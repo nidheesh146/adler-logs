@@ -15,13 +15,10 @@ class Permission
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $permission)
+    public function handle(Request $request, Closure $next, $permission =null)
     {
-        if (in_array($permission, config('permission'))) {
-            return $next($request);
-        }
-        return response()->view('errors/404', [], 404);
-
+        if (!session('token')) {return redirect("login");}
+        return $next($request);
     }
 
 }

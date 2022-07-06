@@ -30,6 +30,34 @@ class DashboardController extends Controller
     public function index(Request $request,$id=null)
     {
         config(['app.title' => 'Dashboard - KSSP']);
+        // $response = Http::get('/user/login/');
+        // print_r($response->json());
+
+
+
+
+        // $response->json() : array|mixed;
+        // $response->object() : object;
+        // $response->collect($key = null) : Illuminate\Support\Collection;
+        // $response->status() : int;
+        // $response->ok() : bool;
+        // $response->successful() : bool;
+        // $response->redirect(): bool;
+        // $response->failed() : bool;
+        // $response->serverError() : bool;
+        // $response->clientError() : bool;
+        // $response->header($header) : string;
+        // $response->headers() : array;
+
+
+       //return view('pages/dashboard',compact('id','data'));
+    }
+
+
+
+    public function login(Request $request,$id=null)
+    {
+        config(['app.title' => 'Dashboard - KSSP']);
         $response = Http::get('/user/login/');
         print_r($response->json());
 
@@ -52,6 +80,12 @@ class DashboardController extends Controller
 
        //return view('pages/dashboard',compact('id','data'));
     }
+
+
+
+
+
+
 
 
     /**

@@ -15,8 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
-    Route::get('/{id?}', 'DashboardController@index');
-    Route::post('/{id?}', 'DashboardController@index');
-    Route::get('/label/list', 'DashboardController@list');
-    Route::get('/download/{id}', 'DashboardController@download');
+    Route::get('/', 'UserController@login');
+});
+
+Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permission']], function() {
+    Route::get('dashboard', 'DashboardController@index');
+
+
+
 });
