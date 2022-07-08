@@ -17,7 +17,7 @@ class Permission
      */
     public function handle(Request $request, Closure $next, $permission =null)
     {
-        if (!session('user')) {return redirect("login");}
+        if (!session('user')) {return redirect("/");}
         return $next($request);
     }
 

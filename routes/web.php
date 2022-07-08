@@ -30,6 +30,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
 
     Route::get('inventory/delete-purchase-reqisition', 'InventoryController@delete_purchase_reqisition');
 
-
+    Route::get('inventory/get-purchase-reqisition-item', 'InventoryController@get_purchase_reqisition_item');
+ 
+    Route::get('inventory/delete-purchase-reqisition-item', 'InventoryController@delete_purchase_reqisition_item');
 
 });

@@ -19,14 +19,13 @@ class InventoryController extends Controller
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-master-list-add-edit-delete/';
         $data = $this->HttpRequest->HttpClient($Request);
-        print_r($data);die;
+        return view('pages/purchase-details/purchase-requisition/purchase-requisition-list', compact('data'));
     }
 
     // Purchase Reqisition Master Add
     public function add_purchase_reqisition(Request $request)
     {
         if ($request->isMethod('post')) {
-
             $Request['Method'] = 'POST';
             $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-master-list-add-edit-delete/";
             $Request['Request'] = json_encode([
@@ -69,19 +68,42 @@ class InventoryController extends Controller
         print_r($data);die;
 
     }
-        // Purchase Reqisition Master delete
-        public function delete_purchase_reqisition(Request $request)
-        {
-            $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-master-list-add-edit-delete/";
-            $Request['param'] = json_encode([
-                "action_type" => "DeletePurchaseRequititionMaster",
-                "purchase_requitition_id" => $request->pr_id
-            ]);
-            $data = $this->HttpRequest->HttpClient($Request);
-            print_r($data);die;
-          
-    
-        }
+    // Purchase Reqisition Master delete
+    public function delete_purchase_reqisition(Request $request)
+    {
+        $Request['Method'] = 'POST';
+        $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-master-list-add-edit-delete/";
+        $Request['param'] = json_encode([
+            "action_type" => "DeletePurchaseRequititionMaster",
+            "purchase_requitition_id" => $request->pr_id
+        ]);
+        $data = $this->HttpRequest->HttpClient($Request);
+        print_r($data);die;
+    }
+
+    // Purchase Reqisition item get list
+    public function get_purchase_reqisition_item(Request $request)
+    {
+        $Request['Method'] = 'GET';
+        $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
+        $Request['param'] = ['pr_id' => $request->pr_id];
+        $data = $this->HttpRequest->HttpClient($Request);
+        print_r($data);die;
+    }
+
+    // Purchase Reqisition item delete 
+    public function delete_purchase_reqisition_item(Request $request)
+    {
+        $Request['Method'] = 'POST';
+        $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-item-list-add-edit-delete/";
+        $Request['param'] = json_encode([
+            "action_type" => "DeletePurchaseRequititionItem",
+            "purchase_requitition_id" => $request->pr_id
+        ]);
+        $data = $this->HttpRequest->HttpClient($Request);
+        print_r($data);die;
+    }
+
+
 
 }

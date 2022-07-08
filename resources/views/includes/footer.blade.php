@@ -1,5 +1,5 @@
 <div class="az-footer ht-40">
-    <div class="container ht-100p pd-t-0-f">
-      <span> 2021 &copy; KSSP - Kerala Sasthra Sahithya Parishad</span>
-    </div><!-- container -->
-  </div><!-- az-footer -->
+  <div class="container-fluid pd-t-0-f ht-100p">
+    <span>&copy; 2019 Azia Responsive Bootstrap 4 Dashboard Template</span>
+  </div><!-- container -->
+</div><!-- az-footer -->

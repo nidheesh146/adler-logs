@@ -237,6 +237,6 @@ $config = [
 
     ],
 ];
-$config['title'] ="KSSP - Kerala Sasthra Sahithya Parishad";
+$config['title'] ="ADLER";
 $config['ApiURL'] ="http://server.malabarroots.com:8001";
 return $config;
