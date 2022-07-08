@@ -68,9 +68,12 @@
 						
 							<td>
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-								<div class="dropdown-menu"> <a href="http://kssp.com/agent-subscription/create/agent/gdp" class="dropdown-item"><i class="fas fa-paper-plane" style="font-size: 13px;margin: 0;"></i> 
-                                          Order request
-                                      </a> <a href=" http://kssp.com/agent/create/agent/gdp" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> <a href=" http://kssp.com/agent-subscribers-action/agents/gdp/action" class="dropdown-item" onclick="return confirm('Are you sure you want to deactive this ?');"><i class="fas fa-times"></i> Deactive</a> <a href=" http://kssp.com/agent-subscribers-action/agents/gdp/delete" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> </div>
+								<div class="dropdown-menu">
+									<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+									<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["id"])}}" class="dropdown-item" ><i class="fas fa-plus"></i> Item</a>
+									<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+								
+								</div>
 							</td>
 						</tr>
 					    	@endforeach

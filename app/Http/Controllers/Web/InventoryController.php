@@ -39,6 +39,8 @@ class InventoryController extends Controller
             $data = $this->HttpRequest->HttpClient($Request);
             print_r($data);die;
         }
+        return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact([]));
+
     }
 
     // Purchase Reqisition Master edit
@@ -65,12 +67,16 @@ class InventoryController extends Controller
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-master-list-add-edit-delete/';
         $Request['param'] = ['pr_id' => $request->pr_id];
         $data = $this->HttpRequest->HttpClient($Request);
-        print_r($data);die;
+       // print_r($data);die;
+
+        return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact([]));
+
 
     }
     // Purchase Reqisition Master delete
     public function delete_purchase_reqisition(Request $request)
     {
+        if($request->pr_id){
         $Request['Method'] = 'POST';
         $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-master-list-add-edit-delete/";
         $Request['param'] = json_encode([
@@ -78,7 +84,11 @@ class InventoryController extends Controller
             "purchase_requitition_id" => $request->pr_id
         ]);
         $data = $this->HttpRequest->HttpClient($Request);
-        print_r($data);die;
+        if(!empty($data['response']['message']) && $data['response']['success']){
+            $request->session()->flash('success',  $data['response']['message']);
+        }
+        }
+       return redirect('inventory/get-purchase-reqisition');
     }
 
     // Purchase Reqisition item get list
@@ -88,8 +98,25 @@ class InventoryController extends Controller
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
         $Request['param'] = ['pr_id' => $request->pr_id];
         $data = $this->HttpRequest->HttpClient($Request);
-        print_r($data);die;
+        return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact([]));
+
     }
+      // Purchase Reqisition item get list
+      public function add_purchase_reqisition_item(Request $request)
+      {
+
+          return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact([]));
+  
+      }
+  
+        // Purchase Reqisition item get list
+        public function edit_purchase_reqisition_item(Request $request)
+        {
+
+            return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact([]));
+    
+        }
+     
 
     // Purchase Reqisition item delete 
     public function delete_purchase_reqisition_item(Request $request)
