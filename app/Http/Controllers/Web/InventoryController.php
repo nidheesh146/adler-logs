@@ -19,23 +19,17 @@ class InventoryController extends Controller
     public function get_purchase_reqisition(Request $request)
     {
         $Request['Method'] = 'GET';
-        if($request->pr_id){
-            $Request['GetParam'] = "?pr_id=".$request->pr_id;
-        }
+        $Request['URL']  = config('app.ApiURL').'/inventory/purchase-requisition-master-list-add-edit-delete' . ($request->pr_id ? "?pr_id=".$request->pr_id : '');
         $data =  $this->HttpRequest->HttpClient($Request);
-
+        print_r($data);die;
     }
 
     // Purchase Reqisition Master Add
     public function add_purchase_reqisition(Request $request)
-    {
-
-
-
-
-        
+    {   
+die;
         $Request['Method'] = 'POST';
-        $Request['Request'] = 
+        $Request['Request'] = "";
         $data =  $this->HttpRequest->HttpClient($Request);
 
     }

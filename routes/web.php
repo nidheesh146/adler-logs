@@ -21,6 +21,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
 
 Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permission']], function() {
     Route::get('inventory/get-purchase-reqisition', 'InventoryController@get_purchase_reqisition');
+    Route::get('inventory/add-purchase-reqisition', 'InventoryController@add_purchase_reqisition');
 
 
 

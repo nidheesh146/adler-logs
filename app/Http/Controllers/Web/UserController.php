@@ -20,7 +20,7 @@ class UserController extends Controller
     {
         $error = "";
 
-        if (session('token')) {
+        if (session('user')) {
             return redirect("inventory/get-purchase-reqisition");
         }
 
@@ -40,7 +40,7 @@ class UserController extends Controller
 
             if ($response->status() == 200) {
                 if (!empty($response->json()['success'])) {
-                    session(['token' => $response->json()['token']]);
+                    session(['user' => $response->json()]);
                     return redirect("inventory/get-purchase-reqisition");
                 } else {
                     $error =  $response->json()['message'];

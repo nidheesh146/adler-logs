@@ -19,10 +19,9 @@ class WebapiController extends Controller
        try {
             if($Request['Method'] == 'GET'){
                 $response = Http::withHeaders([
-                    'Authorization' => 'Token ' . session('token'),
-                ])->get(config('app.ApiURL') . '/inventory/purchase-requisition-master-list-add-edit-delete' . ((!empty($Request['GetParam'])) ? $Request['GetParam'] : ''));
+                    'Authorization' => 'Token ' . session('user')['token'],
+                ])->get($Request['URL']);
             }
-
             if ($response->status() == 200) {
                 if (!empty($response->json()['success'])) {
                     $Res['response'] = $response->json();
@@ -33,7 +32,9 @@ class WebapiController extends Controller
             } else {
                 $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
             }
-        } catch (\Exception$e) {
+        } catch (\Exception $e) {
+
+            echo $e;
             $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
         }
 
