@@ -20,9 +20,9 @@ class UserController extends Controller
     {
         $error = "";
 
-        // if (session('token')) {
-        //     return redirect("inventory/get-purchase-reqisition");
-        // }
+        if (session('token')) {
+            return redirect("inventory/get-purchase-reqisition");
+        }
 
 
         if ($request->isMethod('post')) {
