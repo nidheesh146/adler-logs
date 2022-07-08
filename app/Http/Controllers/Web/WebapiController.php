@@ -16,25 +16,37 @@ class WebapiController extends Controller
 
         $Res['error'] = "";
         $Res['response'] = [];
+        $Request['param'] = (!empty($Request['param']) ? $Request['param'] : []);
+
        try {
             if($Request['Method'] == 'GET'){
                 $response = Http::withHeaders([
                     'Authorization' => 'Token ' . session('user')['token'],
-                ])->get($Request['URL']);
-            }
-            if ($response->status() == 200) {
-                if (!empty($response->json()['success'])) {
-                    $Res['response'] = $response->json();
+                ])->get($Request['URL'],$Request['param']);
 
+            }
+
+            if($Request['Method'] == 'POST'){
+                $response = Http::withHeaders([
+                    'Authorization' => 'Token ' . session('user')['token'],
+                    'Content-Type' => 'application/json'
+                ])->withBody(
+                    $Request['param'], 'application/json'
+                )->post($Request['URL']);
+            }
+
+            if ($response->status() == 200) {
+                if ($response->json()['status'] == 'success') {
+                    $Res['response'] = $response->json();
                 } else {
                     $Res['error'] = $response->json()['message'];
                 }
             } else {
+
                 $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
             }
         } catch (\Exception $e) {
-
-            echo $e;
+echo $e;
             $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
         }
 
