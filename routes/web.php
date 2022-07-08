@@ -16,10 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
     Route::get('/', 'UserController@login');
+    Route::post('/', 'UserController@login');
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permission']], function() {
-    Route::get('dashboard', 'DashboardController@index');
+    Route::get('inventory/get-purchase-reqisition', 'InventoryController@get_purchase_reqisition');
 
 
 

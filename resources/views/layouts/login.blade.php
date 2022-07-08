@@ -24,60 +24,52 @@
     <link rel="stylesheet" href="<?= url('') ?>/css/azia.new.css">
 
   </head>
-  <body class="az-body" style='background-image: url("<?= url('') ?>/img/books.jpeg")'>
+  <body class="az-body" >
 
     <div class="az-signin-wrapper">
       <div class="az-card-signin" style="background: white;">
-        <h1 class="az-logo-login"><img  class="wd-45 ht-40 mg-l-10 bd bd-gray-500 rounded-10" src="<?= url('') ?>/img/bookstore.jpeg">&nbsp;KSSP</h1>
+        <h1 class="az-logo-login">&nbsp;ADLER</h1>
        <span style="border-bottom: 0.001cm solid #cdd4e0;margin-bottom: 19px;"></span>
         <div class="az-signin-header">
           <h2>Welcome back!</h2>
           <h4>Please sign in to continue</h4>
            
-          
-              @if ($validator->errors()->first('Action')) 
-              <div class="alert alert-danger mg-b-0" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-                {{ $validator->errors()->first('Action') }}
-              </div>
-              @endif
+          @foreach ($errors->all() as $errorr)
+          <div class="alert alert-danger "  role="alert" style="width: 100%;">
+             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            {{ $errorr }}
+          </div>
+         @endforeach
+@if($error)
+  <div class="alert alert-danger "  role="alert" style="width: 100%;">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+   {{ $error }}
+ </div>
+@endif
+   
+        
+         @if (Session::get('success'))
+         <div class="alert alert-success " style="width: 100%;">
+             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+             <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+         </div>
+         @endif
 
-              @if ($validator->errors()->first('Token')) 
-              <div class="alert alert-danger mg-b-0" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-                {{ $validator->errors()->first('Token') }}
-              </div>
-              @endif
-              @if ($validator->errors()->first('auth')) 
-              <div class="alert alert-danger mg-b-0" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-                {{ $validator->errors()->first('auth') }}
-              </div>
-              @endif
 
-          <form action="{{ url('') }}" id="commentForm" method="POST">
+
+          <form  id="commentForm" method="POST">
             {{ csrf_field() }}
 
             <div class="form-group">
-              <label>Email</label>
-              <input type="text" name="email" class="form-control" placeholder="Enter your email" >
-             @if ($validator->errors()->first('email')) 
-              <label id="email-error" class="error" for="email">{{ $validator->errors()->first('email') }}</label>
-              @endif
+              <label>Username</label>
+              <input type="text" name="email" class="form-control" placeholder="Enter your username" >
+    
 
             </div><!-- form-group -->
             <div class="form-group">
               <label>Password</label>
               <input type="password" name="password" class="form-control" placeholder="Enter your password" >
-              @if ($validator->errors()->first('password')) 
-              <label id="email-password" class="error" for="email">{{ $validator->errors()->first('password') }}</label>
-              @endif
+      
             </div><!-- form-group -->
 
             <button class="btn btn-az-primary btn-block"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
@@ -86,7 +78,7 @@
         </div><!-- az-signin-header -->
         
         <div class="az-signin-footer">
-          <p ><a href="<?= url('') ?>/forgot-password">Forgot password?</a></p>
+          {{-- <p ><a href="<?= url('') ?>/forgot-password">Forgot password?</a></p> --}}
           {{-- <p >Don't have an account? <a href="<?= url('') ?>/registration">Create an account
           </a></p> --}}
         </div><!-- az-signin-footer -->
@@ -109,7 +101,7 @@
             rules: {
                email:{
                   required: true,
-                   email: true,
+                  // email: true,
                },
                password:{
                   required: true,
