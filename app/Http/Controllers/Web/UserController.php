@@ -59,4 +59,11 @@ class UserController extends Controller
         return view('layouts/login', compact(['error']));
 
     }
+    public function logout()
+    {
+        session()->flush();
+        return redirect("");
+    }
 }
+
+

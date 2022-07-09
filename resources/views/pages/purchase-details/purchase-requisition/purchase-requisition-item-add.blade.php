@@ -15,7 +15,7 @@
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">{{ request()->pr_id? 'Edit' : 'Add' }} purchase reqisition master</h4>
             <div class="az-dashboard-nav">
                 <nav class="nav">
-                    <a class="nav-link    " href="{{url('inventory/add-purchase-reqisition?pr_id='.request()->pr_id)}}">Purchase reqisition master </a>
+                    <a class="nav-link    " href="{{url('inventory/edit-purchase-reqisition?pr_id='.request()->pr_id)}}">Purchase reqisition master </a>
                 <a class="nav-link  active" @if(request()->pr_id) href="{{url('inventory/get-purchase-reqisition-item?pr_id='.request()->pr_id)}}" @endif >  Purchase reqisition item </a>
                      <a class="nav-link  " href="http://kssp.com/order-return"> </a>
                 </nav>

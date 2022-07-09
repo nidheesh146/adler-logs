@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
     Route::get('/', 'UserController@login');
     Route::post('/', 'UserController@login');
+    
+    Route::get('logout', 'UserController@logout');
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permission']], function() {

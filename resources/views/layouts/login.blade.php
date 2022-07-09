@@ -24,11 +24,11 @@
     <link rel="stylesheet" href="<?= url('') ?>/css/azia.new.css">
 
   </head>
-  <body class="az-body" >
+  <body class="az-body" style='background-image: url("<?= url('') ?>/img/1880053.jpeg")'>
 
     <div class="az-signin-wrapper">
       <div class="az-card-signin" style="background: white;">
-        <h1 class="az-logo-login">&nbsp;ADLER</h1>
+        <h1 class="az-logo-login"><img  class="wd-45 ht-40 mg-l-10 bd bd-gray-500 rounded-10" src="<?= url('') ?>/img/alder_logo.png">&nbsp;ADLER</h1>
        <span style="border-bottom: 0.001cm solid #cdd4e0;margin-bottom: 19px;"></span>
         <div class="az-signin-header">
           <h2>Welcome back!</h2>

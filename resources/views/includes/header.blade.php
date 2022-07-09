@@ -41,9 +41,9 @@
       <button class="btn"><i class="fas fa-search"></i></button>
     </div><!-- az-header-center -->
     <div class="az-header-right">
-      <div class="az-header-message">
+      {{-- <div class="az-header-message">
         <a href="app-chat.html"><i class="typcn typcn-messages"></i></a>
-      </div><!-- az-header-message -->
+      </div><!-- az-header-message --> --}}
       <div class="dropdown az-header-notification">
         <a href="#" class="new"><i class="typcn typcn-bell"></i></a>
         <div class="dropdown-menu">
@@ -100,10 +100,10 @@
           </div><!-- az-header-profile -->
 
           <a href="#" class="dropdown-item"><i class="typcn typcn-user-outline"></i> My Profile</a>
-          <a href="#" class="dropdown-item"><i class="typcn typcn-edit"></i> Edit Profile</a>
+          {{-- <a href="#" class="dropdown-item"><i class="typcn typcn-edit"></i> Edit Profile</a>
           <a href="#" class="dropdown-item"><i class="typcn typcn-time"></i> Activity Logs</a>
-          <a href="#" class="dropdown-item"><i class="typcn typcn-cog-outline"></i> Account Settings</a>
-          <a href="page-signin.html" class="dropdown-item"><i class="typcn typcn-power-outline"></i> Sign Out</a>
+          <a href="#" class="dropdown-item"><i class="typcn typcn-cog-outline"></i> Account Settings</a> --}}
+        <a href="{{url('logout')}}" class="dropdown-item"><i class="typcn typcn-power-outline"></i> Sign Out</a>
         </div><!-- dropdown-menu -->
       </div>
     </div><!-- az-header-right -->

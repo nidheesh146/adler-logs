@@ -31,7 +31,7 @@
                 <nav class="nav">
                     <a class="nav-link" href="{{url('inventory/edit-purchase-reqisition?pr_id='.request()->pr_id)}}">Purchase reqisition master </a>
                     <a class="nav-link active "  href=""  >  Purchase reqisition item </a>
-                     <a class="nav-link" href="http://kssp.com/order-return"> </a>
+                     <a class="nav-link" href=""> </a>
                 </nav>
            
             </div>

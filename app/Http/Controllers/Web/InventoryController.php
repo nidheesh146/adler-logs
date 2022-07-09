@@ -25,21 +25,24 @@ class InventoryController extends Controller
     // Purchase Reqisition Master Add
     public function add_purchase_reqisition(Request $request)
     {
+        $data = [];
         if ($request->isMethod('post')) {
             $Request['Method'] = 'POST';
             $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-master-list-add-edit-delete/";
-            $Request['Request'] = json_encode([
+            $Request['param'] = json_encode([
                 "action_type" => "AddPurchaseRequititionMaster",
                 "pr_no" => "PR-" . date('y') . date('m') . sprintf("%03d", date('d')),
-                "requestor" => session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1',
-                "date" => date("d-m-Y"),
-                "department" => "production",
-                "prcsr" => "pr",
+                "requestor" => $request->Requestor,//session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1',
+                "date" => $request->Date,
+                "department" => $request->Department,
+                "prcsr" => $request->PRSR,
             ]);
             $data = $this->HttpRequest->HttpClient($Request);
-            print_r($data);die;
+            if(!empty( $data['response']['purchase_requisition_id'])){
+               return redirect('inventory/add-purchase-reqisition-item?pr_id='.$data['response']['purchase_requisition_id']);
+            }
         }
-        return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact([]));
+        return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact('data'));
 
     }
 
@@ -54,22 +57,27 @@ class InventoryController extends Controller
                 "action_type" => "EditPurchaseRequititionMaster",
                 "purchase_requitition_id" => $request->pr_id,
                 "pr_no" => "PR-" . date('y') . date('m') . sprintf("%03d", date('d')),
-                "requestor" => session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1',
-                "date" => date("d-m-Y"),
-                "department" => "Production",
-                "prcsr" => "sr",
+                "requestor" =>  $request->Requestor,
+                "date" =>$request->Date,
+                "department" => $request->Department,
+                "prcsr" => $request->PRSR,
             ]);
+            
             $data = $this->HttpRequest->HttpClient($Request);
+            if(!empty( $data['response']['success'])){
+                $request->session()->flash('success',  $data['response']['message']);
+                return redirect('inventory/edit-purchase-reqisition?pr_id='.$request->pr_id);
+             }
+
             print_r($data);die;
+          
         }
 
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-master-list-add-edit-delete/';
         $Request['param'] = ['pr_id' => $request->pr_id];
         $data = $this->HttpRequest->HttpClient($Request);
-       // print_r($data);die;
-
-        return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact([]));
+        return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact('data'));
 
 
     }
