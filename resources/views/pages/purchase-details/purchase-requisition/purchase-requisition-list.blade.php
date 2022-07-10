@@ -57,7 +57,7 @@
 						
 						</tr>
 					</thead>
-					<tbody >
+					<tbody id="prbody" style="display:none;">
 					@if(!empty($data['response']['purchase_requisition']))
 					@foreach ($data['response']['purchase_requisition'] as $item)
 						<tr>
@@ -73,11 +73,11 @@
 								<div class="dropdown-menu">
 									<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
 									<a href="{{url('add-purchase-reqisition-item?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
-
 									<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
 								
 								</div>
 								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-purchase-reqisition-item?pr_id='.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 
+								
 							</span>
 							</td>
 						
@@ -125,13 +125,10 @@
         searchPlaceholder: 'Search...',
         sSearch: '',
         lengthMenu: '_MENU_ items/page',
-      },
-	  columnDefs: [
-            { width: 200, targets: 0 }
-        ],
+      }
     });
 
-    
+    $('#prbody').show();
   });
 </script>
 
