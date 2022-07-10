@@ -31,7 +31,7 @@ class InventoryController extends Controller
             $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-master-list-add-edit-delete/";
             $Request['param'] = json_encode([
                 "action_type" => "AddPurchaseRequititionMaster",
-                "pr_no" => "PR-" . date('y') . date('m') . sprintf("%03d", date('d')),
+               // "pr_no" => "PR-" . date('y') . date('m') . sprintf("%03d", date('d')),
                 "requestor" => $request->Requestor,//session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1',
                 "date" => $request->Date,
                 "department" => $request->Department,
@@ -56,23 +56,19 @@ class InventoryController extends Controller
             $Request['param'] = json_encode([
                 "action_type" => "EditPurchaseRequititionMaster",
                 "purchase_requitition_id" => $request->pr_id,
-                "pr_no" => "PR-" . date('y') . date('m') . sprintf("%03d", date('d')),
+                 // "pr_no" => "PR-" . date('y') . date('m') . sprintf("%03d", date('d')),
                 "requestor" =>  $request->Requestor,
                 "date" =>$request->Date,
                 "department" => $request->Department,
                 "prcsr" => $request->PRSR,
             ]);
-            
             $data = $this->HttpRequest->HttpClient($Request);
+          //  print_r($data );die;
             if(!empty( $data['response']['success'])){
                 $request->session()->flash('success',  $data['response']['message']);
                 return redirect('inventory/edit-purchase-reqisition?pr_id='.$request->pr_id);
              }
-
-            print_r($data);die;
-          
         }
-
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-master-list-add-edit-delete/';
         $Request['param'] = ['pr_id' => $request->pr_id];
@@ -104,16 +100,20 @@ class InventoryController extends Controller
     {
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
-        $Request['param'] = ['pr_id' => $request->pr_id];
+        $Request['param'] = ['pr_no_master' => $request->item_id];
         $data = $this->HttpRequest->HttpClient($Request);
-        return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact([]));
+     //   print_r($data);die;
+        return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
 
     }
       // Purchase Reqisition item get list
       public function add_purchase_reqisition_item(Request $request)
       {
-
-          return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact([]));
+        $Request['Method'] = 'GET';
+        $Request['URL'] = config('app.ApiURL') . '/inventory/gst-add-edit-delete/';
+        $Request['param'] = [];
+        $data = $this->HttpRequest->HttpClient($Request);
+        return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data'));
   
       }
   
@@ -129,16 +129,57 @@ class InventoryController extends Controller
     // Purchase Reqisition item delete 
     public function delete_purchase_reqisition_item(Request $request)
     {
+        if($request->item_id){
         $Request['Method'] = 'POST';
         $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-item-list-add-edit-delete/";
         $Request['param'] = json_encode([
             "action_type" => "DeletePurchaseRequititionItem",
-            "purchase_requitition_id" => $request->pr_id
+            "purchase_requitition_id" => $request->item_id
         ]);
         $data = $this->HttpRequest->HttpClient($Request);
-        print_r($data);die;
+        if(!empty($data['response']['message']) && $data['response']['success']){
+            $request->session()->flash('success',  $data['response']['message']);
+        }
+      }
+        return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->item_id);
     }
 
+    function itemcodesearch($itemcode = null){
+        if(!$itemcode){
+            return response()->json(['message'=>'item code is not valid'], 500); 
+        }
+        $Request['Method'] = 'GET';
+        $Request['URL'] = config('app.ApiURL') . '/inventory/rawmaterial-list-add-edit-delete/';
+        $Request['param'] = ['item_code' => $itemcode];
+        $data = $this->HttpRequest->HttpClient($Request);
+        if(!empty($data['response']['raw_materials'][0])){
+            return response()->json($data['response']['raw_materials'][0], 200); 
+        }else{
+            return response()->json(['message'=>'item code is not valid'], 500); 
+        }
+
+    }
+
+    function suppliersearch(Request $request){
+
+        if(!$request->q){
+            return response()->json(['message'=>'item code is not valid'], 500); 
+        }
+    
+        $Request['Method'] = 'GET';
+        $Request['URL'] = config('app.ApiURL') . '/inventory/supplier-add-edit-delete/';
+        $Request['param'] = ['supplier' => $request->q];
+        $data = $this->HttpRequest->HttpClient($Request);
+        if(!empty($data['response']['suppliers'][0])){
+            foreach($data['response']['suppliers']  as $itemcode){
+                $string[] = ['id'=>$itemcode['id'],'text'=>$itemcode['vendor_name']];
+            }
+            return response()->json($string, 200); 
+        }else{
+            return response()->json(['message'=>'item code is not valid'], 500); 
+        }
+
+    }
 
 
 }

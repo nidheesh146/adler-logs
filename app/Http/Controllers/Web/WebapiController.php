@@ -35,18 +35,19 @@ class WebapiController extends Controller
                 )->post($Request['URL']);
             }
 
+          //  print_r($response->json());die;
             if ($response->status() == 200) {
                 if ($response->json()['status'] == 'success') {
                     $Res['response'] = $response->json();
                 } else {
-                    $Res['error'] = $response->json()['message'];
+                    $Res['error'] = (!empty($response->json()['message'])) ? $response->json()['message'] : $response->json()['reason'];
                 }
             } else {
 
                 $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
             }
         } catch (\Exception $e) {
-echo $e;
+            echo $e;
             $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
         }
 

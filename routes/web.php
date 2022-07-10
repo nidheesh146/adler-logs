@@ -41,8 +41,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
     Route::get('inventory/edit-purchase-reqisition-item', 'InventoryController@edit_purchase_reqisition_item');
     Route::post('inventory/edit-purchase-reqisition-item', 'InventoryController@edit_purchase_reqisition_item');
 
-
-
     Route::get('inventory/delete-purchase-reqisition-item', 'InventoryController@delete_purchase_reqisition_item');
+    
+    Route::get('inventory/itemcodesearch/{itemcode?}', 'InventoryController@itemcodesearch');
+
+    Route::get('inventory/suppliersearch', 'InventoryController@suppliersearch');
+
+    
+    
+
+
+
 
 });

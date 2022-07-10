@@ -9,10 +9,10 @@
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE DETAILS</a></span> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE REQISITION</a></span>
-                <span><a href="">{{ request()->pr_id? 'Edit' : 'Add' }} purchase reqisition master</a></span>
+                <span><a href="">List purchase reqisition item </a></span>
             </div>
 	
-            <h4 class="az-content-title" style="font-size: 20px;">{{ request()->pr_id? 'Edit' : 'Add' }} purchase reqisition master
+            <h4 class="az-content-title" style="font-size: 20px;">List Purchase reqisition item
                 <div class="right-button">
                     <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                         <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -22,7 +22,7 @@
                     </div>
                 <div>  
                 </div>
-              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase Reqisition   </button>
+              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase reqisition item</button>
             </div>
           </h4>
 
@@ -37,6 +37,19 @@
             </div>
 
             <div class="table-responsive">
+				@if(!empty($data['error']))
+				<div class="alert alert-danger "  role="alert" style="width: 100%;">
+				  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				 {{ $data['error'] }}
+			   </div>
+			  @endif 
+			    		   
+		   @if (Session::get('success'))
+		   <div class="alert alert-success " style="width: 100%;">
+			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+		   </div>
+		   @endif
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
@@ -51,8 +64,12 @@
 						</tr>
 					</thead>
 					<tbody >
+
+					
+						@if(!empty($data['response']['purchase_requisition'][0]))
+						@foreach($data['response']['purchase_requisition'] as $item)
 						<tr>
-							<th> <a href=" http://kssp.com/agent/create/agent/gdp">AG03</a> </th>
+							<th> AG03</th>
 							<th>Connor Flores Kyla Barnes</th>
 							<td>kanoxi@mailinator.com</td>
 							<td>9037715996</td>
@@ -65,9 +82,11 @@
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu"> 
 							   <a href="{{url('inventory/edit-purchase-reqisition-item?pr_id='.request()->pr_id)}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-							   <a href=" http://kssp.com/agent-subscribers-action/agents/gdp/delete" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> </div>
+							   <a href="{{url('inventory/delete-purchase-reqisition-item?pr_id='.request()->pr_id).'&'.'item_id='.$item['id']}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> </div>
 							</td>
 						</tr>
+						@endforeach
+						@endif
 					
 					</tbody>
 				</table>

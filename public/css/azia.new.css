@@ -269,6 +269,10 @@
 
 
   .az-sidebar-header {
-
     border-bottom: 1px dotted #cdd4e0;
+}
+
+.select2-container .select2-selection--single {
+ height: 36px; 
+
 }
