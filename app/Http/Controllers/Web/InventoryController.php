@@ -100,15 +100,50 @@ class InventoryController extends Controller
     {
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
-        $Request['param'] = ['pr_no_master' => $request->item_id];
+        $Request['param'] = ['pr_no_master' => $request->pr_id];
         $data = $this->HttpRequest->HttpClient($Request);
-     //   print_r($data);die;
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
 
     }
       // Purchase Reqisition item get list
       public function add_purchase_reqisition_item(Request $request)
       {
+        if(!$request->pr_id){
+            return redirect('inventory/get-purchase-reqisition');
+        }
+     
+        if ($request->isMethod('post')) {
+            $Request['Method'] = 'POST';
+            $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-item-list-add-edit-delete/";
+    
+            $Request['param'] = json_encode([
+                "action_type"=>"AddPurchaseRequititionItem",
+                "purchase_reqisition"=>$request->pr_id,
+                "item_code" => $request->Itemcodehidden,
+                "supplier"  => $request->Supplier,
+                "hfn_sac"=>"hsn-sac",
+                "date" => date('d-m-Y'),
+                "requestor" => (session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1'),
+                "department" =>  "production",
+                "currency"  => $request->Currency ,
+                "rate"=> $request->Rate,
+                "basic_value"=> $request->BasicValue,
+                "discount_percent"=> $request->Discount,
+                "discount_value"=> $request->Discount,
+                "gst"=> $request->GST,
+                "net_value"=>  $request->Netvalue,
+                "currency"=>$request->Currency,
+                "remarks"=> $request->Remarks,
+                "actual_order_qty"=> $request->ActualorderQty
+            ]);
+            $data = $this->HttpRequest->HttpClient($Request);
+
+            
+            if(!empty($data['response']['success'])){
+                $request->session()->flash('success',  $data['response']['message']);
+                return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+             }
+        }
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/gst-add-edit-delete/';
         $Request['param'] = [];
@@ -121,7 +156,70 @@ class InventoryController extends Controller
         public function edit_purchase_reqisition_item(Request $request)
         {
 
-            return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact([]));
+            if(!$request->pr_id || !$request->item){
+                return redirect('inventory/get-purchase-reqisition');
+            } 
+
+
+            $datas=[];
+
+            if ($request->isMethod('post')) {
+                $Request['Method'] = 'POST';
+                $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-item-list-add-edit-delete/";
+        
+                $Request['param'] = json_encode([
+                    "action_type"=>"EditPurchaseRequititionItem",
+                    "purchase_reqisition_id" =>  $request->pr_id,
+                    "purchase_requitition_id"=>$request->item,
+                    "hfn_sac"=>"hsn-sac",
+                    "item_code" => $request->Itemcodehidden,
+                    "supplier"  => $request->Supplier,
+                    "date" => date('d-m-Y'),
+                    "requestor" => (session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1'),
+                    "department" =>  "production",
+                    "currency"  => $request->Currency ,
+                    "rate"=> $request->Rate,
+                    "basic_value"=> $request->BasicValue,
+                    "discount_percent"=> $request->Discount,
+                    "discount_value"=> $request->Discount,
+                    "gst"=> $request->GST,
+                    "net_value"=>  $request->Netvalue,
+                    "currency"=>$request->Currency,
+                    "remarks"=> $request->Remarks,
+                    "actual_order_qty"=> $request->ActualorderQty
+                ]);
+                $data = $this->HttpRequest->HttpClient($Request);
+                if(!empty($data['response']['success'])){
+                    $request->session()->flash('success',  $data['response']['message']);
+                    return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+                 }
+            }
+
+
+
+            if($request->item){
+                $Request['Method'] = 'GET';
+                $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
+                $Request['param'] = ['pr_id' => $request->item];
+                $data = $this->HttpRequest->HttpClient($Request);
+// print_r(  $data);die;
+                if(!empty($data['response']['purchase_requisition'][0])){
+                    $datas = $data['response']['purchase_requisition'][0];
+                }else{
+                    return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+                }
+                // print_r($datas);die;
+            }
+
+
+            $Request['Method'] = 'GET';
+            $Request['URL'] = config('app.ApiURL') . '/inventory/gst-add-edit-delete/';
+            $Request['param'] = [];
+            $data = $this->HttpRequest->HttpClient($Request);
+
+
+            return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data','datas'));
+      
     
         }
      
@@ -141,7 +239,7 @@ class InventoryController extends Controller
             $request->session()->flash('success',  $data['response']['message']);
         }
       }
-        return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->item_id);
+        return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
     }
 
     function itemcodesearch($itemcode = null){

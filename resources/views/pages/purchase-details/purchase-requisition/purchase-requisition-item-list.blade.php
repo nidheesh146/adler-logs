@@ -53,14 +53,14 @@
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-							<th>Agent ID</th>
-							<th>Name</th>
-							<th>Email</th>
-							<th>Phone</th>
-							<th>PIN code</th>
-							<th>Credit limit /
-								<br> Balance</th>
-							<th>Action</th>
+							<th>Item code </th>
+							<th>Supplier</th>
+							<th>Actual order Qty</th>
+							<th>Rate</th>
+							<th>Discount %</th>
+							<th>GST %</th>
+							<th>Currency</th>
+							<th>Net value </th>
 						</tr>
 					</thead>
 					<tbody >
@@ -69,19 +69,17 @@
 						@if(!empty($data['response']['purchase_requisition'][0]))
 						@foreach($data['response']['purchase_requisition'] as $item)
 						<tr>
-							<th> AG03</th>
-							<th>Connor Flores Kyla Barnes</th>
-							<td>kanoxi@mailinator.com</td>
-							<td>9037715996</td>
-							<td>3541</td>
-							<th><span style="float: right;">1000000.000 / 
-                                                                          <a href="http://kssp.com/agent-payment/state/gdp"><span style="color: red;">-166.320</span></a>
-								</span>
-							</th>
+							<th>{{$item['item_code']['item_code']}}</th>
+							<th>{{$item['supplier']['vendor_name']}}</th>
+							<td>{{$item['actual_order_qty']}}</td>
+							<td>{{$item['rate']}}</td>
+							<td>{{$item['discount_percent']}}</td>
+							<td>{{$item['gst']}}</td>
+							<th>{{$item['net_value']}}</th>
 							<td>
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu"> 
-							   <a href="{{url('inventory/edit-purchase-reqisition-item?pr_id='.request()->pr_id)}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+							   <a href="{{url('inventory/edit-purchase-reqisition-item?pr_id='.request()->pr_id.'&item='.$item['id'])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
 							   <a href="{{url('inventory/delete-purchase-reqisition-item?pr_id='.request()->pr_id).'&'.'item_id='.$item['id']}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> </div>
 							</td>
 						</tr>

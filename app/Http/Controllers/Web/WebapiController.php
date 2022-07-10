@@ -34,8 +34,8 @@ class WebapiController extends Controller
                     $Request['param'], 'application/json'
                 )->post($Request['URL']);
             }
-
-          //  print_r($response->json());die;
+// echo $response->status();
+//             print_r($response->json());die;
             if ($response->status() == 200) {
                 if ($response->json()['status'] == 'success') {
                     $Res['response'] = $response->json();

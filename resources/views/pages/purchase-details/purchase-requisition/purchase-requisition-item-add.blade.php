@@ -11,11 +11,11 @@
                             DETAILS</a></span>
                     <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">PURCHASE
                             REQISITION</a></span>
-                    <span><a href="">{{ request()->pr_id ? 'Edit' : 'Add' }} purchase reqisition master</a></span>
+                    <span><a href="">{{ request()->item ? 'Edit' : 'Add' }} purchase reqisition master</a></span>
                 </div>
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                    {{ request()->pr_id ? 'Edit' : 'Add' }} purchase reqisition master</h4>
+                    {{ request()->item ? 'Edit' : 'Add' }} purchase reqisition master</h4>
                 <div class="az-dashboard-nav">
                     <nav class="nav">
                         <a class="nav-link    "
@@ -53,27 +53,30 @@
                                     <label for="exampleInputEmail1">Item code * <span
                                             class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                             role="status" aria-hidden="true"></span></label>
-                                    <input type="text" class="form-control" name="Itemcode" id="Itemcode" value=""
+                                    <input type="text" class="form-control" name="Itemcode" id="Itemcode" 
+                                    value="{{ (!empty($datas)) ? $datas['item_code']['item_code'] : ''}}"
                                         placeholder="Item code">
+                                        <input type="hidden" value="{{ (!empty($datas)) ? $datas['item_code']['id'] : ''}}" name="Itemcodehidden" id="Itemcodehidden" >
                                 </div>
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Item type * </label>
-                                    <input type="text" readonly class="form-control" value="" name="Itemtype" id="Itemtype"
+                                    <input type="text" readonly class="form-control" value="{{ (!empty($datas)) ? $datas['item_code']['item_type']['type_name'] : ''}}" name="Itemtype" id="Itemtype"
                                         placeholder="Item type">
+                                        <input type="hidden" value="{{ (!empty($datas)) ? $datas['item_code']['item_type']['id'] : ''}}" name="Itemtypehidden" id="Itemtypehidden" >
                                 </div><!-- form-group -->
 
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Item description *</label>
-                                    <textarea value="" readonly class="form-control" id="Itemdescription"
+                                    <textarea value="{{ (!empty($datas)) ? $datas['item_code']['discription'] : ''}}" readonly class="form-control" id="Itemdescription"
                                         name="Itemdescription" placeholder=""></textarea>
 
                                 </div><!-- form-group -->
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>HSN/SAC code *</label>
-                                    <input type="text" readonly value="" class="form-control" name="HSNSAC" id="HSNSAC"
+                                    <input type="text" readonly value="{{ (!empty($datas)) ? $datas['item_code']['hsn_code'] : ''}}" class="form-control" name="HSNSAC" id="HSNSAC"
                                         placeholder="">
                                 </div><!-- form-group -->
 
@@ -81,7 +84,9 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Supplier *</label>
                                     <select class="form-control Supplier" name="Supplier">
-                                        <option value="">--- select one ---</option>
+                                      @if(!empty($datas))
+                                    <option value="{{$datas['supplier']['id']}}">{{$datas['supplier']['vendor_name']}}</option>
+                                      @endif
                                     </select>
                                 </div>
                                 
@@ -89,51 +94,52 @@
                                 <!-- form-group -->
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Unit name*</label>
-                                    <input type="text" readonly value="" class="form-control" name="Unit" id="Unit" placeholder="">
-                                </div><!-- form-group -->
+                                    <input type="text" readonly value="{{ (!empty($datas)) ? $datas['item_code']['receipt_unit']['unit_name'] : ''}}" class="form-control" name="Unit" id="Unit" placeholder="">
+                                    <input type="hidden" value="{{ (!empty($datas)) ? $datas['item_code']['receipt_unit']['id'] : ''}}" name="Unithidden" id="Unithidden" >
+                                  </div><!-- form-group -->
 
 
              
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Stock Qty *</label>
-                                    <input type="text" readonly class="form-control" value="" id="StockQty" name="StockQty"
+                                    <input type="text" readonly class="form-control" value="{{ (!empty($datas)) ? $datas['item_code']['availble_quantity'] : ''}}" id="StockQty" name="StockQty"
                                         placeholder="">
                                 </div>
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Open PO Qty *</label>
-                                    <input type="text" readonly class="form-control" value="" id="OpenPOQty" name="OpenPOQty"
+                                    <input type="text" readonly class="form-control" value="{{ (!empty($datas)) ? $datas['item_code']['opening_quantity']  : ''}}" id="OpenPOQty" name="OpenPOQty"
                                         placeholder="">
                                 </div>
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Actual order Qty *</label>
-                                    <input type="text" class="form-control" value="" name="ActualorderQty"
+                                    <input type="text" class="form-control" value="{{ (!empty($datas)) ? $datas['actual_order_qty'] : ''}}" name="ActualorderQty"
                                         placeholder="Actual order Qty">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Min Level *</label>
-                                    <input type="text" readonly class="form-control" value="" id="MinLevel" name="MinLevel"
+                                    <input type="text" readonly class="form-control" value="{{ (!empty($datas)) ? $datas['item_code']['min_stock'] : ''}}" id="MinLevel" name="MinLevel"
                                         placeholder="">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Max Level *</label>
-                                    <input type="text" readonly class="form-control" value="" id="MaxLevel" name="MaxLevel"
+                                    <input type="text" readonly class="form-control" value="{{ (!empty($datas)) ? $datas['item_code']['max_stock'] : ''}}" id="MaxLevel" name="MaxLevel"
                                         placeholder="">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                   <label>Basic Value *</label>
-                                  <input type="text" name="BasicValue" value="" class="form-control"
+                                  <input type="text" name="BasicValue" value="{{ (!empty($datas)) ? $datas['basic_value'] : ''}}" class="form-control"
                                       placeholder="Basic Value">
                               </div><!-- form-group -->
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Rate *</label>
-                                    <input type="text" class="form-control" value="" name="Rate" id="Rate" placeholder="Rate">
+                                    <input type="text" class="form-control" value="{{ (!empty($datas)) ? $datas['rate'] : ''}}" name="Rate" id="Rate" placeholder="Rate">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Discount ( % ) *</label>
-                                    <input type="text" class="form-control" value="" id="Discount" name="Discount"
+                                    <input type="text" class="form-control" value="{{ (!empty($datas)) ? $datas['discount_percent'] : ''}}" id="Discount" name="Discount"
                                         placeholder="Discount ( % )">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -141,8 +147,14 @@
                                     {{-- <input type="text" class="form-control" value="" name="GST" id="GST" placeholder="GST"> --}}
                                     <select class="form-control GST" name="GST">
                                       <option value="">--- select one ---</option>
-                                      @foreach ($data['response']['raw_materials'] as $item)
-                                          <option value="{{$item['gst']}}">{{$item['gst']}}  %</option>
+                                      @foreach ($data['response']['GST'] as $item)
+                                          <option value="{{$item['gst']}}"
+                                          @if(!empty($datas)) 
+                                            @if($item['gst'] == $datas['gst'])
+                                              selected
+                                            @endif
+                                          @endif
+                                          >{{$item['gst']}}  %</option>
                                       @endforeach
                                   </select>
                                   </div>
@@ -151,27 +163,35 @@
                                     <select class="form-control Currency" name="Currency">
                                       <option value="">--- select one ---</option>
                                       @foreach (['USD','INR'] as $item)
-                                          <option value="{{ $item }}">{{ $item }}</option>
+                                          <option value="{{ $item }}"
+                                          @if(!empty($datas)) 
+                                          @if($item == $datas['currency'])
+                                            selected
+                                          @endif
+                                        @endif>{{ $item }}</option>
                                       @endforeach
                                   </select>
                                    
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Net value *</label>
-                                    <input type="text" readonly class="form-control" value="" id="Netvalue" name="Netvalue"
+                                    <input type="text" readonly class="form-control" value="{{ (!empty($datas)) ? $datas['net_value'] : ''}}" id="Netvalue" name="Netvalue"
                                         placeholder="">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Reason for Remarks *</label>
                                     <textarea value="" class="form-control" name="Remarks"
-                                        placeholder="Reason for Remarks"></textarea>
+                                        placeholder="Reason for Remarks">{{ (!empty($datas)) ? $datas['remarks'] : ''}}</textarea>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                    <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><i
-                                            class="fas fa-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                      role="status" aria-hidden="true"></span> <i
+                                            class="fas fa-save"></i>
+                                            {{ request()->item ? 'Update' : 'Save' }}
+                                            </button>
                                 </div>
                             </div>
                             <div class="form-devider"></div>
@@ -206,14 +226,8 @@
       let gst = $('.GST').val() ? $('.GST').val() : 0;
       if(Rate){
         let total = ( Rate - ((Rate / 100) * Discount)) ;
-
         let netvalue = (+total + ((total / 100) * gst));
-        console.log(gst);
-        console.log(((total / 100) * gst));
-
-
-        $('#Netvalue').val(netvalue);
-
+        $('#Netvalue').val(netvalue.toFixed(2));
       }else{
        $('#Discount').val('');
        $('.GST').val('');
@@ -233,7 +247,7 @@
 
 
         
-    function get_itemcode(element,event){
+    function get_itemcode(element){
         $('.spinner-button').show();
         $('#Itemcode-error').remove();
         $('#Itemdescription').text('');
@@ -242,20 +256,24 @@
         $('#Unit').val('');
         $('#MinLevel').val('');
         $('#MaxLevel').val('');
+        $('#Itemtypehidden').val('');
      
-        $.get( "{{ url('inventory/itemcodesearch') }}/"+$(element).val(), function(res) {
+        $.get( "{{ url('inventory/itemcodesearch') }}/"+element, function(res) {
           $('.spinner-button').hide();
           if(res.discription){
             $('#Itemdescription').text(res.discription);
           }
           if(res.item_type.type_name){
             $('#Itemtype').val(res.item_type.type_name);
+            $('#Itemtypehidden').val(res.item_type.id);
+            
           }
           if(res.hsn_code){
             $('#HSNSAC').val(res.hsn_code);
           }
           if(res.receipt_unit.unit_name){
             $('#Unit').val(res.receipt_unit.unit_name);
+            $('#Unithidden').val(res.receipt_unit.id);
           }
           if(res.min_stock){
             $('#MinLevel').val(res.min_stock);
@@ -269,6 +287,10 @@
           if(res.availble_quantity){
             $('#StockQty').val(res.availble_quantity);
           }
+          if(res.id){
+            $('#Itemcodehidden').val(res.id);
+          }
+          
 
         }).fail(function(error) {
           $('.spinner-button').hide();
@@ -280,7 +302,7 @@
         $("#commentForm").validate({
           onfocusout: function(element, event) {
           if ($(element).attr('name') == "Itemcode") {
-               get_itemcode(element,event)
+              get_itemcode($(element).val());
            }
         },
                 rules: {
@@ -307,6 +329,7 @@
                     },
                     BasicValue: {
                         required: true,
+                        number: true
                     },
                     StockQty: {
                         required: true,
@@ -316,6 +339,7 @@
                     },
                     ActualorderQty: {
                         required: true,
+                        number: true
                     },
                     MinLevel: {
                         required: true,
@@ -325,9 +349,11 @@
                     },
                     Rate: {
                         required: true,
+                        number: true
                     },
                     Discount: {
                         required: true,
+                        number: true
                     },
                     GST: {
                         required: true,
@@ -337,11 +363,31 @@
                     },
                     Netvalue: {
                         required: true,
+                        number: true
                     },
                     Remarks: {
                         required: true,
                     }
-                }
+                },
+                submitHandler: function(form) {
+                $('.spinner-button').show();
+                 $.get( "{{ url('inventory/itemcodesearch') }}/"+$('#Itemcode').val(), function(res) {
+                  if(res.id){
+                      form.submit();
+                  }else{
+                    alert('item code is not valid');
+                  }
+                 }).fail(function(error) {
+                  alert('item code is not valid');
+                 });
+
+
+
+
+
+
+                    
+            }
             });
 
                 $('.Supplier').select2({
