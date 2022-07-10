@@ -129,7 +129,8 @@
             
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><i class="fas fa-save"></i>
+                                <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                    role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                 @if(!empty($data['response']['purchase_requisition'][0]))
                                     Update
                                 @else 
@@ -207,6 +208,10 @@
                     required: true,
                 },
             },
+            submitHandler: function(form) {
+                $('.spinner-button').show();
+                form.submit();
+            }
         });
 
     
