@@ -75,13 +75,13 @@
 							class="badge 
 							@if($item['status'] == 0)
 							    badge-info
-								@elseif($item['status'] == 2)
+								@elseif($item['status'] == 3)
 								badge-warning
 								@endif
 							">
 							@if($item['status'] == 0)
 							    Pending
-							@elseif($item['status'] == 2)
+							@elseif($item['status'] == 3)
 								On hold
 							@endif
 							</a></td>
@@ -126,7 +126,7 @@
 									<option value=""> --Select One-- </option>
 									{{-- <option value="0"> Pending </option> --}}
 									<option value="1"> Approve</option>
-									<option value="2">On hold</option>
+									<option value="3">On hold</option>
                                 </select>
                             </div>
 							<div class="form-group">
