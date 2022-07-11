@@ -25,16 +25,14 @@
         <li class="nav-label">Main Menu</li>
         <li class="nav-item @if (in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
         'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
-        'Inventory.add_purchase_reqisition_item'])) {{'active show'}} @endif ">
-          <a href="#" class="nav-link with-sub"><i class="fas fa-shopping-cart" style="font-size: 17px;"></i> Purchase details</a>
+        'Inventory.add_purchase_reqisition_item','Approval.getList'])) {{'active show'}} @endif ">
+          <a href="#" class="nav-link with-sub"><i class="fas fa-shopping-cart" style="font-size: 17px;"></i>Purchase Details</a>
           <ul class="nav-sub">
-            <li class="nav-sub-item"><a href="#" class="nav-sub-link">Purchase Order</a></li>
+            <li class="nav-sub-item"><a href="#" class="nav-sub-link">Order</a></li>
             <li class="nav-sub-item @if(in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
             'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
-            'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/get-purchase-reqisition')}}"  class="nav-sub-link">Purchase Reqisition</a></li>
-            <li class="nav-sub-item @if(in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
-            'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
-            'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Purchase Reqisition Approval</a></li>
+            'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/get-purchase-reqisition')}}"  class="nav-sub-link">Reqisition</a></li>
+            <li class="nav-sub-item @if(in_array($Action,['Approval.getList'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Reqisition Approval</a></li>
           </ul>
         </li><!-- nav-item -->
 
