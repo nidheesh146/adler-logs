@@ -32,7 +32,7 @@
                     @endif                   
                    
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" id="commentForm" >
+                    <form method="POST"  action="{{ url('inventory/add/quotation') }}" >
                         {{ csrf_field() }}  
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label for="exampleInputEmail1">RQ NO: *</label>
-                                <input type="text" class="form-control" name="f_name" value="" placeholder="Enter QR NO">
+                                <input type="text" class="form-control" name="rq_no"  placeholder="Enter QR NO">
                             </div> 
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -56,7 +56,7 @@
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Date *</label>
-                                <input type="date" value="" class="form-control datepicker" name="Date" placeholder="Date">
+                                <input type="date"  class="form-control datepicker" name="date" placeholder="Date">
                             </div>
 
 
@@ -69,7 +69,7 @@
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Delivery Schedule *</label>
-                                <input type="date" value="" class="form-control datepicker" name="Date" placeholder="Date">
+                                <input type="date"  class="form-control datepicker" name="delivery" placeholder="Date">
                             </div>
 
                         </div> 
@@ -83,35 +83,30 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Item Code</th>
-                                        <th>Item Type</th>
-                                        <th>Item Description</th>
-                                        <th>HSN code</th>
+                                        <th>Item code </th>
+                                        <th>Supplier</th>
+                                        <th>Actual order Qty</th>
                                         <th>Rate</th>
-                                        <th>PR/SR</th>
-                                        <th>Basic Value</th>
-                                        <th>Discount Percent</th>
-                                        <th>Discount Value</th>
-                                        <th>GST</th>
-                                        <th>Net Value</th>
+                                        <th>Discount %</th>
+                                        <th>GST %</th>
+                                        <th>Currency</th>
+                                        <th>Net value </th>
                                         <th>Actual Order Qty</th>
-                                        <th>Approved Qty</th>
                                     </tr>
                                 </thead>
                                 <tbody >
-                                @foreach($data['response']['purchase_requisition'] as $item)
+                                @foreach($requisition_items as $item)
                                 <tr>
-                                <td><input type="checkbox" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['id']}}"></td>
-                                <td>{{$item['status']}}</td>
-                                <td>{{$item['status']}}</td>
-                                <td>{{$item['status']}}</td>
-                                <td>{{$item['status']}}</td>
-                                <td>{{$item['status']}}</td>
-                                <td>{{$item['status']}}</td>
-                                <td>{{$item['status']}}</td>
-
-                                
-							 
+                                <td><input type="checkbox" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['id']}}">{{$item['id']}}</td>
+                                <th>{{$item['item_code']['item_code']}}</th>
+                                <td>{{$item['supplier']['vendor_name']}}</td>
+                                <td>{{$item['actual_order_qty']}}</td>
+                                <td>{{$item['rate']}}</td>
+                                <td>{{$item['discount_percent']}}</td>
+                                <td>{{$item['gst']}}</td>
+                                <td>{{$item['currency']}}</td>
+                                <td>{{$item['net_value']}}</td>	
+                                <td>{{$item['actual_order_qty']}}</td>						 
                                 </tr>	
                                 @endforeach
                                 </tbody>
@@ -129,6 +124,7 @@
 					}
 					</style>
 				</div>
+                <br/>
                 <div class="form-devider"></div>
                 <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">

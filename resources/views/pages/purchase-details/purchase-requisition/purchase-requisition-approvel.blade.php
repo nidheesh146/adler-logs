@@ -48,24 +48,16 @@
 							<th>GST %</th>
 							<th>Currency</th>
 							<th>Net value </th>
+							<th>Status</th>
 							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody >
 						@foreach($requisition_items as $item)
+						@if($item['status']!=1)
 						<tr>
 							<td>{{$item['id']}}</td>
 							<th>{{$item['item_code']['item_code']}}</th>
-							 <!-- <td>{{$item['item_code']['item_code']}}</td>
-							<td>{{ $item['item_code']['item_type']['type_name'] }}</td>
-							 <td>{{$item['item_code']['discription']}}</td> 
-							<td>{{$item['item_code']['hsn_code']}}</td> -->
-							<!-- <td>{{$item['rate']}}</td>
-							<td>PR/SR</td> -->
-							<!-- <td>{{$item['basic_value']}}</td>
-							<td>{{$item['discount_percent']}}</td>
-							<td>{{$item['discount_value']}}</td>
-							<td>{{$item['gst']}}</td> -->
 							<td>{{$item['supplier']['vendor_name']}}</td>
 							<td>{{$item['actual_order_qty']}}</td>
 							<td>{{$item['rate']}}</td>
@@ -73,14 +65,11 @@
 							<td>{{$item['gst']}}</td>
 							<td>{{$item['currency']}}</td>
 							<td>{{$item['net_value']}}</td>
-							<!-- <td>{{$item['item_code']['opening_quantity']}}</td>
-							<td>{{$item['actual_order_qty']}}</td>
-							<td>{{$item['item_code']['min_stock']}}</td>
-							<td>{{$item['item_code']['max_stock']}}</td>
-							<td>{{ $item['item_code']['over_stock'] }}</td>  -->
+							<td><span class="badge badge-pill badge-info ">waiting for Action<span></td>
 							<td>
 							<a href="#" data-toggle="modal" data-target="#myModal" id="change-status" style="width: 64px;" data-html="true" data-placement="top" class="badge badge-success" @if(!empty($item[ 'purchase_reqisition' ] )) data-purchaserequisitionmasterid="{{$item[ 'purchase_reqisition' ]['id']}}" @endif  data-purchaserequisitionitemid="{{$item['id']}}" > Approve </a></td>
 						</tr>	
+						@endif
 						@endforeach
 					</tbody>
 				</table>
@@ -117,8 +106,9 @@
 								<input type="text" name="purchaseRequisitionItemId" id ="purchaseRequisitionItemId" value=" ">
                                 <select class="form-control" name="status" id="status">
 									<option>Select One..</option>
-                                    <option value="1"> Approve</option>
 									<option value="0">Not Approve </option>
+									<option value="1"> Approve</option>
+									<option value="2"> Hold</option>
                                 </select>
                             </div>
 							<div class="form-group">

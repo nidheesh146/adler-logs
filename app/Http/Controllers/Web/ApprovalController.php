@@ -41,8 +41,8 @@ class ApprovalController extends Controller
                         'purchase_reqisition_list' => $request->purchaseRequisitionItemId,
                         'is_approved'=> 1,
                         'quantity '=>$request->approved_qty,
-                        'reason '=>$request->reason]
-                        );
+                        'reason'=>$request->reason
+                        ]);
                 $data = $this->HttpRequest->HttpClient($Request);
                 // print_r($data);
                 // exit;

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Web\WebapiController;
 use Illuminate\Support\Facades\Http;
+use Validator;
 
 class QuotationController extends Controller
 {
@@ -38,34 +39,38 @@ class QuotationController extends Controller
     public function getQuotation()
     {
         $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL').'/inventory/purchase-requisition-approval-list-add-edit-delete/?status=1';
+        $Request['URL'] = config('app.ApiURL').'/inventory/purchase-requisition-item-list-add-edit-delete/';
+        $Request['param'] = ['status' => 1];
         $data = $this->HttpRequest->HttpClient($Request); 
-        return view('pages/Quotation/quotation-add', compact('data'));
+        $requisition_items = ($data['response']['purchase_requisition']);
+        // print_r(json_encode($data));
+        // exit;
+        return view('pages/Quotation/quotation-add', compact('requisition_items'));
     }
 
     // Add Quotation
     public function postQuotation(Request $request)
     {
-        $validation['rq_no '] = ['required'];
-        $validation['date '] = ['required'|'date'];
-        $validation['requestor  '] = ['required'];
-        $validation['supplier  '] = ['required'];
-        $validation['deliver_schedule  '] = ['required'];
-        $validator = Validator::make($request->all(), $validation);
-        if(!$validator->errors()->all()) 
-        { 
+        // $validation['rq_no '] = ['required'];
+        // $validation['date '] = ['required'|'date'];
+        // //$validation['requestor  '] = ['required'];
+        // $validation['Supplier  '] = ['required'];
+        // $validation['delivery  '] = ['required'];
+        // $validator = Validator::make($request->all(), $validation);
+        
             $Request['Method'] = 'POST';
             $Request['URL'] = config('app.ApiURL').'/inventory/quotation-master-list-add-edit-delete';
-            
             $Request['param'] = json_encode([
                 'action_type '=>'AddQuotationMaster',
-                'rq_no' => '11',//$request->rq_no,
-                'date' => '08-07-2022',//$request->date,
-                'requestor' =>3, //$request->requestor,
-                'supplier' => 1,//$request->supplier,
-                'deliver_schedule' => '10-07-2022'//$request->deliver_schedule,
+                'rq_no' => $request->rq_no,
+                'date' => date("d-m-Y",strtotime($request->date)),
+                'requestor' =>1, //$request->requestor,
+                'supplier' => $request->Supplier,
+                'deliver_schedule' =>date("d-m-Y",strtotime($request->delivery)) ,
             ]);
             $data = $this->HttpRequest->HttpClient($Request);
+            // print_r($Request['param']);
+            // exit;
             if(!empty($data['response']['success'])){
                 $request->session()->flash('success',  $data['response']['message']);
                 return redirect('inventory/quotation');
@@ -76,7 +81,6 @@ class QuotationController extends Controller
                 return redirect('inventory/quotation');
              }
             
-        }
 
     }
 

@@ -34,7 +34,10 @@
             'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/get-purchase-reqisition')}}"  class="nav-sub-link">Purchase Reqisition</a></li>
             <li class="nav-sub-item @if(in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
             'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
-            'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Purchase Reqisition Approval</a></li>
+            'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Reqisition Approval</a></li>
+            <li class="nav-sub-item @if(in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
+            'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
+            'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Rejected list</a></li>
           </ul>
         </li><!-- nav-item -->
 
