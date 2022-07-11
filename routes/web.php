@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
     Route::get('/', 'UserController@login');
     Route::post('/', 'UserController@login');
-    
     Route::get('logout', 'UserController@logout');
 });
 
@@ -31,6 +30,23 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
     Route::post('inventory/edit-purchase-reqisition', 'InventoryController@edit_purchase_reqisition');
 
     Route::get('inventory/delete-purchase-reqisition', 'InventoryController@delete_purchase_reqisition');
+
+    // Quotation Master
+    Route::get('inventory/quotation', 'QuotationController@getQuotation');
+    Route::get('inventory/suppliersearch', 'QuotationController@suppliersearch');
+    Route::post('inventory/add/quotation','QuotationController@postQuotation');
+    // Route::get('inventory/edit/quotation', 'QuotationController@editQuotation');
+    // Route::post('inventory/edit/quotation', 'QuotationController@editQuotation');
+    // Route::post('inventory/delete/quotation', 'QuotationController@deleteQuotation');
+
+    // Quotation item
+    Route::get('inventory/quotation-item', 'QuotationController@getQuotationItem');
+    Route::get('inventory/add/quotation-item','QuotationController@addQuotationItem');
+    Route::post('inventory/add/quotation-item','QuotationController@postQuotationItem');
+    Route::get('inventory/edit/quotation-item', 'QuotationController@editQuotationItem');
+    Route::post('inventory/edit/quotation-item', 'QuotationController@editQuotationItem');
+    Route::post('inventory/delete/quotation-item', 'QuotationController@deleteQuotationItem');
+
 
     Route::get('inventory/get-purchase-reqisition-item', 'InventoryController@get_purchase_reqisition_item');
  
@@ -48,9 +64,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
     Route::get('inventory/suppliersearch', 'InventoryController@suppliersearch');
 
     
-    
-
-
+    Route::get('inventory/purchase-reqisition/approval', 'ApprovalController@getList');
+    Route::post('inventory/purchase-reqisition/approval', 'ApprovalController@Approve');
 
 
 });

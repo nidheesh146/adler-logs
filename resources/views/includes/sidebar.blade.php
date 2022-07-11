@@ -32,8 +32,25 @@
             <li class="nav-sub-item @if(in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
             'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
             'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/get-purchase-reqisition')}}"  class="nav-sub-link">Purchase Reqisition</a></li>
+            <li class="nav-sub-item @if(in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
+            'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
+            'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Purchase Reqisition Approval</a></li>
           </ul>
         </li><!-- nav-item -->
+
+        
+
+        <li class="nav-item">
+          <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i></i>
+           Quotation
+          </a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item"><a href="{{url('inventory/quotation')}}" class="nav-sub-link">Request for Quotation</a></li>
+            <li class="nav-sub-item"><a href="{{url('inventory/quotation')}}"  class="nav-sub-link">Purchase Reqisition</a></li>
+          </ul>
+        </li>
+
+
         <li class="nav-item">
           <a href="#" class="nav-link with-sub"><i class="typcn typcn-document"></i>Apps &amp; Pages</a>
           <ul class="nav-sub">
