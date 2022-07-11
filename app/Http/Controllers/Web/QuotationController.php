@@ -57,9 +57,10 @@ class QuotationController extends Controller
         // $validation['Supplier  '] = ['required'];
         // $validation['delivery  '] = ['required'];
         // $validator = Validator::make($request->all(), $validation);
-        
+        print_r($request->purchase_requisition_item);
+        exit;
             $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL').'/inventory/quotation-master-list-add-edit-delete';
+            $Request['URL'] = config('app.ApiURL').'/inventory/quotation-master-list-add-edit-delete/';
             $Request['param'] = json_encode([
                 'action_type '=>'AddQuotationMaster',
                 'rq_no' => $request->rq_no,
@@ -69,8 +70,8 @@ class QuotationController extends Controller
                 'deliver_schedule' =>date("d-m-Y",strtotime($request->delivery)) ,
             ]);
             $data = $this->HttpRequest->HttpClient($Request);
-            // print_r($Request['param']);
-            // exit;
+            print_r($data);
+            exit;
             if(!empty($data['response']['success'])){
                 $request->session()->flash('success',  $data['response']['message']);
                 return redirect('inventory/quotation');
