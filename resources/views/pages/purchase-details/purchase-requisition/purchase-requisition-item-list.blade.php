@@ -61,6 +61,7 @@
 							<th>GST %</th>
 							<th>Currency</th>
 							<th>Net value </th>
+							<th>#</th>
 						</tr>
 					</thead>
 					<tbody >
@@ -75,6 +76,7 @@
 							<td>{{$item['rate']}}</td>
 							<td>{{$item['discount_percent']}}</td>
 							<td>{{$item['gst']}}</td>
+							<td>{{$item['currency']}}</td>
 							<th>{{$item['net_value']}}</th>
 							<td>
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
