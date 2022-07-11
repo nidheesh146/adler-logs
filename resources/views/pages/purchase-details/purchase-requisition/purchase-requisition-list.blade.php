@@ -34,6 +34,12 @@
 				</div>
 		   @endif
 		   
+		   @if(Session::get('error'))
+		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
+			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+			   {{Session::get('error')}}
+		   </div>
+	       @endif
 		   @if (Session::get('success'))
 		   <div class="alert alert-success " style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -47,6 +53,7 @@
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
+							<th style="display:none;"></th>
 							<th>PR NO:</th>
 							<th>requestor</th>
 							<th>date</th>
@@ -61,6 +68,7 @@
 					@if(!empty($data['response']['purchase_requisition']))
 					@foreach ($data['response']['purchase_requisition'] as $item)
 						<tr>
+							<td style="display:none;">{{ $item['id']}}</td>
 							<th>{{$item['pr_no']}} </th>
 							<th>{{$item['requestor']}}</th>
 							<td>{{$item['date']}}</td>
@@ -105,14 +113,10 @@
 	<!-- az-content-body -->
 </div>
 
-
-
 <script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
-
-
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
 
@@ -125,7 +129,8 @@
         searchPlaceholder: 'Search...',
         sSearch: '',
         lengthMenu: '_MENU_ items/page',
-      }
+      },
+	  order: [[1, 'desc']],
     });
 
     $('#prbody').show();

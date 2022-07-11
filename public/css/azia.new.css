@@ -276,3 +276,11 @@
  height: 36px; 
 
 }
+
+@media (min-width: 992px){
+.az-sidebar {
+
+    z-index: 1000;
+
+}
+}

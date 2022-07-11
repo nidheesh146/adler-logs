@@ -12,7 +12,7 @@
                   <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                       <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
                   <div class="dropdown-menu">
-                  <a href="http://kssp.com/agent/agents?download=excel" class="dropdown-item">Excel</a>
+                  <a href="" class="dropdown-item">Excel</a>
           
                   </div>
               <div>  
@@ -22,12 +22,12 @@
 			<div class="az-dashboard-nav">
 				<nav class="nav"> </nav>
 			</div>
-			@if(!empty($data['error']))
-                    <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                     {{ $data['error'] }}
-                   </div>
-                  @endif 
+			@if($data['error'])
+			<div class="alert alert-danger "  role="alert" style="width: 100%;">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				{{$data['error'] }}
+			</div>
+	       @endif
 		   
 		   @if (Session::get('success'))
 		   <div class="alert alert-success " style="width: 100%;">
@@ -39,7 +39,8 @@
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-						<th>No</th>
+							<th style="display:none;"></th>
+						    <th>PR NO:</th>
 							<th>Item code </th>
 							<th>Supplier</th>
 							<th>Actual order Qty</th>
@@ -48,29 +49,46 @@
 							<th>GST %</th>
 							<th>Currency</th>
 							<th>Net value </th>
+							{{-- <th>Status</th> --}}
 							<th>Status</th>
-							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody >
-						@foreach($requisition_items as $item)
-						@if($item['status']!=1)
+						@if(!empty($data['response']['purchase_requisition'][0]))
+						@foreach($data['response']['purchase_requisition'] as $item)
+						
 						<tr>
-							<td>{{$item['id']}}</td>
-							<th>{{$item['item_code']['item_code']}}</th>
+							<td style="display:none;">{{ $item['id']}}</td>
+							<td>{{!empty($item['purchase_reqisition']) ? $item['purchase_reqisition']['pr_no'] : '-'}}</td>
+							<td>{{$item['item_code']['item_code']}}</td>
 							<td>{{$item['supplier']['vendor_name']}}</td>
 							<td>{{$item['actual_order_qty']}}</td>
-							<td>{{$item['rate']}}</td>
+						    <td>{{$item['rate']}}</td>
 							<td>{{$item['discount_percent']}}</td>
 							<td>{{$item['gst']}}</td>
 							<td>{{$item['currency']}}</td>
 							<td>{{$item['net_value']}}</td>
-							<td><span class="badge badge-pill badge-info ">waiting for Action<span></td>
+							{{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
 							<td>
-							<a href="#" data-toggle="modal" data-target="#myModal" id="change-status" style="width: 64px;" data-html="true" data-placement="top" class="badge badge-success" @if(!empty($item[ 'purchase_reqisition' ] )) data-purchaserequisitionmasterid="{{$item[ 'purchase_reqisition' ]['id']}}" @endif  data-purchaserequisitionitemid="{{$item['id']}}" > Approve </a></td>
+							<a href="#" data-toggle="modal" value="{{$item['id']}}" rel="{{$item['item_code']['item_code']}}" data-target="#myModal" id="change-status" style="width: 64px;" 
+							data-html="true" data-placement="top" 
+							class="badge 
+							@if($item['status'] == 0)
+							    badge-info
+								@elseif($item['status'] == 2)
+								badge-warning
+								@endif
+							">
+							@if($item['status'] == 0)
+							    Pending
+							@elseif($item['status'] == 2)
+								On hold
+							@endif
+							</a></td>
 						</tr>	
-						@endif
+					
 						@endforeach
+						@endif
 					</tbody>
 				</table>
 				<div class="box-footer clearfix">
@@ -96,34 +114,35 @@
                     {{ csrf_field() }} 
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">#Approve Purchase Requisition</h4>
+                            <h4 class="modal-title">#Approve Purchase Requisition <span class="item-codes"></span></h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="inputAddress2">Status</label><br>
-                                <input type="text" name="purchaseRequisitionMasterId" id ="purchaseRequisitionMasterId" value=" ">
-								<input type="text" name="purchaseRequisitionItemId" id ="purchaseRequisitionItemId" value=" ">
+                                <label for="inputAddress2">Status *</label><br>
+                                {{-- <input type="text" name="purchaseRequisitionMasterId" id ="purchaseRequisitionMasterId" value=" "> --}}
+								<input type="hidden" name="purchaseRequisitionItemId" id ="purchaseRequisitionItemId" value="">
                                 <select class="form-control" name="status" id="status">
-									<option>Select One..</option>
-									<option value="0">Not Approve </option>
+									<option value=""> --Select One-- </option>
+									{{-- <option value="0"> Pending </option> --}}
 									<option value="1"> Approve</option>
-									<option value="2"> Hold</option>
+									<option value="2">On hold</option>
                                 </select>
                             </div>
 							<div class="form-group">
-                                <label for="inputAddress">Approved Qty</label>
+                                <label for="inputAddress">Approved Qty *</label>
                                 <input type="text" name="approved_qty"  class="form-control" id="approved_qty" placeholder="Approved Qty">
                             </div> 
                             <div class="form-group">
-                                <label for="inputAddress">Remarks</label>
+                                <label for="inputAddress">Remarks *</label>
                                 <textarea style="min-height: 100px;" name="reason" type="text" class="form-control" id="reason" placeholder="Remarks"></textarea>
                             </div> 
                             
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" id="save"><i class="fas fa-save"></i> Submit</button>
+                            <button type="submit" class="btn btn-primary" id="save"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+								role="status" aria-hidden="true"></span> <i class="fas fa-save"></i> Submit</button>
                         </div>
                     </div>
                     </form>
@@ -138,6 +157,8 @@
 <script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
+<script src="<?= url('') ?>/js/jquery.validate.js"></script>
+<script src="<?= url('') ?>/js/additional-methods.js"></script>
 
 
 <script src="<?=url('');?>/js/azia.js"></script>
@@ -152,25 +173,39 @@
         searchPlaceholder: 'Search...',
         sSearch: '',
         lengthMenu: '_MENU_ items/page',
-      }
+      },
+	  order: [[1, 'desc']],
     });
-
+	$("#status-change-form").validate({
+            rules: {
+                status: {
+                    required: true,
+                },
+                approved_qty: {
+                    required: true,
+					number: true,
+                },
+                reason: {
+                    required: true,
+                },
+            },
+            submitHandler: function(form) {
+                $('.spinner-button').show();
+                form.submit();
+            }
+        });
     
   });
 </script>
 <script>
-$(document).ready(function() 
-    {
+$(document).ready(function() {
         $('body').on('click', '#change-status', function (event) {
             event.preventDefault();
-            var purchaseRequisitionMasterId = $(this).data('purchaserequisitionmasterid');
-			var purchaseRequisitionItemId = $(this).data('purchaserequisitionitemid');
-			console.log(purchaseRequisitionItemId);
-			//$('#myModal').modal('show');
-			$('#purchaseRequisitionMasterId').val(purchaseRequisitionMasterId);
+			$(".item-codes").text('') ;
+			let purchaseRequisitionItemId = $(this).attr('value');
 			$('#purchaseRequisitionItemId').val(purchaseRequisitionItemId);
-			
 
+			$(".item-codes").text('( '+ $(this).attr('rel') + ')');
         });
         
     });

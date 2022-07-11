@@ -17,35 +17,36 @@ class ApprovalController extends Controller
     {
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
+        $Request['param'] = ['status' => 'NA'];
         $data = $this->HttpRequest->HttpClient($Request);
-        $requisition_items = ($data['response']['purchase_requisition']);
-        return view('pages/purchase-details/purchase-requisition/purchase-requisition-approvel', compact('requisition_items'));
+        return view('pages/purchase-details/purchase-requisition/purchase-requisition-approvel', compact('data'));
     }
 
     public function approve(Request $request) 
     {
-            $validation['purchaseRequisitionMasterId'] = ['required'];
-            $validation['purchaseRequisitionItemId'] = ['required'];
-            $validation['status'] = ['required'];
-            $validation['approved_qty'] = ['required'];
+            // $validation['purchaseRequisitionMasterId'] = ['required'];
+            // $validation['purchaseRequisitionItemId'] = ['required'];
+            // $validation['status'] = ['required'];
+            // $validation['approved_qty'] = ['required'];
 
-            $validator = Validator::make($request->all(), $validation);
-            $data = [];
-            if(!$validator->errors()->all()) {
+            // $validator = Validator::make($request->all(), $validation);
+            // $data = [];
+            // if(!$validator->errors()->all()) {
 
                 $Request['Method'] = 'POST';
-                $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-approval-list-add-edit-delete";
+                $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-approval-list-add-edit-delete/";
                 $Request['param'] = json_encode([
                         'action_type' =>'AddPurchaseRequititionApproval',
-                        'purchase_reqisition ' => $request->purchaseRequisitionMasterId,
-                        'purchase_reqisition_list' => $request->purchaseRequisitionItemId,
-                        'is_approved'=> 1,
+                        //'purchase_reqisition ' => $request->purchaseRequisitionMasterId,
+                        'purchase_reqisition_list' => [$request->purchaseRequisitionItemId],
+                        'status'=> $request->status,
                         'quantity '=>$request->approved_qty,
                         'reason'=>$request->reason
                         ]);
+                //print_r(   $Request['param'] );die;
                 $data = $this->HttpRequest->HttpClient($Request);
-                // print_r($data);
-                // exit;
+                //  print_r($data);
+                //  exit;
                 if(!empty($data['response']['success'])){
                     $request->session()->flash('success',  $data['response']['message']);
                     return redirect('inventory/purchase-reqisition/approval');
@@ -56,6 +57,6 @@ class ApprovalController extends Controller
                     return redirect('inventory/purchase-reqisition/approval');
                  }
                 
-            }
+          //  }
     }
 }
