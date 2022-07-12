@@ -14,9 +14,7 @@
     <a> Page : {{$data['page']}} , NO of entries : {{$data['no_of_entries']}} , Total Page : {{$data['total_page']}} , Total entries : {{$data['total_entries']}}</a>
     </div>
 <form  id="formsubmit">
-    @if(request()->get('pr_id'))
-<input type="hidden" name="pr_id" value="{{request()->get('pr_id')}}" >
-    @endif
+
         <ul class="pagination pagination-primary">
 
             <li class="page-item"><a class="page-link" onclick="pagination('prew');" href="javascript:void(0)"><i class="icon ion-ios-arrow-back"></i></a></li>
@@ -50,7 +48,11 @@
             if(value >= totalpage) { return false;}
             $('#pagenum').val( (+$('#pagenum').val() + 1));
         }
-        $('#formsubmit').submit();
+        let url = new URL("{{request()->fullUrl()}}");
+        url.searchParams.delete('page');
+        url.searchParams.append('page', $('#pagenum').val());
+        window.location.href = url.href;
+
     }
     </script>
     </div>

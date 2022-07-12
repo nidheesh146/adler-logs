@@ -100,7 +100,11 @@ class InventoryController extends Controller
     {
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
-        $Request['param'] = ['pr_no_master' => $request->pr_id];
+        $Request['param'] = ['pr_no_master' => $request->pr_id,
+        "no_of_entries"=>15,
+        'page'=>$request->page ? $request->page  : 1];
+
+
         $data = $this->HttpRequest->HttpClient($Request);
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
 

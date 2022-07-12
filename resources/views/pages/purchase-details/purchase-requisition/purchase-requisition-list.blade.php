@@ -7,9 +7,9 @@
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
 				 <span>Purchase details</span>
-				 <span><a href="">Purchase Reqisition</a></span>
+				 <span><a href="">Purchase Requisition</a></span>
 				 </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Purchase Reqisition 
+			<h4 class="az-content-title" style="font-size: 20px;">Purchase Requisition 
               <div class="right-button">
                   <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                       <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -19,7 +19,7 @@
                   </div>
               <div>  
               </div>
-			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase Reqisition   </button>
+			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase Requisition   </button>
           </div>
         </h4>
 			<div class="az-dashboard-nav">
@@ -80,7 +80,7 @@
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu">
 									<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-									<a href="{{url('add-purchase-reqisition-item?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
+									<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
 									<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
 								
 								</div>
