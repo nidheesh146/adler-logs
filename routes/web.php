@@ -35,9 +35,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
     Route::get('inventory/quotation', 'QuotationController@getQuotation');
     Route::get('inventory/suppliersearch', 'QuotationController@suppliersearch');
     Route::post('inventory/add/quotation','QuotationController@postQuotation');
-    // Route::get('inventory/edit/quotation', 'QuotationController@editQuotation');
-    // Route::post('inventory/edit/quotation', 'QuotationController@editQuotation');
-    // Route::post('inventory/delete/quotation', 'QuotationController@deleteQuotation');
+    
 
     // Quotation item
     Route::get('inventory/quotation-item', 'QuotationController@getQuotationItem');
@@ -67,5 +65,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
     Route::get('inventory/purchase-reqisition/approval', 'ApprovalController@getList');
     Route::post('inventory/purchase-reqisition/approval', 'ApprovalController@Approve');
 
-
+    Route::get('inventory/supplier-quotation', 'SupplierQuotationController@getSupplierQuotation');
+    Route::get('inventory/add-supplier-quotation', 'SupplierQuotationController@getSupplierQuotationAdd');
+    Route::get('inventory/add-supplier-quotation-item/{supplierquotationmaster_id}', 'SupplierQuotationController@getSupplierQuotationAddItem');
 });

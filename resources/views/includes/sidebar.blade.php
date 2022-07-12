@@ -48,6 +48,16 @@
           </ul>
         </li>
 
+        <li class="nav-item">
+          <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i></i>
+           Supplier Quotation
+          </a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Supplier Quotation</a></li>
+            
+          </ul>
+        </li>
+
 
         <li class="nav-item">
           <a href="#" class="nav-link with-sub"><i class="typcn typcn-document"></i>Apps &amp; Pages</a>

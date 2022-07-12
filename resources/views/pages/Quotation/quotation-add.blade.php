@@ -97,16 +97,16 @@
                                 <tbody >
                                 @foreach($requisition_items as $item)
                                 <tr>
-                                <td><input type="checkbox" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['id']}}">{{$item['id']}}</td>
-                                <th>{{$item['item_code']['item_code']}}</th>
-                                <td>{{$item['supplier']['vendor_name']}}</td>
-                                <td>{{$item['actual_order_qty']}}</td>
-                                <td>{{$item['rate']}}</td>
-                                <td>{{$item['discount_percent']}}</td>
-                                <td>{{$item['gst']}}</td>
-                                <td>{{$item['currency']}}</td>
-                                <td>{{$item['net_value']}}</td>	
-                                <td>{{$item['actual_order_qty']}}</td>						 
+                                    <td><input type="checkbox" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['id']}}">{{$item['id']}}</td>
+                                    <th>{{$item['item_code']['item_code']}}</th>
+                                    <td>{{$item['supplier']['vendor_name']}}</td>
+                                    <td>{{$item['actual_order_qty']}}</td>
+                                    <td>{{$item['rate']}}</td>
+                                    <td>{{$item['discount_percent']}}</td>
+                                    <td>{{$item['gst']}}</td>
+                                    <td>{{$item['currency']}}</td>
+                                    <td>{{$item['net_value']}}</td>	
+                                    <td>{{$item['actual_order_qty']}}</td>						 
                                 </tr>	
                                 @endforeach
                                 </tbody>

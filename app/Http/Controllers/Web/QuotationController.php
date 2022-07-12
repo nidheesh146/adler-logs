@@ -51,15 +51,15 @@ class QuotationController extends Controller
     // Add Quotation
     public function postQuotation(Request $request)
     {
+        $data = [];
         // $validation['rq_no '] = ['required'];
         // $validation['date '] = ['required'|'date'];
         // //$validation['requestor  '] = ['required'];
         // $validation['Supplier  '] = ['required'];
         // $validation['delivery  '] = ['required'];
         // $validator = Validator::make($request->all(), $validation);
-        
             $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL').'/inventory/quotation-master-list-add-edit-delete';
+            $Request['URL'] = config('app.ApiURL').'/inventory/quotation-master-list-add-edit-delete/';
             $Request['param'] = json_encode([
                 'action_type '=>'AddQuotationMaster',
                 'rq_no' => $request->rq_no,
@@ -69,15 +69,33 @@ class QuotationController extends Controller
                 'deliver_schedule' =>date("d-m-Y",strtotime($request->delivery)) ,
             ]);
             $data = $this->HttpRequest->HttpClient($Request);
-            // print_r($Request['param']);
-            // exit;
-            if(!empty($data['response']['success'])){
+
+            if(!empty($data['response']['quotation_id'])){
+                $requisition = $request->purchase_requisition_item;
+                $quotation_master_id = $data['response']['quotation_id'];
+                $Req['Method'] = 'POST';
+                $Req['URL'] = config('app.ApiURL').'/inventory/quotation-item-list-add-edit-delete';
+                foreach($request->purchase_requisition_item as $item){
+                  $param[] =[
+                    'action_type '=>'AddQuotationMaster',
+                    'quotation'=>$quotation_master_id,
+                    'item_code'=>'A5001',
+                    'unit'=>1,
+                    'required_qty'=>5,
+                    'description'=>'description',
+                    'rate'=>12.7,
+                  ];  
+                }
+                $Req['param'] = $param;
+                $data1 = $this->HttpRequest->HttpClient($Req);
+                
                 $request->session()->flash('success',  $data['response']['message']);
                 return redirect('inventory/quotation');
              }
              else 
              {
-                $request->session()->flash('error',  $data['error']);
+                echo "fail";exit;
+                $request->session()->flash('error',  "failed");
                 return redirect('inventory/quotation');
              }
             
