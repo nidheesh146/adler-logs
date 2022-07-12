@@ -90,19 +90,9 @@
 					
 					</tbody>
 				</table>
-				<div class="box-footer clearfix">
-					<style>
-					.pagination-nav {
-						width: 100%;
-					}
-					
-					.pagination {
-						float: right;
-						margin: 0px;
-						margin-top: -16px;
-					}
-					</style>
-				</div>
+				@if(!empty($data['response']))
+				@include('includes.pagination',['data'=>$data['response']])
+			 @endif
 			</div>
 
 
@@ -134,13 +124,13 @@
   $(function(){
     'use strict'
 
-    $('#example1').DataTable({
-      language: {
-        searchPlaceholder: 'Search...',
-        sSearch: '',
-        lengthMenu: '_MENU_ items/page',
-      }
-    });
+    // $('#example1').DataTable({
+    //   language: {
+    //     searchPlaceholder: 'Search...',
+    //     sSearch: '',
+    //     lengthMenu: '_MENU_ items/page',
+    //   }
+    // });
 
     
   });
