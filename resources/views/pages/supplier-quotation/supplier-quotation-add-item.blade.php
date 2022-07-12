@@ -342,11 +342,6 @@
                   alert('item code is not valid');
                  });
 
-
-
-
-
-
                     
             }
             });
