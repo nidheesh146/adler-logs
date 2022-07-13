@@ -13,12 +13,15 @@ class ApprovalController extends Controller
         $this->HttpRequest = new WebapiController;
     }
 
-    public function getList() 
+    public function getList(Request $request) 
     {
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
-        $Request['param'] = ['status' => 'NA'];
+        $Request['param'] = ['status' => 'NA',
+                            "no_of_entries"=>15,
+                            'page'=>$request->page ? $request->page  : 1];
         $data = $this->HttpRequest->HttpClient($Request);
+       // print_r( $data );die;
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-approvel', compact('data'));
     }
 

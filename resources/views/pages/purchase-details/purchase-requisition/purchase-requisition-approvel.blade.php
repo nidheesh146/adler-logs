@@ -91,19 +91,11 @@
 						@endif
 					</tbody>
 				</table>
-				<div class="box-footer clearfix">
-					<style>
-					.pagination-nav {
-						width: 100%;
-					}
-					
-					.pagination {
-						float: right;
-						margin: 0px;
-						margin-top: -16px;
-					}
-					</style>
-				</div>
+
+				@if(!empty($data['response']))
+				   @include('includes.pagination',['data'=>$data['response']])
+				@endif
+		
 			</div>
 		</div>
 	</div>
@@ -153,6 +145,9 @@
 
 
 
+
+
+
 <script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
@@ -168,14 +163,14 @@
   $(function(){
     'use strict'
 
-    $('#example1').DataTable({
-      language: {
-        searchPlaceholder: 'Search...',
-        sSearch: '',
-        lengthMenu: '_MENU_ items/page',
-      },
-	  order: [[1, 'desc']],
-    });
+    // $('#example1').DataTable({
+    //   language: {
+    //     searchPlaceholder: 'Search...',
+    //     sSearch: '',
+    //     lengthMenu: '_MENU_ items/page',
+    //   },
+	//   order: [[1, 'desc']],
+    // });
 	$("#status-change-form").validate({
             rules: {
                 status: {

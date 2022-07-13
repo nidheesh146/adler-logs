@@ -36,16 +36,18 @@ class QuotationController extends Controller
     }
 
     // list Quotation
-    public function getQuotation()
+    public function getQuotation(Request $request)
     {
         $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL').'/inventory/purchase-requisition-item-list-add-edit-delete/';
-        $Request['param'] = ['status' => 1];
+        $Request['URL'] = config('app.ApiURL').'/inventory/purchase-requisition-approval-list-add-edit-delete/?status=1';
+        $Request['param'] = ['status' => 1,
+        "no_of_entries"=>10,
+        'page'=>$request->page ? $request->page  : 1];
         $data = $this->HttpRequest->HttpClient($Request); 
-        $requisition_items = ($data['response']['purchase_requisition']);
-        // print_r(json_encode($data));
-        // exit;
-        return view('pages/Quotation/quotation-add', compact('requisition_items'));
+
+
+       // print_r( $data);die;
+        return view('pages/Quotation/quotation-add', compact('data'));
     }
 
     // Add Quotation
@@ -59,47 +61,25 @@ class QuotationController extends Controller
         // $validation['delivery  '] = ['required'];
         // $validator = Validator::make($request->all(), $validation);
             $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL').'/inventory/quotation-master-list-add-edit-delete/';
+            $Request['URL'] = config('app.ApiURL').'/inventory/quotation-new-add-edit-delete/';
+            
+            
             $Request['param'] = json_encode([
-                'action_type '=>'AddQuotationMaster',
-                'rq_no' => $request->rq_no,
-                'date' => date("d-m-Y",strtotime($request->date)),
-                'requestor' =>1, //$request->requestor,
-                'supplier' => $request->Supplier,
-                'deliver_schedule' =>date("d-m-Y",strtotime($request->delivery)) ,
+                "action_type"=>"AddQuotation",
+                "rq_no" => $request->rq_no,
+                "date" => date("d-m-Y",strtotime($request->date)),
+                "requestor" =>(session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1'), //$request->requestor,
+                "supplier" => $request->Supplier,
+                "deliver_schedule" =>date("d-m-Y",strtotime($request->delivery)),
+                "purchase_reqisition_approval"=>$request->purchase_requisition_item
             ]);
             $data = $this->HttpRequest->HttpClient($Request);
-
-            if(!empty($data['response']['quotation_id'])){
-                $requisition = $request->purchase_requisition_item;
-                $quotation_master_id = $data['response']['quotation_id'];
-                $Req['Method'] = 'POST';
-                $Req['URL'] = config('app.ApiURL').'/inventory/quotation-item-list-add-edit-delete';
-                foreach($request->purchase_requisition_item as $item){
-                  $param[] =[
-                    'action_type '=>'AddQuotationMaster',
-                    'quotation'=>$quotation_master_id,
-                    'item_code'=>'A5001',
-                    'unit'=>1,
-                    'required_qty'=>5,
-                    'description'=>'description',
-                    'rate'=>12.7,
-                  ];  
-                }
-                $Req['param'] = $param;
-                $data1 = $this->HttpRequest->HttpClient($Req);
-                
-                $request->session()->flash('success',  $data['response']['message']);
-                return redirect('inventory/quotation');
-             }
-             else 
-             {
-                echo "fail";exit;
-                $request->session()->flash('error',  "failed");
-                return redirect('inventory/quotation');
-             }
-            
-
+             if(!empty($data['response']['success'])){
+                $request->session()->flash('success', $data['response']['message']);
+              }else{
+                $request->session()->flash('error', $data['error']);
+              }
+              return redirect('inventory/quotation');
     }
 
     // Edit Quotation

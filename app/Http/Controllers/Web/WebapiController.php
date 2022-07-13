@@ -25,7 +25,6 @@ class WebapiController extends Controller
                 ])->get($Request['URL'],$Request['param']);
 
             }
-
             if($Request['Method'] == 'POST'){
                 $response = Http::withHeaders([
                     'Authorization' => 'Token ' . session('user')['token'],
@@ -34,8 +33,7 @@ class WebapiController extends Controller
                     $Request['param'], 'application/json'
                 )->post($Request['URL']);
             }
-// echo $response->status();
-//             print_r($response->json());die;
+
             if ($response->status() == 200) {
                 if ($response->json()['status'] == 'success') {
                     $Res['response'] = $response->json();

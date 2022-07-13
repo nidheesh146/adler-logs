@@ -10,18 +10,18 @@
                     <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">PURCHASE
                             DETAILS</a></span>
                     <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">PURCHASE
-                            REQISITION</a></span>
-                    <span><a href="">{{ request()->item ? 'Edit' : 'Add' }} purchase reqisition master</a></span>
+                            REQUISITION</a></span>
+                    <span><a href="">{{ request()->item ? 'Edit' : 'Add' }} purchase requisition master</a></span>
                 </div>
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                    {{ request()->item ? 'Edit' : 'Add' }} purchase reqisition master</h4>
+                    {{ request()->item ? 'Edit' : 'Add' }} purchase requisition master</h4>
                 <div class="az-dashboard-nav">
                     <nav class="nav">
                         <a class="nav-link    "
                             href="{{ url('inventory/edit-purchase-reqisition?pr_id=' . request()->pr_id) }}">Purchase
-                            reqisition master </a>
-                        <a class="nav-link  active" @if (request()->pr_id) href="{{ url('inventory/get-purchase-reqisition-item?pr_id=' . request()->pr_id) }}" @endif> Purchase reqisition item </a>
+                            requisition master </a>
+                        <a class="nav-link  active" @if (request()->pr_id) href="{{ url('inventory/get-purchase-reqisition-item?pr_id=' . request()->pr_id) }}" @endif> Purchase requisition item </a>
                         <a class="nav-link  " href=""> </a>
                     </nav>
 

@@ -25,99 +25,28 @@
         <li class="nav-label">Main Menu</li>
         <li class="nav-item @if (in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
         'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
-        'Inventory.add_purchase_reqisition_item','Approval.getList'])) {{'active show'}} @endif ">
+        'Inventory.add_purchase_reqisition_item','Approval.getList','Quotation.getQuotation'])) {{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-shopping-cart" style="font-size: 17px;"></i>Purchase Details</a>
           <ul class="nav-sub">
-            <li class="nav-sub-item"><a href="#" class="nav-sub-link">Order</a></li>
+            {{-- <li class="nav-sub-item"><a href="#" class="nav-sub-link">Order</a></li> --}}
             <li class="nav-sub-item @if(in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
             'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
-            'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/get-purchase-reqisition')}}"  class="nav-sub-link">Reqisition</a></li>
-            <li class="nav-sub-item @if(in_array($Action,['Approval.getList'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Reqisition Approval</a></li>
-          </ul>
-        </li><!-- nav-item -->
-
-        
-
-        <li class="nav-item">
-          <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i></i>
-           Quotation
-          </a>
-          <ul class="nav-sub">
-            <li class="nav-sub-item"><a href="{{url('inventory/quotation')}}" class="nav-sub-link">Request for Quotation</a></li>
+            'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/get-purchase-reqisition')}}"  class="nav-sub-link">Requisition</a></li>
+            <li class="nav-sub-item @if(in_array($Action,['Approval.getList'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Requisition Approval</a></li>
+          
+            <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation'])){{'active'}} @endif "><a href="{{url('inventory/quotation')}}" class="nav-sub-link">Request for Quotation</a></li>
             <li class="nav-sub-item"><a href="{{url('inventory/quotation')}}"  class="nav-sub-link">Purchase Reqisition</a></li>
-          </ul>
-        </li>
-
-        <li class="nav-item">
-          <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i></i>
-           Supplier Quotation
-          </a>
-          <ul class="nav-sub">
-            <li class="nav-sub-item"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Supplier Quotation</a></li>
+          
             
-          </ul>
-        </li>
 
 
-        <li class="nav-item">
-          <a href="#" class="nav-link with-sub"><i class="typcn typcn-document"></i>Apps &amp; Pages</a>
-          <ul class="nav-sub">
-            <li class="nav-sub-item">
-              <a href="app-mail.html" class="nav-sub-link">Mailbox</a>
-            </li>
-            <li class="nav-sub-item">
-              <a href="app-chat.html" class="nav-sub-link">Chat</a>
-            </li>
-            <li class="nav-sub-item">
-              <a href="app-calendar.html" class="nav-sub-link">Calendar</a>
-            </li>
-            <li class="nav-sub-item">
-              <a href="app-contacts.html" class="nav-sub-link">Contacts</a>
-            </li>
-            <li class="nav-sub-item"><a href="app-kanban.html" class="nav-sub-link">Kanban</a></li>
-            <li class="nav-sub-item"><a href="app-tickets.html" class="nav-sub-link">Tickets</a></li>
-            <li class="nav-sub-item"><a href="page-profile.html" class="nav-sub-link">Profile</a></li>
-            <li class="nav-sub-item"><a href="page-invoice.html" class="nav-sub-link">Invoice</a></li>
-            <li class="nav-sub-item"><a href="page-signin.html" class="nav-sub-link">Sign In</a></li>
-            <li class="nav-sub-item"><a href="page-signup.html" class="nav-sub-link">Sign Up</a></li>
-            <li class="nav-sub-item"><a href="page-404.html" class="nav-sub-link">Page 404</a></li>
-            <li class="nav-sub-item"><a href="page-faq.html" class="nav-sub-link">Faq</a></li>
-            <li class="nav-sub-item"><a href="page-news-grid.html" class="nav-sub-link">News Grid</a></li>
-            <li class="nav-sub-item"><a href="page-product-catalogue.html" class="nav-sub-link">Product Catalogue</a></li>
-            <li class="nav-sub-item"><a href="page-project-list.html" class="nav-sub-link">Project List</a></li>
-            <li class="nav-sub-item"><a href="page-order.html" class="nav-sub-link">Orders</a></li>
-            <li class="nav-sub-item"><a href="page-pricing.html" class="nav-sub-link">Pricing</a></li>
-            <li class="nav-sub-item"><a href="landing-sass.html" class="nav-sub-link">Landing Page</a></li>
-            
           </ul>
         </li><!-- nav-item -->
-        <li class="nav-item">
-          <a href="#" class="nav-link with-sub"><i class="typcn typcn-book"></i>UI Elements</a>
-          <ul class="nav-sub">
-            <li class="nav-sub-item"><a href="elem-accordion.html" class="nav-sub-link">Accordion</a></li>
-            <li class="nav-sub-item"><a href="elem-alerts.html" class="nav-sub-link">Alerts</a></li>
-            <li class="nav-sub-item"><a href="elem-avatar.html" class="nav-sub-link">Avatar</a></li>
-            <li class="nav-sub-item"><a href="elem-badge.html" class="nav-sub-link">Badge</a></li>
-            <li class="nav-sub-item"><a href="elem-breadcrumbs.html" class="nav-sub-link">Breadcrumbs</a></li>
-            <li class="nav-sub-item"><a href="elem-buttons.html" class="nav-sub-link">Buttons</a></li>
-            <li class="nav-sub-item"><a href="elem-cards.html" class="nav-sub-link">Cards</a></li>
-            <li class="nav-sub-item"><a href="elem-carousel.html" class="nav-sub-link">Carousel</a></li>
-            <li class="nav-sub-item"><a href="elem-collapse.html" class="nav-sub-link">Collapse</a></li>
-            <li class="nav-sub-item"><a href="elem-dropdown.html" class="nav-sub-link">Dropdown</a></li>
-            <li class="nav-sub-item"><a href="elem-icons.html" class="nav-sub-link">Icons</a></li>
-            <li class="nav-sub-item"><a href="elem-images.html" class="nav-sub-link">Images</a></li>
-            <li class="nav-sub-item"><a href="elem-list-group.html" class="nav-sub-link">List Group</a></li>
-            <li class="nav-sub-item"><a href="elem-media-object.html" class="nav-sub-link">Media Object</a></li>
-            <li class="nav-sub-item"><a href="elem-modals.html" class="nav-sub-link">Modals</a></li>
-            <li class="nav-sub-item"><a href="elem-navigation.html" class="nav-sub-link">Navigation</a></li>
-            <li class="nav-sub-item"><a href="elem-pagination.html" class="nav-sub-link">Pagination</a></li>
-            <li class="nav-sub-item"><a href="elem-popover.html" class="nav-sub-link">Popover</a></li>
-            <li class="nav-sub-item"><a href="elem-progress.html" class="nav-sub-link">Progress</a></li>
-            <li class="nav-sub-item"><a href="elem-spinners.html" class="nav-sub-link">Spinners</a></li>
-            <li class="nav-sub-item"><a href="elem-toast.html" class="nav-sub-link">Toast</a></li>
-            <li class="nav-sub-item"><a href="elem-tooltip.html" class="nav-sub-link">Tooltip</a></li>
-          </ul>
-        </li><!-- nav-item -->
+
+
+
+
+
         <li class="nav-item">
           <a href="#" class="nav-link with-sub"><i class="typcn typcn-edit"></i>Forms</a>
           <ul class="nav-sub">

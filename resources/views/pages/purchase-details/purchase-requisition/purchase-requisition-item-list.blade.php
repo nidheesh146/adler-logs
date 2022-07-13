@@ -8,11 +8,11 @@
 
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE DETAILS</a></span> 
-                <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE REQISITION</a></span>
-                <span><a href="">List purchase reqisition item </a></span>
+                <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE REQUISITION</a></span>
+                <span><a href="">List purchase requisition item </a></span>
             </div>
 	
-            <h4 class="az-content-title" style="font-size: 20px;">List Purchase reqisition item
+            <h4 class="az-content-title" style="font-size: 20px;">List Purchase requisition item
                 <div class="right-button">
                     <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                         <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -22,15 +22,15 @@
                     </div>
                 <div>  
                 </div>
-              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase reqisition item</button>
+              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase requisition item</button>
             </div>
           </h4>
 
 
             <div class="az-dashboard-nav">
                 <nav class="nav">
-                    <a class="nav-link" href="{{url('inventory/edit-purchase-reqisition?pr_id='.request()->pr_id)}}">Purchase reqisition master </a>
-                    <a class="nav-link active "  href=""  >  Purchase reqisition item </a>
+                    <a class="nav-link" href="{{url('inventory/edit-purchase-reqisition?pr_id='.request()->pr_id)}}">Purchase requisition master </a>
+                    <a class="nav-link active "  href=""  >  Purchase requisition item </a>
                      <a class="nav-link" href=""> </a>
                 </nav>
            
@@ -90,19 +90,9 @@
 					
 					</tbody>
 				</table>
-				<div class="box-footer clearfix">
-					<style>
-					.pagination-nav {
-						width: 100%;
-					}
-					
-					.pagination {
-						float: right;
-						margin: 0px;
-						margin-top: -16px;
-					}
-					</style>
-				</div>
+				@if(!empty($data['response']))
+				@include('includes.pagination',['data'=>$data['response']])
+			 @endif
 			</div>
 
 
@@ -134,13 +124,13 @@
   $(function(){
     'use strict'
 
-    $('#example1').DataTable({
-      language: {
-        searchPlaceholder: 'Search...',
-        sSearch: '',
-        lengthMenu: '_MENU_ items/page',
-      }
-    });
+    // $('#example1').DataTable({
+    //   language: {
+    //     searchPlaceholder: 'Search...',
+    //     sSearch: '',
+    //     lengthMenu: '_MENU_ items/page',
+    //   }
+    // });
 
     
   });
