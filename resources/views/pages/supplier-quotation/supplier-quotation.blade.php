@@ -49,12 +49,12 @@
 					<thead>
 						<tr>
 							<th style="display:none;"></th>
-							<th>Quotaion NO:</th>
+							<th>SupplierQuotaion NO:</th>
                             <th>RQ No</th>
 							<th>Supplier</th>
 							<th>PR/SR</th>
 							<th>Requestor</th>
-							<th>DeliverySchedule</th>
+							<th>Delivery Schedule</th>
 							<th>Action</th>
 						
 						</tr>
@@ -63,14 +63,19 @@
                     @if(!empty($items))
                         @foreach($items as $item)
                         <tr>
-                            <td>{{$item['quotation_no']}}</td>
-                            <td>{{$item['rq_no']}}</td>
-                            <td>{{$item['pr_sr']}}</td>
-                            <td>{{$item['supplier']['vendor_name']}}</td>
-                            <td>{{$item['requestor']}}</td>
-                            <td>{{$item['deliver_schedule']}}</td>
-                            <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/add-supplier-quotation-item/'.$item['id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a></td>
-                        <tr>    
+                            <td>{{$item['supplier_quotation_no']}}</td>
+                            
+                            <td>{{$item['deliver_date']}}</td>
+                            <td><button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
+								<div class="dropdown-menu">
+									<a href="{{url('inventory/edit-supplier-quotation?qr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+									<a href="{{url('inventory/add-supplier-quotation-item/'.$item['id'])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
+									<a href="{{url('inventory/delete-supplier-quotation?qr_id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+								
+								</div>
+								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/add-supplier-quotation-item/'.$item['id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
+							</td>
+						</tr>    
                         @endforeach
                     @endif
 					</tbody>

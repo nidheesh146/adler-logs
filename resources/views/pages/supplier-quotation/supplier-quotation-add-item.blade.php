@@ -8,7 +8,7 @@
 
                 <div class="az-content-breadcrumb">
                     <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">SUPPLIER QUOTATION
-                            DETAILS</a></span>
+                    </a></span>
                     <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">ADD SUPPLIER QUOTATION ITEM </a></span>
                     <span><a href="">{{ request()->item ? 'Edit' : 'Add' }} Supplier quotation item</a></span>
                 </div>
@@ -17,10 +17,8 @@
                     {{ request()->item ? 'Edit' : 'Add' }}  Supplier quotation item</h4>
                 <div class="az-dashboard-nav">
                     <nav class="nav">
-                        <a class="nav-link    "
-                            href="{{ url('inventory/edit-purchase-reqisition?pr_id=' . request()->pr_id) }}">Purchase
-                            reqisition master </a>
-                        <a class="nav-link  active" @if (request()->pr_id) href="{{ url('inventory/get-purchase-reqisition-item?pr_id=' . request()->pr_id) }}" @endif> Purchase reqisition item </a>
+                        <a class="nav-link" href="{{ url('inventory/edit-purchase-reqisition?pr_id=' . request()->pr_id) }}">Supplier Quotation</a>
+                        <a class="nav-link  active" @if (request()->pr_id) href="{{ url('inventory/get-purchase-reqisition-item?pr_id=' . request()->pr_id) }}" @endif> Supplier Quotation item </a>
                         <a class="nav-link  " href=""> </a>
                     </nav>
 
