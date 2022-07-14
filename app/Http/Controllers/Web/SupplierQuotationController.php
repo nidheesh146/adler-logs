@@ -115,9 +115,17 @@ class SupplierQuotationController extends Controller
 
     }
     
-    public function getSupplierQuotationAddItem($supplierquotationmaster_id)
+    public function getSupplierQuotationEditItem($supplierquotationid)
     {
-        return view('pages/supplier-quotation/supplier-quotation-add-item');
+        return view('pages/supplier-quotation/supplier-quotation-edit-item');
+    }
+    
+    public function viewSupplierQuotationItems($supplierquotationid) {
+        return view('pages/supplier-quotation/supplier-quotation-items');
+    }
+
+    public function comparisonOfQuotation($supplierquotationid) {
+        return view('pages/supplier-quotation/comparison-quotation');
     }
 }
 

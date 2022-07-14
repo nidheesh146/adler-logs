@@ -7,22 +7,25 @@
             <div class="az-content-body">
 
                 <div class="az-content-breadcrumb">
-                    <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">SUPPLIER QUOTATION
+                    <span><a href="{{ url('inventory/supplier-quotation') }}" style="color: #596881;">SUPPLIER QUOTATION
                     </a></span>
-                    <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">ADD SUPPLIER QUOTATION ITEM </a></span>
-                    <span><a href="">{{ request()->item ? 'Edit' : 'Add' }} Supplier quotation item</a></span>
+                    <!-- <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">EDIT SUPPLIER QUOTATION ITEM </a></span> -->
+                    <!-- <span><a href="">{{ request()->item ? 'Edit' : 'Add' }} Supplier quotation item</a></span> -->
+                    <span><a> Edit Supplier Quotation Item</a></span>
                 </div>
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                    {{ request()->item ? 'Edit' : 'Add' }}  Supplier quotation item</h4>
-                <div class="az-dashboard-nav">
+                    <!-- {{ request()->item ? 'Edit' : 'Add' }}  Supplier quotation item</h4> -->
+                    Edit Supplier Quotation Item
+                </h4>
+                <!-- <div class="az-dashboard-nav">
                     <nav class="nav">
                         <a class="nav-link" href="{{ url('inventory/edit-purchase-reqisition?pr_id=' . request()->pr_id) }}">Supplier Quotation</a>
-                        <a class="nav-link  active" @if (request()->pr_id) href="{{ url('inventory/get-purchase-reqisition-item?pr_id=' . request()->pr_id) }}" @endif> Supplier Quotation item </a>
+                        <a class="nav-link  active" @if (request()->pr_id) href="{{ url('inventory/get-purchase-reqisition-item?pr_id=' . request()->pr_id) }}" @endif>Edit Supplier Quotation item </a>
                         <a class="nav-link  " href=""> </a>
                     </nav>
 
-                </div>
+                </div> -->
 
                 <div class="row">
 
@@ -75,22 +78,16 @@
                                         placeholder="">
                                 </div><!-- form-group -->
 
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Unit *</label>
-                                    <select class="form-control Supplier" name="Supplier">
-                                     <option value=" ">KG</option>
-                                     <option>Litre</option>
-                                    </select>
-                                </div>
+                                
 
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Supplier *</label>
                                     <select class="form-control Supplier" name="Supplier">
                                       @if(!empty($datas))
                                     <option value=" ">{{$datas['supplier']['vendor_name']}}</option>
                                       @endif
                                     </select>
-</div>
+                                </div> -->
 
 
              
@@ -127,14 +124,25 @@
                                         placeholder="">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                  <label>Quotation Quantity *</label>
-                                  <input type="text" name="BasicValue" value="" class="form-control"
-                                      placeholder="Basic Value">
-                              </div><!-- form-group -->
+                                    <label>Unit *</label>
+                                    <select class="form-control Supplier" name="Supplier">
+                                     <option value=" ">KG</option>
+                                     <option>Litre</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                  <label>Quantity *</label>
+                                  <input type="text" name="quantity" value="" class="form-control"
+                                      placeholder="Quantity">
+                                </div><!-- form-group -->
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Approved Quantity *</label>
-                                    <input type="text" class="form-control" value="" name="Rate" id="Rate" placeholder="Rate">
+                                    <label> Rate *</label>
+                                    <input type="text" class="form-control" value="" name="rate" id="rate" placeholder="Rate">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label> Discount *</label>
+                                    <input type="text" class="form-control" value="" name="discount" id="discount" placeholder="Discount">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Specification *</label>

@@ -42,7 +42,13 @@
 
           </ul>
         </li><!-- nav-item -->
-
+        <li class="nav-item">
+          <a href="#" class="nav-link with-sub"><i class="typcn typcn-edit"></i>Supplier Quotation</a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Supplier Quotation</a></li>
+            <li class="nav-sub-item"><a href="form-layouts.html" class="nav-sub-link">Comparison of Quotation</a></li>
+          </ul>
+        </li>
 
 
 

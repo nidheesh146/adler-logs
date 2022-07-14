@@ -66,7 +66,7 @@ class QuotationController extends Controller
             
             $Request['param'] = json_encode([
                 "action_type"=>"AddQuotation",
-                "rq_no" => $request->rq_no,
+                //"rq_no" => $request->rq_no,
                 "date" => date("d-m-Y",strtotime($request->date)),
                 "requestor" =>(session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1'), //$request->requestor,
                 "supplier" => $request->Supplier,

@@ -58,10 +58,8 @@
 							<th>requestor</th>
 							<th>date</th>
 							<th>department</th>
-							<th>prcsr</th>
-				
+							<th>prsr</th>
 							<th>Action</th>
-						
 						</tr>
 					</thead>
 					<tbody id="prbody" style="display:none;">
@@ -74,7 +72,6 @@
 							<td>{{$item['date']}}</td>
 							<td>{{$item['department']}}</td>
 							<td>{{$item['prcsr']}}</td>
-						
 							<td style="width: 133px;">
 								<span style="width: 133px;">
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -82,18 +79,18 @@
 									<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
 									<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
 									<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
-								
 								</div>
-								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-purchase-reqisition-item?pr_id='.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 
-								
+								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-purchase-reqisition-item?pr_id='.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
 							</span>
 							</td>
-						
 						</tr>
-					    	@endforeach
-						@endif
+					@endforeach
+					@endif
 					</tbody>
 				</table>
+				@if(!empty($data['response']))
+				@include('includes.pagination',['data'=>$data['response']])
+			 	@endif
 				<div class="box-footer clearfix">
 					<style>
 					.pagination-nav {
@@ -124,14 +121,14 @@
   $(function(){
     'use strict'
 
-    $('#example1').DataTable({
-      language: {
-        searchPlaceholder: 'Search...',
-        sSearch: '',
-        lengthMenu: '_MENU_ items/page',
-      },
-	  order: [[1, 'desc']],
-    });
+    // $('#example1').DataTable({
+    //   language: {
+    //     searchPlaceholder: 'Search...',
+    //     sSearch: '',
+    //     lengthMenu: '_MENU_ items/page',
+    //   },
+	//   order: [[1, 'desc']],
+    // });
 
     $('#prbody').show();
   });

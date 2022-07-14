@@ -7,9 +7,9 @@
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
 				 <span>Supplier Quotation</span>
-				 <span><a href="">Supplier Quotation</a></span>
+				 <span><a href="">Supplier Quotation Items</a></span>
 				 </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation
+			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation Items
               <div class="right-button">
                   <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                       <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -41,41 +41,53 @@
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		   @endif
-
-
+            <div class="row">
+           <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                <label>Supplier *</label>
+                <select class="form-control Supplier" name="Supplier">
+                @if(!empty($datas))
+                <option value="{{$datas['supplier']['id']}}">{{$datas['supplier']['vendor_name']}}</option>
+                @endif
+                </select>
+            </div>
+            <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                <label style="    width: 100%;">&nbsp;</label>
+                <button type="submit" class="badge badge-pill badge-primary" style="margin-top:8px;"><i class="fas fa-search"></i> Search</button>
+            </div>
+</div>
+                                            
 
 			<div class="table-responsive">
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-							<th>No</th>
-							<th style="width:80px;">RQ NO:</th>
+							<th>No.</th>
+							<th>RQ NO:</th>
                             <th>Date</th>
 							<th>Suppliers</th>
+                            <th>Delivery schedule</th>
 							<th>Item count</th>
-							<th>delivery Schedule </th>
 							<th>Action</th>
 						
 						</tr>
 					</thead>
 					<tbody id="prbody">
                         <tr>
-							<td>1</td>
-                            <td>RQ No:</td>
-                            <td>12--7-20</td>
-							<td>Syppliers</td>
-							<td>Item Count</td>
-                            <td>18-07-2022</td>
+                            <th>1</th>
+                            <th>RQ No:</th>
+                            <th>Date</th>
+							<th>Syppliers</th>
+                            <th>Delivery schedule</th>
+							<th>Item Count</td>
                             <td><button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu">
-									<a href="" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-									<a href="{{url('inventory/view-supplier-quotation-items/1') }}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
-								
+									<a href="{{url('inventory/edit-supplier-quotation-item/1')}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
 								</div>
-								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/1') }}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
-								<a class="badge badge-primary" style="font-size: 13px;" href="{{url('inventory/comparison-quotation/1') }}"  class="dropdown-item"><i class="fa fa-balance-scale"></i> Comparison</a>
+								<!-- <a class="badge badge-info" style="font-size: 13px;" href=""  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> -->
 							</td>
 						</tr>    
+                       
 					</tbody>
 				</table>
 				@if(!empty($data['response']))
@@ -106,10 +118,12 @@
 <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 
 <script>
   $(function(){
     'use strict'
+
     // $('#example1').DataTable({
     //   language: {
     //     searchPlaceholder: 'Search...',
@@ -121,6 +135,21 @@
 
     $('#prbody').show();
   });
+
+  $('.Supplier').select2({
+                    placeholder: 'Choose one',
+                    searchInputPlaceholder: 'Search',
+                    minimumInputLength: 3,
+                    allowClear: true,
+                    ajax: {
+                    url: "{{url('inventory/suppliersearch')}}",
+                    processResults: function (data) {
+                      return {
+                        results: data
+                      };
+                    }
+                  }
+                });
 </script>
 
 

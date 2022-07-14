@@ -50,10 +50,10 @@
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label for="exampleInputEmail1">RQ NO: *</label>
                                 <input type="text" class="form-control" name="rq_no"  placeholder="Enter QR NO">
-                            </div> 
+                            </div>  -->
 
                             {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label>Requestor *</label>
@@ -69,9 +69,9 @@
                                 <input type="text"  class="form-control datepicker" value="{{date("d-m-Y")}}" name="delivery" placeholder="Date">
                             </div>
 
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Supplier *</label>
-                                <select class="form-control Supplier" name="Supplier">
+                                <select class="form-control Supplier" name="Supplier[]" multiple="multiple">
                                         <option value="">--- select one ---</option>
                                 </select>
                             </div><!-- form-group -->
