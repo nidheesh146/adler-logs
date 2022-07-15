@@ -75,7 +75,7 @@
 						</tr>
 					</thead>
 					<tbody id="prbody">
-						@foreach()
+						
                         <tr>
                             <th>1</th>
                             <th>RQ No:</th>
