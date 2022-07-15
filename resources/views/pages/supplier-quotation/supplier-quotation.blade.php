@@ -48,12 +48,14 @@
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-							<th>No</th>
+							{{-- <th>No</th> --}}
 							<th style="width:120px;">RQ NO:</th>
-                            <th>Date</th>
-							<th>Suppliers</th>
-							<th>Item count</th>
+							<th>Date</th>
 							<th>delivery Schedule </th>
+							<th>Suppliers</th>
+							
+							{{-- <th>Item count</th> --}}
+						
 							<th>Action</th>
 						
 						</tr>
@@ -63,23 +65,29 @@
 						@php $i=1; @endphp
 						@foreach($data['response']['quotation'] as $item)
                         <tr>
-							<td>{{$i++}}</td>
+							{{-- <td>{{$i++}}</td> --}}
                             <td>{{$item['rq_no']}}</td>
-                            <td>{{$item['date']}}</td>
+							<td>{{$item['date'] ? date('d-m-Y',strtotime($item['date'])) : '-'}}</td>
+							<td>{{$item['deliver_schedule'] ? date('d-m-Y',strtotime($item['deliver_schedule'])) : '-'}}</td>
 							<td>
-								@foreach($item['supplier'] as $supplier)
-								{{$supplier['vendor_name']}}<br/>
+						
+								@foreach($item['supplier'] as $key => $supplier)
+								{{$supplier['vendor_name']}} 
+								<?php 
+								if($key != count($item['supplier']) - 1){
+									echo ',';
+								 }?>
 								@endforeach
 							</td>
-							<td>Item Count</td>
-                            <td>{{$item['deliver_schedule']}}</td>
-                            <td><button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-								<div class="dropdown-menu">
+							{{-- <td>Item Count</td> --}}
+							<td>
+                            {{-- <button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button> --}}
+								{{-- <div class="dropdown-menu">
 									<a href="" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
 									<!-- <a href="{{url('inventory/view-supplier-quotation-items/1') }}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a>  -->
 								
-								</div>
-								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['rq_no']) }}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
+								</div> --}}
+								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['rq_no'].'/'.$item['supplier'][0]['id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
 								<a class="badge badge-primary" style="font-size: 13px;" href="{{url('inventory/comparison-quotation/'.$item['rq_no']) }}"  class="dropdown-item"><i class="fa fa-balance-scale"></i> Comparison</a>
 							</td>
 						</tr>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Web\WebapiController;
 use Illuminate\Http\Request;
+use Illuminate\Http\Client\Pool;
+use Illuminate\Support\Facades\Http;
 
 class SupplierQuotationController extends Controller
 {
@@ -13,10 +15,11 @@ class SupplierQuotationController extends Controller
         $this->HttpRequest = new WebapiController;
     }
 
-    public function getSupplierQuotation() 
+    public function getSupplierQuotation(Request $request) 
     {
         $Request['Method'] = 'GET';
         $Request['URL'] = config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/';
+        $Request['param'] = ["no_of_entries"=>10,'page'=>$request->page ? $request->page  : 1];
         $data = $this->HttpRequest->HttpClient($Request);
          // print_r(json_encode($data['response']['quotation']));
           //exit;
@@ -121,22 +124,33 @@ class SupplierQuotationController extends Controller
         return view('pages/supplier-quotation/supplier-quotation-edit-item');
     }
     
-    public function viewSupplierQuotationItems($rq_no)
+    public function viewSupplierQuotationItems(Request $request,$rq_no,$supp_id)
     {
-        $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/';
-        $Request['param'] = ['rq_no' => $rq_no];
-        
-        $data = $this->HttpRequest->HttpClient($Request);
-        //if($data['quotation']['supplier']) {
-            $quotation = $data['response']['quotation'];
-            $suppliers =  $quotation[0]['supplier'];
-        //}else {
-          //  $suppliers =[];
-        //}
-        //print_r(json_encode($quotation[0]['supplier']));
-        //exit;
-        return view('pages/supplier-quotation/supplier-quotation-items', compact('suppliers', 'quotation', 'rq_no'));
+        $Res['error'] = "";
+        $Res['response'] = [];
+        $supp_id = $request->supplier ? $request->supplier : $supp_id;
+    try {
+        $response = Http::pool(fn (Pool $pool) => [
+            $pool->withHeaders([
+                'Authorization' => 'Token ' . session('user')['token'],
+            ])->get(config('app.ApiURL') . '/inventory/supplier-quotation-new-add-edit-delete/',['supplier' => $supp_id,'quotation'=>$rq_no,"no_of_entries"=>25,'page'=>$request->page ? $request->page  : 1]),
+            $pool->withHeaders([
+                'Authorization' => 'Token ' . session('user')['token'],
+            ])->get(config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/',['rq_no' => $rq_no]),
+        ]);
+        if ($response[0]->status() == 200 && $response[1]->status() == 200){
+            if ($response[0]->json()['status'] == 'success' && $response[1]->json()['status'] == 'success') {
+                $Res['response'] =['response0'=>$response[0]->json(),'response1'=>$response[1]->json()];
+            }else{
+                $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
+            }
+        }else{
+            $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
+        }
+    }catch (\Exception $e) {
+        $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
+    }
+       return view('pages/supplier-quotation/supplier-quotation-items', compact('Res','rq_no','supp_id'));
     }
 
     public function comparisonOfQuotation($supplierquotationid) {

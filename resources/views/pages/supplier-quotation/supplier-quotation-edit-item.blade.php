@@ -41,116 +41,86 @@
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                                     <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                                        <i class="fas fa-address-card"></i> Basic details </label>
+                                        <i class="fas fa-address-card"></i> Item details </label>
                                     <div class="form-devider"></div>
                                 </div>
                             </div>
 
+
                             <div class="row">
 
-
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label for="exampleInputEmail1">Item code * <span
-                                            class="spinner-border spinner-button spinner-border-sm" style="display:none;"
-                                            role="status" aria-hidden="true"></span></label>
-                                    <input type="text" class="form-control" name="Itemcode" id="Itemcode" placeholder="Item code">
-                                        <input type="hidden"  name="Itemcodehidden" id="Itemcodehidden" >
+                                <table class="table table-bordered mg-b-0">
+                    
+                                    <tbody>
+                                      <tr>
+                                        <th scope="row">Item code</th>
+                                        <td>Tiger Nixon</td>
+                                        <th scope="row">Discount Value</th>
+                                        <td>$320,800</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">Item Name</th>
+                                        <td>Garrett Winters</td>
+                                        <th scope="row">GST</th>
+                                        <td>$170,750</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">HSN code</th>
+                                        <td>Ashton Cox</td>
+                                        <th scope="row">Unit</th>
+                                        <td>$86,000</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">Basic Value</th>
+                                        <td>Cedric Kelly</td>
+                                        <th scope="row">Item description </th>
+                                        <td>$433,060</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">Discount Percent</th>
+                                        <td>Airi Satou</td>
+                                        <th scope="row">1</th>
+                                        <td>$162,700</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
                                 </div>
-
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Item Name * </label>
-                                    <input type="text" readonly class="form-control"  name="Itemtype" id="Itemtype"
-                                        placeholder="Item type">
-                                        <input type="hidden"  name="Itemtypehidden" id="Itemtypehidden" >
-                                </div><!-- form-group -->
-
-
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Item description *</label>
-                                    <textarea  readonly class="form-control" id="Itemdescription"
-                                        name="Itemdescription" placeholder=""></textarea>
-
-                                </div><!-- form-group -->
-
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>HSN code *</label>
-                                    <input type="text" readonly  class="form-control" name="HSN" id="HSNSAC"
-                                        placeholder="">
-                                </div><!-- form-group -->
-
-                                
-
-                                <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Supplier *</label>
-                                    <select class="form-control Supplier" name="Supplier">
-                                      @if(!empty($datas))
-                                    <option value=" ">{{$datas['supplier']['vendor_name']}}</option>
-                                      @endif
-                                    </select>
-                                </div> -->
-
-
-             
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Basic Value *</label>
-                                    <input type="text" readonly class="form-control"  id="StockQty" name="StockQty"
-                                        placeholder="">
+                   <br>
+                                  <div class="row">
+                                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                                        <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                                            <i class="fas fa-address-card"></i> Supplier required details </label>
+                                        <div class="form-devider"></div>
+                                    </div>
                                 </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Discount Percent *</label>
-                                    <input type="text" readonly class="form-control"  id="StockQty" name="StockQty"
-                                        placeholder="">
-                                </div>
+                                <div class="row">   
 
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Discount Value *</label>
-                                    <input type="text" readonly class="form-control" value="" id="OpenPOQty" name="OpenPOQty"
-                                        placeholder="">
-                                </div>
 
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> CGST *</label>
-                                    <input type="text" class="form-control" value="" name="ActualorderQty"
-                                        placeholder="Actual order Qty">
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> SGST *</label>
-                                    <input type="text" readonly class="form-control" value="" id="MinLevel" name="MinLevel"
-                                        placeholder="">
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> IGST *</label>
-                                    <input type="text" readonly class="form-control" value="" id="MaxLevel" name="MaxLevel"
-                                        placeholder="">
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Unit *</label>
-                                    <select class="form-control Supplier" name="Supplier">
-                                     <option value=" ">KG</option>
-                                     <option>Litre</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+
+
+
+
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                   <label>Quantity *</label>
                                   <input type="text" name="quantity" value="" class="form-control"
                                       placeholder="Quantity">
                                 </div><!-- form-group -->
 
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label> Rate *</label>
                                     <input type="text" class="form-control" value="" name="rate" id="rate" placeholder="Rate">
                                 </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label> Discount *</label>
                                     <input type="text" class="form-control" value="" name="discount" id="discount" placeholder="Discount">
                                 </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label> Specification *</label>
                                     <input type="text" class="form-control" value="" id="Discount" name="Discount"
                                         placeholder="">
                                 </div>
                                 
-                                                                
+                            </div>                           
 
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -161,9 +131,9 @@
                                             </button>
                                 </div>
                             </div>
-                            <div class="form-devider"></div>
+                         
                         </form>
-
+                        <div class="form-devider"></div>
                     </div>
                 </div>
             </div>
