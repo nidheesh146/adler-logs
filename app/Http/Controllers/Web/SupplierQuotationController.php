@@ -16,12 +16,12 @@ class SupplierQuotationController extends Controller
     public function getSupplierQuotation() 
     {
         $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL') . '/inventory/supplier-quotation-new-add-edit-delete/';
+        $Request['URL'] = config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/';
         $data = $this->HttpRequest->HttpClient($Request);
-        //  print_r(json_encode($data['response']['supplier_quotation']));
-        //  exit;
-        $items = $data['response']['supplier_quotation'];
-        return view('pages/supplier-quotation/supplier-quotation', compact('items'));
+         // print_r(json_encode($data['response']['quotation']));
+          //exit;
+        //$items = $data['response']['quotation'];
+        return view('pages/supplier-quotation/supplier-quotation', compact('data'));
     }
 
     function quotationsearch($rq_no = null){
@@ -114,14 +114,29 @@ class SupplierQuotationController extends Controller
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact('data'));
 
     }
+
     
-    public function getSupplierQuotationEditItem($supplierquotationid)
+    public function getSupplierQuotationEditItem($rq_no)
     {
         return view('pages/supplier-quotation/supplier-quotation-edit-item');
     }
     
-    public function viewSupplierQuotationItems($supplierquotationid) {
-        return view('pages/supplier-quotation/supplier-quotation-items');
+    public function viewSupplierQuotationItems($rq_no)
+    {
+        $Request['Method'] = 'GET';
+        $Request['URL'] = config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/';
+        $Request['param'] = ['rq_no' => $rq_no];
+        
+        $data = $this->HttpRequest->HttpClient($Request);
+        //if($data['quotation']['supplier']) {
+            $quotation = $data['response']['quotation'];
+            $suppliers =  $quotation[0]['supplier'];
+        //}else {
+          //  $suppliers =[];
+        //}
+        //print_r(json_encode($quotation[0]['supplier']));
+        //exit;
+        return view('pages/supplier-quotation/supplier-quotation-items', compact('suppliers', 'quotation', 'rq_no'));
     }
 
     public function comparisonOfQuotation($supplierquotationid) {

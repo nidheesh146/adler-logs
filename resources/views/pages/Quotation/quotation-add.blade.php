@@ -60,11 +60,11 @@
                                 <input type="text" class="form-control" readonly value="{{ (session('user')['employee_id'])}}" name="Requestor" placeholder="Requestor">
                             </div><!-- form-group --> --}}
 
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Date *</label>
                             <input type="text"  class="form-control datepicker" value="{{date("d-m-Y")}}" name="date" placeholder="Date">
                             </div>
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Delivery Schedule *</label>
                                 <input type="text"  class="form-control datepicker" value="{{date("d-m-Y")}}" name="delivery" placeholder="Date">
                             </div>
@@ -99,7 +99,6 @@
                                         <th>PR No:</th>
                                         <th>Item code </th>
                                         <th>Supplier</th>
-                                        <th>Actual order Qty</th>
                                         <th>Rate</th>
                                         <th>Discount %</th>
                                         <th>GST %</th>
@@ -116,7 +115,6 @@
                                     <th>{{$item['purchase_reqisition_list'][0]['purchase_reqisition']['pr_no']}}</th>
                                     <th>{{$item['purchase_reqisition_list'][0]['item_code']['item_code']}}</th>
                                    <td>{{$item['purchase_reqisition_list'][0]['supplier']['vendor_name']}}</td>
-                                    <td>{{$item['purchase_reqisition_list'][0]['actual_order_qty']}}</td>
                                     <td>{{$item['purchase_reqisition_list'][0]['rate']}}</td>
                                     <td>{{$item['purchase_reqisition_list'][0]['discount_percent']}}</td>
                                     <td>{{$item['purchase_reqisition_list'][0]['gst']}}</td>
@@ -182,16 +180,13 @@
 
            $("#commentForm").validate({
             rules: {
-                rq_no: {
-                    required: true,
-                },
                 date: {
                     required: true,
                 },
                 delivery: {
                     required: true,
                 },
-                Supplier: {
+                "Supplier[]": {
                     required: true,
                 },
       

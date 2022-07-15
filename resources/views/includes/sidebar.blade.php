@@ -3,6 +3,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
+        //echo $Action;
 @endphp
 
 
@@ -25,7 +26,7 @@
         <li class="nav-label">Main Menu</li>
         <li class="nav-item @if (in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
         'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
-        'Inventory.add_purchase_reqisition_item','Approval.getList','Quotation.getQuotation'])) {{'active show'}} @endif ">
+        'Inventory.add_purchase_reqisition_item','Approval.getList','Quotation.getQuotation', 'SupplierQuotation.viewSupplierQuotationItems', 'SupplierQuotation.getSupplierQuotationEditItem', 'SupplierQuotation.comparisonOfQuotation','SupplierQuotation.getSupplierQuotation'])) {{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-shopping-cart" style="font-size: 17px;"></i>Purchase Details</a>
           <ul class="nav-sub">
             {{-- <li class="nav-sub-item"><a href="#" class="nav-sub-link">Order</a></li> --}}
@@ -35,21 +36,16 @@
             <li class="nav-sub-item @if(in_array($Action,['Approval.getList'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Requisition Approval</a></li>
           
             <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation'])){{'active'}} @endif "><a href="{{url('inventory/quotation')}}" class="nav-sub-link">Request for Quotation</a></li>
-            <li class="nav-sub-item"><a href="{{url('inventory/quotation')}}"  class="nav-sub-link">Purchase Reqisition</a></li>
-          
+            <!-- <li class="nav-sub-item"><a href="{{url('inventory/quotation')}}"  class="nav-sub-link">Purchase Reqisition</a></li> -->
+            <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.getSupplierQuotation', 'SupplierQuotation.viewSupplierQuotationItems', 'SupplierQuotation.getSupplierQuotationEditItem'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Supplier Quotation</a></li>
+            <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.comparisonOfQuotation'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Comparison of Quotation</a></li>
+            
             
 
 
           </ul>
         </li><!-- nav-item -->
-        <li class="nav-item">
-          <a href="#" class="nav-link with-sub"><i class="typcn typcn-edit"></i>Supplier Quotation</a>
-          <ul class="nav-sub">
-            <li class="nav-sub-item"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Supplier Quotation</a></li>
-            <li class="nav-sub-item"><a href="form-layouts.html" class="nav-sub-link">Comparison of Quotation</a></li>
-          </ul>
-        </li>
-
+        
 
 
 

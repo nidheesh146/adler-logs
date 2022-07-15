@@ -9,7 +9,7 @@
 				 <span>Supplier Quotation</span>
 				 <span><a href="">Supplier Quotation Items</a></span>
 				 </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation Items
+			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation Items  <span>({{$rq_no}})</span>
               <div class="right-button">
                   <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                       <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -44,9 +44,11 @@
             <div class="row">
            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                 <label>Supplier *</label>
-                <select class="form-control Supplier" name="Supplier">
-                @if(!empty($datas))
-                <option value="{{$datas['supplier']['id']}}">{{$datas['supplier']['vendor_name']}}</option>
+                <select class="form-control Supplier" name="supplier">
+                @if(!empty($suppliers))
+				@foreach($suppliers as $supplier)
+                <option value="{{$supplier['id']}}">{{$supplier['vendor_name']}}</option>
+				@endforeach
                 @endif
                 </select>
             </div>
@@ -63,16 +65,17 @@
 					<thead>
 						<tr>
 							<th>No.</th>
-							<th>RQ NO:</th>
-                            <th>Date</th>
-							<th>Suppliers</th>
-                            <th>Delivery schedule</th>
-							<th>Item count</th>
+							<th>Item Code:</th>
+                            <th>HSN</th>
+							<th>Requested Qty</th>
+							<th>Supplier Qty</th>
+							<th>Supplier Rate</th>
+                            <th>Supplier Discount %</th>
 							<th>Action</th>
-						
 						</tr>
 					</thead>
 					<tbody id="prbody">
+						@foreach()
                         <tr>
                             <th>1</th>
                             <th>RQ No:</th>
@@ -136,20 +139,20 @@
     $('#prbody').show();
   });
 
-  $('.Supplier').select2({
-                    placeholder: 'Choose one',
-                    searchInputPlaceholder: 'Search',
-                    minimumInputLength: 3,
-                    allowClear: true,
-                    ajax: {
-                    url: "{{url('inventory/suppliersearch')}}",
-                    processResults: function (data) {
-                      return {
-                        results: data
-                      };
-                    }
-                  }
-                });
+//   $('.Supplier').select2({
+//                     placeholder: 'Choose one',
+//                     searchInputPlaceholder: 'Search',
+//                     minimumInputLength: 3,
+//                     allowClear: true,
+//                     ajax: {
+//                     url: "{{url('inventory/suppliersearch')}}",
+//                     processResults: function (data) {
+//                       return {
+//                         results: data
+//                       };
+//                     }
+//                   }
+//                 });
 </script>
 
 
