@@ -27,21 +27,21 @@ class SupplierQuotationController extends Controller
         return view('pages/supplier-quotation/supplier-quotation', compact('data'));
     }
 
-    function quotationsearch($rq_no = null){
-        if(!$rq_no){
-            return response()->json(['message'=>'RQ No is not valid'], 500); 
-        }
-        $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL') . '/inventory/quotation-item-list-add-edit-delete/';
-        $Request['param'] = ['rq_no' => $rq_no];
-        $data = $this->HttpRequest->HttpClient($Request);
-        if(!empty($data['response']['quotation'][0])){
-            return response()->json($data['response']['quotation'], 200); 
-        }else{
-            return response()->json(['message'=>'item code is not valid'], 500); 
-        }
+    // function quotationsearch($rq_no = null){
+    //     if(!$rq_no){
+    //         return response()->json(['message'=>'RQ No is not valid'], 500); 
+    //     }
+    //     $Request['Method'] = 'GET';
+    //     $Request['URL'] = config('app.ApiURL') . '/inventory/quotation-item-list-add-edit-delete/';
+    //     $Request['param'] = ['rq_no' => $rq_no];
+    //     $data = $this->HttpRequest->HttpClient($Request);
+    //     if(!empty($data['response']['quotation'][0])){
+    //         return response()->json($data['response']['quotation'], 200); 
+    //     }else{
+    //         return response()->json(['message'=>'item code is not valid'], 500); 
+    //     }
 
-    }
+    // }
     public function getSupplierQuotationAdd(Request $request)
     {
         if ($request->isMethod('post')) {
@@ -188,8 +188,94 @@ class SupplierQuotationController extends Controller
        return view('pages/supplier-quotation/supplier-quotation-items', compact('Res','rq_no','supp_id'));
     }
 
-    public function comparisonOfQuotation($supplierquotationid) {
-        return view('pages/supplier-quotation/comparison-quotation');
+    public function comparisonOfQuotation($rq_no) {
+        // $Request['Method'] = 'GET';
+        // $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-new-add-edit-delete/";
+        // $Request['param'] = ['quotation' => $rq_no];
+        // $data = $this->HttpRequest->HttpClient($Request);
+        $Res['error'] = "";
+        $Res['response'] = [];
+        try {
+            $response = Http::pool(fn (Pool $pool) => [
+                $pool->withHeaders([
+                    'Authorization' => 'Token ' . session('user')['token'],
+                ])->get(config('app.ApiURL') . '/inventory/supplier-quotation-new-add-edit-delete/',['quotation'=>$rq_no]),
+                $pool->withHeaders([
+                    'Authorization' => 'Token ' . session('user')['token'],
+                ])->get(config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/',['rq_no' => $rq_no]),
+            ]);
+            if ($response[0]->status() == 200 && $response[1]->status() == 200){
+                if ($response[0]->json()['status'] == 'success' && $response[1]->json()['status'] == 'success') {
+                    $Res['response'] =['response0'=>$response[0]->json(),'response1'=>$response[1]->json()];
+                    
+                }else{
+                    $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
+                }
+            }else{
+                $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
+            }
+        }catch (\Exception $e) {
+            $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
+        }
+            foreach($Res['response']['response0']['supplier_quotation'] as $item)
+            {   
+                $supplier = $item['supplier']['vendor_id'];
+                $newdata =  [
+                            'item_id' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['id'],
+                            'item_name' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_name'],
+                            'item_code' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_code'],
+                             'hsn'=>$item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['hsn_code'],
+                            // 'supplier_rate'=>$item['supplier_rate'],
+                            // 'quantity'=>$item['quantity'],
+                            // 'total'=>$item['supplier_rate']*$item['quantity'],
+                        ];
+                $supplier_price = [
+                            //'hsn'=>$item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['hsn_code'],
+                            'supplier_rate'=>$item['supplier_rate'],
+                            'quantity'=>$item['quantity'],
+                            'total'=>$item['supplier_rate']*$item['quantity']
+                ];
+                $supplier_Itemprice []= $supplier_price;
+                $supplier_item[] = $newdata;
+            }
+            $size = ceil(count($supplier_item)/2);
+            $array = array_chunk($supplier_item, $size);
+            $item_by_supplier = $array[0];
+            $item_count = count($item_by_supplier);
+            $supplier_count = count($Res['response']['response1']['quotation'][0]['supplier']);
+           //$supplier_Itemprice_list = arrange_Itemprice_list($supplier_Itemprice, $item_count);
+           $array = array_chunk($supplier_Itemprice, $item_count);
+           $length = sizeof($array[0]);
+            for($i=0;$i<$length;$i++)
+            {
+                foreach($array as $arr) 
+                {
+                $supplier_items[] = $arr[$i];
+                }
+            }
+
+        
+
+        //print_r(json_encode($arr2));
+        
+          // exit;      
+//print_r(json_encode($supplier_Itemprice));
+       // exit;
+        return view('pages/supplier-quotation/comparison-quotation',compact('rq_no', 'Res', 'item_by_supplier'));
+    }
+
+    function arrange_Itemprice_list($supplier_Itemprice, $supplier_count)
+    {
+        $array = array_chunk($supplier_Itemprice, $item_count);
+        foreach($array as $ar)
+        {
+            $length = sizeof($ar);
+            for($i=0;$i<$length;$i++)
+            {
+                $supplier_item[$i] = $ar[$i];
+            }
+        }
+        return $supplier_item;
     }
 }
 

@@ -6,7 +6,7 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> <span>Supplier Quotation</span> <span>Comparison of quotation</span> </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation
+			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation <span>( {{$rq_no}} )</span>
               <div class="right-button">
                 
                   <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
@@ -23,73 +23,37 @@
 				<nav class="nav"> </nav>
 			</div>
 	
-			<div class="table-responsive">
+			<div class="table-responsive" style="overflow-y: hidden;overflow-x: visible;">
 				<table class="table table-bordered mg-b-0" id="example1">
                 <colgroup>
-                    <col span="3" style="background-color:red">
+                    <col span="3" style="background-color:#D1F2EB">
                     <col span="3" style="background-color:yellow">
                 </colgroup>
 					<thead>
 						<tr>
-							<th>Item </th>
-							<th>Item Code</th>
-							<th>Item HSN</th>
+							<th  rowspan="3">Item </th>
+							<th  rowspan="3">Item Code</th>
+							<th  rowspan="3">Item HSN</th>
+                            @if(!empty($Res['response']['response1']))
+				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
 							<th rowspan="2" colspan="3"><center>Supplier 1<br>(QR NO)</center></th>
-                            <th rowspan="2" colspan="3"><center>Supplier 2<br>(QR NO)</center></th>
-                            <th rowspan="2" colspan="3"><center>Supplier 3<br>(QR NO)</center></th>
+                            @endforeach
+                            @endif
 						</tr>
 					</thead>
 					<tbody >
-						<tr>
-							<td> ITEM 1</a> </td>
-							<td>A5001</td>
-							<td>YUI</td>
-							<td >price1</td>
-                            <td>gst1</td>
-                            <td>total1</td>
-                            <td >price1</td>
-                            <td>gst1</td>
-                            <td>total1</td>
-                            <td >price1</td>
-                            <td>gst1</td>
-                            <td>total1</td>
-							
+                    @if(!empty($Res['response']['response0']['supplier_quotation'][0]))
+						@foreach($item_by_supplier as $item)
+                        <tr>
+                            {{-- <th>1</th> --}}
+                            <td >{{$item['item_name']}}</td>
+                            <td>{{$item['item_code']}}</td>
+                            <td>{{$item['hsn']}}</td>
 						</tr>
-						<tr>
-                            <td> ITEM 2</a> </td>
-							<td>A5001</td>
-							<td>YUI</td>
-							<td >price2</td>
-                            <td>gst2</td>
-                            <td>total2</td>
-                            <td >price2</td>
-                            <td>gst2</td>
-                            <td>total2</td>
-                            <td >price2</td>
-                            <td>gst2</td>
-                            <td>total2</td>	
-                            
-						</tr>
-						
-						<tr>
-                            <td> ITEM 3</a> </td>
-							<td>A5001</td>
-							<td>YUI</td>
-							<td >price3</td>
-                            <td>gst3</td>
-                            <td>total3</td>
-                            <td >price3</td>
-                            <td>gst3</td>
-                            <td>total3</td>
-                            <td >price3</td>
-                            <td>gst3</td>
-                            <td>total3</td>
-							
-						</tr>
+                    @endforeach
+                    @endif
                         <tr>
                             <td colspan="3"></td>
-                            <td colspan="2">Total :</td>
-                            <td> 456</td>
                             <td colspan="2">Total :</td>
                             <td> 456</td>
                             <td colspan="2">Total :</td>
