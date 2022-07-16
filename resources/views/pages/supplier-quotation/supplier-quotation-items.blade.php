@@ -98,11 +98,11 @@
                             <th>{{$item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_code']}}</th>
 							<th>{{$item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['hsn_code']}}</th>
                             <th>{{date('d-m-Y',strtotime($item['quotation']['deliver_schedule']))}}</th>
-							<th></td>
-							<th></td>
-							<th></td>
-							<th></td>
-                            <td><a href="{{url('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item['id'])}}" class="badge badge-info"><i class="fas fa-edit"></i> Edit</a>
+							<th>{{$item['purchase_reqisition_approval']['quantity']}}</td>
+							<th>{{$item['quantity']}}</td>
+							<th>{{$item['supplier_rate']}}</td>
+							<th>{{$item['supplier_discount']}}</td>
+                            <td><a href="{{url('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item['id'])}}?name={{$item['supplier']['vendor_name']}}" class="badge badge-info"><i class="fas fa-edit"></i> Edit</a>
 							</td>
 						</tr>    
 						@endforeach

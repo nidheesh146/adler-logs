@@ -87,6 +87,7 @@ class SupplierQuotationController extends Controller
 
     public function edit_supplier_quotation(Request $request)
     {
+
         $Request['Method'] = 'POST';
         $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-master-add-edit-delete/";
 
@@ -119,9 +120,43 @@ class SupplierQuotationController extends Controller
     }
 
     
-    public function getSupplierQuotationEditItem($rq_no)
+    public function getSupplierQuotationEditItem(Request $request,$rq_no,$supp_id,$item_id)
     {
-        return view('pages/supplier-quotation/supplier-quotation-edit-item');
+        if ($request->isMethod('post')) {
+            $Request['Method'] = 'POST';
+            $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-new-add-edit-delete/";    
+            $Request['param'] = json_encode([
+                "action_type" => "EditSupplierQuotationNew",
+                "quotation_id" => $request->supplier_quotation,
+                "specifications" =>  $request->Specification,
+                "supplier_rate"  => $request->rate,
+                "supplier_discount"=>$request->discount,
+                "quantity" =>$request->quantity
+            ]);
+            $data = $this->HttpRequest->HttpClient($Request);
+            if(!empty($data['response']['success'])){
+                $request->session()->flash('success',  $data['response']['message']);
+            }else{
+                $request->session()->flash('error',  $data['error']);
+                return redirect('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item_id.'?name='.$request->name);
+            }
+            return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id);
+        }
+        $Request['Method'] = 'GET';
+        $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-new-add-edit-delete/";
+        $Request['param'] = ['supplier' => $supp_id,'quotation'=>$rq_no,"no_of_entries"=>25,'page'=>$request->page ? $request->page  : 1];
+        $data = $this->HttpRequest->HttpClient($Request);
+        if(!empty($data['response']['supplier_quotation'][0])){
+            $supplier_quotation = [];
+            foreach($data['response']['supplier_quotation'] as $key => $value){
+                if($value['id'] == $item_id){
+                    $supplier_quotation[] = $value;
+                }
+            unset($data['response']['supplier_quotation'][$key]);
+            }
+            $data['response']['supplier_quotation']=$supplier_quotation; 
+        }
+        return view('pages/supplier-quotation/supplier-quotation-edit-item',compact('data'));
     }
     
     public function viewSupplierQuotationItems(Request $request,$rq_no,$supp_id)

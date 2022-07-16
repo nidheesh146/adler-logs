@@ -16,7 +16,7 @@
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                     <!-- {{ request()->item ? 'Edit' : 'Add' }}  Supplier quotation item</h4> -->
-                    Edit Supplier Quotation Item
+                    Edit Supplier Quotation Item for  ( {{request()->name}} ) 
                 </h4>
                 <!-- <div class="az-dashboard-nav">
                     <nav class="nav">
@@ -53,39 +53,39 @@
                     
                                     <tbody>
                                       <tr>
-                                        <th scope="row">Item code</th>
-                                        <td>Tiger Nixon</td>
+                                        <th scope="row">Code</th>
+                                      <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_code'] : '-' }}</td>
                                         <th scope="row">Discount Value</th>
-                                        <td>$320,800</td>
+                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['discount_value'] : '-' }}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="row">Item Name</th>
-                                        <td>Garrett Winters</td>
+                                        <th scope="row">Name</th>
+                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_name'] : '-' }}</td>
                                         <th scope="row">GST</th>
-                                        <td>$170,750</td>
+                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['gst'] : '-' }}</td>
                                       </tr>
                                       <tr>
                                         <th scope="row">HSN code</th>
-                                        <td>Ashton Cox</td>
+                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['hsn_code'] : '-' }}</td>
                                         <th scope="row">Unit</th>
-                                        <td>$86,000</td>
+                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['receipt_unit']['unit_name'] : '-' }}</td>
                                       </tr>
                                       <tr>
                                         <th scope="row">Basic Value</th>
-                                        <td>Cedric Kelly</td>
+                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['basic_value'] : '-' }}</td>
                                         <th scope="row">Item description </th>
-                                        <td>$433,060</td>
+                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['discount_percent'] : '-' }}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="row">Discount Percent</th>
-                                        <td>Airi Satou</td>
-                                        <th scope="row">1</th>
-                                        <td>$162,700</td>
+                                        <th scope="row">Discount %</th>
+                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['remarks'] : '-' }}</td>
+                                        <th scope="row">Requested QTY</th>
+                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['remarks'] : '-' }}</td>
                                       </tr>
                                     </tbody>
                                   </table>
                                 </div>
-                   <br>
+                                <br>
                                   <div class="row">
                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
@@ -94,30 +94,23 @@
                                     </div>
                                 </div>
                                 <div class="row">   
-
-
-
-
-
-
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                   <label>Quantity *</label>
-                                  <input type="text" name="quantity" value="" class="form-control"
-                                      placeholder="Quantity">
+                                <input type="text" name="quantity" value="{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['quantity'] : ''}}" class="form-control" placeholder="Quantity">
+                                  <input type="hidden" name="supplier_quotation" value="{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['id'] : ''}}" class="form-control" placeholder="Quantity">
                                 </div><!-- form-group -->
 
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label> Rate *</label>
-                                    <input type="text" class="form-control" value="" name="rate" id="rate" placeholder="Rate">
+                                    <input type="text" class="form-control" value="{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['supplier_rate'] : ''}}" name="rate" id="rate" placeholder="Rate">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label> Discount *</label>
-                                    <input type="text" class="form-control" value="" name="discount" id="discount" placeholder="Discount">
+                                    <input type="text" class="form-control" value="{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['supplier_discount'] : ''}}" name="discount" id="discount" placeholder="Discount">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label> Specification *</label>
-                                    <input type="text" class="form-control" value="" id="Discount" name="Discount"
-                                        placeholder="">
+                                    <textarea  class="form-control"  id="Specification" name="Specification" placeholder="Specification">{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['specifications'] : ''}}</textarea>
                                 </div>
                                 
                             </div>                           
@@ -151,191 +144,31 @@
     <script>
       $(function(){
 
-      // $('.GST').select2({
-      //     placeholder: 'Choose one',
-      //     searchInputPlaceholder: 'Search',
-      // });
-
-
-    function  netvalue(){
-      let Rate = $('#Rate').val();
-      let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
-      let gst = $('.GST').val() ? $('.GST').val() : 0;
-      if(Rate){
-        let total = ( Rate - ((Rate / 100) * Discount)) ;
-        let netvalue = (+total + ((total / 100) * gst));
-        $('#Netvalue').val(netvalue.toFixed(2));
-      }else{
-       $('#Discount').val('');
-       $('.GST').val('');
-      }
-    }
-
-    $( "#Rate" ).on( "input",function() {
-      netvalue();
-    });
-    $( "#Discount" ).on( "input",function() {
-      netvalue();
-    });
-    $('.GST').on('change', function(e) {
-
-      netvalue();
-    });
-
-
-        
-    function get_itemcode(element){
-        $('.spinner-button').show();
-        $('#Itemcode-error').remove();
-        $('#Itemdescription').text('');
-        $('#Itemtype').val('');
-        $('#HSNSAC').val('');
-        $('#Unit').val('');
-        $('#MinLevel').val('');
-        $('#MaxLevel').val('');
-        $('#Itemtypehidden').val('');
-     
-        $.get( "{{ url('inventory/itemcodesearch') }}/"+element, function(res) {
-          $('.spinner-button').hide();
-          if(res.discription){
-            $('#Itemdescription').text(res.discription);
-          }
-          if(res.item_type.type_name){
-            $('#Itemtype').val(res.item_type.type_name);
-            $('#Itemtypehidden').val(res.item_type.id);
-            
-          }
-          if(res.hsn_code){
-            $('#HSNSAC').val(res.hsn_code);
-          }
-          if(res.receipt_unit.unit_name){
-            $('#Unit').val(res.receipt_unit.unit_name);
-            $('#Unithidden').val(res.receipt_unit.id);
-          }
-          if(res.min_stock){
-            $('#MinLevel').val(res.min_stock);
-          }
-          if(res.max_stock){
-            $('#MaxLevel').val(res.max_stock);
-          }
-          if(res.opening_quantity){
-            $('#OpenPOQty').val(res.opening_quantity);
-          }
-          if(res.availble_quantity){
-            $('#StockQty').val(res.availble_quantity);
-          }
-          if(res.id){
-            $('#Itemcodehidden').val(res.id);
-          }
-          
-
-        }).fail(function(error) {
-          $('.spinner-button').hide();
-          $('#Itemcode').after('<label id="Itemcode-error" class="error Itemcode-error" for="Itemcode">'+error.responseJSON.message+'</label>');
-        });
-    }
-
+    
         
         $("#commentForm").validate({
-          onfocusout: function(element, event) {
-          if ($(element).attr('name') == "Itemcode") {
-              get_itemcode($(element).val());
-           }
-        },
                 rules: {
-                    Itemcode: {
+                    quantity: {
                         required: true,
                     },
-                    Itemtype: {
+                    rate: {
                         required: true,
                     },
-                    // Itemdescription: {
-                    //     required: true,
-                    // },
-                    HSNSAC: {
+                    discount: {
                       required: true,
                     },
-                    PRSR: {
+                    Specification: {
                         required: true,
                     },
-                    Supplier: {
-                        required: true,
-                    },
-                    Unit: {
-                        required: true,
-                    },
-                    BasicValue: {
-                        required: true,
-                        number: true
-                    },
-                    StockQty: {
-                        required: true,
-                    },
-                    OpenPOQty: {
-                        required: true,
-                    },
-                    ActualorderQty: {
-                        required: true,
-                        number: true
-                    },
-                    MinLevel: {
-                        required: true,
-                    },
-                    MaxLevel: {
-                        required: true,
-                    },
-                    Rate: {
-                        required: true,
-                        number: true
-                    },
-                    Discount: {
-                        required: true,
-                        number: true
-                    },
-                    GST: {
-                        required: true,
-                    },
-                    Currency: {
-                        required: true,
-                    },
-                    Netvalue: {
-                        required: true,
-                        number: true
-                    },
-                    Remarks: {
-                        required: true,
-                    }
                 },
                 submitHandler: function(form) {
                 $('.spinner-button').show();
-                 $.get( "{{ url('inventory/itemcodesearch') }}/"+$('#Itemcode').val(), function(res) {
-                  if(res.id){
                       form.submit();
-                  }else{
-                    alert('item code is not valid');
-                  }
-                 }).fail(function(error) {
-                  alert('item code is not valid');
-                 });
-
                     
             }
             });
 
-                $('.Supplier').select2({
-                    placeholder: 'Choose one',
-                    searchInputPlaceholder: 'Search',
-                    minimumInputLength: 3,
-                    allowClear: true,
-                    ajax: {
-                    url: "{{url('inventory/suppliersearch')}}",
-                    processResults: function (data) {
-                      return {
-                        results: data
-                      };
-                    }
-                  }
-                });
+                
       });
     </script>
 

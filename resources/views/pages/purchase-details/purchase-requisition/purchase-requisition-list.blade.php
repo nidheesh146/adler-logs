@@ -72,7 +72,7 @@
 							<td>{{$item['date']}}</td>
 							<td>{{$item['department']}}</td>
 							<td>{{$item['prcsr']}}</td>
-							<td style="width: 133px;">
+							<td >
 								<span style="width: 133px;">
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu">
