@@ -6,7 +6,7 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> <span>Supplier Quotation</span> <span>Comparison of quotation</span> </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation
+			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation <span>( {{$rq_no}} )</span>
               <div class="right-button">
                 
                   <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
@@ -22,79 +22,79 @@
 			<div class="az-dashboard-nav">
 				<nav class="nav"> </nav>
 			</div>
-	
-			<div class="table-responsive">
-				<table class="table table-bordered mg-b-0" id="example1">
+            <style>
+               th, td {
+                border-color: black;
+                color:#1c273c;
+                }
+                thead th{
+                    color:red;
+                }
+                
+            </style>
+			<div class="table-responsive" style="overflow-y: hidden;overflow-x: visible; border-color:black;">
+				<table class="table table-bordered " id="example1">
                 <colgroup>
-                    <col span="3" style="background-color:red">
-                    <col span="3" style="background-color:yellow">
+                <?php
+                    function bgcolor(){return dechex(rand(0,10000000));}
+                ?>
+                    <col span="3" style="background-color:#D1F2EB">
+                    @if(!empty($Res['response']['response1']))
+                    <?php $i=0; ?>
+                    @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
+                    <col span="3" style="background-color:#<?php echo bgcolor(); ?>">
+                    <?php $i++; ?>
+                    @endforeach
+                    @endif
                 </colgroup>
 					<thead>
 						<tr>
-							<th>Item </th>
-							<th>Item Code</th>
-							<th>Item HSN</th>
-							<th rowspan="2" colspan="3"><center>Supplier 1<br>(QR NO)</center></th>
-                            <th rowspan="2" colspan="3"><center>Supplier 2<br>(QR NO)</center></th>
-                            <th rowspan="2" colspan="3"><center>Supplier 3<br>(QR NO)</center></th>
-						</tr>
-					</thead>
-					<tbody >
-						<tr>
-							<td> ITEM 1</a> </td>
-							<td>A5001</td>
-							<td>YUI</td>
-							<td >price1</td>
-                            <td>gst1</td>
-                            <td>total1</td>
-                            <td >price1</td>
-                            <td>gst1</td>
-                            <td>total1</td>
-                            <td >price1</td>
-                            <td>gst1</td>
-                            <td>total1</td>
-							
-						</tr>
-						<tr>
-                            <td> ITEM 2</a> </td>
-							<td>A5001</td>
-							<td>YUI</td>
-							<td >price2</td>
-                            <td>gst2</td>
-                            <td>total2</td>
-                            <td >price2</td>
-                            <td>gst2</td>
-                            <td>total2</td>
-                            <td >price2</td>
-                            <td>gst2</td>
-                            <td>total2</td>	
-                            
-						</tr>
-						
-						<tr>
-                            <td> ITEM 3</a> </td>
-							<td>A5001</td>
-							<td>YUI</td>
-							<td >price3</td>
-                            <td>gst3</td>
-                            <td>total3</td>
-                            <td >price3</td>
-                            <td>gst3</td>
-                            <td>total3</td>
-                            <td >price3</td>
-                            <td>gst3</td>
-                            <td>total3</td>
-							
+							<th  rowspan="2" style="color:#1c273c;">Item </th>
+							<th  rowspan="2" style="color:#1c273c;">Item Code</th>
+							<th  rowspan="2" style="color:#1c273c;">Item HSN</th>
+                            @if(!empty($Res['response']['response1']))
+				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
+							<th colspan="3" style="color:black; font-size:15px;"><center>{{$supplier['vendor_name']}}</center></th>
+                            @endforeach
+                            @endif
 						</tr>
                         <tr>
-                            <td colspan="3"></td>
-                            <td colspan="2">Total :</td>
-                            <td> 456</td>
-                            <td colspan="2">Total :</td>
-                            <td> 456</td>
-                            <td colspan="2">Total :</td>
-                            <td> 456</td>
+                        @if(!empty($Res['response']['response1']))
+				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
+                            <th style="color:#1c273c;">Rate</th>
+                            <th style="color:#1c273c;">Qty</th>
+                            <th style="color:#1c273c;">Total</th>
+                        @endforeach
+                            @endif
                         </tr>
+                        
+					</thead>
+					<tbody >
+                    @if(!empty($Res['response']['response0']['supplier_quotation'][0]))
+						@foreach($supplier_values['supplier_items'] as $item)
+                        <tr>
+                            {{-- <th>1</th> --}}
+                            <td >{{$item['item_name']}}</td>
+                            <td>{{$item['item_code']}}</td>
+                            <td>{{$item['hsn']}}</td>
+                            @foreach($item['price_data'] as $data)
+                            <td class="supplier_rate" data-rate="{{ $data['supplier_rate'] }}">{{ $data['supplier_rate'] }}</td>
+                            <td class="quantity"  data-quantity="{{ $data['quantity'] }}">{{ $data['quantity'] }}</td>
+                            <td class="total" data-total="{{ $data['total'] }}">{{ $data['total'] }}</td>
+                            @endforeach
+                            
+						</tr>
+                    @endforeach
+                    @endif
+                    <tr>
+                    <td colspan="3"></td>
+                    @if(!empty($Res['response']['response1']))
+				    @foreach($supplier_values['grant_total_supplier'] as $item)
+                            <td colspan="2">Total :</td>
+                            <td class="grant_total"> {{$item}}</td>
+                    @endforeach
+                    </tr>
+                    @endif
 					</tbody>
 				</table>
 				<div class="box-footer clearfix">
@@ -126,5 +126,6 @@
 
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+
 
 @stop
