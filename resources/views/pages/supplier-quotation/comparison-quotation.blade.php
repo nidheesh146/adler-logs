@@ -22,43 +22,74 @@
 			<div class="az-dashboard-nav">
 				<nav class="nav"> </nav>
 			</div>
-	
-			<div class="table-responsive" style="overflow-y: hidden;overflow-x: visible;">
+            <style>
+               th, td {
+                border-color: #808080;
+                }
+            </style>
+			<div class="table-responsive" style="overflow-y: hidden;overflow-x: visible; border-color:black;">
 				<table class="table table-bordered mg-b-0" id="example1">
                 <colgroup>
+                <?php
+                    function bgcolor(){return dechex(rand(0,10000000));}
+                ?>
                     <col span="3" style="background-color:#D1F2EB">
-                    <col span="3" style="background-color:yellow">
+                    @if(!empty($Res['response']['response1']))
+                    <?php $i=0; ?>
+                    @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
+                    <col span="3" style="background-color:#<?php echo bgcolor(); ?>">
+                    <?php $i++; ?>
+                    @endforeach
+                    @endif
                 </colgroup>
 					<thead>
 						<tr>
-							<th  rowspan="3">Item </th>
-							<th  rowspan="3">Item Code</th>
-							<th  rowspan="3">Item HSN</th>
+							<th  rowspan="2">Item </th>
+							<th  rowspan="2">Item Code</th>
+							<th  rowspan="2">Item HSN</th>
                             @if(!empty($Res['response']['response1']))
 				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
-							<th rowspan="2" colspan="3"><center>Supplier 1<br>(QR NO)</center></th>
+							<th colspan="3"><center>{{$supplier['vendor_name']}}</center></th>
                             @endforeach
                             @endif
 						</tr>
+                        <tr>
+                        @if(!empty($Res['response']['response1']))
+				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
+                            <th>Rate</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                        @endforeach
+                            @endif
+                        </tr>
+                        
 					</thead>
 					<tbody >
                     @if(!empty($Res['response']['response0']['supplier_quotation'][0]))
-						@foreach($item_by_supplier as $item)
+						@foreach($supplier_values['supplier_items'] as $item)
                         <tr>
                             {{-- <th>1</th> --}}
                             <td >{{$item['item_name']}}</td>
                             <td>{{$item['item_code']}}</td>
                             <td>{{$item['hsn']}}</td>
+                            @foreach($item['price_data'] as $data)
+                            <td class="supplier_rate" data-rate="{{ $data['supplier_rate'] }}">{{ $data['supplier_rate'] }}</td>
+                            <td class="quantity"  data-quantity="{{ $data['quantity'] }}">{{ $data['quantity'] }}</td>
+                            <td class="total" data-total="{{ $data['total'] }}">{{ $data['total'] }}</td>
+                            @endforeach
+                            
 						</tr>
                     @endforeach
                     @endif
-                        <tr>
-                            <td colspan="3"></td>
+                    <tr>
+                    <td colspan="3"></td>
+                    @if(!empty($Res['response']['response1']))
+				    @foreach($supplier_values['grant_total_supplier'] as $item)
                             <td colspan="2">Total :</td>
-                            <td> 456</td>
-                            <td colspan="2">Total :</td>
-                            <td> 456</td>
-                        </tr>
+                            <td class="grant_total"> {{$item}}</td>
+                    @endforeach
+                    </tr>
+                    @endif
 					</tbody>
 				</table>
 				<div class="box-footer clearfix">
@@ -90,5 +121,6 @@
 
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+
 
 @stop

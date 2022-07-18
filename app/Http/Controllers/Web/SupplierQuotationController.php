@@ -225,57 +225,63 @@ class SupplierQuotationController extends Controller
                             'item_name' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_name'],
                             'item_code' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_code'],
                              'hsn'=>$item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['hsn_code'],
-                            // 'supplier_rate'=>$item['supplier_rate'],
-                            // 'quantity'=>$item['quantity'],
-                            // 'total'=>$item['supplier_rate']*$item['quantity'],
                         ];
                 $supplier_price = [
-                            //'hsn'=>$item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['hsn_code'],
                             'supplier_rate'=>$item['supplier_rate'],
                             'quantity'=>$item['quantity'],
                             'total'=>$item['supplier_rate']*$item['quantity']
-                ];
+                    ];
                 $supplier_Itemprice []= $supplier_price;
                 $supplier_item[] = $newdata;
             }
-            $size = ceil(count($supplier_item)/2);
-            $array = array_chunk($supplier_item, $size);
-            $item_by_supplier = $array[0];
-            $item_count = count($item_by_supplier);
             $supplier_count = count($Res['response']['response1']['quotation'][0]['supplier']);
-           //$supplier_Itemprice_list = arrange_Itemprice_list($supplier_Itemprice, $item_count);
-           $array = array_chunk($supplier_Itemprice, $item_count);
-           $length = sizeof($array[0]);
-            for($i=0;$i<$length;$i++)
-            {
-                foreach($array as $arr) 
-                {
-                $supplier_items[] = $arr[$i];
-                }
-            }
+            $supplier_values = $this->arrange_Itemprice_list($supplier_item, $supplier_Itemprice, $supplier_count);
 
-        
-
-        //print_r(json_encode($arr2));
-        
-          // exit;      
-//print_r(json_encode($supplier_Itemprice));
-       // exit;
-        return view('pages/supplier-quotation/comparison-quotation',compact('rq_no', 'Res', 'item_by_supplier'));
+        return view('pages/supplier-quotation/comparison-quotation',compact('rq_no', 'Res', 'supplier_values'));
     }
 
-    function arrange_Itemprice_list($supplier_Itemprice, $supplier_count)
+    public function arrange_Itemprice_list($supplier_item, $supplier_Itemprice, $supplier_count)
     {
+        $size = ceil(count($supplier_item)/$supplier_count);
+        $array1 = array_chunk($supplier_item, $size);
+        $item_by_supplier = $array1[0];
+        $item_count = count($item_by_supplier);
         $array = array_chunk($supplier_Itemprice, $item_count);
+        $length = sizeof($array[0]);
+        //print_r(json_encode($array));exit;
         foreach($array as $ar)
         {
-            $length = sizeof($ar);
-            for($i=0;$i<$length;$i++)
+            $total =0;
+            foreach($ar as $a){
+                $total = $total+$a['total'];
+            }
+            $grant_total_supplier[] = $total;
+        }
+        //print_r(json_encode($grant_total));exit;
+        for($i=0;$i<$item_count;$i++)
+        {
+             foreach($array as $arr) 
             {
-                $supplier_item[$i] = $ar[$i];
+            $supplier_items[] = $arr[$i];
             }
         }
-        return $supplier_item;
+    
+        $supplier_item_prices= array_chunk($supplier_items,$supplier_count );
+        $i=0;
+        foreach($item_by_supplier as $item)
+        {
+            $data = [
+                    'price_data' =>array_reverse( $supplier_item_prices[$i])
+                ];
+            $final[] = array_merge($item, $data);
+            $i++;
+
+        }
+        $return_values = ['supplier_items' => $final,
+                            'grant_total_supplier'=> array_reverse($grant_total_supplier)];
+        return $return_values;
     }
+
+
 }
 
