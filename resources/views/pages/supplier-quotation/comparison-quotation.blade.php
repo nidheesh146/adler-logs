@@ -24,11 +24,16 @@
 			</div>
             <style>
                th, td {
-                border-color: #808080;
+                border-color: black;
+                color:#1c273c;
                 }
+                thead th{
+                    color:red;
+                }
+                
             </style>
 			<div class="table-responsive" style="overflow-y: hidden;overflow-x: visible; border-color:black;">
-				<table class="table table-bordered mg-b-0" id="example1">
+				<table class="table table-bordered " id="example1">
                 <colgroup>
                 <?php
                     function bgcolor(){return dechex(rand(0,10000000));}
@@ -44,21 +49,21 @@
                 </colgroup>
 					<thead>
 						<tr>
-							<th  rowspan="2">Item </th>
-							<th  rowspan="2">Item Code</th>
-							<th  rowspan="2">Item HSN</th>
+							<th  rowspan="2" style="color:#1c273c;">Item </th>
+							<th  rowspan="2" style="color:#1c273c;">Item Code</th>
+							<th  rowspan="2" style="color:#1c273c;">Item HSN</th>
                             @if(!empty($Res['response']['response1']))
 				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
-							<th colspan="3"><center>{{$supplier['vendor_name']}}</center></th>
+							<th colspan="3" style="color:black; font-size:15px;"><center>{{$supplier['vendor_name']}}</center></th>
                             @endforeach
                             @endif
 						</tr>
                         <tr>
                         @if(!empty($Res['response']['response1']))
 				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
-                            <th>Rate</th>
-                            <th>Qty</th>
-                            <th>Total</th>
+                            <th style="color:#1c273c;">Rate</th>
+                            <th style="color:#1c273c;">Qty</th>
+                            <th style="color:#1c273c;">Total</th>
                         @endforeach
                             @endif
                         </tr>
