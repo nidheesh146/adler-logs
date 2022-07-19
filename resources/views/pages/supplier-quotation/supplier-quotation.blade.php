@@ -87,7 +87,7 @@
 									<!-- <a href="{{url('inventory/view-supplier-quotation-items/1') }}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a>  -->
 								
 								</div> --}}
-								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['rq_no'].'/'.$item['supplier'][0]['id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
+								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['rq_no'].'/'.$item['supplier'][0]['id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> View</a>
 								<a class="badge badge-primary" style="font-size: 13px;" href="{{url('inventory/comparison-quotation/'.$item['rq_no']) }}"  class="dropdown-item"><i class="fa fa-balance-scale"></i> Comparison</a>
 							</td>
 						</tr>

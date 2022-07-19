@@ -52,10 +52,7 @@
                             </div>
                         </div>
                         <div class="row">
-                        <!-- <div class="form-group col-sm-12 col-md-4 col-lg-6 col-xl-6">
-                            <label for="exampleInputEmail1">Request NO: *</label>
-                            <input type="text" class="form-control" name="request_no" value="" placeholder="Enter PR NO">
-                        </div> -->
+                
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">RQ NO: *</label>

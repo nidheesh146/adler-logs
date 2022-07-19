@@ -10,21 +10,40 @@
 				 <span><a href="">Supplier Quotation Items </a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation Items  <span>({{$rq_no}})</span>
-              <div class="right-button">
-                  <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
-                      <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-					<div class="dropdown-menu">
-						<a href="#" class="dropdown-item">Excel</a>
-					</div>
-              <div>  
-              </div>
-			<!-- <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-supplier-quotation')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Supplier Quotation   </button> -->
-          </div>
+			 
+				
+				
+			
+				
+<div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4" style="float: right;">
+						  	
+				<form id="Supplier_form">
+						   <label>Supplier *</label>
+						   <select class=" Supplier"  name="supplier" style="width: 76%;">
+						   @if(!empty($Res['response']['response1']))
+						   @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
+						   <option value="{{$supplier['id']}}"
+						   @if(!empty($Res['response']['response0']))
+						   @if($Res['response']['response0']['supplier_quotation'][0]['supplier']['id'] == $supplier['id'])
+							  selected
+						   @endif
+						   @endif
+						   >{{$supplier['vendor_name']}}</option>
+						   @endforeach
+						   @endif
+						   </select>
+						   	
+				   </form>   
+					   </div>
+					   {{-- <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+						   <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+						   <label style="    width: 100%;">&nbsp;</label>
+						   <button type="submit" class="button btn-primary" style="margin-top:8px;"><i class="fas fa-search"></i> Change</button>
+					   </div>
+					   </div> --}}
+			
         </h4>
-			<div class="az-dashboard-nav">
-				<nav class="nav"> </nav>
-			</div>
-	
+
       
 			@if($Res['error'])
 			<div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -46,33 +65,51 @@
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		   @endif
-		   <form >
-            <div class="row">
-	
-           <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                <label>Supplier *</label>
-                <select class="form-control Supplier" name="supplier">
-                @if(!empty($Res['response']['response1']))
-				@foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
-				<option value="{{$supplier['id']}}"
-				@if(!empty($Res['response']['response0']))
-				@if($Res['response']['response0']['supplier_quotation'][0]['supplier']['id'] == $supplier['id'])
-				   selected
-				@endif
-				@endif
-				>{{$supplier['vendor_name']}}</option>
-				@endforeach
-                @endif
-                </select>
+	        
+		<div class="row">
+		    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+		    	<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+				<i class="fas fa-address-card"></i> Basic details                               
+				</label>
+				<div class="form-devider"></div>
 			</div>
-		
-            <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-                <label style="    width: 100%;">&nbsp;</label>
-                <button type="submit" class="badge badge-pill badge-primary" style="margin-top:8px;"><i class="fas fa-search"></i> Search</button>
-            </div>
-    		</div>
-		</form>                            
+		</div>
+
+<div class="row">
+	<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+		<label>Supplier quotation NO: *</label>
+		<input type="text"  class="form-control" id="supplier_quotation_no" name="supplier_quotation_no" placeholder="Supplier quotation NO">
+	</div>       
+
+	<div class="form-group col-sm-12 col-md-4 col-lg-6 col-xl-6">
+		<label for="exampleInputEmail1">Commited delivery date *</label>
+		<input type="text" class="form-control" name="rq_no" id="rq_no" value="" placeholder="Commited delivery date">
+	</div>
+	<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+		<label>quotation_date *</label>
+		<select class="form-control supplier" name="supplier">
+			<option value="">--- select one ---</option>
+		</select>
+	</div>
+
+	<!-- form-group -->
+	<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+		<label>contact</label>
+		<textarea class="form-control"></textarea>
+	</div>
+
+</div> 
+
+
+<div class="row">
+	<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+		<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+		<i class="fas fa-address-card"></i> Basic details                               
+		</label>
+		<div class="form-devider"></div>
+	</div>
+</div>
+			
 
 			<div class="table-responsive">
 				<table class="table table-bordered mg-b-0" id="example1">
@@ -102,7 +139,7 @@
 							<th>{{$item['quantity']}}</td>
 							<th>{{$item['supplier_rate']}}</td>
 							<th>{{$item['supplier_discount']}}</td>
-                            <td><a href="{{url('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item['id'])}}?name={{$item['supplier']['vendor_name']}}" class="badge badge-info"><i class="fas fa-edit"></i> Edit</a>
+                            <td><a href="{{url('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item['id'])}}?name={{$item['supplier']['vendor_name']}}" class="badge badge-info"><i class="fas fa-edit"></i> Update</a>
 							</td>
 						</tr>    
 						@endforeach
@@ -154,6 +191,12 @@
 
     $('#prbody').show();
   });
+
+$('.Supplier').change(function(){
+   $('#Supplier_form').submit();
+})
+
+
 
 //   $('.Supplier').select2({
 //                     placeholder: 'Choose one',
