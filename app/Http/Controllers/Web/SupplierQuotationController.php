@@ -158,6 +158,32 @@ class SupplierQuotationController extends Controller
         }
         return view('pages/supplier-quotation/supplier-quotation-edit-item',compact('data'));
     }
+
+    public function supplierQuotationUpdate(Request $request, $rq_no,$supp_id)
+    {
+        if ($request->isMethod('post')) {
+            $Request['Method'] = 'POST';
+            $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-new-add-edit-delete/";    
+            $Request['param'] = json_encode([
+                "action_type" => "EditSupplierQuotationNew",
+                "quotation_id"=>$request->quotation_id,
+                "supplier_quotation_no" => $request->supplier_quotation_no,
+                "quotation_date" =>  date('d-m-Y', strtotime($request->quotation_date)),
+                "contact"  => $request->contact,
+                "deliver_date"=> date('d-m-Y', strtotime($request->commited_delivery_date))
+            ]);
+            //print_r($Request);exit;
+            $data = $this->HttpRequest->HttpClient($Request);
+            if(!empty($data['response']['success'])){
+                $request->session()->flash('success',  $data['response']['message']);
+            }else{
+                $request->session()->flash('error',  $data['error']);
+                return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id);
+            }
+            return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id);
+        } 
+
+    }
     
     public function viewSupplierQuotationItems(Request $request,$rq_no,$supp_id)
     {
@@ -175,6 +201,7 @@ class SupplierQuotationController extends Controller
         ]);
         if ($response[0]->status() == 200 && $response[1]->status() == 200){
             if ($response[0]->json()['status'] == 'success' && $response[1]->json()['status'] == 'success') {
+               //print_r(json_encode($response[0]->json()));exit;
                 $Res['response'] =['response0'=>$response[0]->json(),'response1'=>$response[1]->json()];
             }else{
                 $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";

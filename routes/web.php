@@ -66,6 +66,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
     Route::post('inventory/purchase-reqisition/approval', 'ApprovalController@Approve');
 
     Route::get('inventory/supplier-quotation', 'SupplierQuotationController@getSupplierQuotation');
+    Route::post('inventory/supplierQuotationUpdate/{rq_no}/{supp_id}', 'SupplierQuotationController@supplierQuotationUpdate');
     Route::get('inventory/view-supplier-quotation-items/{rq_no}/{supp_id}','SupplierQuotationController@viewSupplierQuotationItems');
     Route::get('inventory/edit-supplier-quotation-item/{rq_no}/{supp_id}/{item_id}', 'SupplierQuotationController@getSupplierQuotationEditItem');
     Route::post('inventory/edit-supplier-quotation-item/{rq_no}/{supp_id}/{item_id}', 'SupplierQuotationController@getSupplierQuotationEditItem');

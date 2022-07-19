@@ -8,20 +8,14 @@
 			<div class="az-content-breadcrumb"> 
 				 <span>Supplier Quotation</span>
 				 <span><a href="">Supplier Quotation Items </a></span>
-				 </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation Items  <span>({{$rq_no}})</span>
-			 
-				
-				
-			
-				
-<div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4" style="float: right;">
-						  	
+			</div>
+			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation Items  <span>({{$rq_no}})</span>			 
+			<div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4" style="float: right;">
 				<form id="Supplier_form">
-						   <label>Supplier *</label>
-						   <select class=" Supplier"  name="supplier" style="width: 76%;">
-						   @if(!empty($Res['response']['response1']))
-						   @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
+					<label>Supplier *</label>
+					<select class=" Supplier"  name="supplier" style="width: 76%;">
+						@if(!empty($Res['response']['response1']))
+						@foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
 						   <option value="{{$supplier['id']}}"
 						   @if(!empty($Res['response']['response0']))
 						   @if($Res['response']['response0']['supplier_quotation'][0]['supplier']['id'] == $supplier['id'])
@@ -29,18 +23,18 @@
 						   @endif
 						   @endif
 						   >{{$supplier['vendor_name']}}</option>
-						   @endforeach
-						   @endif
-						   </select>
-						   	
-				   </form>   
-					   </div>
-					   {{-- <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-						   <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-						   <label style="    width: 100%;">&nbsp;</label>
-						   <button type="submit" class="button btn-primary" style="margin-top:8px;"><i class="fas fa-search"></i> Change</button>
-					   </div>
-					   </div> --}}
+						@endforeach
+						@endif
+					</select>   	
+				</form>   
+			</div>
+			
+			{{-- <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+				<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+					<label style="    width: 100%;">&nbsp;</label>
+					<button type="submit" class="button btn-primary" style="margin-top:8px;"><i class="fas fa-search"></i> Change</button>
+				</div>
+				</div> --}}
 			
         </h4>
 
@@ -74,31 +68,43 @@
 				<div class="form-devider"></div>
 			</div>
 		</div>
+		<form method="post" action="{{url('inventory/supplierQuotationUpdate/'.$rq_no.'/'.$supp_id)}}"  id="supplierquotationform">
+		{{ csrf_field() }}
+			<div class="row">
+				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+					<label>Supplier quotation NO: *</label>
+					<input type="text"  class="form-control" id="supplier_quotation_no" name="supplier_quotation_no" placeholder="Supplier quotation NO" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['supplier_quotation_no'])) value="{{$Res['response']['response0']['supplier_quotation'][0]['supplier_quotation_no']}}" @endif>
+				</div>       
+				<input type="hidden" name="quotation_id" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['id'])) value="{{$Res['response']['response0']['supplier_quotation'][0]['id']}}" @endif>
+				<div class="form-group col-sm-12 col-md-4 col-lg-6 col-xl-6">
+					<label for="exampleInputEmail1">Commited delivery date *</label>
+					<input type="text" class="form-control date-picker" name="commited_delivery_date" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['deliver_date'])) value="{{date('d-m-Y',strtotime($Res['response']['response0']['supplier_quotation'][0]['deliver_date']))}}" @endif>
+				</div>
+				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+					<label>Quotation date *</label>
+					<input type="text" name="quotation_date" class="form-control date-picker1" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['quotation_date'])) value="{{date('d-m-Y',strtotime($Res['response']['response0']['supplier_quotation'][0]['quotation_date']))}}" @endif>
+				</div>
 
-<div class="row">
-	<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-		<label>Supplier quotation NO: *</label>
-		<input type="text"  class="form-control" id="supplier_quotation_no" name="supplier_quotation_no" placeholder="Supplier quotation NO">
-	</div>       
-
-	<div class="form-group col-sm-12 col-md-4 col-lg-6 col-xl-6">
-		<label for="exampleInputEmail1">Commited delivery date *</label>
-		<input type="text" class="form-control" name="rq_no" id="rq_no" value="" placeholder="Commited delivery date">
-	</div>
-	<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-		<label>quotation_date *</label>
-		<select class="form-control supplier" name="supplier">
-			<option value="">--- select one ---</option>
-		</select>
-	</div>
-
-	<!-- form-group -->
-	<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-		<label>contact</label>
-		<textarea class="form-control"></textarea>
-	</div>
-
-</div> 
+				<!-- form-group -->
+				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+					<label>Contact</label>
+					<input type="text" name="contact" class="form-control" placeholder="Contact Number" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['contact'])) value="{{$Res['response']['response0']['supplier_quotation'][0]['contact']}}" @endif>
+				</div>
+			</div>
+			<div class="row">
+                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <button type="submit" class="btn btn-primary btn-rounded " style="float: right;">
+					<span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                        @if(!empty($Res['response']['response0']['supplier_quotation'][0]))
+                            Update
+                        @else 
+                            Save & Next
+                        @endif
+                    </button>
+                </div>
+            </div>
+            <div class="form-devider"></div>
+		</form> 
 
 
 <div class="row">
@@ -180,21 +186,33 @@
   $(function(){
     'use strict'
 
-    // $('#example1').DataTable({
-    //   language: {
-    //     searchPlaceholder: 'Search...',
-    //     sSearch: '',
-    //     lengthMenu: '_MENU_ items/page',
-    //   },
-	//   order: [[1, 'desc']],
-    // });
-
     $('#prbody').show();
-  });
+	
 
 $('.Supplier').change(function(){
    $('#Supplier_form').submit();
 })
+$('#supplierquotationform')..validate({
+            rules: {
+                supplier_quotation_no: {
+                    required: true,
+                },
+                commited_delivery_date: {
+                    required: true,
+                },
+                quotation_date: {
+                    required: true,
+                },
+                contact: {
+                    required: true,
+                },
+            }
+            // submitHandler: function(form) {
+            //     $('.spinner-button').show();
+            //     form.submit();
+            // }
+        });
+
 
 
 
