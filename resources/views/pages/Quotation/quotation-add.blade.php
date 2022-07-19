@@ -1,5 +1,11 @@
 @extends('layouts.default')
 @section('content')
+<style>
+     .select2-container--default .select2-selection--multiple .select2-selection__choice{
+        color:white;
+        background-color:#5897fb;
+    }
+</style>
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
