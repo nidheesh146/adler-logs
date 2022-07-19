@@ -38,7 +38,7 @@
                 <?php
                     function bgcolor(){return dechex(rand(0,10000000));}
                 ?>
-                    <col span="3" style="background-color:#D1F2EB">
+                    <col span="3">
                     @if(!empty($Res['response']['response1']))
                     <?php $i=0; ?>
                     @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
@@ -78,9 +78,9 @@
                             <td>{{$item['item_code']}}</td>
                             <td>{{$item['hsn']}}</td>
                             @foreach($item['price_data'] as $data)
-                            <td class="supplier_rate" data-rate="{{ $data['supplier_rate'] }}">{{ $data['supplier_rate'] }}</td>
-                            <td class="quantity"  data-quantity="{{ $data['quantity'] }}">{{ $data['quantity'] }}</td>
-                            <td class="total" data-total="{{ $data['total'] }}">{{ $data['total'] }}</td>
+                            <td class="supplier_rate" >@if($data['supplier_rate']==NULL) 0 @else {{ $data['supplier_rate'] }} @endif</td>
+                            <td class="quantity" >{{ $data['quantity'] }}</td>
+                            <td class="total" >{{ $data['total'] }}</td>
                             @endforeach
                             
 						</tr>
