@@ -45,7 +45,7 @@ class WebapiController extends Controller
                 $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
             }
         } catch (\Exception $e) {
-            echo $e;
+           // echo $e;
             $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
         }
 

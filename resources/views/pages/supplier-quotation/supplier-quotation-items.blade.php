@@ -13,7 +13,7 @@
 			<div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4" style="float: right;">
 				<form id="Supplier_form">
 					<label>Supplier *</label>
-					<select class=" Supplier"  name="supplier" style="width: 76%;">
+					<select class=" Supplier"  name="supplier">
 						@if(!empty($Res['response']['response1']))
 						@foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
 						   <option value="{{$supplier['id']}}"
@@ -73,16 +73,19 @@
 			<div class="row">
 				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
 					<label>Supplier quotation NO: *</label>
-					<input type="text"  class="form-control" id="supplier_quotation_no" name="supplier_quotation_no" placeholder="Supplier quotation NO" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['supplier_quotation_no'])) value="{{$Res['response']['response0']['supplier_quotation'][0]['supplier_quotation_no']}}" @endif>
+					<input type="text"  class="form-control" id="supplier_quotation_no" name="supplier_quotation_no" placeholder="Supplier quotation NO" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['supplier_quotation_no']) && !empty($Res['response']['response0']['supplier_quotation'][0]['quotation_date'])) value="{{$Res['response']['response0']['supplier_quotation'][0]['supplier_quotation_no']}}" @endif>
 				</div>       
 				<input type="hidden" name="quotation_id" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['id'])) value="{{$Res['response']['response0']['supplier_quotation'][0]['id']}}" @endif>
 				<div class="form-group col-sm-12 col-md-4 col-lg-6 col-xl-6">
 					<label for="exampleInputEmail1">Commited delivery date *</label>
-					<input type="text" class="form-control date-picker" name="commited_delivery_date" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['deliver_date'])) value="{{date('d-m-Y',strtotime($Res['response']['response0']['supplier_quotation'][0]['deliver_date']))}}" @endif>
+					<input type="text" class="form-control datepicker date-picker" name="commited_delivery_date" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['deliver_date'])) 
+					value="{{date('d-m-Y',strtotime($Res['response']['response0']['supplier_quotation'][0]['deliver_date']))}}" @endif>
 				</div>
 				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
 					<label>Quotation date *</label>
-					<input type="text" name="quotation_date" class="form-control date-picker1" @if(!empty($Res['response']['response0']['supplier_quotation'][0]['quotation_date'])) value="{{date('d-m-Y',strtotime($Res['response']['response0']['supplier_quotation'][0]['quotation_date']))}}" @endif>
+					<input type="text" name="quotation_date" class="form-control datepicker date-picker1" 
+					@if(!empty($Res['response']['response0']['supplier_quotation'][0]['quotation_date'])) 
+					value="{{date('d-m-Y',strtotime($Res['response']['response0']['supplier_quotation'][0]['quotation_date']))}}" @endif>
 				</div>
 
 				<!-- form-group -->
@@ -181,6 +184,11 @@
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
+<script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
+<script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
+
+<script src="<?= url('') ?>/js/jquery.validate.js"></script>
+<script src="<?= url('') ?>/js/additional-methods.js"></script>
 
 <script>
   $(function(){
@@ -189,47 +197,41 @@
     $('#prbody').show();
 	
 
+    $(".datepicker").datepicker({
+    format: " dd-mm-yyyy",
+    autoclose:true
+    });
+
+
+	$('.datepicker').mask('99-99-9999'); 
+
 $('.Supplier').change(function(){
    $('#Supplier_form').submit();
 })
-$('#supplierquotationform')..validate({
+$('#supplierquotationform').validate({
             rules: {
                 supplier_quotation_no: {
-                    required: true,
+                    required: true
                 },
                 commited_delivery_date: {
-                    required: true,
+                    required: true
                 },
                 quotation_date: {
-                    required: true,
+                    required: true
                 },
                 contact: {
-                    required: true,
+                    required: true
                 },
+            },
+            submitHandler: function(form) {
+              //  $('.spinner-button').show();
+                form.submit();
             }
-            // submitHandler: function(form) {
-            //     $('.spinner-button').show();
-            //     form.submit();
-            // }
         });
 
 
+  });
 
-
-//   $('.Supplier').select2({
-//                     placeholder: 'Choose one',
-//                     searchInputPlaceholder: 'Search',
-//                     minimumInputLength: 3,
-//                     allowClear: true,
-//                     ajax: {
-//                     url: "{{url('inventory/suppliersearch')}}",
-//                     processResults: function (data) {
-//                       return {
-//                         results: data
-//                       };
-//                     }
-//                   }
-//                 });
 </script>
 
 

@@ -212,6 +212,14 @@ class SupplierQuotationController extends Controller
     }catch (\Exception $e) {
         $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
     }
+
+
+
+
+
+
+
+
        return view('pages/supplier-quotation/supplier-quotation-items', compact('Res','rq_no','supp_id'));
     }
 
