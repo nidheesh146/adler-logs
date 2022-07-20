@@ -73,10 +73,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
        
     Route::get('inventory/comparison-quotation/{rq_no}', 'SupplierQuotationController@comparisonOfQuotation');
     
-    // Route::post('inventory/add-supplier-quotation', 'SupplierQuotationController@getSupplierQuotationAdd');
-    // Route::get('inventory/add-supplier-quotation-item/{supplierquotationmaster_id}', 'SupplierQuotationController@getSupplierQuotationAddItem');
-    // Route::get('inventory/quotationsearch/{rq_no?}', 'SupplierQuotationController@quotationsearch');
-    // Route::get('inventory/delete-supplier-quotation', 'SupplierQuotationController@delete_supplier_quotation');
-    // Route::get('inventory/edit-supplier-quotation', 'SupplierQuotationController@edit_supplier_quotation');
-    // Route::post('inventory/edit-supplier-quotation', 'SupplierQuotationController@edit_supplier_quotation');
+   //Batchcard
+    Route::get('batchcard/batchcard-upload', 'BatchCardController@getBatchcardUpload');
+    Route::post('batchcard/batchcard-upload', 'BatchCardController@batchcardUpload');
 });

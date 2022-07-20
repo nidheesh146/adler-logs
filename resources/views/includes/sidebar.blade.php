@@ -39,13 +39,18 @@
             <!-- <li class="nav-sub-item"><a href="{{url('inventory/quotation')}}"  class="nav-sub-link">Purchase Reqisition</a></li> -->
             <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.getSupplierQuotation', 'SupplierQuotation.viewSupplierQuotationItems', 'SupplierQuotation.getSupplierQuotationEditItem','SupplierQuotation.comparisonOfQuotation'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Supplier Quotation</a></li>
             {{-- <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.comparisonOfQuotation'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Comparison of Quotation</a></li> --}}
-            
-            
-
 
           </ul>
         </li><!-- nav-item -->
         
+        <li class="nav-item @if(in_array($Action,['BatchCard.getBatchcardUpload'])){{'active'}} @endif ">
+          <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i>Batch Card</a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item @if(in_array($Action,['BatchCard.getBatchcardUpload'])){{'active'}} @endif ">
+            <a href="{{url('batchcard/batchcard-upload')}}"  class="nav-sub-link">Batch Card Upload</a>
+            </li>
+          </ul>
+        </li>
 
 
 
