@@ -34,13 +34,13 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Select File </label>
-                                <input type="file" class="form-control" name="file" value=""  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
+                                <input type="file"  accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" name="file" value=""  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
                             </div> 
                         </div> 
                         <div class="row">
-                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <button type="submit" class="btn btn-primary btn-rounded "><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
-                                    role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <button type="submit" style="float: right;" class="btn btn-primary btn-rounded pull-right"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                    role="status" aria-hidden="true"></span> <i class="fas fa-upload"></i>
                                     Upload
                                 </button>
                             </div>
@@ -69,9 +69,10 @@
                     required: true,
                 },
                 submitHandler: function(form) {
-                //$('.spinner-button').show();
+                $('.spinner-button').show();
                 form.submit();
-            }
+              }
+        }
         });
 
 </script>
