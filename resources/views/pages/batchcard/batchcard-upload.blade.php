@@ -9,8 +9,12 @@
                 <span><a href="{{url('batchcard/batchcard-upload')}}" style="color: #596881;">BATCHCARD </a></span> 
                 <span><a href="{{url('batchcard/batchcard-upload')}}" style="color: #596881;">BATCHCARD UPLOAD</a></span>
             </div>
-	
-            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">BatchCard Upload</h4>
+
+            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">BatchCard Upload
+            <button  style="float: right" class="badge badge-pill badge-info pull-right">
+            <a href="{{ asset('uploads/batchcard_sample.xlsx') }}" style="color:white;"><i class="fas fa-download"></i>
+            Download Template</a>
+            </button></h4>
             <div class="form-devider"></div>
 			<div class="row">     
                 <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
@@ -34,15 +38,15 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Select File </label>
-                                <input type="file" class="form-control" name="file" value=""  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
+                                
+                                <input type="file"  accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" name="file" value="" >
                             </div> 
                         </div> 
                         <div class="row">
-                            <div class="form-group col-sm-12 col-md-8 col-lg-8 col-xl-8">
-                                <button type="submit" class="btn btn-primary btn-rounded " style="float: right;">
-                                <span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true">
-                                </span> 
-                                <i class="fas fa-save"></i>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <button type="submit" style="float: right;" class="btn btn-primary btn-rounded pull-right"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                    role="status" aria-hidden="true"></span> <i class="fas fa-upload"></i>
+
                                     Upload
                                 </button>
                             </div>
@@ -73,7 +77,7 @@
                 },
                 messages: {
                     file: {
-                        //required: "file .xlsx, .xlsm, .xls only.",
+                        required: "file .xlsx, .xlsm, .xls only.",
                         extension: "Please upload valid file formats .xlsx, .xlsm, .xls only.",
                     }
                 },

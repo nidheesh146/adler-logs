@@ -19,40 +19,21 @@ class BatchCardController extends Controller
     {
         $file = $request->file('file');
         if ($file) {
-            // $path = storage_path().'/app/'.$request->file('file')->store('temp');
-            // $reader = new ReaderXlsx;
-            // $reader->setReadDataOnly(TRUE);
-            // $spreadsheet = $reader->load($path);
-            // $sheet = $spreadsheet->getActiveSheet();
-            // $worksheetInfo = $reader->listWorksheetInfo($path);
-            // $data_array =  $sheet->toArray();
-            // $this->Excelsplitsheet($data_array);
-            // foreach ($worksheetInfo as $worksheet) {
-            //     $sheetName = $worksheet['worksheetName'];   
-            //   
-            //     /**  Load $inputFileName to a Spreadsheet Object  **/
-            //     $reader->setLoadSheetsOnly($sheetName);
-            //     $spreadsheet = $reader->load($path);
-            //     $worksheet = $spreadsheet->getActiveSheet();
-            //     print_r($worksheet->toArray());
-                
-            // }
-            // exit;
+
             $ExcelOBJ = new \stdClass();
 
             // CONF
             $path = storage_path().'/app/'.$request->file('file')->store('temp');
-            $ExcelOBJ->inputFileType = 'Xlsx';
-            $ExcelOBJ->filename = 'SL-1-01.xlsx';
-            //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/17-07-2022/Top sheet creater_BAtch card to sheet 16 JULY.xlsx';
+
             $ExcelOBJ->inputFileName = $path;
+            $ExcelOBJ->inputFileType = 'Xlsx';
             // $ExcelOBJ->filename = 'Book1.xlsx';
             // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
             $ExcelOBJ->spreadsheet = new Spreadsheet();
             $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
             $ExcelOBJ->reader->setReadDataOnly(true);
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
-            $no_column =18;
+            $no_column = 15;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
             if($sheet1_column_count == $no_column)
             {
@@ -96,7 +77,6 @@ class BatchCardController extends Controller
             $res = $this->insert_batchcard_batchcard($ExcelOBJ);
             
         }
-        //echo $res;exit;
         return $res;
        
     }
@@ -110,7 +90,6 @@ class BatchCardController extends Controller
             {
                 $product = DB::table('product_product')->select(['is_sterile','id'])->where('sku_code', $excelsheet[1])->first();
                 $batchcard =  DB::table('batchcard_batchcard')->select(['*'])->where('batch_no', $excelsheet[0])->first();
-                //print_r($batchcard);exit;
                 if(!($batchcard) && $product)
                 {
                     $data[] = [
@@ -125,26 +104,14 @@ class BatchCardController extends Controller
                         'target_date' => ($excelsheet[9]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[9]))->format('Y-m-d')) : NULL,
 
                     ];
-                        // $data['batch_no'] = $excelsheet[0];
-                        // $data['quantity'] =  $excelsheet[10];
-                        // $data['description'] = $excelsheet[2];
-                        // $data['product_id']  =$product->id;
-                        // $data['is_active'] = 1;
-                        // $data['created'] = date('Y-m-d H:i:s');
-                        // $data['updated'] = date('Y-m-d H:i:s');
-                        // $data['start_date'] = ($excelsheet[3]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : (NULL);
-                        // $data['target_date'] = ($excelsheet[9]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[9]))->format('Y-m-d')) : (NULL);
-                        
-                         //DB::table('batchcard_batchcard')->insert($data);
-                       //print_r($data);die;
                 }
                     
             }
-            $res = DB::table('batchcard_batchcard')->insert($data);     
+            if( count($data) > 0){
+            $res = DB::table('batchcard_batchcard')->insert($data);  
+            }   
         }
-        //dd($data);exit;
-        //echo $res;exit;
-        return $res;
+        return $data;
             
     }
     
