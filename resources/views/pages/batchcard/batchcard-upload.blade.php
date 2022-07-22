@@ -11,10 +11,7 @@
             </div>
 
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">BatchCard Upload
-            <button  style="float: right" class="badge badge-pill badge-info pull-right">
-            <a href="{{ asset('uploads/batchcard_sample.xlsx') }}" style="color:white;"><i class="fas fa-download"></i>
-            Download Template</a>
-            </button></h4>
+            </h4>
             <div class="form-devider"></div>
 			<div class="row">     
                 <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
@@ -53,6 +50,10 @@
                         </div>
                         <div class="form-devider"></div>
                     </form>
+                    <button  style="float: right" class="badge badge-pill badge-info pull-right">
+                    <a href="{{ asset('uploads/batchcard_sample.xlsx') }}" style="color:white;"><i class="fas fa-download"></i>
+                    Download Template</a>
+                    </button>
 
                 </div>
             </div>

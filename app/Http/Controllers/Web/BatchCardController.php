@@ -38,6 +38,7 @@ class BatchCardController extends Controller
             if($sheet1_column_count == $no_column)
             {
                  $res = $this->Excelsplitsheet($ExcelOBJ);
+                 //print_r($res);exit;
                  if($res)
                  {
                     $request->session()->flash('success',  "Successfully uploaded.");
@@ -71,12 +72,14 @@ class BatchCardController extends Controller
             $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
             $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
             $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
+           // print_r(json_encode($ExcelOBJ->worksheet));exit;
             $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
             $ExcelOBJ->date_created = date('Y-m-d H:i:s');
             $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
             $res = $this->insert_batchcard_batchcard($ExcelOBJ);
             
         }
+         //print_r($res);exit;
         return $res;
        
     }
@@ -92,7 +95,7 @@ class BatchCardController extends Controller
                 $batchcard =  DB::table('batchcard_batchcard')->select(['*'])->where('batch_no', $excelsheet[0])->first();
                 if(!($batchcard) && $product)
                 {
-                    $data[] = [
+                    $data = [
                         'batch_no' =>$excelsheet[0],
                         'quantity'=>$excelsheet[10],
                         'description'=>$excelsheet[2],
@@ -104,14 +107,16 @@ class BatchCardController extends Controller
                         'target_date' => ($excelsheet[9]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[9]))->format('Y-m-d')) : NULL,
 
                     ];
+                    $res = DB::table('batchcard_batchcard')->insert($data);
                 }
                     
             }
-            if( count($data) > 0){
-            $res = DB::table('batchcard_batchcard')->insert($data);  
-            }   
+            // if( count($data) > 0){
+            // $res = DB::table('batchcard_batchcard')->insert($data);  
+            // }   
         }
         return $data;
+    
             
     }
     
