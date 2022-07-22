@@ -43,7 +43,7 @@
           </ul>
         </li><!-- nav-item -->
         
-        <li class="nav-item @if(in_array($Action,['BatchCard.getBatchcardUpload'])){{'active'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['BatchCard.getBatchcardUpload'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i>Batch Card</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['BatchCard.getBatchcardUpload'])){{'active'}} @endif ">

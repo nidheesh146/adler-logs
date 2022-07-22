@@ -48,7 +48,6 @@ class BatchCardController extends Controller
             $ExcelOBJ->inputFileName = $path;
             // $ExcelOBJ->filename = 'Book1.xlsx';
             // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
-            $ExcelOBJ->aircraft = 'B737-MAX';
             $ExcelOBJ->spreadsheet = new Spreadsheet();
             $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
             $ExcelOBJ->reader->setReadDataOnly(true);
@@ -122,8 +121,8 @@ class BatchCardController extends Controller
                         'is_active'=>1,
                         'created'=>date('Y-m-d H:i:s'),
                         'updated'=>date('Y-m-d H:i:s'),
-                        'start_date' => ($excelsheet[3]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : ("NULL"),
-                        'target_date' => ($excelsheet[9]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[9]))->format('Y-m-d')) : ("NULL"),
+                        'start_date' => ($excelsheet[3]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
+                        'target_date' => ($excelsheet[9]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[9]))->format('Y-m-d')) : NULL,
 
                     ];
                         // $data['batch_no'] = $excelsheet[0];
