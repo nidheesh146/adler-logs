@@ -77,10 +77,10 @@ class BatchCardController extends Controller
             $ExcelOBJ->date_created = date('Y-m-d H:i:s');
             $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
             $res = $this->insert_batchcard_batchcard($ExcelOBJ);
-            
+            return $res;
         }
          //print_r($res);exit;
-        return $res;
+
        
     }
 
