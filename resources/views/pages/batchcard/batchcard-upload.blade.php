@@ -28,32 +28,38 @@
                     </div>
                     @endif                   
                    
+
+
+                    <br>
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
                     <form method="POST"  action="{{url('batchcard/batchcard-upload')}}" id="commentForm" enctype='multipart/form-data'>
                
                         {{ csrf_field() }}  
-                        <div class="row">
+                        <div class="row ">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Select File </label>
                                 
                                 <input type="file"  accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" name="file" value="" >
+                                <a href="{{ asset('uploads/batchcard_sample.xlsx') }}"  target="_blank" style="
+                                float: right;
+                                font-size: 10px;
+                            "> Download Template</a>
                             </div> 
                         </div> 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <button type="submit" style="float: right;" class="btn btn-primary btn-rounded pull-right"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-upload"></i>
-
                                     Upload
                                 </button>
                             </div>
                         </div>
-                        <div class="form-devider"></div>
+                        {{-- <div class="form-devider"></div> --}}
                     </form>
-                    <button  style="float: right" class="badge badge-pill badge-info pull-right">
-                    <a href="{{ asset('uploads/batchcard_sample.xlsx') }}" style="color:white;"><i class="fas fa-download"></i>
+                    {{-- <button  style="float: right" class="badge badge-pill badge-info pull-right">
+                    style="color:white;"><i class="fas fa-download"></i>
                     Download Template</a>
-                    </button>
+                    </button> --}}
 
                 </div>
             </div>
