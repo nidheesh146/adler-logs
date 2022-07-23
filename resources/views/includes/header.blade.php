@@ -4,7 +4,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
-        
+        //echo $Action;
 @endphp
 @php /*
 @if(count(config('notification')) > 0)

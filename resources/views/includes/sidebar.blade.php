@@ -52,6 +52,27 @@
           </ul>
         </li>
 
+        <li class="nav-item @if(in_array($Action,['Label.sterilizationProductLabel', 'Label.nonSterileProductLabel' ,'Label.instumentLabel','Label.patientLabel', 'Label.mrpLabel'])){{'active show'}} @endif ">
+          <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Label Card</a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item @if(in_array($Action,['Label.instumentLabel'])){{'active'}} @endif ">
+              <a href="{{url('label/instrument-label')}}"  class="nav-sub-link">Instrument Label</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Label.mrpLabel'])){{'active'}} @endif ">
+              <a href="{{url('label/mrp-label')}}"  class="nav-sub-link">MRP Label</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Label.nonSterileProductLabel'])){{'active'}} @endif ">
+              <a href="{{url('label/non-sterile-product-label')}}"  class="nav-sub-link">Non-Sterile Label</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Label.sterilizationProductLabel'])){{'active'}} @endif ">
+              <a href="{{url('label/sterilization-label')}}"  class="nav-sub-link">Sterilization Label</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Label.patientLabel'])){{'active'}} @endif ">
+              <a href="{{url('label/patient-label')}}"  class="nav-sub-link">Patient Label</a>
+            </li>
+          </ul>
+        </li>
+
 
 
       </ul><!-- nav -->

@@ -76,4 +76,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
    //Batchcard
     Route::get('batchcard/batchcard-upload', 'BatchCardController@getBatchcardUpload');
     Route::post('batchcard/batchcard-upload', 'BatchCardController@batchcardUpload');
+
+    //Label card
+    Route::get('label/mrp-label','LabelController@mrpLabel');
+    Route::get('label/instrument-label','LabelController@instumentLabel');
+    Route::get('label/non-sterile-product-label', 'LabelController@nonSterileProductLabel');
+    Route::get('label/sterilization-label','LabelController@sterilizationProductLabel');
+    Route::get('label/patient-label','LabelController@patientLabel');
 });
