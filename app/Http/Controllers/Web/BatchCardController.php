@@ -51,7 +51,7 @@ class BatchCardController extends Controller
             }
             else 
             {
-                $request->session()->flash('error',  "Column not matching..");
+                $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
                 return redirect('batchcard/batchcard-upload');
             }
             
