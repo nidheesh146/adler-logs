@@ -41,20 +41,20 @@
                     @endif                   
                    
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" id="commentForm" >
+                    <form method="POST" action="{{url('label/sterilization-label')}}" id="commentForm" >
                         {{ csrf_field() }}  
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Batch Card *</label>
-                                <select class="form-control select2" name="batchcard_no">
-                                    <option value="">--- select one ---</option>
+                                <select class="form-control batchcard_no" name="batchcard_no" id="batchcard_no">
+                                
                                 </select>
                             </div><!-- form-group -->
 
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sterilization Lot No *</label>
-                                <input type="text" value="" class="form-control" name="sterilization_lot_no" placeholder="Sterilization Lot No">
+                                <input type="text" value="" class="form-control" name="sterilization_lot_no" placeholder="Sterilization Lot No" disable>
                             </div><!-- form-group -->
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -66,17 +66,17 @@
                             @if(isset($title))
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Per Pack Quantity *</label>
-                                <input type="number" value="" class="form-control" name="per_pack_quantity" placeholder="Per pack quantity">
+                                <input type="text" value="" class="form-control" name="per_pack_quantity" id="per_pack_quantity" placeholder="Per pack quantity" readonly>
                             </div><!-- form-group -->
                             @endif
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Manufacturing Date *</label>
-                                <input type="date" value="" class="form-control" name="manufacturing_date" placeholder="">
+                                <input type="text" value="" class="form-control" name="manufacturing_date" value="" id="manufacturing_date" readonly>
                             </div><!-- form-group -->
                             
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sterilization Expiry date *</label>
-                                <input type="date" value="" class="form-control" name="sterilization_expiry_date" placeholder="Per pack quantity">
+                                <input type="text" value="" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" readonly>
                             </div><!-- form-group -->
 
 
@@ -127,49 +127,87 @@
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
-
 <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 
 <script>
   $(function(){
-    'use strict'
-
-    $(".datepicker").datepicker({
-    format: " dd-mm-yyyy",
-    autoclose:true
-    });
-  //  .datepicker('update', new Date());
-
-    $('.datepicker').mask('99-99-9999');
-              
+    'use strict'         
 
     $("#commentForm").validate({
             rules: {
-                Requestor: {
+                batchcard_no: {
                     required: true,
                 },
-                Department: {
+                sterilization_lot_no: {
                     required: true,
                 },
-                Date: {
+                no_of_label: {
                     required: true,
                 },
-                 email: {
+                per_pack_quantity: {
                      email: true,
                 },
-                PRSR: {
+                manufacturing_date: {
+                    required: true,
+                },
+                sterilization_expiry_date: {
                     required: true,
                 },
             },
-            submitHandler: function(form) {
-                $('.spinner-button').show();
-                form.submit();
+            // submitHandler: function(form) {
+            //     $('.spinner-button').show();
+            //     form.submit();
+            // }
+    });
+    $('.batchcard_no').select2({
+        placeholder: 'Choose one',
+        searchInputPlaceholder: 'Search',
+        minimumInputLength: 5,
+        allowClear: true,
+        ajax: {
+            url: "{{url('label/batchcardSearch')}}",
+            processResults: function (data) {
+            return {
+                    results: data
+                };
+            }
+        }
+    });  
+    // $('.batchcard_no').change(function() {
+    //     var batch_no = $(this).val();
+    //     $.ajax:{
+    //         url: '{{url('label/batchcardData')}}' + '/' + batch_no,
+    //         type: "GET",
+    //         success:function(data) {
+               
+    //         }
+    //     }
+    // });
+    $("#batchcard_no").on('change', function(e) {
+        var batch_no_id = $(this).val();
+        $.get( "{{ url('label/batchcardData') }}/"+batch_no_id, function(res) {
+            if(res.start_date) {
+                $('#manufacturing_date').val(res.start_date);
+            }
+            if(res.target_date) {
+                $('#sterilization_expiry_date').val(res.target_date);
+            }
+            if(res.quantity_per_pack) {
+                $('#per_pack_quantity').val(res.quantity_per_pack);
             }
         });
+    });
 
     
   });
+
+  
+
+
+    
+
 </script>
 
 
