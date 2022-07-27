@@ -275,16 +275,16 @@
             $('#Unit').val(res.receipt_unit.unit_name);
             $('#Unithidden').val(res.receipt_unit.id);
           }
-          if(res.min_stock){
+          if(res.min_stock || res.min_stock == 0 ){
             $('#MinLevel').val(res.min_stock);
           }
-          if(res.max_stock){
+          if(res.max_stock || res.max_stock == 0){
             $('#MaxLevel').val(res.max_stock);
           }
-          if(res.opening_quantity){
+          if(res.opening_quantity || res.opening_quantity == 0){
             $('#OpenPOQty').val(res.opening_quantity);
           }
-          if(res.availble_quantity){
+          if(res.availble_quantity || res.availble_quantity == 0){
             $('#StockQty').val(res.availble_quantity);
           }
           if(res.id){
