@@ -83,4 +83,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
     Route::get('label/non-sterile-product-label', 'LabelController@nonSterileProductLabel');
     Route::get('label/sterilization-label','LabelController@sterilizationProductLabel');
     Route::get('label/patient-label','LabelController@patientLabel');
+    Route::get('label/batchcardSearch','LabelController@batchcardSearch');
+    Route::get('label/batchcardData/{batch_no_id}','LabelController@batchcardData');
 });

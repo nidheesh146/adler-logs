@@ -37,7 +37,7 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Batch Card *</label>
-                                <select class="form-control select2" name="batchcard_no">
+                                <select class="form-control batchcard_no" name="batchcard_no" id="batchcard_no">
                                     <option value="">--- select one ---</option>
                                 </select>
                             </div><!-- form-group -->
@@ -50,12 +50,12 @@
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Per Pack Quantity *</label>
-                                <input type="number" value="" class="form-control" name="per_pack_quantity" placeholder="Per pack quantity">
+                                <input type="number" value="" class="form-control" name="per_pack_quantity" id="per_pack_quantity"  placeholder="Per pack quantity" readonly >
                             </div><!-- form-group -->
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Manufacturing Date *</label>
-                                <input type="date" value="" class="form-control" name="manufacturing_date" placeholder="Per pack quantity">
+                                <input type="date" value="" class="form-control" name="manufacturing_date" id="manufacturing_date"  placeholder="Per pack quantity" readonly>
                             </div><!-- form-group -->
 
                         </div> 
@@ -108,20 +108,10 @@
 
 <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
-
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 <script>
   $(function(){
     'use strict'
-
-    $(".datepicker").datepicker({
-    format: " dd-mm-yyyy",
-    autoclose:true
-    });
-  //  .datepicker('update', new Date());
-
-    $('.datepicker').mask('99-99-9999');
-              
-
     $("#commentForm").validate({
             rules: {
                 Requestor: {
@@ -145,6 +135,34 @@
                 form.submit();
             }
         });
+
+        $('.batchcard_no').select2({
+            placeholder: 'Choose one',
+            searchInputPlaceholder: 'Search',
+            minimumInputLength: 5,
+            allowClear: true,
+            ajax: {
+                url: "{{url('label/batchcardSearch')}}",
+                processResults: function (data) {
+                return {
+                        results: data
+                    };
+                }
+            }
+        });
+
+        $("#batchcard_no").on('change', function(e) {
+        var batch_no_id = $(this).val();
+        $.get( "{{ url('label/batchcardData') }}/"+batch_no_id, function(res) {
+            if(res.start_date) {
+                $('#manufacturing_date').val(res.start_date);
+            }
+            
+            if(res.quantity_per_pack) {
+                $('#per_pack_quantity').val(res.quantity_per_pack);
+            }
+        });
+    });
 
     
   });
