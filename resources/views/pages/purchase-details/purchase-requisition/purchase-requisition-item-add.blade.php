@@ -69,8 +69,8 @@
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Item description *</label>
-                                    <textarea value="{{ (!empty($datas)) ? $datas['item_code']['discription'] : ''}}" readonly class="form-control" id="Itemdescription"
-                                        name="Itemdescription" placeholder=""></textarea>
+                                    <textarea  readonly class="form-control" id="Itemdescription"
+                                        name="Itemdescription" placeholder="">{{ (!empty($datas)) ? $datas['item_code']['discription'] : ''}}</textarea>
 
                                 </div><!-- form-group -->
 
