@@ -315,9 +315,9 @@
                     // Itemdescription: {
                     //     required: true,
                     // },
-                    HSNSAC: {
-                      required: true,
-                    },
+                    // HSNSAC: {
+                    //   required: true,
+                    // },
                     PRSR: {
                         required: true,
                     },
@@ -331,12 +331,12 @@
                         required: true,
                         number: true
                     },
-                    StockQty: {
-                        required: true,
-                    },
-                    OpenPOQty: {
-                        required: true,
-                    },
+                    // StockQty: {
+                    //     required: true,
+                    // },
+                    // OpenPOQty: {
+                    //     required: true,
+                    // },
                     ActualorderQty: {
                         required: true,
                         number: true
