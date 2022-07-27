@@ -274,7 +274,7 @@ class InventoryController extends Controller
         $data = $this->HttpRequest->HttpClient($Request);
         if(!empty($data['response']['suppliers'][0])){
             foreach($data['response']['suppliers']  as $itemcode){
-                $string[] = ['id'=>$itemcode['id'],'text'=>$itemcode['vendor_id'].'-'.$itemcode['vendor_name']];
+                $string[] = ['id'=>$itemcode['id'],'text'=>$itemcode['vendor_id'].' - '.$itemcode['vendor_name']];
             }
             return response()->json($string, 200); 
         }else{
