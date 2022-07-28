@@ -69,8 +69,8 @@
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Item description *</label>
-                                    <textarea value="{{ (!empty($datas)) ? $datas['item_code']['discription'] : ''}}" readonly class="form-control" id="Itemdescription"
-                                        name="Itemdescription" placeholder=""></textarea>
+                                    <textarea  readonly class="form-control" id="Itemdescription"
+                                        name="Itemdescription" placeholder="">{{ (!empty($datas)) ? $datas['item_code']['discription'] : ''}}</textarea>
 
                                 </div><!-- form-group -->
 
@@ -275,16 +275,16 @@
             $('#Unit').val(res.receipt_unit.unit_name);
             $('#Unithidden').val(res.receipt_unit.id);
           }
-          if(res.min_stock){
+          if(res.min_stock || res.min_stock == 0 ){
             $('#MinLevel').val(res.min_stock);
           }
-          if(res.max_stock){
+          if(res.max_stock || res.max_stock == 0){
             $('#MaxLevel').val(res.max_stock);
           }
-          if(res.opening_quantity){
+          if(res.opening_quantity || res.opening_quantity == 0){
             $('#OpenPOQty').val(res.opening_quantity);
           }
-          if(res.availble_quantity){
+          if(res.availble_quantity || res.availble_quantity == 0){
             $('#StockQty').val(res.availble_quantity);
           }
           if(res.id){
@@ -315,9 +315,9 @@
                     // Itemdescription: {
                     //     required: true,
                     // },
-                    HSNSAC: {
-                      required: true,
-                    },
+                    // HSNSAC: {
+                    //   required: true,
+                    // },
                     PRSR: {
                         required: true,
                     },
@@ -331,12 +331,12 @@
                         required: true,
                         number: true
                     },
-                    StockQty: {
-                        required: true,
-                    },
-                    OpenPOQty: {
-                        required: true,
-                    },
+                    // StockQty: {
+                    //     required: true,
+                    // },
+                    // OpenPOQty: {
+                    //     required: true,
+                    // },
                     ActualorderQty: {
                         required: true,
                         number: true
