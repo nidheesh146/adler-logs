@@ -45,7 +45,7 @@
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>No of label *</label>
                             <input type="number" 
-                                value="" class="form-control" name="no_of_label" placeholder="No of label">
+                                value="" class="form-control" name="no_of_label" placeholder="No of label" >
                             </div><!-- form-group -->
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -59,9 +59,6 @@
                             </div><!-- form-group -->
 
                         </div> 
-                      
-
-              
             
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -78,18 +75,8 @@
                 </div>
             </div>
             
-
-
-
-
-
         </div>
         
-
-
-
-
-
 	</div>
 	<!-- az-content-body -->
 </div>
@@ -114,21 +101,19 @@
     'use strict'
     $("#commentForm").validate({
             rules: {
-                Requestor: {
+                batchcard_no: {
                     required: true,
                 },
-                Department: {
+                no_of_label: {
                     required: true,
                 },
-                Date: {
+                per_pack_quantity: {
                     required: true,
                 },
-                 email: {
-                     email: true,
-                },
-                PRSR: {
+                 manufacturing_date: {
                     required: true,
                 },
+               
             },
             submitHandler: function(form) {
                 $('.spinner-button').show();

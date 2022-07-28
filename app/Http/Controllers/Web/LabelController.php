@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
+use PDF;
+use Redirect;
 class LabelController extends Controller
 {
     public function batchcardSearch(Request $request)
@@ -66,5 +68,31 @@ class LabelController extends Controller
     {
         $title= "Create Patient Label ";
         return view('pages/label/sterilization-product-label', compact('title'));
+    }
+
+    public function generatePatientLabel(Request $request)
+    {
+        $batcard_no = $request->batchcard_no;
+        $no_of_label = $request->no_of_label;
+        $lot_no = $request->sterilization_lot_no;
+        $batchcard_data = DB::table('batchcard_batchcard')
+                            ->select('batchcard_batchcard.*')
+                            // ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                            ->where('batchcard_batchcard.id','=',$batcard_no)
+                            ->first();
+        $data = [ 
+            'batchcard_data'=>$batchcard_data,
+            'no_of_label'=>$no_of_label,
+            'lot_no'=>$lot_no
+        ];
+        // set_time_limit(2000);
+        // $pdf = PDF::loadView('pages/label/patient-label-print', $data);
+          //return $pdf->stream();
+
+        return view('pages/label/patient-label-print', compact('batchcard_data','no_of_label', 'lot_no'));
+        //Redirect::away('label/print/patient-label');
+    }
+    public function patient() {
+        return view('pages/label/patient-label-print');
     }
 }

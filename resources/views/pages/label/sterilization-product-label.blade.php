@@ -41,7 +41,7 @@
                     @endif                   
                    
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" action="{{url('label/sterilization-label')}}" id="commentForm" >
+                    <form method="POST" action="{{ (isset($title))?url('label/patient-label'):url('label/sterilization-label')}}" id="commentForm" >
                         {{ csrf_field() }}  
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -71,12 +71,12 @@
                             @endif
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Manufacturing Date *</label>
-                                <input type="text" value="" class="form-control" name="manufacturing_date" value="" id="manufacturing_date" readonly>
+                                <input type="date" value="" class="form-control" name="manufacturing_date" value="" id="manufacturing_date" readonly>
                             </div><!-- form-group -->
                             
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sterilization Expiry date *</label>
-                                <input type="text" value="" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" readonly>
+                                <input type="date" value="" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" readonly>
                             </div><!-- form-group -->
 
 
@@ -147,7 +147,7 @@
                     required: true,
                 },
                 per_pack_quantity: {
-                     email: true,
+                    required: true,
                 },
                 manufacturing_date: {
                     required: true,
@@ -175,18 +175,10 @@
             }
         }
     });  
-    // $('.batchcard_no').change(function() {
-    //     var batch_no = $(this).val();
-    //     $.ajax:{
-    //         url: '{{url('label/batchcardData')}}' + '/' + batch_no,
-    //         type: "GET",
-    //         success:function(data) {
-               
-    //         }
-    //     }
-    // });
+
     $("#batchcard_no").on('change', function(e) {
         var batch_no_id = $(this).val();
+        var type = "sterile";
         $.get( "{{ url('label/batchcardData') }}/"+batch_no_id, function(res) {
             if(res.start_date) {
                 $('#manufacturing_date').val(res.start_date);
