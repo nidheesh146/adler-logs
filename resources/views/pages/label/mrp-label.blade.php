@@ -23,26 +23,24 @@
                         <i class="icon fa fa-check"></i> {{ Session::get('success') }}
                     </div>
                     @endif
-                    @if(!empty($data['error']))
+                    @if(Session::get('error'))
                         <div class="alert alert-danger "  role="alert" style="width: 100%;">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        {{ $data['error'] }}
+                        {{ Session::get('error') }}
                     </div>
                     @endif                   
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" id="commentForm" >
+                    <form method="POST" id="commentForm" action="{{url('label/mrp-label')}}">
                         {{ csrf_field() }}  
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Batch Card *</label>
-                                <select class="form-control select2" name="batchcard_no">
-                                    <option value="">--- select one ---</option>
-                                </select>
+                                <label>SKU Code *</label>
+                                <input type="text" value="" class="form-control" name="sku_code" id="sku_code" placeholder="SKU Code">
                             </div><!-- form-group -->
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>SKU Code *</label>
-                                <input type="text" value="" class="form-control" name="sku_code" placeholder="SKU Code">
+                                <label>Batch Card *</label>
+                                <input type="text" class="form-control batchcard_no" name="batchcard_no" id="batchcard_no" placeholder="Batch card No" readonly>
                             </div><!-- form-group -->
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -52,9 +50,6 @@
                             </div><!-- form-group -->
 
                         </div> 
-                      
-
-              
             
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -70,19 +65,7 @@
 
                 </div>
             </div>
-            
-
-
-
-
-
         </div>
-        
-
-
-
-
-
 	</div>
 	<!-- az-content-body -->
 </div>
@@ -101,46 +84,35 @@
 
 <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
-
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 <script>
   $(function(){
     'use strict'
-
-    $(".datepicker").datepicker({
-    format: " dd-mm-yyyy",
-    autoclose:true
-    });
-  //  .datepicker('update', new Date());
-
-    $('.datepicker').mask('99-99-9999');
-              
-
     $("#commentForm").validate({
             rules: {
-                Requestor: {
+                batchcard_no: {
                     required: true,
                 },
-                Department: {
+                sku_code: {
                     required: true,
                 },
-                Date: {
-                    required: true,
-                },
-                 email: {
-                     email: true,
-                },
-                PRSR: {
+                no_of_label: {
                     required: true,
                 },
             },
-            submitHandler: function(form) {
-                $('.spinner-button').show();
-                form.submit();
-            }
+            // submitHandler: function(form) {
+            //     $('.spinner-button').show();
+            //     form.submit();
+            // }
         });
 
-    
-  });
+        $('#sku_code').focusout(function(){
+            var sku_code = $(this).val();
+            $.get( "{{ url('label/getBatchcard') }}/"+sku_code, function(res) {
+               $('#batchcard_no').val(res);
+            });
+        });
+});
 </script>
 
 

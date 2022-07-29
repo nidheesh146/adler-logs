@@ -76,21 +76,46 @@ class LabelController extends Controller
         $no_of_label = $request->no_of_label;
         $lot_no = $request->sterilization_lot_no;
         $batchcard_data = DB::table('batchcard_batchcard')
-                            ->select('batchcard_batchcard.*')
-                            // ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                            ->select('batchcard_batchcard.*', 'product_product.label_format_number')
+                            ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
-        $data = [ 
-            'batchcard_data'=>$batchcard_data,
-            'no_of_label'=>$no_of_label,
-            'lot_no'=>$lot_no
-        ];
-        // set_time_limit(2000);
-        // $pdf = PDF::loadView('pages/label/patient-label-print', $data);
-          //return $pdf->stream();
 
         return view('pages/label/patient-label-print', compact('batchcard_data','no_of_label', 'lot_no'));
         //Redirect::away('label/print/patient-label');
+    }
+
+    public function getBatchcard($sku_code)
+    {
+        $batchcard_no = DB::table('product_product')
+                            ->leftJoin('batchcard_batchcard','product_product.id','=', 'batchcard_batchcard.product_id')
+                            ->where('product_product.sku_code' ,'=', $sku_code)
+                            ->pluck('batchcard_batchcard.batch_no')
+                            ->first();
+        //return $batchcard_no;
+        return response()->json($batchcard_no, 200);
+    }
+
+    public function generateMRPLabel(Request $request)
+    {
+        $batcard_no = $request->batchcard_no;
+        $no_of_label = $request->no_of_label;
+        $sku_code = $request->sku_code;
+        $product = DB::table('batchcard_batchcard')
+                            ->select('batchcard_batchcard.batch_no','batchcard_batchcard.product_id', 'product_product.sku_code','product_product.mrp', 'product_product.label_format_number', 'product_product.drug_license_number')                        ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                            ->where('product_product.sku_code' ,'=', $sku_code)
+                            ->where('batchcard_batchcard.batch_no','=',$batcard_no)
+                            ->first();
+        //print_r($batchcard_data);exit;
+        if($product)
+        {
+            return view('pages/label/mrp-label-print', compact('product','no_of_label'));
+        
+        } 
+        else
+        {
+            return Redirect::back()->with('error', 'Batch Code & Sku code not matching..');
+        }
     }
     public function patient() {
         return view('pages/label/patient-label-print');

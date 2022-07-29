@@ -27,6 +27,7 @@ class BatchCardController extends Controller
 
             $ExcelOBJ->inputFileName = $path;
             $ExcelOBJ->inputFileType = 'Xlsx';
+
             // $ExcelOBJ->filename = 'Book1.xlsx';
             // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
             $ExcelOBJ->spreadsheet = new Spreadsheet();

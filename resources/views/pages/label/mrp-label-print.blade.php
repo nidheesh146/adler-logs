@@ -27,34 +27,26 @@
             </div>
             <div class="row label-div columns" id="label-div">
                 @for ($i = 0; $i< $no_of_label; $i++)
-                <div class=" column" style=" height:6.57%;float: left;width: 29%;border-style: ridge;border-color:#f0f0f5 ;margin:5px;padding:1px;">
-                        <div class="sub-columns" >
-                            <div class="" style="width:5%;text-align: justify;">
-                                <span class="smalltext" style="font-size:5px;float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
-                                LBL/F-10_REV00_{{date("d-M-y")}}
-                                </span>
-                            </div>
-                            <div class="col-md-9 sub-column" style="width:70%;float: left; margin-left:2px;">
-                                <span style="font-size:10px;font-weight:bolder;">Ref:Rf 00012</span><br/>
-                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->description}}</span><br/>
-                                <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" alt="image">
-                                <span class="smalltext" style=" font-size:6px;">{{$lot_no}}</span>
-                                <img src="/img/alderlogo/lot.png" style="width:25px;">
-                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->batch_no}}</span></br>
-                                <span style="font-size:8px;font-weight:bold;">STERILIZATION</span><br/>
-                                <img src="/img/alderlogo/expiry_date.png" style="width:8px; height:10px;">&nbsp;
-                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->target_date}}</span>
-                                <img src="/img/alderlogo/manufacturing.png" style="width:15px;">&nbsp;
-                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->start_date}}</span>
-                            </div>
-                            <div class="col-md-3 sub-column" style="width:25%;float: left;margin-top:60px; width:fit-content;" >
-                                <!-- <div class="img-wrapper" style="text-align:center;"> -->
-                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 24px;px;">
-                                    <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:24px;">
-                                <!-- </div> -->
-                            </div>
+                <div class=" column" style=" height:13.8%;float: left;width: 45%;border-style: ridge;border-color:#f0f0f5 ;margin:5px;padding:7px;font-size:13px;">
+                    <div class="subcolumn" style="float:left;width:95%;">
+                        <div class="address" style="font-weight:bold;">
+                            MKtd and Distributed by : Smith & Nephew<br/>
+                            Healthcare Pvt.Ltd. B-501-509 Dynasty<br/>
+                            Business Park, Andheri East, Mumbai-400059 
                         </div>
-                    
+                        <strong>For Product Feedback, Contact on:</strong>
+                        <div><strong>Email :</strong>Complaint.india@smith-nephew.com<br/>
+                         Tel: +91-22-40055090 &nbsp; ML No: {{$product->drug_license_number}}<br/>
+                         <strong>Code No: {{$product->sku_code}}</strong><br/>
+                         <strong>MRP (Incl. of all taxes/pc) : Rs.{{$product->mrp}} /-</strong><br/>
+                        </div>  
+                    </div> 
+                    <div class="subcolumn" style="float:left;width:5%;">
+                        <span class="smalltext" style="font-size:10px;margin-top:25px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
+                               {{$product->drug_license_number}}
+                        </span>
+
+                    </div>    
                 </div>
                 @endfor
             </div>
