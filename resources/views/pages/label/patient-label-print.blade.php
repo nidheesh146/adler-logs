@@ -27,10 +27,10 @@
             </div>
             <div class="row label-div columns" id="label-div">
                 @for ($i = 0; $i< $no_of_label; $i++)
-                <div class=" column" style=" height:6.57%;float: left;width: 29%;border-style: ridge;border-color:#f0f0f5 ;margin:5px;padding:1px;">
+                <div class=" column" style=" height:6.599%;float: left;width: 28%;border-style: ridge;border-color:#f0f0f5 ;margin:5px;padding:1.5px;">
                         <div class="sub-columns" >
                             <div class="" style="width:5%;text-align: justify;">
-                                <span class="smalltext" style="font-size:5px;float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
+                                <span class="smalltext" style="font-size:5px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;">
                                 LBL/F-10_REV00_{{date("d-M-y")}}
                                 </span>
                             </div>
