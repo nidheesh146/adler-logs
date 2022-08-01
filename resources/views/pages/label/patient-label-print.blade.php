@@ -31,11 +31,11 @@
                         <div class="sub-columns" >
                             <div class="" style="width:5%;text-align: justify;">
                                 <span class="smalltext" style="font-size:5px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;">
-                                LBL/F-10_REV00_{{date("d-M-y")}}
+                                LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}}
                                 </span>
                             </div>
                             <div class="col-md-9 sub-column" style="width:70%;float: left; margin-left:2px;">
-                                <span style="font-size:10px;font-weight:bolder;">Ref:Rf 00012</span><br/>
+                                <span style="font-size:10px;font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
                                 <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->description}}</span><br/>
                                 <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" alt="image">
                                 <span class="smalltext" style=" font-size:6px;">{{$lot_no}}</span>

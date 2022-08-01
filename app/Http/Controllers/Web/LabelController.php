@@ -7,16 +7,31 @@ use Illuminate\Http\Request;
 use DB;
 use PDF;
 use Redirect;
+use Picqer;
 class LabelController extends Controller
 {
     public function batchcardSearch(Request $request)
     {
         $string =[];
+        if($request->is_sterile==1)
+        {
         $batchcard = DB::table('batchcard_batchcard')
-                        ->select('id', 'batch_no')
-                        ->where('batch_no','LIKE','%'.$request->q.'%')
+                        ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                        ->select('batchcard_batchcard.id', 'batch_no')
+                        ->where('batchcard_batchcard.batch_no','LIKE','%'.$request->q['term'].'%')
+                        ->where('product_product.is_sterile','=', 1)
                         ->get();
-                       // echo count($batchcard);exit;
+        }
+        else 
+        {
+            $batchcard = DB::table('batchcard_batchcard')
+                        ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                        ->select('batchcard_batchcard.id', 'batch_no')
+                        ->where('batch_no','LIKE','%'.$request->q['term'].'%')
+                        ->where('product_product.is_sterile','=', 0)
+                        ->get();
+        }
+        //print_r($batchcard);exit;
         if(count($batchcard)>0)
         {
              foreach($batchcard  as $card){
@@ -44,7 +59,7 @@ class LabelController extends Controller
         return response()->json($batchcard_data, 200); 
     }
 
-    public function instumentLabel()
+    public function instrumentLabel()
     {
         $title = "Create Instrument Label";
         return view('pages/label/label',compact('title'));
@@ -52,8 +67,7 @@ class LabelController extends Controller
 
     public function nonSterileProductLabel()
     {
-        $title = "Create Non-Sterile Product Label";
-        return view('pages/label/label', compact('title'));
+        return view('pages/label/label');
     }
     public function mrplabel()
     {
@@ -76,7 +90,7 @@ class LabelController extends Controller
         $no_of_label = $request->no_of_label;
         $lot_no = $request->sterilization_lot_no;
         $batchcard_data = DB::table('batchcard_batchcard')
-                            ->select('batchcard_batchcard.*', 'product_product.label_format_number')
+                            ->select('batchcard_batchcard.*', 'product_product.label_format_number', 'product_product.sku_code')
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
@@ -102,7 +116,8 @@ class LabelController extends Controller
         $no_of_label = $request->no_of_label;
         $sku_code = $request->sku_code;
         $product = DB::table('batchcard_batchcard')
-                            ->select('batchcard_batchcard.batch_no','batchcard_batchcard.product_id', 'product_product.sku_code','product_product.mrp', 'product_product.label_format_number', 'product_product.drug_license_number')                        ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                            ->select('batchcard_batchcard.batch_no','batchcard_batchcard.product_id', 'product_product.sku_code','product_product.mrp', 'product_product.label_format_number', 'product_product.drug_license_number', 'batchcard_batchcard.start_date')                        
+                            ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('product_product.sku_code' ,'=', $sku_code)
                             ->where('batchcard_batchcard.batch_no','=',$batcard_no)
                             ->first();
@@ -117,7 +132,56 @@ class LabelController extends Controller
             return Redirect::back()->with('error', 'Batch Code & Sku code not matching..');
         }
     }
-    public function patient() {
-        return view('pages/label/patient-label-print');
+
+    public function generateSterilizationProductLabel(Request $request)
+    {
+        $batcard_no = $request->batchcard_no;
+        $no_of_label = $request->no_of_label;
+        $lot_no = $request->sterilization_lot_no;
+        $batchcard_data = DB::table('batchcard_batchcard')
+                            ->select('batchcard_batchcard.*', 'product_product.*')
+                            ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                            ->where('batchcard_batchcard.id','=',$batcard_no)
+                            ->first();
+        
+        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+        $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
+        $gs1_code_barcode = $generator->getBarcode($batchcard_data->gs1_code, $generator::TYPE_CODE_128);
+
+        return view('pages/label/sterilization-label-print', compact('batchcard_data','no_of_label', 'lot_no','sku_code_barcode','gs1_code_barcode'));
+    }
+    public function generateNonSterileProductLabel(Request $request) {
+        $batcard_no = $request->batchcard_no;
+        $no_of_label = $request->no_of_label;
+        $batchcard_data = DB::table('batchcard_batchcard')
+                            ->select('batchcard_batchcard.*', 'product_product.*')
+                            ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                            ->where('batchcard_batchcard.id','=',$batcard_no)
+                            ->first();
+        $manf_date_combo = '[11]'.$batchcard_data->start_date;
+        $gs1_label_batch_combo = $batchcard_data->label_format_number.$batchcard_data->gs1_code.'[10]'.$batchcard_data->batch_no;
+        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+        $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
+        $manf_date_combo_barcode = $generator->getBarcode($manf_date_combo, $generator::TYPE_CODE_128);
+        $gs1_label_batch_combo_barcode = $generator->getBarcode($gs1_label_batch_combo, $generator::TYPE_CODE_128);
+        return view('pages/label/non-sterilization-label-print', compact('batchcard_data','no_of_label','sku_code_barcode', 'gs1_label_batch_combo', 'gs1_label_batch_combo_barcode','manf_date_combo','manf_date_combo_barcode' ));
+    }
+
+    public function generateInstrumentLabel(Request $request)
+    {
+        $batcard_no = $request->batchcard_no;
+        $no_of_label = $request->no_of_label;
+        $batchcard_data = DB::table('batchcard_batchcard')
+                            ->select('batchcard_batchcard.*', 'product_product.*')
+                            ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                            ->where('batchcard_batchcard.id','=',$batcard_no)
+                            ->first();
+        $manf_date_combo = '[11]'.$batchcard_data->start_date;
+        $gs1_label_batch_combo = $batchcard_data->label_format_number.$batchcard_data->gs1_code.'[10]'.$batchcard_data->batch_no;
+        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+        $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
+        $manf_date_combo_barcode = $generator->getBarcode($manf_date_combo, $generator::TYPE_CODE_128);
+        $gs1_label_batch_combo_barcode = $generator->getBarcode($gs1_label_batch_combo, $generator::TYPE_CODE_128);
+        return view('pages/label/instrument-label-print', compact('batchcard_data','no_of_label','sku_code_barcode', 'gs1_label_batch_combo', 'gs1_label_batch_combo_barcode','manf_date_combo','manf_date_combo_barcode' ));
     }
 }

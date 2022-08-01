@@ -81,8 +81,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
     Route::get('label/mrp-label','LabelController@mrpLabel');
     Route::post('label/mrp-label','LabelController@generateMRPLabel');
     Route::get('label/getBatchcard/{sku_code}', 'LabelController@getBatchcard');
-    Route::get('label/instrument-label','LabelController@instumentLabel');
+    Route::get('label/instrument-label','LabelController@instrumentLabel');
+    Route::post('label/instrument-label','LabelController@generateInstrumentLabel');
     Route::get('label/non-sterile-product-label', 'LabelController@nonSterileProductLabel');
+    Route::post('label/non-sterile-product-label', 'LabelController@generateNonSterileProductLabel');
     Route::get('label/sterilization-label','LabelController@sterilizationProductLabel');
     Route::post('label/sterilization-label','LabelController@generateSterilizationProductLabel');
     Route::get('label/patient-label','LabelController@patientLabel');

@@ -79,12 +79,7 @@
                                 <input type="date" value="" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" readonly>
                             </div><!-- form-group -->
 
-
-                        </div> 
-                      
-
-              
-            
+                        </div>               
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                 <button type="submit" class="btn btn-primary btn-rounded " style="float: right;">
@@ -161,6 +156,7 @@
             //     form.submit();
             // }
     });
+    var is_sterile = 1;
     $('.batchcard_no').select2({
         placeholder: 'Choose one',
         searchInputPlaceholder: 'Search',
@@ -168,6 +164,12 @@
         allowClear: true,
         ajax: {
             url: "{{url('label/batchcardSearch')}}",
+            data: function (term, is_sterile) {
+            return {
+                    q: term, // search term
+                    is_sterile: 1
+                };
+            },
             processResults: function (data) {
             return {
                     results: data

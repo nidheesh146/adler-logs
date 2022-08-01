@@ -8,12 +8,20 @@
             <div class="az-content-breadcrumb"> 
                 <span><a href="" style="color: #596881;">LABEL CARD</a></span> 
                 <span><a href="" style="color: #596881;">
-                {{$title}}
+                @if(isset($title))
+                Create Instrument label
+                @else
+                Create Non-Sterilization Label
+                @endif
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            {{$title}}
+            @if(isset($title))
+                Create Instrument label
+            @else
+                Create Non-Sterilization Label
+            @endif
             </h4>
             <div class="form-devider"></div>
 			<div class="row">
@@ -32,7 +40,7 @@
                     </div>
                     @endif                   
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" id="commentForm" >
+                    <form method="POST" id="commentForm"  action="{{ (isset($title))?url('label/instrument-label'):url('label/non-sterile-product-label')}}">
                         {{ csrf_field() }}  
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -120,7 +128,7 @@
                 form.submit();
             }
         });
-
+    
         $('.batchcard_no').select2({
             placeholder: 'Choose one',
             searchInputPlaceholder: 'Search',
@@ -128,6 +136,12 @@
             allowClear: true,
             ajax: {
                 url: "{{url('label/batchcardSearch')}}",
+                data: function (term, is_sterile) {
+                return {
+                    q: term, // search term
+                    is_sterile: 0
+                    };
+                 },
                 processResults: function (data) {
                 return {
                         results: data
