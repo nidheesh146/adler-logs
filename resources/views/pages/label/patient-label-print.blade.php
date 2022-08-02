@@ -28,7 +28,7 @@
             <div class="row label-div columns" id="label-div">
                 @for ($i = 0; $i< $no_of_label; $i++)
                 <div class=" column" style=" height:6.599%;float: left;width: 28%;border-style: ridge;border-color:#f0f0f5 ;margin:5px;padding:1.5px;">
-                        <div class="sub-columns" >
+                        <div class="sub-columns">
                             <div class="" style="width:5%;text-align: justify;">
                                 <span class="smalltext" style="font-size:5px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;">
                                 LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}}
@@ -36,16 +36,22 @@
                             </div>
                             <div class="col-md-9 sub-column" style="width:70%;float: left; margin-left:2px;">
                                 <span style="font-size:10px;font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
-                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->description}}</span><br/>
-                                <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" alt="image">
-                                <span class="smalltext" style=" font-size:6px;">{{$lot_no}}</span>
+                                @if($batchcard_data->description!="")
+                                <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->description}}</span><br/>
+                                @endif
+                                <img src="{{asset('/img/alderlogo/sterile_eo.png')}}">
+                                <span class="smalltext" style=" font-size:5px;">{{$lot_no}}</span>
                                 <img src="/img/alderlogo/lot.png" style="width:25px;">
-                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->batch_no}}</span></br>
-                                <span style="font-size:8px;font-weight:bold;">STERILIZATION</span><br/>
-                                <img src="/img/alderlogo/expiry_date.png" style="width:8px; height:10px;">&nbsp;
-                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->target_date}}</span>
-                                <img src="/img/alderlogo/manufacturing.png" style="width:15px;">&nbsp;
-                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->start_date}}</span>
+                                <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->batch_no}}</span></br>
+                                <!-- <img src="/img/alderlogo/line.png" style="width:15px;"> -->
+                                <span style="font-size:8px;font-weight:bold;">STERILIZATION</span>
+                                <!-- <img src="/img/alderlogo/line.png" style="width:15px;"> -->
+                                <div class="" style="display:block;margin-bottom:3px;">
+                                    <img src="/img/alderlogo/expiry_date.png" style="width:8px; height:10px;">&nbsp;
+                                    <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->target_date}}</span>
+                                    <img src="/img/alderlogo/manufacturing.png" style="width:15px;">&nbsp;
+                                    <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->start_date}}</span>
+                                </div>
                             </div>
                             <div class="col-md-3 sub-column" style="width:25%;float: left;margin-top:60px; width:fit-content;" >
                                 <!-- <div class="img-wrapper" style="text-align:center;"> -->
