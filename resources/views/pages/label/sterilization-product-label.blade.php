@@ -164,12 +164,6 @@
         allowClear: true,
         ajax: {
             url: "{{url('label/batchcardSearch')}}",
-            data: function (term, is_sterile) {
-            return {
-                    q: term, // search term
-                    is_sterile: 1
-                };
-            },
             processResults: function (data) {
             return {
                     results: data

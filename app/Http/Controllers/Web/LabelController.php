@@ -13,24 +13,13 @@ class LabelController extends Controller
     public function batchcardSearch(Request $request)
     {
         $string =[];
-        if($request->is_sterile==1)
-        {
+       
         $batchcard = DB::table('batchcard_batchcard')
                         ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                         ->select('batchcard_batchcard.id', 'batch_no')
-                        ->where('batchcard_batchcard.batch_no','LIKE','%'.$request->q['term'].'%')
-                        ->where('product_product.is_sterile','=', 1)
+                        ->where('batchcard_batchcard.batch_no','LIKE','%'.$request->q.'%')
+                        //->where('product_product.is_sterile','=', 1)
                         ->get();
-        }
-        else 
-        {
-            $batchcard = DB::table('batchcard_batchcard')
-                        ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
-                        ->select('batchcard_batchcard.id', 'batch_no')
-                        ->where('batch_no','LIKE','%'.$request->q['term'].'%')
-                        ->where('product_product.is_sterile','=', 0)
-                        ->get();
-        }
         //print_r($batchcard);exit;
         if(count($batchcard)>0)
         {
