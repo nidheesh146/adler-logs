@@ -28,20 +28,20 @@
             <div class="row label-div columns" id="label-div">
                 @for ($i = 0; $i< $no_of_label; $i++)
                 <div class=" column" style=" height:22.22%;float: left;width: 45%;border-style: ridge;border-color:#f0f0f5 ;margin:5px;padding:8px;font-size:12px;">
-                    <div class="subcolumn" style="float:left; width:25%">
-                        <div class="logo">
-                            <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:90%;">
+                    <div class="subcolumn" style="float:left; width:20%">
+                        <div class="logo" style="text-align:center;">
+                            <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:55%;">
                         </div>
-                        <div class="logo">
+                        <div class="icons" style="margin-top:20%;margin-left:2px; text-align:center;">
                             @if($batchcard_data->is_donot_reuse_logo==1)
-                            <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:40%;float:left;">
+                            <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:30%;">
                             @endif
                             @if($batchcard_data->is_read_instruction_logo==1)
-                            <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;">
+                            <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:30%;">
                             @endif
-                            @if($batchcard_data->is_temperature_logo==1)
+                            <!-- @if($batchcard_data->is_temperature_logo==1)
                             <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;">
-                            @endif
+                            @endif -->
                         </div>
                     </div>
                     <div class="subcolumn" style="float:left;width:70%;">
@@ -59,9 +59,8 @@
                             </div>
                             <div class="ss" style="float:left;width:50%;text-align:center;">
                                 <span style="text-align:right;"><strong>Qty: {{$batchcard_data->quantity_per_pack}}</strong></span><br/>
-                                <img src="{{asset('/img/alderlogo/line.png')}}" style="width:44px;height:1px;">
+                               
                                 <span style="font-size:8px;font-weight:bold;">STERILIZATION</span>
-                                <img src="{{asset('/img/alderlogo/line.png')}}" style="width:44px;height:1px;">
                                 <div class="box" style="font-size:7px;padding:6px;border-bottom:0.7px solid black;border-left:0.7px solid black;border-right:0.7px solid black;">
                                     Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{$batchcard_data->target_date}}
                                 </div>

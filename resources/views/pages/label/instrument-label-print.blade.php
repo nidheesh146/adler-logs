@@ -30,7 +30,7 @@
                 <div class=" column" style=" height:14.13%;float: left;width: 45%;border-style:solid;border-color:#f0f0f5;border-width: thin;margin:5px;padding:8px;font-size:13px;">
                     <div class="subcolumn1" style="float:left;width:95%;">
                         <div class="sub1" style="float:left;width:30px;height:70px;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;">
-                            <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:25px;height:25px;">
+                            <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:17px;height:17px;">
                             <span style="font-size:3.5px;width:content-fit;">To see instructions for use please visit:http://www.adler-healthcare.com</span>
                         </div> 
                         
@@ -82,20 +82,20 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="float:left;width:25%; margin-left:1px;">
-                            <div class="logo">
+                        <div style="float:left;width:25%; margin-left:1px;text-align:center;">
+                            <div class="logo" style="">
                                
                                 @if($batchcard_data->is_read_instruction_logo==1)
-                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:35%;float:left;">
+                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:25%;float:left;padding:2px;">
                                 @endif
                                 <!-- @if($batchcard_data->is_donot_reuse_logo==1)
                                 <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:35%;float:left;">
                                 @endif -->
                                 @if($batchcard_data->is_non_sterile_logo==1)
-                                <img src="{{asset('/img/alderlogo/non_sterile.png')}}"  style="width:35%;float:left;">
+                                <img src="{{asset('/img/alderlogo/non_sterile.png')}}"  style="width:28%;float:left;padding:2px;">
                                 @endif
                                 @if($batchcard_data->is_temperature_logo==1)
-                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:35%;float:left;">
+                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:25%;float:left;padding:2px;">
                                 @endif
                             </div>
                         </div>

@@ -34,7 +34,7 @@
                                 LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}}
                                 </span>
                             </div>
-                            <div class="col-md-9 sub-column" style="width:70%;float: left; margin-left:2px;">
+                            <div class="col-md-9 sub-column" style="width:65%;float: left; margin-left:2px;">
                                 <span style="font-size:10px;font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
                                 @if($batchcard_data->description!="")
                                 <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->description}}</span><br/>
@@ -53,10 +53,10 @@
                                     <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->start_date}}</span>
                                 </div>
                             </div>
-                            <div class="col-md-3 sub-column" style="width:25%;float: left;margin-top:60px; width:fit-content;" >
+                            <div class="col-md-3 sub-column" style="width:30%;float: left;margin-top:60px;padding:2px;" >
                                 <!-- <div class="img-wrapper" style="text-align:center;"> -->
-                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 24px;px;">
-                                    <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:24px;">
+                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 24px;float:left;">
+                                    <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:24px;float:left;">
                                 <!-- </div> -->
                             </div>
                         </div>
