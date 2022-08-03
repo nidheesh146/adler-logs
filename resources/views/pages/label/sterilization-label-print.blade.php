@@ -48,20 +48,23 @@
                         <div class="subdiv">
                             <div class="ss" style="float:left;width:50%;">
                                 <span style="text-align:left;"><strong>Ref: {{$batchcard_data->sku_code}}</strong></span></br/>
-                                <img src="/img/alderlogo/lot.png" style="width:25px;">
+                                <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">
                                 {{$batchcard_data->batch_no}}
                                 <br/>
                                 <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" alt="image">
                                 {{$lot_no}}
                                 <br/>
-                                <img src="/img/alderlogo/manufacturing.png" style="width:15px;">&nbsp;
+                                <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
                                 {{$batchcard_data->start_date}}
                             </div>
                             <div class="ss" style="float:left;width:50%;text-align:center;">
-                                <span style="text-align:right;"><strong>Qty: {{$batchcard_data->quantity_per_pack}}</strong></span>
-                                uuuuuuuuuuuuuuuuuu<br/>
-                                jjjjjjjjjj<br/>
-                                hhhhhhhhhh<br/>
+                                <span style="text-align:right;"><strong>Qty: {{$batchcard_data->quantity_per_pack}}</strong></span><br/>
+                                <img src="{{asset('/img/alderlogo/line.png')}}" style="width:44px;height:1px;">
+                                <span style="font-size:8px;font-weight:bold;">STERILIZATION</span>
+                                <img src="{{asset('/img/alderlogo/line.png')}}" style="width:44px;height:1px;">
+                                <div class="box" style="font-size:7px;padding:6px;border-bottom:0.7px solid black;border-left:0.7px solid black;border-right:0.7px solid black;">
+                                    Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{$batchcard_data->target_date}}
+                                </div>
                             </div>       
                         </div> <br/>
                         <!-- <div class="manufacturing">
@@ -70,7 +73,7 @@
                         </div>  -->
                         <div class="group" style="padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;">
                             {{$batchcard_data->groups}}<br/>
-                            {{$batchcard_data->snn_description}}MODULOC BIPOLAR CUP 51/28
+                            {{$batchcard_data->snn_description}}
                         </div><br/>
                         <div class="subdiv" style="margin-top:-8px;">
                             <div class="ss" style="float:left;width:50%;">

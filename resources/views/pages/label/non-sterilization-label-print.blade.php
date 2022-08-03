@@ -52,9 +52,9 @@
                             </div>
                         </div>
                         <div class="sub4" style="float:left;width:25%;height:70px;padding:1px;font-size:7px">
-                            <img src="/img/alderlogo/manufacturing.png" style="width:15px;">&nbsp;
+                            <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
                             <span class="smalltext">{{$batchcard_data->start_date}}</span><br/>
-                            <img src="/img/alderlogo/lot.png" style="width:25px;">&nbsp;
+                            <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">&nbsp;
                             <span class="smalltext">{{$batchcard_data->batch_no}}</span></br>
                             <strong>Qty :{{$batchcard_data->quantity_per_pack}}</strong>
                         </div>

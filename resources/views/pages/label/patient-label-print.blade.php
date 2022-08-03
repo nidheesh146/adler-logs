@@ -41,15 +41,15 @@
                                 @endif
                                 <img src="{{asset('/img/alderlogo/sterile_eo.png')}}">
                                 <span class="smalltext" style=" font-size:5px;">{{$lot_no}}</span>
-                                <img src="/img/alderlogo/lot.png" style="width:25px;">
+                                <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">
                                 <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->batch_no}}</span></br>
-                                <!-- <img src="/img/alderlogo/line.png" style="width:15px;"> -->
+                                <!-- <img src="{{asset('/img/alderlogo/line.png')}}" style="width:15px;"> -->
                                 <span style="font-size:8px;font-weight:bold;">STERILIZATION</span>
-                                <!-- <img src="/img/alderlogo/line.png" style="width:15px;"> -->
+                                <!-- <img src="/{{asset('img/alderlogo/line.png')}}" style="width:15px;"> -->
                                 <div class="" style="display:block;margin-bottom:3px;">
-                                    <img src="/img/alderlogo/expiry_date.png" style="width:8px; height:10px;">&nbsp;
+                                    <img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;
                                     <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->target_date}}</span>
-                                    <img src="/img/alderlogo/manufacturing.png" style="width:15px;">&nbsp;
+                                    <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
                                     <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->start_date}}</span>
                                 </div>
                             </div>
