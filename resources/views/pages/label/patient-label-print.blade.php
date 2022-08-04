@@ -43,9 +43,14 @@
                                 <span class="smalltext" style=" font-size:5px;">{{$lot_no}}</span>
                                 <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">
                                 <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->batch_no}}</span></br>
-                                <!-- <img src="{{asset('/img/alderlogo/line.png')}}" style="width:15px;"> -->
-                                <span style="font-size:8px;font-weight:bold;">STERILIZATION</span>
-                                <!-- <img src="/{{asset('img/alderlogo/line.png')}}" style="width:15px;"> -->
+                                 <!-- <span style="font-size:8px;font-weight:bold;">STERILIZATION</span> -->
+                                
+                                 <div style=" height: 20px; border-bottom: 1px solid black; text-align: center">
+                                    <span style=" font-weight:bold;position: absolute;font-size: 8px; background-color: #f4f5f8; padding: 0 10px;margin-top: 15px;position: absolute;margin-left: -42px">
+                                        STERILIZATION<!--Padding is optional-->
+                                    </span>
+                                </div>
+
                                 <div class="" style="display:block;margin-bottom:3px;">
                                     <img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;
                                     <span class="smalltext" style=" font-size:5px;">{{$sterilization_expiry_date}}</span>
