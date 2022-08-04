@@ -29,13 +29,13 @@
                 @for ($i = 0; $i< $no_of_label; $i++)
                 <div class=" column" style=" height:14.13%;float: left;width: 45%;border-style:solid;border-color:#f0f0f5;border-width: thin;margin:5px;padding:8px;font-size:13px;">
                     <div class="subcolumn1" style="float:left;width:95%;">
-                        <div class="sub1" style="float:left;width:30px;height:70px;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;">
-                            <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:17px;height:17px;">
-                            <span style="font-size:3.5px;width:content-fit;">To see instructions for use please visit:http://www.adler-healthcare.com</span>
+                        <div class="sub1" style="float:left;width:30px;height:70px;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:2.7px;padding-left: 8px;">
+                            <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:14px;height:14px;">
+                            <span style="margin-left:2px;">visit :http://www.adler-healthcare.com <br>To see instructions for use please</span>
                         </div> 
                         
                         <div class="sub2" style="float:left;width:5%;padding:1px;height:70px">
-                            <span class="smalltext" style="font-size:4px;text-align: left;writing-mode: vertical-lr;transform: rotate(180deg);">
+                        <span class="smalltext" style="font-size:4px;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:12px;">
                                 LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}}
                             </span>
                         </div>
@@ -53,7 +53,7 @@
                         </div>
                         <div class="sub4" style="float:left;width:25%;height:70px;padding:1px;font-size:7px">
                             <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
-                            <span class="smalltext">{{$batchcard_data->start_date}}</span><br/>
+                            <span class="smalltext">{{$manufacturing_date}}</span><br/>
                             <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">&nbsp;
                             <span class="smalltext">{{$batchcard_data->batch_no}}</span></br>
                             <strong>Qty :{{$batchcard_data->quantity_per_pack}}</strong>
@@ -73,7 +73,7 @@
                                     <div style="text-align:center;"><small>{{$manf_date_combo}}</small></div>
                                 </div>
                                 <div style="margin-left:2px;float:left;width:50%;">
-                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:30px;height:30px; margin-left:2.5px;">
+                                <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:35px;height:20px; margin-left:2.5px;margin-top: 8px">
                                     <span style="font-size:5px; padding-left:2px;font-weight:bold;display:block;">ML No:{{$batchcard_data->drug_license_number}}</span> 
                                     <span class=" cls" style="padding-left:2px;font-size:5px;font-weight:bold;display:block;";>ADLER HEALTHCARE PVT. LTD</span>
                                     <span style="font-size:5px;display:block;padding-left:2px">

@@ -48,9 +48,9 @@
                                 <!-- <img src="/{{asset('img/alderlogo/line.png')}}" style="width:15px;"> -->
                                 <div class="" style="display:block;margin-bottom:3px;">
                                     <img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;
-                                    <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->target_date}}</span>
+                                    <span class="smalltext" style=" font-size:5px;">{{$sterilization_expiry_date}}</span>
                                     <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
-                                    <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->start_date}}</span>
+                                    <span class="smalltext" style=" font-size:5px;">{{$manufacture_date}}</span>
                                 </div>
                             </div>
                             <div class="col-md-3 sub-column" style="width:30%;float: left;margin-top:60px;padding:2px;" >
