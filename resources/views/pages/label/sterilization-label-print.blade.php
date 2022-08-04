@@ -55,14 +55,15 @@
                                 {{$lot_no}}
                                 <br/>
                                 <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
-                                {{$batchcard_data->start_date}}
+                                {{$manufacture_date}}
                             </div>
                             <div class="ss" style="float:left;width:50%;text-align:center;">
                                 <span style="text-align:right;"><strong>Qty: {{$batchcard_data->quantity_per_pack}}</strong></span><br/>
                                
                                 <span style="font-size:8px;font-weight:bold;">STERILIZATION</span>
+                                <!-- <hr class="hr-text" data-content="STERILIZATION"> -->
                                 <div class="box" style="font-size:7px;padding:6px;border-bottom:0.7px solid black;border-left:0.7px solid black;border-right:0.7px solid black;">
-                                    Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{$batchcard_data->target_date}}
+                                    Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{$sterilization_expiry_date}}
                                 </div>
                             </div>       
                         </div> <br/>

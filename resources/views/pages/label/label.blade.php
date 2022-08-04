@@ -63,7 +63,7 @@
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Manufacturing Date *</label>
-                                <input type="date" value="" class="form-control" name="manufacturing_date" id="manufacturing_date"  placeholder="Per pack quantity" readonly>
+                                <input type="date" value="{{date('Y-m-d')}}" class="form-control" name="manufacturing_date" id="manufacturing_date"  placeholder="Per pack quantity">
                             </div><!-- form-group -->
 
                         </div> 
@@ -147,10 +147,6 @@
         $("#batchcard_no").on('change', function(e) {
         var batch_no_id = $(this).val();
         $.get( "{{ url('label/batchcardData') }}/"+batch_no_id, function(res) {
-            if(res.start_date) {
-                $('#manufacturing_date').val(res.start_date);
-            }
-            
             if(res.quantity_per_pack) {
                 $('#per_pack_quantity').val(res.quantity_per_pack);
             }

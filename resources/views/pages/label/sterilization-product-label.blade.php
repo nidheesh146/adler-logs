@@ -71,12 +71,12 @@
                             @endif
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Manufacturing Date *</label>
-                                <input type="date" value="" class="form-control" name="manufacturing_date" value="" id="manufacturing_date" readonly>
+                                <input type="date" value="{{date('Y-m-d')}}" class="form-control" name="manufacturing_date" value="" id="manufacturing_date" >
                             </div><!-- form-group -->
                             
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sterilization Expiry date *</label>
-                                <input type="date" value="" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" readonly>
+                                <input type="date" value="{{date('Y-m-d', strtotime('+5 years'))}}" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" >
                             </div><!-- form-group -->
 
                         </div>               
@@ -176,12 +176,6 @@
         var batch_no_id = $(this).val();
         var type = "sterile";
         $.get( "{{ url('label/batchcardData') }}/"+batch_no_id, function(res) {
-            if(res.start_date) {
-                $('#manufacturing_date').val(res.start_date);
-            }
-            if(res.target_date) {
-                $('#sterilization_expiry_date').val(res.target_date);
-            }
             if(res.quantity_per_pack) {
                 $('#per_pack_quantity').val(res.quantity_per_pack);
             }
