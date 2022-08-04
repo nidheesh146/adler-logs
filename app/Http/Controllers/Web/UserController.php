@@ -9,55 +9,44 @@ use Illuminate\Support\Facades\Http;
 
 use Validator;
 
+use App\Models\User;
 
 class UserController extends Controller
 {
     public function __construct()
     {
-
+        $this->User = new User;
     }
     public function login(Request $request)
     {
-        $error = "";
-
-        if (session('user')) {
+        if (session('user.id')) {
             return redirect("inventory/get-purchase-reqisition");
         }
-
-
         if ($request->isMethod('post')) {
-
-        try {
-            $validation['email'] = ['required'];
-            $validation['password'] = ['required'];
-            $validator = Validator::make($request->all(), $validation);
-            if(!$validator->errors()->all()) {
-
-            $response = Http::post(config('app.ApiURL') . '/user/login/', [
-                'username' => $request->email,//'aswin',
-                'password' => $request->password//'Fedora@2021',
-            ]);
-
-            if ($response->status() == 200) {
-                if (!empty($response->json()['success'])) {
-                    session(['user' => $response->json()]);
+        $validator = Validator::make($request->all(), [
+            'username' => ['required'],
+            'password' => ['required'],
+        ]);
+        if (!$validator->errors()->all()) {
+            $data = [
+                'username' => $request->username,
+                'password' => $this->encrypt($request->password),
+            ];
+            $user_data = $this->User->login($data);
+            if (!empty($user_data->user_id)) {
+                if ($user_data->status == 1) {
+                    session(['user.id' => $user_data->user_id]);
                     return redirect("inventory/get-purchase-reqisition");
-                } else {
-                    $error =  $response->json()['message'];
+                }else{
+                    $validator->errors()->add('Action', 'Your account has been deactivated!');
                 }
             } else {
-                $error =  " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
+                $validator->errors()->add('auth', 'Email or password is wrong!');
+                return redirect('/')->withErrors($validator)->withInput();
             }
-
+          }
         }
-        } catch (\Exception$e) {
-            $error =  " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-
-        }
-    }
-
-        return view('layouts/login', compact(['error']));
-
+        return view('layouts/login');
     }
     public function logout()
     {

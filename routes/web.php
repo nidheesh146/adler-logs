@@ -20,7 +20,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
     Route::get('logout', 'UserController@logout');
 });
 
-Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permission']], function() {
+
+Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middleware'=>['RolePermission']], function() {
     Route::get('inventory/get-purchase-reqisition', 'InventoryController@get_purchase_reqisition');
    
     Route::get('inventory/add-purchase-reqisition', 'InventoryController@add_purchase_reqisition');
@@ -72,7 +73,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['Permissi
     Route::post('inventory/edit-supplier-quotation-item/{rq_no}/{supp_id}/{item_id}', 'SupplierQuotationController@getSupplierQuotationEditItem');
        
     Route::get('inventory/comparison-quotation/{rq_no}', 'SupplierQuotationController@comparisonOfQuotation');
-    
+
+});
+
+
+
+Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePermission']], function() {
+  
    //Batchcard
     Route::get('batchcard/batchcard-upload', 'BatchCardController@getBatchcardUpload');
     Route::post('batchcard/batchcard-upload', 'BatchCardController@batchcardUpload');

@@ -11,12 +11,12 @@
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">Purchase Requisition 
               <div class="right-button">
-                  <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
+                  {{-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                       <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
                   <div class="dropdown-menu">
                   <a href="#" class="dropdown-item">Excel</a>
 
-                  </div>
+                  </div> --}}
               <div>  
               </div>
 			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase Requisition   </button>
@@ -26,14 +26,6 @@
 				<nav class="nav"> </nav>
 			</div>
 	
-      
-			@if($data['error'])
-				<div class="alert alert-danger "  role="alert" style="width: 100%;">
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-					{{$data['error'] }}
-				</div>
-		   @endif
-		   
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -53,7 +45,6 @@
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-							<th style="display:none;"></th>
 							<th>PR NO:</th>
 							<th>requestor</th>
 							<th>date</th>
@@ -63,46 +54,33 @@
 						</tr>
 					</thead>
 					<tbody id="prbody" style="display:none;">
-					@if(!empty($data['response']['purchase_requisition']))
-					@foreach ($data['response']['purchase_requisition'] as $item)
+			
+					@foreach ($data['master'] as $item)
 						<tr>
-							<td style="display:none;">{{ $item['id']}}</td>
+					
 							<th>{{$item['pr_no']}} </th>
-							<th>{{$item['requestor']}}</th>
-							<td>{{$item['date']}}</td>
-							<td>{{$item['department']}}</td>
-							<td>{{$item['prcsr']}}</td>
+							<th>{{$item['f_name'].' '.$item['l_name']}}</th>
+							<td>{{date('d-m-Y',strtotime($item['date']))}}</td>
+							<td>{{$item['dept_name']}}</td>
+							<td>{{$item['PR_SR']}}</td>
 							<td >
 								<span style="width: 133px;">
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu">
-									<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-									<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
-									<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+									<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+									<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
+									<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
 								</div>
-								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-purchase-reqisition-item?pr_id='.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
+								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-purchase-reqisition-item?pr_id='.$item["master_id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
 							</span>
 							</td>
 						</tr>
 					@endforeach
-					@endif
+			
 					</tbody>
 				</table>
-				@if(!empty($data['response']))
-				@include('includes.pagination',['data'=>$data['response']])
-			 	@endif
 				<div class="box-footer clearfix">
-					<style>
-					.pagination-nav {
-						width: 100%;
-					}
-					
-					.pagination {
-						float: right;
-						margin: 0px;
-						margin-top: -16px;
-					}
-					</style>
+					{{ $data['master']->appends(request()->input())->links() }}
 				</div>
 			</div>
 		</div>
