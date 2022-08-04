@@ -34,10 +34,10 @@
                         </div>
                         <div class="icons" style="margin-top:20%;margin-left:2px; text-align:center;">
                             @if($batchcard_data->is_donot_reuse_logo==1)
-                            <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:30%;">
+                            <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:25%;">
                             @endif
                             @if($batchcard_data->is_read_instruction_logo==1)
-                            <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:30%;">
+                            <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:25%;">
                             @endif
                             <!-- @if($batchcard_data->is_temperature_logo==1)
                             <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;">
@@ -58,11 +58,17 @@
                                 {{$manufacture_date}}
                             </div>
                             <div class="ss" style="float:left;width:50%;text-align:center;">
-                                <span style="text-align:right;"><strong>Qty: {{$batchcard_data->quantity_per_pack}}</strong></span><br/>
-                               
-                                <span style="font-size:8px;font-weight:bold;">STERILIZATION</span>
+                                <span style="text-align:right;"><strong>Qty: </strong>{{$batchcard_data->quantity_per_pack}}Nos</span><br/>
+
+                                <div style=" height: 20px; border-bottom: 1px solid black; text-align: center">
+                                    <span style=" font-weight:bold;position: absolute;font-size: 8px; background-color: #f4f5f8; padding: 0 10px;margin-top: 15px;position: absolute;margin-left: -42px">
+                                        STERILIZATION<!--Padding is optional-->
+                                    </span>
+                                </div>
+
+                                <!-- <span style="font-size:8px;font-weight:bold;">STERILIZATION</span> -->
                                 <!-- <hr class="hr-text" data-content="STERILIZATION"> -->
-                                <div class="box" style="font-size:7px;padding:6px;border-bottom:0.7px solid black;border-left:0.7px solid black;border-right:0.7px solid black;">
+                                <div class="box" style="font-size:8px;padding:10px;border-bottom:0.7px solid black;border-left:0.7px solid black;border-right:0.7px solid black;">
                                     Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{$sterilization_expiry_date}}
                                 </div>
                             </div>       
@@ -73,7 +79,7 @@
                         </div>  -->
                         <div class="group" style="padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;">
                             {{$batchcard_data->groups}}<br/>
-                            {{$batchcard_data->snn_description}}
+                            {{$batchcard_data->discription}}
                         </div><br/>
                         <div class="subdiv" style="margin-top:-8px;">
                             <div class="ss" style="float:left;width:50%;">
