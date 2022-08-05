@@ -30,7 +30,7 @@
                 <div class=" column" style=" height:22.22%;float: left;width: 45%;border-style: ridge;border-color:#f0f0f5 ;margin:5px;padding:8px;font-size:12px;">
                     <div class="subcolumn" style="float:left; width:20%">
                         <div class="logo" style="text-align:center;">
-                            <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:55%;">
+                            <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:60%;">
                         </div>
                         <div class="icons" style="margin-top:20%;margin-left:2px; text-align:center;">
                             @if($batchcard_data->is_donot_reuse_logo==1)
@@ -42,6 +42,11 @@
                             <!-- @if($batchcard_data->is_temperature_logo==1)
                             <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;">
                             @endif -->
+                        </div>
+                        <div class="prdct-img" style="text-align:center;">
+                        @if($batchcard_data->label_image)
+                            <img src="{{asset('/img/'.$batchcard_data->label_image)}}" style="width:55%;margin-top:128%;">
+                        @endif
                         </div>
                     </div>
                     <div class="subcolumn" style="float:left;width:70%;">
@@ -58,16 +63,15 @@
                                 {{$manufacture_date}}
                             </div>
                             <div class="ss" style="float:left;width:50%;text-align:center;">
-                                <span style="text-align:right;"><strong>Qty: </strong>{{$batchcard_data->quantity_per_pack}}Nos</span><br/>
-
-                                <div style=" height: 20px; border-bottom: 1px solid black; text-align: center">
-                                    <span style=" font-weight:bold;position: absolute;font-size: 8px; background-color: #f4f5f8; padding: 0 10px;margin-top: 15px;position: absolute;margin-left: -42px">
+                                <span style="text-align:right;"><strong>Qty: </strong>{{$batchcard_data->quantity_per_pack}}Nos</span>
+                                <div style=" height: 6px; border-bottom: 1px solid black; text-align: center">
+                                    <span style=" font-weight:bold;position: absolute;font-size: 8px; background-color: #f4f5f8; padding: 0 10px;margin-top: 1px;position: absolute;margin-left: -42px">
                                         STERILIZATION<!--Padding is optional-->
                                     </span>
                                 </div>
 
                                 <!-- <span style="font-size:8px;font-weight:bold;">STERILIZATION</span> -->
-                                <!-- <hr class="hr-text" data-content="STERILIZATION"> -->
+                              <!-- <hr class="hr-text" data-content="STERILIZATION"> -->
                                 <div class="box" style="font-size:8px;padding:10px;border-bottom:0.7px solid black;border-left:0.7px solid black;border-right:0.7px solid black;">
                                     Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{$sterilization_expiry_date}}
                                 </div>
@@ -80,26 +84,26 @@
                         <div class="group" style="padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;">
                             {{$batchcard_data->groups}}<br/>
                             {{$batchcard_data->discription}}
-                        </div><br/>
-                        <div class="subdiv" style="margin-top:-8px;">
-                            <div class="ss" style="float:left;width:50%;">
+                        </div>
+                        <div class="subdiv" style="margin-top:3px;">
+                            <div class="ss" style="float:left;width:50%; font-size:10px;">
                                 <strong>{{$batchcard_data->ad_sp1}}</strong><br/>
-                                <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px">
+                                <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;">
                                 <br/>
                                 <small>{{$batchcard_data->sku_code}}</small>
                                 <br/>
                                 <span style="font-size:7px;">ML No:{{$batchcard_data->drug_license_number}}</span>
                                
                             </div>
-                            <div class="ss" style="float:left;width:50%;text-align:center;">
+                            <div class="ss" style="float:left;width:50%;text-align:center;font-size:10px;">
                             <strong>{{$batchcard_data->ad_sp2}}</strong><br/>
-                            <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:105px;height:45px">
+                            <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:105px;height:45px;margin-top:5px;">
                                 <br/>
                                 <small>{{$batchcard_data->gs1_code}}</small>
                             </div> 
                             <div class="foot"> 
                                 <div class="img" style="float:left;">
-                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width:25px;height:25px;">
+                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width:36px;height:28px;">
                                 </div>
                                 &nbsp;
                                 <div class="address"  style="float:left;line-height: 75%;margin-left:1px;"> 

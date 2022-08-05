@@ -45,8 +45,8 @@
                                 <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->batch_no}}</span></br>
                                  <!-- <span style="font-size:8px;font-weight:bold;">STERILIZATION</span> -->
                                 
-                                 <div style=" height: 20px; border-bottom: 1px solid black; text-align: center">
-                                    <span style=" font-weight:bold;position: absolute;font-size: 8px; background-color: #f4f5f8; padding: 0 10px;margin-top: 15px;position: absolute;margin-left: -42px">
+                                 <div style=" height: 10px; border-bottom: 1px solid black; text-align: center">
+                                    <span style=" font-weight:bold;position: absolute;font-size: 8px; background-color: #f4f5f8; padding: 0 3px;margin-top: 4.5px;position: absolute;margin-left: -35px">
                                         STERILIZATION<!--Padding is optional-->
                                     </span>
                                 </div>
