@@ -37,12 +37,7 @@
             </div>
 
             <div class="table-responsive">
-				@if(!empty($data['error']))
-				<div class="alert alert-danger "  role="alert" style="width: 100%;">
-				  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-				 {{ $data['error'] }}
-			   </div>
-			  @endif 
+	
 			    		   
 		   @if (Session::get('success'))
 		   <div class="alert alert-success " style="width: 100%;">
@@ -90,9 +85,7 @@
 					
 					</tbody>
 				</table>
-				@if(!empty($data['response']))
-				@include('includes.pagination',['data'=>$data['response']])
-			 @endif
+		
 			</div>
 
 

@@ -40,13 +40,7 @@
             {{ $errorr }}
           </div>
          @endforeach
-@if($error)
-  <div class="alert alert-danger "  role="alert" style="width: 100%;">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-   {{ $error }}
- </div>
-@endif
-   
+
         
          @if (Session::get('success'))
          <div class="alert alert-success " style="width: 100%;">
@@ -62,7 +56,7 @@
 
             <div class="form-group">
               <label>Username</label>
-              <input type="text" name="email" class="form-control" placeholder="Enter your username" >
+              <input type="text" name="username" class="form-control" placeholder="Enter your username" >
     
 
             </div><!-- form-group -->
@@ -99,7 +93,7 @@
 
         $("#commentForm").validate({
             rules: {
-               email:{
+              username:{
                   required: true,
                   // email: true,
                },

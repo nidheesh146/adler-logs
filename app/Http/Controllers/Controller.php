@@ -43,4 +43,16 @@ class Controller extends BaseController
               $hashids = new Hashids('', 0, 'abcdefghijklmnopqrstuvwxyz');
       return  $numbers = $hashids->decodeHex($string); 
     }
+    function num_gen($Number){
+        $Number = (($Number+1) / 9999);
+        list($whole, $decimal) = explode('.', $Number);
+        if(!$decimal){
+            return date('y').date('m')."9999";
+        }
+        return date('y').date('m').substr($decimal, 0, 4);
+
+
+
+    
+      }
 }

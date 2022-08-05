@@ -27,9 +27,6 @@
                         {{ Session::get('error') }}
                     </div>
                     @endif                   
-                   
-
-
                     <br>
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
                     <form method="POST"  action="{{url('batchcard/batchcard-upload')}}" id="commentForm" enctype='multipart/form-data'>

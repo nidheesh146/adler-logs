@@ -31,15 +31,15 @@
                         <i class="icon fa fa-check"></i> {{ Session::get('success') }}
                     </div>
                     @endif
-                @if(!empty($data['error']))
+                    @foreach ($errors->all() as $errorr)
                     <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                     {{ $data['error'] }}
-                   </div>
-                  @endif                   
+                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                      {{ $errorr }}
+                    </div>
+                   @endforeach               
                    
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" id="commentForm" >
+                    <form method="POST" id="commentForm" autocomplete="off" >
                
 
                         {{ csrf_field() }}  
@@ -48,8 +48,8 @@
                                 <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
                                     <i class="fas fa-address-card"></i> Basic details  
                                 
-                                    @if(!empty($data['response']['purchase_requisition'][0]))
-                                      ( PR NO : {{$data['response']['purchase_requisition'][0]['pr_no']}} )
+                                    @if(!empty($data['inv_purchase_req_master']))
+                                      ( PR NO : {{$data['inv_purchase_req_master']['requestor']}} )
                                     @endif
                                 
                         
@@ -69,7 +69,7 @@
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Requestor *</label>
                             <input type="text" class="form-control" readonly 
-                            value="{{(!empty($data['response']['purchase_requisition'][0]) ? $data['response']['purchase_requisition'][0]['requestor']  :  (session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1'))}}" 
+                            value="{{(!empty($data['inv_purchase_req_master']) ? $data['inv_purchase_req_master']['f_name'].' '.$data['inv_purchase_req_master']['l_name']  :  (config('user')['f_name'] ? config('user')['f_name'].' '.config('user')['l_name']  : 'Requestor 1'))}}" 
                             name="Requestor" placeholder="Requestor">
                             </div><!-- form-group -->
 
@@ -78,14 +78,14 @@
                                 <label>Department *</label>
                                 <select class="form-control select2" name="Department">
                                     <option value="">--- select one ---</option>
-                                    @foreach(['Production'] as $item)
-                                     <option value="{{$item}}"
-                                     @if(!empty($data['response']['purchase_requisition'][0]))
-                                       @if($item == $data['response']['purchase_requisition'][0]['department'])
+                                    @foreach($data['Department'] as $item)
+                                     <option value="{{$item['id']}}"
+                                     @if(!empty($data['inv_purchase_req_master']))
+                                       @if($item['id'] == $data['inv_purchase_req_master']['department'])
                                            selected
                                        @endif
                                      @endif
-                                     >{{$item}}</option>
+                                     >{{$item['dept_name']}}</option>
                                     @endforeach
                                 </select>
                             </div><!-- form-group -->
@@ -93,7 +93,7 @@
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Date *</label>
                             <input type="text" 
-                                value="{{(!empty($data['response']['purchase_requisition'][0])) ? date('d-m-Y',strtotime($data['response']['purchase_requisition'][0]['date'])) : date('d-m-Y')}}"
+                                value="{{(!empty($data['inv_purchase_req_master'])) ? date('d-m-Y',strtotime($data['inv_purchase_req_master']['date'])) : date('d-m-Y')}}"
                                 class="form-control datepicker" name="Date" placeholder="Date">
                             </div><!-- form-group -->
 
@@ -103,15 +103,15 @@
                                 <select class="form-control select2" name="PRSR">
                                     <option value="">--- select one ---</option>
                                     <option value="PR"
-                                    @if(!empty($data['response']['purchase_requisition'][0]))
-                                    @if('PR' == $data['response']['purchase_requisition'][0]['prcsr'])
+                                    @if(!empty($data['inv_purchase_req_master']))
+                                    @if('PR' == $data['inv_purchase_req_master']['PR_SR'])
                                         selected
                                     @endif
                                   @endif
                                     >PR</option>
                                   <option value="SR"
-                                  @if(!empty($data['response']['purchase_requisition'][0]))
-                                  @if('SR' == $data['response']['purchase_requisition'][0]['prcsr'])
+                                  @if(!empty($data['inv_purchase_req_master']))
+                                  @if('SR' == $data['inv_purchase_req_master']['PR_SR'])
                                       selected
                                   @endif
                                 @endif>SR</option>
