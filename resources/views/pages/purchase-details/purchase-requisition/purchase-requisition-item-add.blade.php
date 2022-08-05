@@ -57,25 +57,25 @@
 
                                     <select class="form-control Item-code" name="Itemcode" id="Itemcode">
                                         {{-- @if (!empty($datas))
-                                            <option value="{{$datas['supplier']['id']}}">{{$datas['supplier']['vendor_name']}}</option>
+                                            <option value="{{$data['supplier']['id']}}">{{$data['supplier']['vendor_name']}}</option>
                                               @endif --}}
                                     </select>
 
 
 
                                     {{-- <input type="text" class="form-control" name="Itemcode" id="Itemcode" 
-                                    value="{{ (!empty($datas)) ? $datas['item_code']['item_code'] : ''}}"
+                                    value="{{ (!empty($datas)) ? $data['item']['item_code'] : ''}}"
                                         placeholder="Item code">
-                                        <input type="hidden" value="{{ (!empty($datas)) ? $datas['item_code']['id'] : ''}}" name="Itemcodehidden" id="Itemcodehidden" > --}}
+                                        <input type="hidden" value="{{ (!empty($datas)) ? $datas['item_code'] : ''}}" name="Itemcodehidden" id="Itemcodehidden" > --}}
                                 </div>
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Item type * </label>
                                     <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item_code']['item_type']['type_name'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['type_name'] : '' }}"
                                         name="Itemtype" id="Itemtype" placeholder="Item type">
                                     <input type="hidden"
-                                        value="{{ !empty($datas) ? $datas['item_code']['item_type']['id'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}"
                                         name="Itemtypehidden" id="Itemtypehidden">
                                 </div><!-- form-group -->
 
@@ -83,14 +83,14 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Item description *</label>
                                     <textarea readonly class="form-control" id="Itemdescription" name="Itemdescription"
-                                        placeholder="">{{ !empty($datas) ? $datas['item_code']['discription'] : '' }}</textarea>
+                                        placeholder="">{{ !empty($datas) ? $datas['item']['discription'] : '' }}</textarea>
 
                                 </div><!-- form-group -->
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>HSN/SAC code *</label>
                                     <input type="text" readonly
-                                        value="{{ !empty($datas) ? $datas['item_code']['hsn_code'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['hsn_code'] : '' }}"
                                         class="form-control" name="HSNSAC" id="HSNSAC" placeholder="">
                                 </div><!-- form-group -->
 
@@ -99,8 +99,8 @@
                                     <label>Supplier *</label>
                                     <select class="form-control Supplier" name="Supplier">
                                         @if (!empty($datas))
-                                            <option value="{{ $datas['supplier']['id'] }}">
-                                                {{ $datas['supplier']['vendor_name'] }}</option>
+                                            <option value="{{ $datas['item']['supplier'] }}">
+                                            {{ $datas['item']['vendorId'] }} - {{ $datas['item']['vendorName'] }}</option>
                                         @endif
                                     </select>
                                 </div>
@@ -110,10 +110,10 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Unit name*</label>
                                     <input type="text" readonly
-                                        value="{{ !empty($datas) ? $datas['item_code']['receipt_unit']['unit_name'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['unit_name'] : '' }}"
                                         class="form-control" name="Unit" id="Unit" placeholder="">
                                     <input type="hidden"
-                                        value="{{ !empty($datas) ? $datas['item_code']['receipt_unit']['id'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['unit_id'] : '' }}"
                                         name="Unithidden" id="Unithidden">
                                 </div><!-- form-group -->
 
@@ -122,52 +122,52 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Stock Qty *</label>
                                     <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item_code']['availble_quantity'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['availble_quantity'] : '' }}"
                                         id="StockQty" name="StockQty" placeholder="">
                                 </div>
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Open PO Qty *</label>
                                     <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item_code']['opening_quantity'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['opening_quantity'] : '' }}"
                                         id="OpenPOQty" name="OpenPOQty" placeholder="">
                                 </div>
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Actual order Qty *</label>
                                     <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['actual_order_qty'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['actual_order_qty'] : '' }}"
                                         name="ActualorderQty" placeholder="Actual order Qty">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Min Level *</label>
                                     <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item_code']['min_stock'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['min_stock'] : '' }}"
                                         id="MinLevel" name="MinLevel" placeholder="">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Max Level *</label>
                                     <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item_code']['max_stock'] : '' }}"
+                                        value="{{ !empty($datas) ? $datas['item']['max_stock'] : '' }}"
                                         id="MaxLevel" name="MaxLevel" placeholder="">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Basic Value *</label>
                                     <input type="text" name="BasicValue"
-                                        value="{{ !empty($datas) ? $datas['basic_value'] : '' }}" class="form-control"
+                                        value="{{ !empty($datas) ? $datas['item']['basic_value'] : '' }}" class="form-control"
                                         placeholder="Basic Value">
                                 </div><!-- form-group -->
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Rate *</label>
                                     <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['rate'] : '' }}" name="Rate" id="Rate"
+                                        value="{{ !empty($datas) ? $datas['item']['rate'] : '' }}" name="Rate" id="Rate"
                                         placeholder="Rate">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Discount ( % ) *</label>
                                     <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['discount_percent'] : '' }}" id="Discount"
+                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
                                         name="Discount" placeholder="Discount ( % )">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -176,7 +176,7 @@
                                     <select class="form-control GST" name="GST">
                                         <option value="">--- select one ---</option>
                                         @foreach ($data['gst'] as $item)
-                                            <option value="{{ $item['id'] }}" @if (!empty($datas))  @if ($item['gst']==$datas['gst'])
+                                            <option value="{{ $item['id'] }}" @if (!empty($datas))  @if ($item['gst']==$datas['item']['gst'])
                                                 selected @endif
                                         @endif
                                         >{{ $item['gst'] }} %</option>
@@ -188,7 +188,7 @@
                                     <select class="form-control Currency" name="Currency">
                                         <option value="">--- select one ---</option>
                                         @foreach ($data["currency"] as $item)
-                                            <option value="{{ $item['currency_id']}}" @if (!empty($datas))  @if ($item==$datas['currency'])
+                                            <option value="{{ $item['currency_id']}}" @if (!empty($datas))  @if ($item['currency_code']==$datas['item']['currency_code'])
                                                 selected @endif
                                         @endif>{{ $item['currency_code'] }}</option>
                                         @endforeach
@@ -198,13 +198,13 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Net value *</label>
                                     <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['net_value'] : '' }}" id="Netvalue"
+                                        value="{{ !empty($datas) ? $datas['item']['net_value'] : '' }}" id="Netvalue"
                                         name="Netvalue" placeholder="">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Reason for Remarks *</label>
                                     <textarea value="" class="form-control" name="Remarks"
-                                        placeholder="Reason for Remarks">{{ !empty($datas) ? $datas['remarks'] : '' }}</textarea>
+                                        placeholder="Reason for Remarks">{{ !empty($datas) ? $datas['item']['remarks'] : '' }}</textarea>
                                 </div>
                             </div>
 

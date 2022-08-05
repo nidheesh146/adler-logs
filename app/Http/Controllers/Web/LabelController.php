@@ -81,7 +81,7 @@ class LabelController extends Controller
         $manufacture_date = $request->manufacturing_date;
         $sterilization_expiry_date = $request->sterilization_expiry_date;
         $batchcard_data = DB::table('batchcard_batchcard')
-                            ->select('batchcard_batchcard.*', 'product_product.label_format_number', 'product_product.sku_code')
+                            ->select('batchcard_batchcard.*', 'product_product.label_format_number', 'product_product.sku_code','product_product.discription as discription' )
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();

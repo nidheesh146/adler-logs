@@ -22,8 +22,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
 
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middleware'=>['RolePermission']], function() {
+    // purchase requisition master
     Route::get('inventory/get-purchase-reqisition', 'InventoryController@get_purchase_reqisition');
-   
     Route::get('inventory/add-purchase-reqisition', 'InventoryController@add_purchase_reqisition');
     Route::post('inventory/add-purchase-reqisition', 'InventoryController@add_purchase_reqisition');
 
@@ -32,6 +32,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
 
     Route::get('inventory/delete-purchase-reqisition', 'InventoryController@delete_purchase_reqisition');
 
+    Route::get('inventory/get-purchase-reqisition-item', 'InventoryController@get_purchase_reqisition_item');
+ 
+    Route::get('inventory/add-purchase-reqisition-item', 'InventoryController@add_purchase_reqisition_item');
+    Route::post('inventory/add-purchase-reqisition-item', 'InventoryController@add_purchase_reqisition_item');
     // Quotation Master
     Route::get('inventory/quotation', 'QuotationController@getQuotation');
     Route::get('inventory/suppliersearch', 'QuotationController@suppliersearch');
@@ -47,10 +51,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/delete/quotation-item', 'QuotationController@deleteQuotationItem');
 
 
-    Route::get('inventory/get-purchase-reqisition-item', 'InventoryController@get_purchase_reqisition_item');
- 
-    Route::get('inventory/add-purchase-reqisition-item', 'InventoryController@add_purchase_reqisition_item');
-    Route::post('inventory/add-purchase-reqisition-item', 'InventoryController@add_purchase_reqisition_item');
+    
 
  
     Route::get('inventory/edit-purchase-reqisition-item', 'InventoryController@edit_purchase_reqisition_item');

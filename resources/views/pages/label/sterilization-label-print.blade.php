@@ -45,7 +45,8 @@
                         </div>
                         <div class="prdct-img" style="text-align:center;">
                         @if($batchcard_data->label_image)
-                            <img src="{{asset('/img/'.$batchcard_data->label_image)}}" style="width:55%;margin-top:128%;">
+                            <!-- <img src="{{asset('/img/'.$batchcard_data->label_image)}}" style="width:55%;margin-top:128%;"> -->
+                            <img src="{{asset('/img/'.$batchcard_data->label_image)}}" style="width:55%;margin-top:100px;">
                         @endif
                         </div>
                     </div>

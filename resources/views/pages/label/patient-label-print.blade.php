@@ -36,8 +36,8 @@
                             </div>
                             <div class="col-md-9 sub-column" style="width:65%;float: left; margin-left:2px;">
                                 <span style="font-size:10px;font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
-                                @if($batchcard_data->description!="")
-                                <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->description}}</span><br/>
+                                @if($batchcard_data->discription!="")
+                                <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->discription}}</span><br/>
                                 @endif
                                 <img src="{{asset('/img/alderlogo/sterile_eo.png')}}">
                                 <span class="smalltext" style=" font-size:5px;">{{$lot_no}}</span>
@@ -58,10 +58,10 @@
                                     <span class="smalltext" style=" font-size:5px;">{{$manufacture_date}}</span>
                                 </div>
                             </div>
-                            <div class="col-md-3 sub-column" style="width:30%;float: left;margin-top:60px;padding:2px;" >
-                                <!-- <div class="img-wrapper" style="text-align:center;"> -->
-                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 24px;float:left;">
-                                    <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:24px;float:left;">
+                            <div class="sub-column" style="width:30%;float: left;margin-top:60px;" >
+                                <!-- <div class="width:30%;float: left;margin-top:60px;padding:2px"> -->
+                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 22px;float:left;">
+                                    <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:22px;float:left;">
                                 <!-- </div> -->
                             </div>
                         </div>
