@@ -11,11 +11,11 @@
                             DETAILS</a></span>
                     <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">PURCHASE
                             REQUISITION</a></span>
-                    <span><a href="">{{ request()->item ? 'Edit' : 'Add' }} purchase requisition master</a></span>
+                    <span><a href="">{{ request()->item ? 'Edit' : 'Add' }} purchase requisition item ( {{$data["master"]['pr_no']}}  )</a></span>
                 </div>
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                    {{ request()->item ? 'Edit' : 'Add' }} purchase requisition master</h4>
+                    {{ request()->item ? 'Edit' : 'Add' }} purchase requisition item ( {{$data["master"]['pr_no']}}  )</h4>
                 <div class="az-dashboard-nav">
                     <nav class="nav">
                         <a class="nav-link    "
@@ -45,7 +45,12 @@
 
                             <div class="row">
 
-
+                            @foreach ($errors->all() as $errorr)
+                    <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                      {{ $errorr }}
+                    </div>
+                   @endforeach 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label for="exampleInputEmail1">Item code * </label>
 
@@ -171,7 +176,7 @@
                                     <select class="form-control GST" name="GST">
                                         <option value="">--- select one ---</option>
                                         @foreach ($data['gst'] as $item)
-                                            <option value="{{ $item['gst'] }}" @if (!empty($datas))  @if ($item['gst']==$datas['gst'])
+                                            <option value="{{ $item['id'] }}" @if (!empty($datas))  @if ($item['gst']==$datas['gst'])
                                                 selected @endif
                                         @endif
                                         >{{ $item['gst'] }} %</option>
@@ -182,10 +187,10 @@
                                     <label> Currency *</label>
                                     <select class="form-control Currency" name="Currency">
                                         <option value="">--- select one ---</option>
-                                        @foreach (['USD', 'INR'] as $item)
-                                            <option value="{{ $item }}" @if (!empty($datas))  @if ($item==$datas['currency'])
+                                        @foreach ($data["currency"] as $item)
+                                            <option value="{{ $item['currency_id']}}" @if (!empty($datas))  @if ($item==$datas['currency'])
                                                 selected @endif
-                                        @endif>{{ $item }}</option>
+                                        @endif>{{ $item['currency_code'] }}</option>
                                         @endforeach
                                     </select>
 
@@ -261,24 +266,24 @@
                                 Itemcode: {
                                     required: true,
                                 },
-                                Itemtype: {
-                                    required: true,
-                                },
+                                // Itemtype: {
+                                //     required: true,
+                                // },
                                 // Itemdescription: {
                                 //     required: true,
                                 // },
                                 // HSNSAC: {
                                 //   required: true,
                                 // },
-                                PRSR: {
-                                    required: true,
-                                },
+                                // PRSR: {
+                                //     required: true,
+                                // },
                                 Supplier: {
                                     required: true,
                                 },
-                                Unit: {
-                                    required: true,
-                                },
+                                // Unit: {
+                                //     required: true,
+                                // },
                                 BasicValue: {
                                     required: true,
                                     number: true
@@ -293,12 +298,12 @@
                                     required: true,
                                     number: true
                                 },
-                                MinLevel: {
-                                    required: true,
-                                },
-                                MaxLevel: {
-                                    required: true,
-                                },
+                                // MinLevel: {
+                                //     required: true,
+                                // },
+                                // MaxLevel: {
+                                //     required: true,
+                                // },
                                 Rate: {
                                     required: true,
                                     number: true

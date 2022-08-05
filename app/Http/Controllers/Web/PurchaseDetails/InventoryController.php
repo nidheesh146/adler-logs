@@ -14,6 +14,8 @@ use App\Models\PurchaseDetails\inv_purchase_req_master;
 use App\Models\inventory_gst;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_supplier;
+use App\Models\currency_exchange_rate;
+use App\Models\PurchaseDetails\inv_purchase_req_item;
 
 class InventoryController extends Controller
 {
@@ -25,6 +27,9 @@ class InventoryController extends Controller
         $this->inventory_gst = new inventory_gst;
         $this->inventory_rawmaterial = new inventory_rawmaterial;
         $this->inv_supplier = new inv_supplier;
+        $this->currency_exchange_rate = new currency_exchange_rate;
+        $this->inv_purchase_req_item = new inv_purchase_req_item;
+        
 
     }
 
@@ -106,64 +111,67 @@ class InventoryController extends Controller
     // Purchase Reqisition item get list
     public function get_purchase_reqisition_item(Request $request)
     {
-        $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
-        $Request['param'] = ['pr_no_master' => $request->pr_id,
-        "no_of_entries"=>15,
-        'page'=>$request->page ? $request->page  : 1];
-
-
-        $data = $this->HttpRequest->HttpClient($Request);
+        if(!$request->pr_id){
+            return response()->view('errors/404', [], 404);
+        }
+        $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
+        $data['item'] = $this->inv_purchase_req_item->getdata(['inv_purchase_req_master_item_rel.master'=>$request->pr_id]);
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
 
     }
       // Purchase Reqisition item get list
       public function add_purchase_reqisition_item(Request $request)
       {
-
-
-
         if(!$request->pr_id){
-            return redirect('inventory/get-purchase-reqisition');
+            return response()->view('errors/404', [], 404);
         }
-     
+
         if ($request->isMethod('post')) {
-            $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-item-list-add-edit-delete/";
-    
-            $Request['param'] = json_encode([
-                "action_type"=>"AddPurchaseRequititionItem",
-                "purchase_reqisition"=>$request->pr_id,
-                "item_code" => $request->Itemcodehidden,
-                "supplier"  => $request->Supplier,
-                "hfn_sac"=>"hsn-sac",
-                "date" => date('d-m-Y'),
-                "requestor" => (session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1'),
-                "department" =>  "production",
-                "currency"  => $request->Currency ,
-                "rate"=> $request->Rate,
-                "basic_value"=> $request->BasicValue,
-                "discount_percent"=> $request->Discount,
-                "discount_value"=> $request->Discount,
-                "gst"=> $request->GST,
-                "net_value"=>  $request->Netvalue,
-                "currency"=>$request->Currency,
-                "remarks"=> $request->Remarks,
-                "actual_order_qty"=> $request->ActualorderQty
-            ]);
-            $data = $this->HttpRequest->HttpClient($Request);
 
-            
-            if(!empty($data['response']['success'])){
-                $request->session()->flash('success',  $data['response']['message']);
+            $validation['pr_id'] = ['required'];
+            $validation['Itemcode'] = ['required'];
+            $validation['Supplier'] = ['required'];
+            $validation['Currency'] = ['required'];
+            $validation['Rate'] = ['required'];
+            $validation['BasicValue'] = ['required'];
+            $validation['Discount'] = ['required'];
+            $validation['GST'] = ['required'];
+            $validation['Netvalue'] = ['required'];
+            $validation['Remarks'] = ['required'];
+            $validation['ActualorderQty'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+
+            if(!$validator->errors()->all()){
+                $Request = [
+                    "item_code" => $request->Itemcode,
+                    "supplier"  => $request->Supplier,
+                    "actual_order_qty"=> $request->ActualorderQty,
+                    "basic_value"=> $request->BasicValue,
+                    "rate"=> $request->Rate,
+                    "discount_percent"=> $request->Discount,
+                    "gst"=> $request->GST,
+                    "currency"  => $request->Currency ,
+                    "net_value"=>  $request->Netvalue,
+                    "remarks"=> $request->Remarks,
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s'),
+                    "created_user" =>  config('user')['user_id']   
+                ];
+
+                $this->inv_purchase_req_item->insert_data($Request,$request->pr_id);
+                $request->session()->flash('success',"You have successfully added a purchase requisition item !");
                 return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
-             }
+
+            }
+            if($validator->errors()->all()){
+                    return redirect("inventory/add-purchase-reqisition-item?pr_id=".$request->pr_id)->withErrors($validator)->withInput();
+            }
         }
 
-    
+        $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
+        $data["currency"] = $this->currency_exchange_rate->get_currency([]);
         $data['gst'] = $this->inventory_gst->get_gst();
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data'));
-  
       }
   
         // Purchase Reqisition item get list
@@ -173,9 +181,6 @@ class InventoryController extends Controller
             if(!$request->pr_id || !$request->item){
                 return redirect('inventory/get-purchase-reqisition');
             } 
-
-
-            $datas=[];
 
             if ($request->isMethod('post')) {
                 $Request['Method'] = 'POST';

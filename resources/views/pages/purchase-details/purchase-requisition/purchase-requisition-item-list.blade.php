@@ -9,17 +9,17 @@
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE DETAILS</a></span> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE REQUISITION</a></span>
-                <span><a href="">List purchase requisition item </a></span>
+                <span><a href="">List purchase requisition item ( {{$data["master"]['pr_no']}}  )</a></span>
             </div>
 	
-            <h4 class="az-content-title" style="font-size: 20px;">List Purchase requisition item
+            <h4 class="az-content-title" style="font-size: 20px;">List Purchase requisition item ( {{$data["master"]['pr_no']}}  )
                 <div class="right-button">
-                    <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
+                    <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                         <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
                     <div class="dropdown-menu">
                     <a href="#" class="dropdown-item">Excel</a>
   
-                    </div>
+                    </div> -->
                 <div>  
                 </div>
               <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase requisition item</button>
@@ -61,30 +61,31 @@
 					</thead>
 					<tbody >
 
-					
-						@if(!empty($data['response']['purchase_requisition'][0]))
-						@foreach($data['response']['purchase_requisition'] as $item)
+						@foreach($data['item'] as $item)
 						<tr>
-							<th>{{$item['item_code']['item_code']}}</th>
-							<th>{{$item['supplier']['vendor_name']}}</th>
+							<th>{{$item['item_code']}}</th>
+							<th>{{$item['vendor_id']}}</th>
 							<td>{{$item['actual_order_qty']}}</td>
 							<td>{{$item['rate']}}</td>
 							<td>{{$item['discount_percent']}}</td>
 							<td>{{$item['gst']}}</td>
-							<td>{{$item['currency']}}</td>
+							<td>{{$item['currency_code']}}</td>
 							<th>{{$item['net_value']}}</th>
 							<td>
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu"> 
-							   <a href="{{url('inventory/edit-purchase-reqisition-item?pr_id='.request()->pr_id.'&item='.$item['id'])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-							   <a href="{{url('inventory/delete-purchase-reqisition-item?pr_id='.request()->pr_id).'&'.'item_id='.$item['id']}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> </div>
+							   <a href="{{url('inventory/edit-purchase-reqisition-item?pr_id='.request()->pr_id.'&item='.$item['requisition_item_id'])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+							   <a href="{{url('inventory/delete-purchase-reqisition-item?pr_id='.request()->pr_id).'&'.'item_id='.$item['requisition_item_id']}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> </div>
 							</td>
 						</tr>
 						@endforeach
-						@endif
+				
 					
 					</tbody>
 				</table>
+				<div class="box-footer clearfix">
+					{{ $data['item']->appends(request()->input())->links() }}
+				</div>
 		
 			</div>
 
