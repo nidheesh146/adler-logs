@@ -16,7 +16,7 @@
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                     <!-- {{ request()->item ? 'Edit' : 'Add' }}  Supplier quotation item</h4> -->
-                    Edit Supplier Quotation Item for  ( {{request()->name}} ) 
+                    Edit Supplier Quotation Item for  ( {{$data['get_item_single']['vendor_id'] }} - {{$data['get_item_single']['vendor_name'] }} ) 
                 </h4>
                 <!-- <div class="az-dashboard-nav">
                     <nav class="nav">
@@ -31,7 +31,6 @@
 
                     <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 "
                         style="border: 0px solid rgba(28, 39, 60, 0.12);">
-
 
 
                         <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
@@ -53,39 +52,52 @@
                     
                                     <tbody>
                                       <tr>
-                                        <th scope="row">Code</th>
-                                      <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_code'] : '-' }}</td>
-                                        <th scope="row">Discount Value</th>
-                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['discount_value'] : '-' }}</td>
+                                        <th scope="row">Item Code</th>
+                                      <td>{{$data['get_item_single']['item_code']}}</td>
+                                        <th scope="row">Item Discount ( % )</th>
+                                        <td>{{$data['get_item_single']['discount_percent']}}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="row">Name</th>
-                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_name'] : '-' }}</td>
+                                        <th scope="row">Item Name</th> 
+                                        <td>{{$data['get_item_single']['item_name']}}</td>
                                         <th scope="row">GST</th>
-                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['gst'] : '-' }}</td>
+                                        <td>{{$data['get_item_single']['gst']}}</td>
                                       </tr>
                                       <tr>
                                         <th scope="row">HSN code</th>
-                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['hsn_code'] : '-' }}</td>
+                                        <td>{{$data['get_item_single']['hsn_code']}}</td>
                                         <th scope="row">Unit</th>
-                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['receipt_unit']['unit_name'] : '-' }}</td>
+                                        <td>{{$data['get_item_single']['unit_name']}}</td>
                                       </tr>
                                       <tr>
                                         <th scope="row">Basic Value</th>
-                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['basic_value'] : '-' }}</td>
+                                        <td>{{$data['get_item_single']['basic_value']}}</td>
                                         <th scope="row">Item description </th>
-                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['discount_percent'] : '-' }}</td>
+                                        <td>{{$data['get_item_single']['short_description']}}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="row">Discount %</th>
-                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['remarks'] : '-' }}</td>
+                                        <th scope="row">Currency</th>
+                                        <td>{{$data['get_item_single']['currency_code']}}</td>
                                         <th scope="row">Requested QTY</th>
-                                        <td>{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['purchase_reqisition_approval']['purchase_reqisition_list'][0]['remarks'] : '-' }}</td>
+                                        <td>{{$data['get_item_single']['approved_qty']}}</td>
                                       </tr>
                                     </tbody>
                                   </table>
                                 </div>
                                 <br>
+                                
+                        @if (Session::get('success'))
+                        <div class="alert alert-success " style="width: 100%;">
+                          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                          <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                        </div>
+                        @endif
+                        @foreach ($errors->all() as $errorr)
+                        <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        {{ $errorr }}
+                        </div>
+                       @endforeach
                                   <div class="row">
                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
@@ -96,21 +108,21 @@
                                 <div class="row">   
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                   <label>Quantity *</label>
-                                <input type="text" name="quantity" value="{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['quantity'] : ''}}" class="form-control" placeholder="Quantity">
-                                  <input type="hidden" name="supplier_quotation" value="{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['id'] : ''}}" class="form-control" placeholder="Quantity">
+                                <input type="text" name="quantity" value="{{$data['get_item_single']['supp_quantity']}}" class="form-control" placeholder="Quantity">
+                              
                                 </div><!-- form-group -->
 
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label> Rate *</label>
-                                    <input type="text" class="form-control" value="{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['supplier_rate'] : ''}}" name="rate" id="rate" placeholder="Rate">
+                                    <input type="text" class="form-control" value="{{$data['get_item_single']['supp_rate']}}" name="rate" id="rate" placeholder="Rate">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <label> Discount *</label>
-                                    <input type="text" class="form-control" value="{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['supplier_discount'] : ''}}" name="discount" id="discount" placeholder="Discount">
+                                    <label> Discount (%) *</label>
+                                    <input type="text" class="form-control" value="{{$data['get_item_single']['supplier_discount']}}" name="discount" id="discount" placeholder="Discount">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label> Specification *</label>
-                                    <textarea  class="form-control"  id="Specification" name="Specification" placeholder="Specification">{{(!empty($data['response']['supplier_quotation'])) ? $data['response']['supplier_quotation'][0]['specifications'] : ''}}</textarea>
+                                    <textarea  class="form-control"  id="Specification" name="Specification" placeholder="Specification">{{$data['get_item_single']['supp_specification']}}</textarea>
                                 </div>
                                 
                             </div>                           
@@ -150,12 +162,15 @@
                 rules: {
                     quantity: {
                         required: true,
+                        number: true,
                     },
                     rate: {
                         required: true,
+                        number: true,
                     },
                     discount: {
                       required: true,
+                      number: true,
                     },
                     Specification: {
                         required: true,

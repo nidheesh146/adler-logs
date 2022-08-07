@@ -158,7 +158,7 @@ class InventoryController extends Controller
                     "created_user" =>  config('user')['user_id']   
                 ];
 
-                $this->inv_purchase_req_item->insert_data($Request,$request->Itemcodehidden);
+                $this->inv_purchase_req_item->insert_data($Request,$request->pr_id);
                 $request->session()->flash('success',"You have successfully added a purchase requisition item !");
                 return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
 
@@ -169,7 +169,6 @@ class InventoryController extends Controller
         }
 
         $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
-        
         $data["currency"] = $this->currency_exchange_rate->get_currency([]);
         $data['gst'] = $this->inventory_gst->get_gst();
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data'));
@@ -208,11 +207,11 @@ class InventoryController extends Controller
                         "gst"=> $request->GST,
                         "currency"  => $request->Currency ,
                         "net_value"=>  $request->Netvalue,
-                        "remarks"=> $request->Remarks,
-                        "updated_at" => date('Y-m-d H:i:s'),
-                        "created_user" =>  config('user')['user_id']   
+                        "inv_purchase_req_item.remarks"=> $request->Remarks,
+                        "inv_purchase_req_item.updated_at" => date('Y-m-d H:i:s'),
+                        "inv_purchase_req_item.created_user" =>  config('user')['user_id']   
                     ];
-                    $this->inv_purchase_req_item->update_data($Request,$request->pr_id);
+                    $this->inv_purchase_req_item->updatedata(['inv_purchase_req_item.requisition_item_id'=>$request->item],$Request);
                     $request->session()->flash('success',"You have successfully edited a purchase requisition item !");
                     return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
                 }
@@ -222,83 +221,23 @@ class InventoryController extends Controller
             }
             //echo $request->item;exit;
             $datas["item"] = $this->inv_purchase_req_item->getItem(['inv_purchase_req_item.requisition_item_id'=>$request->item]);
-            //print_r(json_encode($datas["item"]));exit;
             $data['master'] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
             $data["currency"] = $this->currency_exchange_rate->get_currency([]);
             $data['gst'] = $this->inventory_gst->get_gst();
+          
+          
             return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data', 'datas'));
             
         }
 
-        
-//                 $Request['param'] = json_encode([
-//                     "action_type"=>"EditPurchaseRequititionItem",
-//                     "purchase_reqisition_id" =>  $request->pr_id,
-//                     "purchase_requitition_id"=>$request->item,
-//                     "hfn_sac"=>"hsn-sac",
-//                     "item_code" => $request->Itemcodehidden,
-//                     "supplier"  => $request->Supplier,
-//                     "date" => date('d-m-Y'),
-//                     "requestor" => (session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1'),
-//                     "department" =>  "production",
-//                     "currency"  => $request->Currency ,
-//                     "rate"=> $request->Rate,
-//                     "basic_value"=> $request->BasicValue,
-//                     "discount_percent"=> $request->Discount,
-//                     "discount_value"=> $request->Discount,
-//                     "gst"=> $request->GST,
-//                     "net_value"=>  $request->Netvalue,
-//                     "currency"=>$request->Currency,
-//                     "remarks"=> $request->Remarks,
-//                     "actual_order_qty"=> $request->ActualorderQty
-//                 ]);
-//                 $data = $this->HttpRequest->HttpClient($Request);
-//                 if(!empty($data['response']['success'])){
-//                     $request->session()->flash('success',  $data['response']['message']);
-//                     return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
-//                  }
-//             }
-
-
-
-//             if($request->item){
-//                 $Request['Method'] = 'GET';
-//                 $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
-//                 $Request['param'] = ['pr_id' => $request->item];
-//                 $data = $this->HttpRequest->HttpClient($Request);
-// // print_r(  $data);die;
-//                 if(!empty($data['response']['purchase_requisition'][0])){
-//                     $datas = $data['response']['purchase_requisition'][0];
-//                 }else{
-//                     return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
-//                 }
-//                 // print_r($datas);die;
-//             }
-
-
-//             $Request['Method'] = 'GET';
-//             $Request['URL'] = config('app.ApiURL') . '/inventory/gst-add-edit-delete/';
-//             $Request['param'] = [];
-//             $data = $this->HttpRequest->HttpClient($Request);
-
-
-//             return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data','datas'));
-      
-    
-//         }
-     
 
     // Purchase Reqisition item delete 
     public function delete_purchase_reqisition_item(Request $request)
     {
         if($request->item_id){
-            $this->inv_purchase_req_master->updatedata(['master_id'=>$request->item_id],['status'=>2]);
+            $this->inv_purchase_req_item->updatedata(['requisition_item_id'=>$request->item_id],['status'=>2]);
             $request->session()->flash('success',  "You have successfully deleted a  purchase requisition item !");
-        
-        if(!empty($data['response']['message']) && $data['response']['success']){
-            $request->session()->flash('success',  $data['response']['message']);
         }
-      }
         return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
     }
 

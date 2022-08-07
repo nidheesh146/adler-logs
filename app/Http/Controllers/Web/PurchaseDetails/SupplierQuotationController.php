@@ -3,47 +3,55 @@
 namespace App\Http\Controllers\Web\PurchaseDetails;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Web\WebapiController;
 use Illuminate\Http\Request;
-use Illuminate\Http\Client\Pool;
-use Illuminate\Support\Facades\Http;
+use App\Models\PurchaseDetails\inv_purchase_req_quotation;
+use App\Models\PurchaseDetails\inv_supplier;
+use App\Models\PurchaseDetails\inv_purchase_req_quotation_supplier;
+use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
+
+use Validator;
 
 class SupplierQuotationController extends Controller
 {
     public function __construct()
     {
-        $this->HttpRequest = new WebapiController;
+        $this->inv_purchase_req_quotation = new inv_purchase_req_quotation;
+        $this->inv_supplier = new inv_supplier;
+        $this->inv_purchase_req_quotation_supplier = new inv_purchase_req_quotation_supplier;
+        $this->inv_purchase_req_quotation_item_supp_rel = new inv_purchase_req_quotation_item_supp_rel;
+   
     }
 
     public function getSupplierQuotation(Request $request) 
     {
-        $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/';
-        $Request['param'] = ["no_of_entries"=>10,'page'=>$request->page ? $request->page  : 1];
-        $data = $this->HttpRequest->HttpClient($Request);
-         // print_r(json_encode($data['response']['quotation']));
-          //exit;
-        //$items = $data['response']['quotation'];
-        return view('pages/supplier-quotation/supplier-quotation', compact('data'));
+        $data['quotation'] = $this->inv_purchase_req_quotation->get_quotation([]);
+        return view('pages/purchase-details/supplier-quotation/supplier-quotation', compact('data'));
     }
+    function get_supplier($id){
+      $suppliers ="";
+      $supplier_id ="";
 
-    // function quotationsearch($rq_no = null){
-    //     if(!$rq_no){
-    //         return response()->json(['message'=>'RQ No is not valid'], 500); 
-    //     }
-    //     $Request['Method'] = 'GET';
-    //     $Request['URL'] = config('app.ApiURL') . '/inventory/quotation-item-list-add-edit-delete/';
-    //     $Request['param'] = ['rq_no' => $rq_no];
-    //     $data = $this->HttpRequest->HttpClient($Request);
-    //     if(!empty($data['response']['quotation'][0])){
-    //         return response()->json($data['response']['quotation'], 200); 
-    //     }else{
-    //         return response()->json(['message'=>'item code is not valid'], 500); 
-    //     }
+      $quotation_supplier =  $this->inv_purchase_req_quotation_supplier->getItem(['quotation_id'=>$id]);
+      $count =  count($quotation_supplier);
+      foreach($quotation_supplier as $key => $quotation_supplier){
+         $supplier =  $this->inv_supplier->get_supplier(['id'=>$quotation_supplier->supplier_id]);
+        if(!$supplier_id){
+            $supplier_id = $supplier->id;
+        }
+         if($supplier){
+            $suppliers .="<span>".$supplier->vendor_id."</span>" ;
+            if(  $key !=  ( $count - 1)){
+                $suppliers .= " , ";
+            }   
+        }
 
-    // }
+      }
+        return ["supplier" => $suppliers,'supplier_id' => $supplier_id];
+    }
     public function getSupplierQuotationAdd(Request $request)
     {
+
+     
         if ($request->isMethod('post')) {
             $Request['Method'] = 'POST';
             $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-item-list-add-edit-delete/";
@@ -87,6 +95,7 @@ class SupplierQuotationController extends Controller
 
     public function edit_supplier_quotation(Request $request)
     {
+        
 
         $Request['Method'] = 'POST';
         $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-master-add-edit-delete/";
@@ -123,104 +132,71 @@ class SupplierQuotationController extends Controller
     public function getSupplierQuotationEditItem(Request $request,$rq_no,$supp_id,$item_id)
     {
         if ($request->isMethod('post')) {
-            $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-new-add-edit-delete/";    
-            $Request['param'] = json_encode([
-                "action_type" => "EditSupplierQuotationNew",
-                "quotation_id" => $request->supplier_quotation,
-                "specifications" =>  $request->Specification,
-                "supplier_rate"  => $request->rate,
-                "supplier_discount"=>$request->discount,
+            $validation['quantity'] = ['required'];
+            $validation['rate'] = ['required'];
+            $validation['discount'] = ['required'];
+            $validation['Specification'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+
+            if(!$validator->errors()->all()){
+             $data =  [
+                "specification" =>  $request->Specification,
+                "rate"  => $request->rate,
+                "discount"=>$request->discount,
                 "quantity" =>$request->quantity
-            ]);
-            $data = $this->HttpRequest->HttpClient($Request);
-            if(!empty($data['response']['success'])){
-                $request->session()->flash('success',  $data['response']['message']);
-            }else{
-                $request->session()->flash('error',  $data['error']);
-                return redirect('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item_id.'?name='.$request->name);
+            ];
+            $request->session()->flash('success',"You have successfully updated a Supplier Quotation Item !");
+            $this->inv_purchase_req_quotation_item_supp_rel->updatedata(['quotation_id'=>$rq_no,'item_id'=>$item_id,'supplier_id'=>$supp_id],$data);
+            return redirect('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item_id);
             }
-            return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id);
-        }
-        $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-new-add-edit-delete/";
-        $Request['param'] = ['supplier' => $supp_id,'quotation'=>$rq_no,"no_of_entries"=>25,'page'=>$request->page ? $request->page  : 1];
-        $data = $this->HttpRequest->HttpClient($Request);
-        if(!empty($data['response']['supplier_quotation'][0])){
-            $supplier_quotation = [];
-            foreach($data['response']['supplier_quotation'] as $key => $value){
-                if($value['id'] == $item_id){
-                    $supplier_quotation[] = $value;
-                }
-            unset($data['response']['supplier_quotation'][$key]);
+            if($validator->errors()->all()){
+                return redirect('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item_id)->withErrors($validator)->withInput();
+
             }
-            $data['response']['supplier_quotation']=$supplier_quotation; 
         }
-        return view('pages/supplier-quotation/supplier-quotation-edit-item',compact('data'));
+        $data['get_item_single'] = $this->inv_purchase_req_quotation_item_supp_rel->get_item_single(['inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$supp_id,'inv_purchase_req_quotation_item_supp_rel.item_id'=>$item_id,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$rq_no]);
+        return view('pages/purchase-details/supplier-quotation/supplier-quotation-edit-item',compact('data'));
     }
 
     public function supplierQuotationUpdate(Request $request, $rq_no,$supp_id)
     {
-        if ($request->isMethod('post')) {
-            $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-new-add-edit-delete/";    
-            $Request['param'] = json_encode([
-                "action_type" => "EditSupplierQuotationNew",
-                "quotation_id"=>$request->quotation_id,
-                "supplier_quotation_no" => $request->supplier_quotation_no,
-                "quotation_date" =>  date('d-m-Y', strtotime($request->quotation_date)),
-                "contact"  => $request->contact,
-                "deliver_date"=> date('d-m-Y', strtotime($request->commited_delivery_date))
-            ]);
-            //print_r($Request);exit;
-            $data = $this->HttpRequest->HttpClient($Request);
-            if(!empty($data['response']['success'])){
-                $request->session()->flash('success',  $data['response']['message']);
-            }else{
-                $request->session()->flash('error',  $data['error']);
-                return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id);
-            }
-            return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id);
-        } 
 
+        if(!$rq_no || !$supp_id){
+            return response()->view('errors/404', [], 404);
+        }
+        $validation['supplier_quotation_no'] = ['required'];
+        $validation['commited_delivery_date'] = ['required','date'];
+         $validation['quotation_date'] = ['required','date'];
+         $validation['contact'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all()){
+            $data = ['supplier_quotation_num'=>$request->supplier_quotation_no,'commited_delivery_date'=>date('Y-m-d',strtotime($request->commited_delivery_date)),
+            'quotation_date'=>date('Y-m-d',strtotime($request->quotation_date)),'contact_number'=>$request->contact];
+            $this->inv_purchase_req_quotation_supplier->updatedata(['supplier_id'=>$supp_id,'quotation_id'=>$rq_no],$data);
+            $request->session()->flash('success',"You have successfully updated a Supplier Quotation master !");
+            return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id);
+        }
+        if($validator->errors()->all()){
+            return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id)->withErrors($validator)->withInput();
+        }
     }
     
     public function viewSupplierQuotationItems(Request $request,$rq_no,$supp_id)
     {
-        $Res['error'] = "";
-        $Res['response'] = [];
-        $supp_id = $request->supplier ? $request->supplier : $supp_id;
-    try {
-        $response = Http::pool(fn (Pool $pool) => [
-            $pool->withHeaders([
-                'Authorization' => 'Token ' . session('user')['token'],
-            ])->get(config('app.ApiURL') . '/inventory/supplier-quotation-new-add-edit-delete/',['supplier' => $supp_id,'quotation'=>$rq_no,"no_of_entries"=>25,'page'=>$request->page ? $request->page  : 1]),
-            $pool->withHeaders([
-                'Authorization' => 'Token ' . session('user')['token'],
-            ])->get(config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/',['rq_no' => $rq_no]),
-        ]);
-        if ($response[0]->status() == 200 && $response[1]->status() == 200){
-            if ($response[0]->json()['status'] == 'success' && $response[1]->json()['status'] == 'success') {
-               //print_r(json_encode($response[0]->json()));exit;
-                $Res['response'] =['response0'=>$response[0]->json(),'response1'=>$response[1]->json()];
-            }else{
-                $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-            }
-        }else{
-            $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
+        if(!$rq_no || !$supp_id){
+            return response()->view('errors/404', [], 404);
         }
-    }catch (\Exception $e) {
-        $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-    }
+        if($request->Supplier){
+            $supp_id  = $request->Supplier;
+        }
+  
 
+        $data['supplier'] = $this->inv_purchase_req_quotation_supplier->get_Item(['quotation_id'=>$request->rq_no]);
+        $data['quotation']   = $this->inv_purchase_req_quotation->get_quotation_single(['quotation_id'=>$request->rq_no]);
+        $data['supplier_single']= $this->inv_purchase_req_quotation_supplier->get_single_item(['inv_purchase_req_quotation_supplier.supplier_id'=>$supp_id,'inv_purchase_req_quotation_supplier.quotation_id'=>$rq_no]);
+        $data['inv_purchase_req'] = $this->inv_purchase_req_quotation_item_supp_rel->get_Item(['inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$supp_id,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$rq_no]);
 
-
-
-
-
-
-
-       return view('pages/supplier-quotation/supplier-quotation-items', compact('Res','rq_no','supp_id'));
+        return view('pages/purchase-details/supplier-quotation/supplier-quotation-items', compact('data','rq_no','supp_id'));
     }
 
     public function comparisonOfQuotation($rq_no) {

@@ -12,11 +12,11 @@
 		<div class="az-content-body">
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">QUOTATION</a></span> 
-                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">REQUEST FOR QUOTATION </a></span>
+                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">ADD REQUEST FOR QUOTATION </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                Request For Quotation
+              Add request for quotation
             </h4>
             <div class="az-dashboard-nav">
                 
@@ -30,18 +30,12 @@
                         <i class="icon fa fa-check"></i> {{ Session::get('success') }}
                     </div>
                     @endif
-                    @if (Session::get('error'))
-                    <div class="alert alert-danger" style="width: 100%;">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <i class="icon fa fa-check"></i> {{ Session::get('error') }}
-                    </div>
-                    @endif
-                    @if(!empty($data['error']))
+                    @foreach ($errors->all() as $errorr)
                     <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                     {{ $data['error'] }}
-                   </div>
-                    @endif                   
+                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                      {{ $errorr }}
+                    </div>
+                   @endforeach                 
                    
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
                     <form method="POST" autocomplete="off" action="{{ url('inventory/add/quotation') }}" id="commentForm" >
@@ -56,15 +50,7 @@
                         </div>
 
                         <div class="row">
-                            <!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                <label for="exampleInputEmail1">RQ NO: *</label>
-                                <input type="text" class="form-control" name="rq_no"  placeholder="Enter QR NO">
-                            </div>  -->
-
-                            {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                <label>Requestor *</label>
-                                <input type="text" class="form-control" readonly value="{{ (session('user')['employee_id'])}}" name="Requestor" placeholder="Requestor">
-                            </div><!-- form-group --> --}}
+                       
 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Date *</label>
@@ -101,7 +87,7 @@
 				            <table class="table table-bordered mg-b-0" id="example1">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
+                                        <th>#</th>
                                         <th>PR No:</th>
                                         <th>Item code </th>
                                         <th>Supplier</th>
@@ -111,35 +97,37 @@
                                         <th>Currency</th>
                                         <th>Net value </th>
                                         <th>Actual Order Qty</th>
+                                        <th>Approved Qty</th>
                                     </tr>
                                 </thead>
                                 <tbody >
-                                @if($data['response']['purchase_requisition'][0])
-                                @foreach($data['response']['purchase_requisition'] as $item)
+                           
+                                @foreach($data['getdata'] as $item)
                                 <tr>
-                                    <td><input type="checkbox" class="purchase_requisition_item" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['id']}}"></td>
-                                    <th>{{$item['purchase_reqisition_list'][0]['purchase_reqisition']['pr_no']}}</th>
-                                    <th>{{$item['purchase_reqisition_list'][0]['item_code']['item_code']}}</th>
-                                   <td>{{$item['purchase_reqisition_list'][0]['supplier']['vendor_name']}}</td>
-                                    <td>{{$item['purchase_reqisition_list'][0]['rate']}}</td>
-                                    <td>{{$item['purchase_reqisition_list'][0]['discount_percent']}}</td>
-                                    <td>{{$item['purchase_reqisition_list'][0]['gst']}}</td>
-                                    <td>{{$item['purchase_reqisition_list'][0]['currency']}}</td>
-                                    <td>{{$item['purchase_reqisition_list'][0]['net_value']}}</td>	
-                                    <td>{{$item['purchase_reqisition_list'][0]['actual_order_qty']}}</td>						 
+                                    <td><input type="checkbox" class="purchase_requisition_item" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['requisition_item_id']}}"></td>
+                                    <th>{{$item['pr_no']}}</th>
+                                    <th>{{$item['item_code']}}</th>
+                                    <td> {{$item['vendor_id']}}</td>
+                                    <td>{{$item['rate']}}</td>
+                                    <td>{{$item['discount_percent']}}</td>
+                                    <td>{{$item['gst']}}</td>
+                                    <td>{{$item['currency_code']}}</td>
+                                    <td>{{$item['net_value']}}</td>	
+                                    <td>{{$item['actual_order_qty']}}</td>
+                                    <td>{{$item['approved_qty']}}</td>						 
                                 </tr>	
                                 @endforeach
-                                @endif
+                           
                                 </tbody>
                             </table>
-                            @if(!empty($data['response']))
-                                @include('includes.pagination',['data'=>$data['response']])
-                            @endif
+                            <div class="box-footer clearfix">
+					             {{ $data['getdata']->appends(request()->input())->links() }}
+				            </div>   
                  
                 <br/>
                 <div class="form-devider"></div>
 
-                @if($data['response']['purchase_requisition'][0])
+                @if($data['getdata'])
                 <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                         <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
@@ -148,7 +136,7 @@
                         </button>
                     </div>
                 </div>
-                @endif
+               @endif
 
             </form>
 
@@ -192,9 +180,12 @@
                 delivery: {
                     required: true,
                 },
-                "Supplier[]": {
-                    required: true,
+                'Supplier[]': {
+                   required: true,
                 },
+                'purchase_requisition_item[]':{
+                    required: true
+                }
       
             },
             submitHandler: function(form) {

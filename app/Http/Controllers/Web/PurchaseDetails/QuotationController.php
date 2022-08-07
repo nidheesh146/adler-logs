@@ -4,82 +4,52 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Web\WebapiController;
 use Illuminate\Support\Facades\Http;
 use Validator;
+use App\Models\PurchaseDetails\inv_purchase_req_item;
+use App\Models\PurchaseDetails\inv_purchase_req_quotation;
+
 
 class QuotationController extends Controller
 {
     public function __construct()
     {
-        $this->HttpRequest = new WebapiController;
-    }
-
-    function suppliersearch(Request $request){
-
-        if(!$request->q){
-            return response()->json(['message'=>'item code is not valid'], 500); 
-        }
-    
-        $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL') . '/inventory/supplier-add-edit-delete/';
-        $Request['param'] = ['supplier' => $request->q];
-        $data = $this->HttpRequest->HttpClient($Request);
-        if(!empty($data['response']['suppliers'][0])){
-            foreach($data['response']['suppliers']  as $itemcode){
-                $string[] = ['id'=>$itemcode['id'],'text'=>$itemcode['vendor_name']];
-            }
-            return response()->json($string, 200); 
-        }else{
-            return response()->json(['message'=>'item code is not valid'], 500); 
-        }
+        $this->inv_purchase_req_item = new inv_purchase_req_item;
+        $this->inv_purchase_req_quotation = new inv_purchase_req_quotation;
     }
 
     // list Quotation
     public function getQuotation(Request $request)
     {
-        $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL').'/inventory/purchase-requisition-approval-list-add-edit-delete/?status=1';
-        $Request['param'] = ['status' => 1,
-        "no_of_entries"=>10,
-        'page'=>$request->page ? $request->page  : 1];
-        $data = $this->HttpRequest->HttpClient($Request); 
 
-
-       // print_r( $data);die;
-        return view('pages/Quotation/quotation-add', compact('data'));
+        $data['getdata'] = $this->inv_purchase_req_item->getdata(['inv_purchase_req_item_approve.status'=>1]);
+        return view('pages/purchase-details/Quotation/quotation-add', compact('data'));
     }
 
     // Add Quotation
     public function postQuotation(Request $request)
     {
-        $data = [];
-        // $validation['rq_no '] = ['required'];
-        // $validation['date '] = ['required'|'date'];
-        // //$validation['requestor  '] = ['required'];
-        // $validation['Supplier  '] = ['required'];
-        // $validation['delivery  '] = ['required'];
-        // $validator = Validator::make($request->all(), $validation);
-            $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL').'/inventory/quotation-new-add-edit-delete/';
-            
-            
-            $Request['param'] = json_encode([
-                "action_type"=>"AddQuotation",
-                //"rq_no" => $request->rq_no,
-                "date" => date("d-m-Y",strtotime($request->date)),
-                "requestor" =>(session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1'), //$request->requestor,
-                "supplier" => $request->Supplier,
-                "deliver_schedule" =>date("d-m-Y",strtotime($request->delivery)),
-                "purchase_reqisition_approval"=>$request->purchase_requisition_item
-            ]);
-            $data = $this->HttpRequest->HttpClient($Request);
-             if(!empty($data['response']['success'])){
-                $request->session()->flash('success', $data['response']['message']);
-              }else{
-                $request->session()->flash('error', $data['error']);
-              }
-              return redirect('inventory/quotation');
+        $validation['date'] = ['required','date'];
+        $validation['Supplier'] = ['required'];
+        $validation['delivery'] = ['required'];
+        $validation['purchase_requisition_item'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+       
+        if(!$validator->errors()->all()){
+            $data = ['date'=>date('Y-m-d',strtotime($request->date)),
+                     'delivery_schedule'=>date('Y-m-d',strtotime($request->delivery)),
+                     'rq_no'=>'RQ-'.$this->num_gen( $this->inv_purchase_req_quotation->get_count()),
+                     'created_at'=>date('Y-m-d H:i:s'),
+                     'created_user'=>config('user')['user_id']];
+            $this->inv_purchase_req_quotation->insert_data($data,$request);
+            $request->session()->flash('success', "You have successfully created a  Request For Quotation !");
+            return redirect('inventory/quotation');
+
+        }
+        if($validator->errors()->all()){
+            return redirect('inventory/quotation')->withErrors($validator)->withInput();
+        }
+           
     }
 
     // Edit Quotation

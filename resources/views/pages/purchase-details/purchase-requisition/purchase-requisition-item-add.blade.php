@@ -56,9 +56,9 @@
 
 
                                     <select class="form-control Item-code" name="Itemcode" id="Itemcode">
-                                        {{-- @if (!empty($datas))
-                                            <option value="{{$data['supplier']['id']}}">{{$data['supplier']['vendor_name']}}</option>
-                                              @endif --}}
+                                        @if (!empty($datas["item"]))
+                                            <option value="{{$datas["item"]['Item_code']}}" selected>{{$datas["item"]['item_code']}}</option>
+                                        @endif
                                     </select>
 
 
@@ -98,8 +98,8 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Supplier *</label>
                                     <select class="form-control Supplier" name="Supplier">
-                                        @if (!empty($datas))
-                                            <option value="{{ $datas['item']['supplier'] }}">
+                                        @if (!empty($datas["item"]))
+                                            <option value="{{ $datas['item']['supplierId'] }}" selected>
                                             {{ $datas['item']['vendorId'] }} - {{ $datas['item']['vendorName'] }}</option>
                                         @endif
                                     </select>
