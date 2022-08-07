@@ -34,31 +34,31 @@
                                 LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}}
                                 </span>
                             </div>
-                            <div class="col-md-9 sub-column" style="width:65%;float: left; margin-left:2px;">
-                                <span style="font-size:10px;font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
+                            <div class="col-md-9 sub-column" style="width:65%;float: left; margin-left:2px;line-height:65%;">
+                                <span style="font-size:7px;font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
                                 @if($batchcard_data->discription!="")
-                                <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->discription}}</span><br/>
+                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->discription}}</span><br/>
                                 @endif
-                                <img src="{{asset('/img/alderlogo/sterile_eo.png')}}">
-                                <span class="smalltext" style=" font-size:5px;">{{$lot_no}}</span>
-                                <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">
-                                <span class="smalltext" style=" font-size:5px;">{{$batchcard_data->batch_no}}</span></br>
+                                <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;">
+                                <span class="smalltext" style=" font-size:6px;">{{$lot_no}}</span>
+                                <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:20px;">
+                                <span class="smalltext" style=" font-size:6px;">{{$batchcard_data->batch_no}}</span></br>
                                  <!-- <span style="font-size:8px;font-weight:bold;">STERILIZATION</span> -->
                                 
-                                 <div style=" height: 10px; border-bottom: 1px solid black; text-align: center">
-                                    <span style=" font-weight:bold;position: absolute;font-size: 8px; background-color: #f4f5f8; padding: 0 3px;margin-top: 4.5px;position: absolute;margin-left: -35px">
+                                 <div style=" height: 6px;width:90%; border-bottom: 1px solid black; text-align: center">
+                                    <span style=" font-weight:bold;position: absolute;font-size: 6px; background-color: #f4f5f8; padding: 0 3px;margin-top: 1.0px;position: absolute;margin-left: -28px">
                                         STERILIZATION<!--Padding is optional-->
                                     </span>
                                 </div>
 
-                                <div class="" style="display:block;margin-bottom:3px;">
-                                    <img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;
-                                    <span class="smalltext" style=" font-size:5px;">{{$sterilization_expiry_date}}</span>
-                                    <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
-                                    <span class="smalltext" style=" font-size:5px;">{{$manufacture_date}}</span>
+                                <div class="" style="display:block;margin-bottom:3px;margin-top:3px;">
+                                    <img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:6px; height:8px;">
+                                    <span class="smalltext" style=" font-size:5.5px;">{{$sterilization_expiry_date}}</span>
+                                    <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:12px;height:7px;">
+                                    <span class="smalltext" style=" font-size:5.5px;">{{$manufacture_date}}</span>
                                 </div>
                             </div>
-                            <div class="sub-column" style="width:30%;float: left;margin-top:60px;" >
+                            <div class="sub-column" style="width:30%;float: left;margin-top: 40px;margin-left:2px;" >
                                 <!-- <div class="width:30%;float: left;margin-top:60px;padding:2px"> -->
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 22px;float:left;">
                                     <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:22px;float:left;">

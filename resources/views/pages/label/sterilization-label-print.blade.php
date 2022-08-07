@@ -45,12 +45,13 @@
                         </div>
                         <div class="prdct-img" style="text-align:center;">
                         @if($batchcard_data->label_image)
+                            <?php $img_path = '/img/'.$batchcard_data->label_image; ?>
                             <!-- <img src="{{asset('/img/'.$batchcard_data->label_image)}}" style="width:55%;margin-top:128%;"> -->
-                            <img src="{{asset('/img/'.$batchcard_data->label_image)}}" style="width:55%;margin-top:100px;">
+                            <img src="{{asset($img_path)}}" style="width:55%;margin-top:116px;">
                         @endif
                         </div>
                     </div>
-                    <div class="subcolumn" style="float:left;width:70%;">
+                    <div class="subcolumn" style="float:left;width:74%;">
                         <div class="subdiv">
                             <div class="ss" style="float:left;width:50%;">
                                 <span style="text-align:left;"><strong>Ref: {{$batchcard_data->sku_code}}</strong></span></br/>
@@ -87,7 +88,7 @@
                             {{$batchcard_data->discription}}
                         </div>
                         <div class="subdiv" style="margin-top:3px;">
-                            <div class="ss" style="float:left;width:50%; font-size:10px;">
+                            <div class="ss" style="float:left;width:50%; font-size:9px;">
                                 <strong>{{$batchcard_data->ad_sp1}}</strong><br/>
                                 <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;">
                                 <br/>
@@ -96,7 +97,7 @@
                                 <span style="font-size:7px;">ML No:{{$batchcard_data->drug_license_number}}</span>
                                
                             </div>
-                            <div class="ss" style="float:left;width:50%;text-align:center;font-size:10px;">
+                            <div class="ss" style="float:left;width:50%;text-align:center;font-size:9px;">
                             <strong>{{$batchcard_data->ad_sp2}}</strong><br/>
                             <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:105px;height:45px;margin-top:5px;">
                                 <br/>
@@ -107,7 +108,7 @@
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width:36px;height:28px;">
                                 </div>
                                 &nbsp;
-                                <div class="address"  style="float:left;line-height: 75%;margin-left:1px;"> 
+                                <div class="address"  style="float:left;line-height: 75%;margin-left:1.5px;"> 
                                     <span class=" cls" style="font-size:7px;font-weight:bold";>ADLER HEALTHCARE PVT. LTD</span>
                                     <br/>
                                     <span style="font-size:5px;">

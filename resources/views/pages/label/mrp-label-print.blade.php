@@ -42,7 +42,7 @@
                         </div>  
                     </div> 
                     <div class="subcolumn" style="float:left;width:5%;">
-                        <span class="smalltext" style="font-size:10px;margin-top:25px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
+                        <span class="smalltext" style="font-size:8px;margin-top:22px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
                         LBL/F-{{$product->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($product->start_date) )}}
                         </span>
 
