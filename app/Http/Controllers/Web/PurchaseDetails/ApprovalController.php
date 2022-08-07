@@ -5,61 +5,45 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+
+use App\Models\PurchaseDetails\inv_purchase_req_item;
+
 use Validator;
 class ApprovalController extends Controller
 {
     public function __construct()
     {
-        $this->HttpRequest = new WebapiController;
+        $this->inv_purchase_req_item = new inv_purchase_req_item;
     }
 
     public function getList(Request $request) 
     {
-        $Request['Method'] = 'GET';
-        $Request['URL'] = config('app.ApiURL') . '/inventory/purchase-requisition-item-list-add-edit-delete/';
-        $Request['param'] = ['status' => 'NA',
-                            "no_of_entries"=>15,
-                            'page'=>$request->page ? $request->page  : 1];
-        $data = $this->HttpRequest->HttpClient($Request);
-       // print_r( $data );die;
+
+        $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved([]);
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-approvel', compact('data'));
     }
 
     public function approve(Request $request) 
     {
-            // $validation['purchaseRequisitionMasterId'] = ['required'];
-            // $validation['purchaseRequisitionItemId'] = ['required'];
-            // $validation['status'] = ['required'];
-            // $validation['approved_qty'] = ['required'];
-
-            // $validator = Validator::make($request->all(), $validation);
-            // $data = [];
-            // if(!$validator->errors()->all()) {
-
-                $Request['Method'] = 'POST';
-                $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-approval-list-add-edit-delete/";
-                $Request['param'] = json_encode([
-                        'action_type' =>'AddPurchaseRequititionApproval',
-                        //'purchase_reqisition ' => $request->purchaseRequisitionMasterId,
-                        'purchase_reqisition_list' => [$request->purchaseRequisitionItemId],
-                        'status'=> $request->status,
-                        'quantity '=>$request->approved_qty,
-                        'reason'=>$request->reason
-                        ]);
-                //print_r(   $Request['param'] );die;
-                $data = $this->HttpRequest->HttpClient($Request);
-                //  print_r($data);
-                //  exit;
-                if(!empty($data['response']['success'])){
-                    $request->session()->flash('success',  $data['response']['message']);
-                    return redirect('inventory/purchase-reqisition/approval');
-                 }
-                 else 
-                 {
-                    $request->session()->flash('error',  $data['error']);
-                    return redirect('inventory/purchase-reqisition/approval');
-                 }
-                
-          //  }
+            $validation['purchaseRequisitionItemId'] = ['required'];
+            $validation['status'] = ['required'];
+            $validation['reason'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all()) {
+                if($request->status == 1  && !$request->approved_qty){
+                    $validator->errors()->add('some_field', 'approved qty is empty !');
+                }
+            }
+            if(!$validator->errors()->all()) {
+                $data = ['inv_purchase_req_item_approve.approved_qty'=>$request->approved_qty,
+                         'inv_purchase_req_item_approve.status'=>$request->status,
+                         'inv_purchase_req_item_approve.remarks'=>$request->reason];
+                         $this->inv_purchase_req_item->updatedata(['inv_purchase_req_item_approve.pr_item_id'=>$request->purchaseRequisitionItemId],$data);
+                         $request->session()->flash('success', "You have successfully ".(($request->status == 1) ? 'approved' : 'hold')." a  requisition item ");
+                         return redirect('inventory/purchase-reqisition/approval');
+            }
+            if($validator->errors()->all()) {
+                return redirect('inventory/purchase-reqisition/approval')->withErrors($validator)->withInput();
+            }
     }
 }
