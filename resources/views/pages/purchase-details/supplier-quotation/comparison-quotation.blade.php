@@ -6,7 +6,7 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> <span>Supplier Quotation</span> <span>Comparison of quotation</span> </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation <span>( {{$rq_no}} )</span>
+			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation <span>( {{$rq_number}} )</span>
               <div class="right-button">
                 
                   <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
@@ -52,17 +52,18 @@
 							<th  rowspan="2" style="color:#1c273c;">Item </th>
 							<th  rowspan="2" style="color:#1c273c;">Item Code</th>
 							<th  rowspan="2" style="color:#1c273c;">Item HSN</th>
-                            @if(!empty($Res['response']['response1']))
-				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
-							<th colspan="3" style="color:black; font-size:15px;"><center>{{$supplier['vendor_name']}}</center></th>
+                            @if(!empty($suppliers))
+				            @foreach($suppliers as $supplier)
+							<th colspan="4" style="color:black; font-size:15px;"><center>{{$supplier['vendor_name']}}</center></th>
                             @endforeach
                             @endif
 						</tr>
                         <tr>
-                        @if(!empty($Res['response']['response1']))
-				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
+                        @if(!empty($suppliers))
+				            @foreach($suppliers as $supplier)
                             <th style="color:#1c273c;">Rate</th>
                             <th style="color:#1c273c;">Qty</th>
+                            <th style="color:#1c273c;">Discount</th>
                             <th style="color:#1c273c;">Total</th>
                         @endforeach
                             @endif
@@ -70,16 +71,17 @@
                         
 					</thead>
 					<tbody >
-                    @if(!empty($Res['response']['response0']['supplier_quotation'][0]))
-						@foreach($supplier_values['supplier_items'] as $item)
+                    @if(!empty($supplier_data))
+						@foreach($supplier_data as $item)
                         <tr>
                             {{-- <th>1</th> --}}
                             <td >{{$item['item_name']}}</td>
                             <td>{{$item['item_code']}}</td>
-                            <td>{{$item['hsn']}}</td>
+                            <td>{{$item['hsn_code']}}</td>
                             @foreach($item['price_data'] as $data)
-                            <td class="supplier_rate" >@if($data['supplier_rate']==NULL) 0 @else {{ $data['supplier_rate'] }} @endif</td>
+                            <td class="supplier_rate" >@if($data['rate']==NULL) 0 @else {{ $data['rate'] }} @endif</td>
                             <td class="quantity" >{{ $data['quantity'] }}</td>
+                            <td class="quantity" >{{ $data['discount'] }}</td>
                             <td class="total" >{{ $data['total'] }}</td>
                             @endforeach
                             

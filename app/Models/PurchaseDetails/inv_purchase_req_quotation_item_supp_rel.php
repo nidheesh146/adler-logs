@@ -47,7 +47,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
         'inv_purchase_req_quotation_item_supp_rel.discount as supplier_discount','inv_purchase_req_quotation_item_supp_rel.item_id as inv_item_id','inv_supplier.vendor_id','inv_supplier.vendor_name',
         'inv_purchase_req_quotation_item_supp_rel.specification as supp_specification','inventory_rawmaterial.item_name','inv_unit.unit_name','inventory_gst.gst','currency_exchange_rate.currency_code',
         'inv_purchase_req_item.basic_value','inv_purchase_req_item.rate','inv_purchase_req_item.discount_percent','inv_purchase_req_item.net_value','inv_purchase_req_item.discount_percent',
-        'inv_purchase_req_item.short_description','inv_purchase_req_item_approve.approved_qty'
+        'inventory_rawmaterial.short_description','inv_purchase_req_item_approve.approved_qty'
       
       
         ])
@@ -64,6 +64,32 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
         ->where($condition)
         ->first();
      }
+
+     function get_quotation_items_details($condition)
+     {
+        return $this->select('inventory_rawmaterial.id as itemId','inventory_rawmaterial.item_code','inventory_rawmaterial.item_name', 'inventory_rawmaterial.hsn_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id',
+                             'inv_purchase_req_quotation_item_supp_rel.quantity','inv_purchase_req_quotation_item_supp_rel.rate', 'inv_purchase_req_quotation_item_supp_rel.discount',
+                             'inv_supplier.vendor_id','inv_supplier.vendor_name', 'inventory_rawmaterial.id as itemId')
+                    ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
+                    ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_item_supp_rel.supplier_id')
+                    ->where($condition)
+                    ->groupBy('inventory_rawmaterial.item_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')
+                    ->orderBy('inventory_rawmaterial.id','DESC')
+                    ->orderBy('inv_purchase_req_quotation_item_supp_rel.supplier_id','ASC')
+                    ->get();
+     }
+
+     function get_quotation_items($condition)
+     {
+        return $this->select('inventory_rawmaterial.id as itemId','inventory_rawmaterial.item_code','inventory_rawmaterial.item_name', 'inventory_rawmaterial.hsn_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')
+                    ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
+                    ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                    ->orderBy('inventory_rawmaterial.id','DESC')
+                    ->where($condition)
+                    ->groupBy('inventory_rawmaterial.item_code')
+                    ->get()->toArray();
+        }
 
 
 }
