@@ -32,17 +32,17 @@
                 }
                 
             </style>
-			<div class="table-responsive" style="overflow-y: hidden;overflow-x: visible; border-color:black;">
-				<table class="table table-bordered " id="example1">
+			<div class="table-responsive" style=" border-color:black;width:1000px; overflow-x: scroll;">
+				<table class="table table-bordered " id="example1" class="table1">
                 <colgroup>
                 <?php
                     function bgcolor(){return dechex(rand(0,10000000));}
                 ?>
                     <col span="3">
-                    @if(!empty($Res['response']['response1']))
+                    @if(!empty($suppliers))
                     <?php $i=0; ?>
-                    @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
-                    <col span="3" style="background-color:#<?php echo bgcolor(); ?>">
+                    @foreach($suppliers as $supplier)
+                    <col span="4" style="background-color:#<?php echo bgcolor(); ?>">
                     <?php $i++; ?>
                     @endforeach
                     @endif
@@ -61,7 +61,7 @@
                         <tr>
                         @if(!empty($suppliers))
 				            @foreach($suppliers as $supplier)
-                            <th style="color:#1c273c;">Rate</th>
+                            <th width="5%" style="color:#1c273c;">Rate</th>
                             <th style="color:#1c273c;">Qty</th>
                             <th style="color:#1c273c;">Discount</th>
                             <th style="color:#1c273c;">Total</th>
@@ -74,26 +74,26 @@
                     @if(!empty($supplier_data))
 						@foreach($supplier_data as $item)
                         <tr>
-                            {{-- <th>1</th> --}}
+                            <?php $i=1;?>
                             <td >{{$item['item_name']}}</td>
                             <td>{{$item['item_code']}}</td>
                             <td>{{$item['hsn_code']}}</td>
                             @foreach($item['price_data'] as $data)
-                            <td class="supplier_rate" >@if($data['rate']==NULL) 0 @else {{ $data['rate'] }} @endif</td>
-                            <td class="quantity" >{{ $data['quantity'] }}</td>
+                            <td class="supplier_rate" >@if($data['rate']==NULL) 0 @else {{ $data['rate'] }} {{$item['currency_code']}} @endif</td>
+                            <td class="quantity" >{{ $data['quantity'] }} {{$item['unit_name']}}</td>
                             <td class="quantity" >{{ $data['discount'] }}</td>
-                            <td class="total" >{{ $data['total'] }}</td>
+                            <td class="total{{$i++}}">{{ $data['total'] }} {{$item['currency_code']}}</td>
                             @endforeach
-                            
 						</tr>
+                        
                     @endforeach
                     @endif
                     <tr>
                     <td colspan="3"></td>
-                    @if(!empty($Res['response']['response1']))
-				    @foreach($supplier_values['grant_total_supplier'] as $item)
-                            <td colspan="2">Total :</td>
-                            <td class="grant_total"> {{$item}}</td>
+                    @if(!empty($suppliers))
+				    @foreach($suppliers as $supplier)
+                            <td colspan="3">Total :</td>
+                            <td class="grant_total"><span class="tot"></span> {{$item['currency_code']}}</td>
                     @endforeach
                     </tr>
                     @endif
@@ -124,10 +124,24 @@
 <script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
-
-
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+<script type="text/javascript">
+   var getSum = function (colNumber) {
+    var sum = 0;
+    var selector = '.total' + colNumber;
+    
+    $('#example1').find(selector).each(function (index, element) {
+        sum += parseInt($(element).text());
+    });  
 
+    return sum;        
+};
+
+$('#example1').find('.tot').each(function (index, element) {
+    $(this).text(  getSum(index + 1)); 
+});
+
+</script>
 
 @stop

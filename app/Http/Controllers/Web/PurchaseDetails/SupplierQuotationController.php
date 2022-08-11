@@ -199,51 +199,8 @@ class SupplierQuotationController extends Controller
         return view('pages/purchase-details/supplier-quotation/supplier-quotation-items', compact('data','rq_no','supp_id'));
     }
 
-    public function comparisonOfQuotation($rq_no) {
-        
-        // $Res['error'] = "";
-        // $Res['response'] = [];
-        // try {
-        //     $response = Http::pool(fn (Pool $pool) => [
-        //         $pool->withHeaders([
-        //             'Authorization' => 'Token ' . session('user')['token'],
-        //         ])->get(config('app.ApiURL') . '/inventory/supplier-quotation-new-add-edit-delete/',['quotation'=>$rq_no]),
-        //         $pool->withHeaders([
-        //             'Authorization' => 'Token ' . session('user')['token'],
-        //         ])->get(config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/',['rq_no' => $rq_no]),
-        //     ]);
-        //     if ($response[0]->status() == 200 && $response[1]->status() == 200){
-        //         if ($response[0]->json()['status'] == 'success' && $response[1]->json()['status'] == 'success') {
-        //             $Res['response'] =['response0'=>$response[0]->json(),'response1'=>$response[1]->json()];
-                    
-        //         }else{
-        //             $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-        //         }
-        //     }else{
-        //         $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-        //     }
-        // }catch (\Exception $e) {
-        //     $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-        // }
-        //     foreach($Res['response']['response0']['supplier_quotation'] as $item)
-        //     {   
-        //         $supplier = $item['supplier']['vendor_id'];
-        //         $newdata =  [
-        //                     'item_id' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['id'],
-        //                     'item_name' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_name'],
-        //                     'item_code' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_code'],
-        //                      'hsn'=>$item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['hsn_code'],
-        //                 ];
-        //         $supplier_price = [
-        //                     'supplier_rate'=>$item['supplier_rate'],
-        //                     'quantity'=>$item['quantity'],
-        //                     'total'=>$item['supplier_rate']*$item['quantity']
-        //             ];
-        //         $supplier_Itemprice []= $supplier_price;
-        //         $supplier_item[] = $newdata;
-        //     }
-        //     $supplier_count = count($Res['response']['response1']['quotation'][0]['supplier']);
-        //     $supplier_values = $this->arrange_Itemprice_list($supplier_item, $supplier_Itemprice, $supplier_count);
+    public function comparisonOfQuotation($rq_no) 
+    {
         $rq_number = $this->inv_purchase_req_quotation->get_quotation_number(['quotation_id'=> $rq_no]);
         $suppliers = $this->inv_purchase_req_quotation_supplier->get_suppliers(['inv_purchase_req_quotation_supplier.quotation_id'=>$rq_no]);
         $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
@@ -266,7 +223,7 @@ class SupplierQuotationController extends Controller
                         'quantity' => $details['quantity'],
                         'rate' => $details['rate'],
                         'discount' => $details['discount'],
-                        'total'=>$details['rate']*$details['quantity']
+                        'total'=>$details['rate']*$details['quantity']-$details['rate']*$details['quantity']*$details['discount']/100
                     ];
                 }
                 $price_data['price_data'] = $newdata; 
