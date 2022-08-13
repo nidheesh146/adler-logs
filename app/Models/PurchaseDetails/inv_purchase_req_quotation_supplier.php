@@ -44,6 +44,14 @@ class inv_purchase_req_quotation_supplier extends Model
                     ->get();
     }
 
+    function checkQuotation($condition)
+    {
+        return $this->select('selected_supplier')
+                    ->where($condition)
+                    ->pluck('selected_supplier')
+                    ->first();
+    }
+
 
 
 }

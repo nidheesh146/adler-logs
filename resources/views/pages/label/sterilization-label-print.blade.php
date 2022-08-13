@@ -25,7 +25,7 @@
                 <i class="fa fa-print" aria-hidden="true"></i>&nbsp;Print
             </button>
             </div>
-            <div class="row label-div columns" id="label-div">
+            <div class="row columns">
                 <?php
                     $label_per_page =8;
                     $page_count = (int)($no_of_label/8);
@@ -33,9 +33,9 @@
                  ?>
                 <div class="label-div" id="label-div">
                     @for ($i = 0; $i< $page_count; $i++)
-                    <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21cm;height:29.7cm;">
+                    <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                         @for ($j=0;$j<$label_per_page;$j++)
-                        <div class="label-container" style="float:left;width:10.5cm;height:7cm;padding:2px;margin-bottom:0.08cm;">
+                        <div class="label-container" style="float:left;width:10.4cm;height:7cm;margin-bottom:0.08cm;">
                             <div class="row1" style="font-size:12px;height:fit-content;">    
                                 <div class="subcolumn1" style="float:left; width:75px">
                                     <div class="logo" style="text-align:center;">
@@ -145,9 +145,9 @@
                     </div>
                     @endfor
                     @if($remaining!=0)
-                    <div class="page-container" style="margin-top:34.0157px;margin-bottom:17.007px">
-                    @for ($k=0;$k<$remaining;$k++)
-                        <div class="label-container" style="float:left;width:396.85px;height:264.566px;padding:2px;">
+                    <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                        @for ($j=0;$j<$remaining;$j++)
+                        <div class="label-container" style="float:left;width:10.4cm;height:7cm;margin-bottom:0.08cm;">
                             <div class="row1" style="font-size:12px;height:fit-content;">    
                                 <div class="subcolumn1" style="float:left; width:75px">
                                     <div class="logo" style="text-align:center;">
@@ -253,7 +253,7 @@
                                 </div>
                             </div>
                         </div>
-                    @endfor
+                        @endfor
                     </div>
                     @endif
                 </div>

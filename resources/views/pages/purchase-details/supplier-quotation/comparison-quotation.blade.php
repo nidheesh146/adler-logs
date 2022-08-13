@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
 
 <div class="az-content az-content-dashboard">
   <br>
@@ -7,21 +8,17 @@
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> <span>Supplier Quotation</span> <span>Comparison of quotation</span> </div>
 			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation <span>( {{$rq_number}} )</span>
-              <div class="right-button">
-                
-                  <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
-                      <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-                  <div class="dropdown-menu">
-                  <a href="" class="dropdown-item">Excel</a>
-          
-                  </div>
-              <div>  
-              </div>
-          </div>
-        </h4>
-			<div class="az-dashboard-nav">
-				<nav class="nav"> </nav>
-			</div>
+            </h4>
+			<div class="alert alert-success success" style="width: 100%;display:none;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <i class="icon fa fa-check"></i> Quotation selected successfully..
+            </div>
+                   
+            <div class="alert alert-danger danger"  role="alert" style="width: 100%;display:none;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                Quotation selection failed
+            </div>
+                 
             <style>
                th, td {
                 border-color: black;
@@ -42,7 +39,7 @@
                     @if(!empty($suppliers))
                     <?php $i=0; ?>
                     @foreach($suppliers as $supplier)
-                    <col span="4" style="background-color:#<?php echo bgcolor(); ?>">
+                    <col span="4" style="border-color:black; background-color:#<?php echo bgcolor(); ?>">
                     <?php $i++; ?>
                     @endforeach
                     @endif
@@ -92,8 +89,15 @@
                     <td colspan="3"></td>
                     @if(!empty($suppliers))
 				    @foreach($suppliers as $supplier)
-                            <td colspan="3">Total :</td>
-                            <td class="grant_total"><span class="tot"></span> {{$item['currency_code']}}</td>
+                        <td colspan="3">
+                            <?php $check = $fn->checkSelectedQuotation($rq_no,$supplier['id']) ?>
+                            <button style="margin-left: 9px;font-size: 14px;" class="button badge badge-pill badge-warning select-button" data-quotation="{{$rq_no}}" data-supplier="{{$supplier['id']}}" @if($check==1) disabled @endif>
+                            <span class="text">@if($check==1)Selected @else Select @endif</span> 
+                            <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
+                            </button>
+                            <span style="float:right">Total :</span>
+                        </td>
+                        <td class="grant_total"><span class="tot"></span> {{$item['currency_code']}}</td>
                     @endforeach
                     </tr>
                     @endif
@@ -140,6 +144,33 @@
 
 $('#example1').find('.tot').each(function (index, element) {
     $(this).text(  getSum(index + 1)); 
+});
+
+$(".select-button").on("click", function(){
+    var quotation_id = $(this).data('quotation');
+    var supplier = $(this).data('supplier');
+    $(".danger").hide();
+    $(".success").hide();
+    //alert(supplier);
+    $.ajax({
+           type:'POST',
+           url:"{{ url('inventory/select-quotation') }}",
+           data:{ "_token": "{{ csrf_token() }}",quotation_id:quotation_id, supplier:supplier},
+           success:function(data){
+            location.reload();
+              if(data == 1)
+              {
+                
+                $(".success").show();
+                //alert('Quotation Selected successfuly');
+              }
+              else 
+              {
+                $(".danger").show();
+                //alert('Quotation Selection failed');
+              }
+           }
+    });
 });
 
 </script>

@@ -206,7 +206,7 @@ class SupplierQuotationController extends Controller
         $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
         $item_details = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
         $supplier_data = $this->arrage_items($items, $item_details);
-        return view('pages/purchase-details/supplier-quotation/comparison-quotation',compact('suppliers', 'rq_number', 'supplier_data'));
+        return view('pages/purchase-details/supplier-quotation/comparison-quotation',compact('suppliers', 'rq_number', 'supplier_data', 'rq_no'));
     }
 
     public function arrage_items($items,$item_details)
@@ -234,7 +234,29 @@ class SupplierQuotationController extends Controller
 
     }
 
- 
+    public function selectQuotation(Request $request)
+    {
+        $quotation_id = $request->quotation_id;
+        $supplier = $request->supplier;
+        $un_select = $this->inv_purchase_req_quotation_supplier->updatedata(['quotation_id'=>$request->quotation_id,'selected_supplier'=>1],['selected_supplier'=>0]);
+        $select = $this->inv_purchase_req_quotation_supplier->updatedata(['quotation_id'=>$request->quotation_id,'supplier_id'=>$request->supplier],['selected_supplier'=>1]);
+        if($un_select && $select) {
+            return 1;
+        }
+        else
+        {
+           return 0;
+        } 
+    }
+
+    function checkSelectedQuotation($rq_no,$supplier)
+    {
+        $check = inv_purchase_req_quotation_supplier::where('quotation_id','=',$rq_no)
+                                                    ->where('supplier_id','=',$supplier)
+                                                    ->pluck('selected_supplier')
+                                                    ->first();
+          return $check;
+    }
 
 
 }

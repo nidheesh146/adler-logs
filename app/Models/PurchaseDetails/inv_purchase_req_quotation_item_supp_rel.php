@@ -82,7 +82,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
 
      function get_quotation_items($condition)
      {
-        return $this->select('inventory_rawmaterial.id as itemId','inventory_rawmaterial.item_code','inventory_rawmaterial.item_name', 'inventory_rawmaterial.hsn_code', 
+        return $this->select('inv_purchase_req_quotation_item_supp_rel.quotation_id','inventory_rawmaterial.id as itemId','inventory_rawmaterial.item_code','inventory_rawmaterial.item_name', 'inventory_rawmaterial.hsn_code', 
                              'inv_purchase_req_quotation_item_supp_rel.supplier_id','currency_exchange_rate.currency_code','inv_unit.unit_name')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
