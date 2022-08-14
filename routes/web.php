@@ -55,12 +55,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
 
 
     
-
- 
-    
-
-    
-    
     Route::get('inventory/itemcodesearch/{itemcode?}', 'InventoryController@itemcodesearch');
 
     Route::get('inventory/suppliersearch', 'InventoryController@suppliersearch');
@@ -74,9 +68,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/view-supplier-quotation-items/{rq_no}/{supp_id}','SupplierQuotationController@viewSupplierQuotationItems');
     Route::get('inventory/edit-supplier-quotation-item/{rq_no}/{supp_id}/{item_id}', 'SupplierQuotationController@getSupplierQuotationEditItem');
     Route::post('inventory/edit-supplier-quotation-item/{rq_no}/{supp_id}/{item_id}', 'SupplierQuotationController@getSupplierQuotationEditItem');
-       
+    // comparison of quotation   
     Route::get('inventory/comparison-quotation/{rq_no}', 'SupplierQuotationController@comparisonOfQuotation');
     Route::post('inventory/select-quotation', 'SupplierQuotationController@selectQuotation');
+
+    //final purchase
+    Route::get('inventory/final-purchase', 'PurchaseController@getFinalPurchase');
+    Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');
+    Route::get('inventory/lot-allocation', 'PurchaseController@lotAllocation');
 });
 
 
