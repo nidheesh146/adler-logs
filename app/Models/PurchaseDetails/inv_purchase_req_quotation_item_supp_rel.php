@@ -47,7 +47,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
         'inv_purchase_req_quotation_item_supp_rel.discount as supplier_discount','inv_purchase_req_quotation_item_supp_rel.item_id as inv_item_id','inv_supplier.vendor_id','inv_supplier.vendor_name',
         'inv_purchase_req_quotation_item_supp_rel.specification as supp_specification','inventory_rawmaterial.item_name','inv_unit.unit_name','inventory_gst.gst','currency_exchange_rate.currency_code',
         'inv_purchase_req_item.basic_value','inv_purchase_req_item.rate','inv_purchase_req_item.discount_percent','inv_purchase_req_item.net_value','inv_purchase_req_item.discount_percent',
-        'inv_purchase_req_item.short_description','inv_purchase_req_item_approve.approved_qty'
+        'inventory_rawmaterial.short_description','inv_purchase_req_item_approve.approved_qty'
       
       
         ])
