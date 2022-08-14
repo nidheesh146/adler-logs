@@ -55,5 +55,10 @@ class inv_purchase_req_quotation extends Model
 
     }
 
-   
+    function get_quotation_number($condition){
+        return $this->select('rq_no')
+                    ->where($condition)
+                    ->pluck('rq_no')
+                    ->first();
+    }
 }

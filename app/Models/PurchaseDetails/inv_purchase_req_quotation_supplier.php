@@ -37,6 +37,21 @@ class inv_purchase_req_quotation_supplier extends Model
                     ->where($condition)->first();
      }
 
+     function get_suppliers($condition){
+        return $this->select(['inv_supplier.id','inv_supplier.vendor_id', 'inv_supplier.vendor_name'])
+                    ->join('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+                    ->where($condition)
+                    ->get();
+    }
+
+    function checkQuotation($condition)
+    {
+        return $this->select('selected_supplier')
+                    ->where($condition)
+                    ->pluck('selected_supplier')
+                    ->first();
+    }
+
 
 
 }

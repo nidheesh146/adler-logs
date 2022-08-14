@@ -199,98 +199,63 @@ class SupplierQuotationController extends Controller
         return view('pages/purchase-details/supplier-quotation/supplier-quotation-items', compact('data','rq_no','supp_id'));
     }
 
-    public function comparisonOfQuotation($rq_no) {
-        // $Request['Method'] = 'GET';
-        // $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-new-add-edit-delete/";
-        // $Request['param'] = ['quotation' => $rq_no];
-        // $data = $this->HttpRequest->HttpClient($Request);
-        $Res['error'] = "";
-        $Res['response'] = [];
-        try {
-            $response = Http::pool(fn (Pool $pool) => [
-                $pool->withHeaders([
-                    'Authorization' => 'Token ' . session('user')['token'],
-                ])->get(config('app.ApiURL') . '/inventory/supplier-quotation-new-add-edit-delete/',['quotation'=>$rq_no]),
-                $pool->withHeaders([
-                    'Authorization' => 'Token ' . session('user')['token'],
-                ])->get(config('app.ApiURL') . '/inventory/quotation-new-add-edit-delete/',['rq_no' => $rq_no]),
-            ]);
-            if ($response[0]->status() == 200 && $response[1]->status() == 200){
-                if ($response[0]->json()['status'] == 'success' && $response[1]->json()['status'] == 'success') {
-                    $Res['response'] =['response0'=>$response[0]->json(),'response1'=>$response[1]->json()];
-                    
-                }else{
-                    $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-                }
-            }else{
-                $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-            }
-        }catch (\Exception $e) {
-            $Res['error'] = " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-        }
-            foreach($Res['response']['response0']['supplier_quotation'] as $item)
-            {   
-                $supplier = $item['supplier']['vendor_id'];
-                $newdata =  [
-                            'item_id' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['id'],
-                            'item_name' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_name'],
-                            'item_code' => $item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['item_code'],
-                             'hsn'=>$item['purchase_reqisition_approval']['purchase_reqisition_list'][0]['item_code']['hsn_code'],
-                        ];
-                $supplier_price = [
-                            'supplier_rate'=>$item['supplier_rate'],
-                            'quantity'=>$item['quantity'],
-                            'total'=>$item['supplier_rate']*$item['quantity']
-                    ];
-                $supplier_Itemprice []= $supplier_price;
-                $supplier_item[] = $newdata;
-            }
-            $supplier_count = count($Res['response']['response1']['quotation'][0]['supplier']);
-            $supplier_values = $this->arrange_Itemprice_list($supplier_item, $supplier_Itemprice, $supplier_count);
-
-        return view('pages/supplier-quotation/comparison-quotation',compact('rq_no', 'Res', 'supplier_values'));
+    public function comparisonOfQuotation($rq_no) 
+    {
+        $rq_number = $this->inv_purchase_req_quotation->get_quotation_number(['quotation_id'=> $rq_no]);
+        $suppliers = $this->inv_purchase_req_quotation_supplier->get_suppliers(['inv_purchase_req_quotation_supplier.quotation_id'=>$rq_no]);
+        $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
+        $item_details = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
+        $supplier_data = $this->arrage_items($items, $item_details);
+        return view('pages/purchase-details/supplier-quotation/comparison-quotation',compact('suppliers', 'rq_number', 'supplier_data', 'rq_no'));
     }
 
-    public function arrange_Itemprice_list($supplier_item, $supplier_Itemprice, $supplier_count)
+    public function arrage_items($items,$item_details)
     {
-        $size = ceil(count($supplier_item)/$supplier_count);
-        $array1 = array_chunk($supplier_item, $size);
-        $item_by_supplier = $array1[0];
-        $item_count = count($item_by_supplier);
-        $array = array_chunk($supplier_Itemprice, $item_count);
-        $length = sizeof($array[0]);
-        //print_r(json_encode($array));exit;
-        foreach($array as $ar)
+        $newdata = [];
+        foreach($items as $item)
         {
-            $total =0;
-            foreach($ar as $a){
-                $total = $total+$a['total'];
-            }
-            $grant_total_supplier[] = $total;
-        }
-        //print_r(json_encode($grant_total));exit;
-        for($i=0;$i<$item_count;$i++)
-        {
-             foreach($array as $arr) 
+            $newdata = [];
+            foreach($item_details as $details)
             {
-            $supplier_items[] = $arr[$i];
+                if($item['itemId']==$details['itemId'])
+                {
+                    $newdata[] = [
+                        'quantity' => $details['quantity'],
+                        'rate' => $details['rate'],
+                        'discount' => $details['discount'],
+                        'total'=>$details['rate']*$details['quantity']-$details['rate']*$details['quantity']*$details['discount']/100
+                    ];
+                }
+                $price_data['price_data'] = $newdata; 
             }
+            $item1[] = array_merge($item, $price_data);
         }
-    
-        $supplier_item_prices= array_chunk($supplier_items,$supplier_count );
-        $i=0;
-        foreach($item_by_supplier as $item)
-        {
-            $data = [
-                    'price_data' =>array_reverse( $supplier_item_prices[$i])
-                ];
-            $final[] = array_merge($item, $data);
-            $i++;
+        return $item1;
 
+    }
+
+    public function selectQuotation(Request $request)
+    {
+        $quotation_id = $request->quotation_id;
+        $supplier = $request->supplier;
+        $un_select = $this->inv_purchase_req_quotation_supplier->updatedata(['quotation_id'=>$request->quotation_id,'selected_supplier'=>1],['selected_supplier'=>0]);
+        $select = $this->inv_purchase_req_quotation_supplier->updatedata(['quotation_id'=>$request->quotation_id,'supplier_id'=>$request->supplier],['selected_supplier'=>1]);
+        if($un_select && $select) {
+            return 1;
         }
-        $return_values = ['supplier_items' => $final,
-                            'grant_total_supplier'=> array_reverse($grant_total_supplier)];
-        return $return_values;
+        else
+        {
+           return 0;
+        } 
+    }
+
+    function checkSelectedQuotation($rq_no,$supplier)
+    {
+        $check = inv_purchase_req_quotation_supplier::where('quotation_id','=',$rq_no)
+                                                    ->where('supplier_id','=',$supplier)
+                                                    ->pluck('selected_supplier')
+                                                    ->first();
+          return $check;
     }
 
 

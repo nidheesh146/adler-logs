@@ -1,27 +1,24 @@
 @extends('layouts.default')
 @section('content')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
 
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> <span>Supplier Quotation</span> <span>Comparison of quotation</span> </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation <span>( {{$rq_no}} )</span>
-              <div class="right-button">
-                
-                  <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
-                      <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-                  <div class="dropdown-menu">
-                  <a href="" class="dropdown-item">Excel</a>
-          
-                  </div>
-              <div>  
-              </div>
-          </div>
-        </h4>
-			<div class="az-dashboard-nav">
-				<nav class="nav"> </nav>
-			</div>
+			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation <span>( {{$rq_number}} )</span>
+            </h4>
+			<div class="alert alert-success success" style="width: 100%;display:none;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <i class="icon fa fa-check"></i> Quotation selected successfully..
+            </div>
+                   
+            <div class="alert alert-danger danger"  role="alert" style="width: 100%;display:none;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                Quotation selection failed
+            </div>
+                 
             <style>
                th, td {
                 border-color: black;
@@ -32,17 +29,17 @@
                 }
                 
             </style>
-			<div class="table-responsive" style="overflow-y: hidden;overflow-x: visible; border-color:black;">
-				<table class="table table-bordered " id="example1">
+			<div class="table-responsive" style=" border-color:black;width:1000px; overflow-x: scroll;">
+				<table class="table table-bordered " id="example1" class="table1">
                 <colgroup>
                 <?php
                     function bgcolor(){return dechex(rand(0,10000000));}
                 ?>
                     <col span="3">
-                    @if(!empty($Res['response']['response1']))
+                    @if(!empty($suppliers))
                     <?php $i=0; ?>
-                    @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
-                    <col span="3" style="background-color:#<?php echo bgcolor(); ?>">
+                    @foreach($suppliers as $supplier)
+                    <col span="4" style="border-color:black; background-color:#<?php echo bgcolor(); ?>">
                     <?php $i++; ?>
                     @endforeach
                     @endif
@@ -52,17 +49,18 @@
 							<th  rowspan="2" style="color:#1c273c;">Item </th>
 							<th  rowspan="2" style="color:#1c273c;">Item Code</th>
 							<th  rowspan="2" style="color:#1c273c;">Item HSN</th>
-                            @if(!empty($Res['response']['response1']))
-				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
-							<th colspan="3" style="color:black; font-size:15px;"><center>{{$supplier['vendor_name']}}</center></th>
+                            @if(!empty($suppliers))
+				            @foreach($suppliers as $supplier)
+							<th colspan="4" style="color:black; font-size:15px;"><center>{{$supplier['vendor_name']}}</center></th>
                             @endforeach
                             @endif
 						</tr>
                         <tr>
-                        @if(!empty($Res['response']['response1']))
-				            @foreach($Res['response']['response1']['quotation'][0]['supplier'] as $supplier)
-                            <th style="color:#1c273c;">Rate</th>
+                        @if(!empty($suppliers))
+				            @foreach($suppliers as $supplier)
+                            <th width="5%" style="color:#1c273c;">Rate</th>
                             <th style="color:#1c273c;">Qty</th>
+                            <th style="color:#1c273c;">Discount</th>
                             <th style="color:#1c273c;">Total</th>
                         @endforeach
                             @endif
@@ -70,28 +68,36 @@
                         
 					</thead>
 					<tbody >
-                    @if(!empty($Res['response']['response0']['supplier_quotation'][0]))
-						@foreach($supplier_values['supplier_items'] as $item)
+                    @if(!empty($supplier_data))
+						@foreach($supplier_data as $item)
                         <tr>
-                            {{-- <th>1</th> --}}
+                            <?php $i=1;?>
                             <td >{{$item['item_name']}}</td>
                             <td>{{$item['item_code']}}</td>
-                            <td>{{$item['hsn']}}</td>
+                            <td>{{$item['hsn_code']}}</td>
                             @foreach($item['price_data'] as $data)
-                            <td class="supplier_rate" >@if($data['supplier_rate']==NULL) 0 @else {{ $data['supplier_rate'] }} @endif</td>
-                            <td class="quantity" >{{ $data['quantity'] }}</td>
-                            <td class="total" >{{ $data['total'] }}</td>
+                            <td class="supplier_rate" >@if($data['rate']==NULL) 0 @else {{ $data['rate'] }} {{$item['currency_code']}} @endif</td>
+                            <td class="quantity" >{{ $data['quantity'] }} {{$item['unit_name']}}</td>
+                            <td class="quantity" >{{ $data['discount'] }}</td>
+                            <td class="total{{$i++}}">{{ $data['total'] }} {{$item['currency_code']}}</td>
                             @endforeach
-                            
 						</tr>
+                        
                     @endforeach
                     @endif
                     <tr>
                     <td colspan="3"></td>
-                    @if(!empty($Res['response']['response1']))
-				    @foreach($supplier_values['grant_total_supplier'] as $item)
-                            <td colspan="2">Total :</td>
-                            <td class="grant_total"> {{$item}}</td>
+                    @if(!empty($suppliers))
+				    @foreach($suppliers as $supplier)
+                        <td colspan="3">
+                            <?php $check = $fn->checkSelectedQuotation($rq_no,$supplier['id']) ?>
+                            <button style="margin-left: 9px;font-size: 14px;" class="button badge badge-pill badge-warning select-button" data-quotation="{{$rq_no}}" data-supplier="{{$supplier['id']}}" @if($check==1) disabled @endif>
+                            <span class="text">@if($check==1)Selected @else Select @endif</span> 
+                            <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
+                            </button>
+                            <span style="float:right">Total :</span>
+                        </td>
+                        <td class="grant_total"><span class="tot"></span> {{$item['currency_code']}}</td>
                     @endforeach
                     </tr>
                     @endif
@@ -122,10 +128,51 @@
 <script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
-
-
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+<script type="text/javascript">
+   var getSum = function (colNumber) {
+    var sum = 0;
+    var selector = '.total' + colNumber;
+    
+    $('#example1').find(selector).each(function (index, element) {
+        sum += parseInt($(element).text());
+    });  
 
+    return sum;        
+};
+
+$('#example1').find('.tot').each(function (index, element) {
+    $(this).text(  getSum(index + 1)); 
+});
+
+$(".select-button").on("click", function(){
+    var quotation_id = $(this).data('quotation');
+    var supplier = $(this).data('supplier');
+    $(".danger").hide();
+    $(".success").hide();
+    //alert(supplier);
+    $.ajax({
+           type:'POST',
+           url:"{{ url('inventory/select-quotation') }}",
+           data:{ "_token": "{{ csrf_token() }}",quotation_id:quotation_id, supplier:supplier},
+           success:function(data){
+            location.reload();
+              if(data == 1)
+              {
+                
+                $(".success").show();
+                //alert('Quotation Selected successfuly');
+              }
+              else 
+              {
+                $(".danger").show();
+                //alert('Quotation Selection failed');
+              }
+           }
+    });
+});
+
+</script>
 
 @stop

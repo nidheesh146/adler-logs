@@ -27,7 +27,7 @@
             </div>
             <div class="row label-div columns" id="label-div">
                 @for ($i = 0; $i< $no_of_label; $i++)
-                <div class=" column" style=" height:13.8%;float: left;width: 45%;border-style: ridge;border-color:#f0f0f5 ;margin:5px;padding:8px;font-size:13px;">
+                <div class=" column" style=" height:16.66%;float: left;width: 49%;padding:2px 2px;font-size:13px;">
                     <div class="subcolumn" style="float:left;width:95%;">
                         <div class="address" style="font-weight:bold;">
                             MKtd and Distributed by : Smith & Nephew<br/>
