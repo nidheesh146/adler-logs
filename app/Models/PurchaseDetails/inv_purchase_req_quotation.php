@@ -61,4 +61,21 @@ class inv_purchase_req_quotation extends Model
                     ->pluck('rq_no')
                     ->first();
     }
+
+    function get_master_filter($condition1,$condition2){
+       $query =  $this->select(['inv_purchase_req_quotation.quotation_id as id','inv_purchase_req_quotation.rq_no as text'])
+                    ->join('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
+                    ->where($condition1);
+                   // ->get();
+
+     return    DB::table('inv_final_purchase_order_master')
+        ->select(['inv_purchase_req_quotation.quotation_id as id','inv_purchase_req_quotation.rq_no as text'])
+        ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
+        ->where($condition2)
+        ->union($query)
+        ->get();
+
+    }
+
+
 }

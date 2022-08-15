@@ -30,5 +30,12 @@ class User extends Model
                     ->where($condition)
                     ->first();
    }
+   function get_all_users($condition){
+    return  $this->select(['user_id','email','username','f_name','l_name','employee_id'])
+                    ->where($condition)
+                    ->get();
+
+
+   }
 
 }

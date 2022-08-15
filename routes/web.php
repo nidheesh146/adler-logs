@@ -74,6 +74,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
 
     //final purchase
     Route::get('inventory/final-purchase', 'PurchaseController@getFinalPurchase');
+    Route::get('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
+    Route::post('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
+    Route::get('inventory/find-rq-number', 'PurchaseController@find_rq_number');
+
+
+    Route::get('inventory/final-purchase-item-edit/{id}', 'PurchaseController@Edit_PO_item');
+    Route::post('inventory/final-purchase-item-edit/{id}', 'PurchaseController@Edit_PO_item');
+
+    
+    
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');
     Route::get('inventory/lot-allocation', 'PurchaseController@lotAllocation');
 });

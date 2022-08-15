@@ -93,6 +93,19 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                     ->groupBy('inventory_rawmaterial.item_code')
                     ->get()->toArray();
         }
+        function inv_purchase_req_quotation_item_data($condition){
+            return $this->select(['inv_purchase_req_quotation_item_supp_rel.quantity','inv_purchase_req_quotation_item_supp_rel.rate','inv_purchase_req_quotation_item_supp_rel.discount',
+            'inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code'])
+                        ->join('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_quotation_item_supp_rel.item_id')
+                        ->join('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_master_item_rel.item')
+                        ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
+                        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                        ->orderBy('inv_purchase_req_quotation_item_supp_rel.id','DESC')
+                        ->where($condition)
+                        ->get();
+
+            
+        }
 
 
 }

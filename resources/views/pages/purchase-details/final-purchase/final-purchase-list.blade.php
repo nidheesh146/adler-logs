@@ -8,9 +8,9 @@
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
 		
-				 <span><a href="">Supplier Quotation</a></span>
+				 <span><a href="">Final Purchase Order</a></span>
 				 </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation
+			<h4 class="az-content-title" style="font-size: 20px;">Final Purchase Order list
               <div class="right-button">
                   <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                       <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -20,7 +20,7 @@
                   </div> -->
               <div>  
               </div>
-			<!-- <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-supplier-quotation')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Supplier Quotation   </button> -->
+			 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final Purchase Order </button> 
           </div>
         </h4>
 			<div class="az-dashboard-nav">
@@ -39,46 +39,39 @@
 
 
 			<div class="table-responsive">
-				<table class="table table-bordered mg-b-0" id="example1">
+                <table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
 						
 							<th style="width:120px;">RQ NO:</th>
-							<th>Date</th>
-							<th>delivery Schedule </th>
-							<th>Suppliers</th>
-							
-							{{-- <th>Item count</th> --}}
-						
+							<th>PO NO:</th>
+							<th>PO date</th>
+							<th>Supplier</th>
+							<th>Created Date</th>
+							<th>Created By</th>
 							<th>Action</th>
 						
 						</tr>
 					</thead>
-					<tbody >
-						@foreach($data['quotation'] as $item)
-                        <tr>
-							{{-- <td>{{$i++}}</td> --}}
-                            <td>{{$item['rq_no']}}</td>
-							<td>{{$item['date'] ? date('d-m-Y',strtotime($item['date'])) : '-'}}</td>
-							<td>{{$item['delivery_schedule'] ? date('d-m-Y',strtotime($item['delivery_schedule'])) : '-'}}</td>
+					<tbody>
+						@foreach($data['po_data'] as $po_data)
+						 <tr>
+                            <td>{{$po_data->rq_no}}</td>
+							<td>{{$po_data->po_number}}</td>
+							<td>{{date('d-m-Y',strtotime($po_data->po_date))}}</td>
+							<td>{{$po_data->vendor_id}} - {{$po_data->vendor_name}}</td>
+							<td>{{date('d-m-Y',strtotime($po_data->created_at))}}</td>
+							<td>{{$po_data->f_name}} {{$po_data->l_name}}</td>
 							<td>
-								<?php
-							    	$supp = $SupplierQuotation->get_supplier($item['quotation_id']);
-									echo $supp['supplier'];
-								?>
-							</td>
-							<td>
-								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['quotation_id'].'/'.$supp['supplier_id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> View</a>
-								<a class="badge badge-primary" style="font-size: 13px;" href="{{url('inventory/comparison-quotation/'.$item['quotation_id']) }}"  class="dropdown-item"><i class="fa fa-balance-scale"></i> Comparison</a>
+								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/final-purchase-add/'.$po_data->id)}}"><i class="fas fa-edit"></i> Edit</a>
+								
 							</td>
 						</tr>
-						
-						@endforeach 
-				
+						@endforeach
 					</tbody>
 				</table>
 				<div class="box-footer clearfix">
-					{{ $data['quotation']->appends(request()->input())->links() }}
+					{{ $data['po_data']->appends(request()->input())->links() }}
 			   </div> 
 		
 			</div>
@@ -107,7 +100,6 @@
 	//   order: [[1, 'desc']],
     // });
 
-    $('#prbody').show();
   });
 </script>
 

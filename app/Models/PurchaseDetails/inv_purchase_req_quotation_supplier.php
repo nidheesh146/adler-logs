@@ -51,6 +51,19 @@ class inv_purchase_req_quotation_supplier extends Model
                     ->pluck('selected_supplier')
                     ->first();
     }
+    function inv_purchase_req_quotation_data($condition){
+
+        return $this->select(['inv_purchase_req_quotation.rq_no','inv_purchase_req_quotation_supplier.supplier_quotation_num','inv_purchase_req_quotation_supplier.commited_delivery_date'
+        ,'inv_purchase_req_quotation_supplier.quotation_date','inv_purchase_req_quotation_supplier.contact_number','inv_purchase_req_quotation_supplier.supplier_id','inv_purchase_req_quotation_supplier.quotation_id',
+        'inv_supplier.vendor_id','inv_supplier.vendor_name'])
+        ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','inv_purchase_req_quotation_supplier.quotation_id')
+        ->join('inv_supplier','inv_supplier.id','inv_purchase_req_quotation_supplier.supplier_id')
+        ->where($condition)
+        ->first();
+
+
+    }
+
 
 
 

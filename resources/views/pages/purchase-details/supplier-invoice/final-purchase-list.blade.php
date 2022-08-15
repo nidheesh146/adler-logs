@@ -39,7 +39,7 @@
 
 
 			<div class="table-responsive">
-				<table class="table table-bordered mg-b-0" id="example1">
+                <table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
 						
@@ -48,38 +48,39 @@
 							<th>delivery Schedule </th>
 							<th>Suppliers</th>
 							
-							{{-- <th>Item count</th> --}}
+							
 						
 							<th>Action</th>
 						
 						</tr>
 					</thead>
-					<tbody >
-						@foreach($data['quotation'] as $item)
-                        <tr>
-							{{-- <td>{{$i++}}</td> --}}
-                            <td>{{$item['rq_no']}}</td>
-							<td>{{$item['date'] ? date('d-m-Y',strtotime($item['date'])) : '-'}}</td>
-							<td>{{$item['delivery_schedule'] ? date('d-m-Y',strtotime($item['delivery_schedule'])) : '-'}}</td>
+					<tbody>
+						                        <tr>
+							
+                            <td>RQ-22080008</td>
+							<td>08-08-2022</td>
+							<td>08-08-2022</td>
 							<td>
-								<?php
-							    	$supp = $SupplierQuotation->get_supplier($item['quotation_id']);
-									echo $supp['supplier'];
-								?>
-							</td>
+								<span>VIN056</span> , <span>VDR033</span> , <span>VDR055</span>							</td>
 							<td>
-								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['quotation_id'].'/'.$supp['supplier_id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> View</a>
-								<a class="badge badge-primary" style="font-size: 13px;" href="{{url('inventory/comparison-quotation/'.$item['quotation_id']) }}"  class="dropdown-item"><i class="fa fa-balance-scale"></i> Comparison</a>
+								<a class="badge badge-info" style="font-size: 13px;" href="http://localhost/adler/public/inventory/view-supplier-quotation-items/9/56"><i class="fas fa-eye"></i> View</a>
+								<a class="badge badge-primary" style="font-size: 13px;" href="http://localhost/adler/public/inventory/comparison-quotation/9"><i class="fa fa-balance-scale"></i> Comparison</a>
 							</td>
 						</tr>
 						
-						@endforeach 
+						                    
+						
+						                      
+						
+
+
+						 
 				
 					</tbody>
 				</table>
-				<div class="box-footer clearfix">
+				{{-- <div class="box-footer clearfix">
 					{{ $data['quotation']->appends(request()->input())->links() }}
-			   </div> 
+			   </div>  --}}
 		
 			</div>
 		</div>
@@ -107,7 +108,6 @@
 	//   order: [[1, 'desc']],
     // });
 
-    $('#prbody').show();
   });
 </script>
 

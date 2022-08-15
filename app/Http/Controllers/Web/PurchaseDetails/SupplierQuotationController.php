@@ -147,15 +147,14 @@ class SupplierQuotationController extends Controller
             ];
             $request->session()->flash('success',"You have successfully updated a Supplier Quotation Item !");
             $this->inv_purchase_req_quotation_item_supp_rel->updatedata(['quotation_id'=>$rq_no,'item_id'=>$item_id,'supplier_id'=>$supp_id],$data);
-            return redirect('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item_id);
+            return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id);
             }
             if($validator->errors()->all()){
                 return redirect('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item_id)->withErrors($validator)->withInput();
-
             }
         }
         $data['get_item_single'] = $this->inv_purchase_req_quotation_item_supp_rel->get_item_single(['inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$supp_id,'inv_purchase_req_quotation_item_supp_rel.item_id'=>$item_id,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$rq_no]);
-        return view('pages/purchase-details/supplier-quotation/supplier-quotation-edit-item',compact('data'));
+        return view('pages/purchase-details/supplier-quotation/supplier-quotation-edit-item',compact('data','rq_no','supp_id'));
     }
 
     public function supplierQuotationUpdate(Request $request, $rq_no,$supp_id)

@@ -6,7 +6,7 @@
   <br>
 	<div class="container">
 		<div class="az-content-body">
-			<div class="az-content-breadcrumb"> <span>Supplier Quotation</span> <span>Comparison of quotation</span> </div>
+			<div class="az-content-breadcrumb"><span><a href="{{ url('inventory/supplier-quotation') }}">SUPPLIER QUOTATION </a></span> <span>Comparison of quotation</span> </div>
 			<h4 class="az-content-title" style="font-size: 20px;">Comparison of quotation <span>( {{$rq_number}} )</span>
             </h4>
 			<div class="alert alert-success success" style="width: 100%;display:none;">

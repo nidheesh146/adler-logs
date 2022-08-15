@@ -56,7 +56,7 @@ class QuotationController extends Controller
     public function editQuotation(Request $request)
     {
         $validation['rq_no '] = ['required'];
-        $validation['date '] = ['required'|'date'];
+        $validation['date '] = ['required','date'];
         $validation['requestor  '] = ['required'];
         $validation['supplier  '] = ['required'];
         $validation['deliver_schedule  '] = ['required'];
@@ -113,14 +113,14 @@ class QuotationController extends Controller
     // Add Quotation item
     public function AddQuotationItem(Request $request)
     {
-        $validation['quotation '] = ['required'];
-        $validation['item_code '] = ['required'|'date'];
-        $validation['unit  '] = ['required'];
+        $validation['quotation'] = ['required'];
+        $validation['item_code'] = ['required','date'];
+        $validation['unit'] = ['required'];
         $validation['required_qty  '] = ['required'];
         $validation['description  '] = ['required'];
-        $validation['rate  '] = ['required'];
+        $validation['rate'] = ['required'];
         $validation['currency  '] = ['required'];
-        $validation['moq  '] = ['required'];
+        $validation['moq'] = ['required'];
         $validation['exstock_availability  '] = ['required'];
         $validation['deliver_schedule  '] = ['required'];
 
@@ -159,8 +159,8 @@ class QuotationController extends Controller
     public function editQuotationItem(Request $request)
     {
         $validation['quotation '] = ['required'];
-        $validation['item_code '] = ['required'|'date'];
-        $validation['unit  '] = ['required'];
+        $validation['item_code '] = ['required','date'];
+        $validation['unit'] = ['required'];
         $validation['required_qty  '] = ['required'];
         $validation['description  '] = ['required'];
         $validation['rate  '] = ['required'];

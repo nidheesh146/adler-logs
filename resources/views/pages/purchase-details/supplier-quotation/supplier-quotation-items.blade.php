@@ -6,8 +6,8 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Supplier Quotation</span>
-				 <span><a href="">Supplier Quotation Items </a></span>
+				 <span><a href="{{url('inventory/supplier-quotation')}}">Supplier Quotation</a></span>
+				 <span>Supplier Quotation Items </span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation Items  <span>({{$data['quotation']->rq_no}})</span>			 
 			
@@ -124,7 +124,7 @@
 <div class="row">
 	<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
 		<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-		<i class="fas fa-address-card"></i> Basic details                               
+		<i class="fas fa-address-card"></i> Supplier Quotation Items                               
 		</label>
 		<div class="form-devider"></div>
 	</div>
