@@ -43,7 +43,7 @@
                 <label>RQ number <span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                   role="status" aria-hidden="true"></span></label>
               
-                <select class="form-control  RQ-code" name="rq_master_id">
+                <select class="form-control  RQ-code" name="rq_master_id" disabled>
                  
               @if(!empty($data['master_data']))
                   <option value="{{$data['master_data']->rq_master_id}}" selected>{{$data['master_data']->rq_no}}</option>

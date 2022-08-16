@@ -64,7 +64,7 @@
 
 
                                     {{-- <input type="text" class="form-control" name="Itemcode" id="Itemcode" 
-                                    value="{{ (!empty($datas)) ? $data['item']['item_code'] : ''}}"
+                                    value="{{ (!empty($datas)) ? $datas['item']['item_code'] : ''}}"
                                         placeholder="Item code">
                                         <input type="hidden" value="{{ (!empty($datas)) ? $datas['item_code'] : ''}}" name="Itemcodehidden" id="Itemcodehidden" > --}}
                                 </div>
