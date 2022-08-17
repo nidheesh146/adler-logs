@@ -64,6 +64,7 @@
 							<td>{{$po_data->f_name}} {{$po_data->l_name}}</td>
 							<td>
 								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/final-purchase-add/'.$po_data->id)}}"><i class="fas fa-edit"></i> Edit</a>
+								<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
 								
 							</td>
 						</tr>

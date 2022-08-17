@@ -100,9 +100,16 @@ class PurchaseController extends Controller
         $data = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id'=>$id]);
        
         return view('pages.purchase-details.final-purchase.final-purchase-item-edit',compact('data'));
-
-
         
+    }
+
+    public function deleteFinalPurchase(Request $request,$id)
+    {
+        if($id){
+            $this->inv_final_purchase_order_master->deleteData(['id'=>$id]);
+            $request->session()->flash('success',  "You have successfully deleted a final purchase order master !");
+        }
+       return redirect('inventory/final-purchase');
     }
     function find_rq_number(Request $request){
         if($request->q){     
