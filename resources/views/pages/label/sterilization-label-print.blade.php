@@ -33,11 +33,11 @@
                  ?>
                 <div class="label-div" id="label-div">
                     @for ($i = 0; $i< $page_count; $i++)
-                    <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                    <div class="page-container" style="margin-top:1.3cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                         @for ($j=0;$j<$label_per_page;$j++)
-                        <div class="label-container" style="float:left;width:10.4cm;height:7cm;margin-bottom:0.08cm;">
-                            <div class="row1" style="font-size:12px;height:fit-content;">    
-                                <div class="subcolumn1" style="float:left; width:75px">
+                        <div class="label-container" style="float:left;width:10.4cm;height:7.3cm;margin-bottom:0.08cm;margin-top:0.08cm;"> 
+                            <div class="row1" style="font-size:12px;">    
+                                <div class="subcolumn1" style="float:left; width:60px">
                                     <div class="logo" style="text-align:center;">
                                         <img src="{{asset('/img/logo.png')}}"  style="width:50%;">
                                     </div>
@@ -104,8 +104,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="subcolumn3" style="float:right;width:10px;">
-                                    <span class="smalltext" style="font-size:8px;margin-top:75px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
+                                <div class="subcolumn3" style="float:right;width:5px;">
+                                    <span class="smalltext" style="font-size:8px;margin-top:75px;margin-left: -18px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
                                         <!-- LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}} -->
                                         LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd M y' , strtotime('14-12-2021') )}}
                                     </span>
@@ -142,14 +142,15 @@
                             </div>
                         </div>
                         @endfor
+                        <div style="break-after:page"></div>
                     </div>
                     @endfor
                     @if($remaining!=0)
-                    <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                    <div class="page-container" style="margin-top:1.3cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                         @for ($j=0;$j<$remaining;$j++)
-                        <div class="label-container" style="float:left;width:10.4cm;height:7cm;margin-bottom:0.08cm;">
+                        <div class="label-container" style="float:left;width:10.4cms;height:7.3cm;margin-bottom:0.08cm;margin-top:0.08cm;padding:2px;">
                             <div class="row1" style="font-size:12px;height:fit-content;">    
-                                <div class="subcolumn1" style="float:left; width:75px">
+                                <div class="subcolumn1" style="float:left; width:60px">
                                     <div class="logo" style="text-align:center;">
                                         <img src="{{asset('/img/logo.png')}}"  style="width:50%;">
                                     </div>

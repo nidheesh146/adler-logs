@@ -72,12 +72,44 @@ class PurchaseController extends Controller
 
     function Edit_PO_item(Request $request,$id){
 
-        
-        $data= [];
+        if ($request->isMethod('post'))
+        {
+            $validation['quantity'] = ['required'];
+            $validation['rate'] = ['required'];
+            $validation['discount'] = ['required'];
+            $validation['delivery_schedule'] = ['required','date'];
+            $validation['specification'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all()) 
+            { 
+                $data['delivery_schedule'] = $request->delivery_schedule;
+                $data['order_qty'] = $request->quantity;
+                $data['rate'] = $request->rate;
+                $data['discount'] = $request->discount;
+                $data['Specification'] = $request->specification;
+                $POitem=   $this->inv_final_purchase_order_item->updatedata(['id'=>$id],$data);
+                $request->session()->flash('success',  "You have successfully edited a  purchase order item!");
+                return redirect("inventory/final-purchase-item-edit/".$id);
+            }
+            if($validator->errors()->all()) 
+            { 
+                return redirect("inventory/final-purchase-item-edit/".$id)->withErrors($validator)->withInput();
+
+            }
+        }
+        $data = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id'=>$id]);
+       
         return view('pages.purchase-details.final-purchase.final-purchase-item-edit',compact('data'));
-
-
         
+    }
+
+    public function deleteFinalPurchase(Request $request,$id)
+    {
+        if($id){
+            $this->inv_final_purchase_order_master->deleteData(['id'=>$id]);
+            $request->session()->flash('success',  "You have successfully deleted a final purchase order master !");
+        }
+       return redirect('inventory/final-purchase');
     }
     function find_rq_number(Request $request){
         if($request->q){     

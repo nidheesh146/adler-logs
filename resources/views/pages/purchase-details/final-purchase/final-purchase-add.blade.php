@@ -42,8 +42,10 @@
             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                 <label>RQ number <span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                   role="status" aria-hidden="true"></span></label>
-              
-                <select class="form-control  RQ-code" name="rq_master_id">
+                  @if(!empty($data['master_data']))
+                  <input type="hidden" name="rq_master_id" value="{{$data['master_data']->rq_master_id}}">
+                  @endif
+                <select class="form-control  RQ-code" name="rq_master_id"  @if(!empty($data["master_data"])) disabled @endif >
                  
               @if(!empty($data['master_data']))
                   <option value="{{$data['master_data']->rq_master_id}}" selected>{{$data['master_data']->rq_no}}</option>

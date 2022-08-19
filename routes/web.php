@@ -76,6 +76,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/final-purchase', 'PurchaseController@getFinalPurchase');
     Route::get('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
     Route::post('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
+    Route::get('inventory/final-purchase-delete/{id?}', 'PurchaseController@deleteFinalPurchase');
     Route::get('inventory/find-rq-number', 'PurchaseController@find_rq_number');
 
 

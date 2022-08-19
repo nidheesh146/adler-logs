@@ -65,4 +65,9 @@ class inv_final_purchase_order_master extends Model
 
 
     }
+
+    function deleteData($condition)
+    {
+        return $this->where($condition)->delete();
+    }
 }
