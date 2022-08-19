@@ -62,12 +62,12 @@ class inv_final_purchase_order_master extends Model
         ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
                     ->where($condition)
                     ->first();
-
-
     }
-
     function deleteData($condition)
     {
         return $this->where($condition)->delete();
+    }
+    function find_po_num($condition){
+        return $this->select(['po_number as text','id'])->where($condition)->get();
     }
 }

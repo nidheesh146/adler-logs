@@ -139,7 +139,7 @@ if(!empty($data['master_list'])){
                            $('.RQ-code').select2({
                                 placeholder: 'Choose one',
                                 searchInputPlaceholder: 'Search',
-                                minimumInputLength: 1,
+                                minimumInputLength: 6,
                                 allowClear: true,
                                 ajax: {
                                 url: "{{ url('inventory/find-rq-number') }}",

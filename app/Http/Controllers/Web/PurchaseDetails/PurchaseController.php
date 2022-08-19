@@ -254,18 +254,49 @@ function rq_details($id,$active=null){
 
     $data .=  '</table>
 </div>';
-
-
 return  $data;
-
 }
 
+    function find_po_number(Request $request){
+        if($request->q){     
+            $condition[] = ['inv_final_purchase_order_master.po_number','like','%'.strtoupper($request->q).'%'];
+            $data =  $this->inv_final_purchase_order_master->find_po_num($condition);
+        if(!empty( $data[0])){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'item code is not valid'], 500); 
+        }
+    }else{
+        echo $this->rq_details($request->id,null);
+        exit;
+    }
 
+
+        echo json_encode([]);
+        exit;
+    }
 
     public function supplierInvoice()
     {
-        return view('pages.purchase-details.purchase.supplier-invoice');
+        return view('pages.purchase-details.supplier-invoice.supplier-invoice-list');
     }
+    public function supplierInvoiceAdd(Request $request,$id = null)
+    {
+        return view('pages.purchase-details.supplier-invoice.supplier-invoice-add');
+    }
+
+
+    public function supplierInvoiceItemEdit(Request $request,$id = null)
+    {
+        return view('pages.purchase-details.supplier-invoice.supplier-invoice-list');
+    }
+    public function supplierInvoicedeletes(Request $request,$id = null)
+    {
+        return view('pages.purchase-details.supplier-invoice.supplier-invoice-list');
+    }
+
+
+
     public function lotAllocation()
     {
         return view('pages.purchase-details.purchase.lot-allocation');
