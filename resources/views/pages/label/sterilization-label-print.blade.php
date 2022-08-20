@@ -19,7 +19,7 @@
 <div class="az-content az-content-dashboard">
   <br>
     <div class="container">
-	    <div class="az-content-body">     
+	    <div class="az-content-body" style="color:black;">     
             <div class="az-content-title">
                 <button  style="float: right; margin-left: 9px;font-size: 14px;width:90px;" class="badge badge-pill badge-info " id="print">
                 <i class="fa fa-print" aria-hidden="true"></i>&nbsp;Print
@@ -33,21 +33,22 @@
                  ?>
                 <div class="label-div" id="label-div">
                     @for ($i = 0; $i< $page_count; $i++)
-                    <div class="page-container" style="margin-top:1.3cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                    <div class="page-container" style="margin-top:1.2cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                         @for ($j=0;$j<$label_per_page;$j++)
-                        <div class="label-container" style="float:left;width:10.4cm;height:7.3cm;margin-bottom:0.08cm;margin-top:0.08cm;"> 
+                        <!-- <div class="label-container" style="float:left;width:10.4cm;height:7.3cm;margin-bottom:0.08cm;margin-top:0.08cm;">  -->
+                        <div class="label-container" style="float:left;width:50%;height:25%;margin-bottom:0.08cm;margin-top:0.08cm;"> 
                             <div class="row1" style="font-size:12px;">    
                                 <div class="subcolumn1" style="float:left; width:60px">
                                     <div class="logo" style="text-align:center;">
-                                        <img src="{{asset('/img/logo.png')}}"  style="width:50%;">
+                                        <img src="{{asset('/img/logo.png')}}"  style="width:70%;">
                                     </div>
                                     <div class="icons" style="margin-top:8px;margin-left:2px; text-align:center;">
-                                        @if($batchcard_data->is_donot_reuse_logo==1)
-                                        <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:25%;">
-                                        @endif
-                                        @if($batchcard_data->is_read_instruction_logo==1)
-                                        <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:25%;">
-                                        @endif
+                                        <!-- @if($batchcard_data->is_donot_reuse_logo==1) -->
+                                        <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:29%;">
+                                        <!-- @endif
+                                        @if($batchcard_data->is_read_instruction_logo==1) -->
+                                        <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:29%;">
+                                        <!-- @endif -->
                                         <!-- @if($batchcard_data->is_temperature_logo==1)
                                         <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;">
                                         @endif -->
@@ -57,13 +58,13 @@
                                     <div class="subdiv">
                                         <div class="ss" style="float:left;width:150px">
                                             <span style="text-align:left;"><strong>Ref: {{$batchcard_data->sku_code}}</strong></span></br/>
-                                            <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">
+                                            <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:28px;">
                                             {{$batchcard_data->batch_no}}
                                             <br/>
-                                            <img src="{{asset('/img/alderlogo/sterile_r.png')}}" alt="image" style="width:47px;">
+                                            <img src="{{asset('/img/alderlogo/sterile_r.png')}}" alt="image" style="width:49px;">
                                             {{$lot_no}}
                                             <br/>
-                                            <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
+                                            <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:18px;">&nbsp;
                                             {{$manufacture_date}}
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;">
@@ -87,7 +88,8 @@
                                     <div class="subdiv" style="margin-top:4px;">
                                         <div class="ss" style="float:left;width:150px; font-size:9px;">
                                             <strong>{{$batchcard_data->ad_sp1}}</strong><br/>
-                                            <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;">
+                                            <!-- <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;"> -->
+                                            <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;">
                                             <br/>
                                             <span style="margin-left:26px;"><small>{{$batchcard_data->sku_code}}</small></span>
                                             <br/>
@@ -98,7 +100,8 @@
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;font-size:9px;">
                                             <strong>{{$batchcard_data->ad_sp2}}</strong><br/>
-                                            <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;">
+                                            <!-- <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;"> -->
+                                            <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:140px;margin-top:5px;">
                                             <br/>
                                             <span><small>{{$batchcard_data->gs1_code}}</small>
                                         </div>

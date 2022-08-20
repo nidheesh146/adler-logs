@@ -266,8 +266,5 @@ return  $data;
     {
         return view('pages.purchase-details.purchase.supplier-invoice');
     }
-    public function lotAllocation()
-    {
-        return view('pages.purchase-details.purchase.lot-allocation');
-    }
+    
 }
