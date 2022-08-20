@@ -7,8 +7,8 @@
           <div class="az-content-body">
 
               <div class="az-content-breadcrumb">
-                  <span><a href="http://localhost/adler/public/inventory/supplier-quotation">SUPPLIER QUOTATION </a></span>
-                   <span> <a href="http://localhost/adler/public/inventory/view-supplier-quotation-items/9/56">Supplier Quotation Items</a></span>
+              <span><a href="{{url('')}}">SUPPLIER QUOTATION </a></span>
+                   <span> <a href="{{url('')}}">Supplier Quotation Items</a></span>
                     <span><a> Edit Supplier Quotation Item</a></span>
               </div>
 
