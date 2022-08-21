@@ -73,20 +73,8 @@
 										</tbody>
 			</table>
 			<div class="box-footer clearfix">
-				<style>
-.pagination-nav{
-	width:100%;
-}
-.pagination{
-	float:right;
-	margin:0px;   
-	 margin-top: -16px;
-}
-
-</style>
-
-	
-		   </div> 
+				{{ $data['Requisition']->appends(request()->input())->links() }}
+			</div>
 	
 		</div>
 	</div>

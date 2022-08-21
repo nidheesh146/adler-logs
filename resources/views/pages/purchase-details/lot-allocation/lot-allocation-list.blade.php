@@ -7,7 +7,6 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-		<span><a href="" style="color: #596881;">PURCHASE DETAILS</a></span> 
 			 <span><a href="">Lot Number Allocation</a></span>
 			 </div>
 		<h4 class="az-content-title" style="font-size: 20px;">Lot Number Allocation list
@@ -20,7 +19,7 @@
 			  </div> -->
 		  <div>  
 		  </div>
-		<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/lot-allocation-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i>Lot Allocation</button> 
+		<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/lot-allocation-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> LOT Allocation</button> 
 	  </div>
 	</h4>
 		<div class="az-dashboard-nav">
@@ -88,13 +87,13 @@
 	<!-- az-content-body -->
 </div>
 
-
-<script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
-<script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
+<script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
+<script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
+<script src="<?= url('') ?>/js/jquery.validate.js"></script>
+<script src="<?= url('') ?>/js/additional-methods.js"></script>
 
 <script>
   $(function(){

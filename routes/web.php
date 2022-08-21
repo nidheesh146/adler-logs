@@ -53,13 +53,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/edit/quotation-item', 'QuotationController@editQuotationItem');
     Route::post('inventory/delete/quotation-item', 'QuotationController@deleteQuotationItem');
 
-
-    
     Route::get('inventory/itemcodesearch/{itemcode?}', 'InventoryController@itemcodesearch');
-
     Route::get('inventory/suppliersearch', 'InventoryController@suppliersearch');
-
-    
     Route::get('inventory/purchase-reqisition/approval', 'ApprovalController@getList');
     Route::post('inventory/purchase-reqisition/approval', 'ApprovalController@Approve');
 
@@ -81,8 +76,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/final-purchase-item-edit/{id}', 'PurchaseController@Edit_PO_item');
     Route::post('inventory/final-purchase-item-edit/{id}', 'PurchaseController@Edit_PO_item');
 
-    
-    
+    //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');
     Route::get('inventory/supplier-invoice-add/{id?}', 'PurchaseController@supplierInvoiceAdd');
     Route::post('inventory/supplier-invoice-add/{id?}', 'PurchaseController@supplierInvoiceAdd');
@@ -91,14 +85,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/supplier-invoice-item-edit/{master}/{id}', 'PurchaseController@supplierInvoiceItemEdit');
     Route::post('inventory/supplier-invoice-item-edit/{master}/{id}', 'PurchaseController@supplierInvoiceItemEdit');
    
-   
-   
-   
-   
-
-    
-
-    Route::get('inventory/lot-allocation', 'PurchaseController@lotAllocation');
     //lot allocation
     Route::get('inventory/lot-allocation', 'LotAllocationController@lotAllocation');
     Route::get('inventory/lot-allocation-add', 'LotAllocationController@addLotAllocation');

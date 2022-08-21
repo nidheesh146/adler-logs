@@ -94,10 +94,6 @@
         <!-- az-content-body -->
     </div>
 
-    <script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
-    <script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
     <script src="<?=url('');?>/js/azia.js"></script>
     <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
     <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>

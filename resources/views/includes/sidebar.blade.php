@@ -44,7 +44,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.getFinalPurchase','Purchase.addFinalPurchase','Purchase.Edit_PO_item'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase')}}" class="nav-sub-link">Final Purchase Order</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation','Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit'])){{'active'}} @endif "><a href="{{url('inventory/supplier-invoice')}}" class="nav-sub-link">Supplier Invoice</a></li>
 
-            <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation'])){{'active'}} @endif "><a href="{{url('inventory/lot-allocation')}}" class="nav-sub-link">Lot Number Allocation</a></li>
+            <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation','LotAllocation.addLotAllocation','LotAllocation.lotAllocation'])){{'active'}} @endif "><a href="{{url('inventory/lot-allocation')}}" class="nav-sub-link">LOT Number Allocation</a></li>
           </ul>
         </li><!-- nav-item -->
         
