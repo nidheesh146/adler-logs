@@ -22,10 +22,11 @@ class inv_final_purchase_order_item extends Model
     }
     function get_purchase_order_item($condition){
       
-        return $this->select(['inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_final_purchase_order_item.delivery_schedule',
+        return $this->select(['inv_purchase_req_master.pr_no','inv_final_purchase_order_master.po_date','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_final_purchase_order_item.delivery_schedule',
         'inv_final_purchase_order_item.order_qty','inv_final_purchase_order_item.rate','inv_final_purchase_order_item.discount','inv_final_purchase_order_item.Specification',
         'inv_final_purchase_order_item.id'])
                     ->leftjoin('inv_final_purchase_order_rel','inv_final_purchase_order_rel.item','=','inv_final_purchase_order_item.id')
+                    ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_final_purchase_order_rel.master')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
                     ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
                     ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
@@ -55,8 +56,26 @@ class inv_final_purchase_order_item extends Model
                     ->where('inv_purchase_req_quotation_supplier.selected_supplier', '=', 1)
                     ->where($condition)
                     ->first();
+    }
+
+    function get_item_details($condition){
+
+
+
+
 
     }
+
+
+
+
+
+
+
+
+
+
+
 
     function updatedata($condition, $data)
     {

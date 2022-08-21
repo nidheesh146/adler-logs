@@ -6,12 +6,24 @@
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
                     <span><a href="{{ url('inventory/supplier-invoice') }}">SUPPLIER INVOICE</a></span>
-                    <span> Add FINAL PURCHASE ORDER </span>
+                    <span>{{$id ? 'Edit' : 'Add' }}  SUPPLIER INVOICE</span>
                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;">Add Supplier Invoice
+                <h4 class="az-content-title" style="font-size: 20px;">{{$id ? 'Edit' : 'Add' }} Supplier Invoice
 
                 </h4>
-
+                @foreach ($errors->all() as $errorr)
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                  {{ $errorr }}
+                </div>
+               @endforeach               
+               @if (Session::get('success'))
+               <div class="alert alert-success " style="width: 100%;">
+                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+               </div>
+               @endif
+                        
 
 
                 <div class="row">
@@ -22,33 +34,39 @@
                         <div class="form-devider"></div>
                     </div>
                 </div>
-                <form method="POST" id="commentForm" autocomplete="off" novalidate="novalidate"
-                    data-select2-id="commentForm">
+                <form method="POST" id="commentForm" autocomplete="off" >
                     <div class="row">
                         {{ csrf_field() }}
 
                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" data-select2-id="7">
-                            <label>PO Number <span class="spinner-border spinner-button spinner-border-sm"
+                            <label>PO Number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
-                                <select class="form-control RQ-code" name="rq_master_id">
-                                  
+                                <select class="form-control RQ-code" name="po_number">
+                                  @if(!empty($data['simaster']))
+                                    <option value="{{$data['simaster']->id}}" selected >{{$data['simaster']->po_number}}</option>
+                                  @endif
+
                                 </select>
                         </div>
 
                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                            <label>Invoice number</label>
-                            <input type="text" class="form-control datepicker" value="19-08-2022" name="date" placeholder="Date">
+                            <label>Invoice number *</label>
+                        <input type="text" class="form-control"  value="{{(!empty($data['simaster'])) ? $data['simaster']->invoice_number : '' }}"  name="invoice_number" placeholder="Invoice number">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                            <label>Invoice date</label>
-                            <input type="text" class="form-control datepicker" value="19-08-2022" name="date" placeholder="Date">
+                            <label>Invoice date *</label>
+                            <input type="text" class="form-control datepicker" value="{{(!empty($data['simaster'])) ? date('d-m-Y',strtotime($data['simaster']->invoice_date)) : '' }}" name="date" placeholder="Invoice date">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                            <label>Created by: </label>
+                            <label>Created by: *</label>
                             <select class="form-control user_list" name="create_by">
-                                <option value="1" data-select2-id="3">EMP123 - Admin Admin</option>
+                                @foreach ($data['users'] as $item)
+                                 <option value="{{$item['user_id']}}"
+                                 @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
+                                 >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -59,13 +77,17 @@
                             <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span
                                     class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
-                                Save
+                                    {{$id ? 'Update' : 'Submit' }}
                             </button>
                         </div>
                     </div>
                 </form>
                 <div class="data-bindings">
-
+                    <?php
+                    if(!empty($data['master_list'])){
+                      echo $data['master_list'];
+                    }
+                    ?>
                 </div>
             </div>
         </div>
@@ -86,6 +108,31 @@
     <script>
       $(function(){
         'use strict'
+
+        $("#commentForm").validate({
+        rules: {
+            po_number: {
+                required: true,
+            },
+            invoice_number: {
+                required: true,
+            },
+            date:{
+                required: true,
+            },
+            create_by:{
+                required: true,
+            }
+
+        },
+        submitHandler: function(form) {
+           // $('.spinner-button').show();
+            form.submit();
+        }
+    });
+
+
+
 
         $('.RQ-code').select2({
           placeholder: 'Choose one',
@@ -114,9 +161,14 @@
           $('.spinner-button').hide();
         }
       });
-
-
       });
+
+    $(".datepicker").datepicker({
+    format: " dd-mm-yyyy",
+    autoclose:true,
+    endDate: new Date()
+    });
+    $('.datepicker').mask('99-99-9999');
     </script>
 
 

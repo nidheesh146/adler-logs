@@ -20,6 +20,9 @@ class inv_final_purchase_order_master extends Model
             $builder->where('inv_final_purchase_order_master.status', '!=', 2);
         });
     }
+    function updatedata($condition,$data){
+        return $this->where($condition)->update($data);
+    }
     function insert_data($data){
       $POMaster =  $this->insertGetId($data);
       if( $POMaster ){
@@ -69,5 +72,20 @@ class inv_final_purchase_order_master extends Model
     }
     function find_po_num($condition){
         return $this->select(['po_number as text','id'])->where($condition)->get();
+    }
+    function find_po_data($condition){
+        //
+        return $this->select(['inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.id','inv_final_purchase_order_master.created_at','user.f_name','user.l_name','inv_final_purchase_order_master.po_date',
+        'inv_supplier.vendor_id','inv_supplier.vendor_name'])
+                    ->join('user','user.user_id','=','inv_final_purchase_order_master.created_by')
+                    ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
+                    ->join('inv_purchase_req_quotation_supplier', function($join)
+                    {
+                        $join->on('inv_purchase_req_quotation_supplier.quotation_id', '=', 'inv_final_purchase_order_master.rq_master_id');
+                        $join->where('inv_purchase_req_quotation_supplier.selected_supplier','=',1);
+                    })
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+                    ->where($condition)
+                    ->first();
     }
 }

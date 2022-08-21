@@ -27,7 +27,14 @@
 			<nav class="nav"> </nav>	
 		</div>
 
-  
+		@if (Session::get('success'))
+		<div class="alert alert-success " style="width: 100%;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+			<i class="icon fa fa-check"></i> {{ Session::get('success') }}
+		</div>
+		@endif
+				 
+
 		
 	   
 
@@ -48,19 +55,21 @@
 					</tr>
 				</thead>
 				<tbody>
-											 <tr>
-						<td>RQ-22080008</td>
-						<td>PO-22080001</td>
-						<td>15-08-2022</td>
-						<td>VDR033 - Darshan Surgical</td>
-						<td>15-08-2022</td>
-						<td>Admin Admin</td>
+					@foreach ($data['Requisition'] as $item)
+					<tr>
+					    <td>{{$item->po_number}}</td>
+						<td>{{$item->invoice_number}}</td>
+						<td>{{date('d-m-Y',strtotime($item->invoice_date)) }}</td>
+						<td>{{$item->vendor_id}} - {{$item->vendor_name}}</td>
+						<td>{{date('d-m-Y',strtotime($item->created_at)) }}</td>
+						<td>{{$item->f_name}} {{$item->l_name}}</td>
 						<td>
-							<a class="badge badge-info" style="font-size: 13px;" href="http://localhost/adler/public/inventory/final-purchase-add/3"><i class="fas fa-edit"></i> Edit</a>
-							<a class="badge badge-danger" style="font-size: 13px;" href="http://localhost/adler/public/inventory/final-purchase-delete/3" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+							<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-add/'.$item->id)}}"><i class="fas fa-edit"></i> Edit</a>
+						<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-delete/'.$item->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
 							
 						</td>
 					</tr>
+					@endforeach
 										</tbody>
 			</table>
 			<div class="box-footer clearfix">

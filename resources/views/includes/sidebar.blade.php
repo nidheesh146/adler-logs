@@ -27,7 +27,8 @@
         'Inventory.add_purchase_reqisition_item','Approval.getList','Quotation.getQuotation', 
         'SupplierQuotation.viewSupplierQuotationItems', 'SupplierQuotation.getSupplierQuotationEditItem',
         'SupplierQuotation.comparisonOfQuotation','SupplierQuotation.getSupplierQuotation','Purchase.getFinalPurchase',
-        'Purchase.addFinalPurchase','Purchase.Edit_PO_item','Purchase.supplierInvoice','Purchase.supplierInvoiceAdd'])) {{'active show'}} @endif ">
+        'Purchase.addFinalPurchase','Purchase.Edit_PO_item','Purchase.supplierInvoice','Purchase.supplierInvoiceAdd',
+        'Purchase.supplierInvoiceItemEdit'])) {{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-shopping-cart" style="font-size: 17px;"></i>Purchase Details</a>
           <ul class="nav-sub">
             {{-- <li class="nav-sub-item"><a href="#" class="nav-sub-link">Order</a></li> --}}
@@ -41,7 +42,7 @@
             <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.getSupplierQuotation', 'SupplierQuotation.viewSupplierQuotationItems', 'SupplierQuotation.getSupplierQuotationEditItem','SupplierQuotation.comparisonOfQuotation'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Supplier Quotation</a></li>
             {{-- <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.comparisonOfQuotation'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Comparison of Quotation</a></li> --}}
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.getFinalPurchase','Purchase.addFinalPurchase','Purchase.Edit_PO_item'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase')}}" class="nav-sub-link">Final Purchase Order</a></li>
-            <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation','Purchase.supplierInvoice','Purchase.supplierInvoiceAdd'])){{'active'}} @endif "><a href="{{url('inventory/supplier-invoice')}}" class="nav-sub-link">Supplier Invoice</a></li>
+            <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation','Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit'])){{'active'}} @endif "><a href="{{url('inventory/supplier-invoice')}}" class="nav-sub-link">Supplier Invoice</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation'])){{'active'}} @endif "><a href="{{url('inventory/lot-allocation')}}" class="nav-sub-link">Lot Number Allocation</a></li>
           </ul>
         </li><!-- nav-item -->

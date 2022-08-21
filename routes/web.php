@@ -86,9 +86,17 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/supplier-invoice-add/{id?}', 'PurchaseController@supplierInvoiceAdd');
     Route::post('inventory/supplier-invoice-add/{id?}', 'PurchaseController@supplierInvoiceAdd');
     Route::get('inventory/find-po-number', 'PurchaseController@find_po_number');
+    Route::get('inventory/supplier-invoice-delete/{id}', 'PurchaseController@supplier_invoice_delete');
+    Route::get('inventory/supplier-invoice-item-edit/{master}/{id}', 'PurchaseController@supplierInvoiceItemEdit');
+    Route::post('inventory/supplier-invoice-item-edit/{master}/{id}', 'PurchaseController@supplierInvoiceItemEdit');
    
    
    
+   
+   
+
+    
+
     Route::get('inventory/lot-allocation', 'PurchaseController@lotAllocation');
 });
 
