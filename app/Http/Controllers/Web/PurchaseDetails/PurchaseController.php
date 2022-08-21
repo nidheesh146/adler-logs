@@ -412,6 +412,7 @@ return  $data;
         $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_inv(['inv_supplier_invoice_master.status'=>1]);
         return view('pages.purchase-details.supplier-invoice.supplier-invoice-list',compact('data'));
     }
+
     public function supplierInvoiceAdd(Request $request,$id = null)
     {
 
@@ -501,6 +502,7 @@ return  $data;
 
     public function lotAllocation()
     {
+        return view('pages.purchase-details.supplier-invoice.supplier-invoice-list');
         return view('pages.purchase-details.purchase.lot-allocation');
     }
 }

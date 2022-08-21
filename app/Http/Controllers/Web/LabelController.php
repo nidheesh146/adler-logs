@@ -136,10 +136,10 @@ class LabelController extends Controller
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
-        
+        $color =[0,0,0];
         $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
-        $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
-        $gs1_code_barcode = $generator->getBarcode($batchcard_data->gs1_code, $generator::TYPE_CODE_128);
+        $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128, 1,40, $color);
+        $gs1_code_barcode = $generator->getBarcode($batchcard_data->gs1_code, $generator::TYPE_CODE_128, 1,70, $color );
 
         return view('pages/label/sterilization-label-print', compact('batchcard_data','no_of_label', 'lot_no','sku_code_barcode','gs1_code_barcode', 'manufacture_date','sterilization_expiry_date'));
     }

@@ -19,7 +19,7 @@
 <div class="az-content az-content-dashboard">
   <br>
     <div class="container">
-	    <div class="az-content-body">     
+	    <div class="az-content-body"  style="color:black;">     
             <div class="az-content-title">
                 <button  style="float: right; margin-left: 9px;font-size: 14px;width:90px;" class="badge badge-pill badge-info " id="print">
                 <i class="fa fa-print" aria-hidden="true"></i>&nbsp;Print
@@ -31,55 +31,56 @@
                     $page_count = (int)($no_of_label/12);
                     $remaining = $no_of_label%12;
                  ?>
-                 @for ($i = 0; $i< $page_count; $i++)
-                <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                @for ($i = 0; $i< $page_count; $i++)
+                <div class="page-container" style="margin-top:0.4cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                 @for ($j=0;$j<$label_per_page;$j++)
-                <div class=" column" style="width:10.2cm;float: left;height:4.7cm;float: left;padding:2px 2px;font-size:13px;">
+                <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:1px">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
-                        <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:2.7px;padding-left: 5px;">
+                        <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:3.7px;padding-left: 5px;">
                             <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:14px;height:14px;">
                             <span style="margin-left:2px;">visit :http://www.adler-healthcare.com <br>To see instructions for use please</span>
                         </div> 
                         
                         <div class="sub2" style="float:left;width:8%;padding:1px;height:70px">
-                            <span class="smalltext" style="font-size:4px;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:12px;">
-                                LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) ) }}
+                            <span class="smalltext" style="font-size:5px;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:6px;">
+                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd M y' , strtotime('14-12-2021') )}}
                             </span>
                         </div>
-                        <div class="sub3" style="float:left;width:50%;padding:1px;font-size:5px;line-height:1.5;">
+                        <div class="sub3" style="float:left;width:50%;padding:1px;font-size:8px;line-height:1.3;">
                             <span style="">{{$batchcard_data->groups}}</span><br/>
-                            <span style="font-weight:bold;font-size:6px">{{$batchcard_data->brand}}</span><br/>
+                            <span style="font-weight:bold;font-size:9px">{{$batchcard_data->brand}}</span><br/>
                             <span style="">{{$batchcard_data->family}}</span><br/>
                             <span style="">{{$batchcard_data->snn_description}}</span><br/>
-                            <span style="font-weight:bold;font-size:6px">Ref: {{$batchcard_data->sku_code}}</span><br/>
+                            <span style="font-weight:bold;font-size:9px">Ref: {{$batchcard_data->sku_code}}</span><br/>
                             <div style="padding-top:2px;width: fit-content;">
                                 <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:22px">
                                 <br/>
-                                <div style="text-align:center;"><small>{{$batchcard_data->sku_code}}</small></div>
+                                <div style="text-align:center;font-size:6.2px;font-weight:400;">{{$batchcard_data->sku_code}}</div>
                             </div>
                         </div>
-                        <div class="sub4" style="float:left;width:content-fit;height:70px;padding:1px;font-size:7px;text-align:center;">
+                        <div class="sub4" style="float:left;width:content-fit;height:70px;padding:1px;font-size:9px;text-align:center;">
                             <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
-                            <span class="smalltext">{{$manufacturing_date}}</span><br/>
+                            <span class="smalltext1">{{$manufacturing_date}}</span><br/>
                             <strong>Qty :</strong>{{$batchcard_data->quantity_per_pack}} Nos
                             <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">&nbsp;
-                            <span class="smalltext">{{$batchcard_data->batch_no}}</span></br>
+                            <span class="smalltext1">{{$batchcard_data->batch_no}}</span></br>
                             
                         </div>
                     </div> 
                     <div class="subcolumn2" style="float:left;margin-top:2px;">
-                        <div style="float:left;width:75%;">
+                        <div style="float:left;width:80%;">
                             <div class="barcode2" style="font-size:5.6px">
                                 <img src="data:image/png;base64,{{ base64_encode($gs1_label_batch_combo_barcode)}}" style="width:95%;height:22px">   
                                 <br/>
-                                <div style="text-align:center;margin-top:1px;"><small>{{$gs1_label_batch_combo}}</small></div>
+                                <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:400">{{$gs1_label_batch_combo}}</div>
                             </div>
                         </div>
                         <div style="float:left;width:15%; margin-left:1px;">
-                            <div class="logo" style="">
+                            <div class="logo" style="text-align:center;">
                                
                                 <!--@if($batchcard_data->is_read_instruction_logo==1) -->
-                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:32%;">
+                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;padding:0px;margin-left: 3px;">
+                                <!-- <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;"> -->
                                 <!--@endif -->
                                 <!-- @if($batchcard_data->is_donot_reuse_logo==1)
                                 <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:35%;float:left;">
@@ -88,30 +89,32 @@
                         </div>
                     </div>
                     <div class="subcolumn3" style="float:left;margin-top:2px;">
-                        <div style="float:left;width:75%;">
+                        <div style="float:left;width:80%;">
                             <div class="barcode3"  style="float:left;margin-top:4px;">
-                                <div class="barcode" style="width:40%;float:left;font-size:5.6px">
+                                <div class="barcode" style="width:35%;float:left;font-size:5.6px">
                                     <img src="data:image/png;base64,{{ base64_encode($manf_date_combo_barcode)}}" style="width:100%;height:25px">   
                                     <br/>
-                                    <div style="text-align:center;margin-top:1px;"><small>{{$manf_date_combo}}</small></div>
+                                    <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:400">{{$manf_date_combo}}</div>
                                 </div>
-                                <div style="margin-left:2px;float:left;width:50%;">
-                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:35px;height:20px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:5px; padding-left:2px;font-weight:bold;display:block;">VL No:{{$batchcard_data->drug_license_number}}</span> 
-                                    <span class=" cls" style="padding-left:2px;font-size:5px;font-weight:bold;display:block;";>ADLER HEALTHCARE PVT. LTD</span>
-                                    <span style="font-size:4px;display:block;padding-left:2px">
-                                                Plot No-A1 MIDC, Sadavali, Tal- Sangmeshwar</span>
-                                    <span style="font-size:3.5px;display:block;padding-left:2px">Dist -Ratnagiri, Maharashtra-415804 MADE IN INDIA</span>
+                                <div style="margin-left:2px;float:left;width:62%;">
+                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">ML No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span class=" cls" style="padding-left:2px;font-size:6px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
+                                    <div class="" style="display:block;margin-left: 35px;">
+                                        <span style="font-weight:400;font-size:6px;display:block;padding-left:2px">
+                                                    Plot No-A1 MIDC, Sadavali, Tal- Sangmeshwar</span>
+                                        <span style="font-weight:400;font-size:6px;display:block;padding-left:2px">Dist -Ratnagiri, Maharashtra-415804 MADE IN INDIA</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div style="float:left;width:15%; margin-left:1px;">
-                            <div class="logo" style="margin-top: 8px;">
+                            <div class="logo" style="    margin-top: 8px;">
                                 <!-- @if($batchcard_data->is_donot_reuse_logo==1)
                                 <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:35%;float:left;">
                                 @endif -->
                                 <!-- @if($batchcard_data->is_non_sterile_logo==1) -->
-                                <img src="{{asset('/img/alderlogo/non_sterile.png')}}"  style="width:44%;">
+                                <img src="{{asset('/img/alderlogo/non_sterile.png')}}"  style="width:50%;">
                                 <!-- @endif -->
                             </div>
                         </div>
@@ -122,54 +125,55 @@
                 </div>
                 @endfor
                 @if($remaining!=0)
-                <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                <div class="page-container" style="margin-top:0.4cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                 @for ($j=0;$j<$remaining;$j++)
-                <div class=" column" style="width:10.2cm;float: left;height:4.7cm;float: left;padding:2px 2px;font-size:13px;">
+                <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:1px">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
-                        <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:2.7px;padding-left: 5px;">
+                        <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:3.7px;padding-left: 5px;">
                             <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:14px;height:14px;">
                             <span style="margin-left:2px;">visit :http://www.adler-healthcare.com <br>To see instructions for use please</span>
                         </div> 
                         
                         <div class="sub2" style="float:left;width:8%;padding:1px;height:70px">
-                            <span class="smalltext" style="font-size:4px;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:12px;">
-                                LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) ) }}
+                            <span class="smalltext" style="font-size:5px;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:6px;">
+                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd M y' , strtotime('14-12-2021') )}}
                             </span>
                         </div>
-                        <div class="sub3" style="float:left;width:50%;padding:1px;font-size:5px;line-height:1.5;">
+                        <div class="sub3" style="float:left;width:50%;padding:1px;font-size:8px;line-height:1.3;">
                             <span style="">{{$batchcard_data->groups}}</span><br/>
-                            <span style="font-weight:bold;font-size:6px">{{$batchcard_data->brand}}</span><br/>
+                            <span style="font-weight:bold;font-size:9px">{{$batchcard_data->brand}}</span><br/>
                             <span style="">{{$batchcard_data->family}}</span><br/>
                             <span style="">{{$batchcard_data->snn_description}}</span><br/>
-                            <span style="font-weight:bold;font-size:6px">Ref: {{$batchcard_data->sku_code}}</span><br/>
+                            <span style="font-weight:bold;font-size:9px">Ref: {{$batchcard_data->sku_code}}</span><br/>
                             <div style="padding-top:2px;width: fit-content;">
                                 <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:22px">
                                 <br/>
-                                <div style="text-align:center;"><small>{{$batchcard_data->sku_code}}</small></div>
+                                <div style="text-align:center;font-size:6.2px;font-weight:400;">{{$batchcard_data->sku_code}}</div>
                             </div>
                         </div>
-                        <div class="sub4" style="float:left;width:content-fit;height:70px;padding:1px;font-size:7px;text-align:center;">
+                        <div class="sub4" style="float:left;width:content-fit;height:70px;padding:1px;font-size:9px;text-align:center;">
                             <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
-                            <span class="smalltext">{{$manufacturing_date}}</span><br/>
+                            <span class="smalltext1">{{$manufacturing_date}}</span><br/>
                             <strong>Qty :</strong>{{$batchcard_data->quantity_per_pack}} Nos
                             <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">&nbsp;
-                            <span class="smalltext">{{$batchcard_data->batch_no}}</span></br>
+                            <span class="smalltext1">{{$batchcard_data->batch_no}}</span></br>
                             
                         </div>
                     </div> 
                     <div class="subcolumn2" style="float:left;margin-top:2px;">
-                        <div style="float:left;width:75%;">
+                        <div style="float:left;width:80%;">
                             <div class="barcode2" style="font-size:5.6px">
                                 <img src="data:image/png;base64,{{ base64_encode($gs1_label_batch_combo_barcode)}}" style="width:95%;height:22px">   
                                 <br/>
-                                <div style="text-align:center;margin-top:1px;"><small>{{$gs1_label_batch_combo}}</small></div>
+                                <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:400">{{$gs1_label_batch_combo}}</div>
                             </div>
                         </div>
                         <div style="float:left;width:15%; margin-left:1px;">
-                            <div class="logo" style="">
+                            <div class="logo" style="text-align:center;">
                                
                                 <!--@if($batchcard_data->is_read_instruction_logo==1) -->
-                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:32%;">
+                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;padding:0px;margin-left: 3px;">
+                                <!-- <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;"> -->
                                 <!--@endif -->
                                 <!-- @if($batchcard_data->is_donot_reuse_logo==1)
                                 <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:35%;float:left;">
@@ -178,30 +182,32 @@
                         </div>
                     </div>
                     <div class="subcolumn3" style="float:left;margin-top:2px;">
-                        <div style="float:left;width:75%;">
+                        <div style="float:left;width:80%;">
                             <div class="barcode3"  style="float:left;margin-top:4px;">
-                                <div class="barcode" style="width:40%;float:left;font-size:5.6px">
+                                <div class="barcode" style="width:35%;float:left;font-size:5.6px">
                                     <img src="data:image/png;base64,{{ base64_encode($manf_date_combo_barcode)}}" style="width:100%;height:25px">   
                                     <br/>
-                                    <div style="text-align:center;margin-top:1px;"><small>{{$manf_date_combo}}</small></div>
+                                    <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:400">{{$manf_date_combo}}</div>
                                 </div>
-                                <div style="margin-left:2px;float:left;width:50%;">
-                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:35px;height:20px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:5px; padding-left:2px;font-weight:bold;display:block;">VL No:{{$batchcard_data->drug_license_number}}</span> 
-                                    <span class=" cls" style="padding-left:2px;font-size:5px;font-weight:bold;display:block;";>ADLER HEALTHCARE PVT. LTD</span>
-                                    <span style="font-size:4px;display:block;padding-left:2px">
-                                                Plot No-A1 MIDC, Sadavali, Tal- Sangmeshwar</span>
-                                    <span style="font-size:3.5px;display:block;padding-left:2px">Dist -Ratnagiri, Maharashtra-415804 MADE IN INDIA</span>
+                                <div style="margin-left:2px;float:left;width:62%;">
+                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">ML No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span class=" cls" style="padding-left:2px;font-size:6px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
+                                    <div class="" style="display:block;margin-left: 35px;">
+                                        <span style="font-weight:400;font-size:6px;display:block;padding-left:2px">
+                                                    Plot No-A1 MIDC, Sadavali, Tal- Sangmeshwar</span>
+                                        <span style="font-weight:400;font-size:6px;display:block;padding-left:2px">Dist -Ratnagiri, Maharashtra-415804 MADE IN INDIA</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div style="float:left;width:15%; margin-left:1px;">
-                            <div class="logo" style="margin-top: 8px;">
+                            <div class="logo" style="    margin-top: 8px;">
                                 <!-- @if($batchcard_data->is_donot_reuse_logo==1)
                                 <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:35%;float:left;">
                                 @endif -->
                                 <!-- @if($batchcard_data->is_non_sterile_logo==1) -->
-                                <img src="{{asset('/img/alderlogo/non_sterile.png')}}"  style="width:44%;">
+                                <img src="{{asset('/img/alderlogo/non_sterile.png')}}"  style="width:50%;">
                                 <!-- @endif -->
                             </div>
                         </div>
