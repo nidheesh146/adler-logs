@@ -34,15 +34,16 @@
 				<thead>
 					<tr>
 						<th>Lot No:</th>
-						<th>PO number :</th>
+                        <th>PO number :</th>
+                        <th>Item Code:</th>
 						<th>Invoice No.</th>
 						<th>Invoice Qty</th>
 						<th>Supplier</th>
 						<th>Received Qty</th>
 						<th>Accepted Qty</th>
 						<th>Rejected Qty</th>
-						<th>Transporter</th>
-						<th>Vehicle No</th>
+						{{-- <th>Transporter</th>
+						<th>Vehicle No</th> --}}
 						<th>Action</th>
 					
 					</tr>
@@ -51,15 +52,16 @@
 					@foreach($lot_data as $data)
 					<tr>
 						<td>{{$data['lot_number']}}</td>
-						<td>{{$data['po_number']}}</td>
+                        <td>{{$data['po_number']}}</td>
+                        <td>{{$data['item_code']}}</td>
 						<td>{{$data['invoice_number']}}</td>
-						<td>{{$data['invoice_qty']}}</td>
+						<td>{{$data['inv_odr_qty']}}</td>
 						<td>{{$data['vendor_id']}}-{{$data['vendor_name']}}</td>
 						<td>{{$data['qty_received']}}</td>
 						<td>{{$data['qty_accepted']}}</td>
 						<td>{{$data['qty_rejected']}}</td>
-						<td>{{$data['transporter_name']}}</td>
-						<td>{{$data['vehicle_number']}}</td>
+						{{-- <td>{{$data['transporter_name']}}</td>
+						<td>{{$data['vehicle_number']}}</td> --}}
 						<td>
 							<!-- <a class="badge badge-info" style="font-size: 13px;" href="http://localhost/adler/public/inventory/final-purchase-add/3"><i class="fas fa-edit"></i> Edit</a> -->
 							<a class="badge badge-info lot-edit" style="font-size: 13px;" href="#" data-lotid ="{{$data['id']}}" data-invoiceitem="{{$data['invoice_number']}}" data-toggle="modal" data-target="#myModal"><i class="fas fa-edit"></i> Edit</a>                                    
@@ -94,7 +96,7 @@
               <div class="modal-content">
                 <div class="modal-header" style="display: block;">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Edit Lot Number Allocation</h4>
+                  <h4 class="modal-title">Edit Lot Number Allocation  (<span id="lot_number"></span>) </h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -105,12 +107,12 @@
                        
                                 <div class="row">
                              
-                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                    {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                         <label for="exampleInputEmail1">Lot Number *</label>
                                         <input type="text" class="form-control lot-number" name="lot_number" id="lot_number" placeholder="Lot Number">
-										<input type="hidden"  value="" class="form-control" name="lot_id" id="lot_id">
-									</div>
-    
+									
+									</div> --}}
+                                    <input type="hidden"  value="" class="form-control" name="lot_id" id="lot_id">
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Document No *</label>
                                         <input type="text"  class="form-control document-no" value="" name="document_no" id="document_no" placeholder="Document No">
@@ -222,8 +224,15 @@
                                         <label> Test Report Date *</label>
                                         <input type="date" class="form-control" value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date">
                                     </div>
+
+
+
+
+
+
+
+
                                 </div>
-    
                                 <div class="row">
                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span
@@ -265,11 +274,39 @@
 <script>
   $(function(){
     'use strict'
+
+
+    jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {
+let qty_received =  $('#qty_received').val();
+let qtyaccepted = (qty_received - ((+$('#qty_accepted').val()) + (+$('#qty_rejected').val())));
+if(qtyaccepted == 0 ){
+        return true;
+    }else{
+        return false;
+    }
+}, "if Quantity accepted and Quantity rejected are added , The value of Quantity Received should be !");
+
+$('#qty_received').on('input',function(){
+    let qty_received =  $('#qty_received').val();
+    let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
+    $('#qty_accepted').attr('value',qtyaccepted);
+});
+$('#qty_accepted').on('input',function(){
+    let qty_received =  $('#qty_received').val();
+    let qtyaccepted = (qty_received - (+$('#qty_accepted').val()));
+    $('#qty_rejected').attr('value',qtyaccepted);
+});
+
+$('#qty_rejected').on('input',function(){
+    let qty_received =  $('#qty_received').val();
+    let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
+    $('#qty_accepted').attr('value',qtyaccepted);
+});
+
+
 	$("#commentForm").validate({
                             rules: {
-                                lot_number: {
-                                    required: true,
-                                },
+
                                  document_no: {
                                      required: true,
                                 },
@@ -380,11 +417,10 @@
         $('#document_no').val('');
         var invoice_item_id = $(this).data('invoiceitem');
 		var lot_allocation_id = $(this).data('lotid');
-						alert(lot_allocation_id);
         $.get("{{ url('inventory/get-single-lot-allocation') }}/"+lot_allocation_id,function(data){
-                $('#item_description').text(data.item_description);
-                $('#material_description').text(data.meterial_description);
-                $('#material_code').val(data.meterial_code);
+            $('#item_description').text(data.discription);
+                $('#material_description').text(data.specification);
+                $('#material_code').val(data.item_code);
                 $('#invoice_no').val(data.invoiceNumber);
                 $('#invoice_date').val(data.invoice_date);
                 $('#invoice_qty').val(data.invoice_qty);
@@ -397,7 +433,7 @@
                 $('#unit').val(data.unit_id);
                 $('#invoice_id').val(data.invoice_item_id);
 
-				$('#lot_number').val(data.lot_number);
+				$('#lot_number').text(data.lot_number);
                             $('#rev_no').val(data.rev_number);
                             $('#rev_date').val(data.rev_date);
                             $('#qty_received').val(data.qty_received);
