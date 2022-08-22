@@ -91,7 +91,8 @@ class LotAllocationController extends Controller
 
             }
         }
-        $items = $this->inv_supplier_invoice_item->get_supplier_invoice_item(['inv_supplier_invoice_item.status'=>1]);
+        $all_lot_invoice_number = $this->inv_lot_allocation->all_lot_invoice_number();
+        $items = $this->inv_supplier_invoice_item->get_non_lot_alloted_supplier_invoice_items(['inv_supplier_invoice_item.status'=>1],$all_lot_invoice_number);
         // print_r(json_encode($items));exit;
         return view('pages.purchase-details.lot-allocation.lot-allocation-add', compact('items'));
     }

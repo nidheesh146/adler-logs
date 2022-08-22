@@ -42,7 +42,12 @@ class inv_lot_allocation extends Model
                     ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id', '=','inv_supplier_invoice_master.po_master_id')
                     ->leftjoin('inv_supplier', 'inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
                     ->where($condition)
+                    ->whereNotIn('id')
                     ->first();
+    }
+
+    function all_lot_invoice_number(){
+        return $this->pluck('invoice_number')->all();
     }
 
 }
