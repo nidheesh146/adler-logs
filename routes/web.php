@@ -86,9 +86,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/supplier-invoice-item-edit/{master}/{id}', 'PurchaseController@supplierInvoiceItemEdit');
    
     //lot allocation
-    Route::get('inventory/lot-allocation', 'LotAllocationController@lotAllocation');
+    Route::get('inventory/lot-allocation-list', 'LotAllocationController@lotAllocation');
     Route::get('inventory/lot-allocation-add', 'LotAllocationController@addLotAllocation');
     Route::post('inventory/lot-allocation-add', 'LotAllocationController@addLotAllocation');
+    Route::post('inventory/lot-allocation-edit', 'LotAllocationController@addLotAllocation');
+    Route::get('inventory/get-single-invoice-item/{itemId}','LotAllocationController@getInvoiceItem');
+    Route::get('inventory/get-single-lot-allocation/{lot_allocation_id}','LotAllocationController@getsingleLot');
 });
 
 

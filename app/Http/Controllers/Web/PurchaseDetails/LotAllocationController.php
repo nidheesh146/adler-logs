@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use App\Models\PurchaseDetails\inv_lot_allocation;
-
+use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 class LotAllocationController extends Controller
 {
     public function __construct()
     {
         $this->inv_lot_allocation = new inv_lot_allocation;
+        $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
     }
 
     public function lotAllocation()
@@ -25,6 +26,7 @@ class LotAllocationController extends Controller
     {
         if ($request->isMethod('post'))
         {
+          //  echo $request->supplier;exit;
             $validation['lot_number'] = ['required'];
             $validation['document_no'] = ['required'];
             $validation['rev_no'] = ['required'];
@@ -32,14 +34,14 @@ class LotAllocationController extends Controller
             $validation['item_description'] = ['required'];
             $validation['material_code'] = ['required'];
             $validation['material_description'] = ['required'];
-            $validation['invoice_no'] = ['required'];
+            $validation['invoice_id'] = ['required'];
             $validation['invoice_date'] = ['required'];
             $validation['invoice_qty'] = ['required'];
             $validation['qty_received'] = ['required'];
             $validation['qty_accepted'] = ['required'];
             $validation['qty_rejected'] = ['required'];
             $validation['unit'] = ['required'];
-            $validation['po_number'] = ['required'];
+            $validation['po_id'] = ['required'];
             $validation['supplier'] = ['required'];
             $validation['vehicle_no'] = ['required'];
             $validation['transporter_name'] = ['required'];
@@ -57,23 +59,30 @@ class LotAllocationController extends Controller
                 $data['item_description'] = $request->item_description;
                 $data['meterial_code'] = $request->material_code;
                 $data['meterial_description'] = $request->material_description;
-                $data['invoice_number'] = $request->invoice_no;
+                $data['invoice_number'] = $request->invoice_id;
                 $data['invoice_date'] = $request->invoice_date;
                 $data['invoice_qty'] = $request->invoice_qty;
                 $data['qty_received'] = $request->qty_received;
                 $data['qty_accepted'] = $request->qty_accepted;
                 $data['qty_rejected'] = $request->qty_rejected;
                 $data['unit'] = $request->unit;
-                $data['po_id'] = $request->po_number;
+                $data['po_id'] = $request->po_id;
                 $data['supplier_id'] = $request->supplier;
                 $data['vehicle_number'] = $request->vehicle_no;
                 $data['transporter_name'] = $request->transporter_name;
-                $data['mrr_number'] = $request->mrr_number;
+                $data['mrr_number'] = $request->mrr_no;
                 $data['mrr_date'] = $request->mrr_date;
                 $data['test_report_number'] = $request->test_report_no;
                 $data['test_report_date'] = $request->test_report_date;
-                $lot =$this->inv_lot_allocation->insertdata($data);
-                $request->session()->flash('success',  "You have successfully completed lot allocation !");
+                if($request->lot_id){
+                    $lot =$this->inv_lot_allocation->updatedata(['inv_lot_allocation.id'=>$request->lot_id],$data);
+                    $request->session()->flash('success',  "You have successfully updated lot allocation !");
+                } 
+                else{
+                    $lot =$this->inv_lot_allocation->insertdata($data);
+                    $request->session()->flash('success',  "You have successfully completed lot allocation !");
+                }
+                
                 return redirect("inventory/lot-allocation-list");
             }
             if($validator->errors()->all()) 
@@ -82,6 +91,22 @@ class LotAllocationController extends Controller
 
             }
         }
-        return view('pages.purchase-details.lot-allocation.lot-allocation-add');
+        $items = $this->inv_supplier_invoice_item->get_supplier_invoice_item(['inv_supplier_invoice_item.status'=>1]);
+        // print_r(json_encode($items));exit;
+        return view('pages.purchase-details.lot-allocation.lot-allocation-add', compact('items'));
+    }
+
+    public function getInvoiceItem($invoice_item_id)
+    {
+        $invoice_item = $this->inv_supplier_invoice_item->get_single_supplier_invoice_item(['inv_supplier_invoice_item.id'=>$invoice_item_id]);
+        return $invoice_item;
+    }
+
+    public function getsingleLot($lot_allocation_id)
+    {
+        //echo $lot_allocation_id;
+        //exit;
+        $lot_data= $this->inv_lot_allocation->get_single_lot(['inv_lot_allocation.id'=>$lot_allocation_id]);
+        return $lot_data;
     }
 }
