@@ -32,9 +32,9 @@
                     $remaining = $no_of_label%12;
                  ?>
                 @for ($i = 0; $i< $page_count; $i++)
-                <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                <div class="page-container" style="margin-top:0.2cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                 @for ($j=0;$j<$label_per_page;$j++)
-                <div class=" column" style=" height:16.66%;float: left;width: 49%;padding:2px 2px;font-size:13px;">
+                <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:15px; margin-left:10px;margin-bottom:6px; line-height:135%;">
                     <div class="subcolumn" style="float:left;width:95%;">
                         <div class="address" style="font-weight:bold;">
                             MKtd and Distributed by : Smith & Nephew<br/>
@@ -47,10 +47,11 @@
                          <strong>Code No: {{$product->sku_code}}</strong><br/>
                          <strong>MRP (Incl. of all taxes/pc) : Rs.{{$product->mrp}} /-</strong><br/>
                         </div>  
+                        <br/>
                     </div> 
                     <div class="subcolumn" style="float:left;width:5%;">
-                        <span class="smalltext" style="font-size:8px;margin-top:22px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
-                        LBL/F-{{$product->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($product->start_date) )}}
+                        <span class="smalltext" style="font-size:10px;margin-top:22px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
+                        LBL/F-08_rev00_{{date( 'd M y' , strtotime('29-01-2022') )}}
                         </span>
 
                     </div>    
@@ -60,9 +61,9 @@
                 </div>
                 @endfor
                 @if($remaining!=0)
-                <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                <div class="page-container" style="margin-top:0.2cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                 @for ($j=0;$j<$remaining;$j++)
-                <div class=" column" style=" height:16.66%;float: left;width: 49%;padding:2px 2px;font-size:13px;">
+                <div class=" column" style="width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:15px; margin-left:10px;margin-bottom:6px; line-height:135%;">
                     <div class="subcolumn" style="float:left;width:95%;">
                         <div class="address" style="font-weight:bold;">
                             MKtd and Distributed by : Smith & Nephew<br/>
@@ -78,7 +79,7 @@
                     </div> 
                     <div class="subcolumn" style="float:left;width:5%;">
                         <span class="smalltext" style="font-size:8px;margin-top:22px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
-                        LBL/F-{{$product->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($product->start_date) )}}
+                        LBL/F-08_rev00_{{date( 'd M y' , strtotime('29-01-2022') )}}
                         </span>
 
                     </div>    

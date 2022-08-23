@@ -8,6 +8,10 @@ use Validator;
 use App\Models\User;
 use App\Models\PurchaseDetails\inv_lot_allocation;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
+use App\Models\PurchaseDetails\inventory_rawmaterial;
+use App\Models\PurchaseDetails\inv_supplier;
+use App\Models\PurchaseDetails\inv_final_purchase_order_master;
+use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use DB;
 class LotAllocationController extends Controller
 {
@@ -16,13 +20,22 @@ class LotAllocationController extends Controller
         $this->inv_lot_allocation = new inv_lot_allocation;
         $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
         $this->User = new User;
+        $this->inventory_rawmaterial = new inventory_rawmaterial;
+        $this->inv_supplier = new inv_supplier;
+        $this->inv_final_purchase_order_master = new inv_final_purchase_order_master;
+        $this->inv_supplier_invoice_master = new inv_supplier_invoice_master;
     }
 
     public function lotAllocation()
     {
         $lot_data = $this->inv_lot_allocation->getData();
-        // print_r($lot_data);exit;
-        return view('pages.purchase-details.lot-allocation.lot-allocation-list', compact('lot_data'));
+        $users = $this->User->get_all_users([['user.status','=',1]]);
+        $data['items'] = $this->inventory_rawmaterial->get_items();
+        $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
+        $data['lot_nos'] = $this->inv_lot_allocation->get_lots();
+        $data['po_nos'] = $this->inv_final_purchase_order_master->get_po_nos();
+        $data['invoice_nos'] = $this->inv_supplier_invoice_master->get_invoice_nos();
+        return view('pages.purchase-details.lot-allocation.lot-allocation-list', compact('lot_data','users', 'data'));
     }
 
     public function addLotAllocation(Request $request)
@@ -91,16 +104,16 @@ class LotAllocationController extends Controller
 
             }
         }
-        $all_lot_invoice_number = $this->inv_lot_allocation->all_lot_invoice_number();
-        $items = $this->inv_supplier_invoice_item->get_non_lot_alloted_supplier_invoice_items(['inv_supplier_invoice_item.status'=>1],$all_lot_invoice_number);
-        // print_r(json_encode($items));exit;
-        return view('pages.purchase-details.lot-allocation.lot-allocation-add', compact('items'));
+        // $all_lot_invoice_number = $this->inv_lot_allocation->all_lot_invoice_number();
+        // $items = $this->inv_supplier_invoice_item->get_non_lot_alloted_supplier_invoice_items(['inv_supplier_invoice_item.status'=>1],$all_lot_invoice_number);
+        // // print_r(json_encode($items));exit;
+        // return view('pages.purchase-details.lot-allocation.lot-allocation-add', compact('items'));
 
-    //     $data['items'] = $this->inv_supplier_invoice_item->get_supplier_invoice_item1(['inv_supplier_invoice_item.status'=>1,'inv_supplier_invoice_master.status'=>1]);
-    //     $data['users'] = $this->User->get_all_users([['user.status','=',1]]);
+        $data['items'] = $this->inv_supplier_invoice_item->get_supplier_invoice_item1(['inv_supplier_invoice_item.status'=>1,'inv_supplier_invoice_master.status'=>1]);
+        $data['users'] = $this->User->get_all_users([['user.status','=',1]]);
         
-    //   // print_r( $data['items']);exit;
-    //     return view('pages.purchase-details.lot-allocation.lot-allocation-add', compact('data'));
+      // print_r( $data['items']);exit;
+        return view('pages.purchase-details.lot-allocation.lot-allocation-add', compact('data'));
     }
 
     public function getInvoiceItem($invoice_item_id)

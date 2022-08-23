@@ -72,6 +72,9 @@ class inv_supplier_invoice_master extends Model
                 ->paginate(15);
     }
 
+    function get_invoice_nos(){
+        return $this->select('id','invoice_number')->get();
+    }
 
 
 

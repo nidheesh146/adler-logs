@@ -23,6 +23,99 @@
 		<div class="az-dashboard-nav">
 			<nav class="nav"> </nav>	
 		</div>
+
+        <div class="row row-sm mg-b-20 mg-lg-b-0">
+            <div class="table-responsive" style="margin-bottom: 13px;">
+                <table class="table table-bordered mg-b-0">
+                    <tbody>
+                        <tr>
+                            <style>
+                                .select2-container .select2-selection--single {
+                                    height: 26px;
+                                    width: 117px;
+                                }
+                                .select2-selection__rendered {
+                                    font-size:12px;
+                                }
+                            </style>
+                            <form autocomplete="off">
+                                <th scope="row">
+                                    <div class="row filter_search" style="margin-left: 0px;">
+                                       <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                <label>Lot No:</label>
+                                                <!-- <input type="text" value="{{request()->get('lot_no')}}" name="lot_no" class="form-control" placeholder="LOT NO"> -->
+                                                <select name="lot_no" id="lot_no" class="form-control">
+                                                    @foreach($data['lot_nos'] as $lot)
+                                                    <option value="">---</option> 
+                                                    <option value="{{$lot['id']}}">{{$lot['lot_number']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div><!-- form-group -->
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                <label>PO No:</label>
+                                                <!-- <input type="text" value="{{request()->get('po_no')}}" name="po_no" class="form-control" placeholder="PO NO"> -->
+                                                <select name="po_no" id="po_no" class="form-control">
+                                                    @foreach($data['po_nos'] as $po)
+                                                    <option value="">---</option> 
+                                                    <option value="{{$po['id']}}">{{$po['po_number']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div><!-- form-group -->
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                <label>Invoice No:</label>
+                                                <!-- <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" class="form-control" placeholder="INVOICE NO"> -->
+                                                <select name="invoice_no" id="invoice_no" class="form-control">
+                                                    @foreach($data['invoice_nos'] as $no)
+                                                    <option value="">---</option> 
+                                                    <option value="{{$no['id']}}">{{$no['invoice_number']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div><!-- form-group -->
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                <label>Item Code:</label>
+                                                <!-- <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE"> -->
+                                                <select name="item_code" id="item_code" class="form-control">
+                                                    @foreach($data['items'] as $item)
+                                                    <option value="">---</option> 
+                                                    <option value="{{$item['id']}}">{{$item['item_code']}}</option>
+                                                    @endforeach
+                                                </select>
+
+                                            </div><!-- form-group -->
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
+                                                
+                                                <select name="supplier" id="supplier" class="form-control">
+                                                    @foreach($data['suppliers'] as $supplier)
+                                                    <option value="">---</option>
+                                                    <option value="{{$supplier['id']}}">{{$supplier['vendor_id']}}-{{$supplier['vendor_name']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                <label  style="font-size: 12px;">Created at </label>
+                                                <input type="text" value="{{request()->get('from')}}"  class="form-control datepicker" name="from" placeholder="Created at (MM-YYYY)">
+                                            </div>                      
+                                        </div>
+                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                                <label style="    width: 100%;">&nbsp;</label>
+                                                <button type="submit" class="badge badge-pill badge-primary" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                                @if(count(request()->all('')) > 1)
+                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
+                                                    style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                            </form>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 		@if (Session::get('success'))
 		<div class="alert alert-success " style="width: 100%;">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -90,10 +183,10 @@
 	<!-- Modal content-->
 
 	<div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog modal-lg" style="max-width: 97% !important;">
+        <div class="modal-dialog modal-lg" style="max-width: 97% !important;">
             
               <!-- Modal content-->
-              <div class="modal-content">
+            <div class="modal-content">
                 <div class="modal-header" style="display: block;">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                   <h4 class="modal-title">Edit Lot Number Allocation  (<span id="lot_number"></span>) </h4>
@@ -225,20 +318,33 @@
                                         <input type="date" class="form-control" value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date">
                                     </div>
 
+									<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label> Prepared By*</label>
+                                        <select class="form-control user_list" name="prepared_by" id="prepared_by">
+                                            @foreach ($users as $item)
+                                             <option value="{{$item['user_id']}}"
+                                             @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
+                                             >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                            @endforeach
+                                        </select>                                    </div>
 
-
-
-
-
-
-
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Approved By*</label>
+                                        <select class="form-control user_list" name="approved_by" id="approved_by">
+                                            @foreach ($users as $item)
+                                             <option value="{{$item['user_id']}}"
+                                             @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
+                                             >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                            @endforeach
+                                        </select>                                  
+									</div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span
                                                 class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                                 role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
-                                            Save
+                                            Update
                                         </button>
                                     </div>
                                 </div>
@@ -276,7 +382,7 @@
     'use strict'
 
 
-    jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {
+jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {
 let qty_received =  $('#qty_received').val();
 let qtyaccepted = (qty_received - ((+$('#qty_accepted').val()) + (+$('#qty_rejected').val())));
 if(qtyaccepted == 0 ){
@@ -303,8 +409,30 @@ $('#qty_rejected').on('input',function(){
     $('#qty_accepted').attr('value',qtyaccepted);
 });
 
+$('#item_code').select2({
+    placeholder: 'Item code',
+    searchInputPlaceholder: 'Search',
+    // minimumInputLength: 6,
+    // allowClear: true,
+ });
+ $('#supplier').select2({
+    placeholder: 'Supplier',
+    searchInputPlaceholder: 'Search',
+ });
+ $('#lot_no').select2({
+    placeholder: 'Lot No',
+    searchInputPlaceholder: 'Search',
+ });
+ $('#invoice_no').select2({
+    placeholder: 'Invoice No',
+    searchInputPlaceholder: 'Search',
+ });
+ $('#po_no').select2({
+    placeholder: 'PO No',
+    searchInputPlaceholder: 'Search',
+ });
 
-	$("#commentForm").validate({
+$("#commentForm").validate({
                             rules: {
 
                                  document_no: {
@@ -415,6 +543,8 @@ $('#qty_rejected').on('input',function(){
         $('#test_report_no').val('');
         $('#test_report_date').val('');
         $('#document_no').val('');
+		$('#prepared_by').val('');
+		$('#approved_by').val('');
         var invoice_item_id = $(this).data('invoiceitem');
 		var lot_allocation_id = $(this).data('lotid');
         $.get("{{ url('inventory/get-single-lot-allocation') }}/"+lot_allocation_id,function(data){
@@ -447,6 +577,8 @@ $('#qty_rejected').on('input',function(){
                             $('#test_report_date').val(data.test_report_date);
                             $('#document_no').val(data.doc_number);
 							$('#lot_id').val(data.id);
+							$('#prepared_by option[value="'+data.prepared_by+'"]').attr("selected", "selected");;
+							$('#approved_by').val(data.approved_by);
         });
                         //alert(invoice_item_id);
     });

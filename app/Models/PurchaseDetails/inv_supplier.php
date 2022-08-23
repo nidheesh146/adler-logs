@@ -30,4 +30,9 @@ class inv_supplier extends Model
         return $this->where($condition)->first();
     }
 
+    function get_all_suppliers()
+    {
+        return $this->select('id','vendor_id', 'vendor_name')->get();
+    }
+
 }

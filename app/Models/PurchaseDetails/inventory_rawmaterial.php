@@ -23,6 +23,10 @@ class inventory_rawmaterial extends Model
 
     }
 
+    function get_items()
+    {
+        return $this->select('id','item_code')->get();
+    }
 
 
 

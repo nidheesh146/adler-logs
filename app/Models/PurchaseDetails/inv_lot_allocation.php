@@ -72,7 +72,11 @@ class inv_lot_allocation extends Model
     }
 
     function all_lot_invoice_number(){
-        return $this->pluck('invoice_number')->all();
+        return $this->pluck('si_invoice_item_id')->all();
+    }
+
+    function get_lots(){
+        return $this->select('id','lot_number')->get();
     }
 
 }

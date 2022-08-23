@@ -33,9 +33,9 @@
                  ?>
                 @for ($i = 0; $i< $page_count; $i++)
                 <!-- <div class="page-container" style="margin-top:6mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;"> -->
-                <div class="page-container" style="margin-top:6mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;margin-left:2px">
+                <div class="page-container" style="margin-top:5mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;margin-left:2px">
                     @for ($j=0;$j<$label_per_page;$j++)
-                    <div class="label-container" style="float:left;width:6.9cm;height:2.45cm;margin-left:5px;" >
+                    <div class="label-container" style="float:left;width:6.9cm;height:2.45cm;margin-left:5px;margin-bottom:0.7px" >
                         <div class="sub-columns" style="">
                             <div class="" style="width:7px;text-align: justify;">
                                 <span class="smalltext" style="font-size:6px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;margin-right:1px;">
@@ -78,9 +78,9 @@
                 </div>
                 @endfor
                 @if($remaining!=0)
-                <div class="page-container" style="margin-top:6mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;margin-left:2px">
+                <div class="page-container" style="margin-top:5mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;margin-left:2px">
                     @for ($j=0;$j<$remaining;$j++)
-                    <div class="label-container" style="float:left;width:6.9cm;height:2.45cm;margin-left:5px;" >
+                    <div class="label-container" style="float:left;width:6.9cm;height:2.45cm;margin-left:5px;margin-bottom:0.7px" >
                         <div class="sub-columns" style="">
                             <div class="" style="width:7px;text-align: justify;">
                                 <span class="smalltext" style="font-size:6px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;margin-right:1px;">

@@ -88,4 +88,9 @@ class inv_final_purchase_order_master extends Model
                     ->where($condition)
                     ->first();
     }
+
+    function get_po_nos()
+    {
+        return $this->select('id','po_number')->get();
+    }
 }
