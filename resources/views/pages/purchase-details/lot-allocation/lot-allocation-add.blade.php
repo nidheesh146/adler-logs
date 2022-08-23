@@ -1,6 +1,12 @@
 @extends('layouts.default')
 @section('content')
 
+<style>
+.select2-container{
+    width:100% !important;
+}
+
+</style>
     <div class="az-content az-content-dashboard">
         <br>
 
@@ -58,8 +64,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($items as $item)
-                            <tr>
+                            @foreach( $data['items']  as $item)
+                            <tr @if($item['lot_id']) style="background:#3bb00133;" @endif>
                                 <td>{{$item['po_number']}}</td>
                                 <td>{{$item['invoice_number']}}</td>
                                 <td>{{$item['invoice_date']}}</td>
@@ -70,14 +76,19 @@
                                 <td>{{$item['rate']}}</td>
                                 <td>{{$item['discount']}}</td>
                                 <td>
+                                    @if(!$item['lot_id']) 
                                     <a class="badge badge-info lot-add" style="font-size: 13px;" href="#" data-invoiceitem="{{$item['id']}}" data-toggle="modal" data-target="#myModal"><i class="fas fa-plus"></i> LOT Number</a>                                    
+                                    @else
+                                    - 
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <div class="box-footer clearfix">
-                    </div>
+                        {{ $data['items']->appends(request()->input())->links() }}
+                   </div> 
                 </div>
             </div>
         </div> 
@@ -100,10 +111,10 @@
                        
                                 <div class="row">
                              
-                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                    {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                         <label for="exampleInputEmail1">Lot Number *</label>
                                         <input type="text" class="form-control lot-number" name="lot_number" id="lot_number" placeholder="Lot Number">
-                                    </div>
+                                    </div> --}}
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Document No *</label>
@@ -111,13 +122,13 @@
                                     </div><!-- form-group -->
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Rev No *</label>
+                                        <label>Revision No *</label>
                                         <input type="text" class="form-control" id="rev_no" name="rev_no"
                                             placeholder="Rev No">
                                     </div><!-- form-group -->
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Rev Date *</label>
+                                        <label>Revision Date *</label>
                                         <input type="date"  value="" class="form-control" name="rev_date" id="rev_date" placeholder="Rev Date">
                                     </div><!-- form-group -->
     
@@ -150,23 +161,23 @@
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Invoice Qty *</label>
+                                        <label>Invoice Quantity *</label>
                                         <input type="text"  value="" class="form-control" name="invoice_qty" id="invoice_qty" readonly placeholder="Invoice Qty">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Qty Received *</label>
+                                        <label>Quantity Received *</label>
                                         <input type="text"  value="" class="form-control" name="qty_received" id="qty_received" placeholder="Qty Received">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Qty accepted *</label>
-                                        <input type="text"  value="" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Qty Aceepted">
+                                        <label>Quantity accepted *</label>
+                                        <input type="text"  value="0" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Qty Aceepted">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Qty rejected *</label>
-                                        <input type="text"  value="" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Qty Rejected">
+                                        <label>Quantity rejected *</label>
+                                        <input type="text"  value="0" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Qty Rejected">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -178,7 +189,7 @@
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>PO Number *</label>
                                         <input type="text"  value="" class="form-control" name="po_number" disabled id="po_number" placeholder="PO number">
-                                        <input type="hidden"  value="" class="form-control" name="po_id" id="po_id">
+                                        <input type="hidden"  value="" class="form-control" name="si_id" id="si_id">
                                     </div>
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Supplier *</label>
@@ -216,6 +227,30 @@
                                         <label> Test Report Date *</label>
                                         <input type="date" class="form-control"value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date">
                                     </div>
+
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label> Prepared By*</label>
+                                        <select class="form-control user_list" name="prepared_by">
+                                            @foreach ($data['users'] as $item)
+                                             <option value="{{$item['user_id']}}"
+                                             @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
+                                             >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                            @endforeach
+                                        </select>                                    </div>
+
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Approved By*</label>
+                                        <select class="form-control user_list" name="approved_by">
+                                            @foreach ($data['users'] as $item)
+                                             <option value="{{$item['user_id']}}"
+                                             @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
+                                             >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                            @endforeach
+                                        </select>                                  </div>
+
+
+
+
                                 </div>
     
                                 <div class="row">
@@ -258,6 +293,15 @@
                 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
                 <script>
                   $(function(){
+
+    $('.user_list').select2({
+          placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+
+      });
+
+
+    
                     $(".lot-add").on( "click", function() {
                         $('#item_description').text('');
                         $('#material_description').text('');
@@ -275,13 +319,13 @@
                         var invoice_item_id = $(this).data('invoiceitem');
                         $.get("{{ url('inventory/get-single-invoice-item') }}/"+invoice_item_id,function(data){
                             $('#item_description').text(data.discription);
-                            $('#material_description').text(data.discription);
+                            $('#material_description').text(data.specification);
                             $('#material_code').val(data.item_code);
                             $('#invoice_no').val(data.invoice_number);
                             $('#invoice_date').val(data.invoice_date);
                             $('#invoice_qty').val(data.invoice_qty);
                             $('#po_number').val(data.po_number);
-                            $('#po_id').val(data.po_id);
+                            $('#si_id').val(data.invoice_item_id);
                             $('#supplier').val(data.supplier_id);
                             $('#supplier_name').val(data.vendor_id+"-"+data.vendor_name);
                             $('#supplier').val(data.supplier_id);
@@ -289,10 +333,41 @@
                             $('#unit').val(data.unit_id);
                             $('#invoice_id').val(data.invoice_item_id);
 
-
                         });
                         //alert(invoice_item_id);
                     });
+
+
+jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {
+let qty_received =  $('#qty_received').val();
+let qtyaccepted = (qty_received - ((+$('#qty_accepted').val()) + (+$('#qty_rejected').val())));
+if(qtyaccepted == 0 ){
+        return true;
+    }else{
+        return false;
+    }
+}, "if Quantity accepted and Quantity rejected are added , The value of Quantity Received should be !");
+
+$('#qty_received').on('input',function(){
+    let qty_received =  $('#qty_received').val();
+    let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
+    $('#qty_accepted').attr('value',qtyaccepted);
+});
+$('#qty_accepted').on('input',function(){
+    let qty_received =  $('#qty_received').val();
+    let qtyaccepted = (qty_received - (+$('#qty_accepted').val()));
+    $('#qty_rejected').attr('value',qtyaccepted);
+});
+
+$('#qty_rejected').on('input',function(){
+    let qty_received =  $('#qty_received').val();
+    let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
+    $('#qty_accepted').attr('value',qtyaccepted);
+});
+
+
+
+
 
                     $("#commentForm").validate({
                             rules: {
@@ -332,15 +407,18 @@
                                 },
                                 qty_accepted: {
                                      required: true,
-                                     number: true
-                                 },
+                                     number: true,
+                                     //checkPrevValuePaxTo:true
+                                    },
                                 qty_rejected: {
                                     required: true,
-                                    number: true
+                                    number: true,
+                                    checkPrevValuePaxTo:true
                                 },
                                 qty_received: {
                                     required: true,
-                                    number: true
+                                    number: true,
+                            
                                 },
                                 unit: {
                                     required: true,
@@ -372,9 +450,12 @@
                                 test_report_date: {
                                     required: true,
                                 },
-                                
-
                             },
+                            // messages: {
+                            //     qty_accepted: {
+                            //         email: "Inserire la località di partenza"
+                            //     },
+                            // },
                             submitHandler: function(form) {
                                   form.submit();
                             }
@@ -392,10 +473,7 @@
                                   };
                                 }
                               }
-                            });
-
-                            
-                           
+                            });    
                   });
 
                 </script>

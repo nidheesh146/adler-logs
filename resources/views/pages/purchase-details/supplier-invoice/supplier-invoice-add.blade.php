@@ -128,6 +128,11 @@
     });
 
 
+    $('.user_list').select2({
+          placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+
+      });
 
 
         $('.RQ-code').select2({
