@@ -32,9 +32,9 @@
                     $remaining = $no_of_label%12;
                  ?>
                 @for ($i = 0; $i< $page_count; $i++)
-                <div class="page-container" style="margin-top:0.2cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                <div class="page-container" style="margin-top:0.2cm;width:21.1cm;height:29.3cm;">
                 @for ($j=0;$j<$label_per_page;$j++)
-                <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:15px; margin-left:10px;margin-bottom:6px; line-height:135%;">
+                <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:14px; margin-left:10px;margin-bottom:6px; line-height:130%;">
                     <div class="subcolumn" style="float:left;width:95%;">
                         <div class="address" style="font-weight:bold;">
                             MKtd and Distributed by : Smith & Nephew<br/>

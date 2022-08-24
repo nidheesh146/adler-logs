@@ -60,7 +60,7 @@ class inv_supplier_invoice_master extends Model
             ->delete();
      return  $this->where($condition)->delete();
     }
-    function get_supplier_inv($condition){
+    function get_supplier_inv($condition,$condition2){
         return $this->select(['inv_supplier_invoice_master.id','user.employee_id','user.f_name','user.l_name','inv_final_purchase_order_master.po_number',
         'inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_supplier_invoice_master.created_at',
         'inv_supplier.vendor_id','inv_supplier.vendor_name'])
@@ -68,6 +68,7 @@ class inv_supplier_invoice_master extends Model
                 ->leftjoin('user','user.user_id','=','inv_supplier_invoice_master.created_by')
                 ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
                 ->where($condition)
+                ->where($condition2)
                 ->orderBy('inv_supplier_invoice_master.id','DESC')
                 ->paginate(15);
     }

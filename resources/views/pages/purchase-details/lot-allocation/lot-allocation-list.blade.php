@@ -23,7 +23,12 @@
 		<div class="az-dashboard-nav">
 			<nav class="nav"> </nav>	
 		</div>
-
+        @if (Session::get('success'))
+		<div class="alert alert-success " style="width: 100%;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+			<i class="icon fa fa-check"></i> {{ Session::get('success') }}
+		</div>
+		@endif
         <div class="row row-sm mg-b-20 mg-lg-b-0">
             <div class="table-responsive" style="margin-bottom: 13px;">
                 <table class="table table-bordered mg-b-0">
@@ -46,8 +51,8 @@
                                                 <label>Lot No:</label>
                                                 <!-- <input type="text" value="{{request()->get('lot_no')}}" name="lot_no" class="form-control" placeholder="LOT NO"> -->
                                                 <select name="lot_no" id="lot_no" class="form-control">
-                                                    @foreach($data['lot_nos'] as $lot)
-                                                    <option value="">---</option> 
+                                                    <option value="">---</option>
+                                                    @foreach($data['lot_nos'] as $lot) 
                                                     <option value="{{$lot['id']}}" {{(request()->get('lot_no') == $lot['id']) ? 'selected' : ''}}>{{$lot['lot_number']}}</option>
                                                     @endforeach
                                                 </select>
@@ -56,8 +61,8 @@
                                                 <label>PO No:</label>
                                                 <!-- <input type="text" value="{{request()->get('po_no')}}" name="po_no" class="form-control" placeholder="PO NO"> -->
                                                 <select name="po_no" id="po_no" class="form-control">
-                                                    @foreach($data['po_nos'] as $po)
                                                     <option value="">---</option> 
+                                                    @foreach($data['po_nos'] as $po)
                                                     <option value="{{$po['id']}}" {{(request()->get('po_no') == $po['id']) ? 'selected' : ''}}>{{$po['po_number']}}</option>
                                                     @endforeach
                                                 </select>
@@ -66,8 +71,8 @@
                                                 <label>Invoice No:</label>
                                                 <!-- <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" class="form-control" placeholder="INVOICE NO"> -->
                                                 <select name="invoice_no" id="invoice_no" class="form-control">
-                                                    @foreach($data['invoice_nos'] as $no)
                                                     <option value="">---</option> 
+                                                    @foreach($data['invoice_nos'] as $no)
                                                     <option value="{{$no['id']}}" {{(request()->get('invoice_no') == $no['id']) ? 'selected' : ''}}>{{$no['invoice_number']}}</option>
                                                     @endforeach
                                                 </select>
@@ -76,8 +81,8 @@
                                                 <label>Item Code:</label>
                                                 <!-- <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE"> -->
                                                 <select name="item_code" id="item_code" class="form-control">
-                                                    @foreach($data['items'] as $item)
-                                                    <option value="">---</option> 
+                                                    <option value="">---</option>
+                                                    @foreach($data['items'] as $item) 
                                                     <option value="{{$item['id']}}" {{(request()->get('item_code') == $item['id']) ? 'selected' : ''}}>{{$item['item_code']}}</option>
                                                     @endforeach
                                                 </select>
@@ -87,8 +92,8 @@
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                 
                                                 <select name="supplier" id="supplier" class="form-control">
+                                                   <option value="">---</option>
                                                     @foreach($data['suppliers'] as $supplier)
-                                                    <option value="">---</option>
                                                     <option value="{{$supplier['id']}}" {{(request()->get('supplier') == $supplier['id']) ? 'selected' : ''}}>{{$supplier['vendor_id']}}-{{$supplier['vendor_name']}}</option>
                                                     @endforeach
                                                 </select>
@@ -124,12 +129,7 @@
                 </table>
             </div>
         </div>
-		@if (Session::get('success'))
-		<div class="alert alert-success " style="width: 100%;">
-			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-			<i class="icon fa fa-check"></i> {{ Session::get('success') }}
-		</div>
-		@endif
+		
 		<div class="table-responsive">
 			<table class="table table-bordered mg-b-0" id="example1">
 				<thead>

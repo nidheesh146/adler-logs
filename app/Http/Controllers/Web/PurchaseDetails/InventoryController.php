@@ -258,7 +258,7 @@ class InventoryController extends Controller
     function suppliersearch(Request $request){
         if(!$request->q){
             return response()->json(['message'=>'item code is not valid'], 500); 
-        
+        }
         $data =  $this->inv_supplier->get_supplier_data(strtoupper($request->q));
         if(!empty( $data)){
             return response()->json( $data, 200); 
@@ -266,8 +266,8 @@ class InventoryController extends Controller
             return response()->json(['message'=>'item code is not valid'], 500); 
         }
 
-    }
+        
 
 
-}
+        }
 }

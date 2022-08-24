@@ -175,7 +175,8 @@ $config = [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Mews\Captcha\CaptchaServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
+        //Barryvdh\DomPDF\ServiceProvider::class,
+       // Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class,
 
 
     ],
@@ -232,7 +233,8 @@ $config = [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Captcha' => Mews\Captcha\Facades\Captcha::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class,
+        //'PDF' => Barryvdh\DomPDF\Facade::class,
+        //'PDF' => Meneses\LaravelMpdf\Facades\LaravelMpdf::class,
 
 
     ],

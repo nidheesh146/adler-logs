@@ -13,7 +13,7 @@ use App\Models\PurchaseDetails\inv_final_purchase_order_master;
 use App\Models\PurchaseDetails\inv_final_purchase_order_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
-
+use App\Models\PurchaseDetails\inv_supplier;
 
 
 use Validator;
@@ -31,6 +31,7 @@ class PurchaseController extends Controller
         $this->inv_final_purchase_order_item = new inv_final_purchase_order_item;
         $this->inv_supplier_invoice_master = new inv_supplier_invoice_master;
         $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
+        $this->inv_supplier = new inv_supplier;
     }
 
     public function getFinalPurchase()
@@ -406,10 +407,35 @@ return  $data;
        return  $data;
        }
 
-    public function supplierInvoice()
+    public function supplierInvoice(Request $request)
     {
+        if(count($_GET))
+        {
+            if ($request->po_no) {
+                $condition2[] = ['inv_final_purchase_order_master.id', '=', $request->po_no];
+            }
+            if ($request->invoice_no) {
+                $condition2[] = ['inv_supplier_invoice_master.id', '=', $request->invoice_no];
+            }
+            if ($request->supplier) {
+                $condition2[] = ['inv_supplier.id', '=', $request->supplier];
+            }
+            if ($request->from) {
+                $condition2[] = ['inv_supplier_invoice_master.invoice_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition2[] = ['inv_supplier_invoice_master.invoice_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
+           
+            $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_inv(['inv_supplier_invoice_master.status'=>1],$condition2);
+        }
+        else 
+        {
+            $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_inv(['inv_supplier_invoice_master.status'=>1],$condition2=null);
 
-        $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_inv(['inv_supplier_invoice_master.status'=>1]);
+        }
+        $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
+        $data['po_nos'] = $this->inv_final_purchase_order_master->get_po_nos();
+        $data['invoice_nos'] = $this->inv_supplier_invoice_master->get_invoice_nos();
+        //$data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_inv(['inv_supplier_invoice_master.status'=>1]);
         return view('pages.purchase-details.supplier-invoice.supplier-invoice-list',compact('data'));
     }
 
