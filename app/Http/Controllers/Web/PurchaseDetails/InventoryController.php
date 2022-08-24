@@ -36,7 +36,33 @@ class InventoryController extends Controller
     // Purchase Reqisition Master get list
     public function get_purchase_reqisition(Request $request)
     {
-        $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list();
+        if(count($_GET))
+        {
+            if ($request->department) {
+                $condition[] = ['inv_purchase_req_master.department', '=', $request->department];
+            }
+            if ($request->pr_no) {
+                $condition[] = ['inv_purchase_req_master.master_id', '=', $request->pr_no];
+            }
+            if ($request->pr_sr) {
+                $condition[] = ['inv_purchase_req_master.PR_SR', '=', $request->pr_sr];
+            }
+            if ($request->from) {
+                $condition[] = ['inv_purchase_req_master.date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition[] = ['inv_purchase_req_master.date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
+           
+           // $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
+           $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list($condition);
+        }
+        else 
+        {
+            $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list($condition=null);
+        }
+        $data['department']= $this->Department->get_dept([]);
+        $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
+        // dd($data['pr_nos']);exit;
+       // $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list();
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-list', compact('data'));
     }
 

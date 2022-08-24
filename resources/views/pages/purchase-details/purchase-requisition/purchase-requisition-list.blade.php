@@ -38,7 +38,81 @@
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		   @endif
-
+			
+		   <div class="row row-sm mg-b-20 mg-lg-b-0">
+            <div class="table-responsive" style="margin-bottom: 13px;">
+                <table class="table table-bordered mg-b-0">
+                    <tbody>
+                        <tr>
+                            <style>
+                                .select2-container .select2-selection--single {
+                                    height: 26px;
+                                    /* width: 122px; */
+                                }
+                                .select2-selection__rendered {
+                                    font-size:12px;
+                                }
+                            </style>
+                            <form autocomplete="off">
+                                <th scope="row">
+                                    <div class="row filter_search" style="margin-left: 0px;">
+                                       <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+                        
+									   		<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <label>PR No:</label>
+                                                <!-- <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" class="form-control" placeholder="INVOICE NO"> -->
+                                                <select name="pr_no" id="pr_no" class="form-control">
+													<option value="">---</option>
+													@foreach($data['pr_nos'] as $no) 
+                                                    <option value="{{$no['master_id']}}" {{(request()->get('pr_no') == $no['master_id']) ? 'selected' : ''}}>{{$no['pr_no']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div><!-- form-group -->
+                                            
+                                            
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <label for="exampleInputEmail1" style="font-size: 12px;">Department</label>
+                                                
+                                                <select name="department" id="department" class="form-control">
+													<option value="">---</option>
+													@foreach($data['department'] as $dept)
+                                                    <option value="{{$dept['id']}}" {{(request()->get('department') == $dept['id']) ? 'selected' : ''}}>{{$dept['dept_name']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+											<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <label for="exampleInputEmail1" style="font-size: 12px;">PR/SR</label>
+                                                
+                                                <select name="pr_sr" id="pr_sr" class="form-control">
+													<option value="">PR/SR</option>
+                                                    <option value="PR" {{(request()->get('pr_sr') == 'PR') ? 'selected' : ''}}>PR</option>
+													<option value="SR" {{(request()->get('pr_sr') == 'SR') ? 'selected' : ''}}>SR</option>
+                                                </select>
+                                            </div>
+											 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <label  style="font-size: 12px;">Month</label>
+                                                <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
+                                            </div> 
+                                                                 
+                                        </div>
+                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                                <label style="width: 100%;">&nbsp;</label>
+                                                <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                                @if(count(request()->all('')) > 1)
+                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
+                                                    style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+                                                @endif
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </th>
+                            </form>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
 
 			<div class="table-responsive">
@@ -94,22 +168,42 @@
 <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+<script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 
 <script>
   $(function(){
     'use strict'
-
-    // $('#example1').DataTable({
-    //   language: {
-    //     searchPlaceholder: 'Search...',
-    //     sSearch: '',
-    //     lengthMenu: '_MENU_ items/page',
-    //   },
-	//   order: [[1, 'desc']],
-    // });
+	var date = new Date();
+    date.setDate(date.getDate());
+	$(".datepicker").datepicker({
+        format: "mm-yyyy",
+        viewMode: "months",
+        minViewMode: "months",
+        // startDate: date,
+        autoclose:true
+    });
 
     $('#prbody').show();
   });
+  $('#pr_no').select2({
+		placeholder: 'PR No',
+		searchInputPlaceholder: 'Search',
+	 });
+	$('#department').select2({
+		placeholder: 'Department',
+		searchInputPlaceholder: 'Search',
+	});
+	$('.search-btn').on( "click", function(e)  {
+		var pr_no = $('#pr_no').val();
+		var pr_sr = $('#pr_sr').val();
+		var department = $('#department').val();
+		var from = $('#from').val();
+		if(!pr_no & !pr_sr & !department & !from)
+		{
+			e.preventDefault();
+		}
+	});
 </script>
 
 

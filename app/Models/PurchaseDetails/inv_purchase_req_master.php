@@ -32,12 +32,17 @@ class inv_purchase_req_master extends Model
            ->join('user','user.user_id','=','inv_purchase_req_master.requestor_id')
            ->where($condition)->first();
     }
-    function get_inv_purchase_req_master_list(){
+    function get_inv_purchase_req_master_list($condition){
         return $this->select(['master_id','pr_no','requestor_id','inv_purchase_req_master.department','date','PR_SR','f_name','l_name','department.dept_name'])
            ->leftjoin('user','user.user_id','=','inv_purchase_req_master.requestor_id')
            ->leftjoin('department','department.id','=','inv_purchase_req_master.department')
+           ->where($condition)
            ->orderby('master_id','desc')
            ->paginate(15);
+    }
+    function get_pr_nos()
+    {
+        return $this->select('master_id','pr_no')->get();
     }
 
     
