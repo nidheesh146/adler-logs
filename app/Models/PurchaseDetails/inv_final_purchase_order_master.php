@@ -55,7 +55,7 @@ class inv_final_purchase_order_master extends Model
                             $join->on('inv_purchase_req_quotation_supplier.quotation_id', '=', 'inv_final_purchase_order_master.rq_master_id');
                             $join->where('inv_purchase_req_quotation_supplier.selected_supplier','=',1);
                         })
-                        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
                     ->orderby('inv_final_purchase_order_master.id','desc')
                     ->paginate(15);
 

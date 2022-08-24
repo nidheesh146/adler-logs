@@ -86,14 +86,14 @@
                                             </div>
 											 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label  style="font-size: 12px;">Invoice at </label>
-                                                <input type="text" value="{{request()->get('from')}}"  class="form-control datepicker" name="from" placeholder="Created at (MM-YYYY)">
+                                                <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Created at (MM-YYYY)">
                                             </div> 
                                                                  
                                         </div>
                                         <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
                                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
                                                 <label style="width: 100%;">&nbsp;</label>
-                                                <button type="submit" class="badge badge-pill badge-primary" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                                <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
                                                 @if(count(request()->all('')) > 1)
                                                     <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
                                                     style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
@@ -192,6 +192,16 @@
 	$('#po_no').select2({
 		placeholder: 'PO No',
 		searchInputPlaceholder: 'Search',
+	});
+	$('.search-btn').on( "click", function(e)  {
+		var supplier = $('#supplier').val();
+		var invoice_no = $('#invoice_no').val();
+		var po_no = $('#po_no').val();
+		var from = $('#from').val();
+		if(!supplier & !invoice_no & !po_no & !from)
+		{
+			e.preventDefault();
+		}
 	});
 </script>
 

@@ -34,10 +34,35 @@ class PurchaseController extends Controller
         $this->inv_supplier = new inv_supplier;
     }
 
-    public function getFinalPurchase()
+    public function getFinalPurchase(Request $request)
     {
+        if(count($_GET))
+        {
+            if ($request->po_no) {
+                $condition[] = ['inv_final_purchase_order_master.id', '=', $request->po_no];
+            }
+            if ($request->rq_no) {
+                $condition[] = ['inv_purchase_req_quotation.quotation_id', '=', $request->rq_no];
+            }
+            if ($request->supplier) {
+                $condition[] = ['inv_supplier.id', '=', $request->supplier];
+            }
+            if ($request->from) {
+                $condition[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
+           
+            $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
+        }
+        else 
+        {
+            $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master([]);
 
-        $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master([]);
+        }
+        $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
+        $data['po_nos'] = $this->inv_final_purchase_order_master->get_po_nos();
+        $data['rq_nos'] = $this->inv_purchase_req_quotation->get_rq_nos();
+        //$data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master([]);
         return view('pages.purchase-details.final-purchase.final-purchase-list',compact('data'));
     }
     public function addFinalPurchase(Request $request,$id = null)

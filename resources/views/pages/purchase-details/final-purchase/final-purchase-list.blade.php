@@ -36,6 +36,80 @@
 		   </div>
 		   @endif
 
+		   <div class="row row-sm mg-b-20 mg-lg-b-0">
+            <div class="table-responsive" style="margin-bottom: 13px;">
+                <table class="table table-bordered mg-b-0">
+                    <tbody>
+                        <tr>
+                            <style>
+                                .select2-container .select2-selection--single {
+                                    height: 26px;
+                                    /* width: 122px; */
+                                }
+                                .select2-selection__rendered {
+                                    font-size:12px;
+                                }
+                            </style>
+                            <form autocomplete="off">
+                                <th scope="row">
+                                    <div class="row filter_search" style="margin-left: 0px;">
+                                       <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+                        
+									   		<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <label>RQ No:</label>
+                                                <!-- <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" class="form-control" placeholder="INVOICE NO"> -->
+                                                <select name="rq_no" id="rq_no" class="form-control">
+													<option value="">---</option>
+													@foreach($data['rq_nos'] as $no) 
+                                                    <option value="{{$no['quotation_id']}}" {{(request()->get('rq_no') == $no['quotation_id']) ? 'selected' : ''}}>{{$no['rq_no']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div><!-- form-group -->
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <label>PO No:</label>
+                                                <!-- <input type="text" value="{{request()->get('po_no')}}" name="po_no" class="form-control" placeholder="PO NO"> -->
+                                                <select name="po_no" id="po_no" class="form-control">
+													<option value="">---</option>
+													@foreach($data['po_nos'] as $po)
+                                                    <option value="{{$po['id']}}" {{(request()->get('po_no') == $po['id']) ? 'selected' : ''}}>{{$po['po_number']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div><!-- form-group -->
+                                            
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
+                                                
+                                                <select name="supplier" id="supplier" class="form-control">
+													<option value="">---</option>
+													@foreach($data['suppliers'] as $supplier)
+                                                    <option value="{{$supplier['id']}}" {{(request()->get('supplier') == $supplier['id']) ? 'selected' : ''}}>{{$supplier['vendor_id']}}-{{$supplier['vendor_name']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+											 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <label  style="font-size: 12px;">PO Date </label>
+                                                <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="PO date (MM-YYYY)">
+                                            </div> 
+                                                                 
+                                        </div>
+                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                                <label style="width: 100%;">&nbsp;</label>
+                                                <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                                @if(count(request()->all('')) > 1)
+                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
+                                                    style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+                                                @endif
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </th>
+                            </form>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
 
 			<div class="table-responsive">
@@ -88,20 +162,49 @@
 <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
 <script src="<?=url('');?>/js/azia.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+<script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
+
 
 <script>
   $(function(){
     'use strict'
-    // $('#example1').DataTable({
-    //   language: {
-    //     searchPlaceholder: 'Search...',
-    //     sSearch: '',
-    //     lengthMenu: '_MENU_ items/page',
-    //   },
-	//   order: [[1, 'desc']],
-    // });
+    var date = new Date();
+    date.setDate(date.getDate());
+	$(".datepicker").datepicker({
+        format: "mm-yyyy",
+        viewMode: "months",
+        minViewMode: "months",
+        // startDate: date,
+        autoclose:true
+    });
 
   });
+
+  $('#supplier').select2({
+		placeholder: 'Supplier',
+		searchInputPlaceholder: 'Search',
+	 });
+	$('#rq_no').select2({
+		placeholder: 'RQ No',
+		searchInputPlaceholder: 'Search',
+	});
+	$('#po_no').select2({
+		placeholder: 'PO No',
+		searchInputPlaceholder: 'Search',
+	});
+	$('.search-btn').on( "click", function(e)  {
+		var supplier = $('#supplier').val();
+		var rq_no = $('#rq_no').val();
+		var po_no = $('#po_no').val();
+		var from = $('#from').val();
+		if(!supplier & !rq_no & !po_no & !from)
+		{
+			e.preventDefault();
+		}
+	});
+
+	
 </script>
 
 

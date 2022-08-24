@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-
 class inv_purchase_req_quotation extends Model
 {
     protected $table = 'inv_purchase_req_quotation';
@@ -75,6 +74,11 @@ class inv_purchase_req_quotation extends Model
         ->union($query)
         ->get();
 
+    }
+
+    function get_rq_nos()
+    {
+        return $this->select('quotation_id','rq_no')->get();
     }
 
 

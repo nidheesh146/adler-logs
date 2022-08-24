@@ -39,4 +39,6 @@ class inv_purchase_req_master extends Model
            ->orderby('master_id','desc')
            ->paginate(15);
     }
+
+    
 }
