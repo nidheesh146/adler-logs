@@ -32,9 +32,11 @@
                     $remaining = $no_of_label%12;
                  ?>
                 @for ($i = 0; $i< $page_count; $i++)
-                <div class="page-container" style="margin-top:0.4cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                <!-- <div class="page-container" style="margin-top:0.4cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;"> -->
+                <div class="page-container" style="margin-top:0.15cm;width:21.1cm;height:29.3cm;">
                 @for ($j=0;$j<$label_per_page;$j++)
-                <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:1px">
+                <!-- <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:1px"> -->
+                <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:4px">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
                         <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:3.7px;padding-left: 5px;">
                             <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:14px;height:14px;">
@@ -125,9 +127,9 @@
                 </div>
                 @endfor
                 @if($remaining!=0)
-                <div class="page-container" style="margin-top:0.4cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                <div class="page-container" style="margin-top:0.15cm;margin-bottom:0cm;width:21.1cm;height:29.3cm;">
                 @for ($j=0;$j<$remaining;$j++)
-                <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:1px">
+                <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:4px">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
                         <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:3.7px;padding-left: 5px;">
                             <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:14px;height:14px;">

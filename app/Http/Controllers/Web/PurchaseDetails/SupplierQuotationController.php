@@ -24,7 +24,29 @@ class SupplierQuotationController extends Controller
 
     public function getSupplierQuotation(Request $request) 
     {
-        $data['quotation'] = $this->inv_purchase_req_quotation->get_quotation([]);
+        if(count($_GET))
+        {
+            if ($request->rq_no) {
+                $condition[] = ['inv_purchase_req_quotation.quotation_id', '=', $request->rq_no];
+            }
+            if ($request->supplier) {
+                $condition[] = ['inv_purchase_req_quotation_supplier.supplier_id', '=', $request->supplier];
+            }
+            if ($request->from) {
+                $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
+           
+           // $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
+            $data['quotation'] = $this->inv_purchase_req_quotation->get_quotation($condition);
+        }
+        else 
+        {
+            $data['quotation'] = $this->inv_purchase_req_quotation->get_quotation([]);
+        }
+        $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
+        $data['rq_nos'] = $this->inv_purchase_req_quotation->get_rq_nos();
+        //$data['quotation'] = $this->inv_purchase_req_quotation->get_quotation([]);
         return view('pages/purchase-details/supplier-quotation/supplier-quotation', compact('data'));
     }
     function get_supplier($id){

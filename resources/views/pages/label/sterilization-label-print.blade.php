@@ -151,9 +151,9 @@
                     </div>
                     @endfor
                     @if($remaining!=0)
-                    <div class="page-container" style="margin-top:1.3cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                    <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                         @for ($j=0;$j<$remaining;$j++)
-                        <div class="label-container" style="float:left;width:10.4cms;height:7.3cm;margin-bottom:0.08cm;margin-top:0.08cm;padding:2px;">
+                        <div class="label-container" style="float:left;width:50%;height:25%;margin-bottom:12px;">
                             <div class="row1" style="font-size:12px;height:fit-content;">    
                                 <div class="subcolumn1" style="float:left; width:60px">
                                     <div class="logo" style="text-align:center;">
