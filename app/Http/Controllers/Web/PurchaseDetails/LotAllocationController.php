@@ -26,9 +26,33 @@ class LotAllocationController extends Controller
         $this->inv_supplier_invoice_master = new inv_supplier_invoice_master;
     }
 
-    public function lotAllocation()
+    public function lotAllocation(Request $request)
     {
-        $lot_data = $this->inv_lot_allocation->getData();
+        if(count($_GET))
+        {
+            if ($request->lot_no) {
+                $condition[] = ['inv_lot_allocation.id', '=', $request->lot_no];
+            }
+            if ($request->po_no) {
+                $condition[] = ['inv_final_purchase_order_master.id', '=', $request->po_no];
+            }
+            if ($request->invoice_no) {
+                $condition[] = ['inv_supplier_invoice_master.id', '=', $request->invoice_no];
+            }
+            if ($request->item_code) {
+                $condition[] = ['inventory_rawmaterial.id', '=', $request->item_code];
+            }
+            if ($request->supplier) {
+                $condition[] = ['inv_supplier.id', '=', $request->supplier];
+            }
+            $lot_data = $this->inv_lot_allocation->getData($condition);
+        }
+        else 
+        {
+            $lot_data = $this->inv_lot_allocation->getData($condition=null);
+
+        }
+       
         $users = $this->User->get_all_users([['user.status','=',1]]);
         $data['items'] = $this->inventory_rawmaterial->get_items();
         $data['suppliers'] = $this->inv_supplier->get_all_suppliers();

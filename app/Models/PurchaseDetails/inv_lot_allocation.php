@@ -19,7 +19,7 @@ class inv_lot_allocation extends Model
         return $this->where($condition)->update($data);
     }
 
-    function getdata(){
+    function getdata($condition){
         return $this->select(['inv_lot_allocation.*', 'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_final_purchase_order_master.po_number','inventory_rawmaterial.item_code',
         'inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_supplier_invoice_item.order_qty as inv_odr_qty'])
                 ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_lot_allocation.po_id')
@@ -29,6 +29,7 @@ class inv_lot_allocation extends Model
                 ->leftjoin('inv_supplier_invoice_item', 'inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
                 ->leftjoin('inv_supplier_invoice_rel', 'inv_supplier_invoice_rel.item','=','inv_lot_allocation.si_invoice_item_id')
                 ->leftjoin('inv_supplier_invoice_master', 'inv_supplier_invoice_master.id','=','inv_supplier_invoice_rel.master')
+                ->where($condition)
                 ->groupBy('inv_lot_allocation.id')
                 ->paginate(10);
     }

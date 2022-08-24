@@ -32,7 +32,7 @@
                             <style>
                                 .select2-container .select2-selection--single {
                                     height: 26px;
-                                    width: 117px;
+                                    width: 122px;
                                 }
                                 .select2-selection__rendered {
                                     font-size:12px;
@@ -41,14 +41,14 @@
                             <form autocomplete="off">
                                 <th scope="row">
                                     <div class="row filter_search" style="margin-left: 0px;">
-                                       <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+                                       <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label>Lot No:</label>
                                                 <!-- <input type="text" value="{{request()->get('lot_no')}}" name="lot_no" class="form-control" placeholder="LOT NO"> -->
                                                 <select name="lot_no" id="lot_no" class="form-control">
                                                     @foreach($data['lot_nos'] as $lot)
                                                     <option value="">---</option> 
-                                                    <option value="{{$lot['id']}}">{{$lot['lot_number']}}</option>
+                                                    <option value="{{$lot['id']}}" {{(request()->get('lot_no') == $lot['id']) ? 'selected' : ''}}>{{$lot['lot_number']}}</option>
                                                     @endforeach
                                                 </select>
                                             </div><!-- form-group -->
@@ -58,7 +58,7 @@
                                                 <select name="po_no" id="po_no" class="form-control">
                                                     @foreach($data['po_nos'] as $po)
                                                     <option value="">---</option> 
-                                                    <option value="{{$po['id']}}">{{$po['po_number']}}</option>
+                                                    <option value="{{$po['id']}}" {{(request()->get('po_no') == $po['id']) ? 'selected' : ''}}>{{$po['po_number']}}</option>
                                                     @endforeach
                                                 </select>
                                             </div><!-- form-group -->
@@ -68,7 +68,7 @@
                                                 <select name="invoice_no" id="invoice_no" class="form-control">
                                                     @foreach($data['invoice_nos'] as $no)
                                                     <option value="">---</option> 
-                                                    <option value="{{$no['id']}}">{{$no['invoice_number']}}</option>
+                                                    <option value="{{$no['id']}}" {{(request()->get('invoice_no') == $no['id']) ? 'selected' : ''}}>{{$no['invoice_number']}}</option>
                                                     @endforeach
                                                 </select>
                                             </div><!-- form-group -->
@@ -78,7 +78,7 @@
                                                 <select name="item_code" id="item_code" class="form-control">
                                                     @foreach($data['items'] as $item)
                                                     <option value="">---</option> 
-                                                    <option value="{{$item['id']}}">{{$item['item_code']}}</option>
+                                                    <option value="{{$item['id']}}" {{(request()->get('item_code') == $item['id']) ? 'selected' : ''}}>{{$item['item_code']}}</option>
                                                     @endforeach
                                                 </select>
 
@@ -89,24 +89,32 @@
                                                 <select name="supplier" id="supplier" class="form-control">
                                                     @foreach($data['suppliers'] as $supplier)
                                                     <option value="">---</option>
-                                                    <option value="{{$supplier['id']}}">{{$supplier['vendor_id']}}-{{$supplier['vendor_name']}}</option>
+                                                    <option value="{{$supplier['id']}}" {{(request()->get('supplier') == $supplier['id']) ? 'selected' : ''}}>{{$supplier['vendor_id']}}-{{$supplier['vendor_name']}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                <label  style="font-size: 12px;">Created at </label>
-                                                <input type="text" value="{{request()->get('from')}}"  class="form-control datepicker" name="from" placeholder="Created at (MM-YYYY)">
-                                            </div>                      
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-                                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-                                                <label style="    width: 100%;">&nbsp;</label>
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
+                                                <label style="width: 100%;">&nbsp;</label>
                                                 <button type="submit" class="badge badge-pill badge-primary" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
                                                 @if(count(request()->all('')) > 1)
                                                     <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
                                                     style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
                                                 @endif
                                             </div>
+                                            <!-- <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                <label  style="font-size: 12px;">Created at </label>
+                                                <input type="text" value="{{request()->get('from')}}"  class="form-control datepicker" name="from" placeholder="Created at (MM-YYYY)">
+                                            </div>                       -->
+                                        </div>
+                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                                            <!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                                <label style="width: 100%;">&nbsp;</label>
+                                                <button type="submit" class="badge badge-pill badge-primary" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                                @if(count(request()->all('')) > 1)
+                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
+                                                    style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+                                                @endif
+                                            </div> -->
                                         </div>
                                     </div>
                                 </th>
@@ -380,7 +388,15 @@
 <script>
   $(function(){
     'use strict'
-
+    var date = new Date();
+                    date.setDate(date.getDate());
+                    $(".datepicker").datepicker({
+                    format: "mm-yyyy",
+                    viewMode: "months",
+                    minViewMode: "months",
+                    // startDate: date,
+                    autoclose:true
+                    });
 
 jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {
 let qty_received =  $('#qty_received').val();
