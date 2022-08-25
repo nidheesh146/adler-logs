@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 use App\Models\PurchaseDetails\inv_purchase_req_item;
+use App\Models\PurchaseDetails\inv_purchase_req_master;
+use App\Models\PurchaseDetails\inv_supplier;
+use App\Models\PurchaseDetails\inventory_rawmaterial;
 
 use Validator;
 class ApprovalController extends Controller
@@ -14,12 +17,43 @@ class ApprovalController extends Controller
     public function __construct()
     {
         $this->inv_purchase_req_item = new inv_purchase_req_item;
+        $this->inv_purchase_req_master = new inv_purchase_req_master;
+        $this->inv_supplier = new inv_supplier;
+        $this->inventory_rawmaterial = new inventory_rawmaterial;
     }
 
     public function getList(Request $request) 
     {
-
-        $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved([]);
+        if(count($_GET))
+        {
+            if ($request->pr_no) {
+                $condition[] = ['inv_purchase_req_master.master_id', '=', $request->pr_no];
+            }
+            if ($request->supplier) {
+                $condition[] = ['inv_purchase_req_item.supplier', '=', $request->supplier];
+            }
+            if ($request->item_code) {
+                $condition[] = ['inv_purchase_req_item.Item_code', '=', $request->item_code];
+            }
+            if ($request->status) {
+                $condition[] = ['inv_purchase_req_item_approve.status', '=', $request->status];
+            }
+            if ($request->from) {
+                $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
+           
+           // $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
+           $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved($condition);
+        }
+        else 
+        {
+            $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved([]);
+        }
+        $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
+        $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
+        $data['items'] = $this->inventory_rawmaterial->get_items();
+        //$data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved([]);
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-approvel', compact('data'));
     }
 
