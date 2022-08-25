@@ -284,25 +284,20 @@
         <!-- </div> -->
     </div>
     <script src="<?= url('') ?>/js/azia.js"></script>
-                <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
-                <script src="<?= url('') ?>/js/jquery.validate.js"></script>
-                <script src="<?= url('') ?>/js/additional-methods.js"></script>
-                <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
-                <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
-                <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
-                <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
-                <script>
-                  $(function(){
-
-    $('.user_list').select2({
-          placeholder: 'Choose one',
-          searchInputPlaceholder: 'Search',
-
-      });
-
-
-    
-                    $(".lot-add").on( "click", function() {
+    <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+    <script src="<?= url('') ?>/js/jquery.validate.js"></script> 
+    <script src="<?= url('') ?>/js/additional-methods.js"></script>
+    <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
+    <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
+    <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
+    <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
+    <script>
+        $(function(){
+            $('.user_list').select2({
+                placeholder: 'Choose one',
+                searchInputPlaceholder: 'Search',
+            });
+            $(".lot-add").on( "click", function() {
                         $('#item_description').text('');
                         $('#material_description').text('');
                         $('#material_code').val('');
@@ -335,146 +330,139 @@
 
                         });
                         //alert(invoice_item_id);
-                    });
+            });
 
 
-jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {
-let qty_received =  $('#qty_received').val();
-let qtyaccepted = (qty_received - ((+$('#qty_accepted').val()) + (+$('#qty_rejected').val())));
-if(qtyaccepted == 0 ){
-        return true;
-    }else{
-        return false;
-    }
-}, "if Quantity accepted and Quantity rejected are added , The value of Quantity Received should be !");
+            jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {
+                let qty_received =  $('#qty_received').val();
+                let qtyaccepted = (qty_received - ((+$('#qty_accepted').val()) + (+$('#qty_rejected').val())));
+                    if(qtyaccepted == 0 )
+                    {
+                        return true;
+                    }else{
+                        return false;
+                    }
+            }, "if Quantity accepted and Quantity rejected are added , The value of Quantity Received should be !");
 
-$('#qty_received').on('input',function(){
-    let qty_received =  $('#qty_received').val();
-    let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
-    $('#qty_accepted').attr('value',qtyaccepted);
-});
-$('#qty_accepted').on('input',function(){
-    let qty_received =  $('#qty_received').val();
-    let qtyaccepted = (qty_received - (+$('#qty_accepted').val()));
-    $('#qty_rejected').attr('value',qtyaccepted);
-});
+            $('#qty_received').on('input',function(){
+                let qty_received =  $('#qty_received').val();
+                let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
+                $('#qty_accepted').attr('value',qtyaccepted);
+            });
+            $('#qty_accepted').on('input',function(){
+                let qty_received =  $('#qty_received').val();
+                let qtyaccepted = (qty_received - (+$('#qty_accepted').val()));
+                $('#qty_rejected').attr('value',qtyaccepted);
+            });
 
-$('#qty_rejected').on('input',function(){
-    let qty_received =  $('#qty_received').val();
-    let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
-    $('#qty_accepted').attr('value',qtyaccepted);
-});
-
-
-
+            $('#qty_rejected').on('input',function(){
+                let qty_received =  $('#qty_received').val();
+                let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
+                $('#qty_accepted').attr('value',qtyaccepted);
+            });
 
 
-                    $("#commentForm").validate({
-                            rules: {
-                                lot_number: {
-                                    required: true,
-                                },
-                                 document_no: {
-                                     required: true,
-                                },
-                                rev_no: {
-                                   required: true,
-                                },
-                                rev_date: {
-                                     required: true,
-                                },
-                                supplier: {
-                                    required: true,
-                                },
-                                item_description: {
-                                     required: true,
-                                 },
-                                material_description: {
-                                    required: true,
-                                },
-                                material_code: {
-                                     required: true,
-                                },
-                                invoice_no: {
-                                     required: true,
-                                 },
-                                 invoice_date: {
-                                    required: true,
-                                },
-                                invoice_qty: {
-                                     required: true,
-                                     number: true
-                                },
-                                qty_accepted: {
-                                     required: true,
-                                     number: true,
+            $("#commentForm").validate({
+                rules: {
+                        lot_number: {
+                            required: true,
+                        },
+                        document_no: {
+                            required: true,
+                        },
+                        rev_no: {
+                            required: true,
+                        },
+                        rev_date: {
+                            required: true,
+                        },
+                        supplier: {
+                            required: true,
+                        },
+                        item_description: {
+                            required: true,
+                        },
+                        material_description: {
+                            required: true,
+                        },
+                        material_code: {
+                            required: true,
+                        },
+                        invoice_no: {
+                            required: true,
+                        },
+                        invoice_date: {
+                            required: true,
+                        },
+                        invoice_qty: {
+                            required: true,
+                            number: true
+                        },
+                        qty_accepted: {
+                            required: true,
+                            number: true,
                                      //checkPrevValuePaxTo:true
-                                    },
-                                qty_rejected: {
-                                    required: true,
-                                    number: true,
-                                    checkPrevValuePaxTo:true
-                                },
-                                qty_received: {
-                                    required: true,
-                                    number: true,
-                            
-                                },
-                                unit: {
-                                    required: true,
-                                },
-                                po_number: {
-                                    required: true,
-                                },
-                                supplier: {
-                                    required: true,
-                                },
-                                vehicle_no: {
-                                    required: true,
-                                },
-                                transporter_name: {
-                                    required: true,
-                                },
-                                mrr_no: {
-                                    required: true,
-                                },
-                                mrr_date: {
-                                    required: true,
-                                },
-                                test_report_no: {
-                                    required: true,
-                                },
-                                test_report_date: {
-                                    required: true,
-                                },
-                                test_report_date: {
-                                    required: true,
-                                },
-                            },
-                            // messages: {
-                            //     qty_accepted: {
-                            //         email: "Inserire la località di partenza"
-                            //     },
-                            // },
-                            submitHandler: function(form) {
-                                  form.submit();
-                            }
-                        });
+                        },
+                        qty_rejected: {
+                            required: true,
+                            number: true,
+                            checkPrevValuePaxTo:true
+                        },
+                        qty_received: {
+                            required: true,
+                            number: true,
+                        },
+                        unit: {
+                            required: true,
+                        },
+                        po_number: {
+                            required: true,
+                        },
+                        supplier: {
+                            required: true,
+                        },
+                        vehicle_no: {
+                            required: true,
+                        },
+                        transporter_name: {
+                            required: true,
+                        },
+                        mrr_no: {
+                            required: true,
+                        },
+                        mrr_date: {
+                            required: true,
+                        },
+                        test_report_no: {
+                            required: true,
+                        },
+                        test_report_date: {
+                            required: true,
+                        },
+                        test_report_date: {
+                            required: true,
+                        },
+                    },
+                    submitHandler: function(form) {
+                        form.submit();
+                    }
+            });
 
-                            $('.Supplier').select2({
-                                placeholder: 'Choose one',
-                                searchInputPlaceholder: 'Search',
-                                minimumInputLength: 3,
-                                allowClear: true,
-                                ajax: {
-                                url: "{{ url('inventory/suppliersearch') }}",
-                                processResults: function (data) {
-                                  return {results: data
-                                  };
-                                }
-                              }
-                            });    
-                  });
+            $('.Supplier').select2({
+                placeholder: 'Choose one',
+                searchInputPlaceholder: 'Search',
+                minimumInputLength: 3,
+                allowClear: true,
+                ajax: {
+                    url: "{{ url('inventory/suppliersearch') }}",
+                    processResults: function (data) {
+                        return {
+                                results: data
+                        };
+                    }
+                }
+            });    
+        });
 
                 </script>
 

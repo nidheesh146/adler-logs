@@ -389,78 +389,81 @@
   $(function(){
     'use strict'
     var date = new Date();
-                    date.setDate(date.getDate());
-                    $(".datepicker").datepicker({
-                    format: "mm-yyyy",
-                    viewMode: "months",
-                    minViewMode: "months",
-                    // startDate: date,
-                    autoclose:true
-                    });
+    date.setDate(date.getDate());
+    $(".datepicker").datepicker({
+        format: "mm-yyyy",
+        viewMode: "months",
+        minViewMode: "months",
+        // startDate: date,
+        autoclose:true
+    });
 
-jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {
-let qty_received =  $('#qty_received').val();
-let qtyaccepted = (qty_received - ((+$('#qty_accepted').val()) + (+$('#qty_rejected').val())));
-if(qtyaccepted == 0 ){
-        return true;
-    }else{
-        return false;
-    }
-}, "if Quantity accepted and Quantity rejected are added , The value of Quantity Received should be !");
-
-$('#qty_received').on('input',function(){
+    jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {
     let qty_received =  $('#qty_received').val();
-    let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
-    $('#qty_accepted').attr('value',qtyaccepted);
-});
-$('#qty_accepted').on('input',function(){
-    let qty_received =  $('#qty_received').val();
-    let qtyaccepted = (qty_received - (+$('#qty_accepted').val()));
-    $('#qty_rejected').attr('value',qtyaccepted);
-});
+    let qtyaccepted = (qty_received - ((+$('#qty_accepted').val()) + (+$('#qty_rejected').val())));
+    if(qtyaccepted == 0 ){
+            return true;
+        }else{
+            return false;
+        }
+    }, "if Quantity accepted and Quantity rejected are added , The value of Quantity Received should be !");
 
-$('#qty_rejected').on('input',function(){
-    let qty_received =  $('#qty_received').val();
-    let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
-    $('#qty_accepted').attr('value',qtyaccepted);
-});
+   $('#qty_received').on('input',function(){
+        let qty_received =  $(this).val();
+        let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
+        $('#qty_accepted').val('');
+        $('#qty_accepted').val(qtyaccepted);
+    });
+    $('#qty_accepted').on('input',function(){
+        let qty_received =  $('#qty_received').val();
+        let qtyaccepted = (qty_received - (+$('#qty_accepted').val()));
+        $('#qty_rejected').val('');
+        $('#qty_rejected').val(qtyaccepted);
+    });
 
-$('#item_code').select2({
-    placeholder: 'Item code',
-    searchInputPlaceholder: 'Search',
-    // minimumInputLength: 6,
-    // allowClear: true,
- });
- $('#supplier').select2({
-    placeholder: 'Supplier',
-    searchInputPlaceholder: 'Search',
- });
- $('#lot_no').select2({
-    placeholder: 'Lot No',
-    searchInputPlaceholder: 'Search',
- });
- $('#invoice_no').select2({
-    placeholder: 'Invoice No',
-    searchInputPlaceholder: 'Search',
- });
- $('#po_no').select2({
-    placeholder: 'PO No',
-    searchInputPlaceholder: 'Search',
- });
+    $('#qty_rejected').on('input',function(){
+        let qty_received =  $('#qty_received').val();
+        let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
+        $('#qty_accepted').val('');
+        $('#qty_accepted').val(qtyaccepted);
+    });
 
- $('.search-btn').on( "click", function(e)  {
-		var supplier = $('#supplier').val();
-		var lot_no = $('#lot_no').val();
-        var invoice_no = $('#invoice_no').val();
-		var po_no = $('#po_no').val();
-		var from = $('#from').val();
-		if(!supplier & !lot_no & !invoice_no & !po_no & !from)
-		{
-			e.preventDefault();
-		}
-	});
+    $('#item_code').select2({
+        placeholder: 'Item code',
+        searchInputPlaceholder: 'Search',
+        // minimumInputLength: 6,
+        // allowClear: true,
+    });
+    $('#supplier').select2({
+        placeholder: 'Supplier',
+        searchInputPlaceholder: 'Search',
+    });
+    $('#lot_no').select2({
+        placeholder: 'Lot No',
+        searchInputPlaceholder: 'Search',
+    });
+    $('#invoice_no').select2({
+        placeholder: 'Invoice No',
+        searchInputPlaceholder: 'Search',
+    });
+    $('#po_no').select2({
+        placeholder: 'PO No',
+        searchInputPlaceholder: 'Search',
+    });
 
-$("#commentForm").validate({
+    $('.search-btn').on( "click", function(e)  {
+            var supplier = $('#supplier').val();
+            var lot_no = $('#lot_no').val();
+            var invoice_no = $('#invoice_no').val();
+            var po_no = $('#po_no').val();
+            var from = $('#from').val();
+            if(!supplier & !lot_no & !invoice_no & !po_no & !from)
+            {
+                e.preventDefault();
+            }
+    });
+
+    $("#commentForm").validate({
                             rules: {
 
                                  document_no: {

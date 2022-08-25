@@ -47,7 +47,8 @@
                                 @if($batchcard_data->discription!="")
                                 <span class="smalltext" style=" font-size:7.5px;">{{$batchcard_data->discription}}</span><br/>
                                 @endif
-                                <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;">
+                                <!-- <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;"> -->
+                                <img src="{{asset('/img/alderlogo/sterile_r1.png')}}" style="width:47px;height:11px;">
                                 <span class="smalltext" style=" font-size:8px;">{{$lot_no}}</span>
                                 <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:20px;">
                                 <span class="smalltext" style=" font-size:8px;">{{$batchcard_data->batch_no}}</span></br>
@@ -77,11 +78,26 @@
                     <div style="break-after:page"></div>
                 </div>
                 @endfor
+                <style>
+                        <?php for($i=1;$i<=$label_per_page;$i++) { ?>
+                            .label-content<?php echo $i; ?>{
+                                display:none;
+                            }
+                        <?php }?>
+                </style>
                 @if($remaining!=0)
+                    <style>
+                        <?php for($i=1;$i<=$remaining;$i++) { ?>
+                            .label-content<?php echo $i; ?>{
+                                display:block;
+                            }
+                        <?php }?>
+                    </style>
                 <div class="page-container" style="margin-top:5mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;margin-left:2px">
-                    @for ($j=0;$j<$remaining;$j++)
+                    @for ($j=1;$j<=$label_per_page;$j++)
                     <div class="label-container" style="float:left;width:6.9cm;height:2.45cm;margin-left:5px;margin-bottom:0.7px" >
-                        <div class="sub-columns" style="">
+                        <div class="label-content{{$j}}" style="">
+                        <!-- <div class="sub-columns" style=""> -->
                             <div class="" style="width:7px;text-align: justify;">
                                 <span class="smalltext" style="font-size:6px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;margin-right:1px;">
                                 LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd M y' , strtotime('14-12-2021') )}}
@@ -92,7 +108,8 @@
                                 @if($batchcard_data->discription!="")
                                 <span class="smalltext" style=" font-size:7.5px;">{{$batchcard_data->discription}}</span><br/>
                                 @endif
-                                <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;">
+                                <!-- <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;"> -->
+                                <img src="{{asset('/img/alderlogo/sterile_r1.png')}}" style="width:47px;height:11px;">
                                 <span class="smalltext" style=" font-size:8px;">{{$lot_no}}</span>
                                 <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:20px;">
                                 <span class="smalltext" style=" font-size:8px;">{{$batchcard_data->batch_no}}</span></br>
@@ -116,6 +133,7 @@
                                     <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:22px;float:left;">
                                 <!-- </div> -->
                             </div>
+                        <!-- </div> -->
                         </div>
                     </div>
                     @endfor

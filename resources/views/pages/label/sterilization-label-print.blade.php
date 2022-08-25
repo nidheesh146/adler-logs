@@ -150,22 +150,37 @@
                         <div style="break-after:page"></div>
                     </div>
                     @endfor
+                    <style>
+                        <?php for($i=1;$i<=$label_per_page;$i++) { ?>
+                            .label-content<?php echo $i; ?>{
+                                display:none;
+                            }
+                        <?php }?>
+                    </style>
                     @if($remaining!=0)
+                    <style>
+                        <?php for($i=1;$i<=$remaining;$i++) { ?>
+                            .label-content<?php echo $i; ?>{
+                                display:block;
+                            }
+                        <?php }?>
+                    </style>
                     <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
-                        @for ($j=0;$j<$remaining;$j++)
+                        @for ($j=1;$j<=$label_per_page;$j++)
                         <div class="label-container" style="float:left;width:50%;height:25%;margin-bottom:12px;">
-                            <div class="row1" style="font-size:12px;height:fit-content;">    
+                        <div class="label-content{{$j}}" style="">
+                            <div class="row1" style="font-size:12px;">    
                                 <div class="subcolumn1" style="float:left; width:60px">
                                     <div class="logo" style="text-align:center;">
-                                        <img src="{{asset('/img/logo.png')}}"  style="width:50%;">
+                                        <img src="{{asset('/img/logo.png')}}"  style="width:70%;">
                                     </div>
                                     <div class="icons" style="margin-top:8px;margin-left:2px; text-align:center;">
-                                        @if($batchcard_data->is_donot_reuse_logo==1)
-                                        <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:25%;">
-                                        @endif
-                                        @if($batchcard_data->is_read_instruction_logo==1)
-                                        <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:25%;">
-                                        @endif
+                                        <!-- @if($batchcard_data->is_donot_reuse_logo==1) -->
+                                        <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:29%;">
+                                        <!-- @endif
+                                        @if($batchcard_data->is_read_instruction_logo==1) -->
+                                        <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:29%;">
+                                        <!-- @endif -->
                                         <!-- @if($batchcard_data->is_temperature_logo==1)
                                         <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;">
                                         @endif -->
@@ -175,13 +190,13 @@
                                     <div class="subdiv">
                                         <div class="ss" style="float:left;width:150px">
                                             <span style="text-align:left;"><strong>Ref: {{$batchcard_data->sku_code}}</strong></span></br/>
-                                            <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">
+                                            <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:28px;">
                                             {{$batchcard_data->batch_no}}
                                             <br/>
-                                            <img src="{{asset('/img/alderlogo/sterile_r.png')}}" alt="image" style="width:47px;">
+                                            <img src="{{asset('/img/alderlogo/sterile_r.png')}}" alt="image" style="width:49px;">
                                             {{$lot_no}}
                                             <br/>
-                                            <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
+                                            <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:18px;">&nbsp;
                                             {{$manufacture_date}}
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;">
@@ -205,7 +220,8 @@
                                     <div class="subdiv" style="margin-top:4px;">
                                         <div class="ss" style="float:left;width:150px; font-size:9px;">
                                             <strong>{{$batchcard_data->ad_sp1}}</strong><br/>
-                                            <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;">
+                                            <!-- <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;"> -->
+                                            <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;">
                                             <br/>
                                             <span style="margin-left:26px;"><small>{{$batchcard_data->sku_code}}</small></span>
                                             <br/>
@@ -216,14 +232,15 @@
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;font-size:9px;">
                                             <strong>{{$batchcard_data->ad_sp2}}</strong><br/>
-                                            <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;">
+                                            <!-- <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;"> -->
+                                            <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:140px;margin-top:5px;">
                                             <br/>
                                             <span><small>{{$batchcard_data->gs1_code}}</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="subcolumn3" style="float:right;width:10px;">
-                                    <span class="smalltext" style="font-size:8px;margin-top:75px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
+                                <div class="subcolumn3" style="float:right;width:5px;">
+                                    <span class="smalltext" style="font-size:8px;margin-top:75px;margin-left: -18px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
                                         <!-- LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}} -->
                                         LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd M y' , strtotime('14-12-2021') )}}
                                     </span>
@@ -258,6 +275,7 @@
                                     </div> 
                                 </div>
                             </div>
+                        </div>
                         </div>
                         @endfor
                     </div>

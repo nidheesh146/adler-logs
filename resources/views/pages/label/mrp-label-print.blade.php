@@ -60,10 +60,25 @@
                 <div style="break-after:page"></div>
                 </div>
                 @endfor
+                <style>
+                        <?php for($i=1;$i<=$label_per_page;$i++) { ?>
+                            .label-content<?php echo $i; ?>{
+                                display:none;
+                            }
+                        <?php }?>
+                </style>
                 @if($remaining!=0)
+                <style>
+                        <?php for($i=1;$i<=$remaining;$i++) { ?>
+                            .label-content<?php echo $i; ?>{
+                                display:block;
+                            }
+                        <?php }?>
+                </style>
                 <div class="page-container" style="margin-top:0.2cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
-                @for ($j=0;$j<$remaining;$j++)
+                @for ($j=1;$j<=$label_per_page;$j++)
                 <div class=" column" style="width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:15px; margin-left:10px;margin-bottom:6px; line-height:135%;">
+                <div class="label-content{{$j}}" style="">
                     <div class="subcolumn" style="float:left;width:95%;">
                         <div class="address" style="font-weight:bold;">
                             MKtd and Distributed by : Smith & Nephew<br/>
@@ -82,7 +97,8 @@
                         LBL/F-08_rev00_{{date( 'd M y' , strtotime('29-01-2022') )}}
                         </span>
 
-                    </div>    
+                    </div>  
+                </div>  
                 </div>
                 @endfor
                 </div>

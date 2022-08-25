@@ -126,11 +126,26 @@
                 <div style="break-after:page"></div>
                 </div>
                 @endfor
+                <style>
+                        <?php for($i=1;$i<=$label_per_page;$i++) { ?>
+                            .label-content<?php echo $i; ?>{
+                                display:none;
+                            }
+                        <?php }?>
+                </style>
                 @if($remaining!=0)
+                <style>
+                        <?php for($i=1;$i<=$remaining;$i++) { ?>
+                            .label-content<?php echo $i; ?>{
+                                display:block;
+                            }
+                        <?php }?>
+                </style>
                 <div class="page-container" style="margin-top:0.15cm;margin-bottom:0cm;width:21.1cm;height:29.3cm;">
-                @for ($j=0;$j<$remaining;$j++)
+                @for ($j=1;$j<=$label_per_page;$j++)
                 <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:4px">
-                    <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
+                <div class="label-content{{$j}}" style="">
+                <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
                         <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:3.7px;padding-left: 5px;">
                             <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:14px;height:14px;">
                             <span style="margin-left:2px;">visit :http://www.adler-healthcare.com <br>To see instructions for use please</span>
@@ -214,6 +229,7 @@
                             </div>
                         </div>
                     </div>   
+                </div>
                 </div>
                 @endfor
                 </div>
