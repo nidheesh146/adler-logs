@@ -57,37 +57,20 @@
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                         
 									   		<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-											   <label for="exampleInputEmail1" style="font-size: 12px;">PR No</label>
-                                                <!-- <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" class="form-control" placeholder="INVOICE NO"> -->
-                                                <select name="pr_no" id="pr_no" class="form-control">
-													<option value="">---</option>
-													@foreach($data['pr_nos'] as $no) 
-                                                    <option value="{{$no['master_id']}}" {{(request()->get('pr_no') == $no['master_id']) ? 'selected' : ''}}>{{$no['pr_no']}}</option>
-                                                    @endforeach
-                                                </select>
+											    <label for="exampleInputEmail1" style="font-size: 12px;">PR No</label>
+                                                <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="PR NO">
                                             </div><!-- form-group -->
                                             
                                             
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
 											<label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
-                                                <!-- <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE"> -->
-                                                <select name="item_code" id="item_code" class="form-control">
-                                                    <option value="">---</option>
-                                                    @foreach($data['items'] as $item) 
-                                                    <option value="{{$item['id']}}" {{(request()->get('item_code') == $item['id']) ? 'selected' : ''}}>{{$item['item_code']}}</option>
-                                                    @endforeach
-                                                </select>
-
+                                                <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
+                                               
                                             </div><!-- form-group -->
 											<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
+                                                <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                 
-                                                <select name="supplier" id="supplier" class="form-control">
-													<option value="">---</option>
-													@foreach($data['suppliers'] as $supplier)
-                                                    <option value="{{$supplier['id']}}" {{(request()->get('supplier') == $supplier['id']) ? 'selected' : ''}}>{{$supplier['vendor_id']}}-{{$supplier['vendor_name']}}</option>
-                                                    @endforeach
-                                                </select>
                                             </div>
 											 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label  style="font-size: 12px;">Status</label>
@@ -275,20 +258,7 @@
         });
     
   });
-  $('#item_code').select2({
-    placeholder: 'Item code',
-    searchInputPlaceholder: 'Search',
-    // minimumInputLength: 6,
-    // allowClear: true,
- });
- $('#supplier').select2({
-    placeholder: 'Supplier',
-    searchInputPlaceholder: 'Search',
- });
- $('#pr_no').select2({
-    placeholder: 'PR No',
-    searchInputPlaceholder: 'Search',
- });
+  
  
 
  $('.search-btn').on( "click", function(e)  {

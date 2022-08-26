@@ -31,25 +31,30 @@ class LotAllocationController extends Controller
         if(count($_GET))
         {
             if ($request->lot_no) {
-                $condition[] = ['inv_lot_allocation.id', '=', $request->lot_no];
+                $condition[] = ['inv_lot_allocation.lot_number', 'like', '%'.$request->lot_no.'%'];
+                $condition2 = [];
             }
             if ($request->po_no) {
-                $condition[] = ['inv_final_purchase_order_master.id', '=', $request->po_no];
+                $condition[] = ['inv_final_purchase_order_master.po_number', 'like', '%'.$request->po_no.'%'];
+                $condition2 = [];
             }
             if ($request->invoice_no) {
-                $condition[] = ['inv_supplier_invoice_master.id', '=', $request->invoice_no];
+                $condition[] = ['inv_supplier_invoice_master.invoice_number', 'like', '%'.$request->invoice_no.'%'];
+                $condition2 = [];
             }
             if ($request->item_code) {
-                $condition[] = ['inventory_rawmaterial.id', '=', $request->item_code];
+                $condition[] = ['inventory_rawmaterial.item_code', 'like', '%'.$request->item_code.'%'];
+                $condition2 = [];
             }
             if ($request->supplier) {
-                $condition[] = ['inv_supplier.id', '=', $request->supplier];
+                $condition[] = ['inv_supplier.vendor_id', 'like', '%'.$request->supplier.'%'];
+                $condition2[] = ['inv_supplier.vendor_name', 'like', '%'.$request->supplier.'%'];
             }
-            $lot_data = $this->inv_lot_allocation->getData($condition);
+            $lot_data = $this->inv_lot_allocation->getData($condition,$condition2);
         }
         else 
         {
-            $lot_data = $this->inv_lot_allocation->getData($condition=null);
+            $lot_data = $this->inv_lot_allocation->getData($condition=null,$condition2=null);
 
         }
        

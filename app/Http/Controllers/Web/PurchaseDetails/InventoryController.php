@@ -39,10 +39,10 @@ class InventoryController extends Controller
         if(count($_GET))
         {
             if ($request->department) {
-                $condition[] = ['inv_purchase_req_master.department', '=', $request->department];
+                $condition[] = ['inv_purchase_req_master.department', 'like', '%'.$request->department.'%'];
             }
             if ($request->pr_no) {
-                $condition[] = ['inv_purchase_req_master.master_id', '=', $request->pr_no];
+                $condition[] = ['inv_purchase_req_master.pr_no',  'like', '%'.$request->pr_no.'%'];
             }
             if ($request->pr_sr) {
                 $condition[] = ['inv_purchase_req_master.PR_SR', '=', $request->pr_sr];

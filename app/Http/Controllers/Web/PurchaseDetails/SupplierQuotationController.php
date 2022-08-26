@@ -27,7 +27,7 @@ class SupplierQuotationController extends Controller
         if(count($_GET))
         {
             if ($request->rq_no) {
-                $condition[] = ['inv_purchase_req_quotation.quotation_id', '=', $request->rq_no];
+                $condition[] = ['inv_purchase_req_quotation.quotation_id', 'like', '%'.$request->rq_no.'%'];
             }
             if ($request->supplier) {
                 $condition[] = ['inv_purchase_req_quotation_supplier.supplier_id', '=', $request->supplier];

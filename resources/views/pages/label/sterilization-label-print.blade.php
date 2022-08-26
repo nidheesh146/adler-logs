@@ -42,14 +42,14 @@
                             <div class="row1" style="font-size:12px;">    
                                 <div class="subcolumn1" style="float:left; width:60px">
                                     <div class="logo" style="text-align:center;">
-                                        <img src="{{asset('/img/logo.png')}}"  style="width:70%;">
+                                        <img src="{{asset('/img/logo.png')}}"  style="width:78%;">
                                     </div>
                                     <div class="icons" style="margin-top:8px;margin-left:2px; text-align:center;">
-                                        <!-- @if($batchcard_data->is_donot_reuse_logo==1) -->
-                                        <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:29%;">
+                                        <!-- @if($batchcard_data->is_donot_reuse_logo==1)70 29 -->
+                                        <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:35%;">
                                         <!-- @endif
                                         @if($batchcard_data->is_read_instruction_logo==1) -->
-                                        <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:29%;">
+                                        <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:35%;">
                                         <!-- @endif -->
                                         <!-- @if($batchcard_data->is_temperature_logo==1)
                                         <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;">
@@ -82,18 +82,18 @@
                                         </div>
                                     </div><br/>
                                     <div class="subdiv">
-                                        <div class="group" style= "overflow:hidden;max-height:48px;;padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;font-size:10px;">
+                                        <div class="group" style= "font-weight:550;overflow:hidden;max-height:48px;;padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;font-size:10px;">
                                             {{$batchcard_data->groups}}<br/>
                                             {{$batchcard_data->discription}}
                                         </div>
                                     </div>
                                     <div class="subdiv" style="margin-top:4px;">
                                         <div class="ss" style="float:left;width:150px; font-size:9px;">
-                                            <strong>{{$batchcard_data->ad_sp1}}</strong><br/>
+                                            <span style="margin-left:25px;"><strong>{{$batchcard_data->ad_sp1}}</strong></span><br/>
                                             <!-- <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;"> -->
                                             <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;">
                                             <br/>
-                                            <span style="margin-left:26px;"><small>{{$batchcard_data->sku_code}}</small></span>
+                                            <small><span style="margin-left:26px;font-weight:550">{{$batchcard_data->sku_code}}</span></small>
                                             <br/>
                                             <!-- <span style="font-size:7px;margin-left:40px;">ML No:{{$batchcard_data->drug_license_number}}</span> -->
                                             <div style="font-size:7px;margin-left:40px;margin-top:5px; padding-bottom:4.5px;">
@@ -105,7 +105,7 @@
                                             <!-- <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;"> -->
                                             <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:140px;margin-top:5px;">
                                             <br/>
-                                            <span><small>{{$batchcard_data->gs1_code}}</small>
+                                            <small><span style="font-weight:550">{{$batchcard_data->gs1_code}}</span></small>
                                         </div>
                                     </div>
                                 </div>
@@ -172,14 +172,14 @@
                             <div class="row1" style="font-size:12px;">    
                                 <div class="subcolumn1" style="float:left; width:60px">
                                     <div class="logo" style="text-align:center;">
-                                        <img src="{{asset('/img/logo.png')}}"  style="width:70%;">
+                                        <img src="{{asset('/img/logo.png')}}"  style="width:78%;">
                                     </div>
                                     <div class="icons" style="margin-top:8px;margin-left:2px; text-align:center;">
                                         <!-- @if($batchcard_data->is_donot_reuse_logo==1) -->
-                                        <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:29%;">
+                                        <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:35%;">
                                         <!-- @endif
                                         @if($batchcard_data->is_read_instruction_logo==1) -->
-                                        <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:29%;">
+                                        <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:35%;">
                                         <!-- @endif -->
                                         <!-- @if($batchcard_data->is_temperature_logo==1)
                                         <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;">
@@ -212,14 +212,14 @@
                                         </div>
                                     </div><br/>
                                     <div class="subdiv">
-                                        <div class="group" style= "overflow:hidden;max-height:48px;;padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;font-size:10px;">
+                                        <div class="group" style= "font-weight:550;overflow:hidden;max-height:48px;;padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;font-size:10px;">
                                             {{$batchcard_data->groups}}<br/>
                                             {{$batchcard_data->discription}}
                                         </div>
                                     </div>
                                     <div class="subdiv" style="margin-top:4px;">
                                         <div class="ss" style="float:left;width:150px; font-size:9px;">
-                                            <strong>{{$batchcard_data->ad_sp1}}</strong><br/>
+                                            <span style="margin-left:25px;"><strong>{{$batchcard_data->ad_sp1}}</strong></span><br/>
                                             <!-- <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;"> -->
                                             <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;">
                                             <br/>

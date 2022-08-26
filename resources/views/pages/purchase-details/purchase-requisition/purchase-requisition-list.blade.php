@@ -60,25 +60,13 @@
                         
 									   		<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>PR No:</label>
-                                                <!-- <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" class="form-control" placeholder="INVOICE NO"> -->
-                                                <select name="pr_no" id="pr_no" class="form-control">
-													<option value="">---</option>
-													@foreach($data['pr_nos'] as $no) 
-                                                    <option value="{{$no['master_id']}}" {{(request()->get('pr_no') == $no['master_id']) ? 'selected' : ''}}>{{$no['pr_no']}}</option>
-                                                    @endforeach
-                                                </select>
+                                                <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" id="pr_no" class="form-control" placeholder="PR NO">
                                             </div><!-- form-group -->
                                             
                                             
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Department</label>
-                                                
-                                                <select name="department" id="department" class="form-control">
-													<option value="">---</option>
-													@foreach($data['department'] as $dept)
-                                                    <option value="{{$dept['id']}}" {{(request()->get('department') == $dept['id']) ? 'selected' : ''}}>{{$dept['dept_name']}}</option>
-                                                    @endforeach
-                                                </select>
+                                                <input type="text" value="{{request()->get('department')}}" name="department" id="department" class="form-control" placeholder="DEPARTMENT">
                                             </div>
 											<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">PR/SR</label>
@@ -186,14 +174,7 @@
 
     $('#prbody').show();
   });
-  $('#pr_no').select2({
-		placeholder: 'PR No',
-		searchInputPlaceholder: 'Search',
-	 });
-	$('#department').select2({
-		placeholder: 'Department',
-		searchInputPlaceholder: 'Search',
-	});
+  
 	$('.search-btn').on( "click", function(e)  {
 		var pr_no = $('#pr_no').val();
 		var pr_sr = $('#pr_sr').val();

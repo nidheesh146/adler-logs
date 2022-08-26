@@ -55,34 +55,19 @@
                         
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>PO No:</label>
-                                                <!-- <input type="text" value="{{request()->get('po_no')}}" name="po_no" class="form-control" placeholder="PO NO"> -->
-                                                <select name="po_no" id="po_no" class="form-control">
-													<option value="">---</option>
-													@foreach($data['po_nos'] as $po)
-                                                    <option value="{{$po['id']}}" {{(request()->get('po_no') == $po['id']) ? 'selected' : ''}}>{{$po['po_number']}}</option>
-                                                    @endforeach
-                                                </select>
+                                                <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="PO NO"> 
+                                               
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>Invoice No:</label>
-                                                <!-- <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" class="form-control" placeholder="INVOICE NO"> -->
-                                                <select name="invoice_no" id="invoice_no" class="form-control">
-													<option value="">---</option>
-													@foreach($data['invoice_nos'] as $no) 
-                                                    <option value="{{$no['id']}}" {{(request()->get('invoice_no') == $no['id']) ? 'selected' : ''}}>{{$no['invoice_number']}}</option>
-                                                    @endforeach
-                                                </select>
+                                                <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" id="invoice_no" class="form-control" placeholder="INVOICE NO">
+                                                
                                             </div><!-- form-group -->
                                             
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
+                                                <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                 
-                                                <select name="supplier" id="supplier" class="form-control">
-													<option value="">---</option>
-													@foreach($data['suppliers'] as $supplier)
-                                                    <option value="{{$supplier['id']}}" {{(request()->get('supplier') == $supplier['id']) ? 'selected' : ''}}>{{$supplier['vendor_id']}}-{{$supplier['vendor_name']}}</option>
-                                                    @endforeach
-                                                </select>
                                             </div>
 											 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label  style="font-size: 12px;">Invoice at </label>
@@ -181,18 +166,7 @@
 
   });
 
-  $('#supplier').select2({
-		placeholder: 'Supplier',
-		searchInputPlaceholder: 'Search',
-	 });
-	$('#invoice_no').select2({
-		placeholder: 'Invoice No',
-		searchInputPlaceholder: 'Search',
-	});
-	$('#po_no').select2({
-		placeholder: 'PO No',
-		searchInputPlaceholder: 'Search',
-	});
+  
 	$('.search-btn').on( "click", function(e)  {
 		var supplier = $('#supplier').val();
 		var invoice_no = $('#invoice_no').val();

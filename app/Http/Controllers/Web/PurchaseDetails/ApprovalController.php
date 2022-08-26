@@ -27,13 +27,14 @@ class ApprovalController extends Controller
         if(count($_GET))
         {
             if ($request->pr_no) {
-                $condition[] = ['inv_purchase_req_master.master_id', '=', $request->pr_no];
+                $condition[] = ['inv_purchase_req_master.pr_no', 'like', '%'.$request->pr_no.'%'];
             }
             if ($request->supplier) {
-                $condition[] = ['inv_purchase_req_item.supplier', '=', $request->supplier];
+                $condition[] = ['inv_supplier.vendor_id',  'like', '%'.$request->supplier.'%'];
+                //$condition2[] = ['inv_supplier.vendor_name',  'like', '%'.$request->supplier.'%'];
             }
             if ($request->item_code) {
-                $condition[] = ['inv_purchase_req_item.Item_code', '=', $request->item_code];
+                $condition[] = ['inventory_rawmaterial.Item_code','like', '%'.$request->item_code.'%'];
             }
             if ($request->status) {
                 $condition[] = ['inv_purchase_req_item_approve.status', '=', $request->status];

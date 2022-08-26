@@ -49,54 +49,54 @@
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label>Lot No:</label>
-                                                <!-- <input type="text" value="{{request()->get('lot_no')}}" name="lot_no" class="form-control" placeholder="LOT NO"> -->
-                                                <select name="lot_no" id="lot_no" class="form-control">
+                                                <input type="text" value="{{request()->get('lot_no')}}" name="lot_no" id="lot_no" class="form-control" placeholder="LOT NO">
+                                                <!-- <select name="lot_no" id="lot_no" class="form-control">
                                                     <option value="">---</option>
                                                     @foreach($data['lot_nos'] as $lot) 
                                                     <option value="{{$lot['id']}}" {{(request()->get('lot_no') == $lot['id']) ? 'selected' : ''}}>{{$lot['lot_number']}}</option>
                                                     @endforeach
-                                                </select>
+                                                </select> -->
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label>PO No:</label>
-                                                <!-- <input type="text" value="{{request()->get('po_no')}}" name="po_no" class="form-control" placeholder="PO NO"> -->
-                                                <select name="po_no" id="po_no" class="form-control">
+                                                <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="PO NO">
+                                                <!-- <select name="po_no" id="po_no" class="form-control">
                                                     <option value="">---</option> 
                                                     @foreach($data['po_nos'] as $po)
                                                     <option value="{{$po['id']}}" {{(request()->get('po_no') == $po['id']) ? 'selected' : ''}}>{{$po['po_number']}}</option>
                                                     @endforeach
-                                                </select>
+                                                </select> -->
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label>Invoice No:</label>
-                                                <!-- <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" class="form-control" placeholder="INVOICE NO"> -->
-                                                <select name="invoice_no" id="invoice_no" class="form-control">
+                                                <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" id="invoice_no" class="form-control" placeholder="INVOICE NO"> 
+                                                <!-- <select name="invoice_no" id="invoice_no" class="form-control">
                                                     <option value="">---</option> 
                                                     @foreach($data['invoice_nos'] as $no)
                                                     <option value="{{$no['id']}}" {{(request()->get('invoice_no') == $no['id']) ? 'selected' : ''}}>{{$no['invoice_number']}}</option>
                                                     @endforeach
-                                                </select>
+                                                </select> -->
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label>Item Code:</label>
-                                                <!-- <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE"> -->
-                                                <select name="item_code" id="item_code" class="form-control">
+                                                <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
+                                                <!-- <select name="item_code" id="item_code" class="form-control">
                                                     <option value="">---</option>
                                                     @foreach($data['items'] as $item) 
                                                     <option value="{{$item['id']}}" {{(request()->get('item_code') == $item['id']) ? 'selected' : ''}}>{{$item['item_code']}}</option>
                                                     @endforeach
-                                                </select>
+                                                </select> -->
 
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
-                                                
-                                                <select name="supplier" id="supplier" class="form-control">
+                                                <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier1" class="form-control" placeholder="SUPPLIER">
+                                                <!-- <select name="supplier" id="supplier" class="form-control">
                                                    <option value="">---</option>
                                                     @foreach($data['suppliers'] as $supplier)
                                                     <option value="{{$supplier['id']}}" {{(request()->get('supplier') == $supplier['id']) ? 'selected' : ''}}>{{$supplier['vendor_id']}}-{{$supplier['vendor_name']}}</option>
                                                     @endforeach
-                                                </select>
+                                                </select> -->
                                             </div>
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
                                                 <label style="width: 100%;">&nbsp;</label>
@@ -428,31 +428,11 @@
         $('#qty_accepted').val(qtyaccepted);
     });
 
-    $('#item_code').select2({
-        placeholder: 'Item code',
-        searchInputPlaceholder: 'Search',
-        // minimumInputLength: 6,
-        // allowClear: true,
-    });
-    $('#supplier').select2({
-        placeholder: 'Supplier',
-        searchInputPlaceholder: 'Search',
-    });
-    $('#lot_no').select2({
-        placeholder: 'Lot No',
-        searchInputPlaceholder: 'Search',
-    });
-    $('#invoice_no').select2({
-        placeholder: 'Invoice No',
-        searchInputPlaceholder: 'Search',
-    });
-    $('#po_no').select2({
-        placeholder: 'PO No',
-        searchInputPlaceholder: 'Search',
-    });
+    
+    
 
     $('.search-btn').on( "click", function(e)  {
-            var supplier = $('#supplier').val();
+            var supplier = $('#supplier1').val();
             var lot_no = $('#lot_no').val();
             var invoice_no = $('#invoice_no').val();
             var po_no = $('#po_no').val();
