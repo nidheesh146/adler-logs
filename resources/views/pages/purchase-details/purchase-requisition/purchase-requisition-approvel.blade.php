@@ -136,7 +136,7 @@
 							<td>{{$item['net_value']}}</td>
 							{{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
 							<td>
-							<a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" data-target="#myModal" id="change-status" style="width: 64px;" 
+							<a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" orderqty="{{$item['actual_order_qty']}}" data-target="#myModal" id="change-status" style="width: 64px;" 
 							data-html="true" data-placement="top" 
 							class="badge 
 							@if($item['status'] == 4)
@@ -190,7 +190,7 @@
                             </div>
 							<div class="form-group">
                                 <label for="inputAddress">Approved Qty *</label>
-                                <input type="text" name="approved_qty"  class="form-control" id="approved_qty" placeholder="Approved Qty">
+                                <input type="text" name="approved_qty"  class="form-control approved_qty" id="approved_qty" placeholder="Approved Qty">
                             </div> 
                             <div class="form-group">
                                 <label for="inputAddress">Remarks *</label>
@@ -279,9 +279,12 @@ $(document).ready(function() {
         $('body').on('click', '#change-status', function (event) {
             event.preventDefault();
 			$(".item-codes").text('') ;
+            $('.approved_qty').val('');
+            var orderqty = $(this).attr('orderqty');
 			let purchaseRequisitionItemId = $(this).attr('value');
 			$('#purchaseRequisitionItemId').val(purchaseRequisitionItemId);
 			$(".item-codes").text('( '+ $(this).attr('rel') + ')');
+            $('.approved_qty').val(orderqty);
         });
         
     });
