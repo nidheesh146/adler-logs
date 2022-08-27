@@ -75,9 +75,14 @@ class ApprovalController extends Controller
                          'inv_purchase_req_item_approve.remarks'=>$request->reason,
                          'inv_purchase_req_item_approve.created_user'=>config('user')['user_id'],
                          'inv_purchase_req_item_approve.updated_at'=>date('Y-m-d H:i:s')];
-
+                        if($request->status == 1)
+                        $status="Approved";
+                        if($request->status == 5)
+                        $status="Hold";
+                        if($request->status == 0)
+                        $status="Rejected";
                          $this->inv_purchase_req_item->updatedata(['inv_purchase_req_item_approve.pr_item_id'=>$request->purchaseRequisitionItemId],$data);
-                         $request->session()->flash('success', "You have successfully ".(($request->status == 1) ? 'approved' : 'hold')." a  requisition item ");
+                         $request->session()->flash('success', "You have successfully ".$status." a  requisition item ");
                          return redirect('inventory/purchase-reqisition/approval');
             }
             if($validator->errors()->all()) {

@@ -47,27 +47,15 @@
                                 @if($batchcard_data->discription!="")
                                 <span class="smalltext" style=" font-size:7.5px;">{{$batchcard_data->discription}}</span><br/>
                                 @endif
-                                <div class="" style="display:block;margin-top:1.5px;">
-                                    <!-- <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;"> -->
-                                    <div style="display:block;float:left;font-family: Arial, sans-serif;font-size:6px;font-weight:400;">
-                                        <span style="padding:1.5px; border-style: solid;border-width: thin;border-color:#101010;">STERILE</span>
-                                        <span style="border-top: solid 0.1px #101010;border-bottom: solid 0.1px black;border-right: solid 0.1px black;border-width: thin;padding:1.5px; padding-left:4px;margin-left:-2px;">
-                                        @if($batchcard_data->sterilization_type=='R')
-                                        R
-                                        @else
-                                        EO
-                                        @endif
-                                        </span>
-                                    </div>
-                                    <!-- <img src="{{asset('/img/alderlogo/sterile_r1.png')}}" style="width:47px;height:11px;"> -->
-                                    <span class="smalltext" style=" font-size:8px;float:left;">&nbsp;{{$lot_no}}&nbsp;</span>
-                                    <!-- <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:20px;float:left;"> -->
-                                    <span style="float:left;height:10px;padding-left:1.2px;padding-right:1.2px; border-style: solid;border-width: thin;border-color:#101010;font-family: Arial, sans-serif;font-size:6px;font-weight:400;margin-top:-1px">LOT</span>
-                                    <span class="smalltext" style=" font-size:8px;float:left;">&nbsp;{{$batchcard_data->batch_no}}&nbsp;</span>      
-                                </div>
-                                </br> 
-                                 <div style="display:block;height: 8px;width:90%; border-bottom: 1px solid black; ">
-                                    <span style=" font-weight:bold;position: absolute;font-size: 7px; background-color: #f4f5f8; padding: 0 3px;margin-top: 4.0px;position: absolute;margin-left:-28px">
+                                <!-- <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;"> -->
+                                <img src="{{asset('/img/alderlogo/sterile_r1.png')}}" style="width:47px;height:11px;">
+                                <span class="smalltext" style=" font-size:8px;">{{$lot_no}}</span>
+                                <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:20px;">
+                                <span class="smalltext" style=" font-size:8px;">{{$batchcard_data->batch_no}}</span></br>
+                                 <!-- <span style="font-size:8px;font-weight:bold;">STERILIZATION</span> -->
+                                
+                                 <div style=" height: 8px;width:90%; border-bottom: 1px solid black; text-align: center">
+                                    <span style=" font-weight:bold;position: absolute;font-size: 7px; background-color: #f4f5f8; padding: 0 3px;margin-top: 4.0px;position: absolute;margin-left: -28px">
                                         STERILIZATION<!--Padding is optional-->
                                     </span>
                                 </div>
@@ -120,27 +108,15 @@
                                 @if($batchcard_data->discription!="")
                                 <span class="smalltext" style=" font-size:7.5px;">{{$batchcard_data->discription}}</span><br/>
                                 @endif
-                                <div class="" style="display:block;margin-top:1.5px;">
-                                    <!-- <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;"> -->
-                                    <div style="display:block;float:left;font-family: Arial, sans-serif;font-size:6px;font-weight:400;">
-                                        <span style="padding:1.5px; border-style: solid;border-width: thin;border-color:#101010;">STERILE</span>
-                                        <span style="border-top: solid 0.1px #101010;border-bottom: solid 0.1px black;border-right: solid 0.1px black;border-width: thin;padding:1.5px; padding-left:4px;margin-left:-2px;">
-                                        @if($batchcard_data->sterilization_type=='R')
-                                        R
-                                        @else
-                                        EO
-                                        @endif
-                                        </span>
-                                    </div>
-                                    <!-- <img src="{{asset('/img/alderlogo/sterile_r1.png')}}" style="width:47px;height:11px;"> -->
-                                    <span class="smalltext" style=" font-size:8px;float:left;">&nbsp;{{$lot_no}}&nbsp;</span>
-                                    <!-- <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:20px;float:left;"> -->
-                                    <span style="float:left;height:10px;padding-left:1.2px;padding-right:1.2px; border-style: solid;border-width: thin;border-color:#101010;font-family: Arial, sans-serif;font-size:6px;font-weight:400;margin-top:-1px">LOT</span>
-                                    <span class="smalltext" style=" font-size:8px;float:left;">&nbsp;{{$batchcard_data->batch_no}}&nbsp;</span>      
-                                </div>
-                                </br> 
-                                 <div style="display:block;height: 8px;width:90%; border-bottom: 1px solid black; ">
-                                    <span style=" font-weight:bold;position: absolute;font-size: 7px; background-color: #f4f5f8; padding: 0 3px;margin-top: 4.0px;position: absolute;margin-left:-28px">
+                                <!-- <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;"> -->
+                                <img src="{{asset('/img/alderlogo/sterile_r1.png')}}" style="width:47px;height:11px;">
+                                <span class="smalltext" style=" font-size:8px;">{{$lot_no}}</span>
+                                <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:20px;">
+                                <span class="smalltext" style=" font-size:8px;">{{$batchcard_data->batch_no}}</span></br>
+                                 <!-- <span style="font-size:8px;font-weight:bold;">STERILIZATION</span> -->
+                                
+                                 <div style=" height: 8px;width:90%; border-bottom: 1px solid black; text-align: center">
+                                    <span style=" font-weight:bold;position: absolute;font-size: 7px; background-color: #f4f5f8; padding: 0 3px;margin-top: 4.0px;position: absolute;margin-left: -28px">
                                         STERILIZATION<!--Padding is optional-->
                                     </span>
                                 </div>

@@ -81,7 +81,7 @@ class LabelController extends Controller
         $manufacture_date = $request->manufacturing_date;
         $sterilization_expiry_date = $request->sterilization_expiry_date;
         $batchcard_data = DB::table('batchcard_batchcard')
-                            ->select('batchcard_batchcard.*', 'product_product.label_format_number', 'product_product.sku_code','product_product.discription as discription' )
+                            ->select('batchcard_batchcard.*', 'product_product.label_format_number', 'product_product.sku_code','product_product.discription as discription','product_product.sterilization_type' )
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
@@ -152,11 +152,12 @@ class LabelController extends Controller
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
+        $color =[0,0,0];
         $manf_date_combo = '[11]'.date('Y-m-d');
         $gs1_label_batch_combo ='[01]' .$batchcard_data->gs1_code.'[10]'.$batchcard_data->batch_no;
         $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
         $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
-        $manf_date_combo_barcode = $generator->getBarcode($manf_date_combo, $generator::TYPE_CODE_128);
+        $manf_date_combo_barcode = $generator->getBarcode($manf_date_combo, $generator::TYPE_CODE_128, 1,45, $color);
         $gs1_label_batch_combo_barcode = $generator->getBarcode($gs1_label_batch_combo, $generator::TYPE_CODE_128);
         return view('pages/label/non-sterilization-label-print', compact('batchcard_data','no_of_label','sku_code_barcode', 'gs1_label_batch_combo', 'gs1_label_batch_combo_barcode','manf_date_combo','manf_date_combo_barcode','manufacturing_date' ));
     }
@@ -171,11 +172,12 @@ class LabelController extends Controller
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
+        $color =[0,0,0];
         $manf_date_combo = '[11]'.date('Y-m-d');
         $gs1_label_batch_combo = '[01]'.$batchcard_data->gs1_code.'[10]'.$batchcard_data->batch_no;
         $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
         $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
-        $manf_date_combo_barcode = $generator->getBarcode($manf_date_combo, $generator::TYPE_CODE_128);
+        $manf_date_combo_barcode = $generator->getBarcode($manf_date_combo, $generator::TYPE_CODE_128, 1,45,$color);
         $gs1_label_batch_combo_barcode = $generator->getBarcode($gs1_label_batch_combo, $generator::TYPE_CODE_128);
         return view('pages/label/instrument-label-print', compact('batchcard_data','no_of_label','sku_code_barcode', 'gs1_label_batch_combo', 'gs1_label_batch_combo_barcode','manf_date_combo','manf_date_combo_barcode','manufacturing_date' ));
     }

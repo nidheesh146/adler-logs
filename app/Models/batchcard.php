@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\PurchaseDetails;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,6 +24,10 @@ class batchcard extends Model
         return $this->select(['batchcard_batchcard.id','product_product.discription',''])
         ->where($condition)->get();
 
+    }
+    function insertdata($data)
+    {
+        return $this->insertGetId($data);
     }
 
 

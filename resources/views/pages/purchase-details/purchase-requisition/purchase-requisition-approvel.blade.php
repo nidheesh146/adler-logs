@@ -185,6 +185,7 @@
 									{{-- <option value="0"> Pending </option> --}}
 									<option value="1"> Approve</option>
 									<option value="5">On hold</option>
+                                    <option value="0">Reject</option>
                                 </select>
                             </div>
 							<div class="form-group">

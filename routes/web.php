@@ -101,6 +101,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
    //Batchcard
     Route::get('batchcard/batchcard-upload', 'BatchCardController@getBatchcardUpload');
     Route::post('batchcard/batchcard-upload', 'BatchCardController@batchcardUpload');
+    Route::get('batchcard/batchcard-add', 'BatchCardController@BatchcardAdd');
+    Route::post('batchcard/batchcard-add', 'BatchCardController@BatchcardAdd');
+    Route::get('batchcard/productsearch', 'BatchCardController@productsearch');
 
     //Label card
     Route::get('label/mrp-label','LabelController@mrpLabel');

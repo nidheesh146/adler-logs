@@ -48,11 +48,14 @@
           </ul>
         </li><!-- nav-item -->
         
-        <li class="nav-item @if(in_array($Action,['BatchCard.getBatchcardUpload'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['BatchCard.getBatchcardUpload', 'BatchCard.BatchcardAdd'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i>Batch Card</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['BatchCard.getBatchcardUpload'])){{'active'}} @endif ">
             <a href="{{url('batchcard/batchcard-upload')}}"  class="nav-sub-link">Batch Card Upload</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
+            <a href="{{url('batchcard/batchcard-add')}}"  class="nav-sub-link">Batch Card Add</a>
             </li>
           </ul>
         </li>
