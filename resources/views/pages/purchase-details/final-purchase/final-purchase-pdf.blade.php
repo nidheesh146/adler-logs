@@ -8,16 +8,18 @@
     <style>
         .col1,.col3{
             float:left;
-            width:28%;
+            width:23%;
             font-size:11px;
         }
         .col2{
-            width:40%;
+            width:45%;
             float:left;
         }
         .attn {
             margin-top:32px;
+            font-weight:bold;
            font-size:10px; 
+           color:#1434A4;
         }
         .main-head{
             margin-top:50px;
@@ -42,7 +44,7 @@
             display:block;
         }
         .intro{
-            font-size:9px;
+            font-size:11px;
             font-style:italic;
             padding:10px;
         }
@@ -59,17 +61,30 @@
         }
         .col43{
             font-size:11px;
-            float:left;
+            float:right;
         }
         .remarks, .adler {
             height:50px;
         }
         .row3 table th{
-            background-color:#B8B8B8;
+            background-color:#B6D0E2;
+        }
+        .col51, .col52{
+            font-size:11px;
+            width:33%;
+            float:left;
+        }
+        .col52{
+            text-align:center;
+        }
+        .col53{
+            font-size:11px;
+            text-align:right;
+            float:right;
         }
     </style>
     <?php// print_r(json_encode($items)); ?>
-    <div class="row1" style="height:150px;border-bottom:solid 2px black;">
+    <div class="row1" style="height:130px;border-bottom:solid 2px black;">
         <div class="col1">
             To<br/>
             <strong>{{$final_purchase['vendor_name']}}</strong>
@@ -115,12 +130,12 @@
         </div>
         <div class="col3">
             From<br/>
-            <strong>ADLER HEALTHCARE PVT. LTD</strong>
+            <span style="color:#1434A4;"><strong>ADLER HEALTHCARE PVT. LTD</strong></span>
             <p> Plot No-A1 MIDC, Sadavali(Devrukh),  Tal- Sangmeshwar, Dist -Ratnagiri ,  PIN-415804, Maharashtra, India<br/>
             CIN : <br/>
             Company GSTIN :</p>
         </div>
-        <div class="col4">
+        <div class="col4" style="float:right;">
             <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
         </div>
     </div><br/>
@@ -236,17 +251,17 @@
                 <tr>
                     <td style="width:130px">Sum of Line Value</td>
                     <td style="width:30px;">:</td>
-                    <td style="">{{number_format((float)$total, 2, '.', '')}}</td>
+                    <td style="text-align:right;">{{number_format((float)$total, 2, '.', '')}}</td>
                 </tr>
                 <tr>
                     <td style="width:130px">Total Discount</td>
                     <td style="width:30px;">:</td>
-                    <td style="float:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
+                    <td style="text-align:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
                 </tr>
                 <tr>
                     <td style="width:130px">Total Net Amount</td>
                     <td style="width:30px;">:</td>
-                    <td style="float:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
+                    <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
                 </tr>
                 <!-- <tr>
                     <td style="width:130px">Total Net Amount</td>
@@ -265,9 +280,74 @@
         </div>
     </div>
     <div class="row5">
-
+        <div class="col51">
+            Document Format - PUR/F-04-00
+        </div>
+        <div class="col52">
+            :{{$final_purchase['po_number']}}
+        </div>
+        <div class="col53">
+            Page: 1 of 2
+        </div>
+    </div><br/>
+    <div class="row6" style="font-size:10px;display:block;">
+        <strong>Terms and Conditions</strong>
+        <br/>
+        1. Payment Term - 30 days credit from the date of receipt of material or date of receipt of Invoice whichever is later.<br/>
+        2. Delivery - Goods are to be delivered within 30 days from the receipt of P.O. We will inform the transport details & delivery address after material get ready for dispatch.<br/>
+        3. Please quote the Purchase Order (P.O.) number on your commercial invoice and on any other correspondence in connection with this order. Please also mention Adler Item Code
+        Number & HSN Code line by line.<br/>
+        4. The Company does not accept any responsibility for the material / service that is received without authorized purchase / Work order.<br/>
+        5. Order Acknowledgment - Please confirm acceptance of this order in any form - Acknowledgment on Adler PO / by e-mail / your standard format for order acknowledgment etc. In the absence of
+        such acceptance, the delivery of any material, equipment or services shall constitute full acceptance by the Supplier of the terms and conditions herein.<br/>
+        6. Site Visit - If the Supplier/ Service Provider, by the terms of this order., is required to perform any work in the Company's premises, the Supplier / Service Provider shall be responsible for any
+        damages or injuries to persons or property including Company's employees and property, caused as a result of fault or negligence or for any reasons whatsoever, including omission or commission
+        in doing or complying with certain requisites, statutory or otherwise by the Supplier and/or his agents. Before commencing contract work the Supplier shall furnish to the Company policies of
+        insurance showing that the Supplier has taken adequate cover for public liability, property damage and workmen's compensation and cover the risk to property and body of the Supplier's
+        employees.<br/>
+        7. Supplies received as per the P.O. prior to approval shall not constitute an acceptance of the goods even if payment is made in advance.<br/>        
+        8. Goods should be accompanied by your Commercial invoice with Adler GST Number 27AAJCB3689C1ZJ mentioned on it.<br/>
+        9. If advance payment received from the Adler should be mentioned on the bills and the give the payment details.<br/>
+        10. Any increase / reduction in government levies / taxes will be to the Adler's account.<br/>
+        11. The Company reserves the right to cancel the P.O. or amend the quantities indicated in the P.O. arising out of any change in Company's sales requirements / manufacturing program or from
+        any cause or causes beyond the Company's control.<br/>
+        # Goods not conforming to the Company's specifications / standards / pre-shipment samples are liable to be rejected and the Company's decision in this regard will be final.<br/>
+        # The report shall be sent to you mentioning why it has been rejected. In case of dispute on this report you can send your Representative for on-site re-verification of the report.<br/>
+        # Rejected goods other than printed/promotional materials should be collected back within four weeks on receipt of intimation by the Supplier at his own cost and expenses, failing which the
+        rejected material will be booked to the Supplier on freight to pay basis at Supplier's risk and cost.<br/>
+        # Upon rejection of material, Adler will raise a Debit Note & against the same you shall issue credit note. In case of advance payment the supplier shall repay advance, so received, before taking
+        back the rejected goods.<br/>
+        # If any defects or discrepancies are notified in the supply at a later date, which went undetected at the time of supply, they shall be freely replaced by the Supplier. Rejected printed material will
+        be destroyed by the Supplier in the presence of Company's representatives at Company's premises.<br/>
+        12. The Company reserves the right to reject/accept goods delivered in excess of quantities ordered. If rejected by the Company, the Supplier shall comply with the requirements of clause above
+        pertaining to the manner in which the rejected goods are to be dealt with.<br/>
+        13. For domestic supplier - Transit insurance will be covered by Supplier for all risks up to delivery center and insurance charges will be to the Supplier's account unless otherwise specified.<br/>
+        14. The Supplier shall be responsible for transport worthy packaging. In case of any loss or extra expenses due to damages in the transit on account of improper packing, supplier shall be
+        responsible to pay such expenses. Packaging material used for supplies are on non-returnable basis unless otherwise agreed to by Company in writing.<br/>
+        15. The Supplier guarantees that the sale or use of his products will not infringe any legislation, Indian or foreign concerning patent, design copyright or trademark and undertakes to indemnify
+        and keep the company indemnified against any action, judgement, decree, cost, claim, demand and expense resulting from any actual or alleged violation / infringement of statutes concerning
+        patent, design or trademark, copyrights etc. The Supplier further undertakes at his own expense to defend or assist in the defense of any suit or action which may be brought in this connection
+        against the Company by any third party.<br/>
+        16. The Company reserves the right to cancel the P.O. or part thereof, without ANY CANCELATION AMOUNT, if a stoppage of Company's manufacturing, trading or distribution activities, in total or
+        in part occurs due to fire, worker's agitation, strike, lockout, Government legislation, force majeure or from any cause or causes beyond the Company's control.<br/>
+        17. Any litigation arising out of or in connection with this order shall be subject to Ratnagiri Jurisdiction only.<br/>
+        18. Qty. measured in co premised shall be considered as a final Qty. of material received.<br/>
+        19. The terms and conditions indicated above supersedes all terms and conditions mentioned in the Supplier's/agents quotation/indent/invoice or any other documents pertaining to the
+        transactions covered by this PO.<br/>
+        20. Compliance Clause:<br/>
+        Supplier is aware of the Social responsibility and which include principles against Bribery and Corruption Supplier hereby certifies that he does not and will not use illegal practices such as giving
+        money or gifts to Adler employees or members of their families in exchange for business from Adler. Supplier also agrees that, in the event that Adler determines that a violation of principles
+        against Corruption have occurred, Adler shall notify supplier, and Adler may terminate this agreement/PO immediately, and such termination shall be with cause. Supplier shall indemnify Adler and
+        hold Adler harmless with respect to any liability arising from the contravention of this provision by supplier.<br/>
+        21. Termination of Purchase Order - Company may at any time terminate any or all purchase orders placed by Company. Unless otherwise specified in this Agreement, Company's liability to
+        Supplier with respect to such terminated purchase order or orders shall be limited to: (1) Supplier's purchase price of all components for the PRODUCT, plus (2) the actual costs incurred by
+        Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
+        with proof satisfactory to Company.<br/>
     </div>
-
+    <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
+    Adler Ref No :
+    </div>
+     
    
 </body>
 </html>

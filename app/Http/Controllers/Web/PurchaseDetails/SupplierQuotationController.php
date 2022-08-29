@@ -29,9 +29,9 @@ class SupplierQuotationController extends Controller
             if ($request->rq_no) {
                 $condition[] = ['inv_purchase_req_quotation.quotation_id', 'like', '%'.$request->rq_no.'%'];
             }
-            if ($request->supplier) {
-                $condition[] = ['inv_purchase_req_quotation_supplier.supplier_id', '=', $request->supplier];
-            }
+            // if ($request->supplier) {
+            //     $condition[] = ['inv_purchase_req_quotation_supplier.supplier_id', '=', $request->supplier];
+            // }
             if ($request->from) {
                 $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '<=', date('Y-m-t', strtotime('01-' . $request->from))];

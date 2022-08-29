@@ -55,32 +55,32 @@
                                     <div class="row filter_search" style="margin-left: 0px;">
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                         
-									   		<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+									   		<div class="form-group col-sm-12 col-md-5 col-lg-5 col-xl-5">
                                                 <label>RQ No:</label>
                                                 <input type="text" value="{{request()->get('rq_no')}}" name="rq_no"  id="rq_no" class="form-control" placeholder="RQ NO">
                                             </div><!-- form-group -->
                                             
                                             
-                                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                            <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
 												<input type="text" value="{{request()->get('supplier')}}" name="supplier"  id="supplier" class="form-control" placeholder="SUPPLIER">
                                                 
-                                            </div>
-											 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                            </div> -->
+											 <div class="form-group col-sm-12 col-md-5 col-lg-5 col-xl-5">
                                                 <label  style="font-size: 12px;">Delivery Schedule</label>
                                                 <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Delivery Schedule(MM-YYYY)">
                                             </div> 
                                                                  
                                         </div>
-                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-                                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
+                                            <!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;"> -->
                                                 <label style="width: 100%;">&nbsp;</label>
                                                 <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
                                                 @if(count(request()->all('')) > 1)
                                                     <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
                                                     style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
                                                 @endif
-                                            </div> 
+                                            <!-- </div>  -->
                                         </div>
                                     </div>
                                 </th>
@@ -164,11 +164,11 @@
   });
   
 	$('.search-btn').on( "click", function(e)  {
-		var supplier = $('#supplier').val();
+		//var supplier = $('#supplier').val();
 		var rq_no = $('#rq_no').val();
 		var po_no = $('#po_no').val();
 		var from = $('#from').val();
-		if(!supplier & !rq_no & !po_no & !from)
+		if(!rq_no & !po_no & !from)
 		{
 			e.preventDefault();
 		}

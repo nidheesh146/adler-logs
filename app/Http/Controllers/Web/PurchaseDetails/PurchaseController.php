@@ -557,6 +557,7 @@ return  $data;
         $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master'=>$id]);
           
         $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);
+        $pdf->set_paper('A4', 'landscape');
         return $pdf->stream('final-purchase.pdf');
         //return $pdf->download('final-purchase.pdf');
     }
