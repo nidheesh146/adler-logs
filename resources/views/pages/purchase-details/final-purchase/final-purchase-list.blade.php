@@ -124,7 +124,7 @@
 							<td>
 								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/final-purchase-add/'.$po_data->id)}}"><i class="fas fa-edit"></i> Edit</a>
 								<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
-								
+								<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Receipt</a>
 							</td>
 						</tr>
 						@endforeach

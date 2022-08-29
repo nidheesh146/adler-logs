@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use PDF;
 
 use App\Models\PurchaseDetails\inv_purchase_req_quotation;
 use App\Models\User;
@@ -550,15 +551,19 @@ return  $data;
         return view('pages.purchase-details.supplier-invoice.supplier-invoice-list-edit',compact('data','master','item'));
     }
 
-
-
-
-
-
-
-    public function lotAllocation()
+    public function generateFinalPurchasePdf($id)
     {
-        return view('pages.purchase-details.supplier-invoice.supplier-invoice-list');
-        return view('pages.purchase-details.purchase.lot-allocation');
+        $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_item.id'=>$id]);
+        $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master'=>$id]);
+          
+        $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);
+        return $pdf->stream('final-purchase.pdf');
+        //return $pdf->download('final-purchase.pdf');
     }
+
+
+
+
+
+    
 }

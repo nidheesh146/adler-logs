@@ -75,6 +75,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/find-rq-number', 'PurchaseController@find_rq_number');
     Route::get('inventory/final-purchase-item-edit/{id}', 'PurchaseController@Edit_PO_item');
     Route::post('inventory/final-purchase-item-edit/{id}', 'PurchaseController@Edit_PO_item');
+    Route::get('inventory/final-purchase/pdf/{id}', 'PurchaseController@generateFinalPurchasePdf');
 
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');

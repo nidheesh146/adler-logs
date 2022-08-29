@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>KSSP - 404</title>
+    <title>ADLER - 404</title>
 
 
     <!-- azia CSS -->
