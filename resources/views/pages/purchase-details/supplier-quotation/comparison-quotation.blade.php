@@ -51,7 +51,11 @@
 							<th  rowspan="2" style="color:#1c273c;">Item HSN</th>
                             @if(!empty($suppliers))
 				            @foreach($suppliers as $supplier)
-							<th colspan="4" style="color:black; font-size:15px;"><center>{{$supplier['vendor_name']}}</center></th>
+							<th colspan="4" style="color:black; font-size:15px;">
+                                <center>{{$supplier['vendor_name']}}</center>
+                                <br/>
+                                <div style="font-size:10px;text-align:center;margin-top:-10px;">(Delivery Date :{{date('d-m-Y',strtotime($supplier['commited_delivery_date']))}})</div>
+                            </th>
                             @endforeach
                             @endif
 						</tr>
