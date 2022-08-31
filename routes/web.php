@@ -76,6 +76,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/final-purchase-item-edit/{id}', 'PurchaseController@Edit_PO_item');
     Route::post('inventory/final-purchase-item-edit/{id}', 'PurchaseController@Edit_PO_item');
     Route::get('inventory/final-purchase/pdf/{id}', 'PurchaseController@generateFinalPurchasePdf');
+    Route::get('inventory/final-purchase/export/all', 'PurchaseController@exportFinalPurchaseAll');
+    Route::get('inventory/final-purchase/export/open', 'PurchaseController@exportFinalPurchaseOpen');
 
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');

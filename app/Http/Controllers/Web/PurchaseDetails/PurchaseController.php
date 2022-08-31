@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use PDF;
+use App\Exports\FinalPurchaseOrderExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\PurchaseDetails\inv_purchase_req_quotation;
 use App\Models\User;
@@ -553,13 +555,26 @@ return  $data;
 
     public function generateFinalPurchasePdf($id)
     {
+    
         $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_item.id'=>$id]);
         $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master'=>$id]);
           
         $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);
         $pdf->set_paper('A4', 'landscape');
-        return $pdf->stream('final-purchase.pdf');
+        $file_name = "final-purchase-order_".$data['final_purchase']['vendor_name']."_".$data['final_purchase']['po_number'];
+        return $pdf->stream($file_name.'.pdf');
         //return $pdf->download('final-purchase.pdf');
+    }
+
+    public function exportFinalPurchaseAll()
+    {
+        $status = "all";
+        return Excel::download(new FinalPurchaseOrderExport($status), 'FinalPurchaseOrder'.date('d-m-Y').'.xlsx');
+    }
+    public function exportFinalPurchaseOpen()
+    {
+        $status = 1;
+        return Excel::download(new FinalPurchaseOrderExport($status), 'FinalPurchaseOrder'.date('d-m-Y').'.xlsx');
     }
 
 

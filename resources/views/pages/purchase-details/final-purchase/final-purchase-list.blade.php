@@ -7,25 +7,21 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-		
-				 <span><a href="">Final Purchase Order</a></span>
-				 </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Final Purchase Order list
-              <div class="right-button">
-                  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
-                      <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-                  <div class="dropdown-menu">
-                  <a href="#" class="dropdown-item">Excel</a>
-
-                  </div> -->
-              <div>  
-              </div>
-			 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final Purchase Order </button> 
-          </div>
-        </h4>
-			<div class="az-dashboard-nav">
-				<nav class="nav"> </nav>
+				<span><a href="">Final Purchase Order</a></span>
 			</div>
+			<h4 class="az-content-title" style="font-size: 20px;">Final Purchase Order list
+                <div class="right-button">
+                    <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
+                    <i class="fas fa-file-excel" aria-hidden="true"></i> Report <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
+                    <div class="dropdown-menu">
+                        <a href="{{url('inventory/final-purchase/export/all')}}" class="dropdown-item">All</a>
+                        <a href="{{url('inventory/final-purchase/export/open')}}" class="dropdown-item">Open</a>
+                    </div>  
+                <div>  
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final Purchase Order </button> 
+            </h4>
+        
+			
 	
       
 			

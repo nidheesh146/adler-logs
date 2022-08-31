@@ -2,7 +2,7 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-    <title>Final Purchase Order Receipt</title>
+    <title>Final Purchase Order_{{$final_purchase['vendor_name']}}_{{$final_purchase['po_number']}}</title>
 </head>
 <body>
     <style>
@@ -293,6 +293,8 @@
     <div class="row6" style="font-size:10px;display:block;">
         <strong>Terms and Conditions</strong>
         <br/>
+        @if($final_purchase['supplier_type']=="indirect")
+        <p>
         1. Payment Term - 30 days credit from the date of receipt of material or date of receipt of Invoice whichever is later.<br/>
         2. Delivery - Goods are to be delivered within 30 days from the receipt of P.O. We will inform the transport details & delivery address after material get ready for dispatch.<br/>
         3. Please quote the Purchase Order (P.O.) number on your commercial invoice and on any other correspondence in connection with this order. Please also mention Adler Item Code
@@ -343,6 +345,74 @@
         Supplier with respect to such terminated purchase order or orders shall be limited to: (1) Supplier's purchase price of all components for the PRODUCT, plus (2) the actual costs incurred by
         Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
         with proof satisfactory to Company.<br/>
+        </p>
+        @else
+        <p>
+        1. Material Should be verified and Tested at your end before dispatch for following points:<br/>
+        a) Straightness of Material 1:1000mm<br/>
+        b) Diameter tolerance should be as mentioned in above description / specification.<br/>
+        c) Wooden Box packaging to prevent damage during tansit.<br/>
+        d) Required Test Certificate for correctness of Mechanical & Chemical Properties along with material.<br/>
+        e) Bar Length: The cut length of the bar require between 2.8 to 3.1 meters. Pls. ensure that it should not be more than 3.1 meters.<br/>
+        2. Delivery - Ex-Works. The material is ex-stock available hence arrange the delivery within 2 weeks after receipt of Purchase Order.
+        Item Sr. No 4 for delivery within 5-6 weeks after receipt of purchase order.<br/>
+        # To be handed over to our nominated forwarder. Please quote the Purchase Order (P.O.) number on your commercial invoice and on any other correspondence in connection with this order. Please also mention Adler
+        Item Code Number & HSN Code line by line.<br/>
+        3. Payment Term - Advance 30% against order acknowledgement /Proforma Invoice & balance 70% after material get ready for dispatch against final Commercial Invoice.<br/>
+        4. Manufacturer's Test Certificate for correctness of Chemical Composition, Mechanical Properties,Micro Structure Report & grain size Report as per relevant standard shall be accompanied the ordered material.<br/>
+        5. Heat number Identification on each piece is required. in case of smallest dia wire,Tag of Lot No on the bundle is required.<br/>
+        6. Material should Centrless ground, polished.<br/>
+        7. Invoicing - Please send us the invoice for our approval before you hand over the shipment to our forwarder. We will verify the invoice and let you know change if any required for our custom clearance here in India.As soon as we send you revised invoice as required by us, you cans hand over the shipment with that inovice to our forwarder.<br/>
+        8. Packaging - Export worthly packaging.<br/>
+        9. Mode of shipment - By Air<br/>
+        10. Pls. mentioned Item description in your Invoice & packing list as mentioned given below as it is<br/>
+            <?php $i=1;?>
+            @foreach($items as $item)
+            Item SN {{$i}} - &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$item['short_description']}}<br/>
+            <?php $i++; ?>
+            @endforeach
+
+        11. The Company does not accept any responsibility for the material that is received without authorized purchase order.<br/>
+        12. Order Acknowledgment - Please confirm acceptance of this order in any form - Acknowledgment on Adler PO / by e-mail / your standard format for order acknowledgment etc. In the absence of
+        such acceptance, the delivery of any material, equipment or services shall constitute full acceptance by the Supplier of the terms and conditions herein.<br/>
+        13. Site Visit - If the Supplier, by the terms of this order., is required to perform any work in the Company's premises, the Supplier shall be responsible for any damages or injuries to persons or property including
+        Company's employees and property, caused as a result of fault or negligence or for any reasons whatsoever, including omission or commission in doing or complying with certain requisites, statutory or otherwise
+        by the Supplier and/or his agents. Before commencing contract work the Supplier shall furnish to the Company policies of insurance showing that the Supplier has taken adequate cover for public liability,
+        property damage and workmen's compensation and cover the risk to property and body of the Supplier's employees<br/>
+        14. Supplies received as per the P.O. prior to approval shall not constitute an acceptance of the goods even if payment is made in advance.<br/>
+        15. The Company reserves the right to cancel the P.O. or amend the quantities indicated in the P.O. arising out of any change in Company's sales requirements / manufacturing program or from
+        any cause or causes beyond the Company's control.<br/>
+        # Goods not conforming to the Company's specifications / standards / pre-shipment samples are liable to be rejected and the Company's decision in this regard will be final.<br/>
+        # The report shall be sent to you mentioning why it has been rejected. In case of dispute on this report you can send your Representative for on-site re-verification of the report.<br/>
+        # Rejected goods other than printed/promotional materials should be collected back within four weeks on receipt of intimation by the Supplier at his own cost and expenses, failing which the
+        rejected material will be booked to the Supplier on freight to pay basis at Supplier's risk and cost<br/>
+        # Upon rejection of material, Adler will raise a Debit Note & against the same you shall issue credit note. In case of advance payment the supplier shall repay advance, so received, before taking
+        back the rejected goods.<br/>
+        # If any defects or discrepancies are notified in the supply at a later date, which went undetected at the time of supply, they shall be freely replaced by the Supplier. Rejected printed material will
+        be destroyed by the Supplier in the presence of Company's representatives at Company's premises<br/>
+        16. The Company reserves the right to reject/accept goods delivered in excess of quantities ordered. If rejected by the Company, the Supplier shall comply with the requirements of clause above
+        pertaining to the manner in which the rejected goods are to be dealt with.<br/>
+        17. The Supplier guarantees that the sale or use of his products will not infringe any legislation, Indian or foreign concerning patent, design copyright or trademark and undertakes to indemnify
+        and keep the company indemnified against any action, judgement, decree, cost, claim, demand and expense resulting from any actual or alleged violation / infringement of statutes concerning
+        patent, design or trademark, copyrights etc. The Supplier further undertakes at his own expense to defend or assist in the defense of any suit or action which may be brought in this connection
+        against the Company by any third party.<br/>
+        18. The Company reserves the right to cancel the P.O. or part thereof, without ANY CANCELATION AMOUNT, if a stoppage of Company's manufacturing, trading or distribution activities, in total or
+        in part occurs due to fire, worker's agitation, strike, lockout, Government legislation, force majeure or from any cause or causes beyond the Company's control.<br/>
+        19. Any litigation arising out of or in connection with this order shall be subject to RATNAGIRI Jurisdiction only.<br/>
+        20. Qty. measured in co premised shall be considered as a final Qty. of material received<br/>
+        21. The terms and conditions indicated above supersedes all terms and conditions mentioned in the Supplier's/agents quotation/indent/invoice or any other documents pertaining to the
+        transactions covered by this PO.<br/>
+        22. Compliance Clause:<br/>
+        Supplier is aware of the Social responsibility and which include principles against Bribery and Corruption Supplier hereby certifies that he does not and will not use illegal practices such as giving
+        money or gifts to Adler employees or members of their families in exchange for business from Adler. Supplier also agrees that, in the event that Adler determines that a violation of principles
+        against Corruption have occurred, Adler shall notify supplier, and Adler may terminate this agreement/PO immediately, and such termination shall be with cause. Supplier shall indemnify Adler and
+        hold Adler harmless with respect to any liability arising from the contravention of this provision by supplier.<br/>
+        23. Termination of Purchase Order - Company may at any time terminate any or all purchase orders placed by Company. Unless otherwise specified in this Agreement, Company's liability to
+        Supplier with respect to such terminated purchase order or orders shall be limited to: (1) Supplier's purchase price of all components for the PRODUCT, plus (2) the actual costs incurred by
+        Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
+        with proof satisfactory to Company.<br/>
+        </p>
+        @endif
     </div>
     <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     Adler Ref No :
