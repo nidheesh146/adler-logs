@@ -31,11 +31,36 @@ class User extends Model
                     ->first();
    }
    function get_all_users($condition){
-    return  $this->select(['user_id','email','username','f_name','l_name','employee_id'])
+        return  $this->select(['user_id','email','username','f_name','l_name','employee_id', 'dept_name', 'designation','phone','email'])
+                    ->leftjoin('department','id','=','user.department')
                     ->where($condition)
+                    ->where(['user.status'=>1])
                     ->get();
+   }
+   function all_users($condition){
+        return  $this->select(['user_id','email','username','f_name','l_name','employee_id', 'dept_name', 'designation','phone','email','date_of_hire'])
+                    ->leftjoin('department','id','=','user.department')
+                    ->where($condition)
+                    ->where(['user.status'=>1])
+                    ->orderby('user_id','desc')
+                    ->paginate(15);
+   }
 
+   function insert_data($data)
+   {
+        return $this->insertGetId($data);
+   }
+   function update_data($condition,$data)
+   {
+        return $this->where($condition)->update($data);
+   }
 
+   function get_user($condition) {
+    return  $this->select(['user_id','email','username','f_name','l_name','employee_id','address' ,'department', 'designation','phone','email','date_of_hire'])
+        //->leftjoin('department','id','=','user.department')
+        ->where(['status'=>1])
+        ->where($condition)
+        ->first();
    }
 
 }

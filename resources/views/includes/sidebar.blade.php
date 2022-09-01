@@ -81,6 +81,23 @@
           </ul>
         </li>
 
+        <li class="nav-item @if(in_array($Action,['Employee.employeeList'])){{'active show'}} @endif ">
+          <a href="#" class="nav-link with-sub"><i class="fas fa-user-alt" style="font-size: 19px"></i>Employee</a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item @if(in_array($Action,['Employee.employeeList'])){{'active'}} @endif ">
+            <a href="{{url('employee/list')}}"  class="nav-sub-link">Employee</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
+            <a href="{{url('batchcard/batchcard-add')}}"  class="nav-sub-link">Permissions</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
+            <a href="{{url('batchcard/batchcard-add')}}"  class="nav-sub-link">Modules</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
+            <a href="{{url('batchcard/batchcard-add')}}"  class="nav-sub-link">Role</a>
+            </li>
+          </ul>
+        </li>
 
 
       </ul><!-- nav -->

@@ -124,3 +124,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('label/batchcardSearch','LabelController@batchcardSearch');
     Route::get('label/batchcardData/{batch_no_id}','LabelController@batchcardData');
 });
+
+Route::group(['namespace' => 'App\Http\Controllers\Web\Employee','middleware'=>['RolePermission']], function() {
+    Route::get('employee/list', 'EmployeeController@employeeList');
+    Route::get('employee/add', 'EmployeeController@employeeAdd');
+    Route::post('employee/add', 'EmployeeController@employeeAdd');
+    Route::get('employee/edit/{id}', 'EmployeeController@employeeEdit');
+    Route::post('employee/edit/{id}', 'EmployeeController@employeeEdit');
+    Route::get('employee/delete/{id}', 'EmployeeController@employeeDelete');
+
+});
