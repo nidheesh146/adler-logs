@@ -133,4 +133,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\Employee','middleware'=>[
     Route::post('employee/edit/{id}', 'EmployeeController@employeeEdit');
     Route::get('employee/delete/{id}', 'EmployeeController@employeeDelete');
 
+    //Module 
+    Route::get('module/list', 'ModuleController@moduleList');
+    Route::get('module/add', 'ModuleController@moduleAdd');
+
 });

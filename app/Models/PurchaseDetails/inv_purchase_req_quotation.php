@@ -41,7 +41,7 @@ class inv_purchase_req_quotation extends Model
     function get_quotation($condition){
 
         return $this->select('inv_purchase_req_quotation.*')
-                    ->rightjoin('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
+                    //->join('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
                     ->where($condition)
                     ->orderby('quotation_id','desc')
                     ->paginate(15);
