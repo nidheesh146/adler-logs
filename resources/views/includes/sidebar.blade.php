@@ -13,9 +13,15 @@
     </div><!-- az-sidebar-header -->
     
     <div class="az-sidebar-loggedin">
-      <div class="az-img-user online"><img src="<?=url('');?>/img/profile.png" alt=""></div>
+      <div class="az-img-user online">
+        @if(config('user')['profile_img'])
+        <img src="<?=url('');?>/Employee_Image/{{ config('user')['profile_img']}}" alt="">
+        @else
+        <img src="<?=url('');?>/img/profile.png" alt="">
+        @endif
+      </div>
       <div class="media-body">
-        <h6>Aziana Pechon</h6>
+        <h6>{{config('user')['f_name']}} {{config('user')['l_name']}}</h6>
         <span>Premium Member</span>
       </div><!-- media-body -->
     </div><!-- az-sidebar-loggedin -->

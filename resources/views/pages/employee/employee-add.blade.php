@@ -26,7 +26,7 @@
                     </div>
                    @endforeach                        
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" id="commentForm" autocomplete="off" >
+                    <form method="POST" id="commentForm" autocomplete="off" enctype="multipart/form-data">
                         {{ csrf_field() }}  
                         <div class="form-devider"></div>
                         <div class="row">
@@ -45,7 +45,7 @@
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label>Profile Image *</label>
-                                <input type="file" class="form-control" name="profile_img"  id="profile_img" placeholder="Department">
+                                <input type="file" class="form-control" name="profile_img"  id="profile_img" value="{{ !empty($user) ? $user['profile_img'] : '' }}" placeholder="Department">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Department *</label>
@@ -64,6 +64,20 @@
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label>Designation *</label>
                                 <input type="text" class="form-control" name="designation" value="{{ !empty($user) ? $user['designation'] : '' }}" id="designation" placeholder="Designation">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Role *</label>
+                                <select class="form-control" name="role_permission" id="role_permission">
+                                    <option value="">--- select one ---</option>
+                                    @foreach($roles as $role)
+                                    <option value="{{$role['role_id']}}"
+                                        @if(!empty($user))  
+                                        @if($user["role_permission"]==$role["role_id"])
+                                            selected
+                                        @endif
+                                        @endif>{{$role['role_name']}}</option>
+                                    @endforeach
+                                </select>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label>Date of hire *</label>
@@ -156,6 +170,9 @@
                 },
                 department: {
                     required: true,
+                },
+                profile_img:{
+                    //required: true,
                 },
                 designation: {
                     required: true,

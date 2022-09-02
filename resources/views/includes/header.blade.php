@@ -87,16 +87,26 @@
         </div><!-- dropdown-menu -->
       </div><!-- az-header-notification -->
       <div class="dropdown az-profile-menu">
-        <a href="#" class="az-img-user"><img  src="<?=url('');?>/img/profile.png" alt=""></a>
+        <a href="#" class="az-img-user">
+        @if(config('user')['profile_img'])
+        <img src="<?=url('');?>/Employee_Image/{{ config('user')['profile_img']}}" alt="">
+        @else
+        <img src="<?=url('');?>/img/profile.png" alt="">
+        @endif
+        </a>
         <div class="dropdown-menu">
           <div class="az-dropdown-header d-sm-none">
             <a href="#" class="az-header-arrow"><i class="icon ion-md-arrow-back"></i></a>
           </div>
           <div class="az-header-profile">
             <div class="az-img-user">
-              <img  src="<?=url('');?>/img/profile.png" alt="">
+              @if(config('user')['profile_img'])
+              <img src="<?=url('');?>/Employee_Image/{{ config('user')['profile_img']}}" alt="">
+              @else
+              <img src="<?=url('');?>/img/profile.png" alt="">
+              @endif
             </div><!-- az-img-user -->
-            <h6>Aziana Pechon</h6>
+            <h6>{{config('user')['f_name']}} {{config('user')['l_name']}}</h6>
             <span>Premium Member</span>
           </div><!-- az-header-profile -->
 

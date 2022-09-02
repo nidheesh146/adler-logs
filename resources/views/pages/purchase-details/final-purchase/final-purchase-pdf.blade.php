@@ -152,7 +152,7 @@
                 </tr>
                 <tr>
                     <td >Currency</td>
-                    <td>: {{$final_purchase['unit_name']}}</td>
+                    <td>: {{$final_purchase['currency_code']}}</td>
                 </tr>
             </table>
         </div>
@@ -189,8 +189,17 @@
                 <th rowspan="2">RATE</th>
                 <th rowspan="2">VALUE</th>
                 <th colspan="2">DISC</th>
+                <th colspan="2">CGST</th>
+                <th colspan="2">SGST/UTGST</th>
+                <th colspan="2">IGST</th>
             </tr>
             <tr>
+                <th>%</th>
+                <th>Value</th>
+                <th>%</th>
+                <th>Value</th>
+                <th>%</th>
+                <th>Value</th>
                 <th>%</th>
                 <th>Value</th>
             </tr>
@@ -210,6 +219,12 @@
                 <td>{{number_format((float)($item['rate']* $item['order_qty']), 2, '.', '') }}</td>
                 <td>{{$item['discount']}}</td>
                 <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['discount'])/100), 2, '.', '')}}</td>
+                <td>0</td>
+                <td>0.00</td>
+                <td>0</td>
+                <td>0.00</td>
+                <td>0</td>
+                <td>0.00</td>
                 <?php 
                 $total =$total+ $item['rate']* $item['order_qty'];
                 $total_discount = $total_discount+($item['rate']* $item['order_qty']*$item['discount'])/100;

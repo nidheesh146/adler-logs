@@ -25,7 +25,7 @@ class User extends Model
          return  $this->select(['user_id','status'])->where($condition)->first();
     }
     function get_user_details($condition){
-        return  $this->select(['user_id','email','username','f_name','l_name','phone','employee_id','date_of_hire','address','department.dept_name as department','user.status as status'])
+        return  $this->select(['user_id','email','username','f_name','l_name','phone','employee_id','date_of_hire','address','department.dept_name as department','user.status as status','user.profile_img','user.role_permission'])
                     ->leftjoin('department','department.id','=','user.department')
                     ->where($condition)
                     ->first();
@@ -56,7 +56,7 @@ class User extends Model
    }
 
    function get_user($condition) {
-    return  $this->select(['user_id','email','username','f_name','l_name','employee_id','address' ,'department', 'designation','phone','email','date_of_hire'])
+    return  $this->select(['user_id','email','username','f_name','l_name','employee_id','address' ,'department', 'designation','phone','email','date_of_hire','role_permission'])
         //->leftjoin('department','id','=','user.department')
         ->where(['status'=>1])
         ->where($condition)

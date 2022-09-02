@@ -5,6 +5,7 @@ namespace App\Http\Controllers\web\Employee;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\Department;
 use Validator;
 
@@ -13,6 +14,7 @@ class EmployeeController extends Controller
     public function __construct()
     {
         $this->User = new User;
+        $this->Role = new Role;
         $this->Department = new Department;
     }
     public function employeeList() {
@@ -30,15 +32,25 @@ class EmployeeController extends Controller
             $validation['department'] = ['required'];
             $validation['designation'] = ['required'];
             $validation['date_of_hire'] = ['required'];
+            $validation['role_permission'] =['required'];
             $validation['email'] = ['required','email','unique:user'];
             $validation['phone'] = ['required'];
             $validation['address'] = ['required'];
             $validation['username'] = ['required'];
             $validation['password'] = ['required'];
-            $validation['confirm_password'] = ['required','same:password'];
+            $validation['confirm_password'] = ['required','same:pas/////sword'];
             $validator = Validator::make($request->all(), $validation);
     
             if(!$validator->errors()->all()){
+                if($request->file('profile_img')){
+                    $file= $request->file('profile_img');
+                    $filename= date('YmdHi').$file->getClientOriginalName();
+                    $file-> move(public_path('public/employee/Image'), $filename);
+                    //$data['image']= $filename;
+                }
+                else {
+                    $filename= "";
+                }
                 $data = [
                         "f_name" => $request->f_name,
                         "l_name"  => $request->l_name,
@@ -46,10 +58,12 @@ class EmployeeController extends Controller
                         "department"=> $request->department,
                         "designation"=> $request->designation,
                         "date_of_hire"=> date('Y-m-d',strtotime($request->date_of_hire)),
+                        "role_permission"=>$request->role_permission,
                         "email"=> $request->email,
                         "phone"  => $request->phone ,
                         "address"=>  $request->address,
                         "username"=> $request->username,
+                        "profile_img"=>$filename,
                         "password" => $this->encrypt($request->password), 
                 ];
     
@@ -62,8 +76,9 @@ class EmployeeController extends Controller
                         return redirect("employee/add")->withErrors($validator)->withInput();
                 }
         }
+        $roles = $this->Role->get_roles();
         $department = $this->Department->get_dept($condition=null);
-        return view('pages\employee\employee-add',compact('department'));
+        return view('pages\employee\employee-add',compact('department','roles'));
     }
     public function employeeEdit(Request $request, $id)
     {
@@ -76,6 +91,7 @@ class EmployeeController extends Controller
             $validation['designation'] = ['required'];
             $validation['date_of_hire'] = ['required'];
             $validation['email'] = ['required','email'];
+            $validation['role_permission'] =['required'];
             $validation['phone'] = ['required'];
             $validation['address'] = ['required'];
             $validation['username'] = ['required'];
@@ -84,6 +100,21 @@ class EmployeeController extends Controller
             $validator = Validator::make($request->all(), $validation);
     
             if(!$validator->errors()->all()){
+
+                if($request->file('profile_img')){
+                    $file= $request->file('profile_img');
+                    $filename= date('YmdHi').$file->getClientOriginalName();
+                    $file-> move(public_path('Employee_Image'), $filename);
+                    //$data['image']= $filename;
+                }
+                else {
+                    $img = User::where('user_id','=',$id)->pluck('profile_img')->first();
+                    if($img){
+                        $filename =$img;
+                    } else{
+                    $filename= "";
+                    }
+                }
                 $data = [
                         "f_name" => $request->f_name,
                         "l_name"  => $request->l_name,
@@ -91,10 +122,12 @@ class EmployeeController extends Controller
                         "department"=> $request->department,
                         "designation"=> $request->designation,
                         "date_of_hire"=> date('Y-m-d',strtotime($request->date_of_hire)),
+                        "role_permission"=>$request->role_permission,
                         "email"=> $request->email,
                         "phone"  => $request->phone ,
                         "address"=>  $request->address,
                         "username"=> $request->username,
+                        "profile_img"=>$filename,
                         "password" => $this->encrypt($request->password), 
                 ];
     
@@ -110,7 +143,8 @@ class EmployeeController extends Controller
         $user = $this->User->get_user(['user_id'=>$id]);
         //print_r($user);exit;
         $department = $this->Department->get_dept($condition=null);
-        return view('pages\employee\employee-add',compact('department','user'));
+        $roles = $this->Role->get_roles();
+        return view('pages\employee\employee-add',compact('department','user','roles'));
     }
 
     public function employeeDelete(Request $request, $id)
