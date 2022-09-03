@@ -68,9 +68,20 @@
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Requestor *</label>
-                            <input type="text" class="form-control" readonly 
+                            <!-- <input type="text" class="form-control select2"  
                             value="{{(!empty($data['inv_purchase_req_master']) ? $data['inv_purchase_req_master']['f_name'].' '.$data['inv_purchase_req_master']['l_name']  :  (config('user')['f_name'] ? config('user')['f_name'].' '.config('user')['l_name']  : 'Requestor 1'))}}" 
-                            name="Requestor" placeholder="Requestor">
+                            name="Requestor" placeholder="Requestor"> -->
+                                <select class="form-control select2 requestor" name="Requestor">
+                                    @foreach($data['users'] as $user)
+                                     <option value="{{$user['user_id']}}"
+                                     @if(!empty($data['inv_purchase_req_master']))
+                                       @if($user['user_id'] == $data['inv_purchase_req_master']['requestor_id'])
+                                           selected
+                                       @endif
+                                     @endif
+                                     >{{$user['employee_id']}}-{{$user['f_name']}} {{$user['l_name']}}</option>
+                                    @endforeach
+                                </select>
                             </div><!-- form-group -->
 
 
@@ -164,14 +175,11 @@
 
 
 <script src="<?= url('') ?>/js/azia.js"></script>
-
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
-
 <script src="<?= url('') ?>/js/jquery.validate.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
-
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
-
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
 
@@ -214,6 +222,10 @@
 
     
   });
+  $('.requestor').select2({
+        placeholder: 'Choose one',
+        searchInputPlaceholder: 'Search',
+    });
 </script>
 
 

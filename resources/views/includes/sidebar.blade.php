@@ -53,6 +53,15 @@
             <li class="nav-sub-item  @if(in_array($Action,['LotAllocation.addLotAllocation','LotAllocation.lotAllocation'])){{'active'}} @endif "><a href="{{url('inventory/lot-allocation-list')}}" class="nav-sub-link">LOT Number Allocation</a></li>
           </ul>
         </li><!-- nav-item -->
+
+        <li class="nav-item @if(in_array($Action,['Service.get_service_reqisition','Service.get_service_reqisition_item'])){{'active show'}} @endif ">
+          <a href="#" class="nav-link with-sub"><i class="fa fa-podcast" style="font-size:19px"></i>Service Requisition</a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item @if(in_array($Action,['Service.get_service_reqisition','Service.get_service_reqisition_item'])){{'active'}} @endif ">
+            <a href="{{url('inventory/get-service-reqisition')}}"  class="nav-sub-link">Service Requisition</a>
+            </li>
+          </ul>
+        </li>
         
         <li class="nav-item @if(in_array($Action,['BatchCard.getBatchcardUpload', 'BatchCard.BatchcardAdd'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i>Batch Card</a>

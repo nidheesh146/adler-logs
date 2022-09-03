@@ -10,6 +10,7 @@ use Validator;
 use DB;
 
 use App\Models\Department;
+use App\Models\User;
 use App\Models\PurchaseDetails\inv_purchase_req_master;
 use App\Models\inventory_gst;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
@@ -23,6 +24,7 @@ class InventoryController extends Controller
     {
         $this->HttpRequest = new WebapiController;
         $this->Department = new Department;
+        $this->User = new User;
         $this->inv_purchase_req_master = new inv_purchase_req_master;
         $this->inventory_gst = new inventory_gst;
         $this->inventory_rawmaterial = new inventory_rawmaterial;
@@ -39,7 +41,7 @@ class InventoryController extends Controller
         if(count($_GET))
         {
             if ($request->department) {
-                $condition[] = ['inv_purchase_req_master.department', 'like', '%'.$request->department.'%'];
+                $condition[] = ['department.dept_name', 'like', '%'.$request->department.'%'];
             }
             if ($request->pr_no) {
                 $condition[] = ['inv_purchase_req_master.pr_no',  'like', '%'.$request->pr_no.'%'];
@@ -86,12 +88,19 @@ class InventoryController extends Controller
                 $datas['created_at'] =  date('Y-m-d h:i:s');
                 $datas['updated_at'] =  date('Y-m-d h:i:s');
                 $inv_purchase_num =  $this->inv_purchase_req_master->insertdata($datas);
-                return redirect('inventory/add-purchase-reqisition-item?pr_id='.$inv_purchase_num);
+                if($request->PRSR=='PR'){
+                    return redirect('inventory/add-purchase-reqisition-item?pr_id='.$inv_purchase_num);
+                }
+                else
+                {
+                    return redirect('inventory/add-service-reqisition-item?sr_id='.$inv_purchase_num);
+                }
             }
             if ($validator->errors()->all()) {
                 return redirect("inventory/add-purchase-reqisition/")->withErrors($validator)->withInput();
             }
         }
+        $data['users'] = $this->User->get_all_users([]);
         $data['Department'] = $this->Department->get_dept(['status'=>1]);
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact('data'));
 
@@ -120,6 +129,7 @@ class InventoryController extends Controller
             }
         }
         $data['Department'] = $this->Department->get_dept(['status'=>1]);
+        $data['users'] = $this->User->get_all_users([]);
         $data['inv_purchase_req_master'] = $this->inv_purchase_req_master->get_data(['inv_purchase_req_master.status'=>1,'master_id'=>$request->pr_id]);
     
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact('data'));

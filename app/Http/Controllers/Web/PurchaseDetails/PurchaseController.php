@@ -70,43 +70,43 @@ class PurchaseController extends Controller
     }
     public function addFinalPurchase(Request $request,$id = null)
     {  
-    if ($request->isMethod('post')) 
-    {
+        if ($request->isMethod('post')) 
+        {
 
-        $validation['date'] = ['required','date'];
-        $validation['create_by'] = ['required'];
-        $validation['rq_master_id'] = ['required'];
-        $validator = Validator::make($request->all(), $validation);
-        if(!$validator->errors()->all()) 
-        { 
-
-         if(!$id){
-            $data['po_number'] = "PO-".$this->num_gen(DB::table('inv_final_purchase_order_master')->count());
-            $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
-            $data['rq_master_id'] = $request->rq_master_id;
-            $quotation_supplier = $this->inv_purchase_req_quotation_supplier->get_suppliers_single(['inv_purchase_req_quotation_supplier.quotation_id'=>$request->rq_master_id,'inv_purchase_req_quotation_supplier.selected_supplier'=>1]);
-            $data['supplier_id'] = $quotation_supplier->supplier_id;
-         }
-            $data['po_date'] = date('Y-m-d',strtotime($request->date));
-            $data['created_by'] = $request->create_by;
+            $validation['date'] = ['required','date'];
+            $validation['create_by'] = ['required'];
+            $validation['rq_master_id'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all()) 
+            { 
 
             if(!$id){
-                $POMaster =   $this->inv_final_purchase_order_master->insert_data($data);
-                $request->session()->flash('success',  "You have successfully added a  purchase order master !");
-            }else{
-                 $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$id],$data);
-                $request->session()->flash('success',  "You have successfully updated a  purchase order master !");
+                $data['po_number'] = "PO-".$this->num_gen(DB::table('inv_final_purchase_order_master')->count());
+                $data['created_at'] = date('Y-m-d H:i:s');
+                $data['updated_at'] = date('Y-m-d H:i:s');
+                $data['rq_master_id'] = $request->rq_master_id;
+                $quotation_supplier = $this->inv_purchase_req_quotation_supplier->get_suppliers_single(['inv_purchase_req_quotation_supplier.quotation_id'=>$request->rq_master_id,'inv_purchase_req_quotation_supplier.selected_supplier'=>1]);
+                $data['supplier_id'] = $quotation_supplier->supplier_id;
             }
-            return redirect("inventory/final-purchase-add/".$id);
-        }
-        if($validator->errors()->all()) 
-        { 
-            return redirect("inventory/final-purchase-add/".$id)->withErrors($validator)->withInput();
+                $data['po_date'] = date('Y-m-d',strtotime($request->date));
+                $data['created_by'] = $request->create_by;
 
+                if(!$id){
+                    $POMaster =   $this->inv_final_purchase_order_master->insert_data($data);
+                    $request->session()->flash('success',  "You have successfully added a  purchase order master !");
+                }else{
+                    $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$id],$data);
+                    $request->session()->flash('success',  "You have successfully updated a  purchase order master !");
+                }
+                return redirect("inventory/final-purchase-add/".$id);
+            }
+            if($validator->errors()->all()) 
+            { 
+                return redirect("inventory/final-purchase-add/".$id)->withErrors($validator)->withInput();
+
+            }
+            
         }
-        
-    }
         $condition[] = ['user.status','=',1];
         $data['users'] = $this->User->get_all_users($condition);
         if($id){
