@@ -197,7 +197,7 @@ class InventoryController extends Controller
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
 
     }
-      // Purchase Reqisition item get list
+      // Purchase Reqisition add item 
       public function add_purchase_reqisition_item(Request $request)
       {
         if((!$request->pr_id) && (!$request->sr_id)){

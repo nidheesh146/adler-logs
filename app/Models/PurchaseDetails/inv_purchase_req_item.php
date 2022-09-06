@@ -57,7 +57,7 @@ class inv_purchase_req_item extends Model
     function getdata($condition){
        return  $this->select(['inv_purchase_req_item.requisition_item_id','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_purchase_req_item.actual_order_qty','inv_purchase_req_item.rate',
                              'inv_purchase_req_item.discount_percent','inventory_gst.gst','currency_exchange_rate.currency_code','inv_purchase_req_item.net_value','inventory_rawmaterial.item_code',
-                             'inv_purchase_req_item_approve.approved_qty','inv_purchase_req_master.pr_no'])
+                             'inv_purchase_req_item_approve.approved_qty','inv_purchase_req_master.pr_no','inv_purchase_req_master.PR_SR'])
                     ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
                     ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
@@ -73,7 +73,7 @@ class inv_purchase_req_item extends Model
     function getdata_approved($condition){
         return  $this->select(['inv_purchase_req_item.requisition_item_id','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_purchase_req_item.actual_order_qty','inv_purchase_req_item.rate',
                                'inv_purchase_req_item.discount_percent','inventory_gst.gst','currency_exchange_rate.currency_code','inv_purchase_req_item.net_value','inventory_rawmaterial.item_code',
-                               'inv_purchase_req_master.pr_no','inv_purchase_req_item_approve.status'])
+                               'inv_purchase_req_master.pr_no','inv_purchase_req_item_approve.status','inv_purchase_req_master.PR_SR'])
                      ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
                      ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
                      ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')

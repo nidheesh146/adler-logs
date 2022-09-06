@@ -5,8 +5,8 @@
   <br>
 	<div class="container">
 		<div class="az-content-body">
-			<div class="az-content-breadcrumb"> <span>Purchase Requisition</span> <span>Purchase Requisition Approval</span> </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Purchase Requisition Approval
+			<div class="az-content-breadcrumb"> <span>Purchase Requisition</span> <span>Requisition Approval</span> </div>
+			<h4 class="az-content-title" style="font-size: 20px;">Requisition Approval
               <div class="right-button">
                 
                   <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
@@ -19,150 +19,285 @@
               </div>
           </div>
         </h4>
-			<div class="az-dashboard-nav">
-				<nav class="nav"> </nav>
-			</div>
-
-			@foreach ($errors->all() as $errorr)
-                    <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                      {{ $errorr }}
-                    </div>
-                   @endforeach 
+        @foreach ($errors->all() as $errorr)
+            <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {{ $errorr }}
+            </div>
+        @endforeach 
 		   
-		   @if (Session::get('success'))
+		@if (Session::get('success'))
 		   <div class="alert alert-success " style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
-		   @endif
-
-		   <div class="row row-sm mg-b-20 mg-lg-b-0">
-            <div class="table-responsive" style="margin-bottom: 13px;">
-                <table class="table table-bordered mg-b-0">
-                    <tbody>
-                        <tr>
-                            <style>
-                                .select2-container .select2-selection--single {
-                                    height: 26px;
-                                    /* width: 122px; */
-                                }
-                                .select2-selection__rendered {
-                                    font-size:12px;
-                                }
-                            </style>
-                            <form autocomplete="off">
-                                <th scope="row">
-                                    <div class="row filter_search" style="margin-left: 0px;">
-                                       <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
-                        
-									   		<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-											    <label for="exampleInputEmail1" style="font-size: 12px;">PR No</label>
-                                                <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="PR NO">
-                                            </div><!-- form-group -->
-                                            
-                                            
-                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-											<label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
-                                                <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
-                                               
-                                            </div><!-- form-group -->
-											<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
-                                                <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
-                                                
+		@endif
+        <div class="card bd-0">
+		<div class="card-header bg-gray-400 bd-b-0-f pd-b-0">
+            <nav class="nav nav-tabs">
+                <a class="nav-link  active" data-toggle="tab" href="#purchase">Purchase requisition</a>
+                <a class="nav-link" data-toggle="tab" href="#service">  Service requisition </a>
+            </nav>   
+        </div>
+        </div><br/>
+		<div class="tab-content">
+            <div class="tab-pane active show" id="purchase">
+                <div class="row row-sm mg-b-20 mg-lg-b-0">
+                    <div class="table-responsive" style="margin-bottom: 13px;">
+                        <table class="table table-bordered mg-b-0">
+                            <tbody>
+                                <tr>
+                                    <style>
+                                        .select2-container .select2-selection--single {
+                                            height: 26px;
+                                            /* width: 122px; */
+                                        }
+                                        .select2-selection__rendered {
+                                            font-size:12px;
+                                        }
+                                    </style>
+                                    <form autocomplete="off">
+                                        <th scope="row">
+                                            <div class="row filter_search" style="margin-left: 0px;">
+                                            <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+                                
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <label for="exampleInputEmail1" style="font-size: 12px;">PR No</label>
+                                                        <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="PR NO">
+                                                    </div><!-- form-group -->
+                                                    
+                                                    
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    <label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
+                                                        <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
+                                                    
+                                                    </div><!-- form-group -->
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
+                                                        <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
+                                                        
+                                                    </div>
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <label  style="font-size: 12px;">Status</label>
+                                                        <select name="status" id="status" class="form-control">
+                                                            <option value=""> --Select One-- </option>
+                                                            <option value="1" {{(request()->get('status') == 1) ? 'selected' : ''}}> Active </option>
+                                                            <option value="4" {{(request()->get('status') == 4) ? 'selected' : ''}}> Pending</option>
+                                                            <option value="5"{{(request()->get('status') == 5) ? 'selected' : ''}}>On hold</option>
+                                                        </select>
+                                                    </div> 
+                                                                        
+                                                </div>
+                                                <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                                                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                                        <label style="width: 100%;">&nbsp;</label>
+                                                        <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                                        @if(count(request()->all('')) > 1)
+                                                            <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
+                                                            style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+                                                        @endif
+                                                    </div> 
+                                                </div>
                                             </div>
-											 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label  style="font-size: 12px;">Status</label>
-												<select name="status" id="status" class="form-control">
-													<option value=""> --Select One-- </option>
-													<option value="1" {{(request()->get('status') == 1) ? 'selected' : ''}}> Active </option>
-													<option value="4" {{(request()->get('status') == 4) ? 'selected' : ''}}> Pending</option>
-													<option value="5"{{(request()->get('status') == 5) ? 'selected' : ''}}>On hold</option>
-												</select>
-                                            </div> 
-                                                                 
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-                                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-                                                <label style="width: 100%;">&nbsp;</label>
-                                                <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                @if(count(request()->all('')) > 1)
-                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-                                                    style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-                                                @endif
-                                            </div> 
-                                        </div>
-                                    </div>
-                                </th>
-                            </form>
-                        </tr>
-                    </tbody>
-                </table>
+                                        </th>
+                                    </form>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered mg-b-0" id="example1">
+                        <thead>
+                            <tr>
+                                <th>PR NO:</th>
+                                <th>Item code </th>
+                                <th>Supplier</th>
+                                <th>Actual order Qty</th>
+                                <th>Rate</th>
+                                <th>Discount %</th>
+                                <th>GST %</th>
+                                <th>Currency</th>
+                                <th>Net value </th>
+                                {{-- <th>Status</th> --}}
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                    
+                            @foreach($data['inv_purchase'] as $item)
+                            @if($item['PR_SR']=="PR")
+                            <tr style="	@if($item['status'] == 5)
+                                    background: #ffc1074f;
+                                    @endif">
+                                <td>{{$item['pr_no']}}</td>
+                                <td>{{$item['item_code']}}</td>
+                                <td><span>{{$item['vendor_id']}}</span></td>
+                                <td>{{$item['actual_order_qty']}}</td>
+                                <td>{{$item['rate']}}</td>
+                                <td>{{$item['discount_percent']}}</td>
+                                <td>{{$item['gst']}}</td>
+                                <td>{{$item['currency_code']}}</td>
+                                <td>{{$item['net_value']}}</td>
+                                {{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
+                                <td>
+                                <a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" orderqty="{{$item['actual_order_qty']}}" type="Purchase" data-target="#myModal" id="change-status" style="width: 64px;" 
+                                data-html="true" data-placement="top" 
+                                class="badge 
+                                @if($item['status'] == 4)
+                                    badge-info
+                                    @elseif($item['status'] == 5)
+                                    badge-warning
+                                    @endif
+                                ">
+                                @if($item['status'] ==4)
+                                    Pending
+                                @elseif($item['status'] == 5)
+                                    On hold
+                                @endif
+                                </a></td>
+                            </tr>	
+                            @endif
+                            @endforeach
+                        
+                        </tbody>
+                    </table>
+
+                    <div class="box-footer clearfix">
+                        {{ $data['inv_purchase']->appends(request()->input())->links() }}
+                    </div>
+            
+                </div>
+            </div>
+            <div class="tab-pane" id="service">
+                <div class="row row-sm mg-b-20 mg-lg-b-0">
+                    <div class="table-responsive" style="margin-bottom: 13px;">
+                        <table class="table table-bordered mg-b-0">
+                            <tbody>
+                                <tr>
+                                    <style>
+                                        .select2-container .select2-selection--single {
+                                            height: 26px;
+                                            /* width: 122px; */
+                                        }
+                                        .select2-selection__rendered {
+                                            font-size:12px;
+                                        }
+                                    </style>
+                                    <form autocomplete="off">
+                                        <th scope="row">
+                                            <div class="row filter_search" style="margin-left: 0px;">
+                                            <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+                                
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <label for="exampleInputEmail1" style="font-size: 12px;">SR No</label>
+                                                        <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="SR NO">
+                                                    </div><!-- form-group -->
+                                                    
+                                                    
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    <label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
+                                                        <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
+                                                    
+                                                    </div><!-- form-group -->
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
+                                                        <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
+                                                        
+                                                    </div>
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <label  style="font-size: 12px;">Status</label>
+                                                        <select name="status" id="status" class="form-control">
+                                                            <option value=""> --Select One-- </option>
+                                                            <option value="1" {{(request()->get('status') == 1) ? 'selected' : ''}}> Active </option>
+                                                            <option value="4" {{(request()->get('status') == 4) ? 'selected' : ''}}> Pending</option>
+                                                            <option value="5"{{(request()->get('status') == 5) ? 'selected' : ''}}>On hold</option>
+                                                        </select>
+                                                    </div> 
+                                                                        
+                                                </div>
+                                                <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                                                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                                        <label style="width: 100%;">&nbsp;</label>
+                                                        <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                                        @if(count(request()->all('')) > 1)
+                                                            <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
+                                                            style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+                                                        @endif
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </form>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered mg-b-0" id="example1">
+                        <thead>
+                            <tr>
+                                <th>PR NO:</th>
+                                <th>Item code </th>
+                                <th>Supplier</th>
+                                <th>Actual order Qty</th>
+                                <th>Rate</th>
+                                <th>Discount %</th>
+                                <th>GST %</th>
+                                <th>Currency</th>
+                                <th>Net value </th>
+                                {{-- <th>Status</th> --}}
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                    
+                            @foreach($data['inv_purchase'] as $item)
+                            @if($item['PR_SR']=="SR")
+                            <tr style="	@if($item['status'] == 5)
+                                    background: #ffc1074f;
+                                    @endif">
+                                <td>{{$item['pr_no']}}</td>
+                                <td>{{$item['item_code']}}</td>
+                                <td><span>{{$item['vendor_id']}}</span></td>
+                                <td>{{$item['actual_order_qty']}}</td>
+                                <td>{{$item['rate']}}</td>
+                                <td>{{$item['discount_percent']}}</td>
+                                <td>{{$item['gst']}}</td>
+                                <td>{{$item['currency_code']}}</td>
+                                <td>{{$item['net_value']}}</td>
+                                {{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
+                                <td>
+                                <a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" orderqty="{{$item['actual_order_qty']}}" data-target="#myModal" type="Service" id="change-status" style="width: 64px;" 
+                                data-html="true" data-placement="top" 
+                                class="badge 
+                                @if($item['status'] == 4)
+                                    badge-info
+                                    @elseif($item['status'] == 5)
+                                    badge-warning
+                                    @endif
+                                ">
+                                @if($item['status'] ==4)
+                                    Pending
+                                @elseif($item['status'] == 5)
+                                    On hold
+                                @endif
+                                </a></td>
+                            </tr>	
+                            @endif
+                            @endforeach
+                        
+                        </tbody>
+                    </table>
+
+                    <div class="box-footer clearfix">
+                        {{ $data['inv_purchase']->appends(request()->input())->links() }}
+                    </div>
+            
+                </div>
             </div>
         </div>
-			<div class="table-responsive">
-				<table class="table table-bordered mg-b-0" id="example1">
-					<thead>
-						<tr>
-						    <th>PR NO:</th>
-							<th>Item code </th>
-							<th>Supplier</th>
-							<th>Actual order Qty</th>
-							<th>Rate</th>
-							<th>Discount %</th>
-							<th>GST %</th>
-							<th>Currency</th>
-							<th>Net value </th>
-							{{-- <th>Status</th> --}}
-							<th>Status</th>
-						</tr>
-					</thead>
-					<tbody >
-				
-						@foreach($data['inv_purchase'] as $item)
-						
-						<tr style="	@if($item['status'] == 5)
-							       background: #ffc1074f;
-								@endif">
-							<td>{{$item['pr_no']}}</td>
-							<td>{{$item['item_code']}}</td>
-							<td><span>{{$item['vendor_id']}}</span></td>
-							<td>{{$item['actual_order_qty']}}</td>
-						    <td>{{$item['rate']}}</td>
-							<td>{{$item['discount_percent']}}</td>
-							<td>{{$item['gst']}}</td>
-							<td>{{$item['currency_code']}}</td>
-							<td>{{$item['net_value']}}</td>
-							{{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
-							<td>
-							<a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" orderqty="{{$item['actual_order_qty']}}" data-target="#myModal" id="change-status" style="width: 64px;" 
-							data-html="true" data-placement="top" 
-							class="badge 
-							@if($item['status'] == 4)
-							    badge-info
-								@elseif($item['status'] == 5)
-								badge-warning
-								@endif
-							">
-							@if($item['status'] ==4)
-							    Pending
-							@elseif($item['status'] == 5)
-								On hold
-							@endif
-							</a></td>
-						</tr>	
-					
-						@endforeach
-					
-					</tbody>
-				</table>
-
-				<div class="box-footer clearfix">
-					{{ $data['inv_purchase']->appends(request()->input())->links() }}
-				</div>
-		
-			</div>
 		</div>
 	</div>
 
@@ -172,7 +307,7 @@
                     {{ csrf_field() }} 
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">#Approve Purchase Requisition <span class="item-codes"></span></h4>
+                            <h4 class="modal-title">#Approve <span id="type"></span> Requisition <span class="item-codes"></span></h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
@@ -281,6 +416,8 @@ $(document).ready(function() {
 			$(".item-codes").text('') ;
             $('.approved_qty').val('');
             var orderqty = $(this).attr('orderqty');
+            var type = $(this).attr('type');
+            $('#type').html(type);
 			let purchaseRequisitionItemId = $(this).attr('value');
 			$('#purchaseRequisitionItemId').val(purchaseRequisitionItemId);
 			$(".item-codes").text('( '+ $(this).attr('rel') + ')');
