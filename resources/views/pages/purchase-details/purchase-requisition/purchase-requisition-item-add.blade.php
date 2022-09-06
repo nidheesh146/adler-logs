@@ -9,20 +9,42 @@
                 <div class="az-content-breadcrumb">
                     <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">PURCHASE
                             DETAILS</a></span>
-                    <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">PURCHASE
+                    <span><a href="{{ url('inventory/get-purchase-reqisition') }}" style="color: #596881;">
                             REQUISITION</a></span>
-                    <span><a href="">{{ request()->item ? 'Edit' : 'Add' }} purchase requisition item ( {{$data["master"]['pr_no']}}  )</a></span>
+                    <span><a href="">
+                    @if(request()->pr_id)
+                        {{ request()->item ? 'Edit' : 'Add' }} purchase requisition item ( {{$data["master"]['pr_no']}}  )
+                    @endif
+                    @if(request()->sr_id)
+                        {{ request()->item ? 'Edit' : 'Add' }} service requisition item ( {{$data["master"]['pr_no']}}  )
+                    @endif
+                    </a></span>
                 </div>
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                    {{ request()->item ? 'Edit' : 'Add' }} purchase requisition item ( {{$data["master"]['pr_no']}}  )</h4>
+                    @if(request()->pr_id)
+                        {{ request()->item ? 'Edit' : 'Add' }} purchase requisition item ( {{$data["master"]['pr_no']}}  )
+                    @endif
+                    @if(request()->sr_id)
+                            {{ request()->item ? 'Edit' : 'Add' }} service requisition item ( {{$data["master"]['pr_no']}}  )
+                    @endif
+                </h4>
                 <div class="az-dashboard-nav">
                     <nav class="nav">
+                    @if(request()->pr_id)
                         <a class="nav-link    "
                             href="{{ url('inventory/edit-purchase-reqisition?pr_id=' . request()->pr_id) }}">Purchase
                             requisition master </a>
                         <a class="nav-link  active" @if (request()->pr_id) href="{{ url('inventory/get-purchase-reqisition-item?pr_id=' . request()->pr_id) }}" @endif> Purchase requisition item </a>
                         <a class="nav-link  " href=""> </a>
+                    @endif
+                    @if(request()->sr_id)
+                        <a class="nav-link    "
+                            href="{{ url('inventory/edit-purchase-reqisition?sr_id=' . request()->sr_id) }}">Service 
+                            requisition master </a>
+                        <a class="nav-link  active" @if (request()->sr_id) href="{{ url('inventory/get-purchase-reqisition-item?sr_id=' . request()->sr_id) }}" @endif> Service requisition item </a>
+                        <a class="nav-link  " href=""> </a>
+                    @endif
                     </nav>
 
                 </div>
@@ -118,13 +140,14 @@
                                 </div><!-- form-group -->
 
 
-
+                                @if(request()->pr_id)
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Stock Qty *</label>
                                     <input type="text" readonly class="form-control"
                                         value="{{ !empty($datas) ? $datas['item']['availble_quantity'] : '' }}"
                                         id="StockQty" name="StockQty" placeholder="">
                                 </div>
+                                @endif
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Open PO Qty *</label>
@@ -139,6 +162,7 @@
                                         value="{{ !empty($datas) ? $datas['item']['actual_order_qty'] : '' }}"
                                         name="ActualorderQty" placeholder="Actual order Qty">
                                 </div>
+                                @if(request()->pr_id)
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Min Level *</label>
                                     <input type="text" readonly class="form-control"
@@ -151,6 +175,7 @@
                                         value="{{ !empty($datas) ? $datas['item']['max_stock'] : '' }}"
                                         id="MaxLevel" name="MaxLevel" placeholder="">
                                 </div>
+                                @endif
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Basic Value *</label>
                                     <input type="text" name="BasicValue"

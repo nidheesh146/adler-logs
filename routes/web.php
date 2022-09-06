@@ -38,6 +38,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/edit-purchase-reqisition-item', 'InventoryController@edit_purchase_reqisition_item');
     Route::post('inventory/edit-purchase-reqisition-item', 'InventoryController@edit_purchase_reqisition_item');
     Route::get('inventory/delete-purchase-reqisition-item', 'InventoryController@delete_purchase_reqisition_item');
+
+    // service requisition master
+    Route::get('inventory/edit-service-reqisition', 'InventoryController@edit_purchase_reqisition');
+    Route::post('inventory/edit-service-reqisition', 'InventoryController@edit_purchase_reqisition');
+    Route::get('inventory/delete-service-reqisition', 'InventoryController@delete_service_reqisition');
+    // service requisition item
+    Route::get('inventory/get-service-reqisition-item', 'InventoryController@get_purchase_reqisition_item');
+    // Route::get('inventory/add-service-reqisition-item', 'InventoryController@add_purchase_reqisition_item');
+    // Route::post('inventory/add-service-reqisition-item', 'InventoryController@add_purchase_reqisition_item');
     
     // Quotation Master
     Route::get('inventory/quotation', 'QuotationController@getQuotation');
@@ -97,14 +106,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/get-single-lot-allocation/{lot_allocation_id}','LotAllocationController@getsingleLot');
 });
 
-Route::group(['namespace' => 'App\Http\Controllers\Web\ServiceRequisition','middleware'=>['RolePermission']], function() {
-    // Service requisition 
-    Route::get('inventory/get-service-reqisition', 'ServiceController@get_service_reqisition');
+// Route::group(['namespace' => 'App\Http\Controllers\Web\ServiceRequisition','middleware'=>['RolePermission']], function() {
+//     // Service requisition 
+//     Route::get('inventory/get-service-reqisition', 'ServiceController@get_service_reqisition');
 
-    // service requisition item
-    Route::get('inventory/get-service-reqisition-item', 'ServiceController@get_service_reqisition_item');
-    Route::get('inventory/add-service-reqisition-item', 'ServiceController@add_service_reqisition_item');
-});
+//     // service requisition item
+//     Route::get('inventory/get-service-reqisition-item', 'ServiceController@get_service_reqisition_item');
+//     Route::get('inventory/add-service-reqisition-item', 'ServiceController@add_service_reqisition_item');
+// });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePermission']], function() {
   

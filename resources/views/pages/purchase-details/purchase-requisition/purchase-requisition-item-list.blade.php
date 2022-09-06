@@ -9,10 +9,10 @@
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE DETAILS</a></span> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE REQUISITION</a></span>
-                <span><a href="">List purchase requisition item ( {{$data["master"]['pr_no']}}  )</a></span>
+                <span><a href="">List {{ (request()->pr_id)?  "Purchase": "Service"}}  Requisition item ( {{$data["master"]['pr_no']}}  )</a></span>
             </div>
 	
-            <h4 class="az-content-title" style="font-size: 20px;">List Purchase requisition item ( {{$data["master"]['pr_no']}}  )
+            <h4 class="az-content-title" style="font-size: 20px;">List {{ (request()->pr_id)?  "Purchase": "Service"}} Requisition item ( {{$data["master"]['pr_no']}}  )
                 <div class="right-button">
                     <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                         <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -21,17 +21,27 @@
   
                     </div> -->
                 <div>  
-                </div>
-              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase requisition item</button>
+            	</div>
+				@if(request()->pr_id)
+              	<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase requisition item</button>
+				@else
+				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?sr_id='.request()->sr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> service requisition item</button>
+				@endif
             </div>
           </h4>
 
 
             <div class="az-dashboard-nav">
                 <nav class="nav">
+					@if(request()->pr_id)
                     <a class="nav-link" href="{{url('inventory/edit-purchase-reqisition?pr_id='.request()->pr_id)}}">Purchase requisition master </a>
                     <a class="nav-link active "  href=""  >  Purchase requisition item </a>
                      <a class="nav-link" href=""> </a>
+					 @else
+					 <a class="nav-link" href="{{url('inventory/edit-purchase-reqisition?sr_id='.request()->sr_id)}}">Service requisition master </a>
+                    <a class="nav-link active "  href=""  >  Service requisition item </a>
+                     <a class="nav-link" href=""> </a>
+					 @endif
                 </nav>
            
             </div>

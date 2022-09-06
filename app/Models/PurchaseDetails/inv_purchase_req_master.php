@@ -37,7 +37,7 @@ class inv_purchase_req_master extends Model
            ->leftjoin('user','user.user_id','=','inv_purchase_req_master.requestor_id')
            ->leftjoin('department','department.id','=','inv_purchase_req_master.department')
            ->where($condition)
-           ->where('PR_SR','=', 'PR')
+           //->where('PR_SR','=', 'PR')
            ->orderby('master_id','desc')
            ->paginate(15);
     }
@@ -52,7 +52,7 @@ class inv_purchase_req_master extends Model
         ->leftjoin('user','user.user_id','=','inv_purchase_req_master.requestor_id')
         ->leftjoin('department','department.id','=','inv_purchase_req_master.department')
         ->where($condition)
-        ->where('PR_SR','=', 'SR')
+        //->where('PR_SR','=', 'SR')
         ->orderby('master_id','desc')
         ->paginate(15);
  

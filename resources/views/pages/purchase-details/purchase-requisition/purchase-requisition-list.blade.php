@@ -9,7 +9,7 @@
 				 <span>Purchase details</span>
 				 <span><a href="">Purchase Requisition</a></span>
 				 </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Purchase Requisition 
+			<h4 class="az-content-title" style="font-size: 20px;">Purchase/ Service Requisition 
               <div class="right-button">
                   {{-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                       <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -19,7 +19,7 @@
                   </div> --}}
               <div>  
               </div>
-			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase Requisition   </button>
+			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase/Service Requisition   </button>
           </div>
         </h4>
 			<div class="az-dashboard-nav">
@@ -59,8 +59,8 @@
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                         
 									   		<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>PR No:</label>
-                                                <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" id="pr_no" class="form-control" placeholder="PR NO">
+                                                <label>PR/SR No:</label>
+                                                <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" id="pr_no" class="form-control" placeholder="PR/SR NO">
                                             </div><!-- form-group -->
                                             
                                             
@@ -107,7 +107,7 @@
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-							<th>PR NO:</th>
+							<th>PR/SR NO:</th>
 							<th>requestor</th>
 							<th>date</th>
 							<th>department</th>
@@ -129,11 +129,21 @@
 								<span style="width: 133px;">
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu">
+									@if($item['PR_SR']=="PR")
 									<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
 									<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
 									<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+									@else
+									<a href="{{url('inventory/edit-service-reqisition?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+									<a href="{{url('inventory/add-service-reqisition-item?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
+									<a href="{{url('inventory/delete-service-reqisition?sr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+									@endif
 								</div>
+								@if($item['PR_SR']=="PR")
 								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-purchase-reqisition-item?pr_id='.$item["master_id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
+								@else
+								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-service-reqisition-item?sr_id='.$item["master_id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
+								@endif
 							</span>
 							</td>
 						</tr>

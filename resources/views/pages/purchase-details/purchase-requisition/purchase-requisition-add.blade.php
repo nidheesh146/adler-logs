@@ -8,15 +8,31 @@
 
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE DETAILS</a></span> 
-                <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE REQUISITION</a></span>
-                <span><a href="">{{ request()->pr_id? 'Edit' : 'Add' }} purchase requisition master</a></span>
+                <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE/SERVICE REQUISITION</a></span>
+                <span><a href="">
+                   @if((request()->pr_id) AND (!request()->sr_id)) 
+                        Edit Purchase Requisition Master
+                    @elseif((!request()->pr_id) AND (request()->sr_id))
+                        Edit Service Requisition Master  
+                    @else
+                        Add Purchase/service Requisition Master
+                   @endif
+                </a></span>
             </div>
 	
-            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">{{ request()->pr_id? 'Edit' : 'Add' }} purchase requisition master</h4>
+            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
+                    @if((request()->pr_id) AND (!request()->sr_id)) 
+                        Edit Purchase Requisition Master
+                    @elseif((!request()->pr_id) AND (request()->sr_id))
+                        Edit Service Requisition Master  
+                    @else
+                        Add Purchase/service Requisition Master
+                   @endif
+            </h4>
             <div class="az-dashboard-nav">
                 <nav class="nav">
-                    <a class="nav-link  active  " href="">Purchase requisition master </a>
-                     <a class="nav-link  " @if(request()->pr_id) href="{{url('inventory/get-purchase-reqisition-item?pr_id='.request()->pr_id)}}" @endif >  Purchase requisition item </a>
+                    <a class="nav-link  active  " href="">Purchase/Service requisition master </a>
+                     <a class="nav-link  " @if(request()->pr_id) href="{{url('inventory/get-purchase-reqisition-item?pr_id='.request()->pr_id)}}" @endif >  Purchase/Service requisition item </a>
                      <a class="nav-link  " href=""> </a>
                 </nav>
            
@@ -49,7 +65,11 @@
                                     <i class="fas fa-address-card"></i> Basic details  
                                 
                                     @if(!empty($data['inv_purchase_req_master']))
-                                      ( PR NO : {{$data['inv_purchase_req_master']['requestor']}} )
+                                        @if(request()->pr_id)
+                                            ( PR NO : {{$data['inv_purchase_req_master']['pr_no']}} )
+                                        @else
+                                            ( SR NO : {{$data['inv_purchase_req_master']['pr_no']}} )
+                                        @endif
                                     @endif
                                 
                         
@@ -116,14 +136,14 @@
                                     <option value="PR"
                                     @if(!empty($data['inv_purchase_req_master']))
                                     @if('PR' == $data['inv_purchase_req_master']['PR_SR'])
-                                        selected
+                                        selected 
                                     @endif
                                   @endif
                                     >PR</option>
                                   <option value="SR"
                                   @if(!empty($data['inv_purchase_req_master']))
                                   @if('SR' == $data['inv_purchase_req_master']['PR_SR'])
-                                      selected
+                                      selected 
                                   @endif
                                 @endif>SR</option>
                                 </select>

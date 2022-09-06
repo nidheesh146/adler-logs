@@ -80,8 +80,13 @@ class InventoryController extends Controller
             $validator = Validator::make($request->all(), $validation);
 
             if(!$validator->errors()->all()){
-                $datas['requestor_id'] = config('user')['user_id'];
+                $datas['requestor_id'] = $request->Requestor;
+                if($request->PRSR=="PR"){
                 $datas['pr_no'] = "PR-".$this->num_gen(DB::table('inv_purchase_req_master')->count());
+                }
+                if($request->PRSR=="SR"){
+                    $datas['pr_no'] = "SR-".$this->num_gen(DB::table('inv_purchase_req_master')->count());
+                }
                 $datas['department'] =  $request->Department;
                 $datas['date'] =  date('Y-m-d',strtotime($request->Date));
                 $datas['PR_SR'] =  $request->PRSR;
@@ -93,7 +98,7 @@ class InventoryController extends Controller
                 }
                 else
                 {
-                    return redirect('inventory/add-service-reqisition-item?sr_id='.$inv_purchase_num);
+                    return redirect('inventory/add-purchase-reqisition-item?sr_id='.$inv_purchase_num);
                 }
             }
             if ($validator->errors()->all()) {
@@ -116,49 +121,86 @@ class InventoryController extends Controller
             $validator = Validator::make($request->all(), $validation);
 
             if(!$validator->errors()->all()){
-                $datas['requestor_id'] = config('user')['user_id'];
+                $datas['requestor_id'] = $request->Requestor;
                 $datas['department'] =  $request->Department;
                 $datas['date'] =  date('Y-m-d',strtotime($request->Date));
                 $datas['PR_SR'] =  $request->PRSR;
                 $datas['updated_at'] =  date('Y-m-d h:i:s');
-                $this->inv_purchase_req_master->updatedata(['master_id'=>$request->pr_id],$datas);
-                return redirect('inventory/edit-purchase-reqisition?pr_id='.$request->pr_id);
+                if($request->pr_id) 
+                {
+                    $this->inv_purchase_req_master->updatedata(['master_id'=>$request->pr_id],$datas);
+                    return redirect('inventory/edit-service-reqisition?pr_id='.$request->pr_id);
+                }
+                else 
+                {
+                    $this->inv_purchase_req_master->updatedata(['master_id'=>$request->sr_id],$datas);
+                    return redirect('inventory/edit-service-reqisition?sr_id='.$request->sr_id);
+                }
             }
             if ($validator->errors()->all()) {
+                if($request->pr_id) 
                 return redirect("inventory/edit-purchase-reqisition/?pr_id=".$request->pr_id)->withErrors($validator)->withInput();
+                else
+                return redirect("inventory/edit-service-reqisition/?sr_id=".$request->sr_id)->withErrors($validator)->withInput();
             }
         }
         $data['Department'] = $this->Department->get_dept(['status'=>1]);
         $data['users'] = $this->User->get_all_users([]);
-        $data['inv_purchase_req_master'] = $this->inv_purchase_req_master->get_data(['inv_purchase_req_master.status'=>1,'master_id'=>$request->pr_id]);
-    
+        if($request->pr_id) 
+            $data['inv_purchase_req_master'] = $this->inv_purchase_req_master->get_data(['inv_purchase_req_master.status'=>1,'master_id'=>$request->pr_id]);
+        else
+            $data['inv_purchase_req_master'] = $this->inv_purchase_req_master->get_data(['inv_purchase_req_master.status'=>1,'master_id'=>$request->sr_id]);
+
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-add', compact('data'));
     }
     // Purchase Reqisition Master delete
     public function delete_purchase_reqisition(Request $request)
     {
-        if($request->pr_id){
+        if($request->pr_id)
+        {
             $this->inv_purchase_req_master->updatedata(['master_id'=>$request->pr_id],['status'=>2]);
             $request->session()->flash('success',  "You have successfully deleted a  purchase requisition master !");
         }
+        
+        
+       return redirect('inventory/get-purchase-reqisition');
+    }
+    // service Reqisition Master delete
+    public function delete_service_reqisition(Request $request)
+    {
+        if($request->sr_id)
+        {
+            $this->inv_purchase_req_master->updatedata(['master_id'=>$request->sr_id],['status'=>2]);
+            $request->session()->flash('success',  "You have successfully deleted a  service requisition master !");
+        }
+        
+        
        return redirect('inventory/get-purchase-reqisition');
     }
 
     // Purchase Reqisition item get list
     public function get_purchase_reqisition_item(Request $request)
     {
-        if(!$request->pr_id){
+        if((!$request->pr_id) AND (!$request->sr_id)){
             return response()->view('errors/404', [], 404);
         }
-        $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
-        $data['item'] = $this->inv_purchase_req_item->getdata(['inv_purchase_req_master_item_rel.master'=>$request->pr_id]);
+        if($request->pr_id)
+        {
+            $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
+            $data['item'] = $this->inv_purchase_req_item->getdata(['inv_purchase_req_master_item_rel.master'=>$request->pr_id]);
+        }
+        else 
+        {
+            $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
+            $data['item'] = $this->inv_purchase_req_item->getdata(['inv_purchase_req_master_item_rel.master'=>$request->sr_id]);
+        }
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
 
     }
       // Purchase Reqisition item get list
       public function add_purchase_reqisition_item(Request $request)
       {
-        if(!$request->pr_id){
+        if((!$request->pr_id) && (!$request->sr_id)){
             return response()->view('errors/404', [], 404);
         }
 
@@ -200,11 +242,16 @@ class InventoryController extends Controller
 
             }
             if($validator->errors()->all()){
+                if($request->pr_id)
                     return redirect("inventory/add-purchase-reqisition-item?pr_id=".$request->pr_id)->withErrors($validator)->withInput();
+                else
+                return redirect("inventory/add-purchase-reqisition-item?sr_id=".$request->sr_id)->withErrors($validator)->withInput();
             }
         }
-
-        $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
+        if($request->pr_id)
+            $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
+        else
+            $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
         $data["currency"] = $this->currency_exchange_rate->get_currency([]);
         $data['gst'] = $this->inventory_gst->get_gst();
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data'));
