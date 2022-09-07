@@ -22,9 +22,7 @@
 			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase/Service Requisition   </button>
           </div>
         </h4>
-			<div class="az-dashboard-nav">
-				<nav class="nav"> </nav>
-			</div>
+        @include('includes.purchase-details.pr-sr-tab')
 	
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">

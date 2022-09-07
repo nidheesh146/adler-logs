@@ -24,8 +24,7 @@ class ApprovalController extends Controller
 
     public function getList(Request $request) 
     {
-        if(count($_GET))
-        {
+             $condition = []; 
             if ($request->pr_no) {
                 $condition[] = ['inv_purchase_req_master.pr_no', 'like', '%'.$request->pr_no.'%'];
             }
@@ -46,11 +45,7 @@ class ApprovalController extends Controller
            
            // $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
            $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved($condition);
-        }
-        else 
-        {
-            $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved([]);
-        }
+
         $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
         $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
         $data['items'] = $this->inventory_rawmaterial->get_items();

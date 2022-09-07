@@ -279,8 +279,19 @@
 
 @media (min-width: 992px){
 .az-sidebar {
-
     z-index: 1000;
-
 }
+}
+
+
+.card-header{
+    border-bottom: 1px solid #cdd4e0 !important;
+    background-color: #ffffff !important;
+    padding: 0px 0px 0px 11px !important;
+}
+.card-header  .nav-link.active{
+    /* border-bottom: 1px solid #cdd4e0 !important;    */
+    border-top: 1px solid #cdd4e0 !important;
+    border-right: 1px solid #cdd4e0 !important;
+    border-left: 1px solid #cdd4e0 !important;
 }

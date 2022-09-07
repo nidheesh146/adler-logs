@@ -18,9 +18,7 @@
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
               Add request for quotation
             </h4>
-            <div class="az-dashboard-nav">
-                
-            </div>
+            
 
 			<div class="row">                   
                 <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
@@ -36,15 +34,7 @@
                       {{ $errorr }}
                     </div>
                    @endforeach 
-                   <div class="card bd-0">
-                        <div class="card-header bg-gray-400 bd-b-0-f pd-b-0" style="background-color: #cdd4e0;">
-                            <nav class="nav nav-tabs">
-                                <a class="nav-link  active" data-toggle="tab" href="#purchase">Purchase requisition</a>
-                                <a class="nav-link" data-toggle="tab" href="#service">  Service requisition </a>
-                            </nav>   
-                        </div>
-                    </div><br/>                
-                   
+                   @include('includes.purchase-details.pr-sr-tab')
                     <div class="tab-content">
                         <div class="tab-pane active show" id="purchase">
                         <form method="POST" autocomplete="off" action="{{ url('inventory/add/quotation') }}" id="commentForm" >
