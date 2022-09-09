@@ -88,7 +88,15 @@ class PurchaseController extends Controller
                 $type = $this->check_reqisition_type($request->rq_master_id);
                 if($type=="PR")
                 {
-                    $data['po_number'] = "PO-".$this->num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like', '%PO%')->count());
+                    $supplier_type = $this->check_supplier_type($request->rq_master_id);
+                    if($supplier_type=="direct")
+                    {
+                        $data['po_number'] = "PO-".$this->num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like', '%PO%')->where('po_number','not like', '%ID%')->count());
+                    }
+                    else
+                    {
+                        $data['po_number'] = "PO-".$this->po_indirect_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like', '%PO%')->where('po_number','like', '%ID%')->count());
+                    }
                 }
                 else{
                     $data['po_number'] = "WO-".$this->num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like', '%WO%')->count());
@@ -184,6 +192,15 @@ class PurchaseController extends Controller
         exit;
     }
 
+
+    }
+    function check_supplier_type($rq_id)
+    {
+        $supplier_type = inv_purchase_req_quotation_supplier::where('quotation_id','=', $rq_id)
+                            ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+                            ->where('selected_supplier','=',1)
+                            ->pluck('inv_supplier.supplier_type')->first();
+        return $supplier_type;
 
     }
 
@@ -577,7 +594,7 @@ return  $data;
     public function generateFinalPurchasePdf($id)
     {
     
-        $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_item.id'=>$id]);
+        $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_master.id'=>$id]);
         $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master'=>$id]);
           
         $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);

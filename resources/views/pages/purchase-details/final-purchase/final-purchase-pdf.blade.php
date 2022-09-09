@@ -83,7 +83,7 @@
             float:right;
         }
     </style>
-    <?php// print_r(json_encode($items)); ?>
+    <?php /*print_r(json_encode($final_purchase)); exit;*/?>
     <div class="row1" style="height:130px;border-bottom:solid 2px black;">
         <div class="col1">
             To<br/>
@@ -313,7 +313,7 @@
     <div class="row6" style="font-size:10px;display:block;">
         <strong>Terms and Conditions</strong>
         <br/>
-        @if($final_purchase['supplier_type']=="indirect")
+        @if($final_purchase['supplier_type']=="direct")
         <p>
         1. Payment Term - 30 days credit from the date of receipt of material or date of receipt of Invoice whichever is later.<br/>
         2. Delivery - Goods are to be delivered within 30 days from the receipt of P.O. We will inform the transport details & delivery address after material get ready for dispatch.<br/>

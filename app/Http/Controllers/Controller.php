@@ -50,5 +50,14 @@ class Controller extends BaseController
             return date('y').date('m')."9999";
         }
         return date('y').date('m').substr($decimal, 0, 4);
-      }
+    }
+    function po_indirect_num_gen($Number)
+    {
+        $Number = (($Number + 1) / 9999);
+        list($whole, $decimal) = explode('.', $Number);
+        if(!$decimal){
+            return date('y').date('m')."9999";
+        }
+        return date('y').date('m').'ID'.substr($decimal, 0, 4);
+    }
 }

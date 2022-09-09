@@ -117,4 +117,6 @@ class inv_final_purchase_order_master extends Model
     {
         return $this->select('id','po_number')->get();
     }
+
+    
 }
