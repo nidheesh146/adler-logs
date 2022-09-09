@@ -38,8 +38,8 @@
                     <div class="label-container" style="float:left;width:6.9cm;height:2.45cm;margin-left:5px;margin-bottom:0.7px" >
                         <div class="sub-columns" style="">
                             <div class="" style="width:7px;text-align: justify;">
-                                <span class="smalltext" style="font-size:6px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;margin-right:1px;">
-                                LBL/F-10_REV00_{{date( 'd M y' , strtotime('14-12-2021') )}}
+                                <span class="smalltext" style="font-size:5px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;margin-right:1px;">
+                                LBL/F-10_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
                                 </span>
                             </div>
                             <div class="col-md-9 sub-column" style="width:64%;float: left; margin-left:2px;line-height:65%;">
@@ -111,8 +111,8 @@
                         <div class="label-content{{$j}}" style="">
                         <!-- <div class="sub-columns" style=""> -->
                             <div class="" style="width:7px;text-align: justify;">
-                                <span class="smalltext" style="font-size:6px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;margin-right:1px;">
-                                LBL/F-10_REV00_{{date( 'd M y' , strtotime('14-12-2021') )}}
+                                <span class="smalltext" style="font-size:5px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;margin-right:1px;">
+                                LBL/F-10_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
                                 </span>
                             </div>
                             <div class="col-md-9 sub-column" style="width:64%;float: left; margin-left:2px;line-height:65%;">

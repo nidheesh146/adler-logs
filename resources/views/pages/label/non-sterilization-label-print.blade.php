@@ -42,8 +42,8 @@
                         </div> 
                         
                         <div class="sub2" style="float:left;width:8%;padding:1px;height:70px">
-                            <span class="smalltext" style="font-weight:500;font-size:5px;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:5px;">
-                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd M y' , strtotime('14-12-2021') )}}
+                            <span class="smalltext" style="font-size:4.7px;font-weight:500;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:5px;">
+                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
                             </span>
                         </div>
                         <div class="sub3" style="float:left;width:50%;padding:1px;font-size:8px;line-height:1.3;">
@@ -150,8 +150,8 @@
                         </div> 
                         
                         <div class="sub2" style="float:left;width:8%;padding:1px;height:70px">
-                            <span class="smalltext" style="font-weight:500;font-size:5px;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:5px;">
-                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd M y' , strtotime('14-12-2021') )}}
+                            <span class="smalltext" style="font-size:4.7px;font-weight:500;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:5px;">
+                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
                             </span>
                         </div>
                         <div class="sub3" style="float:left;width:50%;padding:1px;font-size:8px;line-height:1.3;">
