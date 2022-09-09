@@ -7,10 +7,10 @@
   <div class="container">
     <div class="az-content-body">
         <div class="az-content-breadcrumb"> 
-             <span><a href="{{url('inventory/final-purchase')}}">FINAL PURCHASE ORDER</a></span>
-             <span> {{(!empty($data['master_data'])) ? 'Edit' : 'Add'}} FINAL PURCHASE ORDER {{(!empty($data['master_data'])) ? '( '.$data['master_data']->po_number.' )' : ''}}</span>
+             <span><a href="{{url('inventory/final-purchase')}}">FINAL  ORDER</a></span>
+             <span> {{(!empty($data['master_data'])) ? 'Edit' : 'Add'}} FINAL ORDER {{(!empty($data['master_data'])) ? '( '.$data['master_data']->po_number.' )' : ''}}</span>
         </div>
-        <h4 class="az-content-title" style="font-size: 20px;">{{(!empty($data['master_data'])) ? 'Edit' : 'Add'}} final purchase order		{{(!empty($data['master_data'])) ? '( '.$data['master_data']->po_number.' )' : ''}}	 
+        <h4 class="az-content-title" style="font-size: 20px;">{{(!empty($data['master_data'])) ? 'Edit' : 'Add'}} final  order		{{(!empty($data['master_data'])) ? '( '.$data['master_data']->po_number.' )' : ''}}	 
         
     </h4>
    

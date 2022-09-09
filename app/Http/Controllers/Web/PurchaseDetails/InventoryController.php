@@ -205,8 +205,12 @@ class InventoryController extends Controller
         }
 
         if ($request->isMethod('post')) {
-
+            if($request->pr_id){
             $validation['pr_id'] = ['required'];
+            }
+            else{
+                $validation['sr_id'] = ['required'];
+            }
             $validation['Itemcode'] = ['required'];
             $validation['Supplier'] = ['required'];
             $validation['Currency'] = ['required'];
@@ -235,10 +239,16 @@ class InventoryController extends Controller
                     "updated_at" => date('Y-m-d H:i:s'),
                     "created_user" =>  config('user')['user_id']   
                 ];
-
+                if($request->pr_id){
                 $this->inv_purchase_req_item->insert_data($Request,$request->pr_id);
                 $request->session()->flash('success',"You have successfully added a purchase requisition item !");
                 return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+                }
+                else {
+                    $this->inv_purchase_req_item->insert_data($Request,$request->sr_id);
+                    $request->session()->flash('success',"You have successfully added a service requisition item !");
+                    return redirect('inventory/get-purchase-reqisition-item?sr_id='.$request->sr_id);
+                }
 
             }
             if($validator->errors()->all()){
