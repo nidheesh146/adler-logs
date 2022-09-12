@@ -7,9 +7,9 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				<span><a href="">Final Order</a></span>
+				<span><a href="">Final @if(request()->get('order_type')=='work-order') Work @else Purchase @endif Order</a></span>
 			</div>
-			<h4 class="az-content-title" style="font-size: 20px;">Final Order list
+			<h4 class="az-content-title" style="font-size: 20px;">Final @if(request()->get('order_type')=='work-order') Work @else Purchase @endif Order list
                 <div class="right-button">
                     <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                     <i class="fas fa-file-excel" aria-hidden="true"></i> Report <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -18,12 +18,8 @@
                         <a href="{{url('inventory/final-purchase/export/open')}}" class="dropdown-item">Open</a>
                     </div>  
                 <div>  
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final Order </button> 
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final @if(request()->get('order_type')=='work-order') Work @else Purchase @endif  Order </button> 
             </h4><br/>
-        
-			
-	
-      
 			
 		   @if (Session::get('success'))
 		   <div class="alert alert-success " style="width: 100%;">
@@ -31,14 +27,8 @@
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		   @endif
-           <div class="card bd-0">
-                <div class="card-header bg-gray-400 bd-b-0-f pd-b-0" style="background-color: #cdd4e0;">
-                    <nav class="nav nav-tabs">
-                        <a class="nav-link  active" data-toggle="tab" href="#purchase">Final Purchase Order</a>
-                        <a class="nav-link" data-toggle="tab" href="#service"> Final Work Order </a>
-                    </nav>   
-                </div>
-            </div><br/>  
+           
+            @include('includes.purchase-details.purchase-work-order-tab')
             <div class="tab-content">
             <div class="row row-sm mg-b-20 mg-lg-b-0">
                         <div class="table-responsive" style="margin-bottom: 13px;">
@@ -62,11 +52,11 @@
                                                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                             <label>RQ No:</label>
                                                             <input type="text" value="{{request()->get('rq_no')}}" name="rq_no" id="rq_no" class="form-control" placeholder="RQ NO"> 
-                                                            
+                                                            <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                                                         </div><!-- form-group -->
                                                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                            <label>PO/WO No:</label>
-                                                            <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="PO/WO NO">
+                                                            <label>@if(request()->get('order_type')=='work-order') WO @else PO @endif No:</label>
+                                                            <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="@if(request()->get('order_type')=='work-order') WO NO @else PO NO @endif">
                                                             
                                                         </div><!-- form-group -->
                                                         
@@ -76,8 +66,8 @@
                                                             
                                                         </div>
                                                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                            <label  style="font-size: 12px;">PO/WO Date </label>
-                                                            <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="PO date (MM-YYYY)">
+                                                            <label  style="font-size: 12px;">@if(request()->get('order_type')=='work-order') WO @else PO @endif Date </label>
+                                                            <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="@if(request()->get('order_type')=='work-order') WO @else PO @endif DATE (MM-YYYY)">
                                                         </div> 
                                                                         
                                                     </div>
@@ -99,7 +89,7 @@
                             </table>
                         </div>
                     </div>
-                <div class="tab-pane active show" id="purchase">
+                <div class="tab-pane @if(request()->get('order_type')!='work-order') active show @endif" id="purchase">
                     
                     <div class="table-responsive">
                         <table class="table table-bordered mg-b-0" id="example1">
@@ -142,7 +132,7 @@
                 
                     </div>
                 </div>
-                <div class="tab-pane" id="service">
+                <div class="tab-pane @if(request()->get('order_type')=='work-order') active show @endif" id="service">
                     <!-- <div class="row row-sm mg-b-20 mg-lg-b-0">
                         <div class="table-responsive" style="margin-bottom: 13px;">
                             <table class="table table-bordered mg-b-0">

@@ -23,9 +23,9 @@
 		<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/supplier-invoice-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Supplier Invoice</button> 
 	  </div>
 	</h4>
-		<div class="az-dashboard-nav">
+		<!-- <div class="az-dashboard-nav">
 			<nav class="nav"> </nav>	
-		</div>
+		</div> -->
 
 		@if (Session::get('success'))
 		<div class="alert alert-success " style="width: 100%;">
@@ -33,14 +33,7 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		</div>
 		@endif
-		<div class="card bd-0">
-            <div class="card-header bg-gray-400 bd-b-0-f pd-b-0" style="background-color: #cdd4e0;">
-                <nav class="nav nav-tabs">
-                        <a class="nav-link  active" data-toggle="tab" href="#purchase">Final Purchase Order</a>
-                        <a class="nav-link" data-toggle="tab" href="#service"> Final Work Order </a>
-                </nav>   
-            </div>
-        </div><br/>
+		@include('includes.purchase-details.purchase-work-order-tab')
 		<div class="tab-content">
 		<div class="row row-sm mg-b-20 mg-lg-b-0">
             <div class="table-responsive" style="margin-bottom: 13px;">
@@ -62,9 +55,9 @@
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                         
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>PO/WO No:</label>
-                                                <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="PO NO"> 
-                                               
+                                                <label>@if(request()->get('order_type')=='work-order') WO @else PO @endif No:</label>
+                                                <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="@if(request()->get('order_type')=='work-order') WO NO @else PO NO @endif"> 
+												<input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>Invoice No:</label>
@@ -105,7 +98,7 @@
 		
 	   
 
-		<div class="tab-pane active show" id="purchase">
+		<div class="tab-pane @if(request()->get('order_type')!='work-order') active show @endif " id="purchase">
 			<div class="table-responsive">
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
@@ -147,7 +140,7 @@
 		
 			</div>
 		</div>
-		<div class="tab-pane" id="service">
+		<div class="tab-pane @if(request()->get('order_type')=='work-order') active show @endif " id="service">
 			<div class="table-responsive">
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>

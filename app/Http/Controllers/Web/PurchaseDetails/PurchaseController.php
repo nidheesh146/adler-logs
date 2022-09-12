@@ -475,6 +475,8 @@ return  $data;
 
     public function supplierInvoice(Request $request)
     {
+        $condition1 = [];
+        $condition2 = [];
         if(count($_GET))
         {
             if ($request->po_no) {
