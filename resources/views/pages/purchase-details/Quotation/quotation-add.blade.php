@@ -36,8 +36,8 @@
                    @endforeach 
                    @include('includes.purchase-details.pr-sr-tab')
                     <div class="tab-content">
-                        <div class="tab-pane active show" id="purchase">
-                        <form method="POST" autocomplete="off" action="{{ url('inventory/add/quotation') }}" id="commentForm" >
+                        <div class="tab-pane @if(request()->get('prsr')!='sr')active  show @endif" id="purchase">
+                            <form method="POST" autocomplete="off" action="{{ url('inventory/add/quotation') }}" id="commentForm" >
                             {{ csrf_field() }}  
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
@@ -57,7 +57,7 @@
                                     <label>Delivery Schedule *</label>
                                     <input type="text"  class="form-control datepicker" value="{{date("d-m-Y")}}" name="delivery" placeholder="Date">
                                 </div>
-
+                                <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Supplier *</label>
                                     <select class="form-control Supplier" name="Supplier[]" multiple="multiple">
@@ -134,7 +134,7 @@
                         </div>
                         
                         
-                        <div class="tab-pane" id="service">
+                        <div class="tab-pane @if(request()->get('prsr')=='sr')active  show @endif" id="service">
                             <form method="POST" autocomplete="off" action="{{ url('inventory/add/quotation') }}" id="commentForm" >
                                 {{ csrf_field() }}  
                                 <div class="row">

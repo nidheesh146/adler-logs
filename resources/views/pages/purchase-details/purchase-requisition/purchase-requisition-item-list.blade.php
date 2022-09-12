@@ -8,7 +8,7 @@
 
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE DETAILS</a></span> 
-                <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE REQUISITION</a></span>
+                <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">{{ (request()->pr_id)?  "PURCHASE": "SERVICE"}} REQUISITION</a></span>
                 <span><a href="">List {{ (request()->pr_id)?  "Purchase": "Service"}}  Requisition item ( {{$data["master"]['pr_no']}}  )</a></span>
             </div>
 	

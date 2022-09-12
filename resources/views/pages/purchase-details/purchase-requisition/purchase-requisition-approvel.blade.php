@@ -5,8 +5,12 @@
   <br>
 	<div class="container">
 		<div class="az-content-body">
-			<div class="az-content-breadcrumb"> <span>Purchase Requisition</span> <span>Requisition Approval</span> </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Requisition Approval
+			<div class="az-content-breadcrumb">  <span>Purchase details</span>
+                <span>@if(request()->get('prsr')=='sr') Service @else Purchase @endif Requisition</span> 
+                <span>@if(request()->get('prsr')=='sr') Service @else Purchase @endif Requisition Approval</span> 
+            </div>
+			<h4 class="az-content-title" style="font-size: 20px;">
+                @if(request()->get('prsr')=='sr') Service @else Purchase @endif Requisition Approval
               <div class="right-button">
                 
                   <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
@@ -34,8 +38,7 @@
 		@endif
         @include('includes.purchase-details.pr-sr-tab')
 		<div class="tab-content">
-            <div class="tab-pane active show" id="purchase">
-                <div class="row row-sm mg-b-20 mg-lg-b-0">
+        <div class="row row-sm mg-b-20 mg-lg-b-0">
                     <div class="table-responsive" style="margin-bottom: 13px;">
                         <table class="table table-bordered mg-b-0">
                             <tbody>
@@ -58,7 +61,7 @@
                                                         <label for="exampleInputEmail1" style="font-size: 12px;">PR No</label>
                                                         <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="PR NO">
                                                     </div><!-- form-group -->
-                                                    
+                                                    <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
                                                     
                                                     <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                     <label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
@@ -99,6 +102,7 @@
                         </table>
                     </div>
                 </div>
+            <div class="tab-pane @if(request()->get('prsr')!='sr')active  show @endif" id="purchase">
                 <div class="table-responsive">
                     <table class="table table-bordered mg-b-0" id="example1">
                         <thead>
@@ -162,71 +166,8 @@
             
                 </div>
             </div>
-            <div class="tab-pane" id="service">
-                <div class="row row-sm mg-b-20 mg-lg-b-0">
-                    <div class="table-responsive" style="margin-bottom: 13px;">
-                        <table class="table table-bordered mg-b-0">
-                            <tbody>
-                                <tr>
-                                    <style>
-                                        .select2-container .select2-selection--single {
-                                            height: 26px;
-                                            /* width: 122px; */
-                                        }
-                                        .select2-selection__rendered {
-                                            font-size:12px;
-                                        }
-                                    </style>
-                                    <form autocomplete="off">
-                                        <th scope="row">
-                                            <div class="row filter_search" style="margin-left: 0px;">
-                                            <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
-                                
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                        <label for="exampleInputEmail1" style="font-size: 12px;">SR No</label>
-                                                        <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="SR NO">
-                                                    </div><!-- form-group -->
-                                                    
-                                                    
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                    <label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
-                                                        <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
-                                                    
-                                                    </div><!-- form-group -->
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                        <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
-                                                        <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
-                                                        
-                                                    </div>
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                        <label  style="font-size: 12px;">Status</label>
-                                                        <select name="status" id="status" class="form-control">
-                                                            <option value=""> --Select One-- </option>
-                                                            <option value="1" {{(request()->get('status') == 1) ? 'selected' : ''}}> Active </option>
-                                                            <option value="4" {{(request()->get('status') == 4) ? 'selected' : ''}}> Pending</option>
-                                                            <option value="5"{{(request()->get('status') == 5) ? 'selected' : ''}}>On hold</option>
-                                                        </select>
-                                                    </div> 
-                                                                        
-                                                </div>
-                                                <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-                                                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-                                                        <label style="width: 100%;">&nbsp;</label>
-                                                        <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                        @if(count(request()->all('')) > 1)
-                                                            <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-                                                            style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-                                                        @endif
-                                                    </div> 
-                                                </div>
-                                            </div>
-                                        </th>
-                                    </form>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="tab-pane @if(request()->get('prsr')=='sr')active  show @endif" id="service">
+               
                 <div class="table-responsive">
                     <table class="table table-bordered mg-b-0" id="example1">
                         <thead>

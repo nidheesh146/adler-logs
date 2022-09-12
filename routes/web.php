@@ -28,7 +28,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middleware'=>['RolePermission']], function() {
     // purchase requisition master
-    Route::get('inventory/get-purchase-reqisition', 'InventoryController@get_purchase_reqisition');
+    Route::get('inventory/get-purchase-reqisition', 'InventoryController@get_purchase_reqisition')->name('search-requisition');
     Route::get('inventory/add-purchase-reqisition', 'InventoryController@add_purchase_reqisition');
     Route::post('inventory/add-purchase-reqisition', 'InventoryController@add_purchase_reqisition');
     Route::get('inventory/edit-purchase-reqisition', 'InventoryController@edit_purchase_reqisition');

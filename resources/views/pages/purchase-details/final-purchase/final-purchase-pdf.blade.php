@@ -313,7 +313,7 @@
     <div class="row6" style="font-size:10px;display:block;">
         <strong>Terms and Conditions</strong>
         <br/>
-        @if($final_purchase['supplier_type']=="direct")
+        @if($final_purchase['supplier_type']=="direct" && (str_starts_with($final_purchase['po_number'] , 'PO')))
         <p>
         1. Payment Term - 30 days credit from the date of receipt of material or date of receipt of Invoice whichever is later.<br/>
         2. Delivery - Goods are to be delivered within 30 days from the receipt of P.O. We will inform the transport details & delivery address after material get ready for dispatch.<br/>
@@ -366,7 +366,7 @@
         Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
         with proof satisfactory to Company.<br/>
         </p>
-        @else
+        @elseif(($final_purchase['supplier_type']=="indirect" && (str_starts_with($final_purchase['po_number'] , 'PO'))))
         <p>
         1. Material Should be verified and Tested at your end before dispatch for following points:<br/>
         a) Straightness of Material 1:1000mm<br/>
@@ -432,7 +432,142 @@
         Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
         with proof satisfactory to Company.<br/>
         </p>
-        @endif
+
+        @elseif(($final_purchase['supplier_type']=="direct" && (str_starts_with($final_purchase['po_number'] , 'WO'))))
+       
+        <p>
+        1. Payment Term - 30 days credit from the date of receipt of service or date of receipt of Invoice whichever is later.<br/>
+        2. Service - Please quote the Work Order (W.O.) number on your invoice and on any other correspondence in connection with this order. Please also mention Adler Item Code Number & SAC Code
+        line by line.<br/>
+        3. The Company does not accept any responsibility for the service that is received without authorized Work order.<br/>
+        4. Order Acknowledgment - Please confirm acceptance of this order in any form - Acknowledgment on Adler WO / by e-mail / your standard format for order acknowledgment etc. In the absence
+        of such acceptance, the services shall constitute full acceptance by the Service Provider of the terms and conditions herein.<br/>
+        5. Site Visit - If the Service Provider, by the terms of this order., is required to perform any work in the Company's premises, the Service Provider shall be responsible for any damages or injuries to
+        persons or property including Company's employees and property, caused as a result of fault or negligence or for any reasons whatsoever, including omission or commission in doing or complying
+        with certain requisites, statutory or otherwise by the Service provider and/or his agents. Before commencing contract work the Service Provider shall furnish to the Company policies of insurance
+        showing that the Service provider has taken adequate cover for public liability, property damage and workmen's compensation and cover the risk to property and body of the Supplier's employees.<br/>
+        6. Service received as per the W.O. prior to approval shall not constitute an acceptance of the service even if payment is made in advance.<br/>
+            I / We, hereby accept this service with the term mentioned herein<br/>
+            Service Provider's Acceptance<br/>
+            (Supplier Signature & Date)<br/>
+            WORK ORDER<br/>
+            Survey No.48/3 & 48/7 Pashan-Sus Road Pune-411021<br/>
+        7. Service should be accompanied by your Commercial invoice with Adler GST Number 27AADCA0618C1ZB mentioned on it.<br/>
+        8. If advance payment received from the Adler should be mentioned on the bills and the give the payment details.<br/>
+        9. Service are to be delivered within 7 days from the receipt of W.O. failing which the Company shall be at liberty to cancel the order (in part or in full) and / or service the undelivered will take
+        from other sources. The Service Provider shall reimburse the Company the additional cost incurred by way of increase in price and incidental expenses in connection with such services from other
+        sources, if any.<br/>
+        # Inspection: Will be done at our end as per our specification.<br/>
+        # NABL Testing Reports required after completion of work within 7 days.<br/>
+        10. Any increase / reduction in government levies / taxes will be to the Adler's account.<br/>
+        11. The Company reserves the right to cancel the W.O. or amend the service's quantities indicated in the W.O. arising out of any change in Company's sales requirements / manufacturing program
+        or from any cause or causes beyond the Company's control.<br/>
+        # Service not conforming to the Company's specifications / standards are liable to be rejected and the Company's decision in this regard will be final.<br/>
+        # The report shall be sent to you mentioning why it has been rejected. In case of dispute on this report you can send your Representative for on-site re-verification of the report.<br/>
+        # Upon rejection of Service, Adler will raise a Debit Note & against the same you shall issue credit note. In case of advance payment the service provider shall repay advance,<br/>
+        # If any defects or discrepancies are notified in the service at a later date, which went undetected at the time of service, they shall be freely re-serviced by the Service Provider.<br/>
+        12. The Serice Provider guarantees that the service will not infringe any legislation, Indian or foreign concerning patent, design copyright or trademark and undertakes to indemnify and keep the
+        company indemnified against any action, judgement, decree, cost, claim, demand and expense resulting from any actual or alleged violation / infringement of statutes concerning patent, design or
+        trademark, copyrights etc. The Service provider further undertakes at his own expense to defend or assist in the defense of any suit or action which may be brought in this connection against the
+        Company by any third party.<br/>
+        13. The Company reserves the right to cancel the W.O. or part thereof, without ANY CANCELATION AMOUNT, if a stoppage of Company's manufacturing, trading or distribution activities, in total or
+        in part occurs due to fire, worker's agitation, strike, lockout, Government legislation, force majeure or from any cause or causes beyond the Company's control.<br/>
+        14. Any litigation arising out of or in connection with this order shall be subject to MUMBAI Jurisdiction only.
+        15. The terms and conditions indicated above supersede all terms and conditions mentioned in the Service provider's /agents quotation/indent/invoice or any other documents pertaining to the
+        transactions covered by this WO.<br/>
+        16. Compliance Clause:<br/>
+        A) Supplier hereby certifies that he does not and will not employ any person to manufacture or provide goods or services who is under eighteen (18) years of age (hereinafter "Child Labour").
+        Supplier has used reasonable efforts to determine whether his suppliers use Child Labour in manufacturing or providing goods or services, and he certifies that he, after reasonable inquiry,
+        is not aware of any of his suppliers of goods and services that use Child Labour. Supplier hereby certifies that the workers he uses and will use, to produce and supply the goods or provide
+        the services are present voluntarily. Supplier certifies that he and his suppliers of goods and services do not and will notknowingly use forced labour.<br/>
+        Supplier understands that these certifications and undertakings are essential to this contract. Supplier shall indemnify Adler and hold Adler harmless contravention of these provisions
+        by supplier or any of his suppliers with respect to the goods or services used in the supply chain. Supplier also agrees that, in the event that Adler determines that a violation of this provision
+        has occurred, Adler shall notify supplier and supplier shall immediately remedy the violation. In the event that Adler determines that supplier has not remedied the violation,
+        then Adler may terminate this agreement/PO immediately, and such termination shall be with cause.<br/>
+        B) Supplier is aware of the Social responsibility and which include principles against Bribery and Corruption Supplier hereby certifies that he does not and will not use illegal practices such as giving
+        money or gifts to Adler employees or members of their families in exchange for business from Adler. Supplier also agrees that, in the event that Adler determines that a violation of principles
+        against Corruption have occurred, Adler shall notify supplier, and Adler may terminate this agreement/PO immediately, and such termination shall be with cause. Supplier shall indemnify Adler and
+        hold Adler harmless with respect to any liability arising from the contravention of this provision by supplier.<br/>
+        C) Supplier is aware that Adler applies a high standard of care in connection with the protection of the environment. Supplier hereby certifies that he complies at least with the Environmental laws
+        of the country where he operates and where the goods are manufactured or handled. Adler may at its sole discretion, during regular business hours and after reasonable notice conduct audits to
+        verify whether the legal requirements of such country are met. Supplier also agrees that, in the event that Adler determines that a violation of such laws has occurred, Adler shall notify
+        supplier and Adler may terminate this agreement/PO immediately, and such termination shall be with cause. Supplier shall indemnify Alder and hold Adler harmless with respect to any liability
+        arising from the contravention of this provision by supplier.<br/>
+        17. Termination of Purchase / Work Order - Company may at any time terminate any or all purchase orders placed by Company. Unless otherwise specified in this Agreement, Company's liability to
+        Supplier with respect to such terminated purchase / Service order or orders shall be limited to: (1) Supplier's purchase price of all components for the PRODUCT, plus (2) the actual costs incurred by
+        Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
+        with proof satisfactory to Company.<br/>
+        </p>
+        @elseif(($final_purchase['supplier_type']=="indirect" && (str_starts_with($final_purchase['po_number'] , 'WO'))))
+        <p>
+        1. Payment Term - 60 days credit from the date of receipt of service or date of receipt of Invoice whichever is later.<br/>
+        # Toll Charges - At actual<br/>
+        # Halt Charges - Extra Rs. 1000/- for one day<br/>
+        # Diesel /surcharge - at acual (Diesel Base rate forumala - Disel rate@93.92. Fixed rate@16/-per kms. Vehicle avg. 12 per kms)
+        Service are to be delivered within 07 days from the receipt of W.O. failing which the Company shall be at liberty to cancel the order (in part or in full) and / or service the undelivered will take
+        from other sources. The Service Provider shall reimburse the Company the additional cost incurred by way of increase in price and incidental expenses in connection with such services from other
+        sources, if any.<br/>
+        2. Service - Please quote the Work Order (W.O.) number on your invoice and on any other correspondence in connection with this order. Please also mention Adler Item Code Number & SAC Code
+        line by line.<br/>
+        3. The Company does not accept any responsibility for the service that is received without authorized Work order.<br/>
+        4. Order Acknowledgment - Please confirm acceptance of this order in any form - Acknowledgment on Adler WO / by e-mail / your standard format for order acknowledgment etc. In the absence
+        of such acceptance, the services shall constitute full acceptance by the Service Provider of the terms and conditions herein.<br/>
+        5. Site Visit - If the Service Provider, by the terms of this order., is required to perform any work in the Company's premises, the Service Provider shall be responsible for any damages or injuries to
+        persons or property including Company's employees and property, caused as a result of fault or negligence or for any reasons whatsoever, including omission or commission in doing or complying
+        with certain requisites, statutory or otherwise by the Service provider and/or his agents. Before commencing contract work the Service Provider shall furnish to the Company policies of insurance
+        showing that the Service provider has taken adequate cover for public liability, property damage and workmen's compensation and cover the risk to property and body of the Supplier's employees.<br/>
+        6. Service received as per the W.O. prior to approval shall not constitute an acceptance of the service even if payment is made in advance.
+        I / We, hereby accept this service with the term mentioned herein<br/>
+        Service Provider's Acceptance<br/>
+        (Supplier Signature & Date)<br/>
+        WORK ORDER<br/>
+        At/PO. Sadavali, Tal. Sangameshwar<br/>
+        7. Service should be accompanied by your Commercial invoice with Adler GST Number 27AADCA0618C1ZB mentioned on it.<br/>
+        8. If advance payment received from the Adler should be mentioned on the bills and the give the payment details.<br/>
+        9. Service are to be delivered within 7 days from the receipt of W.O. failing which the Company shall be at liberty to cancel the order (in part or in full) and / or service the undelivered will take
+        from other sources. The Service Provider shall reimburse the Company the additional cost incurred by way of increase in price and incidental expenses in connection with such services from other
+        sources, if any.<br/>
+        # Inspection: Will be done at our end as per our specification.<br/>
+        # NABL Testing Reports required after completion of work within 7 days.<br/>
+        10. Any increase / reduction in government levies / taxes will be to the Adler's account.<br/>
+        11. The Company reserves the right to cancel the W.O. or amend the service's quantities indicated in the W.O. arising out of any change in Company's sales requirements / manufacturing program
+        or from any cause or causes beyond the Company's control.<br/>
+        # Service not conforming to the Company's specifications / standards are liable to be rejected and the Company's decision in this regard will be final.<br/>
+        # The report shall be sent to you mentioning why it has been rejected. In case of dispute on this report you can send your Representative for on-site re-verification of the report.<br/>
+        # Upon rejection of Service, Adler will raise a Debit Note & against the same you shall issue credit note. In case of advance payment the service provider shall repay advance,<br/>
+        # If any defects or discrepancies are notified in the service at a later date, which went undetected at the time of service, they shall be freely re-serviced by the Service Provider.<br/>
+        12. The Serice Provider guarantees that the service will not infringe any legislation, Indian or foreign concerning patent, design copyright or trademark and undertakes to indemnify and keep the
+        company indemnified against any action, judgement, decree, cost, claim, demand and expense resulting from any actual or alleged violation / infringement of statutes concerning patent, design or
+        trademark, copyrights etc. The Service provider further undertakes at his own expense to defend or assist in the defense of any suit or action which may be brought in this connection against the
+        Company by any third party.<br/>
+        13. The Company reserves the right to cancel the W.O. or part thereof, without ANY CANCELATION AMOUNT, if a stoppage of Company's manufacturing, trading or distribution activities, in total or
+        in part occurs due to fire, worker's agitation, strike, lockout, Government legislation, force majeure or from any cause or causes beyond the Company's control.<br/>
+        14. Any litigation arising out of or in connection with this order shall be subject to MUMBAI Jurisdiction only.<br/>
+        15. The terms and conditions indicated above supersede all terms and conditions mentioned in the Service provider's /agents quotation/indent/invoice or any other documents pertaining to the
+        transactions covered by this WO.<br/>
+        16. Compliance Clause:<br/>
+        A) Supplier hereby certifies that he does not and will not employ any person to manufacture or provide goods or services who is under eighteen (18) years of age (hereinafter "Child Labour").
+        Supplier has used reasonable efforts to determine whether his suppliers use Child Labour in manufacturing or providing goods or services, and he certifies that he, after reasonable inquiry,
+        is not aware of any of his suppliers of goods and services that use Child Labour. Supplier hereby certifies that the workers he uses and will use, to produce and supply the goods or provide
+        the services are present voluntarily. Supplier certifies that he and his suppliers of goods and services do not and will notknowingly use forced labour.
+        Supplier understands that these certifications and undertakings are essential to this contract. Supplier shall indemnify Adler and hold Adler harmless contravention of these provisions
+        by supplier or any of his suppliers with respect to the goods or services used in the supply chain. Supplier also agrees that, in the event that Adler determines that a violation of this provision
+        has occurred, Adler shall notify supplier and supplier shall immediately remedy the violation. In the event that Adler determines that supplier has not remedied the violation,
+        then Adler may terminate this agreement/PO immediately, and such termination shall be with cause.<br/>
+        B) Supplier is aware of the Social responsibility and which include principles against Bribery and Corruption Supplier hereby certifies that he does not and will not use illegal practices such as giving
+        money or gifts to Adler employees or members of their families in exchange for business from Adler. Supplier also agrees that, in the event that Adler determines that a violation of principles
+        against Corruption have occurred, Adler shall notify supplier, and Adler may terminate this agreement/PO immediately, and such termination shall be with cause. Supplier shall indemnify Adler and
+        hold Adler harmless with respect to any liability arising from the contravention of this provision by supplier.<br/>
+        C) Supplier is aware that Adler applies a high standard of care in connection with the protection of the environment. Supplier hereby certifies that he complies at least with the Environmental laws
+        of the country where he operates and where the goods are manufactured or handled. Adler may at its sole discretion, during regular business hours and after reasonable notice conduct audits to
+        verify whether the legal requirements of such country are met. Supplier also agrees that, in the event that Adler determines that a violation of such laws has occurred, Adler shall notify
+        supplier and Adler may terminate this agreement/PO immediately, and such termination shall be with cause. Supplier shall indemnify Alder and hold Adler harmless with respect to any liability
+        arising from the contravention of this provision by supplier.<br/>
+        17. Termination of Purchase / Work Order - Company may at any time terminate any or all purchase orders placed by Company. Unless otherwise specified in this Agreement, Company's liability to
+        Supplier with respect to such terminated purchase / Service order or orders shall be limited to: (1) Supplier's purchase price of all components for the PRODUCT, plus (2) the actual costs incurred by
+        Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
+        with proof satisfactory to Company.
+    @endif
     </div>
     <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     Adler Ref No :

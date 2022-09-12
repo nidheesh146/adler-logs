@@ -8,14 +8,16 @@
 
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE DETAILS</a></span> 
-                <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE/SERVICE REQUISITION</a></span>
+                <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">@if(request()->get('prsr')=="sr" || request()->sr_id) SERVICE REQUISITION @else PURCHASE REQUISITION @endif</a></span>
                 <span><a href="">
                    @if((request()->pr_id) AND (!request()->sr_id)) 
                         Edit Purchase Requisition Master
                     @elseif((!request()->pr_id) AND (request()->sr_id))
                         Edit Service Requisition Master  
+                    @elseif(request()->get('prsr')=="sr")
+                        Add Service Requisition Master
                     @else
-                        Add Purchase/service Requisition Master
+                        Add Purchase Requisition Master
                    @endif
                 </a></span>
             </div>
@@ -25,14 +27,16 @@
                         Edit Purchase Requisition Master
                     @elseif((!request()->pr_id) AND (request()->sr_id))
                         Edit Service Requisition Master  
+                    @elseif(request()->get('prsr')=="sr")
+                        Add Service Requisition Master
                     @else
-                        Add Purchase/service Requisition Master
+                        Add Purchase Requisition Master
                    @endif
             </h4>
             <div class="az-dashboard-nav">
                 <nav class="nav">
-                    <a class="nav-link  active  " href="">Purchase/Service requisition master </a>
-                     <a class="nav-link  " @if(request()->pr_id) href="{{url('inventory/get-purchase-reqisition-item?pr_id='.request()->pr_id)}}" @endif >  Purchase/Service requisition item </a>
+                    <a class="nav-link  active  " href="">@if(request()->get('prsr')=="sr" || request()->sr_id) Service @else Purchase @endif requisition master </a>
+                     <a class="nav-link  " @if(request()->pr_id) href="{{url('inventory/get-purchase-reqisition-item?pr_id='.request()->pr_id)}}" @endif >  @if(request()->get('prsr')=="sr" || request()->sr_id) Service @else Purchase @endif requisition item </a>
                      <a class="nav-link  " href=""> </a>
                 </nav>
            
@@ -129,7 +133,7 @@
                             </div><!-- form-group -->
 
 
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                            <!-- <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>PR/SR *</label>
                                 <select class="form-control select2" name="PRSR">
                                     <option value="">--- select one ---</option>
@@ -147,7 +151,7 @@
                                   @endif
                                 @endif>SR</option>
                                 </select>
-                            </div><!-- form-group -->
+                            </div> -->
 
 
 
@@ -230,9 +234,9 @@
                  email: {
                      email: true,
                 },
-                PRSR: {
-                    required: true,
-                },
+                // PRSR: {
+                //     required: true,
+                // },
             },
             submitHandler: function(form) {
                 $('.spinner-button').show();

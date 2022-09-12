@@ -45,23 +45,24 @@ class InventoryController extends Controller
             if ($request->pr_no) {
                 $condition[] = ['inv_purchase_req_master.pr_no',  'like', '%'.$request->pr_no.'%'];
             }
-            if ($request->pr_sr) {
-                $condition[] = ['inv_purchase_req_master.PR_SR', '=', $request->pr_sr];
-            }
+            // if ($request->pr_sr) {
+            //     $condition[] = ['inv_purchase_req_master.PR_SR', '=', $request->pr_sr];
+            // }
             if ($request->from) {
                 $condition[] = ['inv_purchase_req_master.date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition[] = ['inv_purchase_req_master.date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
             }
            
-           // $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
            $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list($condition);
         
 
         $data['department']= $this->Department->get_dept([]);
         $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
-        // dd($data['pr_nos']);exit;
-       // $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list();
+        // print_r(json_encode($data['master']));
+        // exit;
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-list', compact('data'));
+       // $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list();
+        //return view('pages/purchase-details/purchase-requisition/purchase-requisition-list', compact('data'));
     }
 
     // Purchase Reqisition Master Add
@@ -72,20 +73,20 @@ class InventoryController extends Controller
 
             $validation['Date'] = ['required'];
             $validation['Department'] = ['required'];
-            $validation['PRSR'] = ['required'];
+            // $validation['PRSR'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
             if(!$validator->errors()->all()){
                 $datas['requestor_id'] = $request->Requestor;
-                if($request->PRSR=="PR"){
+                if($request->prsr=="pr"){
                 $datas['pr_no'] = "PR-".$this->num_gen(DB::table('inv_purchase_req_master')->count());
                 }
-                if($request->PRSR=="SR"){
+                if($request->prsr=="sr"){
                     $datas['pr_no'] = "SR-".$this->num_gen(DB::table('inv_purchase_req_master')->count());
                 }
                 $datas['department'] =  $request->Department;
                 $datas['date'] =  date('Y-m-d',strtotime($request->Date));
-                $datas['PR_SR'] =  $request->PRSR;
+                $datas['PR_SR'] =  $request->prsr;
                 $datas['created_at'] =  date('Y-m-d h:i:s');
                 $datas['updated_at'] =  date('Y-m-d h:i:s');
                 $inv_purchase_num =  $this->inv_purchase_req_master->insertdata($datas);
@@ -113,14 +114,14 @@ class InventoryController extends Controller
         if ($request->isMethod('post')) {
             $validation['Date'] = ['required'];
             $validation['Department'] = ['required'];
-            $validation['PRSR'] = ['required'];
+            // $validation['PRSR'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
             if(!$validator->errors()->all()){
                 $datas['requestor_id'] = $request->Requestor;
                 $datas['department'] =  $request->Department;
                 $datas['date'] =  date('Y-m-d',strtotime($request->Date));
-                $datas['PR_SR'] =  $request->PRSR;
+                //$datas['PR_SR'] =  $request->prsr;
                 $datas['updated_at'] =  date('Y-m-d h:i:s');
                 if($request->pr_id) 
                 {
@@ -190,8 +191,9 @@ class InventoryController extends Controller
             $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
             $data['item'] = $this->inv_purchase_req_item->getdata(['inv_purchase_req_master_item_rel.master'=>$request->sr_id]);
         }
+       
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
-
+        
     }
       // Purchase Reqisition add item 
       public function add_purchase_reqisition_item(Request $request)

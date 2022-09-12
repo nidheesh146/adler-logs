@@ -26,7 +26,7 @@
 			 {{ $errorr }}
 		   </div>
 		  @endforeach
-	        
+		  
 		<div class="row">
 		    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
 		    	<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
