@@ -8,7 +8,9 @@ use App\Models\PurchaseDetails\inv_purchase_req_quotation;
 use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inv_purchase_req_quotation_supplier;
 use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
-
+use App\Models\PurchaseDetails\inv_purchase_req_item;
+use App\Models\PurchaseDetails\inv_purchase_req_master_item_rel;
+use App\Models\PurchaseDetails\inv_purchase_req_master;
 use Validator;
 
 class SupplierQuotationController extends Controller
@@ -19,7 +21,9 @@ class SupplierQuotationController extends Controller
         $this->inv_supplier = new inv_supplier;
         $this->inv_purchase_req_quotation_supplier = new inv_purchase_req_quotation_supplier;
         $this->inv_purchase_req_quotation_item_supp_rel = new inv_purchase_req_quotation_item_supp_rel;
-   
+        $this->inv_purchase_req_item = new inv_purchase_req_item;
+        $this->inv_purchase_req_master_item_rel = new inv_purchase_req_master_item_rel;
+        $this->inv_purchase_req_master = new inv_purchase_req_master;
     }
 
     public function getSupplierQuotation(Request $request) 
@@ -64,6 +68,16 @@ class SupplierQuotationController extends Controller
 
       }
         return ["supplier" => $suppliers,'supplier_id' => $supplier_id];
+    }
+
+    function check_reqisition_type($id)
+    {
+        $item_id = inv_purchase_req_quotation_item_supp_rel::where('quotation_id','=',$id)->pluck('item_id')->first();
+        $requisition_item_id = inv_purchase_req_item::where('requisition_item_id','=',$item_id)->pluck('requisition_item_id')->first();
+        $requisition_master_id = inv_purchase_req_master_item_rel::where('item','=',$requisition_item_id)->pluck('master')->first();
+        $reqisition_type = inv_purchase_req_master::where('master_id','=',$requisition_master_id)->pluck('PR_SR')->first();
+        return $reqisition_type;
+
     }
     public function getSupplierQuotationAdd(Request $request)
     {
@@ -273,6 +287,7 @@ class SupplierQuotationController extends Controller
                                                     ->first();
           return $check;
     }
+
 
 
 }

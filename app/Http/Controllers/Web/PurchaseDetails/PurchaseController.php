@@ -17,6 +17,10 @@ use App\Models\PurchaseDetails\inv_final_purchase_order_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_supplier;
+use App\Models\PurchaseDetails\inv_purchase_req_item;
+use App\Models\PurchaseDetails\inv_purchase_req_master_item_rel;
+use App\Models\PurchaseDetails\inv_purchase_req_master;
+
 
 
 use Validator;
@@ -81,7 +85,22 @@ class PurchaseController extends Controller
             { 
 
             if(!$id){
-                $data['po_number'] = "PO-".$this->num_gen(DB::table('inv_final_purchase_order_master')->count());
+                $type = $this->check_reqisition_type($request->rq_master_id);
+                if($type=="PR")
+                {
+                    $supplier_type = $this->check_supplier_type($request->rq_master_id);
+                    if($supplier_type=="direct")
+                    {
+                        $data['po_number'] = "PO-".$this->num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like', '%PO%')->where('po_number','not like', '%ID%')->count());
+                    }
+                    else
+                    {
+                        $data['po_number'] = "PO-".$this->po_indirect_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like', '%PO%')->where('po_number','like', '%ID%')->count());
+                    }
+                }
+                else{
+                    $data['po_number'] = "WO-".$this->num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like', '%WO%')->count());
+                }
                 $data['created_at'] = date('Y-m-d H:i:s');
                 $data['updated_at'] = date('Y-m-d H:i:s');
                 $data['rq_master_id'] = $request->rq_master_id;
@@ -175,14 +194,33 @@ class PurchaseController extends Controller
 
 
     }
+    function check_supplier_type($rq_id)
+    {
+        $supplier_type = inv_purchase_req_quotation_supplier::where('quotation_id','=', $rq_id)
+                            ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+                            ->where('selected_supplier','=',1)
+                            ->pluck('inv_supplier.supplier_type')->first();
+        return $supplier_type;
 
-function rq_details($id,$active=null){
- $quotation   = $this->inv_purchase_req_quotation_supplier->inv_purchase_req_quotation_data(['inv_purchase_req_quotation_supplier.quotation_id'=>$id,'inv_purchase_req_quotation_supplier.selected_supplier'=>1]);
- $quotation_item   = $this->inv_purchase_req_quotation_item_supp_rel->inv_purchase_req_quotation_item_data(['inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$quotation->supplier_id,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$quotation->quotation_id]);
+    }
+
+    function check_reqisition_type($id)
+    {
+        $item_id = inv_purchase_req_quotation_item_supp_rel::where('quotation_id','=',$id)->pluck('item_id')->first();
+        $requisition_item_id = inv_purchase_req_item::where('requisition_item_id','=',$item_id)->pluck('requisition_item_id')->first();
+        $requisition_master_id = inv_purchase_req_master_item_rel::where('item','=',$requisition_item_id)->pluck('master')->first();
+        $reqisition_type = inv_purchase_req_master::where('master_id','=',$requisition_master_id)->pluck('PR_SR')->first();
+        return $reqisition_type;
+
+    }
+
+    function rq_details($id,$active=null){
+         $quotation   = $this->inv_purchase_req_quotation_supplier->inv_purchase_req_quotation_data(['inv_purchase_req_quotation_supplier.quotation_id'=>$id,'inv_purchase_req_quotation_supplier.selected_supplier'=>1]);
+        $quotation_item   = $this->inv_purchase_req_quotation_item_supp_rel->inv_purchase_req_quotation_item_data(['inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$quotation->supplier_id,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$quotation->quotation_id]);
   
- if($active){
-  $purchase_order_item =  $this->inv_final_purchase_order_item->get_purchase_order_item(['inv_final_purchase_order_rel.master'=>$active]);
-  }
+        if($active) {
+            $purchase_order_item =  $this->inv_final_purchase_order_item->get_purchase_order_item(['inv_final_purchase_order_rel.master'=>$active]);
+        }
  
  
  $data = '<div class="row">
@@ -556,7 +594,7 @@ return  $data;
     public function generateFinalPurchasePdf($id)
     {
     
-        $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_item.id'=>$id]);
+        $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_master.id'=>$id]);
         $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master'=>$id]);
           
         $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);

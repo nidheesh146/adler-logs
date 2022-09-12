@@ -41,6 +41,10 @@
                                 <input type="text" class="form-control"  value="" name="batchcard" placeholder="Batch Card No">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Process Sheet No *</label>
+                                <input type="text" class="form-control"  value="" name="process_sheet" placeholder="Process Sheet No">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Quantity *</label>
                                 <input type="text" class="form-control"  value="" name="quantity" placeholder="Quantity">
                             </div><!-- form-group -->
@@ -112,6 +116,9 @@
                     required: true,
                 },
                 quantity: {
+                    required: true,
+                },
+                process_sheet:{
                     required: true,
                 },
                 start_date: {

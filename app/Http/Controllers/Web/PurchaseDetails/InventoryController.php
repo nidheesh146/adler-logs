@@ -201,8 +201,12 @@ class InventoryController extends Controller
         }
 
         if ($request->isMethod('post')) {
-
+            if($request->pr_id){
             $validation['pr_id'] = ['required'];
+            }
+            else{
+                $validation['sr_id'] = ['required'];
+            }
             $validation['Itemcode'] = ['required'];
             $validation['Supplier'] = ['required'];
             $validation['Currency'] = ['required'];
@@ -231,10 +235,16 @@ class InventoryController extends Controller
                     "updated_at" => date('Y-m-d H:i:s'),
                     "created_user" =>  config('user')['user_id']   
                 ];
-
+                if($request->pr_id){
                 $this->inv_purchase_req_item->insert_data($Request,$request->pr_id);
                 $request->session()->flash('success',"You have successfully added a purchase requisition item !");
                 return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+                }
+                else {
+                    $this->inv_purchase_req_item->insert_data($Request,$request->sr_id);
+                    $request->session()->flash('success',"You have successfully added a service requisition item !");
+                    return redirect('inventory/get-purchase-reqisition-item?sr_id='.$request->sr_id);
+                }
 
             }
             if($validator->errors()->all()){
@@ -256,13 +266,18 @@ class InventoryController extends Controller
         //edit  Purchase Reqisition item 
         public function edit_purchase_reqisition_item(Request $request)
         {
-            if(!$request->pr_id || !$request->item){
+            if(!$request->pr_id && !$request->item && !$request->sr_id){
                 return redirect('inventory/get-purchase-reqisition');
             } 
 
             if ($request->isMethod('post')) 
             {
-                $validation['pr_id'] = ['required'];
+                if($request->pr_id){
+                    $validation['pr_id'] = ['required'];
+                    }
+                    else{
+                        $validation['sr_id'] = ['required'];
+                    }
                 $validation['Itemcode'] = ['required'];
                 $validation['Supplier'] = ['required'];
                 $validation['Currency'] = ['required'];
@@ -290,17 +305,33 @@ class InventoryController extends Controller
                         "inv_purchase_req_item.updated_at" => date('Y-m-d H:i:s'),
                         "inv_purchase_req_item.created_user" =>  config('user')['user_id']   
                     ];
-                    $this->inv_purchase_req_item->updatedata(['inv_purchase_req_item.requisition_item_id'=>$request->item],$Request);
-                    $request->session()->flash('success',"You have successfully edited a purchase requisition item !");
-                    return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+                    if($request->pr_id)
+                    {
+                        $this->inv_purchase_req_item->updatedata(['inv_purchase_req_item.requisition_item_id'=>$request->item],$Request);
+                        $request->session()->flash('success',"You have successfully edited a purchase requisition item !");
+                        return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+                    }
+                    else
+                    {
+                        $this->inv_purchase_req_item->updatedata(['inv_purchase_req_item.requisition_item_id'=>$request->item],$Request);
+                        $request->session()->flash('success',"You have successfully edited a service requisition item !");
+                        return redirect('inventory/get-purchase-reqisition-item?sr_id='.$request->sr_id);
+                    }
                 }
+                
                 if($validator->errors()->all()){
+                    if($request->pr_id)
                     return redirect("inventory/add-purchase-reqisition-item?pr_id=".$request->pr_id)->withErrors($validator)->withInput();
+                    else
+                    return redirect("inventory/add-purchase-reqisition-item?sr_id=".$request->sr_id)->withErrors($validator)->withInput();                    
                 }
             }
             //echo $request->item;exit;
             $datas["item"] = $this->inv_purchase_req_item->getItem(['inv_purchase_req_item.requisition_item_id'=>$request->item]);
+            if($request->pr_id)
             $data['master'] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
+            else
+            $data['master'] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
             $data["currency"] = $this->currency_exchange_rate->get_currency([]);
             $data['gst'] = $this->inventory_gst->get_gst();
           
@@ -317,7 +348,10 @@ class InventoryController extends Controller
             $this->inv_purchase_req_item->updatedata(['requisition_item_id'=>$request->item_id],['status'=>2]);
             $request->session()->flash('success',  "You have successfully deleted a  purchase requisition item !");
         }
+        if($request->pr_id)
         return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+        else
+        return redirect('inventory/get-purchase-reqisition-item?sr_id='.$request->sr_id);
     }
 
     function itemcodesearch(Request $request,$itemcode = null){

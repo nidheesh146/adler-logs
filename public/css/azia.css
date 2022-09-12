@@ -564,7 +564,7 @@ pre {
 
 @media (min-width: 1200px) {
   .container, .container-sm, .container-md, .container-lg, .container-xl {
-    max-width: 1310px; } }
+    max-width: 1140px; } }
 
 .row {
   display: flex;
@@ -45074,3 +45074,31 @@ ul.list-ckeck-soft {
 
 .wd-100v {
   width: 100vw; }
+
+  /* ************ Custom Module ************ */
+
+  .az-logo-login {
+    font-weight: 700;
+    font-size: 28px;
+    font-family: 'Poppins', sans-serif;
+    color: #1b1b1d;
+    letter-spacing: -1px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    top: -2px;
+}
+
+.az-logo-img-login {
+  width: 51px;
+  height: 44px;
+  border-radius: 24%;
+}
+.az-card-signin {
+  height: 490px;
+  background: #ced4e117;
+}
+
+.az-signin-footer{
+  margin-top: 13px;
+}

@@ -36,6 +36,7 @@ class BatchCardController extends Controller
         if ($request->isMethod('post')) {
             $validation['product'] = ['required'];
             $validation['batchcard'] = ['required'];
+            $validation['process_sheet'] = ['required'];
             $validation['quantity'] = ['required'];
             $validation['start_date'] = ['required'];
             $validation['target_date'] = ['required'];

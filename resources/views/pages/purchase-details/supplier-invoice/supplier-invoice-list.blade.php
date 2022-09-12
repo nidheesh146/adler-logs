@@ -33,7 +33,15 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		</div>
 		@endif
-		
+		<div class="card bd-0">
+            <div class="card-header bg-gray-400 bd-b-0-f pd-b-0" style="background-color: #cdd4e0;">
+                <nav class="nav nav-tabs">
+                        <a class="nav-link  active" data-toggle="tab" href="#purchase">Final Purchase Order</a>
+                        <a class="nav-link" data-toggle="tab" href="#service"> Final Work Order </a>
+                </nav>   
+            </div>
+        </div><br/>
+		<div class="tab-content">
 		<div class="row row-sm mg-b-20 mg-lg-b-0">
             <div class="table-responsive" style="margin-bottom: 13px;">
                 <table class="table table-bordered mg-b-0">
@@ -54,7 +62,7 @@
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                         
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>PO No:</label>
+                                                <label>PO/WO No:</label>
                                                 <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="PO NO"> 
                                                
                                             </div><!-- form-group -->
@@ -97,44 +105,89 @@
 		
 	   
 
-
-		<div class="table-responsive">
-			<table class="table table-bordered mg-b-0" id="example1">
-				<thead>
-					<tr>
-					
-						<th style="width:120px;">PO number :</th>
-						<th>Invoice number:</th>
-						<th>Invoice date</th>
-						<th>Supplier</th>
-						<th>Created Date</th>
-						<th>Created By</th>
-						<th>Action</th>
-					
-					</tr>
-				</thead>
-				<tbody>
-					@foreach ($data['Requisition'] as $item)
-					<tr>
-					    <td>{{$item->po_number}}</td>
-						<td>{{$item->invoice_number}}</td>
-						<td>{{date('d-m-Y',strtotime($item->invoice_date)) }}</td>
-						<td>{{$item->vendor_id}} - {{$item->vendor_name}}</td>
-						<td>{{date('d-m-Y',strtotime($item->created_at)) }}</td>
-						<td>{{$item->f_name}} {{$item->l_name}}</td>
-						<td>
-							<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-add/'.$item->id)}}"><i class="fas fa-edit"></i> Edit</a>
-						<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-delete/'.$item->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
-							
-						</td>
-					</tr>
-					@endforeach
-				</tbody>
-			</table>
-			<div class="box-footer clearfix">
-				{{ $data['Requisition']->appends(request()->input())->links() }}
+		<div class="tab-pane active show" id="purchase">
+			<div class="table-responsive">
+				<table class="table table-bordered mg-b-0" id="example1">
+					<thead>
+						<tr>
+						
+							<th style="width:120px;">PO number :</th>
+							<th>Invoice number:</th>
+							<th>Invoice date</th>
+							<th>Supplier</th>
+							<th>Created Date</th>
+							<th>Created By</th>
+							<th>Action</th>
+						
+						</tr>
+					</thead>
+					<tbody>
+						@foreach ($data['Requisition'] as $item)
+						@if(str_starts_with($item->po_number , 'PO') )
+						<tr>
+							<td>{{$item->po_number}}</td>
+							<td>{{$item->invoice_number}}</td>
+							<td>{{date('d-m-Y',strtotime($item->invoice_date)) }}</td>
+							<td>{{$item->vendor_id}} - {{$item->vendor_name}}</td>
+							<td>{{date('d-m-Y',strtotime($item->created_at)) }}</td>
+							<td>{{$item->f_name}} {{$item->l_name}}</td>
+							<td>
+								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-add/'.$item->id)}}"><i class="fas fa-edit"></i> Edit</a>
+							<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-delete/'.$item->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+								
+							</td>
+						</tr>
+						@endif
+						@endforeach
+					</tbody>
+				</table>
+				<div class="box-footer clearfix">
+					{{ $data['Requisition']->appends(request()->input())->links() }}
+				</div>
+		
 			</div>
-	
+		</div>
+		<div class="tab-pane" id="service">
+			<div class="table-responsive">
+				<table class="table table-bordered mg-b-0" id="example1">
+					<thead>
+						<tr>
+						
+							<th style="width:120px;">WO number :</th>
+							<th>Invoice number:</th>
+							<th>Invoice date</th>
+							<th>Supplier</th>
+							<th>Created Date</th>
+							<th>Created By</th>
+							<th>Action</th>
+						
+						</tr>
+					</thead>
+					<tbody>
+						@foreach ($data['Requisition'] as $item)
+						@if(str_starts_with($item->po_number , 'WO') )
+						<tr>
+							<td>{{$item->po_number}}</td>
+							<td>{{$item->invoice_number}}</td>
+							<td>{{date('d-m-Y',strtotime($item->invoice_date)) }}</td>
+							<td>{{$item->vendor_id}} - {{$item->vendor_name}}</td>
+							<td>{{date('d-m-Y',strtotime($item->created_at)) }}</td>
+							<td>{{$item->f_name}} {{$item->l_name}}</td>
+							<td>
+								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-add/'.$item->id)}}"><i class="fas fa-edit"></i> Edit</a>
+							<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-delete/'.$item->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+								
+							</td>
+						</tr>
+						@endif
+						@endforeach
+					</tbody>
+				</table>
+				<div class="box-footer clearfix">
+					{{ $data['Requisition']->appends(request()->input())->links() }}
+				</div>
+		
+			</div>
 		</div>
 	</div>
 </div>

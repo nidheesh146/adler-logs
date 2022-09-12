@@ -2,7 +2,7 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-    <title>Final Purchase Order_{{$final_purchase['vendor_name']}}_{{$final_purchase['po_number']}}</title>
+    <title>Final @if(str_starts_with($final_purchase['po_number'] , 'PO') )Purchase Order @else Work Order @endif _{{$final_purchase['vendor_name']}}_{{$final_purchase['po_number']}}</title>
 </head>
 <body>
     <style>
@@ -83,7 +83,7 @@
             float:right;
         }
     </style>
-    <?php// print_r(json_encode($items)); ?>
+    <?php /*print_r(json_encode($final_purchase)); exit;*/?>
     <div class="row1" style="height:130px;border-bottom:solid 2px black;">
         <div class="col1">
             To<br/>
@@ -110,7 +110,8 @@
                 $len = count($arr);
                 echo trim($arr[0],' " ');
                 // for($x = 0; $x < $len; $x++) {
-                //     echo trim($arr[$x]," ' ");
+               
+                    //     echo trim($arr[$x]," ' ");
                 //     if($x!=($len-1))
                 //     echo ",";
                 // }
@@ -125,7 +126,11 @@
         <div class="col2" style="text-align:center;">
             <div class="attn">Kind Attn: {{$final_purchase['contact_person']}}</div>
             <div class="main-head">
+                @if(str_starts_with($final_purchase['po_number'] , 'PO') )
                 <h6>PURCHASE ORDER</h6>
+                @else
+                <h6>WORK ORDER</h6>
+                @endif
             </div>
         </div>
         <div class="col3">
@@ -308,7 +313,7 @@
     <div class="row6" style="font-size:10px;display:block;">
         <strong>Terms and Conditions</strong>
         <br/>
-        @if($final_purchase['supplier_type']=="indirect")
+        @if($final_purchase['supplier_type']=="direct")
         <p>
         1. Payment Term - 30 days credit from the date of receipt of material or date of receipt of Invoice whichever is later.<br/>
         2. Delivery - Goods are to be delivered within 30 days from the receipt of P.O. We will inform the transport details & delivery address after material get ready for dispatch.<br/>

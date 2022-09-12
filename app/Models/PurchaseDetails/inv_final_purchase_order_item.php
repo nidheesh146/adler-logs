@@ -76,7 +76,7 @@ class inv_final_purchase_order_item extends Model
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->leftjoin('currency_exchange_rate','currency_exchange_rate.currency_id', '=', 'inv_purchase_req_item.currency')
                     ->leftjoin('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
-                    ->leftjoin('inv_supplier', 'inv_supplier.id','=', 'inv_purchase_req_quotation_supplier.supplier_id')
+                    ->leftjoin('inv_supplier', 'inv_supplier.id','=', 'inv_final_purchase_order_master.supplier_id')
                     ->where('inv_purchase_req_quotation_supplier.selected_supplier', '=', 1)
                     ->where($condition)
                     ->first();
