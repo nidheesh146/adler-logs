@@ -79,7 +79,7 @@
 								
 													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
 														<label>@if(request()->get('prsr')=="sr")SR @else PR @endif No:</label>
-														<input type="text" value="{{request()->get('pr_no')}}" name="pr_no" id="pr_no" class="form-control" placeholder="PR/SR NO">
+														<input type="text" value="{{request()->get('pr_no')}}" name="pr_no" id="pr_no" class="form-control" placeholder="@if(request()->get('prsr')=='sr')SR @else PR @endif NO">
 													</div><!-- form-group -->
 													
 													

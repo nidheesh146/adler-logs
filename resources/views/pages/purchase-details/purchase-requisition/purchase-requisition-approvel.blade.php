@@ -58,8 +58,8 @@
                                             <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                                 
                                                     <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                        <label for="exampleInputEmail1" style="font-size: 12px;">PR No</label>
-                                                        <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="PR NO">
+                                                        <label for="exampleInputEmail1" style="font-size: 12px;">@if(request()->get('prsr')!='sr') PR No @else SR No @endif</label>
+                                                        <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="@if(request()->get('prsr')!='sr') PR NO @else SR NO @endif">
                                                     </div><!-- form-group -->
                                                     <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
                                                     

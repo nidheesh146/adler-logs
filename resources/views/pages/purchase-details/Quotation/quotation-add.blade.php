@@ -178,7 +178,7 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>PR No:</th>
+                                                <th>SR No:</th>
                                                 <th>Item code </th>
                                                 <th>Supplier</th>
                                                 <th>Rate</th>
