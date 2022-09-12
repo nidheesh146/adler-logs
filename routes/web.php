@@ -18,6 +18,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
     Route::get('/', 'UserController@login');
     Route::post('/', 'UserController@login');
     Route::get('logout', 'UserController@logout');
+
+
+    Route::get('user-add', 'WebapiController@insert_user');
+    Route::get('user-dept', 'WebapiController@insert_dept');
+
 });
 
 

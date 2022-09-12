@@ -32,14 +32,7 @@
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		@endif
-        <div class="card bd-0">
-		<div class="card-header bg-gray-400 bd-b-0-f pd-b-0">
-            <nav class="nav nav-tabs">
-                <a class="nav-link  active" data-toggle="tab" href="#purchase">Purchase requisition</a>
-                <a class="nav-link" data-toggle="tab" href="#service">  Service requisition </a>
-            </nav>   
-        </div>
-        </div><br/>
+        @include('includes.purchase-details.pr-sr-tab')
 		<div class="tab-content">
             <div class="tab-pane active show" id="purchase">
                 <div class="row row-sm mg-b-20 mg-lg-b-0">

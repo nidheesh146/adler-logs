@@ -23,10 +23,7 @@
 			<!-- <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-supplier-quotation')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Supplier Quotation   </button> -->
           </div>
         </h4>
-			<div class="az-dashboard-nav">
-				<nav class="nav"> </nav>
-			</div>
-	
+		@include('includes.purchase-details.pr-sr-tab')
       
 			
 		   @if (Session::get('success'))

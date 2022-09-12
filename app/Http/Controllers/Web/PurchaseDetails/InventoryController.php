@@ -38,8 +38,7 @@ class InventoryController extends Controller
     // Purchase Reqisition Master get list
     public function get_purchase_reqisition(Request $request)
     {
-        if(count($_GET))
-        {
+            $condition = []; 
             if ($request->department) {
                 $condition[] = ['department.dept_name', 'like', '%'.$request->department.'%'];
             }
@@ -56,11 +55,8 @@ class InventoryController extends Controller
            
            // $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
            $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list($condition);
-        }
-        else 
-        {
-            $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list($condition=null);
-        }
+        
+
         $data['department']= $this->Department->get_dept([]);
         $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
         // dd($data['pr_nos']);exit;

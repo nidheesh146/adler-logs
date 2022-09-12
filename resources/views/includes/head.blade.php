@@ -12,21 +12,14 @@
 
   <!-- azia CSS -->
   <link rel="stylesheet" href="<?=url('');?>/css/azia.css">
-
-
     <link href="<?=url('');?>/lib/spectrum-colorpicker/spectrum.css" rel="stylesheet">
     <link href="<?=url('');?>/lib/select2/css/select2.min.css" rel="stylesheet">
     <link href="<?=url('');?>/lib/ion-rangeslider/css/ion.rangeSlider.css" rel="stylesheet">
     <link href="<?=url('');?>/lib/ion-rangeslider/css/ion.rangeSlider.skinFlat.css" rel="stylesheet">
-
     <link href="<?=url('');?>/lib/pickerjs/picker.min.css" rel="stylesheet">
-
-
     <link href="<?=url('');?>/lib/amazeui-datetimepicker/css/bootstrap-datepicker.css" rel="stylesheet">
+    <link href="<?=url('');?>/css/azia.new.css" rel="stylesheet" >
+
     <script src="<?=url('');?>/lib/jquery/jquery.min.js"></script>
-
-
-
-    <link rel="stylesheet" href="<?=url('');?>/css/azia.new.css">
-
 </head>
+

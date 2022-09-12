@@ -27,9 +27,8 @@ class SupplierQuotationController extends Controller
     }
 
     public function getSupplierQuotation(Request $request) 
-    {
-        if(count($_GET))
-        {
+    {     
+           $condition = [];
             if ($request->rq_no) {
                 $condition[] = ['inv_purchase_req_quotation.rq_no', 'like', '%'.$request->rq_no.'%'];
             }
@@ -43,11 +42,7 @@ class SupplierQuotationController extends Controller
            
            // $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
             $data['quotation'] = $this->inv_purchase_req_quotation->get_quotation($condition);
-        }
-        else 
-        {
-            $data['quotation'] = $this->inv_purchase_req_quotation->get_quotation([]);
-        }
+
         $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
         $data['rq_nos'] = $this->inv_purchase_req_quotation->get_rq_nos();
         //$data['quotation'] = $this->inv_purchase_req_quotation->get_quotation([]);

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
-
+use DB;
 class WebapiController extends Controller
 {
     public function __construct()
@@ -50,6 +50,41 @@ class WebapiController extends Controller
         }
 
         return $Res;
+    }
+    function insert_user(){
+    $name = ['Mangesh','Milind','Pradeep','Nayan','Sachin','Shriniwas',
+    'Abhijeeth','Vinayak','Ganesh','Satyawan','Kanchan','Ravindra','Bhushan',
+     'Sonali','Dinesh','Mithun'];
+
+foreach( $name as $key => $names){
+
+$data['email']= strtolower($names).'@adler.com';
+$data['username']= strtolower($names);
+$data['password']= $this->encrypt(strtolower($names).'@123');
+$data['f_name']= $names;
+$data['phone']= 000000000;
+$data['employee_id']= 'EM000'.$key+1;
+$data['designation']= 'Admin';
+$data['role_permission']= 1;
+$data['status']= 1;
+$data['admin']= 1;
+$data['department']= 1;
+
+DB::table('user')->insert($data);
+}
+
+
+
+    }
+    function insert_dept(){
+        $Dept = ['RM Stores','Quality','Purchase','NPD','Administration','HR',
+    'Accounts','Manufactoring','FG Stores','Maintenance','Logistics','IT'];
+    foreach(  $Dept as $key =>  $Depts){
+
+        DB::table('department')->insert(['dept_name'=>$Depts,'status'=>1]);
+    }
+
+
     }
 
 }
