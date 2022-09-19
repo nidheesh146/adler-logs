@@ -117,10 +117,12 @@
 									<td>{{$item['date'] ? date('d-m-Y',strtotime($item['date'])) : '-'}}</td>
 									<td>{{$item['delivery_schedule'] ? date('d-m-Y',strtotime($item['delivery_schedule'])) : '-'}}</td>
 									<td>
+										@if($item['quotation_id'])
 										<?php
 											$supp = $SupplierQuotation->get_supplier($item['quotation_id']);
 											echo $supp['supplier'];
 										?>
+										@endif
 									</td>
 									<td>
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['quotation_id'].'/'.$supp['supplier_id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> View</a>
