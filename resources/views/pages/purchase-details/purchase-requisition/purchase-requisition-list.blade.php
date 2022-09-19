@@ -29,13 +29,14 @@
 
                   </div> --}}
               <div>  
+				
               </div>
 				@if(request()->get('prsr')=="sr")
-				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition?prsr=sr')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}?prsr=sr'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
 					Service Requisition
 				</button>
 				@else
-				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition?prsr=pr')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}?prsr=pr'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
 					Purchase Requisition
 				</button>
 				@endif
@@ -108,7 +109,7 @@
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
 														<label style="width: 100%;">&nbsp;</label>
 														<button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-														@if(count(request()->all('')) > 1)
+														@if(count(request()->all('')) > 2)
 															<a href="{{url()->current()}}" class="badge badge-pill badge-warning"
 															style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
 														@endif
@@ -122,7 +123,9 @@
 							</table>
 						</div>
 					</div>
-				<div class="tab-pane  @if(request()->get('prsr')!='sr')active  show @endif" id="purchase"> 
+			
+			
+					<div class="tab-pane  active  show " id="purchase"> 
 					
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" >
@@ -139,7 +142,6 @@
 							<tbody id="prbody1">
 									
 							@foreach($data['master'] as $item)
-							@if($item['prsr_type']=="PR")
 								<tr>
 									<th>{{$item['pr_no']}} </th>
 									<th>{{$item['f_name'].' '.$item['l_name']}}</th>
@@ -168,7 +170,6 @@
 									</span>
 									</td>
 								</tr>
-							@endif
 							@endforeach
 					
 							</tbody>
@@ -178,61 +179,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="tab-pane @if(request()->get('prsr')=='sr')active  show @endif" id="service">
-					<div class="table-responsive">
-						<table class="table table-bordered mg-b-0" >
-							<thead>
-								<tr>
-									<th>PR/SR NO:</th>
-									<th>requestor</th>
-									<th>date</th>
-									<th>department</th>
-									<th>prsr</th>
-									<th>Action</th>
-								</tr>
-							</thead>
-							<tbody class="prbody2">
-					
-							@foreach($data['master'] as $item)
-							@if($item['prsr_type']=="SR")
-								<tr>
-									<th>{{$item['pr_no']}} </th>
-									<th>{{$item['f_name'].' '.$item['l_name']}}</th>
-									<td>{{date('d-m-Y',strtotime($item['date']))}}</td>
-									<td>{{$item['dept_name']}}</td>
-									<td>{{$item['prsr_type']}}</td>
-									<td >
-										<span style="width: 133px;">
-										<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-										<div class="dropdown-menu">
-											@if($item['PR_SR']=="PR")
-											<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-											<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
-											<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
-											@else
-											<a href="{{url('inventory/edit-service-reqisition?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-											<a href="{{url('inventory/add-service-reqisition-item?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
-											<a href="{{url('inventory/delete-service-reqisition?sr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
-											@endif
-										</div>
-										@if($item['PR_SR']=="PR")
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-purchase-reqisition-item?pr_id='.$item["master_id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
-										@else
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-service-reqisition-item?sr_id='.$item["master_id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
-										@endif
-									</span>
-									</td>
-								</tr>
-							@endif
-							@endforeach
-					
-							</tbody>
-						</table>
-						<div class="box-footer clearfix">
-							{{ $data['master']->appends(request()->input())->links() }}
-						</div>
-					</div>
-				</div>
+
+
+
 			</div>
 		</div>
 	</div>

@@ -5,7 +5,7 @@
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
         //echo $Action;
-        $query  =  $_GET;
+     // $query  =  $_GET;
 @endphp
 
 <div class="card bd-0">
