@@ -209,6 +209,30 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label> CGST ( % ) *</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
+                                        name="CGST" placeholder="CGST ( % )">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label> SGST ( % ) *</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
+                                        name="SGST" placeholder="SGST ( % )">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label> UTGST ( % ) *</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
+                                        name="UTGST" placeholder="UTGST ( % )">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label> IGST ( % ) *</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
+                                        name="IGST" placeholder="IGST ( % )">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Currency *</label>
                                     <select class="form-control Currency" name="Currency">
                                         <option value="">--- select one ---</option>

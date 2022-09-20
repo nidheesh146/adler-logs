@@ -122,7 +122,7 @@
 							</table>
 						</div>
 					</div>
-				<div class="tab-pane  @if(request()->get('prsr')!='sr')active  show @endif" id="purchase"> 
+				<div class="" id="purchase"> 
 					
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" >
@@ -139,7 +139,7 @@
 							<tbody id="prbody1">
 									
 							@foreach($data['master'] as $item)
-							@if($item['prsr_type']=="PR")
+							
 								<tr>
 									<th>{{$item['pr_no']}} </th>
 									<th>{{$item['f_name'].' '.$item['l_name']}}</th>
@@ -168,7 +168,7 @@
 									</span>
 									</td>
 								</tr>
-							@endif
+							
 							@endforeach
 					
 							</tbody>
@@ -178,7 +178,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="tab-pane @if(request()->get('prsr')=='sr')active  show @endif" id="service">
+				<!-- <div class="tab-pane @if(request()->get('prsr')=='sr')active  show @endif" id="service">
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" >
 							<thead>
@@ -232,7 +232,7 @@
 							{{ $data['master']->appends(request()->input())->links() }}
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>
@@ -263,13 +263,21 @@
 	$('#prbody1').show();
 	$('#prbody2').show();
   });
-  
+  	$('#purchase_tab').on('click',function(){
+		$('#pr_no').val(" ");
+		$('#department').val("");
+		$('#from').val(" ");
+	});
+	$('#service_tab').on('click',function(){
+		$('#pr_no').val(" ");
+		$('#department').val("");
+		$('#from').val(" ");
+	});
 	$('.search-btn').on( "click", function(e)  {
 		var pr_no = $('#pr_no').val();
-		var pr_sr = $('#pr_sr').val();
 		var department = $('#department').val();
 		var from = $('#from').val();
-		if(!pr_no & !pr_sr & !department & !from)
+		if(!pr_no  & !department & !from)
 		{
 			e.preventDefault();
 		}

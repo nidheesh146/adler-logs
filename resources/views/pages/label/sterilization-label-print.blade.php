@@ -82,13 +82,13 @@
                                         </div>
                                     </div><br/>
                                     <div class="subdiv">
-                                        <div class="group" style= "font-weight:550;overflow:hidden;max-height:48px;;padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;font-size:10px;">
+                                        <div class="group" style= "font-weight:400;overflow:hidden;max-height:48px;;padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;font-size:10px;">
                                             {{$batchcard_data->groups}}<br/>
                                             {{$batchcard_data->discription}}
                                         </div>
                                     </div>
                                     <div class="subdiv" style="margin-top:4px;">
-                                        <div class="ss" style="float:left;width:150px; font-size:9px;">
+                                        <div class="ss" style="float:left;width:150px; font-size:11px;">
                                             <span style="margin-left:25px;"><strong>{{$batchcard_data->ad_sp1}}</strong></span><br/>
                                             <!-- <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;"> -->
                                             <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;">
@@ -100,7 +100,7 @@
                                                 ML No:{{$batchcard_data->drug_license_number}}
                                             </div>
                                         </div>
-                                        <div class="ss" style="float:left;width:150px;text-align:center;font-size:9px;">
+                                        <div class="ss" style="float:left;width:150px;text-align:center;font-size:11px;">
                                             <strong>{{$batchcard_data->ad_sp2}}</strong><br/>
                                             <!-- <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;"> -->
                                             <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:140px;margin-top:5px;">
@@ -212,13 +212,13 @@
                                         </div>
                                     </div><br/>
                                     <div class="subdiv">
-                                        <div class="group" style= "font-weight:550;overflow:hidden;max-height:48px;;padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;font-size:10px;">
+                                        <div class="group" style= "font-weight:400;overflow:hidden;max-height:48px;;padding:2px;border-bottom: 1.5px solid black;border-top: 1.5px solid black; margin-top:60px;font-size:10px;">
                                             {{$batchcard_data->groups}}<br/>
                                             {{$batchcard_data->discription}}
                                         </div>
                                     </div>
                                     <div class="subdiv" style="margin-top:4px;">
-                                        <div class="ss" style="float:left;width:150px; font-size:9px;">
+                                        <div class="ss" style="float:left;width:150px; font-size:11px;">
                                             <span style="margin-left:25px;"><strong>{{$batchcard_data->ad_sp1}}</strong></span><br/>
                                             <!-- <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;"> -->
                                             <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;">
@@ -230,7 +230,7 @@
                                                 ML No:{{$batchcard_data->drug_license_number}}
                                             </div>
                                         </div>
-                                        <div class="ss" style="float:left;width:150px;text-align:center;font-size:9px;">
+                                        <div class="ss" style="float:left;width:150px;text-align:center;font-size:11px;">
                                             <strong>{{$batchcard_data->ad_sp2}}</strong><br/>
                                             <!-- <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;"> -->
                                             <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:140px;margin-top:5px;">

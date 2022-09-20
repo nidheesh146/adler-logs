@@ -21,7 +21,7 @@
             @if(!empty(request()->prsr) &&  request()->prsr == 'pr')
                active
             @endif
-            " href="<?=url()->current();?>?<?=http_build_query($query);?>" >Purchase requisition</a>
+            " href="<?=url()->current();?>?<?=http_build_query($query);?>" id="purchase_tab">Purchase requisition</a>
             <?php
                 $query['prsr'] = 'sr';
             ?>
@@ -30,7 +30,7 @@
             @if(!empty(request()->prsr) &&  request()->prsr == 'sr')
                active
             @endif
-            "  href="<?=url()->current();?>?<?=http_build_query($query);?>">  Service requisition </a>
+            "  href="<?=url()->current();?>?<?=http_build_query($query);?>" id="service_tab">  Service requisition </a>
         </nav>   
     </div>
   </div>
