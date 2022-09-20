@@ -45,17 +45,22 @@ class InventoryController extends Controller
             if ($request->pr_no) {
                 $condition[] = ['inv_purchase_req_master.pr_no',  'like', '%'.$request->pr_no.'%'];
             }
+
             if ($request->prsr) {
-                 $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtoupper($request->prsr)];
+                $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
             }
+            if (!$request->prsr) {
+                $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
+            }
+
             if ($request->from) {
                 $condition[] = ['inv_purchase_req_master.date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition[] = ['inv_purchase_req_master.date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
             }
            
-           $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list($condition);
-        
-
+        $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list($condition);
+       
+       
         $data['department']= $this->Department->get_dept([]);
         $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
         // print_r(json_encode($data['master']));

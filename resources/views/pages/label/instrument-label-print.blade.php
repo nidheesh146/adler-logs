@@ -83,7 +83,7 @@
                         <div class="sub4" style="float:left;width:content-fit;height:70px;padding:1px;font-size:9px;text-align:center;">
                             <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
                             <span class="smalltext1">{{$manufacturing_date}}</span><br/>
-                            <strong>Qty :</strong>{{$batchcard_data->quantity_per_pack}} Nos
+                            <strong>Qty :</strong>{{$per_pack_quantity}} Nos
                             <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">&nbsp;
                             <span class="smalltext1">{{$batchcard_data->batch_no}}</span></br>
                             
@@ -195,7 +195,7 @@
                         <div class="sub4" style="float:left;width:content-fit;height:70px;padding:1px;font-size:9px;text-align:center;">
                             <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:15px;">&nbsp;
                             <span class="smalltext1">{{$manufacturing_date}}</span><br/>
-                            <strong>Qty :</strong>{{$batchcard_data->quantity_per_pack}} Nos
+                            <strong>Qty :</strong>{{$per_pack_quantity}} Nos
                             <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:25px;">&nbsp;
                             <span class="smalltext1">{{$batchcard_data->batch_no}}</span></br>
                             

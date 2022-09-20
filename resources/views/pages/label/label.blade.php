@@ -58,7 +58,7 @@
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Per Pack Quantity *</label>
-                                <input type="number" value="" class="form-control" name="per_pack_quantity" id="per_pack_quantity"  placeholder="Per pack quantity" readonly >
+                                <input type="number" value="" class="form-control" name="per_pack_quantity" id="per_pack_quantity"  placeholder="Per pack quantity">
                             </div><!-- form-group -->
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">

@@ -78,6 +78,7 @@ class LabelController extends Controller
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $lot_no = $request->sterilization_lot_no;
+        $per_pack_quantity = $request->per_pack_quantity;
         $manufacture_date = $request->manufacturing_date;
         $sterilization_expiry_date = $request->sterilization_expiry_date;
         $batchcard_data = DB::table('batchcard_batchcard')
@@ -86,7 +87,7 @@ class LabelController extends Controller
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
 
-        return view('pages/label/patient-label-print', compact('batchcard_data','no_of_label', 'lot_no', 'manufacture_date', 'sterilization_expiry_date'));
+        return view('pages/label/patient-label-print', compact('batchcard_data','no_of_label', 'lot_no', 'manufacture_date', 'sterilization_expiry_date', 'per_pack_quantity'));
         //Redirect::away('label/print/patient-label');
     }
 
@@ -147,6 +148,7 @@ class LabelController extends Controller
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $manufacturing_date = $request->manufacturing_date;
+        $per_pack_quantity = $request->per_pack_quantity;
         $batchcard_data = DB::table('batchcard_batchcard')
                             ->select('batchcard_batchcard.*', 'product_product.*')
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
@@ -159,13 +161,14 @@ class LabelController extends Controller
         $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
         $manf_date_combo_barcode = $generator->getBarcode($manf_date_combo, $generator::TYPE_CODE_128, 1,45, $color);
         $gs1_label_batch_combo_barcode = $generator->getBarcode($gs1_label_batch_combo, $generator::TYPE_CODE_128);
-        return view('pages/label/non-sterilization-label-print', compact('batchcard_data','no_of_label','sku_code_barcode', 'gs1_label_batch_combo', 'gs1_label_batch_combo_barcode','manf_date_combo','manf_date_combo_barcode','manufacturing_date' ));
+        return view('pages/label/non-sterilization-label-print', compact('batchcard_data','no_of_label','sku_code_barcode', 'gs1_label_batch_combo', 'gs1_label_batch_combo_barcode','manf_date_combo','manf_date_combo_barcode','manufacturing_date','per_pack_quantity' ));
     }
 
     public function generateInstrumentLabel(Request $request)
     {
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
+        $per_pack_quantity = $request->per_pack_quantity;
         $manufacturing_date = $request->manufacturing_date;
         $batchcard_data = DB::table('batchcard_batchcard')
                             ->select('batchcard_batchcard.*', 'product_product.*')
@@ -179,6 +182,6 @@ class LabelController extends Controller
         $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
         $manf_date_combo_barcode = $generator->getBarcode($manf_date_combo, $generator::TYPE_CODE_128, 1,45,$color);
         $gs1_label_batch_combo_barcode = $generator->getBarcode($gs1_label_batch_combo, $generator::TYPE_CODE_128);
-        return view('pages/label/instrument-label-print', compact('batchcard_data','no_of_label','sku_code_barcode', 'gs1_label_batch_combo', 'gs1_label_batch_combo_barcode','manf_date_combo','manf_date_combo_barcode','manufacturing_date' ));
+        return view('pages/label/instrument-label-print', compact('batchcard_data','no_of_label','sku_code_barcode', 'gs1_label_batch_combo', 'gs1_label_batch_combo_barcode','manf_date_combo','manf_date_combo_barcode','manufacturing_date','per_pack_quantity' ));
     }
 }
