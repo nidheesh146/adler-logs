@@ -289,6 +289,14 @@ class SupplierQuotationController extends Controller
                                                     ->first();
           return $check;
     }
+    function getRemarks($rq_no,$supplier)
+    {
+        $check = inv_purchase_req_quotation_item_supp_rel::where('quotation_id','=',$rq_no)
+                                                    ->where('supplier_id','=',$supplier)
+                                                    ->pluck('remarks')
+                                                    ->first();
+          return $check;
+    }
 
 
 

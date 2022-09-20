@@ -94,15 +94,24 @@
                     @if(!empty($suppliers))
 				    @foreach($suppliers as $supplier)
                         <td colspan="3">
-                            <?php $check = $fn->checkSelectedQuotation($rq_no,$supplier['id']) ?>
-                            <button style="margin-left: 9px;font-size: 14px;" class="button badge badge-pill badge-warning select-button" data-quotation="{{$rq_no}}" data-supplier="{{$supplier['id']}}" @if($check==1) disabled @endif>
-                            <span class="text">@if($check==1)Selected @else Select @endif</span> 
-                            <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
-                            </button>
                             <span style="float:right">Total :</span>
                         </td>
                         <td class="grant_total"><span class="tot"></span> {{$item['currency_code']}}</td>
+                        
                     @endforeach
+                    </tr>
+                    <tr>
+                        <td colspan="3"></td>
+                        @foreach($suppliers as $supplier)
+                            <td colspan="3"><strong>Remarks:</strong>{{$fn->getRemarks($rq_no,$supplier['id'])}}</td>
+                            <td>
+                                <?php $check = $fn->checkSelectedQuotation($rq_no,$supplier['id']) ?>
+                                <button style="margin-left: 9px;font-size: 14px;" class="button badge badge-pill @if($check==1) badge-success @else badge-warning @endif  select-button" data-quotation="{{$rq_no}}" data-supplier="{{$supplier['id']}}" @if($check==1) disabled @endif>
+                                <span class="text">@if($check==1)Selected @else Select @endif</span> 
+                                <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        @endforeach
                     </tr>
                     @endif
 					</tbody>
