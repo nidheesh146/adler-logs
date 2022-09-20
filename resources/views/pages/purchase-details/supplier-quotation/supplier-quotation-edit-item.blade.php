@@ -122,6 +122,10 @@
                                     <label> Specification *</label>
                                     <textarea  class="form-control"  id="Specification" name="Specification" placeholder="Specification">{{$data['get_item_single']['supp_specification']}}</textarea>
                                 </div>
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                    <label> Remarks *</label>
+                                    <textarea  class="form-control"  id="Remarks" name="Remarks" placeholder="Remarks">{{$data['get_item_single']['remarks']}}</textarea>
+                                </div>
                                 
                             </div>                           
 
@@ -172,6 +176,9 @@
                     },
                     Specification: {
                         required: true,
+                    },
+                    Remarks: {
+                      required: true,
                     },
                 },
                 submitHandler: function(form) {

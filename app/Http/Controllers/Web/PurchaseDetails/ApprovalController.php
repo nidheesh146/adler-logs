@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-
+use App\Models\User;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_master;
 use App\Models\PurchaseDetails\inv_supplier;
@@ -16,6 +16,7 @@ class ApprovalController extends Controller
 {
     public function __construct()
     {
+        $this->User = new User;
         $this->inv_purchase_req_item = new inv_purchase_req_item;
         $this->inv_purchase_req_master = new inv_purchase_req_master;
         $this->inv_supplier = new inv_supplier;
@@ -49,6 +50,7 @@ class ApprovalController extends Controller
         $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
         $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
         $data['items'] = $this->inventory_rawmaterial->get_items();
+        $data['users'] = $this->User->get_all_users([]);
         //$data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved([]);
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-approvel', compact('data'));
     }
@@ -58,6 +60,7 @@ class ApprovalController extends Controller
             $validation['purchaseRequisitionItemId'] = ['required'];
             $validation['status'] = ['required'];
             $validation['reason'] = ['required'];
+            $validation['approved_by'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) {
                 if($request->status == 1  && !$request->approved_qty){
@@ -68,7 +71,7 @@ class ApprovalController extends Controller
                 $data = ['inv_purchase_req_item_approve.approved_qty'=>$request->approved_qty,
                          'inv_purchase_req_item_approve.status'=>$request->status,
                          'inv_purchase_req_item_approve.remarks'=>$request->reason,
-                         'inv_purchase_req_item_approve.created_user'=>config('user')['user_id'],
+                         'inv_purchase_req_item_approve.created_user'=>$request->approved_by,
                          'inv_purchase_req_item_approve.updated_at'=>date('Y-m-d H:i:s')];
                         if($request->status == 1)
                         $status="Approved";

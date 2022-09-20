@@ -90,6 +90,8 @@
                                             <th>Net value </th>
                                             <th>Actual Order Qty</th>
                                             <th>Approved Qty</th>
+                                            <th>Approved By</th>
+                                            <th>Date</th>
                                         </tr>
                                     </thead>
                                     <tbody >

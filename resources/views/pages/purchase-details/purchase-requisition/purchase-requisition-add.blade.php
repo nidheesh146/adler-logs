@@ -103,7 +103,7 @@
                                            selected
                                        @endif
                                      @endif
-                                     >{{$user['employee_id']}}-{{$user['f_name']}} {{$user['l_name']}}</option>
+                                     >{{$user['f_name']}} {{$user['l_name']}}</option>
                                     @endforeach
                                 </select>
                             </div><!-- form-group -->

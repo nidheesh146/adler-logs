@@ -156,12 +156,6 @@
                                         id="OpenPOQty" name="OpenPOQty" placeholder="">
                                 </div>
 
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Actual order Qty *</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['actual_order_qty'] : '' }}"
-                                        name="ActualorderQty" placeholder="Actual order Qty">
-                                </div>
                                 @if(request()->pr_id)
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Min Level *</label>
@@ -177,12 +171,11 @@
                                 </div>
                                 @endif
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Basic Value *</label>
-                                    <input type="text" name="BasicValue"
-                                        value="{{ !empty($datas) ? $datas['item']['basic_value'] : '' }}" class="form-control"
-                                        placeholder="Basic Value">
-                                </div><!-- form-group -->
-
+                                    <label> Actual order Qty *</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ !empty($datas) ? $datas['item']['actual_order_qty'] : '' }}"
+                                        name="ActualorderQty" id="ActualorderQty" placeholder="Actual order Qty">
+                                </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Rate *</label>
                                     <input type="text" class="form-control"
@@ -190,47 +183,58 @@
                                         placeholder="Rate">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label>Basic Value *</label>
+                                    <input type="text" name="BasicValue"
+                                        value="{{ !empty($datas) ? $datas['item']['basic_value'] : '' }}" class="form-control"
+                                        placeholder="Basic Value" id="BasicValue">
+                                </div><!-- form-group -->
+
+                                
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Discount ( % ) *</label>
                                     <input type="text" class="form-control"
                                         value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
                                         name="Discount" placeholder="Discount ( % )">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label> Discount Value *</label>
+                                    <input type="text" class="form-control"
+                                        value="" id="DiscountValue"
+                                        name="DiscountValue" placeholder="Discount Value">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> GST *</label>
-                                    {{-- <input type="text" class="form-control" value="" name="GST" id="GST" placeholder="GST"> --}}
-                                    <select class="form-control GST" name="GST">
+                                    <select class="form-control GST" id="GST" name="GST">
                                         <option value="">--- select one ---</option>
                                         @foreach ($data['gst'] as $item)
-                                            <option value="{{ $item['id'] }}" @if (!empty($datas))  @if ($item['gst']==$datas['item']['gst'])
-                                                selected @endif
-                                        @endif
-                                        >{{ $item['gst'] }} %</option>
+                                            <option value="{{ $item['id'] }}" @if(!empty($datas))  @if($item['gst']==$datas['item']['gst'])
+                                                selected @endif @endif >{{ $item['gst'] }} %</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> CGST ( % ) *</label>
                                     <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
-                                        name="CGST" placeholder="CGST ( % )">
+                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="CGST"
+                                        name="CGST" placeholder="CGST ( % )" readonly>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> SGST ( % ) *</label>
                                     <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
-                                        name="SGST" placeholder="SGST ( % )">
+                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="SGST"
+                                        name="SGST" placeholder="SGST ( % )" readonly>
                                 </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> UTGST ( % ) *</label>
                                     <input type="text" class="form-control"
                                         value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
-                                        name="UTGST" placeholder="UTGST ( % )">
-                                </div>
+                                        name="UTGST" placeholder="UTGST ( % )" readonly>
+                                </div> -->
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> IGST ( % ) *</label>
                                     <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
-                                        name="IGST" placeholder="IGST ( % )">
+                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="IGST"
+                                        name="IGST" placeholder="IGST ( % )" readonly>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Currency *</label>
@@ -276,179 +280,185 @@
         <!-- az-content-body -->
     </div>
     <script src="<?= url('') ?>/js/azia.js"></script>
-                <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
-                <script src="<?= url('') ?>/js/jquery.validate.js"></script>
-                <script src="<?= url('') ?>/js/additional-methods.js"></script>
-                <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
-                <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
-                <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
-                <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
-                <script>
-                  $(function(){
+    <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+    <script src="<?= url('') ?>/js/jquery.validate.js"></script>
+    <script src="<?= url('') ?>/js/additional-methods.js"></script>
+    <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
+    <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
+    <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
+    <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
+    <script>
+        $(function(){
 
-                function  netvalue(){
-                  let Rate = $('#Rate').val();
-                  let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
-                  let gst = $('.GST').val() ? $('.GST').val() : 0;
-                  if(Rate){
+            function  netvalue() {
+                let Rate = $('#Rate').val();
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let gst = $('.GST').val() ? $('.GST').val() : 0;
+                if(Rate)
+                {
                     let total = ( Rate - ((Rate / 100) * Discount)) ;
                     let netvalue = (+total + ((total / 100) * gst));
                     $('#Netvalue').val(netvalue.toFixed(2));
-                  }else{
+                }
+                else
+                {
                    $('#Discount').val('');
                    $('.GST').val('');
-                  }
                 }
+            }
 
-                $( "#Rate" ).on( "input",function() {
-                  netvalue();
+            function basicValue() {
+                let actual_qty = $('#ActualorderQty').val();
+                let Rate = $('#Rate').val();
+                let basic = actual_qty*Rate;
+                $('#BasicValue').val(basic);
+            }
+            function DiscountValue() {
+                let actual_qty = $('#ActualorderQty').val();
+                let Rate = $('#Rate').val();
+                let discout_percent = $("#Discount").val();
+                let discount_value = (actual_qty*Rate*discout_percent)/100;
+                $('#DiscountValue').val(discount_value); 
+            }
+
+            $( "#Rate" ).on( "input",function() {
+                basicValue();
+                netvalue();   
+            });
+            $( "#Discount" ).on( "input",function() {
+                netvalue();
+                DiscountValue();
+            });
+            $('.GST').on('change', function(e) {
+                let gst= $(this).val();
+                $.ajax ({
+                    type: 'GET',
+                    url: "{{url('getGST')}}",
+                    data: { id: '' + gst + '' },
+                    success : function(data) {
+                       $('#IGST').val(data.igst);
+                       $('#CGST').val(data.cgst);
+                       $('#SGST').val(data.sgst);
+                    }
                 });
-                $( "#Discount" ).on( "input",function() {
-                  netvalue();
-                });
-                $('.GST').on('change', function(e) {
-                   netvalue();
-                });
+                netvalue();
+            });
 
-                    $("#commentForm").validate({
-                            rules: {
-                                Itemcode: {
-                                    required: true,
-                                },
-                                // Itemtype: {
-                                //     required: true,
-                                // },
-                                // Itemdescription: {
-                                //     required: true,
-                                // },
-                                // HSNSAC: {
-                                //   required: true,
-                                // },
-                                // PRSR: {
-                                //     required: true,
-                                // },
-                                Supplier: {
-                                    required: true,
-                                },
-                                // Unit: {
-                                //     required: true,
-                                // },
-                                BasicValue: {
-                                    required: true,
-                                    number: true
-                                },
-                                // StockQty: {
-                                //     required: true,
-                                // },
-                                // OpenPOQty: {
-                                //     required: true,
-                                // },
-                                ActualorderQty: {
-                                    required: true,
-                                    number: true
-                                },
-                                // MinLevel: {
-                                //     required: true,
-                                // },
-                                // MaxLevel: {
-                                //     required: true,
-                                // },
-                                Rate: {
-                                    required: true,
-                                    number: true
-                                },
-                                Discount: {
-                                    required: true,
-                                    number: true
-                                },
-                                GST: {
-                                    required: true,
-                                },
-                                Currency: {
-                                    required: true,
-                                },
-                                Netvalue: {
-                                    required: true,
-                                    number: true
-                                },
-                                Remarks: {
-                                    required: true,
-                                }
-                            },
-                            submitHandler: function(form) {
-                                  form.submit();
-                            }
-                        });
+            $("#commentForm").validate({
+                rules: {
+                    Itemcode: {
+                            required: true,
+                    },
+                                
+                    Supplier: {
+                            required: true,
+                    },
+                    BasicValue: {
+                            required: true,
+                            number: true
+                    },
+                    ActualorderQty: {
+                                required: true,
+                                number: true
+                    },
+                    Rate: {
+                        required: true,
+                        number: true
+                    },
+                    Discount: {
+                        required: true,
+                        number: true
+                    },
+                    GST: {
+                        required: true,
+                    },
+                    Currency: {
+                            required: true,
+                    },
+                    Netvalue: {
+                        required: true,
+                        number: true
+                    },
+                    Remarks: {
+                        required: true,
+                    }
+                },
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
 
-                            $('.Supplier').select2({
-                                placeholder: 'Choose one',
-                                searchInputPlaceholder: 'Search',
-                                minimumInputLength: 3,
-                                allowClear: true,
-                                ajax: {
-                                url: "{{ url('inventory/suppliersearch') }}",
-                                processResults: function (data) {
-                                  return {results: data
-                                  };
-                                }
-                              }
-                            });
+            $('.Supplier').select2({
+                placeholder: 'Choose one',
+                searchInputPlaceholder: 'Search',
+                minimumInputLength: 3,
+                allowClear: true,
+                    ajax: {
+                        url: "{{ url('inventory/suppliersearch') }}",
+                        processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    }
+                }
+            });
 
-                            $('.Item-code').select2({
-                                placeholder: 'Choose one',
-                                searchInputPlaceholder: 'Search',
-                                minimumInputLength: 6,
-                                allowClear: true,
-                                ajax: {
-                                url: "{{ url('inventory/itemcodesearch') }}",
-                                processResults: function (data) {
-
-                                  return { results: data };
-                                }
-                              }
-                            }).on('change', function (e) {
-             
-                    $('#Itemcode-error').remove();
-                    $('#Itemdescription').text('');
-                    $('#Itemtype').val('');
-                    $('#HSNSAC').val('');
-                    $('#Unit').val('');
-                    $('#MinLevel').val('');
-                    $('#MaxLevel').val('');
-                    $('#Itemtypehidden').val('');
+            $('.Item-code').select2({
+                placeholder: 'Choose one',
+                searchInputPlaceholder: 'Search',
+                minimumInputLength: 6,
+                allowClear: true,
+                ajax: {
+                    url: "{{ url('inventory/itemcodesearch') }}",
+                    processResults: function (data) {
+                            return { results: data };
+                    }
+                }
+            }).on('change', function (e) {
+                $('#Itemcode-error').remove();
+                $('#Itemdescription').text('');
+                $('#Itemtype').val('');
+                $('#HSNSAC').val('');
+                $('#Unit').val('');
+                $('#MinLevel').val('');
+                $('#MaxLevel').val('');
+                $('#Itemtypehidden').val('');
                  
-                      let res = $(this).select2('data')[0];
-                          if(res.short_description){
-                              $('#Itemdescription').text(res.short_description);
-                          }
-                          if(res.type_name){
-                            $('#Itemtype').val(res.type_name);
-                          }
-                          if(res.hsn_code){
-                            $('#HSNSAC').val(res.hsn_code);
-                          }
-                          if(res.unit_name){
-                            $('#Unit').val(res.unit_name);
-                          }
-                          if(res.min_stock || res.min_stock == 0 ){
-                            $('#MinLevel').val(res.min_stock);
-                          }
-                          if(res.max_stock || res.max_stock == 0){
-                            $('#MaxLevel').val(res.max_stock);
-                          }
-                          if(res.opening_quantity || res.opening_quantity == 0){
-                            $('#OpenPOQty').val(res.opening_quantity);
-                          }
-                          if(res.availble_quantity || res.availble_quantity == 0){
-                            $('#StockQty').val(res.availble_quantity);
-                          }
-                          if(res.id){
-                            $('#Itemcodehidden').val(res.id);
-                          }
-                      });       
-                  });
+                let res = $(this).select2('data')[0];
+                    if(res.short_description){
+                        $('#Itemdescription').text(res.short_description);
+                    }
+                    if(res.type_name){
+                        $('#Itemtype').val(res.type_name);
+                    }
+                    if(res.hsn_code){
+                        $('#HSNSAC').val(res.hsn_code);
+                    }
+                    if(res.unit_name){
+                        $('#Unit').val(res.unit_name);
+                    }
+                    if(res.min_stock || res.min_stock == 0 ){
+                        $('#MinLevel').val(res.min_stock);
+                    }
+                    if(res.max_stock || res.max_stock == 0){
+                        $('#MaxLevel').val(res.max_stock);
+                    }
+                    if(res.opening_quantity || res.opening_quantity == 0){
+                        $('#OpenPOQty').val(res.opening_quantity);
+                    }
+                    if(res.availble_quantity || res.availble_quantity == 0){
+                        $('#StockQty').val(res.availble_quantity);
+                    }
+                    if(res.id){
+                        $('#Itemcodehidden').val(res.id);
+                    }
+                });       
+            });
+            // $('.GST').on('change', function() {
+                
+            // });
 
-                </script>
+        </script>
 
 
 @stop

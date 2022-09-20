@@ -95,7 +95,7 @@ class InventoryController extends Controller
                 $datas['created_at'] =  date('Y-m-d h:i:s');
                 $datas['updated_at'] =  date('Y-m-d h:i:s');
                 $inv_purchase_num =  $this->inv_purchase_req_master->insertdata($datas);
-                if($request->PRSR=='PR'){
+                if($request->prsr=='pr'){
                     return redirect('inventory/add-purchase-reqisition-item?pr_id='.$inv_purchase_num);
                 }
                 else
@@ -269,6 +269,13 @@ class InventoryController extends Controller
         $data['gst'] = $this->inventory_gst->get_gst();
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data'));
       }
+
+      public function getGST(Request $request)
+      {
+        $id = $request->id;
+        $gst = $this->inventory_gst->get_single_gst(['id'=>$id]);
+        return $gst;
+     }
   
         //edit  Purchase Reqisition item 
         public function edit_purchase_reqisition_item(Request $request)

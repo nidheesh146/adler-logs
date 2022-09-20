@@ -45,7 +45,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
         return $this->select(['inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_purchase_req_quotation.delivery_schedule',
         'inv_purchase_req_item.actual_order_qty','inv_purchase_req_quotation_item_supp_rel.quantity as supp_quantity','inv_purchase_req_quotation_item_supp_rel.rate as supp_rate',
         'inv_purchase_req_quotation_item_supp_rel.discount as supplier_discount','inv_purchase_req_quotation_item_supp_rel.item_id as inv_item_id','inv_supplier.vendor_id','inv_supplier.vendor_name',
-        'inv_purchase_req_quotation_item_supp_rel.specification as supp_specification','inventory_rawmaterial.item_name','inv_unit.unit_name','inventory_gst.gst','currency_exchange_rate.currency_code',
+        'inv_purchase_req_quotation_item_supp_rel.specification as supp_specification','inv_purchase_req_quotation_item_supp_rel.remarks','inventory_rawmaterial.item_name','inv_unit.unit_name','inventory_gst.gst','currency_exchange_rate.currency_code',
         'inv_purchase_req_item.basic_value','inv_purchase_req_item.rate','inv_purchase_req_item.discount_percent','inv_purchase_req_item.net_value','inv_purchase_req_item.discount_percent',
         'inventory_rawmaterial.short_description','inv_purchase_req_item_approve.approved_qty'
       

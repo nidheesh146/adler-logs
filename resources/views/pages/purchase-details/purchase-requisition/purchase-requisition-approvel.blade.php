@@ -257,9 +257,34 @@
                                     <option value="0">Reject</option>
                                 </select>
                             </div>
-							<div class="form-group">
+							<div class="form-group ">
                                 <label for="inputAddress">Approved Qty *</label>
                                 <input type="text" name="approved_qty"  class="form-control approved_qty" id="approved_qty" placeholder="Approved Qty">
+                            </div> 
+                            <div class="form-group">
+                                <label for="inputAddress">Approved By *</label><br/>
+                                <style>
+                                    .select2-container .select2-selection--single {
+                                        height: 38px;
+                                        width: 450px;
+                                    }
+                                    .select2-container--default .select2-selection--single .select2-selection__arrow b{
+                                        margin-left: 242px;
+                                        margin-top: 2px;
+                                    }
+                                    .select2-container--open .select2-dropdown--above{
+                                        width:445px;
+                                    }
+                                    .select2-container--default .select2-results>.select2-results__options{
+                                        width: 433px;
+                                    }
+                                </style>
+                                <select class="form-control select2 approved_by" name="approved_by">
+                                    <option value="">--- select one ---</option>
+                                    @foreach($data['users'] as $user)
+                                     <option value="{{$user['user_id']}}">{{$user['f_name']}} {{$user['l_name']}}</option>
+                                    @endforeach
+                                </select>
                             </div> 
                             <div class="form-group">
                                 <label for="inputAddress">Remarks *</label>
@@ -320,6 +345,9 @@
                 reason: {
                     required: true,
                 },
+                approved_by:{
+                    required: true,
+                }
             },
             submitHandler: function(form) {
                 $('.spinner-button').show();
@@ -329,7 +357,10 @@
     
   });
   
- 
+  $('.approved_by').select2({
+        placeholder: 'Choose one',
+        searchInputPlaceholder: 'Search',
+    });
 
  $('.search-btn').on( "click", function(e)  {
 		var supplier = $('#supplier').val();

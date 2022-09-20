@@ -14,5 +14,8 @@ class inventory_gst extends Model
     function get_gst(){
         return $this->get();
     }
+    function get_single_gst($condition){
+        return $this->where($condition)->first();
+    }
 
 }

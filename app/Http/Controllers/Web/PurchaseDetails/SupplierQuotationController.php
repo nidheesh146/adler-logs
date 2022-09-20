@@ -167,6 +167,7 @@ class SupplierQuotationController extends Controller
             $validation['rate'] = ['required'];
             $validation['discount'] = ['required'];
             $validation['Specification'] = ['required'];
+            $validation['Remarks'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
             if(!$validator->errors()->all()){
@@ -174,7 +175,8 @@ class SupplierQuotationController extends Controller
                 "specification" =>  $request->Specification,
                 "rate"  => $request->rate,
                 "discount"=>$request->discount,
-                "quantity" =>$request->quantity
+                "quantity" =>$request->quantity,
+                "remarks" =>$request->Remarks,
             ];
             $request->session()->flash('success',"You have successfully updated a Supplier Quotation Item !");
             $this->inv_purchase_req_quotation_item_supp_rel->updatedata(['quotation_id'=>$rq_no,'item_id'=>$item_id,'supplier_id'=>$supp_id],$data);
