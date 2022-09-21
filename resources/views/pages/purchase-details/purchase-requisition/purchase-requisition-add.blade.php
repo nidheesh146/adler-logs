@@ -11,32 +11,32 @@
                 <span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">@if(request()->get('prsr')=="sr" || request()->sr_id) SERVICE REQUISITION @else PURCHASE REQUISITION @endif</a></span>
                 <span><a href="">
                    @if((request()->pr_id) AND (!request()->sr_id)) 
-                        Edit Purchase Requisition Master
+                        Edit Purchase Requestor Details
                     @elseif((!request()->pr_id) AND (request()->sr_id))
-                        Edit Service Requisition Master  
+                        Edit Service Requestor Details  
                     @elseif(request()->get('prsr')=="sr")
-                        Add Service Requisition Master
+                        Add Service Requestor Details
                     @else
-                        Add Purchase Requisition Master
+                        Add Purchase Requestor Details
                    @endif
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                     @if((request()->pr_id) AND (!request()->sr_id)) 
-                        Edit Purchase Requisition Master
+                        Edit Purchase Requestor Details
                     @elseif((!request()->pr_id) AND (request()->sr_id))
-                        Edit Service Requisition Master  
+                        Edit Service Requestor Details  
                     @elseif(request()->get('prsr')=="sr")
-                        Add Service Requisition Master
+                        Add Service Requestor Details
                     @else
-                        Add Purchase Requisition Master
+                        Add Purchase Requestor Details
                    @endif
             </h4>
             <div class="az-dashboard-nav">
                 <nav class="nav">
-                    <a class="nav-link  active  " href="">@if(request()->get('prsr')=="sr" || request()->sr_id) Service @else Purchase @endif requisition master </a>
-                     <a class="nav-link  " @if(request()->pr_id) href="{{url('inventory/get-purchase-reqisition-item?pr_id='.request()->pr_id)}}" @endif >  @if(request()->get('prsr')=="sr" || request()->sr_id) Service @else Purchase @endif requisition item </a>
+                    <a class="nav-link  active  " href="">@if(request()->get('prsr')=="sr" || request()->sr_id) Service @else Purchase @endif Requestor Details </a>
+                     <a class="nav-link  " @if(request()->pr_id) href="{{url('inventory/get-purchase-reqisition-item?pr_id='.request()->pr_id)}}" @endif >  @if(request()->get('prsr')=="sr" || request()->sr_id) Service @else Purchase @endif Requisition Details </a>
                      <a class="nav-link  " href=""> </a>
                 </nav>
            

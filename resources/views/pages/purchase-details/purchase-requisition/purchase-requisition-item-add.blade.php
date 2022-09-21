@@ -34,15 +34,15 @@
                     @if(request()->pr_id)
                         <a class="nav-link    "
                             href="{{ url('inventory/edit-purchase-reqisition?pr_id=' . request()->pr_id) }}">Purchase
-                            requisition master </a>
-                        <a class="nav-link  active" @if (request()->pr_id) href="{{ url('inventory/get-purchase-reqisition-item?pr_id=' . request()->pr_id) }}" @endif> Purchase requisition item </a>
+                            Requestor Details </a>
+                        <a class="nav-link  active" @if (request()->pr_id) href="{{ url('inventory/get-purchase-reqisition-item?pr_id=' . request()->pr_id) }}" @endif> Purchase Requisition Details  </a>
                         <a class="nav-link  " href=""> </a>
                     @endif
                     @if(request()->sr_id)
                         <a class="nav-link    "
                             href="{{ url('inventory/edit-purchase-reqisition?sr_id=' . request()->sr_id) }}">Service 
-                            requisition master </a>
-                        <a class="nav-link  active" @if (request()->sr_id) href="{{ url('inventory/get-purchase-reqisition-item?sr_id=' . request()->sr_id) }}" @endif> Service requisition item </a>
+                            Requestor Details </a>
+                        <a class="nav-link  active" @if (request()->sr_id) href="{{ url('inventory/get-purchase-reqisition-item?sr_id=' . request()->sr_id) }}" @endif> Service Requisition Details </a>
                         <a class="nav-link  " href=""> </a>
                     @endif
                     </nav>
@@ -196,7 +196,13 @@
                                         value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
                                         name="Discount" placeholder="Discount ( % )">
                                 </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                    <label> Discount Rate *</label>
+                                    <input type="text" class="form-control"
+                                        value="" id="DiscountRate"
+                                        name="DiscountRate" placeholder="Discount Rate">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                     <label> Discount Value *</label>
                                     <input type="text" class="form-control"
                                         value="" id="DiscountValue"
@@ -215,13 +221,13 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> CGST ( % ) *</label>
                                     <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="CGST"
+                                        value="{{ !empty($datas) ? $datas['item']['cgst'] : '' }}" id="CGST"
                                         name="CGST" placeholder="CGST ( % )" readonly>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> SGST ( % ) *</label>
                                     <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="SGST"
+                                        value="{{ !empty($datas) ? $datas['item']['sgst'] : '' }}" id="SGST"
                                         name="SGST" placeholder="SGST ( % )" readonly>
                                 </div>
                                 <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -233,7 +239,7 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> IGST ( % ) *</label>
                                     <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="IGST"
+                                        value="{{ !empty($datas) ? $datas['item']['igst'] : '' }}" id="IGST"
                                         name="IGST" placeholder="IGST ( % )" readonly>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -317,7 +323,9 @@
                 let actual_qty = $('#ActualorderQty').val();
                 let Rate = $('#Rate').val();
                 let discout_percent = $("#Discount").val();
-                let discount_value = (actual_qty*Rate*discout_percent)/100;
+                let discount_rate = (actual_qty*Rate*discout_percent)/100;
+                let discount_value = (actual_qty*Rate)-discount_rate;
+                $('#DiscountRate').val(discount_rate); 
                 $('#DiscountValue').val(discount_value); 
             }
 

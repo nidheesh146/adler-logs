@@ -109,7 +109,9 @@
                                         <td>{{$item['currency_code']}}</td>
                                         <td>{{$item['net_value']}}</td>	
                                         <td>{{$item['actual_order_qty']}}</td>
-                                        <td>{{$item['approved_qty']}}</td>						 
+                                        <td>{{$item['approved_qty']}}</td>	
+                                        <td>{{$item['f_name']}} {{$item['l_name']}}</td>
+                                        <td>{{$item['f_name']}}</td>					 
                                     </tr>
                                     @endif	
                                     @endforeach
