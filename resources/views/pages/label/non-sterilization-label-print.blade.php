@@ -31,15 +31,33 @@
                     $page_count = (int)($no_of_label/12);
                     $remaining = $no_of_label%12;
                  ?>
+                 <style>
+                   
+                        <?php for($i=1;$i<=$label_per_page-2;$i++) { ?>
+                            #labelstyle<?php echo $i; ?>{
+                                margin-bottom:4px;
+                            }
+                            <?php }?>
+                            .labelstyle7{
+                                margin-top:3px;
+                            }
+                            .labelstyle8{
+                                margin-top:3px;
+                            }
+                       
+                </style>
+                
                 @for ($i = 0; $i< $page_count; $i++)
+                <!-- <div class="page-container" style="margin-top:0.4cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;"> -->
                 <div class="page-container" style="margin-top:0.01cm;width:21.1cm;">
-                @for ($j=0;$j<$label_per_page;$j++)
-                <div class=" label-container labelstyle{{$j}}" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:0px;@if($j==7 || $j==8) margin-top:3px; @endif @if($j==9 || $j==10) margin-top:8px; @endif">
+                @for ($j=1;$j<=$label_per_page;$j++)
+                <!-- <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:1px"> -->
+                <div class=" label-container labelstyle{{$j}}" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:0px;@if($j==7 || $j==8) margin-top:3px; @endif @if($j==9 || $j==10) margin-top:5px; @endif">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
-                        <!-- <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:3.7px;padding-left: 5px;">
+                        <!-- <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:4px;padding-left: 5px;">
                             <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:14px;height:14px;">
-                            <span style="margin-left:2px;">visit :http://www.adler-healthcare.com <br>To see instructions for use please</span>
-                        </div>  -->
+                            <div style="float:left;margin-top:3.5px;font-weight:600;line-height:1.2em;">http://www.adler-healthcare.com<br> please visit:<br>To see instructions for use </div> 
+                        </div> -->
                         <div class="sub1" style="float:left;width:content-fit;font-weight:bold;">
                             <img src="{{asset('/img/alderlogo/IFU.png')}}" style="float:left; height:81px;">
                             
@@ -47,7 +65,7 @@
                         
                         <div class="sub2" style="float:left;width:8%;padding:1px;height:70px">
                             <span class="smalltext" style="font-size:4.7px;font-weight:500;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:5px;">
-                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
+                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021')) )}}
                             </span>
                         </div>
                         <div class="sub3" style="float:left;width:50%;padding:1px;font-size:8px;line-height:1.3;">
@@ -85,6 +103,7 @@
                                 <!--@if($batchcard_data->is_read_instruction_logo==1) -->
                                 <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;padding:0px;margin-left: 3px;">
                                 <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;">
+                                <!-- <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;"> -->
                                 <!--@endif -->
                                 <!-- @if($batchcard_data->is_donot_reuse_logo==1)
                                 <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:35%;float:left;">
@@ -102,7 +121,7 @@
                                 </div>
                                 <div style="margin-left:2px;float:left;width:62%;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">ML No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">VL No:{{$batchcard_data->drug_license_number}}</span> 
                                     <span class=" cls" style="padding-left:2px;font-size:8px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
                                     <div class="" style="display:block;margin-left: 35px;">
                                         <span style="font-weight:550;font-size:6.3px;display:block;padding-left:2px">
@@ -136,29 +155,30 @@
                         <?php }?>
                 </style>
                 @if($remaining!=0)
-                    <style>
+                <style>
                         <?php for($i=1;$i<=$remaining;$i++) { ?>
                             .label-content<?php echo $i; ?>{
                                 display:block;
                             }
                         <?php }?>
-                    </style>
-                <div class="page-container" style="margin-top:0.01cm;width:21.1cm;">
+                </style>
+                <div class="page-container" style="margin-top:0.01cm;margin-bottom:0cm;width:21.1cm;">
                 @for ($j=1;$j<=$label_per_page;$j++)
-                <div class=" label-container labelstyle{{$j}}" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:0px;@if($j==7 || $j==8) margin-top:3px; @endif @if($j==9 || $j==10) margin-top:8px; @endif">
+                <div class=" label-container labelstyle{{$j}}"  style="width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:13px; margin-left:10px;margin-bottom:0px;@if($j==7 || $j==8) margin-top:3px; @endif @if($j==9 || $j==10) margin-top:8px; @endif">
                 <div class="label-content{{$j}}" style="">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
                         <!-- <div class="sub1" style="float:left;width:content-fit;padding:2px;margin-bottom: 13px; writing-mode: vertical-lr;transform: rotate(180deg);border-color:black;border-style: solid;border-width: thin;padding: 2px;font-size:3.7px;padding-left: 5px;">
                             <img src="{{asset('/img/alderlogo/consulting_use.png')}}" style="float:left;writing-mode: vertical-lr;transform: rotate(90deg); width:14px;height:14px;">
                             <span style="margin-left:2px;">visit :http://www.adler-healthcare.com <br>To see instructions for use please</span>
                         </div>  -->
-                        
                         <div class="sub1" style="float:left;width:content-fit;font-weight:bold;">
-                            <img src="{{asset('/img/alderlogo/IFU.png')}}" style="float:left; height:81px;">      
+                            <img src="{{asset('/img/alderlogo/IFU.png')}}" style="float:left; height:81px;">
+                            
                         </div>
+                        
                         <div class="sub2" style="float:left;width:8%;padding:1px;height:70px">
                             <span class="smalltext" style="font-size:4.7px;font-weight:500;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:5px;">
-                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
+                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMy' , strtotime('14-12-2021') ))}}
                             </span>
                         </div>
                         <div class="sub3" style="float:left;width:50%;padding:1px;font-size:8px;line-height:1.3;">
@@ -195,7 +215,7 @@
                                
                                 <!--@if($batchcard_data->is_read_instruction_logo==1) -->
                                 <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;padding:0px;margin-left: 3px;">
-                                <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;">
+                                <!-- <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;"> -->
                                 <!--@endif -->
                                 <!-- @if($batchcard_data->is_donot_reuse_logo==1)
                                 <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:35%;float:left;">
@@ -213,7 +233,7 @@
                                 </div>
                                 <div style="margin-left:2px;float:left;width:62%;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">ML No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">VL No:{{$batchcard_data->drug_license_number}}</span> 
                                     <span class=" cls" style="padding-left:2px;font-size:8px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
                                     <div class="" style="display:block;margin-left: 35px;">
                                         <span style="font-weight:550;font-size:6.3px;display:block;padding-left:2px">
@@ -233,8 +253,8 @@
                                 <!-- @endif -->
                             </div>
                         </div>
-                    </div>
-                </div> 
+                    </div>    
+                </div>
                 </div>
                 @endfor
                 </div>

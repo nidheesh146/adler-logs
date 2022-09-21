@@ -39,6 +39,13 @@ class ApprovalController extends Controller
             if ($request->status) {
                 $condition[] = ['inv_purchase_req_item_approve.status', '=', $request->status];
             }
+            if ($request->prsr) {
+                $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
+            }
+            if (!$request->prsr) {
+                $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
+            }
+            
             if ($request->from) {
                 $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '<=', date('Y-m-t', strtotime('01-' . $request->from))];

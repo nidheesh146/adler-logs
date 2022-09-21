@@ -71,6 +71,7 @@ class inv_purchase_req_item extends Model
                     
                     })
                     ->where($condition)
+                    ->where('inv_purchase_req_item_approve.status','=',1)
                     ->groupBy('inv_purchase_req_item.requisition_item_id')
                     ->orderby('inv_purchase_req_item.requisition_item_id','desc')
                     ->paginate(10);

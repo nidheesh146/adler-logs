@@ -135,7 +135,7 @@
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-							<th>PR NO.</th>
+							<th>PR/SR NO.</th>
 							<th>Item Code:</th>
 							<th>HSN</th>
 							<th>Delivery schedule</th>

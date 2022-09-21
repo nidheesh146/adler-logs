@@ -88,7 +88,7 @@
                                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
                                                         <label style="width: 100%;">&nbsp;</label>
                                                         <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                        @if(count(request()->all('')) > 1)
+                                                        @if(count(request()->all('')) > 2)
                                                             <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
                                                             style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
                                                         @endif
@@ -102,12 +102,12 @@
                         </table>
                     </div>
                 </div>
-            <div class="tab-pane @if(request()->get('prsr')!='sr')active  show @endif" id="purchase">
+            <div class="tab-pane active  show" id="purchase">
                 <div class="table-responsive">
                     <table class="table table-bordered mg-b-0" id="example1">
                         <thead>
                             <tr>
-                                <th>PR NO:</th>
+                                <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
                                 <th>Item code </th>
                                 <th>Supplier</th>
                                 <th>Actual order Qty</th>
@@ -123,7 +123,7 @@
                         <tbody >
                     
                             @foreach($data['inv_purchase'] as $item)
-                            @if($item['PR_SR']=="PR")
+                           
                             <tr style="	@if($item['status'] == 5)
                                     background: #ffc1074f;
                                     @endif">
@@ -154,7 +154,7 @@
                                 @endif
                                 </a></td>
                             </tr>	
-                            @endif
+                            
                             @endforeach
                         
                         </tbody>
@@ -166,71 +166,7 @@
             
                 </div>
             </div>
-            <div class="tab-pane @if(request()->get('prsr')=='sr')active  show @endif" id="service">
-               
-                <div class="table-responsive">
-                    <table class="table table-bordered mg-b-0" id="example1">
-                        <thead>
-                            <tr>
-                                <th>PR NO:</th>
-                                <th>Item code </th>
-                                <th>Supplier</th>
-                                <th>Actual order Qty</th>
-                                <th>Rate</th>
-                                <th>Discount %</th>
-                                <th>GST %</th>
-                                <th>Currency</th>
-                                <th>Net value </th>
-                                {{-- <th>Status</th> --}}
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody >
-                    
-                            @foreach($data['inv_purchase'] as $item)
-                            @if($item['PR_SR']=="SR")
-                            <tr style="	@if($item['status'] == 5)
-                                    background: #ffc1074f;
-                                    @endif">
-                                <td>{{$item['pr_no']}}</td>
-                                <td>{{$item['item_code']}}</td>
-                                <td><span>{{$item['vendor_id']}}</span></td>
-                                <td>{{$item['actual_order_qty']}}</td>
-                                <td>{{$item['rate']}}</td>
-                                <td>{{$item['discount_percent']}}</td>
-                                <td>{{$item['gst']}}</td>
-                                <td>{{$item['currency_code']}}</td>
-                                <td>{{$item['net_value']}}</td>
-                                {{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
-                                <td>
-                                <a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" orderqty="{{$item['actual_order_qty']}}" data-target="#myModal" type="Service" id="change-status" style="width: 64px;" 
-                                data-html="true" data-placement="top" 
-                                class="badge 
-                                @if($item['status'] == 4)
-                                    badge-info
-                                    @elseif($item['status'] == 5)
-                                    badge-warning
-                                    @endif
-                                ">
-                                @if($item['status'] ==4)
-                                    Pending
-                                @elseif($item['status'] == 5)
-                                    On hold
-                                @endif
-                                </a></td>
-                            </tr>	
-                            @endif
-                            @endforeach
-                        
-                        </tbody>
-                    </table>
-
-                    <div class="box-footer clearfix">
-                        {{ $data['inv_purchase']->appends(request()->input())->links() }}
-                    </div>
-            
-                </div>
-            </div>
+           
         </div>
 		</div>
 	</div>

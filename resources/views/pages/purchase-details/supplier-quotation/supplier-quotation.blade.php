@@ -89,7 +89,7 @@
 							</table>
 						</div>
 					</div>
-				<div class="tab-pane tab-pane @if(request()->get('prsr')!='sr')active  show @endif" id="purchase">
+				<div class="tab-pane tab-pane active  show" id="purchase">
 					
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" id="example1">
@@ -110,7 +110,7 @@
 								<?php
 									$type = $SupplierQuotation->check_reqisition_type($item['quotation_id']);
 								?>
-								@if($type=="PR")
+								
 								<tr>
 									{{-- <td>{{$i++}}</td> --}}
 									<td>{{$item['rq_no']}}</td>
@@ -129,7 +129,7 @@
 										<a class="badge badge-primary" style="font-size: 13px;" href="{{url('inventory/comparison-quotation/'.$item['quotation_id']) }}"  class="dropdown-item"><i class="fa fa-balance-scale"></i> Comparison</a>
 									</td>
 								</tr>
-								@endif
+								
 								
 								@endforeach 
 						
@@ -140,7 +140,7 @@
 						</div> 
 					</div>
 				</div>
-				<div class="tab-pane tab-pane @if(request()->get('prsr')=='sr')active  show @endif" id="service">
+				<!-- <div class="tab-pane tab-pane @if(request()->get('prsr')=='sr')active  show @endif" id="service">
 					
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" id="example1">
@@ -188,7 +188,7 @@
 							{{ $data['quotation']->appends(request()->input())->links() }}
 						</div> 
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>

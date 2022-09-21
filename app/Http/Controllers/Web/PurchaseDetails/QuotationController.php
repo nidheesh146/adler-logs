@@ -21,8 +21,13 @@ class QuotationController extends Controller
     // list Quotation
     public function getQuotation(Request $request)
     {
-
-        $data['getdata'] = $this->inv_purchase_req_item->getdata(['inv_purchase_req_item_approve.status'=>1]);
+        if ($request->prsr) {
+            $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
+        }
+        if (!$request->prsr) {
+            $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
+        }
+        $data['getdata'] = $this->inv_purchase_req_item->getdata($condition);
         return view('pages/purchase-details/Quotation/quotation-add', compact('data'));
     }
 

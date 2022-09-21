@@ -32,9 +32,12 @@ class SupplierQuotationController extends Controller
             if ($request->rq_no) {
                 $condition[] = ['inv_purchase_req_quotation.rq_no', 'like', '%'.$request->rq_no.'%'];
             }
-            // if ($request->supplier) {
-            //     $condition[] = ['inv_purchase_req_quotation_supplier.supplier_id', '=', $request->supplier];
-            // }
+            if ($request->prsr) {
+                $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
+            }
+            if (!$request->prsr) {
+                $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
+            }
             if ($request->from) {
                 $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
@@ -46,6 +49,7 @@ class SupplierQuotationController extends Controller
         $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
         $data['rq_nos'] = $this->inv_purchase_req_quotation->get_rq_nos();
         //$data['quotation'] = $this->inv_purchase_req_quotation->get_quotation([]);
+        //print_r(json_encode($data['quotation']));exit;
         return view('pages/purchase-details/supplier-quotation/supplier-quotation', compact('data'));
     }
     function get_supplier($id){

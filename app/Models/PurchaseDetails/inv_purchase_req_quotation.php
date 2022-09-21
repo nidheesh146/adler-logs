@@ -40,10 +40,16 @@ class inv_purchase_req_quotation extends Model
     }
     function get_quotation($condition){
 
-        return $this->select('inv_purchase_req_quotation.*')
+        return $this->select('inv_purchase_req_quotation.*','inv_purchase_req_master.PR_SR')
+                    ->rightjoin('inv_purchase_req_quotation_item_supp_rel','inv_purchase_req_quotation_item_supp_rel.quotation_id','=','inv_purchase_req_quotation.quotation_id')
+                    ->rightjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
+                    ->rightjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
+                    ->rightjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
                     //->join('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
                     ->where($condition)
-                    ->orderby('quotation_id','desc')
+                    //->where('inv_purchase_req_master.PR_SR','=','SR')
+                    ->distinct('inv_purchase_req_quotation.quotation_id')
+                    ->orderby('inv_purchase_req_quotation.quotation_id','desc')
                     ->paginate(15);
 
     }
