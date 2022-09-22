@@ -186,6 +186,7 @@ class PurchaseController extends Controller
 
             $condition2[] = ['inv_purchase_req_quotation.rq_no','like','%'.strtoupper($request->q).'%'];
             $data = $this->inv_purchase_req_quotation->get_master_filter($condition1,$condition2);
+            // print_r($rq_master_ids);
         if(!empty( $data)){
             return response()->json( $data, 200); 
         }else{
@@ -511,7 +512,7 @@ return  $data;
         else 
         {
             if (!$request->order_type) {
-                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like','PO%'];
+                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like','YY%'];
             }
             $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_invoices(['inv_supplier_invoice_master.status'=>1],$condition1,$condition2=null);
 

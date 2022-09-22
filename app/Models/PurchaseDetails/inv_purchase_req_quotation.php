@@ -75,15 +75,17 @@ class inv_purchase_req_quotation extends Model
 
                         $query->select('inv_final_purchase_order_master.rq_master_id')->from('inv_final_purchase_order_master');
                      
-                     })->where($condition1);
-                   // ->get();
+                      })
+                    ->where($condition1,$condition2)
+                    ->get();
+                    return $query;
 
-     return    DB::table('inv_final_purchase_order_master')
-        ->select(['inv_purchase_req_quotation.quotation_id as id','inv_purchase_req_quotation.rq_no as text'])
-        ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
-        ->where($condition2)
-        ->union($query)
-        ->get();
+    //  return    DB::table('inv_final_purchase_order_master')
+    //     ->select(['inv_purchase_req_quotation.quotation_id as id','inv_purchase_req_quotation.rq_no as text'])
+    //     ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
+    //     ->where($condition2)
+    //     ->union($query)
+    //     ->get();
 
     }
 

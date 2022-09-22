@@ -69,7 +69,7 @@
        
             <select class="form-control user_list" name="create_by">
               @foreach ($data['users'] as $user)
-              <option value="{{$user->user_id}}"   @if(!empty($data['master_data']) && $data['master_data']->created_by == $user->user_id) selected  @endif   >{{$user->employee_id}} - {{$user->f_name}} {{$user->l_name}}</option>
+              <option value="{{$user->user_id}}"   @if(!empty($data['master_data']) && $data['master_data']->created_by == $user->user_id) selected  @endif   >{{$user->f_name}} {{$user->l_name}}</option>
               @endforeach
                                                                 
             </select>

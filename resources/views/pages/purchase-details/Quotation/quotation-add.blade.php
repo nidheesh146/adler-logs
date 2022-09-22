@@ -90,8 +90,8 @@
                                             <th>Net value </th>
                                             <th>Actual Order Qty</th>
                                             <th>Approved Qty</th>
-                                            <th>Approved By</th>
-                                            <th>Date</th>
+                                            <!-- <th>Approved By</th>
+                                            <th>Date</th> -->
                                         </tr>
                                     </thead>
                                     <tbody >
@@ -110,8 +110,8 @@
                                         <td>{{$item['net_value']}}</td>	
                                         <td>{{$item['actual_order_qty']}}</td>
                                         <td>{{$item['approved_qty']}}</td>	
-                                        <td>{{$item['f_name']}} {{$item['l_name']}}</td>
-                                        <td>{{$item['f_name']}}</td>					 
+                                        <!-- <td>{{$item['f_name']}} {{$item['l_name']}}</td>
+                                        <td>{{$item['f_name']}}</td>					  -->
                                     </tr>
                                     
                                     @endforeach

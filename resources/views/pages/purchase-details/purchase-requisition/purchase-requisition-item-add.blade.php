@@ -208,7 +208,7 @@
                                         value="" id="DiscountValue"
                                         name="DiscountValue" placeholder="Discount Value">
                                 </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> GST *</label>
                                     <select class="form-control GST" id="GST" name="GST">
                                         <option value="">--- select one ---</option>
@@ -217,18 +217,42 @@
                                                 selected @endif @endif >{{ $item['gst'] }} %</option>
                                         @endforeach
                                     </select>
+                                </div> -->
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label> IGST ( % ) *</label>
+                                    <select class="form-control IGST" id="IGST" name="IGST">
+                                        <option value="">--- select one ---</option>
+                                        @foreach ($data['gst'] as $item)
+                                            <option value="{{ $item['id'] }}" @if(!empty($datas))  @if($item['gst']==$datas['item']['igst'])
+                                                selected @endif @endif >{{ $item['igst'] }} %</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> CGST ( % ) *</label>
-                                    <input type="text" class="form-control"
+                                    <!-- <input type="text" class="form-control"
                                         value="{{ !empty($datas) ? $datas['item']['cgst'] : '' }}" id="CGST"
-                                        name="CGST" placeholder="CGST ( % )" readonly>
+                                        name="CGST" placeholder="CGST ( % )" readonly> -->
+                                    <select class="form-control CGST" id="CGST" name="CGST">
+                                        <option value="">--- select one ---</option>
+                                        @foreach ($data['gst'] as $item)
+                                            <option value="{{ $item['id'] }}" @if(!empty($datas))  @if($item['gst']==$datas['item']['cgst'])
+                                                selected @endif @endif >{{ $item['cgst'] }} %</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> SGST ( % ) *</label>
-                                    <input type="text" class="form-control"
+                                    <!-- <input type="text" class="form-control"
                                         value="{{ !empty($datas) ? $datas['item']['sgst'] : '' }}" id="SGST"
-                                        name="SGST" placeholder="SGST ( % )" readonly>
+                                        name="SGST" placeholder="SGST ( % )" readonly> -->
+                                        <select class="form-control GST" id="SGST" name="SGST">
+                                        <option value="">--- select one ---</option>
+                                        @foreach ($data['gst'] as $item)
+                                            <option value="{{ $item['id'] }}" @if(!empty($datas))  @if($item['gst']==$datas['item']['sgst'])
+                                                selected @endif @endif >{{ $item['sgst'] }} %</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> UTGST ( % ) *</label>
@@ -236,12 +260,7 @@
                                         value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
                                         name="UTGST" placeholder="UTGST ( % )" readonly>
                                 </div> -->
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> IGST ( % ) *</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['igst'] : '' }}" id="IGST"
-                                        name="IGST" placeholder="IGST ( % )" readonly>
-                                </div>
+                                
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Currency *</label>
                                     <select class="form-control Currency" name="Currency">
