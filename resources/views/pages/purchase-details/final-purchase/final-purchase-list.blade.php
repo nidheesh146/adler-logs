@@ -7,9 +7,9 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				<span><a href="">Final @if(request()->get('order_type')=='work-order') Work @else Purchase @endif Order</a></span>
+				<span><a href="">Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order</a></span>
 			</div>
-			<h4 class="az-content-title" style="font-size: 20px;">Final @if(request()->get('order_type')=='work-order') Work @else Purchase @endif Order list
+			<h4 class="az-content-title" style="font-size: 20px;">Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order list
                 <div class="right-button">
                     <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                     <i class="fas fa-file-excel" aria-hidden="true"></i> Report <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -18,7 +18,7 @@
                         <a href="{{url('inventory/final-purchase/export/open')}}" class="dropdown-item">Open</a>
                     </div>  
                 <div>  
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final @if(request()->get('order_type')=='work-order') Work @else Purchase @endif  Order </button> 
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif  Order </button> 
             </h4><br/>
 			
 		   @if (Session::get('success'))
@@ -55,7 +55,7 @@
                                                             <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                                                         </div><!-- form-group -->
                                                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                            <label>@if(request()->get('order_type')=='work-order') WO @else PO @endif No:</label>
+                                                            <label>@if(request()->get('order_type')=='wo') WO @else PO @endif No:</label>
                                                             <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="@if(request()->get('order_type')=='work-order') WO NO @else PO NO @endif">
                                                             
                                                         </div><!-- form-group -->
@@ -66,7 +66,7 @@
                                                             
                                                         </div>
                                                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                            <label  style="font-size: 12px;">@if(request()->get('order_type')=='work-order') WO @else PO @endif Date </label>
+                                                            <label  style="font-size: 12px;">@if(request()->get('order_type')=='wo') WO @else PO @endif Date </label>
                                                             <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="@if(request()->get('order_type')=='work-order') WO @else PO @endif DATE (MM-YYYY)">
                                                         </div> 
                                                                         
@@ -75,7 +75,7 @@
                                                         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
                                                             <label style="width: 100%;">&nbsp;</label>
                                                             <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                            @if(count(request()->all('')) > 1)
+                                                            @if(count(request()->all('')) > 2)
                                                                 <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
                                                                 style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
                                                             @endif
@@ -89,7 +89,7 @@
                             </table>
                         </div>
                     </div>
-                <div class="tab-pane @if(request()->get('order_type')!='work-order') active show @endif" id="purchase">
+                <div class="tab-pane active show " id="purchase">
                     
                     <div class="table-responsive">
                         <table class="table table-bordered mg-b-0" id="example1">
@@ -97,7 +97,7 @@
                                 <tr>
                                 
                                     <th style="width:120px;">RQ NO:</th>
-                                    <th>PO NO:</th>
+                                    <th>@if(request()->get('order_type')=="wo") WO @else PO @endif No</th>
                                     <th>PO date</th>
                                     <th>Supplier</th>
                                     <th>Created Date</th>
@@ -108,7 +108,6 @@
                             </thead>
                             <tbody>
                                 @foreach($data['po_data'] as $po_data)
-                                @if(str_starts_with($po_data->po_number , 'PO') )
                                 <tr>
                                     <td>{{$po_data->rq_no}}</td>
                                     <td>{{$po_data->po_number}}</td>
@@ -122,7 +121,7 @@
                                         <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Receipt</a>
                                     </td>
                                 </tr>
-                                @endif
+                                
                                 @endforeach
                             </tbody>
                         </table>
@@ -132,109 +131,7 @@
                 
                     </div>
                 </div>
-                <div class="tab-pane @if(request()->get('order_type')=='work-order') active show @endif" id="service">
-                    <!-- <div class="row row-sm mg-b-20 mg-lg-b-0">
-                        <div class="table-responsive" style="margin-bottom: 13px;">
-                            <table class="table table-bordered mg-b-0">
-                                <tbody>
-                                    <tr>
-                                        <style>
-                                        .select2-container .select2-selection--single {
-                                            height: 26px;
-                                           
-                                        }
-                                        .select2-selection__rendered {
-                                            font-size:12px;
-                                        }
-                                        </style>
-                                        <form autocomplete="off">
-                                            <th scope="row">
-                                                <div class="row filter_search" style="margin-left: 0px;">
-                                                    <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
-                                
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                            <label>RQ No:</label>
-                                                            <input type="text" value="{{request()->get('rq_no')}}" name="rq_no" id="rq_no" class="form-control" placeholder="RQ NO"> 
-                                                            
-                                                        </div>
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                            <label>PO No:</label>
-                                                            <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="PO NO">
-                                                            
-                                                        </div>
-                                                        
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                            <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
-                                                            <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
-                                                            
-                                                        </div>
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                            <label  style="font-size: 12px;">PO Date </label>
-                                                            <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="PO date (MM-YYYY)">
-                                                        </div> 
-                                                                        
-                                                    </div>
-                                                    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-                                                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-                                                            <label style="width: 100%;">&nbsp;</label>
-                                                            <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                            @if(count(request()->all('')) > 1)
-                                                                <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-                                                                style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-                                                            @endif
-                                                        </div> 
-                                                    </div>
-                                                </div>
-                                            </th>
-                                        </form>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div> -->
 
-
-                    <div class="table-responsive">
-                        <table class="table table-bordered mg-b-0" id="example1">
-                            <thead>
-                                <tr>
-                                
-                                    <th style="width:120px;">RQ NO:</th>
-                                    <th>WO NO:</th>
-                                    <th>WO date</th>
-                                    <th>Supplier</th>
-                                    <th>Created Date</th>
-                                    <th>Created By</th>
-                                    <th>Action</th>
-                                
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($data['po_data'] as $po_data)
-                                @if(str_starts_with($po_data->po_number , 'WO') )
-                                <tr>
-                                    <td>{{$po_data->rq_no}}</td>
-                                    <td>{{$po_data->po_number}}</td>
-                                    <td>{{date('d-m-Y',strtotime($po_data->po_date))}}</td>
-                                    <td>{{$po_data->vendor_id}} - {{$po_data->vendor_name}}</td>
-                                    <td>{{date('d-m-Y',strtotime($po_data->created_at))}}</td>
-                                    <td>{{$po_data->f_name}} {{$po_data->l_name}}</td>
-                                    <td>
-                                        <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/final-purchase-add/'.$po_data->id)}}"><i class="fas fa-edit"></i> Edit</a>
-                                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
-                                        <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Receipt</a>
-                                    </td>
-                                </tr>
-                                @endif
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <div class="box-footer clearfix">
-                            {{ $data['po_data']->appends(request()->input())->links() }}
-                    </div> 
-                
-                    </div>
-                </div>
             </div>
 		</div>
 	</div>

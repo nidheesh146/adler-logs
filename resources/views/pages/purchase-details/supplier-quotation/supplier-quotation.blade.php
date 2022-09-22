@@ -108,7 +108,7 @@
 							<tbody >
 								@foreach($data['quotation'] as $item)
 								<?php
-									$type = $SupplierQuotation->check_reqisition_type($item['quotation_id']);
+									// $type = $SupplierQuotation->check_reqisition_type($item['quotation_id']);
 								?>
 								
 								<tr>

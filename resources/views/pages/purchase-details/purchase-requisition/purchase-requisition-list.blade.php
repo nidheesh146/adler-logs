@@ -131,11 +131,10 @@
 						<table class="table table-bordered mg-b-0" >
 							<thead>
 								<tr>
-									<th>PR/SR NO:</th>
+									<th>@if(request()->get('prsr')=="sr")SR @else PR @endif NO:</th>
 									<th>requestor</th>
 									<th>date</th>
 									<th>department</th>
-									<th>prsr</th>
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -148,7 +147,6 @@
 									<th>{{$item['f_name'].' '.$item['l_name']}}</th>
 									<td>{{date('d-m-Y',strtotime($item['date']))}}</td>
 									<td>{{$item['dept_name']}}</td>
-									<td>{{$item['prsr_type']}}</td>
 									<td >
 										<span style="width: 133px;">
 										<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>

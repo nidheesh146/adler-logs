@@ -214,7 +214,8 @@
                             <div class="logo" style="text-align:center;">
                                
                                 <!--@if($batchcard_data->is_read_instruction_logo==1) -->
-                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;padding:0px;margin-left: 3px;">
+                                <img <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;padding:0px;margin-left: 3px;">
+                                <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;">
                                 <!-- <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;"> -->
                                 <!--@endif -->
                                 <!-- @if($batchcard_data->is_donot_reuse_logo==1)

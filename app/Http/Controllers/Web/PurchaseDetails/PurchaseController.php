@@ -61,14 +61,18 @@ class PurchaseController extends Controller
                 $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
             }
+            if ($request->order_type) {
+                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like',$request->order_type.'%'];
+            }
+            
            
             //$data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master_list($condition1,$condition2);
         }
-        // else 
-        // {
-        //     $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master([]);
-
-        // }
+        if (!$request->order_type) {
+            $order_type='PO';
+            $condition1[] = ['inv_final_purchase_order_master.po_number', 'like',$order_type.'%'];
+        }
+        
         $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master_list($condition1,$condition2);
         return view('pages.purchase-details.final-purchase.final-purchase-list',compact('data'));
     }
@@ -479,6 +483,10 @@ return  $data;
         $condition2 = [];
         if(count($_GET))
         {
+            if ($request->order_type) {
+                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like',$request->order_type.'%'];
+            }
+            
             if ($request->po_no) {
                 $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%'.$request->po_no.'%'];
                 $condition2 = [];
@@ -502,7 +510,10 @@ return  $data;
         }
         else 
         {
-            $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_invoices(['inv_supplier_invoice_master.status'=>1],$condition1=null,$condition2=null);
+            if (!$request->order_type) {
+                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like','PO%'];
+            }
+            $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_invoices(['inv_supplier_invoice_master.status'=>1],$condition1,$condition2=null);
 
         }
         // $data['suppliers'] = $this->inv_supplier->get_all_suppliers();

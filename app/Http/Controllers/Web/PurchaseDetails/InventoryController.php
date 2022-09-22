@@ -189,12 +189,12 @@ class InventoryController extends Controller
         if($request->pr_id)
         {
             $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
-            $data['item'] = $this->inv_purchase_req_item->getdata(['inv_purchase_req_master_item_rel.master'=>$request->pr_id]);
+            $data['item'] = $this->inv_purchase_req_item->getItemdata(['inv_purchase_req_master_item_rel.master'=>$request->pr_id]);
         }
         else 
         {
             $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
-            $data['item'] = $this->inv_purchase_req_item->getdata(['inv_purchase_req_master_item_rel.master'=>$request->sr_id]);
+            $data['item'] = $this->inv_purchase_req_item->getItemdata(['inv_purchase_req_master_item_rel.master'=>$request->sr_id]);
         }
        
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));

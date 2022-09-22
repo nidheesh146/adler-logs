@@ -5,29 +5,29 @@
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
         //echo $Action;
-        $query  =  $_GET;
+       // $query  =  $_GET;
 @endphp
 
 <div class="card bd-0" style="margin-top:-10px;">
     <div class="card-header bg-gray-400 bd-b-0-f pd-b-0">
         <nav class="nav nav-tabs">
             <?php
-              $query['order_type'] = 'purchase-order';
+              $query['order_type'] = 'po';
             ?>
             <a class="nav-link 
             @if(empty(request()->order_type)) 
                active
             @endif
-            @if(!empty(request()->order_type) &&  request()->order_type == 'purchase-order')
+            @if(!empty(request()->order_type) &&  request()->order_type == 'po')
                active
             @endif
             " href="<?=url()->current();?>?<?=http_build_query($query);?>" >Purchase Order</a>
             <?php
-                $query['order_type'] = 'work-order';
+                $query['order_type'] = 'wo';
             ?>
 
             <a class="nav-link 
-            @if(!empty(request()->order_type) &&  request()->order_type == 'work-order')
+            @if(!empty(request()->order_type) &&  request()->order_type == 'wo')
                active
             @endif
             "  href="<?=url()->current();?>?<?=http_build_query($query);?>">  Work Order </a>

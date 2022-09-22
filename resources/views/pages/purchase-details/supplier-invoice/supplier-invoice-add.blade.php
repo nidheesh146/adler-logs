@@ -39,7 +39,7 @@
                         {{ csrf_field() }}
 
                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" data-select2-id="7">
-                            <label>PO Number *<span class="spinner-border spinner-button spinner-border-sm"
+                            <label>PO/WO Number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
                                 <select class="form-control RQ-code" name="po_number">
                                   @if(!empty($data['simaster']))

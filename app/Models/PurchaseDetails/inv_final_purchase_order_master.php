@@ -91,11 +91,11 @@ class inv_final_purchase_order_master extends Model
     }
     function find_po_num($condition){
         return $this->select(['inv_final_purchase_order_master.po_number as text','inv_final_purchase_order_master.id'])->where($condition)
-            ->whereNotIn('inv_final_purchase_order_master.id',function($query) {
+        ->whereNotIn('inv_final_purchase_order_master.id',function($query) {
 
-                $query->select('inv_supplier_invoice_master.po_master_id')->from('inv_supplier_invoice_master');
-            
-            })->get();
+            $query->select('inv_supplier_invoice_master.po_master_id')->from('inv_supplier_invoice_master');
+        
+        })->get();
     }
     function find_po_data($condition){
         //
