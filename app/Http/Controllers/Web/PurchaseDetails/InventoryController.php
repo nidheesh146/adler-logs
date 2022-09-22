@@ -196,7 +196,6 @@ class InventoryController extends Controller
             $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
             $data['item'] = $this->inv_purchase_req_item->getItemdata(['inv_purchase_req_master_item_rel.master'=>$request->sr_id]);
         }
-       
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
         
     }
@@ -220,7 +219,7 @@ class InventoryController extends Controller
             $validation['Rate'] = ['required'];
             $validation['BasicValue'] = ['required'];
             $validation['Discount'] = ['required'];
-            $validation['GST'] = ['required'];
+            $validation['gst'] = ['required'];
             $validation['Netvalue'] = ['required'];
             $validation['Remarks'] = ['required'];
             $validation['ActualorderQty'] = ['required'];
@@ -234,7 +233,7 @@ class InventoryController extends Controller
                     "basic_value"=> $request->BasicValue,
                     "rate"=> $request->Rate,
                     "discount_percent"=> $request->Discount,
-                    "gst"=> $request->GST,
+                    "gst"=> $request->gst,
                     "currency"  => $request->Currency ,
                     "net_value"=>  $request->Netvalue,
                     "remarks"=> $request->Remarks,
@@ -270,7 +269,7 @@ class InventoryController extends Controller
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data'));
       }
 
-      public function getGST(Request $request)
+      public function getSGSTandCGST(Request $request)
       {
         $id = $request->id;
         $gst = $this->inventory_gst->get_single_gst(['id'=>$id]);

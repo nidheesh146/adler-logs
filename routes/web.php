@@ -43,7 +43,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/edit-purchase-reqisition-item', 'InventoryController@edit_purchase_reqisition_item');
     Route::post('inventory/edit-purchase-reqisition-item', 'InventoryController@edit_purchase_reqisition_item');
     Route::get('inventory/delete-purchase-reqisition-item', 'InventoryController@delete_purchase_reqisition_item');
-    Route::get('getGST','InventoryController@getGST');
+    Route::get('getSGSTandCGST','InventoryController@getSGSTandCGST');
     // service requisition master
     Route::get('inventory/edit-service-reqisition', 'InventoryController@edit_purchase_reqisition');
     Route::post('inventory/edit-service-reqisition', 'InventoryController@edit_purchase_reqisition');
