@@ -214,12 +214,12 @@ class InventoryController extends Controller
                 $validation['sr_id'] = ['required'];
             }
             $validation['Itemcode'] = ['required'];
-            $validation['Supplier'] = ['required'];
+            //$validation['Supplier'] = ['required'];
             $validation['Currency'] = ['required'];
             $validation['Rate'] = ['required'];
             $validation['BasicValue'] = ['required'];
             $validation['Discount'] = ['required'];
-            $validation['gst'] = ['required'];
+           // $validation['gst'] = ['required'];
             $validation['Netvalue'] = ['required'];
             $validation['Remarks'] = ['required'];
             $validation['ActualorderQty'] = ['required'];
@@ -292,12 +292,12 @@ class InventoryController extends Controller
                         $validation['sr_id'] = ['required'];
                     }
                 $validation['Itemcode'] = ['required'];
-                $validation['Supplier'] = ['required'];
+                //$validation['Supplier'] = ['required'];
                 $validation['Currency'] = ['required'];
                 $validation['Rate'] = ['required'];
                 $validation['BasicValue'] = ['required'];
                 $validation['Discount'] = ['required'];
-                $validation['gst'] = ['required'];
+                //$validation['gst'] = ['required'];
                 $validation['Netvalue'] = ['required'];
                 $validation['Remarks'] = ['required'];
                 $validation['ActualorderQty'] = ['required'];

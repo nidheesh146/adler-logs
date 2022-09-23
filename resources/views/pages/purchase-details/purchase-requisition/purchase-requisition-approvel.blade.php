@@ -77,9 +77,11 @@
                                                         <label  style="font-size: 12px;">Status</label>
                                                         <select name="status" id="status" class="form-control">
                                                             <option value=""> --Select One-- </option>
-                                                            <option value="1" {{(request()->get('status') == 1) ? 'selected' : ''}}> Active </option>
+                                                            <!-- <option value="1" {{(request()->get('status') == 1) ? 'selected' : ''}}> Active </option> -->
                                                             <option value="4" {{(request()->get('status') == 4) ? 'selected' : ''}}> Pending</option>
                                                             <option value="5"{{(request()->get('status') == 5) ? 'selected' : ''}}>On hold</option>
+                                                            <option value="1"{{(request()->get('status') == 1) ? 'selected' : ''}}>Approved</option>
+                                                            <option value="reject" {{(request()->get('status') == 'reject') ? 'selected' : ''}}> Rejected </option>
                                                         </select>
                                                     </div> 
                                                                         
@@ -109,14 +111,15 @@
                             <tr>
                                 <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
                                 <th>Item code </th>
-                                <th>Supplier</th>
+                                <!-- <th>Supplier</th> -->
                                 <th>Actual order Qty</th>
                                 <th>Rate</th>
-                                <th>Discount %</th>
+                                <th>Disc %</th>
                                 <th>GST %</th>
                                 <th>Currency</th>
                                 <th>Net value </th>
-                                {{-- <th>Status</th> --}}
+                                <th>Approved By</th>
+                                <th>Approved Date</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -126,10 +129,12 @@
                            
                             <tr style="	@if($item['status'] == 5)
                                     background: #ffc1074f;
-                                    @endif">
+                                    @endif @if($item['status'] == 0) background: #ffc1074f;
+                                    @endif"
+                                    >
                                 <td>{{$item['pr_no']}}</td>
                                 <td>{{$item['item_code']}}</td>
-                                <td><span>{{$item['vendor_id']}}</span></td>
+                                <!-- <td><span>{{$item['vendor_id']}}</span></td> -->
                                 <td>{{$item['actual_order_qty']}}</td>
                                 <td>{{$item['rate']}}</td>
                                 <td>{{$item['discount_percent']}}</td>
@@ -150,8 +155,11 @@
                                 </td>
                                 <td>{{$item['currency_code']}}</td>
                                 <td>{{$item['net_value']}}</td>
+                                <td>{{$item['f_name']}} {{$item['l_name']}}</td>
+                                <td>@if($item['updated_at']!=NULL) {{date( 'd-m-Y' , strtotime($item['updated_at']))}} @endif</td>
                                 {{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
                                 <td>
+                                @if($item['status'] == 4 || $item['status'] == 5 || $item['status'] == 0)
                                 <a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" orderqty="{{$item['actual_order_qty']}}" type="Purchase" data-target="#myModal" id="change-status" style="width: 64px;" 
                                 data-html="true" data-placement="top" 
                                 class="badge 
@@ -159,14 +167,26 @@
                                     badge-info
                                     @elseif($item['status'] == 5)
                                     badge-warning
+                                    @elseif($item['status'] == 0)
+                                    badge-danger
                                     @endif
                                 ">
                                 @if($item['status'] ==4)
                                     Pending
                                 @elseif($item['status'] == 5)
                                     On hold
+                                @elseif($item['status'] == 0)
+                                    Rejected
                                 @endif
-                                </a></td>
+
+                                </a>
+                                @else
+                                @if($item['status'] == 1)
+                                    
+                                <a href="#" style="width: 64px;" class="badge badge-primary">Approved</a>
+                                @endif
+                                @endif
+                                </td>
                             </tr>	
                             
                             @endforeach

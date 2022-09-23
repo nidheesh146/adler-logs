@@ -23,9 +23,9 @@
                 <div>  
             	</div>
 				@if(request()->pr_id)
-              	<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase requisition item</button>
+              	<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase Requisition Details</button>
 				@else
-				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?sr_id='.request()->sr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> service requisition item</button>
+				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?sr_id='.request()->sr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Service Requisition Details</button>
 				@endif
             </div>
           </h4>
@@ -35,11 +35,11 @@
                 <nav class="nav">
 					@if(request()->pr_id)
                     <a class="nav-link" href="{{url('inventory/edit-purchase-reqisition?pr_id='.request()->pr_id)}}">Purchase Requestor Details </a>
-                    <a class="nav-link active "  href=""  >  Purchase Pequisition Details </a>
+                    <a class="nav-link active "  href=""  >  Purchase Requisition Details </a>
                      <a class="nav-link" href=""> </a>
 					 @else
 					 <a class="nav-link" href="{{url('inventory/edit-purchase-reqisition?sr_id='.request()->sr_id)}}">Purchase Requestor Details </a>
-                    <a class="nav-link active "  href=""  >  Service Pequisition Details </a>
+                    <a class="nav-link active "  href=""  >  Service Requisition Details </a>
                      <a class="nav-link" href=""> </a>
 					 @endif
                 </nav>

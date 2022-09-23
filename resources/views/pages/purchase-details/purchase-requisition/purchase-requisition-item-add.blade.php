@@ -13,20 +13,20 @@
                             REQUISITION</a></span>
                     <span><a href="">
                     @if(request()->pr_id)
-                        {{ request()->item ? 'Edit' : 'Add' }} purchase requisition item ( {{$data["master"]['pr_no']}}  )
+                        {{ request()->item ? 'Edit' : 'Add' }} Purchase Requisition Details ( {{$data["master"]['pr_no']}}  )
                     @endif
                     @if(request()->sr_id)
-                        {{ request()->item ? 'Edit' : 'Add' }} service requisition item ( {{$data["master"]['pr_no']}}  )
+                        {{ request()->item ? 'Edit' : 'Add' }} service requisition Details ( {{$data["master"]['pr_no']}}  )
                     @endif
                     </a></span>
                 </div>
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                     @if(request()->pr_id)
-                        {{ request()->item ? 'Edit' : 'Add' }} purchase requisition item ( {{$data["master"]['pr_no']}}  )
+                        {{ request()->item ? 'Edit' : 'Add' }} Purchase Requisition Details ( {{$data["master"]['pr_no']}}  )
                     @endif
                     @if(request()->sr_id)
-                            {{ request()->item ? 'Edit' : 'Add' }} service requisition item ( {{$data["master"]['pr_no']}}  )
+                            {{ request()->item ? 'Edit' : 'Add' }} Service Requisition Details ( {{$data["master"]['pr_no']}}  )
                     @endif
                 </h4>
                 <div class="az-dashboard-nav">
@@ -393,9 +393,9 @@
                             required: true,
                     },
                                 
-                    Supplier: {
-                            required: true,
-                    },
+                    // Supplier: {
+                    //         required: true,
+                    // },
                     BasicValue: {
                             required: true,
                             number: true
@@ -412,9 +412,9 @@
                         required: true,
                         number: true
                     },
-                    GST: {
-                        required: true,
-                    },
+                    // GST: {
+                    //     required: true,
+                    // },
                     Currency: {
                             required: true,
                     },
