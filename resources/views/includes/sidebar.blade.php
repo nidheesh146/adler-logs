@@ -51,7 +51,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit'])){{'active'}} @endif "><a href="{{url('inventory/supplier-invoice')}}" class="nav-sub-link">Supplier Invoice</a></li>
 
             <li class="nav-sub-item  @if(in_array($Action,['LotAllocation.addLotAllocation','LotAllocation.lotAllocation'])){{'active'}} @endif "><a href="{{url('inventory/lot-allocation-list')}}" class="nav-sub-link">LOT Number Allocation</a></li>
-            <li class="nav-sub-item  @if(in_array($Action,['MIQ.MIQlist'])){{'active'}} @endif "><a href="{{url('inventory/MIQ')}}" class="nav-sub-link">MIQ</a></li>
+            <!-- <li class="nav-sub-item  @if(in_array($Action,['MIQ.MIQlist'])){{'active'}} @endif "><a href="{{url('inventory/MIQ')}}" class="nav-sub-link">MIQ</a></li> -->
           </ul>
         </li><!-- nav-item -->
 
