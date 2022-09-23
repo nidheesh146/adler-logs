@@ -297,7 +297,7 @@ class InventoryController extends Controller
                 $validation['Rate'] = ['required'];
                 $validation['BasicValue'] = ['required'];
                 $validation['Discount'] = ['required'];
-                $validation['GST'] = ['required'];
+                $validation['gst'] = ['required'];
                 $validation['Netvalue'] = ['required'];
                 $validation['Remarks'] = ['required'];
                 $validation['ActualorderQty'] = ['required'];
@@ -311,7 +311,7 @@ class InventoryController extends Controller
                         "basic_value"=> $request->BasicValue,
                         "rate"=> $request->Rate,
                         "discount_percent"=> $request->Discount,
-                        "gst"=> $request->GST,
+                        "gst"=> $request->gst,
                         "currency"  => $request->Currency ,
                         "net_value"=>  $request->Netvalue,
                         "inv_purchase_req_item.remarks"=> $request->Remarks,
@@ -334,7 +334,7 @@ class InventoryController extends Controller
                 
                 if($validator->errors()->all()){
                     if($request->pr_id)
-                    return redirect("inventory/add-purchase-reqisition-item?pr_id=".$request->pr_id)->withErrors($validator)->withInput();
+                    return redirect("inventory/edit-purchase-reqisition-item?pr_id=".$request->pr_id)->withErrors($validator)->withInput();
                     else
                     return redirect("inventory/add-purchase-reqisition-item?sr_id=".$request->sr_id)->withErrors($validator)->withInput();                    
                 }

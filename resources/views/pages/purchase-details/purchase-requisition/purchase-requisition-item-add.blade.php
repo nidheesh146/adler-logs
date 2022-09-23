@@ -220,9 +220,14 @@
                                 </div> -->
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> IGST ( % ) *</label>
-                                    <input type="hidden" name="gst" id="gst-id" value="">
+                                    <input type="hidden" name="gst" id="gst-id" value="@if(!empty($datas)) {{$datas['item']['gst_id']}}  @endif">
                                     <select class="form-control IGST" id="IGST" name="IGST">
                                         <option value="">--- select one ---</option>
+                                        @if(!empty($datas))
+                                        @if($datas['item']['igst']==0)
+                                            <option class="edit-zero" selected>0%</option>
+                                        @endif
+                                        @endif
                                         <option class="zero-option-igst" value="" style="display:none;">0%</option>
                                         @foreach ($data['gst'] as $item)
                                             @if($item['igst']!=0)
@@ -239,6 +244,11 @@
                                         name="SGST" placeholder="SGST ( % )" readonly> -->
                                         <select class="form-control SGST" id="SGST" name="SGST">
                                         <option value="">--- select one ---</option>
+                                        @if(!empty($datas))
+                                        @if($datas['item']['sgst']==0)
+                                            <option class="edit-zero"  selected>0%</option>
+                                        @endif
+                                        @endif
                                         <option  class="zero-option" value="" style="display:none;">0%</option>
                                         @foreach ($data['gst'] as $item)
                                             @if($item['sgst']!=0)
@@ -252,6 +262,11 @@
                                     <label> CGST ( % ) *</label>
                                     <select class="form-control CGST" id="CGST" name="CGST">
                                         <option value="">--- select one ---</option>
+                                        @if(!empty($datas))
+                                        @if($datas['item']['cgst']==0)
+                                            <option class="edit-zero" selected>0%</option>
+                                        @endif
+                                        @endif
                                         <option class="zero-option" value="" style="display:none;">0%</option>
                                         @foreach ($data['gst'] as $item)
                                             @if($item['cgst']!=0)
@@ -485,6 +500,7 @@
             $('#IGST').on('change', function() {
                 let igst = $(this).val();
                 $('.append-option').remove();
+                $('.edit-zero').remove();
                 $('#gst-id').val('');
                 // $('#CGST').load();
                 // $('#SGST').load();
@@ -505,6 +521,7 @@
                 let sgst = $(this).val();
                 $('#gst-id').val('');
                 $('.append-option').remove();
+                $('.edit-zero').remove();
                 $.ajax ({
                     type: 'GET',
                     url: "{{url('getSGSTandCGST')}}",
@@ -526,6 +543,7 @@
             $('#CGST').on('change', function() {
                 let cgst = $(this).val();
                 $('.append-option').remove();
+                $('.edit-zero').remove();
                 $('#gst-id').val('');
                 //$("#SGST").selectmenu("refresh");
                 $.ajax ({
