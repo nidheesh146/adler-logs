@@ -133,7 +133,21 @@
                                 <td>{{$item['actual_order_qty']}}</td>
                                 <td>{{$item['rate']}}</td>
                                 <td>{{$item['discount_percent']}}</td>
-                                <td>{{$item['gst']}}</td>
+                                <td>@if($item['igst']!=0)
+                                    IGST:{{$item['igst']}}%
+                                    &nbsp;
+                                    @endif
+                                    
+                                    @if($item['sgst']!=0)
+                                    SGST:{{$item['sgst']}}%
+                                    &nbsp;
+                                    @endif
+                                    
+                                    @if($item['sgst']!=0)
+                                    CGST:{{$item['sgst']}}%
+                                    @endif
+                                    <!-- ,SGST:{{$item['sgst']}},CGST:{{$item['cgst']}}, -->
+                                </td>
                                 <td>{{$item['currency_code']}}</td>
                                 <td>{{$item['net_value']}}</td>
                                 {{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}

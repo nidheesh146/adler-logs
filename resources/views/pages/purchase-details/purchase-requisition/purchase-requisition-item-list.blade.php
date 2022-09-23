@@ -78,7 +78,20 @@
 							<td>{{$item['actual_order_qty']}}</td>
 							<td>{{$item['rate']}}</td>
 							<td>{{$item['discount_percent']}}</td>
-							<td>IGST:{{$item['igst']}}, SGST:{{$item['sgst']}}, CGST:{{$item['cgst']}}</td>
+							<td>@if($item['igst']!=0)
+                                    IGST:{{$item['igst']}}%
+                                    &nbsp;
+                                    @endif
+                                    
+                                    @if($item['sgst']!=0)
+                                    SGST:{{$item['sgst']}}%,
+                                    &nbsp;
+                                    @endif
+                                    
+                                    @if($item['sgst']!=0)
+                                    CGST:{{$item['sgst']}}%
+                                    @endif
+							</td>
 							<td>{{$item['currency_code']}}</td>
 							<th>{{$item['net_value']}}</th>
 							<td>
