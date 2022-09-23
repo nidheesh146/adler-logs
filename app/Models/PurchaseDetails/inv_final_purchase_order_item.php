@@ -84,11 +84,14 @@ class inv_final_purchase_order_item extends Model
 
     function get_purchase_items($condition)
     {
-        return $this->select(['inventory_rawmaterial.hsn_code','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.short_description','inv_final_purchase_order_item.order_qty', 'inv_final_purchase_order_item.rate', 'inv_final_purchase_order_item.discount', 'inv_unit.unit_name'])
+        return $this->select(['inventory_rawmaterial.hsn_code','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.short_description',
+            'inv_final_purchase_order_item.order_qty', 'inv_final_purchase_order_item.rate', 'inv_final_purchase_order_item.discount', 'inv_unit.unit_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst'])
                     ->leftjoin('inv_final_purchase_order_rel','inv_final_purchase_order_rel.item','=','inv_final_purchase_order_item.id','inv_supplier.supplier_type')
                     ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_final_purchase_order_rel.master')
                     ->leftjoin('inv_supplier', 'inv_supplier.id','=', 'inv_final_purchase_order_master.supplier_id')
-                    ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_final_purchase_order_item.item_id')
+                    ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
+                    ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                    ->leftjoin('inventory_gst','inventory_gst.id','=','inv_purchase_req_item.gst' )
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')            
                     ->where($condition)
                     ->get();

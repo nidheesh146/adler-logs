@@ -59,7 +59,21 @@
                                         <th scope="row">Item Name</th> 
                                         <td>{{$data['get_item_single']['item_name']}}</td>
                                         <th scope="row">GST</th>
-                                        <td>{{$data['get_item_single']['gst']}}</td>
+                                        <td>@if($data['get_item_single']['igst']!=0)
+                                            IGST:{{$data['get_item_single']['igst']}}%
+                                            &nbsp;
+                                            @endif
+                                            
+                                            @if($data['get_item_single']['sgst']!=0)
+                                            SGST:{{$data['get_item_single']['sgst']}}%,
+                                            &nbsp;
+                                            @endif
+                                            
+                                            @if($data['get_item_single']['sgst']!=0)
+                                            CGST:{{$data['get_item_single']['sgst']}}%
+                                            @endif
+                                          
+                                        </td>
                                       </tr>
                                       <tr>
                                         <th scope="row">HSN code</th>

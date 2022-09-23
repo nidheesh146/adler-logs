@@ -179,6 +179,11 @@
         </div>
         
     </div>
+    <style>
+        th{
+            text-align:center;
+        }
+    </style>
     <div class="row3">
         <div class="intro">
             We are pleased to place an order for the following items at the Terms and Conditions given herewith. Please sign a copy of the same and return it to us as an acceptance. 
@@ -188,15 +193,15 @@
                 <th rowspan="2">S.NO</th>
                 <th rowspan="2">HSN CODE</th>
                 <th rowspan="2">ITEM.NO</th>
-                <th rowspan="2">ITEM DESCRIPTION</th>
+                <th rowspan="2" width='40%'>ITEM DESCRIPTION</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
                 <th rowspan="2">RATE</th>
                 <th rowspan="2">VALUE</th>
                 <th colspan="2">DISC</th>
-                <th colspan="2">CGST</th>
-                <th colspan="2">SGST/UTGST</th>
                 <th colspan="2">IGST</th>
+                <th colspan="2">SGST/UTGST</th>
+                <th colspan="2">CGST</th>
             </tr>
             <tr>
                 <th>%</th>
@@ -211,6 +216,9 @@
             <?php $i=1;
             $total = 0;
             $total_discount = 0;
+            $total_igst = 0;
+            $total_cgst = 0;
+            $total_sgst = 0;
              ?>
             @foreach($items as $item)
             <tr>
@@ -224,15 +232,18 @@
                 <td>{{number_format((float)($item['rate']* $item['order_qty']), 2, '.', '') }}</td>
                 <td>{{$item['discount']}}</td>
                 <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['discount'])/100), 2, '.', '')}}</td>
-                <td>0</td>
-                <td>0.00</td>
-                <td>0</td>
-                <td>0.00</td>
-                <td>0</td>
-                <td>0.00</td>
+                <td>{{$item['igst']}}</td>
+                <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['igst'])/100), 2, '.', '')}}</td>
+                <td>{{$item['sgst']}}</td>
+                <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['sgst'])/100), 2, '.', '')}}</td>
+                <td>{{$item['cgst']}}</td>
+                <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['cgst'])/100), 2, '.', '')}}</td>
                 <?php 
                 $total =$total+ $item['rate']* $item['order_qty'];
                 $total_discount = $total_discount+($item['rate']* $item['order_qty']*$item['discount'])/100;
+                $total_igst = $total_igst+($item['rate']* $item['order_qty']*$item['igst'])/100;
+                $total_sgst = $total_sgst+($item['rate']* $item['order_qty']*$item['sgst'])/100;
+                $total_cgst = $total_cgst+($item['rate']* $item['order_qty']*$item['cgst'])/100;
                 ?>
             </tr>
             @endforeach
@@ -283,6 +294,21 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
                 </tr>
+                <tr>
+                    <td style="width:130px">Total IGST</td>
+                    <td style="width:30px;">:</td>
+                    <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
+                </tr>
+                <tr>
+                    <td style="width:130px">Total SGST/UTGST</td>
+                    <td style="width:30px;">:</td>
+                    <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
+                </tr>
+                <tr>
+                    <td style="width:130px">Total CGST</td>
+                    <td style="width:30px;">:</td>
+                    <td style="text-align:right;">{{number_format((float)($total_cgst), 2, '.', '')}}</td>
+                </tr>
                 <!-- <tr>
                     <td style="width:130px">Total Net Amount</td>
                     <td style="width:30px;">:</td>
@@ -294,7 +320,7 @@
                 <tr>
                     <th style="width:130px">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
-                    <th style="float:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</th>
+                    <th style="float:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_cgst), 2, '.', '')}}</th>
                 </tr> 
             </table>
         </div>
