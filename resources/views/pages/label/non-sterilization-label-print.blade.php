@@ -121,7 +121,7 @@
                                 </div>
                                 <div style="margin-left:2px;float:left;width:62%;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">VL No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">ML No:{{$batchcard_data->drug_license_number}}</span> 
                                     <span class=" cls" style="padding-left:2px;font-size:8px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
                                     <div class="" style="display:block;margin-left: 35px;">
                                         <span style="font-weight:550;font-size:6.3px;display:block;padding-left:2px">
@@ -214,7 +214,7 @@
                             <div class="logo" style="text-align:center;">
                                
                                 <!--@if($batchcard_data->is_read_instruction_logo==1) -->
-                                <img <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;padding:0px;margin-left: 3px;">
+                                <img src="{{asset('/img/alderlogo/instruction_use.png')}}"  style="width:40%;float:left;padding:0px;margin-left: 3px;">
                                 <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;">
                                 <!-- <img src="{{asset('/img/alderlogo/dot_not_reuse.png')}}"  style="width:36%;float:left;padding:0px;margin-left: 3px;"> -->
                                 <!--@endif -->
@@ -234,7 +234,7 @@
                                 </div>
                                 <div style="margin-left:2px;float:left;width:62%;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">VL No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">ML No:{{$batchcard_data->drug_license_number}}</span> 
                                     <span class=" cls" style="padding-left:2px;font-size:8px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
                                     <div class="" style="display:block;margin-left: 35px;">
                                         <span style="font-weight:550;font-size:6.3px;display:block;padding-left:2px">
