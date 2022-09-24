@@ -29,10 +29,22 @@ class inv_supplier extends Model
     function get_supplier($condition){
         return $this->where($condition)->first();
     }
+    function get_suppliers($condition){
+        return $this->select('*')
+        ->where($condition)
+        ->orderBy('inv_supplier.id','desc')
+        ->paginate(15);
+    }
 
     function get_all_suppliers()
     {
         return $this->select('id','vendor_id', 'vendor_name')->get();
     }
-
+    function updatedata($condition, $data)
+    {
+        return $this->where($condition)->update($data);
+    }
+    function insert_data($data){
+        return $this->insertGetId($data);
+    }
 }

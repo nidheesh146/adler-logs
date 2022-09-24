@@ -19,7 +19,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
     Route::post('/', 'UserController@login');
     Route::get('logout', 'UserController@logout');
 
-
     Route::get('user-add', 'WebapiController@insert_user');
     Route::get('user-dept', 'WebapiController@insert_dept');
 
@@ -111,9 +110,25 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/get-single-lot-allocation/{lot_allocation_id}','LotAllocationController@getsingleLot');
 
     //MIQ
-    Route::get('inventory/MIQ', 'MIQController@MIQlist');
-    Route::get('inventory/MIQ-add', 'MIQController@MIQAdd');
-    Route::get('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
+    // Route::get('inventory/MIQ', 'MIQController@MIQlist');
+    // Route::get('inventory/MIQ-add', 'MIQController@MIQAdd');
+    // Route::get('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
+
+    // suppliers
+    // Route::get('inventory/terms-and-conditions-list','TermsconditionsController@list_terms_conditions');
+    // Route::get('inventory/terms-and-conditions-add/{id?}','TermsconditionsController@add_terms_conditions');
+    // Route::post('inventory/terms-and-conditions-add/{id?}','TermsconditionsController@add_terms_conditions');
+    // Route::get('inventory/terms-and-conditions-get/{id}','TermsconditionsController@get_terms_conditions');
+    // suppliers
+    Route::get('inventory/suppliers-list','SupplierController@list_supplier');
+    Route::get('inventory/suppliers-add/{id?}','SupplierController@add_supplier');
+    Route::post('inventory/suppliers-add/{id?}','SupplierController@add_supplier');
+    Route::get('inventory/suppliers-delete/{id}','SupplierController@delete_suppliers');
+
+
+
+
+
 });
 
 // Route::group(['namespace' => 'App\Http\Controllers\Web\ServiceRequisition','middleware'=>['RolePermission']], function() {
