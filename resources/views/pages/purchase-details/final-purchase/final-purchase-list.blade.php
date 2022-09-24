@@ -43,31 +43,48 @@
                                         .select2-selection__rendered {
                                             font-size:12px;
                                         }
+                                        
                                         </style>
                                         <form autocomplete="off">
                                             <th scope="row">
                                                 <div class="row filter_search" style="margin-left: 0px;">
                                                     <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                                 
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                             <label>RQ No:</label>
                                                             <input type="text" value="{{request()->get('rq_no')}}" name="rq_no" id="rq_no" class="form-control" placeholder="RQ NO"> 
                                                             <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                                                         </div><!-- form-group -->
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                             <label>@if(request()->get('order_type')=='wo') WO @else PO @endif No:</label>
                                                             <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="@if(request()->get('order_type')=='work-order') WO NO @else PO NO @endif">
                                                             
                                                         </div><!-- form-group -->
                                                         
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                             <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                             <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                             
                                                         </div>
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                             <label  style="font-size: 12px;">@if(request()->get('order_type')=='wo') WO @else PO @endif Date </label>
-                                                            <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="@if(request()->get('order_type')=='work-order') WO @else PO @endif DATE (MM-YYYY)">
+                                                            <input type="text" value="{{request()->get('po_from')}}" id="po_from" class="form-control datepicker" name="po_from" placeholder="MM-YYYY">
+                                                        </div>
+                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                            <label  style="font-size: 12px;">Status</label>
+                                                            <!-- <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="@if(request()->get('order_type')=='work-order') WO @else PO @endif DATE (MM-YYYY)"> -->
+                                                            <select name="status" id="status" class="form-control">
+                                                                <option value=""> --Select One-- </option>
+                                                                <!-- <option value="1" {{(request()->get('status') == 1) ? 'selected' : ''}}> Active </option> -->
+                                                                <option value="4" {{(request()->get('status') == 4) ? 'selected' : ''}}> Pending</option>
+                                                                <option value="5"{{(request()->get('status') == 5) ? 'selected' : ''}}>On hold</option>
+                                                                <option value="1"{{(request()->get('status') == 1) ? 'selected' : ''}}>Approved</option>
+                                                                <option value="reject" {{(request()->get('status') == 'reject') ? 'selected' : ''}}> Cancelled </option>
+                                                            </select>
+                                                        </div> 
+                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                            <label  style="font-size: 12px;">Processed Date</label>
+                                                            <input type="text" value="{{request()->get('processed_from')}}" id="processed_from" class="form-control datepicker" name="processed_from" placeholder="MM-YYYY">
                                                         </div> 
                                                                         
                                                     </div>
@@ -90,7 +107,11 @@
                         </div>
                     </div>
                 <div class="tab-pane active show " id="purchase">
-                    
+                    <style>
+                        tbody tr{
+                            font-size:12.9px;
+                        }
+                    </style>
                     <div class="table-responsive">
                         <table class="table table-bordered mg-b-0" id="example1">
                             <thead>
@@ -108,7 +129,11 @@
                             </thead>
                             <tbody>
                                 @foreach($data['po_data'] as $po_data)
-                                <tr>
+                                <tr style="	@if($po_data->status == 5)
+                                    background: #ffc1074f;
+                                    @endif @if($po_data->status == 0) background: #ffc1074f;
+                                    @endif"
+                                    >
                                     <td>{{$po_data->rq_no}}</td>
                                     <td>{{$po_data->po_number}}</td>
                                     <td>{{date('d-m-Y',strtotime($po_data->po_date))}}</td>
@@ -116,8 +141,32 @@
                                     <td>{{date('d-m-Y',strtotime($po_data->created_at))}}</td>
                                     <td>{{$po_data->f_name}} {{$po_data->l_name}}</td>
                                     <td>
-                                        <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/final-purchase-add/'.$po_data->id)}}"><i class="fas fa-edit"></i> Edit</a>
-                                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                                    
+                                    <button data-toggle="dropdown" style="width: 68px;" class="badge 
+                                        @if($po_data->status==1) badge-success @elseif($po_data->status==4)  badge-primary @elseif($po_data->status==5)  badge-warning @elseif($po_data->status==0) badge-danger @endif"> 
+                                        @if($po_data->status==1) 
+                                            Approved 
+                                        @elseif($po_data->status==4)  
+                                            pending
+                                        @elseif($po_data->status==5)  
+                                            On hold
+                                        @elseif($po_data->status==0)  
+                                            Cancelled
+                                        @endif
+                                        <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i>
+                                    </button>
+								    <div class="dropdown-menu">
+                                        @if($po_data->status!=0)
+                                        <a href="{{url('inventory/final-purchase-add/'.$po_data->id)}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                                        <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
+                                            <i class="fa fa-check-circle"></i> Change Status
+                                        </a>
+                                        @endif
+                                        <!-- <a href="{{url('inventory/final-purchase-add/'.$po_data->id)}}" class="dropdown-item"><i class="fa fa-window-close"></i> Cancel</a> -->
+                                        <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                                    </div>
+                                        <!-- <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/final-purchase-add/'.$po_data->id)}}"><i class="fas fa-edit"></i> Edit</a>
+                                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a> -->
                                         <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
                                     </td>
                                 </tr>
@@ -136,6 +185,72 @@
 		</div>
 	</div>
 	<!-- az-content-body -->
+    <div id="approveModal" class="modal">
+        <div class="modal-dialog modal-md" role="document">
+            <form id="status-change-form" method="post" action="{{ url('inventory/final-purchase/change/status')}}">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"># @if(request()->get('order_type')=="wo") Work Order @else Purchase Order @endif Status Change<span class="po_number"></span></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="inputAddress2">Status *</label><br>
+                            {{-- <input type="text" name="purchaseRequisitionMasterId" id ="purchaseRequisitionMasterId" value=" "> --}}
+							<input type="hidden" name="po_id" id ="po_id" >
+                            <select class="form-control" name="status" id="status">
+							    <option value=""> --Select One-- </option>
+								{{-- <option value="0"> Pending </option> --}}
+								<option value="1"> Approve</option>
+								<option value="5">On hold</option>
+                                <option value="0">Cancel</option>
+                            </select>
+                        </div> 
+                        <div class="form-group">
+                            <label>Date *</label>
+                            <input type="text" 
+                                value="{{date('d-m-Y')}}" class="form-control datepicker2" name="date" placeholder="date">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress">Processed By *</label><br/>
+                            <style>
+                                    .select2-container .select2-selection--single {
+                                        height: 38px;
+                                        width: 450px;
+                                    }
+                                    .select2-container--default .select2-selection--single .select2-selection__arrow b{
+                                        margin-left: 242px;
+                                        margin-top: 2px;
+                                    }
+                                    .select2-container--open .select2-dropdown--above{
+                                        width:445px;
+                                    }
+                                    .select2-container--default .select2-results>.select2-results__options{
+                                        width: 433px;
+                                    }
+                            </style>
+                            <select class="form-control select2 approved_by" name="approved_by">
+                                <option value="">--- select one ---</option>
+                                @foreach($data['users'] as $user)
+                                <option value="{{$user['user_id']}}">{{$user['f_name']}} {{$user['l_name']}}</option>
+                                @endforeach
+                            </select>
+                        </div> 
+                        <div class="form-group">
+                            <label for="inputAddress">Remarks *</label>
+                            <textarea style="min-height: 100px;" name="remarks" type="text" class="form-control" id="remarks" placeholder="Remarks"></textarea>
+                        </div> 
+                    </div>
+                    <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        <button type="submit" class="btn btn-primary" id="save"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+								role="status" aria-hidden="true"></span> <i class="fas fa-save"></i> Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div><!-- modal-dialog -->
 </div>
 
 
@@ -161,20 +276,67 @@
         // startDate: date,
         autoclose:true
     });
+    $(".datepicker2").datepicker({
+        format: " dd-mm-yyyy",
+        autoclose:true
+    });
+    $("#status-change-form").validate({
+            rules: {
+                status: {
+                    required: true,
+                },
+                date: {
+                    required: true,
+                },
+                remarks: {
+                    required: true,
+                },
+                approved_by:{
+                    required: true,
+                }
+            },
+            submitHandler: function(form) {
+                $('.spinner-button').show();
+                //form.submit();
+            }
+    });
 
   });
+    
 
   
 	$('.search-btn').on( "click", function(e)  {
 		var supplier = $('#supplier').val();
 		var rq_no = $('#rq_no').val();
 		var po_no = $('#po_no').val();
-		var from = $('#from').val();
-		if(!supplier & !rq_no & !po_no & !from)
+		var po_from = $('#from').val();
+        var processed_from = $('#processed_from').val();
+        var status = $('#status').val();
+		if(!supplier & !rq_no & !po_no & !from & !processed_from & !status)
 		{
 			e.preventDefault();
 		}
 	});
+
+    $(document).ready(function() {
+        $('body').on('click', '#approve-model', function (event) {
+            event.preventDefault();
+            var po = $(this).attr('po');
+            // alert(po);
+            $('.po_number').html('('+po+')');
+			let po_id = $(this).attr('value');
+			$('#po_id').val(po_id);
+            let status = $(this).attr('status');
+            $('#status option').each(function(){
+                if (this.value == status) {
+                  $(this).remove();
+                }
+            });
+            //$('#status')
+
+        });
+        
+    });
 
 	
 </script>
