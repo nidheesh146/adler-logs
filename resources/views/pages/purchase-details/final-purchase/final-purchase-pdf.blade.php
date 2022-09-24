@@ -231,19 +231,20 @@
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                 <td>{{number_format((float)($item['rate']* $item['order_qty']), 2, '.', '') }}</td>
                 <td>{{$item['discount']}}</td>
+                <?php $discount_value = ($item['rate']* $item['order_qty'])-(($item['rate']* $item['order_qty']*$item['discount'])/100);?>
                 <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['discount'])/100), 2, '.', '')}}</td>
                 <td>{{$item['igst']}}</td>
-                <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['igst'])/100), 2, '.', '')}}</td>
+                <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
                 <td>{{$item['sgst']}}</td>
-                <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['sgst'])/100), 2, '.', '')}}</td>
+                <td>{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
                 <td>{{$item['cgst']}}</td>
-                <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['cgst'])/100), 2, '.', '')}}</td>
+                <td>{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
                 <?php 
                 $total =$total+ $item['rate']* $item['order_qty'];
                 $total_discount = $total_discount+($item['rate']* $item['order_qty']*$item['discount'])/100;
-                $total_igst = $total_igst+($item['rate']* $item['order_qty']*$item['igst'])/100;
-                $total_sgst = $total_sgst+($item['rate']* $item['order_qty']*$item['sgst'])/100;
-                $total_cgst = $total_cgst+($item['rate']* $item['order_qty']*$item['cgst'])/100;
+                $total_igst = $total_igst+($discount_value*$item['igst'])/100;
+                $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
+                $total_cgst = $total_cgst+($discount_value* $item['order_qty']*$item['cgst'])/100;
                 ?>
             </tr>
             @endforeach

@@ -47,6 +47,11 @@ class PurchaseController extends Controller
         $condition2 = [];
         if(count($_GET))
         {
+            if(!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from && !$request->status)
+            {
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
+            } 
+
             if ($request->po_no) {
                 $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%'.$request->po_no.'%'];
             }
@@ -57,22 +62,36 @@ class PurchaseController extends Controller
                 $condition1[] = ['inv_supplier.vendor_id',  'like', '%'.$request->supplier.'%'];
                 $condition2[] = ['inv_supplier.vendor_name',  'like', '%'.$request->supplier.'%'];
             }
-            if ($request->from) {
-                $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-                $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            if ($request->po_from) {
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->po_from))];
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->po_from))];
+            }
+            if ($request->processed_from) {
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->processed_from))];
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->processed_from))];
+            }
+            if ($request->status) {
+                if($request->status=="reject"){
+                    $condition1[] = ['inv_final_purchase_order_master.status',  '=', 0];
+                }
+                $condition1[] = ['inv_final_purchase_order_master.status',  '=', $request->status];
             }
             if ($request->order_type) {
                 $condition1[] = ['inv_final_purchase_order_master.po_number', 'like',$request->order_type.'%'];
             }
-            
+            if (!$request->prsr) {
+                $order_type='PO';
+                $condition[] = ['inv_final_purchase_order_master.po_number', 'like',$order_type.'%'];
+            }
            
             //$data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master_list($condition1,$condition2);
         }
-        if (!$request->order_type) {
+        else {
             $order_type='PO';
             $condition1[] = ['inv_final_purchase_order_master.po_number', 'like',$order_type.'%'];
+            $condition1[] = ['inv_final_purchase_order_master.status',  '=', 4];
         }
-        
+        $data['users'] = $this->User->get_all_users([]);
         $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master_list($condition1,$condition2);
         return view('pages.purchase-details.final-purchase.final-purchase-list',compact('data'));
     }
@@ -108,6 +127,7 @@ class PurchaseController extends Controller
                 $data['created_at'] = date('Y-m-d H:i:s');
                 $data['updated_at'] = date('Y-m-d H:i:s');
                 $data['rq_master_id'] = $request->rq_master_id;
+                $data['status']=4;
                 $quotation_supplier = $this->inv_purchase_req_quotation_supplier->get_suppliers_single(['inv_purchase_req_quotation_supplier.quotation_id'=>$request->rq_master_id,'inv_purchase_req_quotation_supplier.selected_supplier'=>1]);
                 $data['supplier_id'] = $quotation_supplier->supplier_id;
             }
@@ -169,6 +189,41 @@ class PurchaseController extends Controller
         $data = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id'=>$id]);
         return view('pages.purchase-details.final-purchase.final-purchase-item-edit',compact('data'));
         
+    }
+
+    public function changeStatus(Request $request)
+    {
+        if ($request->isMethod('post')) 
+        {
+            $validation['po_id'] = ['required'];
+            $validation['status'] = ['required'];
+            $validation['remarks'] = ['required'];
+            $validation['date'] = ['required'];
+            $validation['approved_by'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all()) 
+            {
+                
+                $data = ['inv_final_purchase_order_master.status'=>$request->status,
+                        'inv_final_purchase_order_master.remarks'=>$request->remarks,
+                        'inv_final_purchase_order_master.processed_by'=>$request->approved_by,
+                        'inv_final_purchase_order_master.processed_date'=>$request->date,
+                        'inv_final_purchase_order_master.updated_at'=>date('Y-m-d H:i:s')];
+                            if($request->status == 1)
+                            $status="Approved";
+                            if($request->status == 5)
+                            $status="Hold";
+                            if($request->status == 0)
+                            $status="Rejected";
+
+                            $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$request->po_id],$data);
+                            $request->session()->flash('success', "You have successfully ".$status." a  Purchase/Work Order ");
+                return redirect('inventory/final-purchase');
+            }
+            if($validator->errors()->all()) {
+                    return redirect('inventory/final-purchase')->withErrors($validator)->withInput();
+            }
+        }
     }
 
     public function deleteFinalPurchase(Request $request,$id)
@@ -628,6 +683,8 @@ return  $data;
         $status = 1;
         return Excel::download(new FinalPurchaseOrderExport($status), 'FinalPurchaseOrder'.date('d-m-Y').'.xlsx');
     }
+
+    
 
 
 
