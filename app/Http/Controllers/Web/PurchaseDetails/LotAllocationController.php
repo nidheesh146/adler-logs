@@ -113,11 +113,11 @@ class LotAllocationController extends Controller
 
                 if($request->lot_id){
                     $lot =$this->inv_lot_allocation->updatedata(['inv_lot_allocation.id'=>$request->lot_id],$data);
-                    $request->session()->flash('success',  "You have successfully updated lot allocation !");
+                    $request->session()->flash('success',  "You have successfully updated a LOT allocation !");
                 } 
                 else{
                     $lot =$this->inv_lot_allocation->insertdata($data);
-                    $request->session()->flash('success',  "You have successfully completed lot allocation !");
+                    $request->session()->flash('success',  "You have successfully created a LOT allocation !");
                 }
                 
                 return redirect("inventory/lot-allocation-list");

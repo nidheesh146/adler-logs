@@ -41,7 +41,7 @@ class UserController extends Controller
                     $validator->errors()->add('Action', 'Your account has been deactivated!');
                 }
             } else {
-                $validator->errors()->add('auth', 'Email or password is wrong!');
+                $validator->errors()->add('auth', 'username or password is wrong!');
                 return redirect('/')->withErrors($validator)->withInput();
             }
           }
