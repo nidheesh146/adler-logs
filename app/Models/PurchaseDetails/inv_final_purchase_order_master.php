@@ -23,24 +23,24 @@ class inv_final_purchase_order_master extends Model
     function updatedata($condition,$data){
         return $this->where($condition)->update($data);
     }
-    function insert_data($data){
+    function insert_data($data,$terms = null){
       $POMaster =  $this->insertGetId($data);
       if( $POMaster ){
        $inv_purchase_req_quotation =  DB::table('inv_purchase_req_quotation_supplier')->where(['quotation_id'=>$data['rq_master_id'],'selected_supplier'=>1])->first();
        $item =  DB::table('inv_purchase_req_quotation_item_supp_rel')->where(['quotation_id'=>$data['rq_master_id'],'status'=>1,'supplier_id'=>$inv_purchase_req_quotation->supplier_id])->get();
-       
        foreach($item as $items){
             $datas['item_id'] = $items->item_id;
             $datas['order_qty'] = $items->quantity;
             $datas['discount'] =  $items->discount; 
             $datas['Specification'] =  $items->specification;
             $datas['rate'] =  $items->rate;
-
             $or_item_id = DB::table('inv_final_purchase_order_item')->insertGetId($datas);
                 if( $or_item_id){
                     DB::table('inv_final_purchase_order_rel')->insertGetId(['master'=>$POMaster,'item'=>$or_item_id]);
                 }
         }
+        $TC_ID = DB::table('po_supplier_terms_conditions')->insertGetId(['terms_and_conditions'=>$terms,'type'=>"supplier"]);
+        DB::table('po_fpo_master_tc_rel')->insert(['fpo_id'=>$POMaster,'terms_id'=>$TC_ID]);
       }
       return $POMaster;
     }

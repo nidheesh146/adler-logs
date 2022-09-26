@@ -16,7 +16,8 @@ class SupplierController extends Controller
     }
 
     public function list_supplier(Request $request) 
-    {     $condition=[];
+    {   $condition =[];
+
         if ($request->supplier_id) {
             $condition[] = ['inv_supplier.vendor_id', 'like','%'.$request->supplier_id.'%'];
         }
@@ -62,12 +63,14 @@ class SupplierController extends Controller
                 $data['address'] = $request->Address;
                 $data['remarks'] = $request->Remarks;
                 $data['terms_and_conditions'] = $request->conditions;
-               
                 if($id){
+                    $data['updated'] = date('Y-m-d H:i:s');
                     $request->session()->flash('success',"You have successfully updated a supplier !");
                     $this->inv_supplier->updatedata(['id'=>$id],$data);
                     return redirect("inventory/suppliers-add/".$id);
                 }else{
+                    $data['created'] = date('Y-m-d H:i:s');
+                    $data['updated'] = date('Y-m-d H:i:s');
                   $request->session()->flash('success',"You have successfully added a supplier !");
                   $this->inv_supplier->insert_data($data);
                   return redirect("inventory/suppliers-list");

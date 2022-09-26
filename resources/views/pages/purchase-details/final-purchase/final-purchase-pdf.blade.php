@@ -340,7 +340,7 @@
     <div class="row6" style="font-size:10px;display:block;">
         <strong>Terms and Conditions</strong>
         <br/>
-        @if($final_purchase['supplier_type']=="direct" && (str_starts_with($final_purchase['po_number'] , 'PO')))
+     <?php /* @if($final_purchase['supplier_type']=="direct" && (str_starts_with($final_purchase['po_number'] , 'PO')))
         <p>
         1. Payment Term - 30 days credit from the date of receipt of material or date of receipt of Invoice whichever is later.<br/>
         2. Delivery - Goods are to be delivered within 30 days from the receipt of P.O. We will inform the transport details & delivery address after material get ready for dispatch.<br/>
@@ -594,7 +594,12 @@
         Supplier with respect to such terminated purchase / Service order or orders shall be limited to: (1) Supplier's purchase price of all components for the PRODUCT, plus (2) the actual costs incurred by
         Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
         with proof satisfactory to Company.
-    @endif
+    @endif */ ?>
+
+<?= nl2br($terms_condition->terms_and_conditions);?>
+
+
+
     </div>
     <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     Adler Ref No :

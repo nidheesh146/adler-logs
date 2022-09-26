@@ -135,7 +135,8 @@ class PurchaseController extends Controller
                 $data['created_by'] = $request->create_by;
 
                 if(!$id){
-                    $POMaster =   $this->inv_final_purchase_order_master->insert_data($data);
+                    $inv_supplier_terms = DB::table('inv_supplier')->select('*')->where('id',$data['supplier_id'])->first();
+                    $POMaster =   $this->inv_final_purchase_order_master->insert_data($data,$inv_supplier_terms->terms_and_conditions);
                     $request->session()->flash('success',  "You have successfully added a  purchase order master !");
                 }else{
                     $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$id],$data);
@@ -536,42 +537,30 @@ return  $data;
     public function supplierInvoice(Request $request)
     {
         $condition1 = [];
-        $condition2 = [];
-        if(count($_GET))
-        {
+ 
             if ($request->order_type) {
                 $condition1[] = ['inv_final_purchase_order_master.po_number', 'like',$request->order_type.'%'];
             }
             
             if ($request->po_no) {
                 $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%'.$request->po_no.'%'];
-                $condition2 = [];
             }
             if ($request->invoice_no) {
                 $condition1[] = ['inv_supplier_invoice_master.invoice_number', 'like', '%'.$request->invoice_no.'%'];
-                $condition2 = [];
             }
             if ($request->supplier) {
                 // $condition2[] = ['inv_supplier.id', '=', $request->supplier];
-                $condition1[] = ['inv_supplier.vendor_id', 'like', '%'.$request->supplier.'%'];
-                $condition2[] = ['inv_supplier.vendor_name', 'like', '%'.$request->supplier.'%'];
+                $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"),'like','%'.$request->supplier.'%'];
+               // $condition2[] = ['inv_supplier.vendor_name', 'like', '%'.$request->supplier.'%'];
             }
             if ($request->from) {
                 $condition1[] = ['inv_supplier_invoice_master.invoice_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition1[] = ['inv_supplier_invoice_master.invoice_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
-                $condition2 = [];
             }
            
-            $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_invoices(['inv_supplier_invoice_master.status'=>1],$condition1,$condition2);
-        }
-        else 
-        {
-            if (!$request->order_type) {
-                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like','YY%'];
-            }
-            $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_invoices(['inv_supplier_invoice_master.status'=>1],$condition1,$condition2=null);
+            $data['Requisition'] = $this->inv_supplier_invoice_master->get_supplier_invoices($condition1);
 
-        }
+        
         // $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
         // $data['po_nos'] = $this->inv_final_purchase_order_master->get_po_nos();
         // $data['invoice_nos'] = $this->inv_supplier_invoice_master->get_invoice_nos();
@@ -665,6 +654,11 @@ return  $data;
     
         $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_master.id'=>$id]);
         $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master'=>$id]);
+        $data['terms_condition'] = DB::table('po_fpo_master_tc_rel')
+                                    ->select('po_supplier_terms_conditions.terms_and_conditions')
+                                    ->join('po_supplier_terms_conditions','po_supplier_terms_conditions.id','=','po_fpo_master_tc_rel.terms_id')
+                                    ->where('fpo_id',$id)
+                                    ->first();
           
         $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);
         $pdf->set_paper('A4', 'landscape');
