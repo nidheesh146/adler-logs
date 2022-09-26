@@ -409,6 +409,7 @@
                 $('#qty_accepted').attr('value',qtyaccepted);
                 reject_changes();
             });
+            
             $('.rejobj').hide();
             function reject_changes(){
                let qty_rejected =  $('#qty_rejected').val();
