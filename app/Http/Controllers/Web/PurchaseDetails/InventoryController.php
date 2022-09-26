@@ -263,7 +263,7 @@ class InventoryController extends Controller
         if($request->pr_id)
             $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
         else
-            $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
+        $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
         $data["currency"] = $this->currency_exchange_rate->get_currency([]);
         $data['gst'] = $this->inventory_gst->get_gst();
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data'));

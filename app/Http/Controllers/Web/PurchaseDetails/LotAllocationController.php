@@ -12,6 +12,8 @@ use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inv_final_purchase_order_master;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
+use App\Models\currency_exchange_rate;
+
 use DB;
 class LotAllocationController extends Controller
 {
@@ -24,47 +26,38 @@ class LotAllocationController extends Controller
         $this->inv_supplier = new inv_supplier;
         $this->inv_final_purchase_order_master = new inv_final_purchase_order_master;
         $this->inv_supplier_invoice_master = new inv_supplier_invoice_master;
+        $this->currency_exchange_rate = new currency_exchange_rate;
+        
     }
 
     public function lotAllocation(Request $request)
     {
-        if(count($_GET))
-        {
+            $condition = [];
             if ($request->lot_no) {
                 $condition[] = ['inv_lot_allocation.lot_number', 'like', '%'.$request->lot_no.'%'];
-                $condition2 = [];
             }
             if ($request->po_no) {
                 $condition[] = ['inv_final_purchase_order_master.po_number', 'like', '%'.$request->po_no.'%'];
-                $condition2 = [];
             }
             if ($request->invoice_no) {
                 $condition[] = ['inv_supplier_invoice_master.invoice_number', 'like', '%'.$request->invoice_no.'%'];
-                $condition2 = [];
             }
             if ($request->item_code) {
                 $condition[] = ['inventory_rawmaterial.item_code', 'like', '%'.$request->item_code.'%'];
-                $condition2 = [];
             }
             if ($request->supplier) {
-                $condition[] = ['inv_supplier.vendor_id', 'like', '%'.$request->supplier.'%'];
-                $condition2[] = ['inv_supplier.vendor_name', 'like', '%'.$request->supplier.'%'];
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"),'like','%'.$request->supplier.'%'];
             }
-            $lot_data = $this->inv_lot_allocation->getData($condition,$condition2);
-        }
-        else 
-        {
-            $lot_data = $this->inv_lot_allocation->getData($condition=null,$condition2=null);
-
-        }
-       
+        
+        $data['lot_data'] = $this->inv_lot_allocation->getData($condition);
         $users = $this->User->get_all_users([['user.status','=',1]]);
         $data['items'] = $this->inventory_rawmaterial->get_items();
         $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
         $data['lot_nos'] = $this->inv_lot_allocation->get_lots();
         $data['po_nos'] = $this->inv_final_purchase_order_master->get_po_nos();
         $data['invoice_nos'] = $this->inv_supplier_invoice_master->get_invoice_nos();
-        return view('pages.purchase-details.lot-allocation.lot-allocation-list', compact('lot_data','users', 'data'));
+        $data["currency"] = $this->currency_exchange_rate->get_currency([]);
+        return view('pages.purchase-details.lot-allocation.lot-allocation-list', compact('users','data'));
     }
 
     public function addLotAllocation(Request $request)
@@ -75,18 +68,16 @@ class LotAllocationController extends Controller
             $validation['document_no'] = ['required'];
             $validation['rev_no'] = ['required'];
             $validation['rev_date'] = ['required','date'];
-            $validation['invoice_id'] = ['required'];
             $validation['qty_received'] = ['required'];
             $validation['qty_accepted'] = ['required'];
             $validation['qty_rejected'] = ['required'];
-            $validation['vehicle_no'] = ['required'];
-            $validation['transporter_name'] = ['required'];
-            $validation['mrr_no'] = ['required'];
-            $validation['mrr_date'] = ['required'];
             $validation['test_report_no'] = ['required'];
             $validation['test_report_date'] = ['required'];
+            $validation['currency'] = ['required'];
+            $validation['conversion_rate'] = ['required'];
             $validation['prepared_by'] = ['required'];
-            $validation['si_id'] = ['required'];
+
+
 
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) 
@@ -116,6 +107,13 @@ class LotAllocationController extends Controller
                 $data['po_id'] = $invoice_item->po_master_id;
               }
 
+              $data['qty_rej_reason'] = $request->qty_rej_reason;
+              $data['rejected_user'] = $request->rejected_user;
+              $data['invoice_rate'] = $request->invoice_rate;
+              $data['currency'] = $request->currency;
+              $data['conversion_rate'] = $request->conversion_rate;
+              $data['value_inr'] = $request->value_inr;
+
                 if($request->lot_id){
                     $lot =$this->inv_lot_allocation->updatedata(['inv_lot_allocation.id'=>$request->lot_id],$data);
                     $request->session()->flash('success',  "You have successfully updated lot allocation !");
@@ -140,14 +138,14 @@ class LotAllocationController extends Controller
 
         $data['items'] = $this->inv_supplier_invoice_item->get_supplier_invoice_item1(['inv_supplier_invoice_item.status'=>1,'inv_supplier_invoice_master.status'=>1]);
         $data['users'] = $this->User->get_all_users([['user.status','=',1]]);
-        
-      // print_r( $data['items']);exit;
+        $data["currency"] = $this->currency_exchange_rate->get_currency([]);
         return view('pages.purchase-details.lot-allocation.lot-allocation-add', compact('data'));
     }
 
     public function getInvoiceItem($invoice_item_id)
     {
         $invoice_item = $this->inv_supplier_invoice_item->get_single_supplier_invoice_item(['inv_supplier_invoice_item.id'=>$invoice_item_id]);
+        $invoice_item->total_rate = (float) sprintf('%.2f',($invoice_item->rate - ($invoice_item->discount/100)*$invoice_item->rate));
         return $invoice_item;
     }
 

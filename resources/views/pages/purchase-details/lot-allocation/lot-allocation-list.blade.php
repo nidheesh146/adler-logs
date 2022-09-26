@@ -2,6 +2,8 @@
 @section('content')
 
 @inject('SupplierQuotation', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
+
+
 <div class="az-content az-content-dashboard">
   <br>
   <div class="container">
@@ -150,45 +152,35 @@
 					</tr>
 				</thead>
 				<tbody>
-					@foreach($lot_data as $data)
+					@foreach( $data['lot_data']  as $datas)
 					<tr>
-						<td>{{$data['lot_number']}}</td>
-                        <td>{{$data['po_number']}}</td>
-                        <td>{{$data['item_code']}}</td>
-						<td>{{$data['invoice_number']}}</td>
-						<td>{{$data['inv_odr_qty']}}</td>
-						<td>{{$data['vendor_id']}}-{{$data['vendor_name']}}</td>
-						<td>{{$data['qty_received']}}</td>
-						<td>{{$data['qty_accepted']}}</td>
-						<td>{{$data['qty_rejected']}}</td>
+						<td>{{$datas['lot_number']}}</td>
+                        <td>{{$datas['po_number']}}</td>
+                        <td>{{$datas['item_code']}}</td>
+						<td>{{$datas['invoice_number']}}</td>
+						<td>{{$datas['inv_odr_qty']}}</td>
+						<td>{{$datas['vendor_id']}}-{{$datas['vendor_name']}}</td>
+						<td>{{$datas['qty_received']}}</td>
+						<td>{{$datas['qty_accepted']}}</td>
+						<td>{{$datas['qty_rejected']}}</td>
 						{{-- <td>{{$data['transporter_name']}}</td>
 						<td>{{$data['vehicle_number']}}</td> --}}
 						<td>
 							<!-- <a class="badge badge-info" style="font-size: 13px;" href="http://localhost/adler/public/inventory/final-purchase-add/3"><i class="fas fa-edit"></i> Edit</a> -->
-							<a class="badge badge-info lot-edit" style="font-size: 13px;" href="#" data-lotid ="{{$data['id']}}" data-invoiceitem="{{$data['invoice_number']}}" data-toggle="modal" data-target="#myModal"><i class="fas fa-edit"></i> Edit</a>                                    
+							<a class="badge badge-info lot-edit" style="font-size: 13px;" href="#" data-lotid ="{{$datas['id']}}" data-invoiceitem="{{$datas['invoice_number']}}" data-toggle="modal" data-target="#myModal"><i class="fas fa-edit"></i> Edit</a>                                    
 						</td>
 					</tr>
 					@endforeach
 				</tbody>
 			</table>
-			<div class="box-footer clearfix">
-				<style>
-				.pagination-nav{
-					width:100%;
-				}
-				.pagination{
-					float:right;
-					margin:0px;   
-					margin-top: -16px;
-				}
-
-				</style>
-		   </div> 
+            <div class="box-footer clearfix">
+                {{ $data['lot_data']->appends(request()->input())->links() }}
+        </div> 
 		</div>
 	</div>
 </div>
 	<!-- az-content-body -->
-	<!-- Modal content-->
+
 
 	<div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog modal-lg" style="max-width: 97% !important;">
@@ -220,64 +212,95 @@
                                     </div><!-- form-group -->
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Rev No *</label>
+                                        <label>Revision Number *</label>
                                         <input type="text" class="form-control" id="rev_no" name="rev_no"
-                                            placeholder="Rev No">
+                                            placeholder="Revision Number">
                                     </div><!-- form-group -->
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Rev Date *</label>
-                                        <input type="date"  value="" class="form-control" name="rev_date" id="rev_date" placeholder="Rev Date">
+                                        <label>Revision Date *</label>
+                                        <input type="date"  value="" class="form-control" name="rev_date" id="rev_date" placeholder="Revision Date">
                                     </div><!-- form-group -->
-    
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Item Description *</label>
+                                        <label>Item Code </label>
+                                        <input type="text"  value="" class="form-control" name="material_code" id="material_code" readonly placeholder="Item Code">
+                                    </div>
+
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Item Description </label>
                                         <textarea value="" class="form-control" name="item_description" id="item_description"
                                             placeholder="Item Description" readonly></textarea>
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Material Code *</label>
-                                        <input type="text"  value="" class="form-control" name="material_code" id="material_code" readonly placeholder="Material Code">
+                                        <label>Supplier </label>
+                                        <input type="text"  value="" class="form-control" name="supplier_name" id="supplier_name" disabled placeholder="Supplier">
+                                        <input type="hidden"  value="" class="form-control" name="supplier" id="supplier">
                                     </div>
     
+    
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Material Description *</label>
+                                        <label>Supplier Specification </label>
                                         <textarea value="" class="form-control" name="material_description"  id="material_description"
-                                            placeholder="Material Description" readonly></textarea>
+                                            placeholder="Supplier Specification" readonly></textarea>
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Invoice No *</label>
-                                        <input type="text"  value="" class="form-control" name="invoice_no" id="invoice_no" readonly placeholder="Invoice No">
+                                        <label>Supplier Invoice Number </label>
+                                        <input type="text"  value="" class="form-control" name="invoice_no" id="invoice_no" readonly placeholder="Supplier Invoice Number">
                                         <input type="hidden"  value="" class="form-control" name="invoice_id" id="invoice_id">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Invoice Date *</label>
+                                        <label>Supplier Invoice Date </label>
                                         <input type="date"  value="" class="form-control" name="invoice_date" id="invoice_date" readonly placeholder="Invoice Date">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Invoice Qty *</label>
+                                        <label>Supplier Invoice Quantity </label>
                                         <input type="text"  value="" class="form-control" name="invoice_qty" id="invoice_qty" readonly placeholder="Invoice Qty">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Qty Received *</label>
-                                        <input type="text"  value="" class="form-control" name="qty_received" id="qty_received" placeholder="Qty Received">
+                                        <label>Quantity Received </label>
+                                        <input type="text"  value="" class="form-control" name="qty_received" id="qty_received" placeholder="Quantity Received">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Qty accepted *</label>
-                                        <input type="text"  value="" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Qty Aceepted">
+                                        <label>Quantity accepted </label>
+                                        <input type="text"  value="" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Quantity Aceepted">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Qty rejected *</label>
-                                        <input type="text"  value="" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Qty Rejected">
+                                        <label>Quantity rejected *</label>
+                                        <input type="text"  value="" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Quantity Rejected">
                                     </div>
     
+
+
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3 rejobj">
+                                        <label>Rejected Reason</label>
+                                        <textarea value="" class="form-control" name="qty_rej_reason"  id="qty_rej_reason"
+                                        placeholder="Rejected Reason" ></textarea>
+                                    </div>
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3 rejobj">
+                                        <label>Rejected Person</label>
+                                        <select class="form-control rejected_user" name="rejected_user">
+                                            @foreach ($users as $item)
+                                             <option value="{{$item['user_id']}}"
+                                             @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
+                                             >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                            @endforeach
+                                        </select>  
+                                    </div>
+
+
+
+
+
+
+
+
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Unit *</label>
                                         <input type="text"  value="" class="form-control" name="unit_name" id="unit_name" readonly  placeholder="Unit">
@@ -289,12 +312,47 @@
                                         <input type="text"  value="" class="form-control" name="po_number" disabled id="po_number" placeholder="PO number">
                                         <input type="hidden"  value="" class="form-control" name="po_id" id="po_id">
                                     </div>
+                 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Supplier *</label>
-                                        <input type="text"  value="" class="form-control" name="supplier_name" id="supplier_name" disabled placeholder="Supplier">
-                                        <input type="hidden"  value="" class="form-control" name="supplier" id="supplier">
+                                        <label> MRR Number*</label>
+                                        <input type="text"  class="form-control" value="" id="mrr_no" name="mrr_no" placeholder="MRR Number">
                                     </div>
     
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label> MRR Date*</label>
+                                        <input type="date"  class="form-control" value="" id="mrr_date" name="mrr_date" placeholder="MRR Date">
+                                    </div>
+
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Supplier Invoice rate <span id="inv_rate"></span> </label>
+                                        <input type="text" readonly class="form-control" value="" name="invoice_rate" id="invoice_rate" placeholder="Invoice rate">
+                                    </div>
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Currency *</label>
+                                        <select class="form-control" name="currency" id="currency">
+                                            @foreach($data["currency"] as $items)
+                                            <option value="{{$items->currency_id}}" @if($items->currency_code == "INR") selected  @endif >{{$items->currency_code}}</option>
+                                            @endforeach
+                                          </select>
+                                    </div>
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Conversion rate (INR) *</label>
+                                        <input type="text" class="form-control" value="" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
+                                    </div>
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Value in INR </label>
+                                        <input type="text" readonly class="form-control" value="" name="value_inr" id="value_inr" placeholder="Value in INR">
+                                    </div>
+  
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label> Test Report No *</label>
+                                        <input type="text" class="form-control" value="" name="test_report_no" id="test_report_no"  placeholder="Test Report No">
+                                    </div>
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label> Test Report Date *</label>
+                                        <input type="date" class="form-control" value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date">
+                                    </div>
+
     
                                     <!-- form-group -->
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -307,24 +365,7 @@
                                         <input type="text" value="" class="form-control" name="transporter_name" id="transporter_name" placeholder="Transporter Name">
                                     </div>
     
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> MRR Number*</label>
-                                        <input type="text"  class="form-control" value="" id="mrr_no" name="mrr_no" placeholder="MRR Number">
-                                    </div>
-    
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> MRR Date*</label>
-                                        <input type="date"  class="form-control" value="" id="mrr_date" name="mrr_date" placeholder="MRR Date">
-                                    </div>
-    
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Test Report No *</label>
-                                        <input type="text" class="form-control" value="" name="test_report_no" id="test_report_no"  placeholder="Test Report No">
-                                    </div>
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Test Report Date *</label>
-                                        <input type="date" class="form-control" value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date">
-                                    </div>
+                               
 
 									<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label> Prepared By*</label>

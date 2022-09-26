@@ -122,9 +122,9 @@
                                     </div><!-- form-group -->
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Revision No *</label>
+                                        <label>Revision Number *</label>
                                         <input type="text" class="form-control" id="rev_no" name="rev_no"
-                                            placeholder="Rev No">
+                                            placeholder="Revision Number">
                                     </div><!-- form-group -->
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -133,41 +133,47 @@
                                     </div><!-- form-group -->
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Item Description *</label>
-                                        <textarea value="" class="form-control" name="item_description" id="item_description"
-                                            placeholder="Item Description" readonly></textarea>
-                                    </div>
-    
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Material Code *</label>
+                                        <label>Item Code</label>
                                         <input type="text"  value="" class="form-control" name="material_code" id="material_code" readonly placeholder="Material Code">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Material Description *</label>
+                                        <label>Item Description</label>
+                                        <textarea value="" class="form-control" name="item_description" id="item_description"
+                                            placeholder="Item Description" readonly></textarea>
+                                    </div>
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Supplier</label>
+                                        <input type="text"  value="" class="form-control" name="supplier_name" id="supplier_name" disabled placeholder="Supplier">
+                                        <input type="hidden"  value="" class="form-control" name="supplier" id="supplier">
+                                    </div>
+    
+
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Supplier Specification</label>
                                         <textarea value="" class="form-control" name="material_description"  id="material_description"
                                             placeholder="Material Description" readonly></textarea>
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Invoice No *</label>
-                                        <input type="text"  value="" class="form-control" name="invoice_no" id="invoice_no" readonly placeholder="Invoice No">
+                                        <label>Supplier Invoice Number</label>
+                                        <input type="text"  value="" class="form-control" name="invoice_no" id="invoice_no" readonly placeholder="Invoice Number">
                                         <input type="hidden"  value="" class="form-control" name="invoice_id" id="invoice_id">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Invoice Date *</label>
+                                        <label>Supplier Invoice Date</label>
                                         <input type="date"  value="" class="form-control" name="invoice_date" id="invoice_date" readonly placeholder="Invoice Date">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Invoice Quantity *</label>
+                                        <label>Supplier Invoice Quantity</label>
                                         <input type="text"  value="" class="form-control" name="invoice_qty" id="invoice_qty" readonly placeholder="Invoice Qty">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Quantity Received *</label>
-                                        <input type="text"  value="" class="form-control" name="qty_received" id="qty_received" placeholder="Qty Received">
+                                        <input type="text"  value="" class="form-control" name="qty_received" id="qty_received" placeholder="Quantity Received">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -179,57 +185,96 @@
                                         <label>Quantity rejected *</label>
                                         <input type="text"  value="0" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Qty Rejected">
                                     </div>
-    
+                                   
+                                        <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3 rejobj">
+                                            <label>Rejected Reason</label>
+                                            <textarea value="" class="form-control" name="qty_rej_reason"  id="qty_rej_reason"
+                                            placeholder="Rejected Reason" ></textarea>
+                                        </div>
+                                        <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3 rejobj">
+                                            <label>Rejected Person</label>
+                                            <select class="form-control rejected_user" name="rejected_user">
+                                                @foreach ($data['users'] as $item)
+                                                 <option value="{{$item['user_id']}}"
+                                                 @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
+                                                 >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                                @endforeach
+                                            </select>  
+                                        </div>
+
+
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Unit *</label>
+                                        <label>Unit</label>
                                         <input type="text"  value="" class="form-control" name="unit_name" id="unit_name" readonly  placeholder="Unit">
                                         <input type="hidden"  value="" class="form-control" name="unit" id="unit">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>PO Number *</label>
+                                        <label>PO Number</label>
                                         <input type="text"  value="" class="form-control" name="po_number" disabled id="po_number" placeholder="PO number">
                                         <input type="hidden"  value="" class="form-control" name="si_id" id="si_id">
                                     </div>
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Supplier *</label>
-                                        <input type="text"  value="" class="form-control" name="supplier_name" id="supplier_name" disabled placeholder="Supplier">
-                                        <input type="hidden"  value="" class="form-control" name="supplier" id="supplier">
-                                    </div>
-    
-    
-                                    <!-- form-group -->
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Vehicle Number*</label>
-                                        <input type="text" value="" class="form-control" name="vehicle_no" id="vehicle_no" placeholder="Vehicle Number">
-                                    </div><!-- form-group -->
+                    
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Transporter Name *</label>
-                                        <input type="text" value="" class="form-control" name="transporter_name" id="transporter_name" placeholder="Transporter Name">
-                                    </div>
-    
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> MRR Number*</label>
+                                        <label> MRR Number </label>
                                         <input type="text"  class="form-control" value="" id="mrr_no" name="mrr_no" placeholder="MRR Number">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> MRR Date*</label>
+                                        <label> MRR Date </label>
                                         <input type="date"  class="form-control" value="" id="mrr_date" name="mrr_date" placeholder="MRR Date">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Test Report No *</label>
-                                        <input type="text" class="form-control" value="" name="test_report_no" placeholder="Test Report Date">
+                                        <label>Supplier Invoice rate <span id="inv_rate"></span> </label>
+                                        <input type="text" readonly class="form-control" value="" name="invoice_rate" id="invoice_rate" placeholder="Invoice rate">
                                     </div>
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Currency *</label>
+                                        <select class="form-control" name="currency" id="currency">
+                                            @foreach ($data["currency"] as $item)
+                                               <option value="{{$item->currency_id}}" @if($item->currency_code == "INR") selected  @endif >{{$item->currency_code}}</option>
+                                            @endforeach
+                                          </select>
+                                    </div>
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Conversion rate (INR) *</label>
+                                        <input type="text" class="form-control" value="" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
+                                    </div>
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Value in INR </label>
+                                        <input type="text" readonly class="form-control" value="" name="value_inr" id="value_inr" placeholder="Value in INR">
+                                    </div>
+
+
+
+
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label> Test Report Number *</label>
+                                        <input type="text" class="form-control" value="" name="test_report_no" placeholder="Test Report Number">
+                                    </div>
+
+
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label> Test Report Date *</label>
                                         <input type="date" class="form-control"value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date">
                                     </div>
 
+                                    <!-- form-group -->
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Prepared By*</label>
+                                        <label>Vehicle Number </label>
+                                        <input type="text" value="" class="form-control" name="vehicle_no" id="vehicle_no" placeholder="Vehicle Number">
+                                    </div><!-- form-group -->
+    
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label> Transporter Name </label>
+                                        <input type="text" value="" class="form-control" name="transporter_name" id="transporter_name" placeholder="Transporter Name">
+                                    </div>
+    
+
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label> Prepared By *</label>
                                         <select class="form-control user_list" name="prepared_by">
                                             @foreach ($data['users'] as $item)
                                              <option value="{{$item['user_id']}}"
@@ -239,7 +284,7 @@
                                         </select>                                    </div>
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Approved By*</label>
+                                        <label>Approved By *</label>
                                         <select class="form-control user_list" name="approved_by">
                                             @foreach ($data['users'] as $item)
                                              <option value="{{$item['user_id']}}"
@@ -297,20 +342,22 @@
                 placeholder: 'Choose one',
                 searchInputPlaceholder: 'Search',
             });
+            $('.rejected_user').select2({
+                placeholder: 'Choose one',
+                searchInputPlaceholder: 'Search',
+            });
+
+
+            
             $(".lot-add").on( "click", function() {
-                        $('#item_description').text('');
-                        $('#material_description').text('');
-                        $('#material_code').val('');
-                        $('#invoice_no').val('');
-                        $('#invoice_date').val('');
-                        $('#invoice_qty').val('');
-                        $('#po_number').val('');
-                        $('#supplier').val('');
-                        $('#supplier_name').val('');
-                        $('#po_id').val('');
-                        $('#unit_name').val('');
-                        $('#unit').val('');
-                        $('#invoice_id').val('');
+                        $('#item_description').text('');$('#material_description').text('');
+                        $('#material_code').val('');$('#invoice_no').val('');
+                        $('#invoice_date').val('');$('#invoice_qty').val('');
+                        $('#po_number').val('');$('#supplier').val('');
+                        $('#supplier_name').val('');$('#po_id').val('');
+                        $('#unit_name').val('');$('#unit').val('');
+                        $('#invoice_id').val('');$('#inv_rate').text('')
+                        $('#invoice_rate').val('')
                         var invoice_item_id = $(this).data('invoiceitem');
                         $.get("{{ url('inventory/get-single-invoice-item') }}/"+invoice_item_id,function(data){
                             $('#item_description').text(data.discription);
@@ -327,9 +374,9 @@
                             $('#unit_name').val(data.unit_name);
                             $('#unit').val(data.unit_id);
                             $('#invoice_id').val(data.invoice_item_id);
-
+                            $('#inv_rate').text("( Rate : "+data.rate+" , Discount(%) : "+data.discount+")")
+                            $('#invoice_rate').val(data.total_rate);
                         });
-                        //alert(invoice_item_id);
             });
 
 
@@ -348,25 +395,43 @@
                 let qty_received =  $('#qty_received').val();
                 let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
                 $('#qty_accepted').attr('value',qtyaccepted);
+                reject_changes();
             });
             $('#qty_accepted').on('input',function(){
                 let qty_received =  $('#qty_received').val();
                 let qtyaccepted = (qty_received - (+$('#qty_accepted').val()));
                 $('#qty_rejected').attr('value',qtyaccepted);
+                reject_changes();
             });
-
             $('#qty_rejected').on('input',function(){
                 let qty_received =  $('#qty_received').val();
                 let qtyaccepted = (qty_received - (+$('#qty_rejected').val()));
                 $('#qty_accepted').attr('value',qtyaccepted);
+                reject_changes();
             });
+            $('.rejobj').hide();
+            function reject_changes(){
+               let qty_rejected =  $('#qty_rejected').val();
+                if(qty_rejected > 0){
+                    $('.rejobj').show();
+                }else{
+                    $('.rejobj').hide();
+                }
+            }
+            $("#conversion_rate").on('input',function(){
+                curr_net_value()
+            });
+            $("#currency").on('change',function(){
+                curr_net_value()
+            });
+            function curr_net_value(){
+                $("#value_inr").val(($("#invoice_rate").val()*$("#conversion_rate").val()).toFixed(2));
+            }
+            
 
 
             $("#commentForm").validate({
                 rules: {
-                        lot_number: {
-                            required: true,
-                        },
                         document_no: {
                             required: true,
                         },
@@ -376,32 +441,9 @@
                         rev_date: {
                             required: true,
                         },
-                        supplier: {
-                            required: true,
-                        },
-                        item_description: {
-                            required: true,
-                        },
-                        material_description: {
-                            required: true,
-                        },
-                        material_code: {
-                            required: true,
-                        },
-                        invoice_no: {
-                            required: true,
-                        },
-                        invoice_date: {
-                            required: true,
-                        },
-                        invoice_qty: {
-                            required: true,
-                            number: true
-                        },
                         qty_accepted: {
                             required: true,
                             number: true,
-                                     //checkPrevValuePaxTo:true
                         },
                         qty_rejected: {
                             required: true,
@@ -412,36 +454,19 @@
                             required: true,
                             number: true,
                         },
-                        unit: {
-                            required: true,
-                        },
-                        po_number: {
-                            required: true,
-                        },
-                        supplier: {
-                            required: true,
-                        },
-                        vehicle_no: {
-                            required: true,
-                        },
-                        transporter_name: {
-                            required: true,
-                        },
-                        mrr_no: {
-                            required: true,
-                        },
-                        mrr_date: {
-                            required: true,
-                        },
                         test_report_no: {
                             required: true,
                         },
                         test_report_date: {
                             required: true,
                         },
-                        test_report_date: {
+                        currency: {
                             required: true,
                         },
+                        conversion_rate: {
+                            required: true,
+                        },
+                        
                     },
                     submitHandler: function(form) {
                         form.submit();
