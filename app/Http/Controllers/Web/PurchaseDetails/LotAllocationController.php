@@ -77,12 +77,9 @@ class LotAllocationController extends Controller
             $validation['conversion_rate'] = ['required'];
             $validation['prepared_by'] = ['required'];
 
-
-
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) 
             { 
-
                 $data['lot_number'] = "LT-".$this->num_gen(DB::table('inv_lot_allocation')->count()); //$request->lot_number;
                 $data['doc_number'] = $request->document_no;
                 $data['rev_number'] = $request->rev_no;
@@ -154,6 +151,8 @@ class LotAllocationController extends Controller
         //echo $lot_allocation_id;
         //exit;
         $lot_data= $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_allocation_id]);
+       
+        $lot_data->total_rate = (float) sprintf('%.2f',($lot_data->rate - ($lot_data->discount/100)*$lot_data->rate));
         return $lot_data;
     }
 }
