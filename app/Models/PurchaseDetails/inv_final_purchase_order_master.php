@@ -85,6 +85,17 @@ class inv_final_purchase_order_master extends Model
                     ->where($condition)
                     ->first();
     }
+
+    function get_master_details($condition){
+        return $this->select(['inv_final_purchase_order_master.*','inv_purchase_req_quotation.rq_no','inv_purchase_req_quotation.date as rq_date','inv_purchase_req_quotation.delivery_schedule',
+                        'inv_purchase_req_quotation.created_user as rq_created_user','user.l_name','user.f_name','inv_supplier.vendor_name','inv_supplier.vendor_id','inv_final_purchase_order_master.created_by as order_created_by'])
+                    ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
+                    ->join('user','user.user_id','=','inv_final_purchase_order_master.created_by')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
+                    ->where($condition)
+                    ->first();
+    } 
+
     function deleteData($condition)
     {
         return $this->where($condition)->delete();
@@ -95,7 +106,8 @@ class inv_final_purchase_order_master extends Model
 
             $query->select('inv_supplier_invoice_master.po_master_id')->from('inv_supplier_invoice_master');
         
-        })->get();
+        })->where('inv_final_purchase_order_master.status','=',1)
+        ->get();
     }
     function find_po_data($condition){
         //

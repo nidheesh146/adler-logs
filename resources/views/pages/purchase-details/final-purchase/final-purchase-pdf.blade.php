@@ -308,7 +308,7 @@
                 <tr>
                     <td style="width:130px">Total CGST</td>
                     <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)($total_cgst), 2, '.', '')}}</td>
+                    <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
                 </tr>
                 <!-- <tr>
                     <td style="width:130px">Total Net Amount</td>
@@ -321,7 +321,7 @@
                 <tr>
                     <th style="width:130px">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
-                    <th style="float:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_cgst), 2, '.', '')}}</th>
+                    <th style="float:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}}</th>
                 </tr> 
             </table>
         </div>

@@ -203,11 +203,10 @@ class PurchaseController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) 
             {
-                
                 $data = ['inv_final_purchase_order_master.status'=>$request->status,
                         'inv_final_purchase_order_master.remarks'=>$request->remarks,
                         'inv_final_purchase_order_master.processed_by'=>$request->approved_by,
-                        'inv_final_purchase_order_master.processed_date'=>$request->date,
+                        'inv_final_purchase_order_master.processed_date'=>date('Y-m-d',strtotime($request->date)),
                         'inv_final_purchase_order_master.updated_at'=>date('Y-m-d H:i:s')];
                             if($request->status == 1)
                             $status="Approved";
@@ -224,6 +223,13 @@ class PurchaseController extends Controller
                     return redirect('inventory/final-purchase')->withErrors($validator)->withInput();
             }
         }
+    }
+
+    public function viewFinalPurchase($id)
+    {
+        $data['master'] = $this->inv_final_purchase_order_master->get_master_details(['inv_final_purchase_order_master.id'=>$id]);
+        $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master'=>$id]);
+        return view('pages.purchase-details.final-purchase.final-purchase-view',compact('data'));
     }
 
     public function deleteFinalPurchase(Request $request,$id)
@@ -682,6 +688,12 @@ return  $data;
     {
         $status = 1;
         return Excel::download(new FinalPurchaseOrderExport($status), 'FinalPurchaseOrder'.date('d-m-Y').'.xlsx');
+    }
+
+    function find_user($user_id)
+    {
+        $user = $this->User->get_user(['user_id'=>$user_id]);
+        return $user;
     }
 
     

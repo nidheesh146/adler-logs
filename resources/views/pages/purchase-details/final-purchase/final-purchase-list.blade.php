@@ -156,6 +156,7 @@
                                         <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i>
                                     </button>
 								    <div class="dropdown-menu">
+                                        <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
                                         @if($po_data->status!=0)
                                         <a href="{{url('inventory/final-purchase-add/'.$po_data->id)}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
@@ -210,7 +211,7 @@
                         <div class="form-group">
                             <label>Date *</label>
                             <input type="text" 
-                                value="{{date('d-m-Y')}}" class="form-control datepicker2" name="date" placeholder="date">
+                                value="{{date('d-m-Y')}}" class="form-control datepicker2" name="date" placeholder="Date">
                         </div>
                         <div class="form-group">
                             <label for="inputAddress">Processed By *</label><br/>
