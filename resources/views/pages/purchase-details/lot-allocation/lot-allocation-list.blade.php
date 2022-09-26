@@ -526,8 +526,9 @@
         $(".rejected_user").val('');
         $('#inv_rate').text("")
         $('#invoice_rate').val('');
-
-
+        $('#currency').val('');
+        $('#conversion_rate').val('');
+        $('#value_inr').val('');
 
         var invoice_item_id = $(this).data('invoiceitem');
 		var lot_allocation_id = $(this).data('lotid');
