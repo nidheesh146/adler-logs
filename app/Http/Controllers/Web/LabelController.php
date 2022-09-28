@@ -155,7 +155,7 @@ class LabelController extends Controller
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
         $color =[0,0,0];
-        $manf_date_combo = '[11]'.date('Y-m-d');
+        $manf_date_combo = '[11]'.date('Y-m-d',strtotime($request->manufacturing_date));
         $gs1_label_batch_combo ='[01]' .$batchcard_data->gs1_code.'[10]'.$batchcard_data->batch_no;
         $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
         $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
@@ -176,7 +176,7 @@ class LabelController extends Controller
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
         $color =[0,0,0];
-        $manf_date_combo = '[11]'.date('Y-m-d');
+        $manf_date_combo = '[11]'.date('Y-m-d',strtotime($request->manufacturing_date));
         $gs1_label_batch_combo = '[01]'.$batchcard_data->gs1_code.'[10]'.$batchcard_data->batch_no;
         $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
         $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128);
