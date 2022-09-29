@@ -162,6 +162,10 @@
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
                                             <i class="fa fa-check-circle"></i> Change Status
                                         </a>
+                                        <br/>
+                                        <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#cancelModal" id="cancel-model" class="cancel-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
+                                            <i class="fa fa-window-close"></i> Cancel
+                                        </a>
                                         @endif
                                         <!-- <a href="{{url('inventory/final-purchase-add/'.$po_data->id)}}" class="dropdown-item"><i class="fa fa-window-close"></i> Cancel</a> -->
                                         <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
@@ -239,7 +243,69 @@
                             </select>
                         </div> 
                         <div class="form-group">
-                            <label for="inputAddress">Remarks *</label>
+                            <label for="inputAddress">Remarks</label>
+                            <textarea style="min-height: 100px;" name="remarks" type="text" class="form-control" id="remarks" placeholder="Remarks"></textarea>
+                        </div> 
+                    </div>
+                    <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        <button type="submit" class="btn btn-primary" id="save"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+								role="status" aria-hidden="true"></span> <i class="fas fa-save"></i> Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div><!-- modal-dialog -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-dialog modal-md" role="document">
+            <form id="status-change-form" method="post" action="{{ url('inventory/final-purchase/change/status')}}">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#Cancel @if(request()->get('order_type')=="wo") Work Order @else Purchase Order @endif <span class="po_number"></span></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="inputAddress2">Status *</label><br>
+                            {{-- <input type="text" name="purchaseRequisitionMasterId" id ="purchaseRequisitionMasterId" value=" "> --}}
+							<input type="hidden" name="po_id" id ="po-id" class="po-id">
+                            <select class="form-control" name="status" id="status">
+                                <option value="0" selected>Cancel</option>
+                            </select>
+                        </div> 
+                        <div class="form-group">
+                            <label>Date *</label>
+                            <input type="text" 
+                                value="{{date('d-m-Y')}}" class="form-control datepicker2" name="date" placeholder="Date">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress">Canceled By *</label><br/>
+                            <style>
+                                    .select2-container .select2-selection--single {
+                                        height: 38px;
+                                        width: 450px;
+                                    }
+                                    .select2-container--default .select2-selection--single .select2-selection__arrow b{
+                                        margin-left: 242px;
+                                        margin-top: 2px;
+                                    }
+                                    .select2-container--open .select2-dropdown--above{
+                                        width:445px;
+                                    }
+                                    .select2-container--default .select2-results>.select2-results__options{
+                                        width: 433px;
+                                    }
+                            </style>
+                            <select class="form-control select2 approved_by" name="approved_by">
+                                <option value="">--- select one ---</option>
+                                @foreach($data['users'] as $user)
+                                <option value="{{$user['user_id']}}">{{$user['f_name']}} {{$user['l_name']}}</option>
+                                @endforeach
+                            </select>
+                        </div> 
+                        <div class="form-group">
+                            <label for="inputAddress">Remarks</label>
                             <textarea style="min-height: 100px;" name="remarks" type="text" class="form-control" id="remarks" placeholder="Remarks"></textarea>
                         </div> 
                     </div>
@@ -335,6 +401,14 @@
             });
             //$('#status')
 
+        });
+        $('body').on('click', '#cancel-model', function (event) {
+            event.preventDefault();
+            var po = $(this).attr('po');
+            $('.po_number').html('('+po+')');
+			let po_id = $(this).attr('value');
+            alert(po_id);
+			$('#po-id').val(po_id);
         });
         
     });
