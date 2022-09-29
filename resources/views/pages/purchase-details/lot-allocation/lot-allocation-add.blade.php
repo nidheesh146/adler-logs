@@ -197,7 +197,7 @@
                                                 @foreach ($data['users'] as $item)
                                                  <option value="{{$item['user_id']}}"
                                                  @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
-                                                 >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                                 >{{$item['f_name']}} {{$item['l_name']}}</option>
                                                 @endforeach
                                             </select>  
                                         </div>
@@ -279,7 +279,7 @@
                                             @foreach ($data['users'] as $item)
                                              <option value="{{$item['user_id']}}"
                                              @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
-                                             >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                             >{{$item['f_name']}} {{$item['l_name']}}</option>
                                             @endforeach
                                         </select>                                    </div>
 
@@ -289,7 +289,7 @@
                                             @foreach ($data['users'] as $item)
                                              <option value="{{$item['user_id']}}"
                                              @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
-                                             >{{$item['employee_id']}} - {{$item['f_name']}} {{$item['l_name']}}</option>
+                                             >{{$item['f_name']}} {{$item['l_name']}}</option>
                                             @endforeach
                                         </select>                                  </div>
 

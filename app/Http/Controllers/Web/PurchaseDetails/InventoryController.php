@@ -221,7 +221,7 @@ class InventoryController extends Controller
             $validation['Discount'] = ['required'];
            // $validation['gst'] = ['required'];
             $validation['Netvalue'] = ['required'];
-            $validation['Remarks'] = ['required'];
+           // $validation['Remarks'] = ['required'];
             $validation['ActualorderQty'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
@@ -299,7 +299,7 @@ class InventoryController extends Controller
                 $validation['Discount'] = ['required'];
                 //$validation['gst'] = ['required'];
                 $validation['Netvalue'] = ['required'];
-                $validation['Remarks'] = ['required'];
+                //$validation['Remarks'] = ['required'];
                 $validation['ActualorderQty'] = ['required'];
                 $validator = Validator::make($request->all(), $validation);
 

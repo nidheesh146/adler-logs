@@ -191,7 +191,12 @@
         <table border="1">
             <tr>
                 <th rowspan="2">S.NO</th>
-                <th rowspan="2">HSN CODE</th>
+                <th rowspan="2">
+                    @if(str_starts_with($final_purchase['po_number'] , 'PO') ) HSN CODE 
+                    @else
+                    SAC CODE
+                    @endif
+                </th>
                 <th rowspan="2">ITEM.NO</th>
                 <th rowspan="2" width='40%'>ITEM DESCRIPTION</th>
                 <th rowspan="2">QTY</th>

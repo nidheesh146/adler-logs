@@ -241,6 +241,7 @@ class SupplierQuotationController extends Controller
         $suppliers = $this->inv_purchase_req_quotation_supplier->get_suppliers(['inv_purchase_req_quotation_supplier.quotation_id'=>$rq_no]);
         $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
         $item_details = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
+       // print_r(json_encode($item_details));exit;
         $supplier_data = $this->arrage_items($items, $item_details);
         return view('pages/purchase-details/supplier-quotation/comparison-quotation',compact('suppliers', 'rq_number', 'supplier_data', 'rq_no'));
     }
@@ -248,26 +249,51 @@ class SupplierQuotationController extends Controller
     public function arrage_items($items,$item_details)
     {
         $newdata = [];
+        $i=1;
         foreach($items as $item)
         {
             $newdata = [];
+           
             foreach($item_details as $details)
             {
-                if($item['itemId']==$details['itemId'])
+                if($item['itemid']==$details['itemid'])
                 {
                     $newdata[] = [
+                        'radio_name'=> 'radio'.$i,
+                        'supplier_id'=>$details['supplier_id'],
                         'quantity' => $details['quantity'],
                         'rate' => $details['rate'],
                         'discount' => $details['discount'],
+                        'itemId'=>$details['itemid'],
+                        'remarks'=>$details['remarks'],
+                        'selected_item'=>$details['selected_item'],
                         'total'=>$details['rate']*$details['quantity']-$details['rate']*$details['quantity']*$details['discount']/100
                     ];
                 }
                 $price_data['price_data'] = $newdata; 
             }
             $item1[] = array_merge($item, $price_data);
+            $i++;
         }
+        //print_r(json_encode($item1));exit;
         return $item1;
 
+    }
+
+    public function selectQuotationItems(Request $request)
+    {
+        $quotation_id = $request->quotation_id;
+        $supplier = $request->supplier;
+        $item_id = $request->item_id;
+        $un_select = $this->inv_purchase_req_quotation_item_supp_rel->updatedata(['quotation_id'=>$quotation_id,'item_id'=>$item_id,'selected_item'=>1],['selected_item'=>0]);
+        $select = $this->inv_purchase_req_quotation_item_supp_rel->updatedata(['quotation_id'=>$quotation_id,'item_id'=>$item_id,'supplier_id'=>$supplier],['selected_item'=>1]);
+        if($un_select && $select) {
+            return 1;
+        }
+        else
+        {
+           return 0;
+        } 
     }
 
     public function selectQuotation(Request $request)

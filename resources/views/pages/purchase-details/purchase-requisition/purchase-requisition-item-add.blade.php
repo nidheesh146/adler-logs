@@ -284,7 +284,7 @@
                                         name="Netvalue" placeholder="">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Reason for Remarks *</label>
+                                    <label>Reason for Remarks </label>
                                     <textarea value="" class="form-control" name="Remarks"
                                         placeholder="Reason for Remarks">{{ !empty($datas) ? $datas['item']['remarks'] : '' }}</textarea>
                                 </div>
@@ -410,9 +410,9 @@
                         required: true,
                         number: true
                     },
-                    Remarks: {
-                        required: true,
-                    }
+                    // Remarks: {
+                    //     required: true,
+                    // }
                 },
                 submitHandler: function(form) {
                     form.submit();

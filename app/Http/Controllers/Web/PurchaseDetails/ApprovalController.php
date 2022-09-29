@@ -79,7 +79,7 @@ class ApprovalController extends Controller
     {
             $validation['purchaseRequisitionItemId'] = ['required'];
             $validation['status'] = ['required'];
-            $validation['reason'] = ['required'];
+            //$validation['reason'] = ['required'];
             $validation['approved_by'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) {

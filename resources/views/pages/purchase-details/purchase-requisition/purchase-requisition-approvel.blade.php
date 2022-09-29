@@ -257,7 +257,7 @@
                                 </select>
                             </div> 
                             <div class="form-group">
-                                <label for="inputAddress">Remarks *</label>
+                                <label for="inputAddress">Remarks </label>
                                 <textarea style="min-height: 100px;" name="reason" type="text" class="form-control" id="reason" placeholder="Remarks"></textarea>
                             </div> 
                             
@@ -312,9 +312,9 @@
                     // required: true,
 					number: true,
                 },
-                reason: {
-                    required: true,
-                },
+                // reason: {
+                //     required: true,
+                // },
                 approved_by:{
                     required: true,
                 }
