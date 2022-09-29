@@ -115,7 +115,7 @@ class inv_purchase_req_item extends Model
                      ->leftjoin('inventory_gst','inventory_gst.id','=','inv_purchase_req_item.gst')
                      ->leftjoin('user','user.user_id','=', 'inv_purchase_req_item_approve.created_user')
                      ->leftjoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','inv_purchase_req_item.currency')
-                     //->whereIn('inv_purchase_req_item_approve.status',[4,5])
+                     ->whereIn('inv_purchase_req_item_approve.status',[4,5])
                      ->where($condition)
                      ->groupBy('inv_purchase_req_item.requisition_item_id')
                      ->orderby('inv_purchase_req_item.requisition_item_id','desc')

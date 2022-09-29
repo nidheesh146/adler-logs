@@ -7,9 +7,9 @@
           <div class="az-content-body">
 
               <div class="az-content-breadcrumb">
-              <span><a href="{{url('')}}">SUPPLIER QUOTATION </a></span>
-                   <span> <a href="{{url('')}}">Supplier Quotation Items</a></span>
-                    <span><a> Edit Supplier Quotation Item</a></span>
+              <span><a href="{{url('inventory/final-purchase?order_type=')}}{{($data->type == "PO") ? 'po': 'wo';}}">  @if($data->type == "PO") Final Purchase @else Work @endif Order </a></span>
+                   <span> <a href="{{url('inventory/final-purchase-add/'.$data->fpo_master_id)}}"> Edit @if($data->type == "PO") Final Purchase @else Work @endif Order</a></span>
+                    <span><a>  Edit @if($data->type == "PO") Final Purchase @else Work @endif Order Item</a></span>
               </div>
 
               <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">

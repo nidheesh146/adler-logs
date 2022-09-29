@@ -66,7 +66,7 @@ class inv_purchase_req_quotation_supplier extends Model
         ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','inv_purchase_req_quotation_supplier.quotation_id')
         ->join('inv_supplier','inv_supplier.id','inv_purchase_req_quotation_supplier.supplier_id')
         ->where($condition)
-        ->first();
+        ->get();
 
 
     }

@@ -25,6 +25,11 @@
                 <i class="fa fa-print" aria-hidden="true"></i>&nbsp;Print
             </button>
             </div>
+
+
+
+
+
             <div class="row label-div columns" id="label-div">
                 <?php
                     $label_per_page =12;
@@ -260,6 +265,13 @@
                 @endfor
                 </div>
                 @endif
+
+
+
+
+
+
+                
             </div>
         </div>
     </div>

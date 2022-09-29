@@ -18,7 +18,7 @@
                         <a href="{{url('inventory/final-purchase/export/open')}}" class="dropdown-item">Open</a>
                     </div>  
                 <div>  
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif  Order </button> 
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif  Order </button> 
             </h4><br/>
 			
 		   @if (Session::get('success'))
@@ -61,7 +61,7 @@
                                                             
                                                         </div><!-- form-group -->
                                                         
-                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                             <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                             <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                             
@@ -70,7 +70,7 @@
                                                             <label  style="font-size: 12px;">@if(request()->get('order_type')=='wo') WO @else PO @endif Date </label>
                                                             <input type="text" value="{{request()->get('po_from')}}" id="po_from" class="form-control datepicker" name="po_from" placeholder="MM-YYYY">
                                                         </div>
-                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                             <label  style="font-size: 12px;">Status</label>
                                                             <!-- <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="@if(request()->get('order_type')=='work-order') WO @else PO @endif DATE (MM-YYYY)"> -->
                                                             <select name="status" id="status" class="form-control">
@@ -82,10 +82,10 @@
                                                                 <option value="reject" {{(request()->get('status') == 'reject') ? 'selected' : ''}}> Cancelled </option>
                                                             </select>
                                                         </div> 
-                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                        {{-- <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                             <label  style="font-size: 12px;">Processed Date</label>
                                                             <input type="text" value="{{request()->get('processed_from')}}" id="processed_from" class="form-control datepicker" name="processed_from" placeholder="MM-YYYY">
-                                                        </div> 
+                                                        </div>  --}}
                                                                         
                                                     </div>
                                                     <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
@@ -143,7 +143,7 @@
                                     <td>
                                     
                                     <button data-toggle="dropdown" style="width: 68px;" class="badge 
-                                        @if($po_data->status==1) badge-success @elseif($po_data->status==4)  badge-primary @elseif($po_data->status==5)  badge-warning @elseif($po_data->status==0) badge-danger @endif"> 
+                                        @if($po_data->status==1) badge-success @elseif($po_data->status==4)  badge-warning @elseif($po_data->status==5)  badge-warning @elseif($po_data->status==0) badge-danger @endif"> 
                                         @if($po_data->status==1) 
                                             Approved 
                                         @elseif($po_data->status==4)  
@@ -158,7 +158,7 @@
 								    <div class="dropdown-menu">
                                         <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
                                         @if($po_data->status!=0)
-                                        <a href="{{url('inventory/final-purchase-add/'.$po_data->id)}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                                        <a href="{{url('inventory/final-purchase-add/'.$po_data->id)}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
                                             <i class="fa fa-check-circle"></i> Change Status
                                         </a>

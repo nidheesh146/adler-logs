@@ -52,44 +52,43 @@
                                             font-size:12px;
                                         }
                                     </style>
-                                    <form autocomplete="off">
+                                    <form autocomplete="off" id="formfilter" method="GET">
                                         <th scope="row">
                                             <div class="row filter_search" style="margin-left: 0px;">
-                                            <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+                                            <div class="col-sm-10 col-md-8 col-lg-8 col-xl-8  row">
                                 
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                                         <label for="exampleInputEmail1" style="font-size: 12px;">@if(request()->get('prsr')!='sr') PR No @else SR No @endif</label>
                                                         <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="@if(request()->get('prsr')!='sr') PR NO @else SR NO @endif">
                                                     </div><!-- form-group -->
                                                     <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
                                                     
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                                     <label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
                                                         <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
                                                     
                                                     </div><!-- form-group -->
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                         <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                         <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                         
-                                                    </div>
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    </div> --}}
+                                                    {{-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                         <label  style="font-size: 12px;">Status</label>
-                                                        <select name="status" id="status" class="form-control">
+                                                        <select name="status" class="form-control">
                                                             <option value=""> --Select One-- </option>
-                                                            <!-- <option value="1" {{(request()->get('status') == 1) ? 'selected' : ''}}> Active </option> -->
                                                             <option value="4" {{(request()->get('status') == 4) ? 'selected' : ''}}> Pending</option>
                                                             <option value="5"{{(request()->get('status') == 5) ? 'selected' : ''}}>On hold</option>
-                                                            <option value="1"{{(request()->get('status') == 1) ? 'selected' : ''}}>Approved</option>
-                                                            <option value="reject" {{(request()->get('status') == 'reject') ? 'selected' : ''}}> Rejected </option>
+
+
                                                         </select>
-                                                    </div> 
+                                                    </div>  --}}
                                                                         
                                                 </div>
                                                 <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
                                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
                                                         <label style="width: 100%;">&nbsp;</label>
-                                                        <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                                        <button type="submit" class="badge badge-pill badge-primary search-btn" onclick="document.getElementById('formfilter').submit();" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
                                                         @if(count(request()->all('')) > 2)
                                                             <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
                                                             style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
@@ -160,7 +159,7 @@
                                 {{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
                                 <td>
                                 @if($item['status'] == 4 || $item['status'] == 5 || $item['status'] == 0)
-                                <a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" orderqty="{{$item['actual_order_qty']}}" type="Purchase" data-target="#myModal" id="change-status" style="width: 64px;" 
+                                <a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" orderqty="{{$item['actual_order_qty']}}" type="@if(request()->get('prsr')!='sr') Purchase @else Service @endif" data-target="#myModal" id="change-status" style="width: 64px;" 
                                 data-html="true" data-placement="top" 
                                 class="badge 
                                 @if($item['status'] == 4)
@@ -211,7 +210,7 @@
                     {{ csrf_field() }} 
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">#Approve <span id="type"></span> Requisition <span class="item-codes"></span></h4>
+                            <h4 class="modal-title"> <span id="type"></span> Requisition Item <span  class="item-codes"></span></h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
@@ -279,10 +278,7 @@
 
 
 
-<script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
-<script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
+
 <script src="<?= url('') ?>/js/jquery.validate.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
@@ -355,7 +351,7 @@ $(document).ready(function() {
             $('#type').html(type);
 			let purchaseRequisitionItemId = $(this).attr('value');
 			$('#purchaseRequisitionItemId').val(purchaseRequisitionItemId);
-			$(".item-codes").text('( '+ $(this).attr('rel') + ')');
+			//$(".item-codes").text('( '+ $(this).attr('rel') + ')');
             $('.approved_qty').val(orderqty);
         });
         

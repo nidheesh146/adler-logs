@@ -25,48 +25,38 @@ class ApprovalController extends Controller
 
     public function getList(Request $request) 
     {
-        $condition = []; 
-        if(count($_GET))
-        {      
-            if(!$request->pr_no && !$request->supplier && !$request->item_code && !$request->status){
-                $condition[] = ['inv_purchase_req_item_approve.status', '=', 4];
-            } 
+            $condition = []; 
+     
+
             if ($request->pr_no) {
                 $condition[] = ['inv_purchase_req_master.pr_no', 'like', '%'.$request->pr_no.'%'];
             }
-            if ($request->supplier) {
-                $condition[] = ['inv_supplier.vendor_id',  'like', '%'.$request->supplier.'%'];
+            if ($request->prsr == 'sr') {
+                $condition[] = ['inv_purchase_req_master.PR_SR', '=', "SR"];
+            }else{
+                $condition[] = ['inv_purchase_req_master.PR_SR', '=', "PR"];
             }
+
+
+
+            // if ($request->supplier) {
+            //     $condition[] = ['inv_supplier.vendor_id',  'like', '%'.$request->supplier.'%'];
+            // }
             if ($request->item_code) {
                 $condition[] = ['inventory_rawmaterial.Item_code','like', '%'.$request->item_code.'%'];
             }
-            if ($request->status) {
-                if($request->status=="reject"){
-                    $condition[] = ['inv_purchase_req_item_approve.status', '=', 0];
-                }
-                $condition[] = ['inv_purchase_req_item_approve.status', '=', $request->status];
-            }
-            if ($request->prsr) {
-                $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
-            }
-            if (!$request->prsr) {
-                $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
-            }
-            
-            if ($request->from) {
-                $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-                $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
-            }
-            //$condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
-        }
-        else{
-            
-            $condition[] = ['inv_purchase_req_item_approve.status', '=', 4];
-            $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
-        }  
-           // $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
-           $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved($condition);
-
+            // if ($request->status) {
+            //     if($request->status=="reject"){
+            //         $condition[] = ['inv_purchase_req_item_approve.status', '=', 0];
+            //     }
+            //     $condition[] = ['inv_purchase_req_item_approve.status', '=', $request->status];
+            // }
+            // if ($request->from) {
+            //     $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            //     $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            // }
+        
+        $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved($condition);
         $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
         $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
         $data['items'] = $this->inventory_rawmaterial->get_items();
@@ -77,6 +67,7 @@ class ApprovalController extends Controller
 
     public function approve(Request $request) 
     {
+        
             $validation['purchaseRequisitionItemId'] = ['required'];
             $validation['status'] = ['required'];
             //$validation['reason'] = ['required'];
@@ -101,10 +92,10 @@ class ApprovalController extends Controller
                         $status="Rejected";
                          $this->inv_purchase_req_item->updatedata(['inv_purchase_req_item_approve.pr_item_id'=>$request->purchaseRequisitionItemId],$data);
                          $request->session()->flash('success', "You have successfully ".$status." a  requisition item ");
-                         return redirect('inventory/purchase-reqisition/approval');
+                         return redirect('inventory/purchase-reqisition/approval?prsr='.$request->prsr);
             }
             if($validator->errors()->all()) {
-                return redirect('inventory/purchase-reqisition/approval')->withErrors($validator)->withInput();
+                return redirect('inventory/purchase-reqisition/approval?prsr='.$request->prsr)->withErrors($validator)->withInput();
             }
     }
 }

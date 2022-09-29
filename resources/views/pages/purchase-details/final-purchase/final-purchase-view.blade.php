@@ -6,10 +6,10 @@
         <div class="container" data-select2-id="9">
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
-                    <span><a href="">@if (str_starts_with($data['master']['po_number'], 'PO')) PURCHASE @else WORK @endif ORDER</a></span>
-                    <span>@if (str_starts_with($data['master']['po_number'], 'PO')) PURCHASE @else WORK @endif VIEW</span>
+                    <span><a href="">@if ($data['master']['type'] == 'PO')FINAL PURCHASE @else WORK @endif ORDER</a></span>
+                    <span>@if ($data['master']['type'] == 'PO') FINAL PURCHASE @else WORK @endif VIEW</span>
                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;">@if (str_starts_with($data['master']['po_number'], 'PO')) Purchase @else Work @endif Order View
+                <h4 class="az-content-title" style="font-size: 20px;">@if ($data['master']['type'] == 'PO') FINAL PURCHASE @else WORK @endif VIEW
 
                 </h4>
                 
@@ -29,7 +29,7 @@
                         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                             <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
                             <i class="fas fa-hand-point-right"></i>
-                            Final @if (str_starts_with($data['master']['po_number'], 'PO')) Purchase @else Work @endif Order ({{$data['master']['po_number']}})
+                            Final @if ($data['master']['type'] == 'PO') Purchase @else Work @endif Order ({{$data['master']['po_number']}})
                                 </label>
                             <div class="form-devider"></div>
                         </div>
@@ -47,9 +47,9 @@
                                 <th>@if($data['master']['status']==1)
                                     <span class="badge badge-success">Approved</span>
                                     @elseif($data['master']['status']==4)
-                                    <span class="badge badge-info">Pending</span>
+                                    <span class="badge badge-warning">Pending</span>
                                     @elseif($data['master']['status']==5)
-                                    <span class="badge badge-info">On Hold</span>
+                                    <span class="badge badge-warning">On Hold</span>
                                     @elseif($data['master']['status']==0)
                                     <span class="badge badge-danger">Cancelled</span>
                                     @endif

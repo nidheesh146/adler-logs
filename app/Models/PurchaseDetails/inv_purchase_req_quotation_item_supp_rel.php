@@ -104,8 +104,14 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                         ->orderBy('inv_purchase_req_quotation_item_supp_rel.id','DESC')
                         ->where($condition)
                         ->get();
+        }
+        function  groupByItemSupplier($condition){
+            return $this->select('*')
+            ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_purchase_req_quotation_item_supp_rel.selected_item')
+            ->groupBy('inv_purchase_req_quotation_item_supp_rel.supplier_id')
+            ->where($condition)
+            ->get();
 
-            
         }
         function getItems($condition){
             return $this->select(['id','quotation_id','supplier_id','item_id','selected_item'])->where($condition)->get();

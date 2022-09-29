@@ -24,10 +24,9 @@ class inv_final_purchase_order_master extends Model
         return $this->where($condition)->update($data);
     }
     function insert_data($data,$terms = null){
-      $POMaster =  $this->insertGetId($data);
+      $POMaster = $this->insertGetId($data);
       if( $POMaster ){
-       $inv_purchase_req_quotation =  DB::table('inv_purchase_req_quotation_supplier')->where(['quotation_id'=>$data['rq_master_id'],'selected_supplier'=>1])->first();
-       $item =  DB::table('inv_purchase_req_quotation_item_supp_rel')->where(['quotation_id'=>$data['rq_master_id'],'status'=>1,'supplier_id'=>$inv_purchase_req_quotation->supplier_id])->get();
+       $item =  DB::table('inv_purchase_req_quotation_item_supp_rel')->where(['quotation_id'=>$data['rq_master_id'],'status'=>1,'supplier_id'=>$data['supplier_id'],'selected_item'=>1])->get();
        foreach($item as $items){
             $datas['item_id'] = $items->item_id;
             $datas['order_qty'] = $items->quantity;
@@ -61,19 +60,14 @@ class inv_final_purchase_order_master extends Model
 
     }
 
-    function get_purchase_master_list($condition1,$condition2){
+    function get_purchase_master_list($condition1){
         return $this->select(['inv_purchase_req_quotation.rq_no','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_final_purchase_order_master.po_date',
-                              'inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.status','inv_final_purchase_order_master.id as po_id','inv_final_purchase_order_master.created_at','user.f_name','user.l_name','inv_final_purchase_order_master.id'])
+                              'inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.status','inv_final_purchase_order_master.id as po_id','inv_final_purchase_order_master.created_at',
+                              'user.f_name','user.l_name','inv_final_purchase_order_master.id'])
                     ->where($condition1)
-                    ->Orwhere($condition2)
                     ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
                     ->join('user','user.user_id','=','inv_final_purchase_order_master.created_by')
-                    ->leftjoin('inv_purchase_req_quotation_supplier', function($join)
-                        {
-                            $join->on('inv_purchase_req_quotation_supplier.quotation_id', '=', 'inv_final_purchase_order_master.rq_master_id');
-                            $join->where('inv_purchase_req_quotation_supplier.selected_supplier','=',1);
-                        })
-                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
                     ->orderby('inv_final_purchase_order_master.id','desc')
                     ->paginate(15);
 
@@ -115,12 +109,7 @@ class inv_final_purchase_order_master extends Model
         'inv_supplier.vendor_id','inv_supplier.vendor_name'])
                     ->join('user','user.user_id','=','inv_final_purchase_order_master.created_by')
                     ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
-                    ->join('inv_purchase_req_quotation_supplier', function($join)
-                    {
-                        $join->on('inv_purchase_req_quotation_supplier.quotation_id', '=', 'inv_final_purchase_order_master.rq_master_id');
-                        $join->where('inv_purchase_req_quotation_supplier.selected_supplier','=',1);
-                    })
-                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
                     ->where($condition)
                     ->first();
     }

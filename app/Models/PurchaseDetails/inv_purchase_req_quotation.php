@@ -68,15 +68,13 @@ class inv_purchase_req_quotation extends Model
                     ->first();
     }
 
-    function get_master_filter($condition1,$condition2){
+    function get_master_filter($condition1){
        $query =  $this->select(['inv_purchase_req_quotation.quotation_id as id','inv_purchase_req_quotation.rq_no as text'])
-                    ->join('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
+                  //  ->join('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
                     ->whereNotIn('inv_purchase_req_quotation.quotation_id',function($query) {
-
                         $query->select('inv_final_purchase_order_master.rq_master_id')->from('inv_final_purchase_order_master');
-                     
                       })
-                    ->where($condition1,$condition2)
+                    ->where($condition1)
                     ->get();
                     return $query;
 
