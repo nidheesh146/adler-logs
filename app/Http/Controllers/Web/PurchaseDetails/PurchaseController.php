@@ -198,7 +198,7 @@ class PurchaseController extends Controller
         {
             $validation['po_id'] = ['required'];
             $validation['status'] = ['required'];
-            $validation['remarks'] = ['required'];
+            //$validation['remarks'] = ['required'];
             $validation['date'] = ['required'];
             $validation['approved_by'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
@@ -214,7 +214,7 @@ class PurchaseController extends Controller
                             if($request->status == 5)
                             $status="Hold";
                             if($request->status == 0)
-                            $status="Rejected";
+                            $status="Cancelled";
 
                             $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$request->po_id],$data);
                             $request->session()->flash('success', "You have successfully ".$status." a  Purchase/Work Order ");
@@ -225,6 +225,7 @@ class PurchaseController extends Controller
             }
         }
     }
+    
 
     public function viewFinalPurchase($id)
     {
