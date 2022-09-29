@@ -22,16 +22,14 @@ class SupplierController extends Controller
             $condition[] = ['inv_supplier.vendor_id', 'like','%'.$request->supplier_id.'%'];
         }
         if ($request->supplier_name) {
-            $condition[] = ['inv_supplier.vendor_name', '=','%'.$request->supplier_name.'%'];
+            $condition[] = ['inv_supplier.vendor_name', 'like','%'.$request->supplier_name.'%'];
         }
         if ($request->contact_persion) {
-            $condition[] = ['inv_supplier.contact_person', '=','%'.$request->contact_persion.'%'];
+            $condition[] = ['inv_supplier.contact_person', 'like','%'.$request->contact_persion.'%'];
         }
         if ($request->type) {
             $condition[] = ['inv_supplier.supplier_type', '=', $request->type];
         }
-
-
 
         $data['suppliers'] = $this->inv_supplier->get_suppliers($condition);
         return view('pages/purchase-details/suppliers/suppliers-list',compact('data'));
