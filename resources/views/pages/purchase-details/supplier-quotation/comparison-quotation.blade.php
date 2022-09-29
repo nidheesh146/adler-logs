@@ -105,6 +105,7 @@
                     @if(!empty($supplier_data))
 						@foreach($supplier_data as $item) 
                         <tr>
+                            <?php $i=1;?>
                             <td >{{$item['item_name']}}</td>
                             <td>{{$item['item_code']}}</td>
                             <td>{{$item['hsn_code']}}</td>
@@ -177,7 +178,6 @@
     $('#example1').find(selector).each(function (index, element) {
         sum += parseInt($(element).text());
     });  
-
     return sum;        
 };
 
@@ -188,13 +188,12 @@ $('.item-select-radio').on('change', function() {
     let item_id = $(this).val();
     let quotation_id = $(this).data('quotation');
     let supplier = $(this).data('supplier');
-    //alert(quotation_id);
     $.ajax({
            type:'POST',
            url:"{{ url('inventory/select-quotation-items') }}",
            data:{ "_token": "{{ csrf_token() }}",quotation_id:quotation_id, item_id:item_id, supplier:supplier},
            success:function(data){
-            alert(data);
+            
             //location.reload();
             //   if(data == 1)
             //   { 
