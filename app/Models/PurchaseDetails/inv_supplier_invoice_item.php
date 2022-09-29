@@ -34,6 +34,7 @@ class inv_supplier_invoice_item extends Model
                     ->leftjoin('inv_supplier', 'inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
                     ->where($condition)
                     ->groupBy('inv_supplier_invoice_item.id')
+                    ->orderBy('inv_supplier_invoice_item.id','desc')
                     ->get();
     }
 
@@ -51,6 +52,7 @@ class inv_supplier_invoice_item extends Model
                     ->where($condition)
                     ->whereNotIn('inv_supplier_invoice_item.id',$all_lot_invoice_number)
                     ->groupBy('inv_supplier_invoice_item.id')
+                    ->orderBy('inv_supplier_invoice_item.id','desc')
                     ->get();
     }
 
@@ -124,6 +126,7 @@ class inv_supplier_invoice_item extends Model
                     })
                     ->where($condition)
                     ->groupBy('inv_supplier_invoice_item.id')
+                    ->orderBy('inv_supplier_invoice_item.id','desc')
                     ->paginate(15);
     }
 
