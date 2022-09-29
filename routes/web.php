@@ -79,7 +79,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     // comparison of quotation   
     Route::get('inventory/comparison-quotation/{rq_no}', 'SupplierQuotationController@comparisonOfQuotation');
     Route::post('inventory/select-quotation', 'SupplierQuotationController@selectQuotation');
-
+    Route::post('inventory/select-quotation-items', 'SupplierQuotationController@selectQuotationItems'); 
     //final purchase
     Route::get('inventory/final-purchase', 'PurchaseController@getFinalPurchase');
     Route::get('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');

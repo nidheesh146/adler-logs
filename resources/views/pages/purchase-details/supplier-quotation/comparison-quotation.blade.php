@@ -20,6 +20,35 @@
             </div>
                  
             <style>
+                input[type="radio"]{
+                    appearance: none;
+                    border: 1px solid #d3d3d3;
+                    width: 30px;
+                    height: 30px;
+                    content: none;
+                    outline: none;
+                    margin: 0;
+                    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                    background-color: #fff;
+                }
+
+                input[type="radio"]:checked {
+                appearance: none;
+                outline: none;
+                padding: 0;
+                content: none;
+                border: none;
+                }
+
+                input[type="radio"]:checked::before{
+                position: relative;
+                color: green !important;
+                content: "\00A0\2713\00A0" !important;
+                border: 1px solid #d3d3d3;
+                font-weight: bolder;
+                font-size: 21px;
+                }
+
                th, td {
                 border-color: black;
                 color:#1c273c;
@@ -39,7 +68,7 @@
                     @if(!empty($suppliers))
                     <?php $i=0; ?>
                     @foreach($suppliers as $supplier)
-                    <col span="4" style="border-color:black; background-color:#<?php echo bgcolor(); ?>">
+                    <col span="5" style="border-color:black; background-color:#<?php echo bgcolor(); ?>">
                     <?php $i++; ?>
                     @endforeach
                     @endif
@@ -51,7 +80,7 @@
 							<th  rowspan="2" style="color:#1c273c;">Item HSN</th>
                             @if(!empty($suppliers))
 				            @foreach($suppliers as $supplier)
-							<th colspan="4" style="color:black; font-size:15px;">
+							<th colspan="5" style="color:black; font-size:15px;">
                                 <center>{{$supplier['vendor_name']}}</center>
                                 <br/>
                                 <div style="font-size:10px;text-align:center;margin-top:-10px;">(Delivery Date :{{date('d-m-Y',strtotime($supplier['commited_delivery_date']))}})</div>
@@ -62,6 +91,7 @@
                         <tr>
                         @if(!empty($suppliers))
 				            @foreach($suppliers as $supplier)
+                            <th></th>
                             <th width="5%" style="color:#1c273c;">Rate</th>
                             <th style="color:#1c273c;">Qty</th>
                             <th style="color:#1c273c;">Discount</th>
@@ -73,27 +103,30 @@
 					</thead>
 					<tbody >
                     @if(!empty($supplier_data))
-						@foreach($supplier_data as $item)
+						@foreach($supplier_data as $item) 
                         <tr>
-                            <?php $i=1;?>
                             <td >{{$item['item_name']}}</td>
                             <td>{{$item['item_code']}}</td>
                             <td>{{$item['hsn_code']}}</td>
                             @foreach($item['price_data'] as $data)
+                           
+                            <td>
+                                <input type="radio" class="item-select-radio" name="{{$data['radio_name']}}" value="{{$data['itemId']}}" data-quotation="{{$rq_no}}"  data-supplier="{{$data['supplier_id']}}" @if($data["selected_item"]==1) checked @endif></td>
                             <td class="supplier_rate" >@if($data['rate']==NULL) 0 @else {{ $data['rate'] }} {{$item['currency_code']}} @endif</td>
                             <td class="quantity" >{{ $data['quantity'] }} {{$item['unit_name']}}</td>
                             <td class="quantity" >{{ $data['discount'] }}</td>
                             <td class="total{{$i++}}">{{ $data['total'] }} {{$item['currency_code']}}</td>
                             @endforeach
-						</tr>
-                        
-                    @endforeach
+                            
+						</tr>                 
+                        @endforeach
+        
                     @endif
                     <tr>
                     <td colspan="3"></td>
                     @if(!empty($suppliers))
 				    @foreach($suppliers as $supplier)
-                        <td colspan="3">
+                        <td colspan="4">
                             <span style="float:right">Total :</span>
                         </td>
                         <td class="grant_total"><span class="tot"></span> {{$item['currency_code']}}</td>
@@ -103,14 +136,7 @@
                     <tr>
                         <td colspan="3"></td>
                         @foreach($suppliers as $supplier)
-                            <td colspan="3"><strong>Remarks:</strong>{{$fn->getRemarks($rq_no,$supplier['id'])}}</td>
-                            <td>
-                                <?php $check = $fn->checkSelectedQuotation($rq_no,$supplier['id']) ?>
-                                <button style="margin-left: 9px;font-size: 14px;" class="button badge badge-pill @if($check==1) badge-success @else badge-warning @endif  select-button" data-quotation="{{$rq_no}}" data-supplier="{{$supplier['id']}}" @if($check==1) disabled @endif>
-                                <span class="text">@if($check==1)Selected @else Select @endif</span> 
-                                <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
-                                </button>
-                            </td>
+                            <td colspan="5"><strong>Remarks:</strong>{{$fn->getRemarks($rq_no,$supplier['id'])}}</td>
                         @endforeach
                     </tr>
                     @endif
@@ -158,33 +184,58 @@
 $('#example1').find('.tot').each(function (index, element) {
     $(this).text(  getSum(index + 1)); 
 });
-
-$(".select-button").on("click", function(){
-    var quotation_id = $(this).data('quotation');
-    var supplier = $(this).data('supplier');
-    $(".danger").hide();
-    $(".success").hide();
-    //alert(supplier);
+$('.item-select-radio').on('change', function() {
+    let item_id = $(this).val();
+    let quotation_id = $(this).data('quotation');
+    let supplier = $(this).data('supplier');
+    //alert(quotation_id);
     $.ajax({
            type:'POST',
-           url:"{{ url('inventory/select-quotation') }}",
-           data:{ "_token": "{{ csrf_token() }}",quotation_id:quotation_id, supplier:supplier},
+           url:"{{ url('inventory/select-quotation-items') }}",
+           data:{ "_token": "{{ csrf_token() }}",quotation_id:quotation_id, item_id:item_id, supplier:supplier},
            success:function(data){
-            location.reload();
-              if(data == 1)
-              {
-                
-                $(".success").show();
-                //alert('Quotation Selected successfuly');
-              }
-              else 
-              {
-                $(".danger").show();
-                //alert('Quotation Selection failed');
-              }
+            alert(data);
+            //location.reload();
+            //   if(data == 1)
+            //   { 
+            //     $(".success").show();
+            //     //alert('Quotation Selected successfuly');
+            //   }
+            //   else 
+            //   {
+            //     $(".danger").show();
+            //     //alert('Quotation Selection failed');
+            //   }
            }
     });
 });
+
+// $(".select-button").on("click", function(){
+//     var quotation_id = $(this).data('quotation');
+//     var supplier = $(this).data('supplier');
+//     $(".danger").hide();
+//     $(".success").hide();
+//     //alert(supplier);
+//     $.ajax({
+//            type:'POST',
+//            url:"{{ url('inventory/select-quotation') }}",
+//            data:{ "_token": "{{ csrf_token() }}",quotation_id:quotation_id, supplier:supplier},
+//            success:function(data){
+//             location.reload();
+//               if(data == 1)
+//               {
+                
+//                 $(".success").show();
+//                 //alert('Quotation Selected successfuly');
+//               }
+//               else 
+//               {
+//                 $(".danger").show();
+//                 //alert('Quotation Selection failed');
+//               }
+//            }
+//     });
+// });
 
 </script>
 

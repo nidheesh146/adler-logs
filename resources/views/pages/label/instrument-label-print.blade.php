@@ -16,9 +16,9 @@
             $remaining = $no_of_label%12;
         
             ?>
-            <div class="label-div" id="label-div">
+            <div class="label-div" id="label-div" style="margin:0px; padding:0px;">
                 @for ($i = 1; $i<= $page_count; $i++)
-                <div style="margin-top:0;">
+                <div style="margin-top:0px;">
                 @for ($j = 1; $j<= $label_per_page; $j++)
                 <div class=" column " style="height:16%;float:left;width: 48%;padding:0px 2px;font-size:13px; margin-left:10px;@if($j==11 || $j==12) margin-bottom:0px; @else margin-bottom:11.3px;  @endif">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
