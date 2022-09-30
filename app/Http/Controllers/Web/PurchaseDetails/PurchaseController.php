@@ -196,7 +196,20 @@ class PurchaseController extends Controller
 
                             $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$request->po_id],$data);
                             $request->session()->flash('success', "You have successfully ".$status." a  Purchase/Work Order ");
-                return redirect('inventory/final-purchase');
+                if(isset($request->poc))
+                {
+                    if($request->order_type)
+                    return redirect('inventory/final-purchase/cancellation?order_type='.$request->order_type);
+                    else
+                    return redirect('inventory/final-purchase/cancellation');
+                }
+                else
+                {
+                    if($request->order_type)
+                    return redirect('inventory/final-purchase?order_type='.$request->order_type);
+                    else
+                    return redirect('inventory/final-purchase');
+                }
             }
             if ($validator->errors()->all()) {
                 return redirect('inventory/final-purchase')->withErrors($validator)->withInput();
@@ -219,6 +232,44 @@ class PurchaseController extends Controller
             $request->session()->flash('success', "You have successfully deleted a final purchase order master !");
         }
         return redirect('inventory/final-purchase');
+    }
+
+    public function purchaseOderCancellation(Request $request){
+        $condition1 = [];
+            if (!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from && !$request->status) {
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
+            }
+            if ($request->order_type == "wo") {
+                $condition1[] = ['inv_final_purchase_order_master.type','=', "WO"];
+            }else{
+                $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
+            }
+            if ($request->rq_no) {
+                $condition1[] = ['inv_purchase_req_quotation.rq_no', 'like', '%' . $request->rq_no . '%'];
+            }
+            if ($request->supplier) {
+                $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+       
+            if ($request->po_from) {
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->po_from))];
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->po_from))];
+            }
+
+            if ($request->status) {
+                if ($request->status == "reject") {
+                    $condition1[] = ['inv_final_purchase_order_master.status', '=', 0];
+                }
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', $request->status];
+            }
+            if ($request->po_no) {
+                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $request->po_no . '%'];
+            }
+            
+
+        $data['users'] = $this->User->get_all_users([]);
+        $data['po_data'] = $this->inv_final_purchase_order_master->get_purchase_master_list($condition1);
+        return view('pages.purchase-details.final-purchase.final-purchase-cancellation', compact('data'));
     }
     public function find_rq_number(Request $request)
     {
@@ -518,7 +569,7 @@ class PurchaseController extends Controller
     public function supplierInvoice(Request $request)
     {
         $condition1 = [];
-
+        
         if ($request->order_type) {
             $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', $request->order_type . '%'];
         }

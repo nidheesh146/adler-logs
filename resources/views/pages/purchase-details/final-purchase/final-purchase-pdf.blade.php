@@ -286,37 +286,42 @@
         <div class="col43">
             <table style="height:130px;">
                 <tr>
-                    <td style="width:130px">Sum of Line Value</td>
+                    <td style="width:160px">Sum of Line Value</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)$total, 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:130px">Total Discount</td>
+                    <td style="width:160px">Total Discount</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:130px">Total Net Amount</td>
+                    <td style="width:160px">Transportation & Freight Charge</td>
                     <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
+                    <td style="text-align:right;">{{number_format((float)($final_purchase['freight_charge']), 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:130px">Total IGST</td>
+                    <td style="width:160px">Total Net Amount</td>
+                    <td style="width:30px;">:</td>
+                    <td style="text-align:right;">{{number_format((float)($total-$total_discount+$final_purchase['freight_charge']), 2, '.', '')}}</td>
+                </tr>
+                <tr>
+                    <td style="width:160px">Total IGST</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:130px">Total SGST/UTGST</td>
+                    <td style="width:160px">Total SGST/UTGST</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:130px">Total CGST</td>
+                    <td style="width:160px">Total CGST</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
                 </tr>
                 <!-- <tr>
-                    <td style="width:130px">Total Net Amount</td>
+                    <td style="width:130px">Transportation & Freight Charge</td>
                     <td style="width:30px;">:</td>
                     <td style="float:right;">{{$total_discount}}</td>
                 </tr> -->
@@ -326,14 +331,18 @@
                 <tr>
                     <th style="width:130px">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
-                    <th style="float:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}}</th>
+                    <th style="text-align:right;">{{number_format((float)($total-$total_discount+$final_purchase['freight_charge']+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}}</th>
                 </tr> 
             </table>
         </div>
     </div>
     <div class="row5">
         <div class="col51">
+            @if(str_starts_with($final_purchase['po_number'] , 'PO') )
             Document Format - PUR/F-04-00
+            @else
+            Document Format - PUR/F-20-00
+            @endif
         </div>
         <div class="col52">
             :{{$final_purchase['po_number']}}

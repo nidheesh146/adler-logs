@@ -93,6 +93,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/final-purchase/export/open', 'PurchaseController@exportFinalPurchaseOpen');
     Route::post('inventory/final-purchase/change/status', 'PurchaseController@changeStatus');
     Route::get('inventory/final-purchase-view/{id}', 'PurchaseController@viewFinalPurchase');
+    Route::get('inventory/final-purchase/cancellation', 'PurchaseController@purchaseOderCancellation');
 
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');

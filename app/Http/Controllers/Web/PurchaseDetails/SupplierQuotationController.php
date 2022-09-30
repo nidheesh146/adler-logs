@@ -188,8 +188,11 @@ class SupplierQuotationController extends Controller
          $validation['contact'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all()){
-            $data = ['supplier_quotation_num'=>$request->supplier_quotation_no,'commited_delivery_date'=>date('Y-m-d',strtotime($request->commited_delivery_date)),
-            'quotation_date'=>date('Y-m-d',strtotime($request->quotation_date)),'contact_number'=>$request->contact];
+            $data = ['supplier_quotation_num'=>$request->supplier_quotation_no,
+                    'commited_delivery_date'=>date('Y-m-d',strtotime($request->commited_delivery_date)),
+                    'quotation_date'=>date('Y-m-d',strtotime($request->quotation_date)),
+                    'contact_number'=>$request->contact,
+                    'freight_charge'=>$request->freight_charge];
             $this->inv_purchase_req_quotation_supplier->updatedata(['supplier_id'=>$supp_id,'quotation_id'=>$rq_no],$data);
             $request->session()->flash('success',"You have successfully updated a Supplier Quotation master !");
             return redirect('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id);
