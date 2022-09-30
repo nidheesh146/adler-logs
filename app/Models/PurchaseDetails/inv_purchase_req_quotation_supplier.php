@@ -32,7 +32,7 @@ class inv_purchase_req_quotation_supplier extends Model
      function get_single_item($condition){
         return $this->select(['inv_purchase_req_quotation_supplier.supplier_quotation_num','inv_purchase_req_quotation_supplier.commited_delivery_date',
                               'inv_purchase_req_quotation_supplier.quotation_date','inv_purchase_req_quotation_supplier.contact_number', 'inv_supplier.id'
-                              ,'inv_supplier.vendor_id','inv_supplier.vendor_name'])
+                              ,'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_purchase_req_quotation_supplier.freight_charge'])
                     ->join('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
                     ->where($condition)->first();
      }

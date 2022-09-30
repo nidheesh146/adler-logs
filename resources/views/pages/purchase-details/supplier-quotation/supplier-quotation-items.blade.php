@@ -104,6 +104,13 @@
 					    value="{{$data['supplier_single']->contact_number}}" 
 					@endif>
 				</div>
+				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+					<label>Transportation & Freight Charge</label>
+					<input type="text" name="freight_charge" class="form-control" placeholder="Transportation & Freight Charge" 
+					@if(!empty($data['supplier_single']->freight_charge))
+					    value="{{$data['supplier_single']->freight_charge}}" 
+					@endif>
+				</div>
 			</div>
 			<div class="row">
                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
