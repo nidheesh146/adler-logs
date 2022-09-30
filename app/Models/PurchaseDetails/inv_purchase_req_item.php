@@ -102,8 +102,8 @@ class inv_purchase_req_item extends Model
                     ->paginate(10);
     }
     
-    function getdata_approved($condition){
-        return  $this->select(['inv_purchase_req_item.requisition_item_id','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_purchase_req_item.actual_order_qty','inv_purchase_req_item.rate',
+    function getdata_approved($condition, $wherein = null){
+         $query = $this->select(['inv_purchase_req_item.requisition_item_id','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_purchase_req_item.actual_order_qty','inv_purchase_req_item.rate',
                                'inv_purchase_req_item.discount_percent','inventory_gst.gst','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst','currency_exchange_rate.currency_code','inv_purchase_req_item.net_value','inventory_rawmaterial.item_code',
                                'inv_purchase_req_master.pr_no','inv_purchase_req_item_approve.status','inv_purchase_req_master.PR_SR', 'user.f_name','user.l_name','inv_purchase_req_item_approve.updated_at'])
                      ->leftjoin('inv_purchase_req_item_approve','inv_purchase_req_item_approve.pr_item_id', '=', 'inv_purchase_req_item.requisition_item_id')
@@ -114,12 +114,14 @@ class inv_purchase_req_item extends Model
                      
                      ->leftjoin('inventory_gst','inventory_gst.id','=','inv_purchase_req_item.gst')
                      ->leftjoin('user','user.user_id','=', 'inv_purchase_req_item_approve.created_user')
-                     ->leftjoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','inv_purchase_req_item.currency')
-                     ->whereIn('inv_purchase_req_item_approve.status',[4,5])
-                     ->where($condition)
-                     ->groupBy('inv_purchase_req_item.requisition_item_id')
-                     ->orderby('inv_purchase_req_item.requisition_item_id','desc')
-                     ->paginate(10);
+                     ->leftjoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','inv_purchase_req_item.currency');
+                     if($wherein ){
+                        $query = $query->whereIn('inv_purchase_req_item_approve.status',$wherein);
+                     }
+                    return  $query->where($condition)
+                                ->groupBy('inv_purchase_req_item.requisition_item_id')
+                                ->orderby('inv_purchase_req_item.requisition_item_id','desc')
+                                ->paginate(10);
      }
 
      

@@ -55,34 +55,36 @@
                                     <form autocomplete="off" id="formfilter" method="GET">
                                         <th scope="row">
                                             <div class="row filter_search" style="margin-left: 0px;">
-                                            <div class="col-sm-10 col-md-8 col-lg-8 col-xl-8  row">
+                                            <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                                 
-                                                    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                         <label for="exampleInputEmail1" style="font-size: 12px;">@if(request()->get('prsr')!='sr') PR No @else SR No @endif</label>
                                                         <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="@if(request()->get('prsr')!='sr') PR NO @else SR NO @endif">
                                                     </div><!-- form-group -->
                                                     <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
                                                     
-                                                    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                     <label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
                                                         <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
                                                     
                                                     </div><!-- form-group -->
-                                                    {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                         <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                         <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                         
-                                                    </div> --}}
-                                                    {{-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                                    </div>
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                         <label  style="font-size: 12px;">Status</label>
                                                         <select name="status" class="form-control">
                                                             <option value=""> --Select One-- </option>
+                                                            <option value="1" {{(request()->get('status') == 1) ? 'selected' : ''}}> Approved</option>
                                                             <option value="4" {{(request()->get('status') == 4) ? 'selected' : ''}}> Pending</option>
                                                             <option value="5"{{(request()->get('status') == 5) ? 'selected' : ''}}>On hold</option>
+                                                            <option value="0"{{(request()->get('status') == '0') ? 'selected' : ''}}>Rejected</option>
 
 
                                                         </select>
-                                                    </div>  --}}
+                                                    </div> 
                                                                         
                                                 </div>
                                                 <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
@@ -210,7 +212,7 @@
                     {{ csrf_field() }} 
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title"> <span id="type"></span> Requisition Item <span  class="item-codes"></span></h4>
+                            <h4 class="modal-title">#Approve <span id="type"></span> Requisition Item <span  class="item-codes"></span></h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">

@@ -26,7 +26,7 @@ class ApprovalController extends Controller
     public function getList(Request $request) 
     {
             $condition = []; 
-     
+            $wherein = [4,5];
 
             if ($request->pr_no) {
                 $condition[] = ['inv_purchase_req_master.pr_no', 'like', '%'.$request->pr_no.'%'];
@@ -36,27 +36,23 @@ class ApprovalController extends Controller
             }else{
                 $condition[] = ['inv_purchase_req_master.PR_SR', '=', "PR"];
             }
-
-
-
-            // if ($request->supplier) {
-            //     $condition[] = ['inv_supplier.vendor_id',  'like', '%'.$request->supplier.'%'];
-            // }
+            if ($request->supplier) {
+                $condition[] = ['inv_supplier.vendor_id',  'like', '%'.$request->supplier.'%'];
+            }
             if ($request->item_code) {
                 $condition[] = ['inventory_rawmaterial.Item_code','like', '%'.$request->item_code.'%'];
             }
-            // if ($request->status) {
-            //     if($request->status=="reject"){
-            //         $condition[] = ['inv_purchase_req_item_approve.status', '=', 0];
-            //     }
-            //     $condition[] = ['inv_purchase_req_item_approve.status', '=', $request->status];
-            // }
+            if ($request->status || $request->status == '0') {
+                $wherein = [$request->status];
+            }
             // if ($request->from) {
             //     $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
             //     $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
             // }
         
-        $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved($condition);
+
+
+        $data['inv_purchase'] = $this->inv_purchase_req_item->getdata_approved($condition,$wherein);
         $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
         $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
         $data['items'] = $this->inventory_rawmaterial->get_items();
