@@ -55,26 +55,32 @@
 												font-size:12px;
 											}
 										</style>
-										<form autocomplete="off">
+										<form autocomplete="off" id="formfilter">
 											<th scope="row">
 												<div class="row filter_search" style="margin-left: 0px;">
-												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+												<div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
 									
-														<div class="form-group col-sm-12 col-md-5 col-lg-5 col-xl-5">
+														<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 															<label>RQ No:</label>
 															<input type="text" value="{{request()->get('rq_no')}}" name="rq_no"  id="rq_no" class="form-control" placeholder="RQ NO">
 														</div><!-- form-group -->
 														<input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
-														<div class="form-group col-sm-12 col-md-5 col-lg-5 col-xl-5">
+														<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 															<label  style="font-size: 12px;">Delivery Schedule</label>
 															<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Delivery Schedule(MM-YYYY)">
+														</div> 
+														<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+															<label  style="font-size: 12px;">Ssupplier</label>
+															<input type="text" value="{{request()->get('supplier')}}"  class="form-control " name="supplier" placeholder="Supplier ID" >
 														</div> 
 																			
 													</div>
 													<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
 														<!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;"> -->
 															<label style="width: 100%;">&nbsp;</label>
-															<button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+															<button type="submit" class="badge badge-pill badge-primary search-btn" 
+															onclick="document.getElementById('formfilter').submit();"
+															style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
 															@if(count(request()->all('')) > 1)
 																<a href="{{url()->current();}}" class="badge badge-pill badge-warning"
 																style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>

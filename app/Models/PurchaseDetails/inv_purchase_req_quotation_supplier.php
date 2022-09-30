@@ -59,7 +59,6 @@ class inv_purchase_req_quotation_supplier extends Model
                     ->first();
     }
     function inv_purchase_req_quotation_data($condition){
-
         return $this->select(['inv_purchase_req_quotation.rq_no','inv_purchase_req_quotation_supplier.supplier_quotation_num','inv_purchase_req_quotation_supplier.commited_delivery_date'
         ,'inv_purchase_req_quotation_supplier.quotation_date','inv_purchase_req_quotation_supplier.contact_number','inv_purchase_req_quotation_supplier.supplier_id','inv_purchase_req_quotation_supplier.quotation_id',
         'inv_supplier.vendor_id','inv_supplier.vendor_name'])
@@ -68,6 +67,16 @@ class inv_purchase_req_quotation_supplier extends Model
         ->where($condition)
         ->get();
 
+
+    }
+    function get_quotation_all($condition){
+     return  $this->select('inv_purchase_req_quotation.*')
+        ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_purchase_req_quotation_supplier.quotation_id')
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+        ->distinct('inv_purchase_req_quotation.quotation_id')
+        ->orderby('inv_purchase_req_quotation.quotation_id','desc')
+        ->where($condition)
+        ->paginate(15);
 
     }
 
