@@ -57,7 +57,9 @@ class QuotationController extends Controller
                      'delivery_schedule'=>date('Y-m-d',strtotime($request->delivery)),
                      'rq_no'=>'RQ-'.$this->num_gen( $this->inv_purchase_req_quotation->get_count()),
                      'created_at'=>date('Y-m-d H:i:s'),
-                     'created_user'=>config('user')['user_id']];
+                     'created_user'=>config('user')['user_id'],
+                     'type'=> ($request->prsr == 'sr') ? 'SR' : 'PR'
+                    ];
             $this->inv_purchase_req_quotation->insert_data($data,$request);
             $request->session()->flash('success', "You have successfully created a  Request For Quotation !");
             return redirect('inventory/quotation');

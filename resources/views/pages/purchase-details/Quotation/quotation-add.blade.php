@@ -37,8 +37,8 @@
                    @include('includes.purchase-details.pr-sr-tab')
                     <div class="tab-content">
                         <div class="tab-pane active  show " id="purchase">
-                            <form method="POST" autocomplete="off" action="{{ url('inventory/add/quotation') }}" id="commentForm" > 
-                            {{ csrf_field() }} 
+                        <form method="POST" autocomplete="off" action="{{ url('inventory/add/quotation') }}?prsr={{request()->get('prsr')}}" id="commentForm" >
+                            {{ csrf_field() }}  
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                                     <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">

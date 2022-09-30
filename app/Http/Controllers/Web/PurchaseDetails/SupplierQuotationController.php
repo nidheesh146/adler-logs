@@ -13,6 +13,8 @@ use App\Models\PurchaseDetails\inv_purchase_req_master_item_rel;
 use App\Models\PurchaseDetails\inv_purchase_req_master;
 use Validator;
 
+USE DB;
+
 class SupplierQuotationController extends Controller
 {
     public function __construct()
@@ -33,19 +35,25 @@ class SupplierQuotationController extends Controller
                 $condition[] = ['inv_purchase_req_quotation.rq_no', 'like', '%'.$request->rq_no.'%'];
             }
             if ($request->prsr) {
-                $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
+                $condition[] = ['inv_purchase_req_quotation.type', '=', strtolower($request->prsr)];
             }
             if (!$request->prsr) {
-                $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
+                $condition[] = ['inv_purchase_req_quotation.type', '=', 'PR'];
             }
             if ($request->from) {
                 $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition[] = ['inv_purchase_req_quotation.delivery_schedule', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
             }
            
+            if ($request->supplier) {
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+       
            // $data['po_data'] =  $this->inv_final_purchase_order_master->get_purchase_master($condition);
-            $data['quotation'] = $this->inv_purchase_req_quotation->get_quotation($condition);
+           //  $this->inv_purchase_req_quotation->get_quotation($condition);
 
+        $data['quotation'] =  $this->inv_purchase_req_quotation_supplier->get_quotation_all( $condition);
+      // print_r( $data['quotation']);die;
         $data['suppliers'] = $this->inv_supplier->get_all_suppliers();
         $data['rq_nos'] = $this->inv_purchase_req_quotation->get_rq_nos();
         //$data['quotation'] = $this->inv_purchase_req_quotation->get_quotation([]);
@@ -64,9 +72,9 @@ class SupplierQuotationController extends Controller
             $supplier_id = $supplier->id;
         }
          if($supplier){
-            $suppliers .="<span>".$supplier->vendor_id."</span>" ;
+            $suppliers .="<span>".$supplier->vendor_id."</span> - <span>".$supplier->vendor_name."</span>" ;
             if(  $key !=  ( $count - 1)){
-                $suppliers .= " , ";
+                $suppliers .= " <br> ";
             }   
         }
 
@@ -83,33 +91,7 @@ class SupplierQuotationController extends Controller
         return $reqisition_type;
 
     }
-    public function getSupplierQuotationAdd(Request $request)
-    {
-
-     
-        if ($request->isMethod('post')) {
-            $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL') . "/inventory/purchase-requisition-item-list-add-edit-delete/";
-            $Request['param'] = json_encode([
-                "action_type"=>"AddSupplierQuotationMaster",
-                'quotation_no'=>"",
-                "rq_no"=>$request->rq_no,
-                "supplier"  => $request->supplier,
-                "date"=>$request->date,
-                "requestor" => (session('user')['employee_id'] ? session('user')['employee_id'] : 'Requestor 1'),
-                "pr_sr" => $request->prsr,
-                "deliver_schedule"=>$request->delivery
-                
-            ]);
-            $data = $this->HttpRequest->HttpClient($Request);
-            if(!empty($data['response']['message'] && $data['response']['success']))
-            {
-                $request->session()->flash('success',  $data['response']['message']);
-                return redirect('inventory/supplier-quotation');
-             }
-        }
-        return view('pages/supplier-quotation/supplier-quotation-add');
-    }
+   
 
     public function delete_supplier_quotation(Request $request) {
         if($request->qr_id)
