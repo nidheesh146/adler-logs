@@ -88,8 +88,8 @@ class PurchaseController extends Controller
                     $type = $this->check_reqisition_type($request->rq_master_id);
                     foreach ($groupByItemSupplier as $ByItemSupplier) {
                         if ($type == "PR") {
-                           // $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
-                            $supplier_type =  $this->inv_supplier->get_supplier(['id'=>$ByItemSupplier->supplier_id])->supplier_type;
+                            $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
+                            //$supplier_type =  $this->inv_supplier->get_supplier(['id'=>$ByItemSupplier->supplier_id])->supplier_type;
                             if ($supplier_type == "direct") {
                                 $data['po_number'] = "PO-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count());
                             } else {
@@ -680,6 +680,7 @@ class PurchaseController extends Controller
 
         $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_master.id' => $id]);
         $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $id]);
+        //print_r( json_encode($data['items']));exit;
         $data['terms_condition'] = DB::table('po_fpo_master_tc_rel')
             ->select('po_supplier_terms_conditions.terms_and_conditions')
             ->join('po_supplier_terms_conditions', 'po_supplier_terms_conditions.id', '=', 'po_fpo_master_tc_rel.terms_id')
@@ -708,6 +709,13 @@ class PurchaseController extends Controller
     {
         $user = $this->User->get_user(['user_id' => $user_id]);
         return $user;
+    }
+
+    public function find_freight_charge($rq_id,$supplierId)
+    {
+        $freight_charge = inv_purchase_req_quotation_supplier::where('quotation_id','=',$rq_id)->where('supplier_id','=',$supplierId)
+                            ->pluck('freight_charge')->first();
+         return $freight_charge;                   
     }
 
 }

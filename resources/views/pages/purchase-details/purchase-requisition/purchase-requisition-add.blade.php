@@ -132,29 +132,6 @@
                                 class="form-control datepicker" name="Date" placeholder="Date">
                             </div><!-- form-group -->
 
-
-                            <!-- <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>PR/SR *</label>
-                                <select class="form-control select2" name="PRSR">
-                                    <option value="">--- select one ---</option>
-                                    <option value="PR"
-                                    @if(!empty($data['inv_purchase_req_master']))
-                                    @if('PR' == $data['inv_purchase_req_master']['PR_SR'])
-                                        selected 
-                                    @endif
-                                  @endif
-                                    >PR</option>
-                                  <option value="SR"
-                                  @if(!empty($data['inv_purchase_req_master']))
-                                  @if('SR' == $data['inv_purchase_req_master']['PR_SR'])
-                                      selected 
-                                  @endif
-                                @endif>SR</option>
-                                </select>
-                            </div> -->
-
-
-
                         </div> 
                       
 
@@ -231,12 +208,8 @@
                 Date: {
                     required: true,
                 },
-                 email: {
-                     email: true,
-                },
-                // PRSR: {
-                //     required: true,
-                // },
+                
+                
             },
             submitHandler: function(form) {
                 $('.spinner-button').show();
