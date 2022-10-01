@@ -60,4 +60,35 @@ class Controller extends BaseController
         }
         return date('y').date('m').'ID'.substr($decimal, 0, 4);
     }
+    function ResponseApi($data,$code,$message = null){
+        $status = false;
+        switch ($code) {
+           case 200:
+                $message = $message ? $message : "success";
+                $status = true;
+              break;
+           case 400:
+                $message = $message ? $message : "Bad Request";
+           break;
+           case 401:
+                $message = $message ? $message : "Unauthorized";
+           break;
+           case 403:
+                $message = $message ? $message : "Forbidden";
+           break;
+           case 204:
+            $message = $message ? $message : "Data not found";
+            break;
+          }
+          
+          $response =  [
+            "success" => $status ,
+            'timestamp'=> time(),
+            "code" => $code,
+            "message"=> $message,
+            "data"=>  $data
+           ];
+      
+          return response($response,$code);
+    }
 }

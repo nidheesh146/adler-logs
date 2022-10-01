@@ -19,5 +19,15 @@ class product extends Model
                     ->get()->toArray();
         
     }
+    function get_label_filter($condition){
+        return $this->select(['sku_code','mrp'])
+                    ->where($condition)
+                    ->get();
+        
+    }
+
+
+
+    
 
 }
