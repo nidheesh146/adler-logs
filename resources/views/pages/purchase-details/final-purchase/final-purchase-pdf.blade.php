@@ -5,6 +5,7 @@
     <title>Final @if(str_starts_with($final_purchase['po_number'] , 'PO') )Purchase Order @else Work Order @endif _{{$final_purchase['vendor_name']}}_{{$final_purchase['po_number']}}</title>
 </head>
 <body>
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\PurchaseController')
     <style>
         .col1,.col3{
             float:left;
@@ -297,13 +298,13 @@
                 </tr>
                 <tr>
                     <td style="width:160px">Transportation & Freight Charge</td>
-                    <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)($final_purchase['freight_charge']), 2, '.', '')}}</td>
+                    <td style="width:30px;"><?php $freight_charge = $fn->find_freight_charge($final_purchase['rq_master_id'],$final_purchase['supplierId']); ?>{{--$final_purchase['rq_master_id']}}:{{$final_purchase['supplierId']--}}</td>
+                    <td style="text-align:right;">{{number_format((float)($freight_charge), 2, '.', '')}}</td>
                 </tr>
                 <tr>
                     <td style="width:160px">Total Net Amount</td>
                     <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)($total-$total_discount+$final_purchase['freight_charge']), 2, '.', '')}}</td>
+                    <td style="text-align:right;">{{number_format((float)($total-$total_discount+$freight_charge), 2, '.', '')}}</td>
                 </tr>
                 <tr>
                     <td style="width:160px">Total IGST</td>
@@ -331,7 +332,7 @@
                 <tr>
                     <th style="width:130px">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
-                    <th style="text-align:right;">{{number_format((float)($total-$total_discount+$final_purchase['freight_charge']+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}}</th>
+                    <th style="text-align:right;">{{number_format((float)($total-$total_discount+$freight_charge+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}}</th>
                 </tr> 
             </table>
         </div>

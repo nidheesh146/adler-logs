@@ -63,32 +63,32 @@ class Controller extends BaseController
     function ResponseApi($data,$code,$message = null){
         $status = false;
         switch ($code) {
-           case 200:
                 $message = $message ? $message : "success";
-                $status = true;
               break;
+           case 200:
+                $status = true;
            case 400:
+           break;
                 $message = $message ? $message : "Bad Request";
+    }
+          return response($response,$code);
+      
+           ];
+            "data"=>  $data
+            "message"=> $message,
+            "code" => $code,
+            'timestamp'=> time(),
+          $response =  [
+            "success" => $status ,
+          }
+          
+            break;
+            $message = $message ? $message : "Data not found";
+           case 204:
+           break;
+                $message = $message ? $message : "Forbidden";
+           case 403:
            break;
            case 401:
                 $message = $message ? $message : "Unauthorized";
-           break;
-           case 403:
-                $message = $message ? $message : "Forbidden";
-           break;
-           case 204:
-            $message = $message ? $message : "Data not found";
-            break;
-          }
-          
-          $response =  [
-            "success" => $status ,
-            'timestamp'=> time(),
-            "code" => $code,
-            "message"=> $message,
-            "data"=>  $data
-           ];
-      
-          return response($response,$code);
-    }
 }

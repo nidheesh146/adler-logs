@@ -15,6 +15,7 @@ use App\Models\PurchaseDetails\inv_purchase_req_quotation_supplier;
 use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
+use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ class PurchaseController extends Controller
         $this->inv_supplier_invoice_master = new inv_supplier_invoice_master;
         $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
         $this->inv_supplier = new inv_supplier;
+        $this->inventory_rawmaterial = new inventory_rawmaterial;
     }
 
     public function getFinalPurchase(Request $request)
@@ -85,20 +87,28 @@ class PurchaseController extends Controller
             if (!$validator->errors()->all()) {
                 if (!$id) {
                     $groupByItemSupplier = $this->inv_purchase_req_quotation_item_supp_rel->groupByItemSupplier(['inv_purchase_req_quotation_item_supp_rel.selected_item' => 1,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$request->rq_master_id]);
-                    $type = $this->check_reqisition_type($request->rq_master_id);
+                    
                     foreach ($groupByItemSupplier as $ByItemSupplier) {
+                        $type = $this->check_reqisition_type($request->rq_master_id,$ByItemSupplier->supplier_id);
                         if ($type == "PR") {
-                           // $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
-                            $supplier_type =  $this->inv_supplier->get_supplier(['id'=>$ByItemSupplier->supplier_id])->supplier_type;
-                            if ($supplier_type == "direct") {
-                                $data['po_number'] = "PO-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count());
+                            $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
+                            //$supplier_type =  $this->inv_supplier->get_supplier(['id'=>$ByItemSupplier->supplier_id])->supplier_type;
+                            $item_type = $this->check_item_type($request->rq_master_id,$ByItemSupplier->supplier_id);
+                            //echo $item_type;exit;
+                            if ($item_type == "Direct Items") {
+                                $data['po_number'] = "POI2-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count());
                             } else {
-                                $data['po_number'] = "PO-" . $this->po_indirect_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count());
+                                $data['po_number'] = "POI3-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count());
                             }
                             $data['type'] ="PO";
                         } else {
-                            $data['po_number'] = "WO-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
-                            $data['type'] ="WO";
+                            if ($item_type == "Direct Items") {
+                            $data['po_number'] = "WOI2-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                            //$data['type'] ="WO";
+                            }
+                            else{
+                                $data['po_number'] = "WOI3-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                            }
                         }
                         $data['created_at'] = date('Y-m-d H:i:s');
                         $data['updated_at'] = date('Y-m-d H:i:s');
@@ -139,6 +149,19 @@ class PurchaseController extends Controller
         }
 
         return view('pages.purchase-details.final-purchase.final-purchase-add', compact('data'));
+    }
+
+    public function check_item_type($rq_master_id, $supplier_id){
+        $item_id = inv_purchase_req_quotation_item_supp_rel::where('inv_purchase_req_quotation_item_supp_rel.quotation_id','=',$rq_master_id)
+                                                    ->where('inv_purchase_req_quotation_item_supp_rel.supplier_id','=',$supplier_id)
+                                                    ->where('selected_item','=',1)
+                                                    ->pluck('item_id')
+                                                    ->first();
+        $item_code = inv_purchase_req_item::where('requisition_item_id','=',$item_id)->pluck('item_code')->first();
+        $type = inventory_rawmaterial::leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                    ->where('inventory_rawmaterial.id','=',$item_code)->pluck('type_name')->first();
+        return $type;
+
     }
 
     public function Edit_PO_item(Request $request, $id)
@@ -680,6 +703,7 @@ class PurchaseController extends Controller
 
         $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_master.id' => $id]);
         $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $id]);
+        //print_r( json_encode($data['items']));exit;
         $data['terms_condition'] = DB::table('po_fpo_master_tc_rel')
             ->select('po_supplier_terms_conditions.terms_and_conditions')
             ->join('po_supplier_terms_conditions', 'po_supplier_terms_conditions.id', '=', 'po_fpo_master_tc_rel.terms_id')
@@ -708,6 +732,13 @@ class PurchaseController extends Controller
     {
         $user = $this->User->get_user(['user_id' => $user_id]);
         return $user;
+    }
+
+    public function find_freight_charge($rq_id,$supplierId)
+    {
+        $freight_charge = inv_purchase_req_quotation_supplier::where('quotation_id','=',$rq_id)->where('supplier_id','=',$supplierId)
+                            ->pluck('freight_charge')->first();
+         return $freight_charge;                   
     }
 
 }

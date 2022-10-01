@@ -49,16 +49,24 @@
                             </div>
 
                             <div class="row">
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Date *</label>
-                                    <input type="text"  class="form-control datepicker" value="{{date("d-m-Y")}}" name="date" placeholder="Date">
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3 type-form">
+                                    <label>Type *</label>
+                                    <select class="form-control " name="type" id="type">
+                                        <option value="">--select one--</option>
+                                        <option value="1" @if(request()->get('type')==1) selected @endif>Indirect Items</option>
+                                        <option value="2" @if(request()->get('type')==2) selected @endif>Direct Items</option>
+                                    </select>
                                 </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                    <label>Date *</label>
+                                    <input type="text"  class="form-control datepicker" value="{{date('d-m-Y')}}" name="date" placeholder="Date">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                     <label>Delivery Schedule *</label>
-                                    <input type="text"  class="form-control datepicker" value="{{date("d-m-Y")}}" name="delivery" placeholder="Date">
+                                    <input type="text"  class="form-control datepicker" value="{{date('d-m-Y')}}" name="delivery" placeholder="Date">
                                 </div>
                                 <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                     <label>Supplier *</label>
                                     <select class="form-control Supplier" name="Supplier[]" multiple="multiple">
                                             <option value="">--- select one ---</option>
@@ -82,7 +90,7 @@
                                             <th>#</th>
                                             <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
                                             <th>Item code </th>
-                                            <th>Supplier</th>
+                                            <th>Type</th>
                                             <th>Rate</th>
                                             <th>Discount %</th>
                                             <th>GST %</th>
@@ -90,19 +98,16 @@
                                             <th>Net value </th>
                                             <th>Actual Order Qty</th>
                                             <th>Approved Qty</th>
-                                            <!-- <th>Approved By</th>
-                                            <th>Date</th> -->
                                         </tr>
                                     </thead>
                                     <tbody >
-                            
                                     @foreach($data['getdata'] as $item)
                                   
                                     <tr>
                                         <td><input type="checkbox" class="purchase_requisition_item" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['requisition_item_id']}}"></td>
                                         <th>{{$item['pr_no']}}</th>
                                         <th>{{$item['item_code']}}</th>
-                                        <td> {{$item['vendor_id']}}</td>
+                                        <td> {{$item['type_name']}}</td>
                                         <td>{{$item['rate']}}</td>
                                         <td>{{$item['discount_percent']}}</td>
                                         <td>@if($item['igst']!=0)
@@ -123,8 +128,6 @@
                                         <td>{{$item['net_value']}}</td>	
                                         <td>{{$item['actual_order_qty']}}</td>
                                         <td>{{$item['approved_qty']}}</td>	
-                                        <!-- <td>{{$item['f_name']}} {{$item['l_name']}}</td>
-                                        <td>{{$item['f_name']}}</td>					  -->
                                     </tr>
                                     
                                     @endforeach
@@ -192,6 +195,9 @@
                 delivery: {
                     required: true,
                 },
+                type: {
+                    required: true,
+                },
                 'Supplier[]': {
                    required: true,
                 },
@@ -210,8 +216,26 @@
     format: " dd-mm-yyyy",
     autoclose:true
     });
-        $('.datepicker').mask('99-99-9999');
+    $('.datepicker').mask('99-99-9999');
 
+    $('#type').change(function() {
+        let type= $(this).val();
+        this.form.submit();
+        // $.ajax({
+        //    type:'GET',
+        //    url:"{{ url('inventory/quotation/items') }}",
+        //    data: { type: '' + type + '' },
+        //    success:function(data){
+        //         $("tbody").append(html);
+        //    }
+        // });
+    });
+
+    $(document).ready(function () {
+        (function () {
+            $('#type').wrap('<form id="Form2"></form>');
+            //$('#Form2').append('{{csrf_field()}}');
+    })();});
 
 </script>
 

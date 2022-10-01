@@ -20,11 +20,23 @@ class QuotationController extends Controller
 
     // list Quotation
     public function getQuotation(Request $request)
-    {
+    { 
+
         if ($request->prsr) {
+            if($request->type)
+            {
+            $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
+            $condition[] = ['inventory_rawmaterial.item_type_id','=',$request->type];
+            }
+            else
             $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
         }
         if (!$request->prsr) {
+            if($request->type)
+            {
+            $condition[] = ['inv_purchase_req_master.PR_SR', '=','PR'];
+            $condition[] = ['inventory_rawmaterial.item_type_id','=',$request->type];
+            }
             $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
         }
         $data['getdata'] = $this->inv_purchase_req_item->getdata($condition);
@@ -57,6 +69,14 @@ class QuotationController extends Controller
             return redirect('inventory/quotation')->withErrors($validator)->withInput();
         }
            
+    }
+
+    public function getItems(Request $request)
+    {
+        //echo "jj";exit;
+        $data['getdata'] = $this->inv_purchase_req_item->getdata(['inv_item_type.type_name'=>$request->type]);
+        return view('pages/purchase-details/Quotation/quotation-add', compact('data'));
+
     }
 
     // Edit Quotation

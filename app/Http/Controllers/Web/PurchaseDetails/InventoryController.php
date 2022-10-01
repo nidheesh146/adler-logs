@@ -78,7 +78,7 @@ class InventoryController extends Controller
 
             $validation['Date'] = ['required'];
             $validation['Department'] = ['required'];
-            // $validation['PRSR'] = ['required'];
+            //$validation['Type'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
             if(!$validator->errors()->all()){
