@@ -153,7 +153,7 @@ class SupplierQuotationController extends Controller
             $validation['rate'] = ['required'];
             $validation['discount'] = ['required'];
             $validation['Specification'] = ['required'];
-            $validation['Remarks'] = ['required'];
+            //$validation['Remarks'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
             if(!$validator->errors()->all()){

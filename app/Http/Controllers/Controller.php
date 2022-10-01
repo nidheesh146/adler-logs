@@ -60,4 +60,5 @@ class Controller extends BaseController
         }
         return date('y').date('m').'ID'.substr($decimal, 0, 4);
     }
+    
 }
