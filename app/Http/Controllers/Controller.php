@@ -51,14 +51,29 @@ class Controller extends BaseController
         }
         return date('y').date('m').substr($decimal, 0, 4);
     }
-    function po_indirect_num_gen($Number)
+    function po_num_gen($Number,$type)
     {
-        $Number = (($Number + 1) / 9999);
+        $Number = (($Number + 1) / 999);
         list($whole, $decimal) = explode('.', $Number);
         if(!$decimal){
-            return date('y').date('m')."9999";
+            if($type==1)
+            return date('y').date('y', strtotime('+1 year')).'-'."999";
+            else
+            return date('y').date('y', strtotime('+1 year')).'ID-'."999";
+
         }
-        return date('y').date('m').'ID'.substr($decimal, 0, 4);
+        if($type==1)
+        return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
+        else
+        return date('y').date('y', strtotime('+1 year')).'ID-'.substr($decimal, 0, 3);
     }
-    
+
+    function wo_num_gen($Number){
+        $Number = (($Number + 1) / 999);
+        list($whole, $decimal) = explode('.', $Number);
+        if(!$decimal){
+            return date('y').date('y', strtotime('+1 year')).'-'."999";
+        }
+        return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
+    }
 }

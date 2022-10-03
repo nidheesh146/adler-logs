@@ -51,11 +51,14 @@
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3 type-form">
                                     <label>Type *</label>
+                                    <div id="type-wrapper">
                                     <select class="form-control " name="type" id="type">
                                         <option value="">--select one--</option>
                                         <option value="1" @if(request()->get('type')==1) selected @endif>Indirect Items</option>
                                         <option value="2" @if(request()->get('type')==2) selected @endif>Direct Items</option>
                                     </select>
+                                    <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
+                                    </div>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                     <label>Date *</label>
@@ -233,7 +236,8 @@
 
     $(document).ready(function () {
         (function () {
-            $('#type').wrap('<form id="Form2"></form>');
+                                    
+            $('#type-wrapper').wrap('<form id="Form2"></form>');
             //$('#Form2').append('{{csrf_field()}}');
     })();});
 

@@ -44,8 +44,9 @@ class PurchaseController extends Controller
             $condition1 = [];
             if (!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from && !$request->status) {
                 $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
+                $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
             }
-            if ($request->order_type == "wo") {
+            if ($request->order_type=="wo") {
                 $condition1[] = ['inv_final_purchase_order_master.type','=', "WO"];
             }else{
                 $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
@@ -96,18 +97,19 @@ class PurchaseController extends Controller
                             $item_type = $this->check_item_type($request->rq_master_id,$ByItemSupplier->supplier_id);
                             //echo $item_type;exit;
                             if ($item_type == "Direct Items") {
-                                $data['po_number'] = "POI2-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count());
+                                $data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
                             } else {
-                                $data['po_number'] = "POI3-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count());
+                                $data['po_number'] = "POI3" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),2);
                             }
                             $data['type'] ="PO";
                         } else {
+                            $item_type = $this->check_item_type($request->rq_master_id,$ByItemSupplier->supplier_id);
                             if ($item_type == "Direct Items") {
-                            $data['po_number'] = "WOI2-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
-                            //$data['type'] ="WO";
+                            $data['po_number'] = "WOI2-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                            $data['type'] ="WO";
                             }
                             else{
-                                $data['po_number'] = "WOI3-" . $this->num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                                $data['po_number'] = "WOI3-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
                             }
                         }
                         $data['created_at'] = date('Y-m-d H:i:s');
