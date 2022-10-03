@@ -23,8 +23,13 @@ class batchcard extends Model
     function get_label($condition){
         return $this->select(['batchcard_batchcard.id','product_product.discription',''])
         ->where($condition)->get();
-
     }
+    function get_label_filter($condition){
+        return $this->select(['batchcard_batchcard.batch_no','product_product.sku_code','product_product.mrp'])
+        ->where($condition)->get();
+    }
+
+
     function insertdata($data)
     {
         return $this->insertGetId($data);
