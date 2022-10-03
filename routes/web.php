@@ -113,10 +113,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/get-single-invoice-item/{itemId}','LotAllocationController@getInvoiceItem');
     Route::get('inventory/get-single-lot-allocation/{lot_allocation_id}','LotAllocationController@getsingleLot');
 
-    //MIQ
-    // Route::get('inventory/MIQ', 'MIQController@MIQlist');
-    // Route::get('inventory/MIQ-add', 'MIQController@MIQAdd');
-    // Route::get('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
+   // MIQ
+    Route::get('inventory/MIQ', 'MIQController@MIQlist');
+    Route::get('inventory/MIQ-add', 'MIQController@MIQAdd');
+    Route::get('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
 
     // suppliers
     // Route::get('inventory/terms-and-conditions-list','TermsconditionsController@list_terms_conditions');

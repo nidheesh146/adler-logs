@@ -40,7 +40,7 @@ class PurchaseController extends Controller
     }
 
     public function getFinalPurchase(Request $request)
-    {
+    {//echo $request->order_type;exit;
             $condition1 = [];
             if (!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from && !$request->status) {
                 $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
@@ -95,11 +95,11 @@ class PurchaseController extends Controller
                             $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
                             //$supplier_type =  $this->inv_supplier->get_supplier(['id'=>$ByItemSupplier->supplier_id])->supplier_type;
                             $item_type = $this->check_item_type($request->rq_master_id,$ByItemSupplier->supplier_id);
-                            //echo $item_type;exit;
+                           
                             if ($item_type == "Direct Items") {
                                 $data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
                             } else {
-                                $data['po_number'] = "POI3" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),2);
+                                $data['po_number'] = "POI3" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
                             }
                             $data['type'] ="PO";
                         } else {

@@ -51,12 +51,12 @@
 
                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                             <label>MIQ number *</label>
-                        <input type="text" class="form-control"  value=""  name="invoice_number" placeholder="Invoice number">
+                        <input type="text" class="form-control"  value=""  name="invoice_number" placeholder="MIQ number">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                             <label>MIQ date *</label>
-                            <input type="text" class="form-control datepicker" value="" name="date" placeholder="Invoice date">
+                            <input type="text" class="form-control datepicker" value="" name="date" placeholder="MIQ date">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
@@ -115,43 +115,43 @@
                             <td>AArya Vision</td>
                         </tr>
                     </tbody>
-                </table><br>
-           <div class="row">
-            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                Supplier Invoice items</label>
-                <div class="form-devider"></div>
-            </div>
-           </div>
-           <div class="table-responsive">
-                <table class="table table-bordered mg-b-0" id="example1">
-                    <thead>
-                        <tr>
-                            <th>PO/WO No.</th>
-                            <th>Item Code:</th>
-                            <th>Quantity</th>
-                            <th>Stk Kpng Unit</th>
-                            <th>unit Rate</th>
-                            <th>Expiry Control</th>
-                            <th>Expiry Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody >
-                    <tr>
-                            <th>PO/WO No.</th>
-                            <th>Item Code:</th>
-                            <th>Quantity</th>
-                            <th>Stk Kpng Unit</th>
-                            <th>unit Rate</th>
-                            <th>Expiry Control</th>
-                            <th>Expiry Date</th>
-                            <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MIQ/1/item')}}"  class="dropdown-item"><i class="fas fa-eye"></i> Edit</a> 	</th>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                    </table><br>
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                            <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                            Supplier Invoice items</label>
+                            <div class="form-devider"></div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                            <table class="table table-bordered mg-b-0" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th>PO/WO No.</th>
+                                        <th>Item Code:</th>
+                                        <th>Quantity</th>
+                                        <th>Stk Kpng Unit</th>
+                                        <th>unit Rate</th>
+                                        <th>Expiry Control</th>
+                                        <th>Expiry Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                <tr>
+                                        <th>PO/WO No.</th>
+                                        <th>Item Code:</th>
+                                        <th>Quantity</th>
+                                        <th>Stk Kpng Unit</th>
+                                        <th>unit Rate</th>
+                                        <th>Expiry Control</th>
+                                        <th>Expiry Date</th>
+                                        <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MIQ/1/item')}}"  class="dropdown-item"><i class="fas fa-eye"></i> Edit</a> 	</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
     </div>
         <!-- az-content-body -->
     </div>

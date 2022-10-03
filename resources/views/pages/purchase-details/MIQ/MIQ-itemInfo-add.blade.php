@@ -46,95 +46,63 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                                 <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                                    <i class="fas fa-address-card"></i> Basic details  
-                                
-                                    @if(!empty($data['inv_purchase_req_master']))
-                                        @if(request()->pr_id)
-                                            ( PR NO : {{$data['inv_purchase_req_master']['pr_no']}} )
-                                        @else
-                                            ( SR NO : {{$data['inv_purchase_req_master']['pr_no']}} )
-                                        @endif
-                                    @endif
-                                
-                        
+                                    <i class="fas fa-address-card"></i> Basic details                        
                                 </label>
                                 <div class="form-devider"></div>
                             </div>
                          </div>
 
                         <div class="row">
-
-
-                            {{-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">PR NO: *</label>
-                                <input type="text" class="form-control" name="f_name" value="" placeholder="Enter PR NO">
-                            </div> --}}
-
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Requestor *</label>
-                            <!-- <input type="text" class="form-control select2"  
-                            value="{{(!empty($data['inv_purchase_req_master']) ? $data['inv_purchase_req_master']['f_name'].' '.$data['inv_purchase_req_master']['l_name']  :  (config('user')['f_name'] ? config('user')['f_name'].' '.config('user')['l_name']  : 'Requestor 1'))}}" 
-                            name="Requestor" placeholder="Requestor"> -->
+                                <label>Material Type *</label>
                                 <select class="form-control select2 requestor" name="Requestor">
-                                    @foreach($data['users'] as $user)
-                                     <option value="{{$user['user_id']}}"
-                                     @if(!empty($data['inv_purchase_req_master']))
-                                       @if($user['user_id'] == $data['inv_purchase_req_master']['requestor_id'])
-                                           selected
-                                       @endif
-                                     @endif
-                                     >{{$user['employee_id']}}-{{$user['f_name']}} {{$user['l_name']}}</option>
-                                    @endforeach
+                                    <option>Select One</option>
+                                    <option>Direct</option>
+                                    <option>Indirect</option>      
                                 </select>
                             </div><!-- form-group -->
-
-
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Department *</label>
+                                <label>Item code *</label>
                                 <select class="form-control select2" name="Department">
-                                    <option value="">--- select one ---</option>
-                                    @foreach($data['Department'] as $item)
-                                     <option value="{{$item['id']}}"
-                                     @if(!empty($data['inv_purchase_req_master']))
-                                       @if($item['id'] == $data['inv_purchase_req_master']['department'])
-                                           selected
-                                       @endif
-                                     @endif
-                                     >{{$item['dept_name']}}</option>
-                                    @endforeach
+                                    <option value="">--- select one ---</option>  
                                 </select>
                             </div><!-- form-group -->
-
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Date *</label>
-                            <input type="text" 
-                                value="{{(!empty($data['inv_purchase_req_master'])) ? date('d-m-Y',strtotime($data['inv_purchase_req_master']['date'])) : date('d-m-Y')}}"
-                                class="form-control datepicker" name="Date" placeholder="Date">
+                                <label>PO/WO Number *</label>
+                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="Item Description">
                             </div><!-- form-group -->
-
-
-                            <!-- <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>PR/SR *</label>
-                                <select class="form-control select2" name="PRSR">
-                                    <option value="">--- select one ---</option>
-                                    <option value="PR"
-                                    @if(!empty($data['inv_purchase_req_master']))
-                                    @if('PR' == $data['inv_purchase_req_master']['PR_SR'])
-                                        selected 
-                                    @endif
-                                  @endif
-                                    >PR</option>
-                                  <option value="SR"
-                                  @if(!empty($data['inv_purchase_req_master']))
-                                  @if('SR' == $data['inv_purchase_req_master']['PR_SR'])
-                                      selected 
-                                  @endif
-                                @endif>SR</option>
-                                </select>
-                            </div> -->
-
-
-
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Item Description *</label>
+                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="Item Description">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Lot Number *</label>
+                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="Lot Number">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Quantity *</label>
+                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="Quantity">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Stk Kpng Unit *</label>
+                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="Stk Kpng Unit">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Supplier Unit Rate *</label>
+                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="Supplier Unit Rate">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Rate in INR *</label>
+                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="Rate in INR">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Expiry Control *</label>
+                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="Expiry Control">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Expiry Date *</label>
+                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="Expiry Date">
+                            </div><!-- form-group -->
                         </div> 
                       
 
@@ -144,11 +112,7 @@
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                 <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
-                                @if(!empty($data['response']['purchase_requisition'][0]))
-                                    Update
-                                @else 
-                                     Save & Next
-                                @endif
+                               Save
                                 
                                 </button>
                             </div>

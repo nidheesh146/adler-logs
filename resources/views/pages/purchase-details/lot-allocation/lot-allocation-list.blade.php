@@ -9,9 +9,9 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Lot Number Allocation</a></span>
+			 <span><a href="">MATERIAL INWARDS TO QUARANTINE(MIQ)</a></span>
 		</div>
-		<h4 class="az-content-title" style="font-size: 20px;">Lot Number Allocation list
+		<h4 class="az-content-title" style="font-size: 20px;">Material Inwards TO Quarantine
 		  	<div class="right-button">
 			  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
 				  <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -258,13 +258,6 @@
                                             @endforeach
                                         </select>  
                                     </div>
-
-
-
-
-
-
-
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Unit *</label>
