@@ -40,42 +40,36 @@ class PurchaseController extends Controller
     }
 
     public function getFinalPurchase(Request $request)
-    {//echo $request->order_type;exit;
-            $condition1 = [];
-            if (!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from && !$request->status) {
-                $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
-                $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
-            }
-            if ($request->order_type=="wo") {
-                $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
-                $condition1[] = ['inv_final_purchase_order_master.type','=', 'WO'];
-            }else{
-                $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
-                $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
-            }
-            if ($request->rq_no) {
-                $condition1[] = ['inv_purchase_req_quotation.rq_no', 'like', '%' . $request->rq_no . '%'];
-            }
-            if ($request->supplier) {
-                $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
-            }
-       
-            if ($request->po_from) {
-                $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->po_from))];
-                $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->po_from))];
-            }
+    {
+        if (!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from && !$request->status) {
+            $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
+        }
+        if ($request->order_type == "wo") {
+            $condition1[] = ['inv_final_purchase_order_master.type','=', "WO"];
+        }else{
+            $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
+        }
+        if ($request->rq_no) {
+            $condition1[] = ['inv_purchase_req_quotation.rq_no', 'like', '%' . $request->rq_no . '%'];
+        }
+        if ($request->supplier) {
+            $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+        }
+   
+        if ($request->po_from) {
+            $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->po_from))];
+            $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->po_from))];
+        }
 
-            if ($request->status) {
-                if ($request->status == "reject") {
-                    $condition1[] = ['inv_final_purchase_order_master.status', '=', 0];
-                }
-                $condition1[] = ['inv_final_purchase_order_master.status', '=', $request->status];
+        if ($request->status) {
+            if ($request->status == "reject") {
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', 0];
             }
-            if ($request->po_no) {
-                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $request->po_no . '%'];
-            }
-
-
+            $condition1[] = ['inv_final_purchase_order_master.status', '=', $request->status];
+        }
+        if ($request->po_no) {
+            $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $request->po_no . '%'];
+        }
         $data['users'] = $this->User->get_all_users([]);
         $data['po_data'] = $this->inv_final_purchase_order_master->get_purchase_master_list($condition1);
        // print_r(json_encode($data['po_data']));exit;
@@ -175,7 +169,7 @@ class PurchaseController extends Controller
         $data['quotation'] =  $this->inv_purchase_req_quotation->get_rq_final_purchase( $condition);
         $condition1[] = ['user.status', '=', 1];
         $data['users'] = $this->User->get_all_users($condition1);
-        return view('pages.purchase-details.final-purchase.final-purchase-add1',compact('data'));
+        return view('pages.purchase-details.final-purchase.final-purchase-add',compact('data'));
     }
 
     public function insertFinalPurchase(Request $request){
