@@ -158,7 +158,7 @@
 								    <div class="dropdown-menu">
                                         <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
                                         @if($po_data->status!=0)
-                                        <a href="{{url('inventory/final-purchase-add/'.$po_data->id)}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                                        <a href="{{url('inventory/final-purchase-edit/'.$po_data->id)}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
                                             <i class="fa fa-check-circle"></i> Change Status
                                         </a>

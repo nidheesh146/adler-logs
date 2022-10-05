@@ -47,8 +47,10 @@ class PurchaseController extends Controller
                 $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
             }
             if ($request->order_type=="wo") {
-                $condition1[] = ['inv_final_purchase_order_master.type','=', "WO"];
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
+                $condition1[] = ['inv_final_purchase_order_master.type','=', 'WO'];
             }else{
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
                 $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
             }
             if ($request->rq_no) {
@@ -76,9 +78,10 @@ class PurchaseController extends Controller
 
         $data['users'] = $this->User->get_all_users([]);
         $data['po_data'] = $this->inv_final_purchase_order_master->get_purchase_master_list($condition1);
+       // print_r(json_encode($data['po_data']));exit;
         return view('pages.purchase-details.final-purchase.final-purchase-list', compact('data'));
     }
-    public function addFinalPurchase(Request $request, $id = null)
+    public function editFinalPurchase(Request $request, $id = null)
     {
         if ($request->isMethod('post')) {
             $validation['date'] = ['required', 'date'];
@@ -134,10 +137,10 @@ class PurchaseController extends Controller
                     $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id' => $id], $data);
                     $request->session()->flash('success', "You have successfully updated a  purchase order master !");
                 }
-                return redirect("inventory/final-purchase-add/" . $id);
+                return redirect("inventory/final-purchase-edit/" . $id);
             }
             if ($validator->errors()->all()) {
-                return redirect("inventory/final-purchase-add/" . $id)->withErrors($validator)->withInput();
+                return redirect("inventory/final-purchase-edit/" . $id)->withErrors($validator)->withInput();
 
             }
 
@@ -150,7 +153,84 @@ class PurchaseController extends Controller
 
         }
 
-        return view('pages.purchase-details.final-purchase.final-purchase-add', compact('data'));
+        return view('pages.purchase-details.final-purchase.final-purchase-edit', compact('data'));
+    }
+
+    public function add1FinalPurchase(Request $request){
+        $condition = [];
+        if($request->order_type){
+            if($request->order_type=='wo')
+            $cond = 'SR';
+            else
+            $cond = 'PR';
+            $condition[] = ['inv_purchase_req_quotation.type', '=', $cond];
+            
+        }
+        if ($request->rq_no) {
+            $condition[] = ['inv_purchase_req_quotation.rq_no', 'like', '%'.$request->rq_no.'%'];
+        }
+        if ($request->supplier) {
+            $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+        }
+        $data['quotation'] =  $this->inv_purchase_req_quotation->get_rq_final_purchase( $condition);
+        $condition1[] = ['user.status', '=', 1];
+        $data['users'] = $this->User->get_all_users($condition1);
+        return view('pages.purchase-details.final-purchase.final-purchase-add1',compact('data'));
+    }
+
+    public function insertFinalPurchase(Request $request){
+        $validation['date'] = ['required','date'];
+        $validation['quotation_id'] = ['required'];
+        $validation['create_by'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all()){
+            //print_r($request->quotation_id);exit;
+            foreach($request->quotation_id as $quotation_id){
+                $groupByItemSupplier = $this->inv_purchase_req_quotation_item_supp_rel->groupByItemSupplier(['inv_purchase_req_quotation_item_supp_rel.selected_item' => 1,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$quotation_id]);
+                    
+                    foreach ($groupByItemSupplier as $ByItemSupplier) {
+                        $type = $this->check_reqisition_type($quotation_id,$ByItemSupplier->supplier_id);
+                        if ($type == "PR") {
+                            $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
+                            $item_type = $this->check_item_type($quotation_id,$ByItemSupplier->supplier_id);
+                           
+                            if ($item_type == "Direct Items") {
+                                $data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
+                            } else {
+                                $data['po_number'] = "POI3" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
+                            }
+                            $data['type'] ="PO";
+                        } else {
+                            $item_type = $this->check_item_type($quotation_id,$ByItemSupplier->supplier_id);
+                            if ($item_type == "Direct Items") {
+                            $data['po_number'] = "WOI2-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                            $data['type'] ="WO";
+                            }
+                            else{
+                                $data['po_number'] = "WOI3-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                            }
+                        }
+                        $data['created_at'] = date('Y-m-d H:i:s');
+                        $data['updated_at'] = date('Y-m-d H:i:s');
+                        $data['rq_master_id'] = $quotation_id;
+                        $data['status'] = 4;
+                        $data['supplier_id'] = $ByItemSupplier->supplier_id;
+                        $data['po_date'] = date('Y-m-d', strtotime($request->date));
+                        $data['created_by'] = $request->create_by;
+                
+                        $inv_supplier_terms = DB::table('inv_supplier')->select('*')->where('id', $data['supplier_id'])->first();
+                        $POMaster = $this->inv_final_purchase_order_master->insert_data($data, $inv_supplier_terms->terms_and_conditions);
+
+  
+                    }
+            }
+            $request->session()->flash('success', "You have successfully added a  purchase order master !");
+            return redirect('inventory/final-purchase?order_type='.$request->order_type)->withErrors($validator)->withInput();
+        }   
+        if($validator->errors()->all()){
+            return redirect('inventory/final-purchase-add?order_type='.$request->order_type)->withErrors($validator)->withInput();
+        }
+
     }
 
     public function check_item_type($rq_master_id, $supplier_id){
@@ -194,6 +274,26 @@ class PurchaseController extends Controller
        
         return view('pages.purchase-details.final-purchase.final-purchase-item-edit', compact('data'));
 
+    }
+
+    function get_supplier($quotation_id){
+        //return "jj";
+        $suppliers ="";
+        $supplier_id ="";
+        $suppliers_list = inv_purchase_req_quotation_item_supp_rel::select('inv_supplier.vendor_name','inv_supplier.vendor_id')
+                        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_item_supp_rel.supplier_id')
+                        ->where('inv_purchase_req_quotation_item_supp_rel.quotation_id','=', $quotation_id)
+                        ->where('inv_purchase_req_quotation_item_supp_rel.selected_item','=',1)
+                        ->get();
+        foreach($suppliers_list as $supplier){
+            $suppliers .="<span>".$supplier->vendor_id."</span> - <span>".$supplier->vendor_name."</span>" ;
+            if(count($suppliers_list)>1)
+            {
+                $suppliers .= " <br> ";
+            }
+        }
+        return ["supplier" => $suppliers];
+        
     }
 
     public function changeStatus(Request $request)

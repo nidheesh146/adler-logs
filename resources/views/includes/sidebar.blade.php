@@ -3,7 +3,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
-       //echo $Action;
+     //  echo $Action;
 @endphp
   <div class="az-sidebar">
     <div class="az-sidebar-header">
@@ -34,7 +34,7 @@
         'SupplierQuotation.viewSupplierQuotationItems', 'SupplierQuotation.getSupplierQuotationEditItem',
         'SupplierQuotation.comparisonOfQuotation','SupplierQuotation.getSupplierQuotation','Purchase.getFinalPurchase',
         'Purchase.addFinalPurchase','Purchase.Edit_PO_item','Quotation.getQuotation','Supplier.list_supplier','Purchase.purchaseOderCancellation',
-        'Supplier.add_supplier','Purchase.viewFinalPurchase'])) {{'active show'}} @endif ">
+        'Supplier.add_supplier','Purchase.viewFinalPurchase','Purchase.add1FinalPurchase','Purchase.editFinalPurchase'])) {{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-shopping-cart" style="font-size: 17px;"></i>Purchase Details</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
@@ -45,7 +45,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation'])){{'active'}} @endif "><a href="{{url('inventory/quotation')}}" class="nav-sub-link">Request for Quotation</a></li>
             <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.getSupplierQuotation', 'SupplierQuotation.viewSupplierQuotationItems', 'SupplierQuotation.getSupplierQuotationEditItem','SupplierQuotation.comparisonOfQuotation'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Supplier Quotation</a></li>
             {{-- <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.comparisonOfQuotation'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Comparison of Quotation</a></li> --}}
-            <li class="nav-sub-item  @if(in_array($Action,['Purchase.getFinalPurchase','Purchase.addFinalPurchase','Purchase.Edit_PO_item','Purchase.viewFinalPurchase'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase')}}" class="nav-sub-link">Purchase/Work Order</a></li>
+            <li class="nav-sub-item  @if(in_array($Action,['Purchase.getFinalPurchase','Purchase.addFinalPurchase','Purchase.Edit_PO_item','Purchase.viewFinalPurchase','Purchase.add1FinalPurchase','Purchase.editFinalPurchase'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase')}}" class="nav-sub-link">Purchase/Work Order</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.purchaseOderCancellation','Purchase.viewFinalPurchase'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase/cancellation')}}" class="nav-sub-link">Order Cancellation</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Supplier.list_supplier','Supplier.add_supplier'])){{'active'}} @endif "><a href="{{url('inventory/suppliers-list')}}" class="nav-sub-link">Suppliers</a></li>
           </ul>

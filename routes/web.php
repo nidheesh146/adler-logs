@@ -83,8 +83,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/select-quotation-items', 'SupplierQuotationController@selectQuotationItems'); 
     //final purchase
     Route::get('inventory/final-purchase', 'PurchaseController@getFinalPurchase');
-    Route::get('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
-    Route::post('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
+    // Route::get('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
+    // Route::post('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
+
+    Route::get('inventory/final-purchase-add', 'PurchaseController@add1FinalPurchase');
+    Route::post('inventory/final-purchase-insert', 'PurchaseController@insertFinalPurchase');
+    Route::get('inventory/final-purchase-edit/{id?}', 'PurchaseController@editFinalPurchase');
+    Route::post('inventory/final-purchase-edit/{id?}', 'PurchaseController@editFinalPurchase');
+
+
     Route::get('inventory/final-purchase-delete/{id?}', 'PurchaseController@deleteFinalPurchase');
     Route::get('inventory/find-rq-number', 'PurchaseController@find_rq_number');
     Route::get('inventory/final-purchase-item-edit/{id}', 'PurchaseController@Edit_PO_item');

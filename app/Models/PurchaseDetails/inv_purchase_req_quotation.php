@@ -86,6 +86,20 @@ class inv_purchase_req_quotation extends Model
     //     ->get();
 
     }
+    function get_rq_final_purchase($condition1){
+        $query =  $this->select('inv_purchase_req_quotation.*')
+                    ->leftjoin('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+                    ->distinct('inv_purchase_req_quotation.quotation_id')
+                    ->orderby('inv_purchase_req_quotation.quotation_id','desc')
+                   //  ->join('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
+                     ->whereNotIn('inv_purchase_req_quotation.quotation_id',function($query) {
+                         $query->select('inv_final_purchase_order_master.rq_master_id')->from('inv_final_purchase_order_master');
+                       })
+                     ->where($condition1)
+                     ->paginate(15);
+                     return $query;
+    }
 
     function get_rq_nos()
     {
