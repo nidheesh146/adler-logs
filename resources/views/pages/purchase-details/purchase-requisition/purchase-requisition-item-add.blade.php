@@ -321,19 +321,27 @@
 
             function  netvalue() {
                 let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
                 let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
-                let gst = $('.GST').val() ? $('.GST').val() : 0;
-                if(Rate)
-                {
-                    let total = ( Rate - ((Rate / 100) * Discount)) ;
-                    let netvalue = (+total + ((total / 100) * gst));
-                    $('#Netvalue').val(netvalue.toFixed(2));
-                }
-                else
-                {
-                   $('#Discount').val('');
-                   $('.GST').val('');
-                }
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+                $('#Netvalue').val(netvalue.toFixed(2));
+                
+                // let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                // let gst = $('.GST').val() ? $('.GST').val() : 0;
+                // if(Rate)
+                // {
+                //     let total = ( Rate - ((Rate / 100) * Discount)) ;
+                //     let netvalue = (+total + ((total / 100) * gst));
+                //     $('#Netvalue').val(netvalue.toFixed(2));
+                // }
+                // else
+                // {
+                //    $('#Discount').val('');
+                //    $('.GST').val('');
+                // }
+
             }
 
             function basicValue() {
@@ -487,6 +495,19 @@
             });
             $('#IGST').on('change', function() {
                 let igst = $(this).val();
+                let igst_percent = $(this).find('option:selected').text();
+                var igst_val = parseInt(igst_percent.split('%', 1)[0]);
+               
+                let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+
+                new_net_val = (netvalue*igst_val/100)+netvalue;
+                $('#Netvalue').val(new_net_val.toFixed(2));
+
                 $('.append-option').remove();
                 $('.edit-zero').remove();
                 $('#gst-id').val('');
@@ -506,7 +527,21 @@
                 
             });
             $('#SGST').on('change', function() {
+                $('#Netvalue').val('');
                 let sgst = $(this).val();
+                let sgst_percent = $(this).find('option:selected').text();
+                var sgst_val = parseInt(sgst_percent.split('%', 1)[0]);
+               
+                let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+                
+                new_net_val = (netvalue*sgst_val/100)+(netvalue*sgst_val/100)+netvalue;
+                $('#Netvalue').val(new_net_val.toFixed(2));
+
                 $('#gst-id').val('');
                 $('.append-option').remove();
                 $('.edit-zero').remove();
@@ -529,7 +564,21 @@
                 
             });
             $('#CGST').on('change', function() {
+                $('#Netvalue').val('');
                 let cgst = $(this).val();
+                let cgst_percent = $(this).find('option:selected').text();
+                var cgst_val = parseInt(cgst_percent.split('%', 1)[0]);
+               
+                let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+                
+                new_net_val = (netvalue*cgst_val/100)+(netvalue*cgst_val/100)+netvalue;
+                $('#Netvalue').val(new_net_val.toFixed(2));
+
                 $('.append-option').remove();
                 $('.edit-zero').remove();
                 $('#gst-id').val('');
