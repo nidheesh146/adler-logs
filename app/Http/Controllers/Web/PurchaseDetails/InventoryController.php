@@ -130,13 +130,15 @@ class InventoryController extends Controller
                 $datas['updated_at'] =  date('Y-m-d h:i:s');
                 if($request->pr_id) 
                 {
+                    $request->session()->flash('success',  "You have successfully updated a  purchase requisition master !");
                     $this->inv_purchase_req_master->updatedata(['master_id'=>$request->pr_id],$datas);
-                    return redirect('inventory/edit-service-reqisition?pr_id='.$request->pr_id);
+                    return redirect('inventory/get-purchase-reqisition?prsr=pr');
                 }
                 else 
                 {
+                    $request->session()->flash('success',  "You have successfully updated a  service requisition master !");
                     $this->inv_purchase_req_master->updatedata(['master_id'=>$request->sr_id],$datas);
-                    return redirect('inventory/edit-service-reqisition?sr_id='.$request->sr_id);
+                    return redirect('inventory/get-purchase-reqisition?prsr=sr');
                 }
             }
             if ($validator->errors()->all()) {
@@ -165,7 +167,7 @@ class InventoryController extends Controller
         }
         
         
-       return redirect('inventory/get-purchase-reqisition');
+       return redirect('inventory/get-purchase-reqisition?prsr=pr');
     }
     // service Reqisition Master delete
     public function delete_service_reqisition(Request $request)
@@ -177,7 +179,7 @@ class InventoryController extends Controller
         }
         
         
-       return redirect('inventory/get-purchase-reqisition');
+       return redirect('inventory/get-purchase-reqisition?prsr=sr');
     }
 
     // Purchase Reqisition item get list

@@ -228,10 +228,11 @@
                                     <option value="0">Reject</option>
                                 </select>
                             </div>
-							<div class="form-group ">
+							<div class="form-group qty-div">
                                 <label for="inputAddress">Approved Qty *</label>
                                 <input type="text" name="approved_qty"  class="form-control approved_qty" id="approved_qty" placeholder="Approved Qty">
                             </div> 
+
                             <div class="form-group">
                                 <label for="inputAddress">Approved By *</label><br/>
                                 <style>
@@ -257,6 +258,7 @@
                                     @endforeach
                                 </select>
                             </div> 
+                            <input type="hidden" value="" id="prsr"  name="prsr" class="prsr">
                             <div class="form-group">
                                 <label for="inputAddress">Remarks </label>
                                 <textarea style="min-height: 100px;" name="reason" type="text" class="form-control" id="reason" placeholder="Remarks"></textarea>
@@ -348,6 +350,7 @@ $(document).ready(function() {
             event.preventDefault();
 			$(".item-codes").text('') ;
             $('.approved_qty').val('');
+            $('.prsr').val('');
             var orderqty = $(this).attr('orderqty');
             var type = $(this).attr('type');
             $('#type').html(type);
@@ -355,6 +358,15 @@ $(document).ready(function() {
 			$('#purchaseRequisitionItemId').val(purchaseRequisitionItemId);
 			//$(".item-codes").text('( '+ $(this).attr('rel') + ')');
             $('.approved_qty').val(orderqty);
+            if(type=="Service"){
+                let prsr ='sr';
+                $('.prsr').val(prsr);
+                // $('.qty-div').append('<input type="hidden" value="sr" id="prsr"  name="prsr">');
+            }else {
+                let prsr ='pr';
+                $('.prsr').val(prsr);
+                // $('.qty-div').append('<input type="hidden" value="pr" id="prsr"  name="prsr">');
+            }
         });
         
     });

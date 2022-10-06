@@ -314,7 +314,11 @@ class PurchaseController extends Controller
                             $status="Cancelled";
 
                             $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$request->po_id],$data);
-                            $request->session()->flash('success', "You have successfully ".$status." a  Purchase/Work Order ");
+                            if($request->order_type=='wo')
+                            $request->session()->flash('success', "You have successfully ".$status." a  Work Order ");
+                            else
+                            $request->session()->flash('success', "You have successfully ".$status." a  Purchase Order ");
+
                 if(isset($request->poc))
                 {
                     if($request->order_type)
@@ -348,8 +352,14 @@ class PurchaseController extends Controller
     {
         if ($id) {
             $this->inv_final_purchase_order_master->deleteData(['id' => $id]);
-            $request->session()->flash('success', "You have successfully deleted a final purchase order master !");
+            if($request->order_type=='wo')
+            $request->session()->flash('success', "You have successfully deleted a  work order master !");
+            else
+            $request->session()->flash('success', "You have successfully deleted a  purchase order master !");
         }
+        if($request->order_type)
+        return redirect('inventory/final-purchase?order_type='.$request->order_type);
+        else
         return redirect('inventory/final-purchase');
     }
 

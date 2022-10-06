@@ -38,7 +38,7 @@
                     <a class="nav-link active "  href=""  >  Purchase Requisition Details </a>
                      <a class="nav-link" href=""> </a>
 					 @else
-					 <a class="nav-link" href="{{url('inventory/edit-purchase-reqisition?sr_id='.request()->sr_id)}}">Purchase Requestor Details </a>
+					 <a class="nav-link" href="{{url('inventory/edit-purchase-reqisition?sr_id='.request()->sr_id)}}">Service Requestor Details </a>
                     <a class="nav-link active "  href=""  >  Service Requisition Details </a>
                      <a class="nav-link" href=""> </a>
 					 @endif

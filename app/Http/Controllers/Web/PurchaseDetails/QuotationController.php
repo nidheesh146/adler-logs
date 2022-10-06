@@ -62,11 +62,19 @@ class QuotationController extends Controller
                     ];
             $this->inv_purchase_req_quotation->insert_data($data,$request);
             $request->session()->flash('success', "You have successfully created a  Request For Quotation !");
+            if($request->prsr)
+            return redirect('inventory/quotation?prsr='.$request->prsr);
+            else
             return redirect('inventory/quotation');
 
         }
         if($validator->errors()->all()){
+            if($request->prsr)
+            return redirect('inventory/quotation?prsr='.$request->prsr)->withErrors($validator)->withInput();
+            else
             return redirect('inventory/quotation')->withErrors($validator)->withInput();
+
+            //return redirect('inventory/quotation');
         }
            
     }
