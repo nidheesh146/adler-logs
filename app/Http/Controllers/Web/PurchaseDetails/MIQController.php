@@ -79,7 +79,7 @@ class MIQController extends Controller
                         $request->session()->flash('success', "You have successfully created a MIQ !");
                     else
                         $request->session()->flash('error', "MIQ creation is failed. Try again... !");
-                    return redirect('inventory/MIQ-add');
+                    return redirect('inventory/MIQ-add/'.$add_id);
                 }
                 else
                 {
@@ -138,14 +138,14 @@ class MIQController extends Controller
                 $data['conversion_rate']= $request->conversion_rate;
                 $data['value_inr']= $request->value_inr;
                 $data['expiry_date']=date('Y-m-d', strtotime($request->expiry_date));
-                $data['expiry_control'] =date('Y-m-d H:i:s');
+                $data['expiry_control'] =$request->expiry_control;
                 $update = $this->inv_miq_item->update_data(['inv_miq_item.id'=>$request->id],$data);
-                if($update)
+                $miq_id = inv_miq_rel::where('item','=',$request->id)->pluck('master')->first();
                 if($update)
                     $request->session()->flash('success', "You have successfully updated a MIQ Item Info!");
                 else
                     $request->session()->flash('error', "MIQ Item info updation is failed. Try again... !");
-                return redirect('inventory/MIQ/'.$request->id.'/item');
+                return redirect('inventory/MIQ-add/'.$miq_id);
             }
             if($validator->errors()->all()){
                 return redirect('inventory/MIQ/'.$request->id.'/item')->withErrors($validator)->withInput();

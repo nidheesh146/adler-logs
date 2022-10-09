@@ -107,7 +107,7 @@
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Expiry Date *</label>
-                                <input type="text" value="@if($data) {{date('d-m-Y',strtotime($data['expiry_date']))}} @endif" class="form-control datepicker" name="expiry_date" placeholder="Expiry Date">
+                                <input type="text" value=" {{(!empty($data) &&($data['expiry_date']!=NULL) ) ? date('d-m-Y',strtotime($data['expiry_date'])) : date('d-m-Y') }}" class="form-control datepicker" name="expiry_date" placeholder="Expiry Date">
                             </div><!-- form-group -->
                         </div> 
                       
