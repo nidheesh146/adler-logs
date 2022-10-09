@@ -125,7 +125,7 @@ class MIQController extends Controller
     public function MIQAddItemInfo(Request $request, $id)
     {
         if ($request->isMethod('post')) {
-            $validation['lot_number'] = ['required'];
+            //$validation['lot_number'] = ['required'];
             $validation['currency'] = ['required'];
             $validation['conversion_rate'] = ['required'];
             $validation['value_inr'] = ['required'];
