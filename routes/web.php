@@ -81,11 +81,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/comparison-quotation/{rq_no}', 'SupplierQuotationController@comparisonOfQuotation');
     Route::post('inventory/select-quotation', 'SupplierQuotationController@selectQuotation');
     Route::post('inventory/select-quotation-items', 'SupplierQuotationController@selectQuotationItems'); 
+    
     //final purchase
-    Route::get('inventory/final-purchase', 'PurchaseController@getFinalPurchase');
     // Route::get('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
     // Route::post('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
-
+    Route::get('inventory/final-purchase', 'PurchaseController@getFinalPurchase');
     Route::get('inventory/final-purchase-add', 'PurchaseController@add1FinalPurchase');
     Route::post('inventory/final-purchase-insert', 'PurchaseController@insertFinalPurchase');
     Route::get('inventory/final-purchase-edit/{id?}', 'PurchaseController@editFinalPurchase');
@@ -122,8 +122,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
 
    // MIQ
     Route::get('inventory/MIQ', 'MIQController@MIQlist');
-    Route::get('inventory/MIQ-add', 'MIQController@MIQAdd');
+    Route::get('inventory/MIQ-add/{id?}', 'MIQController@MIQAdd');
+    Route::post('inventory/MIQ-add/{id?}', 'MIQController@MIQAdd');
     Route::get('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
+    Route::post('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
+    Route::get('inventory/find-invoice-number','MIQController@findInvoiceNumber');
 
     // suppliers
     // Route::get('inventory/terms-and-conditions-list','TermsconditionsController@list_terms_conditions');

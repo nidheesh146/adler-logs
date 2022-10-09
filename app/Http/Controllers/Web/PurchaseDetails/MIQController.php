@@ -4,21 +4,172 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Validator;
+use DB;
+use App\Models\User;
+use App\Models\PurchaseDetails\inv_supplier_invoice_master;
+use App\Models\PurchaseDetails\inv_miq;
+use App\Models\PurchaseDetails\inv_miq_item;
+use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
+use App\Models\PurchaseDetails\inv_supplier_invoice_item;
+use App\Models\currency_exchange_rate;
 
 class MIQController extends Controller
 {
+    public function __construct()
+    {
+        $this->User = new User;
+        $this->inv_miq = new inv_miq;
+        $this->inv_miq_item = new inv_miq_item;
+        $this->inv_supplier_invoice_rel = new inv_supplier_invoice_rel;
+        $this->inv_supplier_invoice_master = new inv_supplier_invoice_master;
+        $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
+        $this->currency_exchange_rate = new currency_exchange_rate;
+    }
     public function MIQlist()
     {
-        return view('pages.purchase-details.MIQ.MIQ-list');
+        $data['miq']= $this->inv_miq->get_all_data($condition=null);
+        return view('pages.inventory.MIQ.MIQ-list',compact('data'));
     }
 
-    public function MIQAdd()
+    public function MIQAdd(Request $request,$id = null)
     {
-        return view('pages.purchase-details.MIQ.MIQ-add');
+        if ($request->isMethod('post')) {
+            $validation['miq_date'] = ['required','date'];
+            $validation['invoice_number'] = ['required'];
+            $validation['created_by'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all()){
+                if(!$request->id)
+                {
+                    $item_type = $this->item_type($request->invoice_number);
+                    if($item_type=="Direct Items"){
+                        $Data['miq_number'] = "MIQ2-".$this->po_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ2%')->count(),1); 
+                    }
+                    if($item_type=="Indirect Items"){
+                        $Data['miq_number'] = "MIQ3-" . $this->po_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ3%')->count(),1); 
+                    }
+                        
+                        $Data['miq_date'] = date('Y-m-d', strtotime($request->miq_date));
+                        $Data['invoice_master_id'] = $request->invoice_number;
+                        $Data['created_by']= $request->created_by;
+                        $Data['status']=1;
+                        $Data['created_at'] =date('Y-m-d H:i:s');
+                        $Data['updated_at'] =date('Y-m-d H:i:s');
+                    
+                    $add_id = $this->inv_miq->insert_data($Data);
+                    $invoice_items = inv_supplier_invoice_rel::select('item')->where('master','=',$request->invoice_number)->get();
+                    foreach($invoice_items as $item){
+                        $dat=[
+                            'invoice_item_id'=>$item->item,
+                            'status'=>1,
+                            'created_at'=>date('Y-m-d H:i:s'),
+                            'updated_at'=>date('Y-m-d H:i:s')
+
+                        ];
+                        $item_id = $this->inv_miq_item->insert_data($dat);
+                        $dat2 =[
+                            'master'=>$add_id,
+                            'item'=>$item_id,
+                        ];
+                        $rel =DB::table('inv_miq_item_rel')->insert($dat2);
+                    }
+                    
+                    if($add_id && $item_id && $rel)
+                        $request->session()->flash('success', "You have successfully created a MIQ !");
+                    else
+                        $request->session()->flash('error', "MIQ creation is failed. Try again... !");
+                    return redirect('inventory/MIQ-add');
+                }
+                else
+                {
+                        $Data['miq_date'] = date('Y-m-d', strtotime($request->miq_date));
+                        $Data['invoice_master_id'] = $request->invoice_number;
+                        $Data['created_by']= $request->created_by;
+                        $Data['updated_at'] =date('Y-m-d H:i:s');
+                    
+                    $update = $this->inv_miq->update_data(['inv_miq.id'=>$request->id],$Data);
+                    if($update)
+                        $request->session()->flash('success', "You have successfully updated a MIQ !");
+                    else
+                        $request->session()->flash('error', "MIQ updation is failed. Try again... !");
+                    return redirect('inventory/MIQ-add/'.$request->id);
+
+                }
+                
+            }
+            if($validator->errors()->all()){
+                if($request->id)
+                return redirect('inventory/MIQ-add/'.$request->id)->withErrors($validator)->withInput();
+                else
+                return redirect('inventory/MIQ-add')->withErrors($validator)->withInput();
+            }
+        }
+        $condition1[] = ['user.status', '=', 1];
+        $data['users'] = $this->User->get_all_users($condition1);
+        if($request->id){
+            $data['miq']= $this->inv_miq->get_data(['inv_miq.id'=>$request->id]);
+            $data['miq_items'] = $this->inv_miq_item->get_items(['inv_miq_item_rel.master'=>$request->id]);
+        }
+        return view('pages.inventory.MIQ.MIQ-add',compact('data'));
     }
 
-    public function MIQAddItemInfo($id)
+    function item_type($invoice_number){
+        $item_type = inv_supplier_invoice_rel::leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_rel.item')
+                            ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.requisition_item_id')
+                            ->leftJoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                            ->where('master','=', $invoice_number)->pluck('inv_item_type.type_name')->first();
+        return $item_type;
+    }
+
+    public function MIQAddItemInfo(Request $request, $id)
     {
-        return view('pages.purchase-details.MIQ.MIQ-itemInfo-add');
+        if ($request->isMethod('post')) {
+            $validation['lot_number'] = ['required'];
+            $validation['currency'] = ['required'];
+            $validation['conversion_rate'] = ['required'];
+            $validation['value_inr'] = ['required'];
+            $validation['expiry_control'] = ['required'];
+            $validation['expiry_date'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all()){
+                $data['lot_number'] =$request->lot_number;
+                $data['currency'] = $request->currency;
+                $data['conversion_rate']= $request->conversion_rate;
+                $data['value_inr']= $request->value_inr;
+                $data['expiry_date']=date('Y-m-d', strtotime($request->expiry_date));
+                $data['expiry_control'] =date('Y-m-d H:i:s');
+                $update = $this->inv_miq_item->update_data(['inv_miq_item.id'=>$request->id],$data);
+                if($update)
+                if($update)
+                    $request->session()->flash('success', "You have successfully updated a MIQ Item Info!");
+                else
+                    $request->session()->flash('error', "MIQ Item info updation is failed. Try again... !");
+                return redirect('inventory/MIQ/'.$request->id.'/item');
+            }
+            if($validator->errors()->all()){
+                return redirect('inventory/MIQ/'.$request->id.'/item')->withErrors($validator)->withInput();
+            }
+        }
+        $data = $this->inv_miq_item->get_item(['inv_miq_item.id'=>$id]);
+        //print_r(json_encode($data));
+        $currency = $this->currency_exchange_rate->get_currency([]);
+        return view('pages.inventory.MIQ.MIQ-itemInfo-add',compact('data','currency'));
+    }
+
+    public function findInvoiceNumber(Request $request){
+        if ($request->q) {
+            $condition[] = ['inv_supplier_invoice_master.invoice_number', 'like', '%' . strtoupper($request->q) . '%'];
+           
+            $data = $this->inv_supplier_invoice_master->find_invoice_num($condition);
+            if (!empty($data[0])) {
+                return response()->json($data, 200);
+            } else {
+                return response()->json(['message' => 'item code is not valid'], 500);
+            }
+        } else {
+            echo $this->invoice_details($request->id, null);
+            exit;
+        }
     }
 }
