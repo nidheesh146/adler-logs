@@ -26,8 +26,29 @@ class MIQController extends Controller
         $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
         $this->currency_exchange_rate = new currency_exchange_rate;
     }
-    public function MIQlist()
-    {
+    public function MIQlist(Request $request)
+    {   
+        $condition = [];
+        if($request)
+        {
+            if ($request->miq_no) {
+                $condition[] = ['inv_miq.miq_number','like', '%' . $request->miq_no . '%'];
+            }
+            if ($request->invoice_no) {
+                $condition[] = ['inv_supplier_invoice_master.invoice_number','like', '%' . $request->invoice_no . '%'];
+            }
+            if($request->supplier)
+            {
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+            
+            if ($request->from) {
+                $condition[] = ['inv_miq.miq_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition[] = ['inv_miq.miq_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
+            $data['miq']= $this->inv_miq->get_all_data($condition);
+        }
+        else
         $data['miq']= $this->inv_miq->get_all_data($condition=null);
         return view('pages.inventory.MIQ.MIQ-list',compact('data'));
     }

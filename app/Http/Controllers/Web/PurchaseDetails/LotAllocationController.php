@@ -73,8 +73,8 @@ class LotAllocationController extends Controller
             $validation['qty_rejected'] = ['required'];
             $validation['test_report_no'] = ['required'];
             $validation['test_report_date'] = ['required'];
-            $validation['currency'] = ['required'];
-            $validation['conversion_rate'] = ['required'];
+            // $validation['currency'] = ['required'];
+            // $validation['conversion_rate'] = ['required'];
             $validation['prepared_by'] = ['required'];
 
             $validator = Validator::make($request->all(), $validation);
@@ -107,9 +107,9 @@ class LotAllocationController extends Controller
               $data['qty_rej_reason'] = $request->qty_rej_reason;
               $data['rejected_user'] = $request->rejected_user;
               $data['invoice_rate'] = $request->invoice_rate;
-              $data['currency'] = $request->currency;
-              $data['conversion_rate'] = $request->conversion_rate;
-              $data['value_inr'] = $request->value_inr;
+            //   $data['currency'] = $request->currency;
+            //   $data['conversion_rate'] = $request->conversion_rate;
+            //   $data['value_inr'] = $request->value_inr;
 
                 if($request->lot_id){
                     $lot =$this->inv_lot_allocation->updatedata(['inv_lot_allocation.id'=>$request->lot_id],$data);

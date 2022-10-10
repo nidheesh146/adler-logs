@@ -211,18 +211,18 @@
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Supplier Invoice Number </label>
+                                        <label>Invoice Number </label>
                                         <input type="text"  value="" class="form-control" name="invoice_no" id="invoice_no" readonly placeholder="Supplier Invoice Number">
                                         <input type="hidden"  value="" class="form-control" name="invoice_id" id="invoice_id">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Supplier Invoice Date </label>
+                                        <label> Invoice Date </label>
                                         <input type="date"  value="" class="form-control" name="invoice_date" id="invoice_date" readonly placeholder="Invoice Date">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Supplier Invoice Quantity </label>
+                                        <label>Invoice Quantity </label>
                                         <input type="text"  value="" class="form-control" name="invoice_qty" id="invoice_qty" readonly placeholder="Invoice Qty">
                                     </div>
     
@@ -282,10 +282,10 @@
                                     </div>
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Supplier Invoice rate  <span id="inv_rate"></span> </label>
+                                        <label>Invoice rate  <span id="inv_rate"></span> </label>
                                         <input type="text" readonly class="form-control" value="" name="invoice_rate" id="invoice_rate" placeholder="Invoice rate">
                                     </div>
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                    <!-- <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Currency *</label>
                                         <select class="form-control" name="currency" id="currency">
                                             @foreach($data["currency"] as $items)
@@ -300,7 +300,7 @@
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Value in INR </label>
                                         <input type="text" readonly class="form-control" value="" name="value_inr" id="value_inr" placeholder="Value in INR">
-                                    </div>
+                                    </div> -->
   
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label> Test Report No *</label>

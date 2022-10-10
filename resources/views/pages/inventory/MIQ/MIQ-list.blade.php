@@ -49,7 +49,7 @@
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label>MIQ No:</label>
-                                                <input type="text" value="{{request()->get('lot_no')}}" name="lot_no" id="lot_no" class="form-control" placeholder="LOT NO">
+                                                <input type="text" value="{{request()->get('miq_no')}}" name="miq_no" id="miq_no" class="form-control" placeholder="MIQ NO">
                                             
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
@@ -58,13 +58,13 @@
                                                 
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                <label for="exampleInputEmail1" style="font-size: 12px;">Prepared By</label>
-                                                <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier1" class="form-control" placeholder="SUPPLIER">
+                                                <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
+                                                <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                 
                                             </div>
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                <label for="exampleInputEmail1" style="font-size: 12px;">MIQ Date</label>
-                                                <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier1" class="form-control" placeholder="SUPPLIER">
+                                                <label for="exampleInputEmail1" style="font-size: 12px;">Month</label>
+                                                <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
                                                 
                                             </div>
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
@@ -141,6 +141,26 @@
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
 <script src="<?= url('') ?>/js/jquery.validate.js"></script>
+<script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
-
+<script>
+    $(".datepicker").datepicker({
+        format: "mm-yyyy",
+        viewMode: "months",
+        minViewMode: "months",
+        // startDate: date,
+        autoclose:true
+    });
+    $('.search-btn').on( "click", function(e)  {
+		var miq_no = $('#miq_no').val();
+		var invoice_no = $('#invoice_no').val();
+		var from = $('#from').val();
+        var supplier = $('#supplier').val();
+        var prepared = $('#prepared').val();
+		if(!miq_no  & !invoice_no & !from & !supplier & !prepared)
+		{
+			e.preventDefault();
+		}
+	});
+</script>
 @stop
