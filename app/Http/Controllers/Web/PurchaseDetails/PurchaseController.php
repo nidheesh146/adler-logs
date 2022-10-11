@@ -859,7 +859,7 @@ class PurchaseController extends Controller
         return view('pages.purchase-details.supplier-invoice.supplier-invoice-list-edit', compact('data', 'master', 'item'));
     }
 
-    public function generateFinalPurchasePdf($id)
+    public function generateFinalPurchasePdf($id, $order=null, Request $request)
     {
 
         $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_master.id' => $id]);
@@ -870,6 +870,7 @@ class PurchaseController extends Controller
             ->join('po_supplier_terms_conditions', 'po_supplier_terms_conditions.id', '=', 'po_fpo_master_tc_rel.terms_id')
             ->where('fpo_id', $id)
             ->first();
+        $data['type'] = $request->order;
 
         $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);
         $pdf->set_paper('A4', 'landscape');

@@ -156,6 +156,9 @@
                                             <i class="fa fa-window-close"></i> Cancel
                                         </a>
                                     @endif
+                                    @if($po_data->status==0)
+                                    <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id.'?order=cancel')}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
+                                    @endif
                                     </td>
                                 </tr>
                                 

@@ -2,7 +2,11 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    @if($type =='cancel')
+    <title> @if(str_starts_with($final_purchase['po_number'] , 'PO') )Purchase Order @else Work Order @endif Cancellation _{{$final_purchase['vendor_name']}}_{{$final_purchase['po_number']}}</title>
+    @else 
     <title>Final @if(str_starts_with($final_purchase['po_number'] , 'PO') )Purchase Order @else Work Order @endif _{{$final_purchase['vendor_name']}}_{{$final_purchase['po_number']}}</title>
+    @endif
 </head>
 <body>
 @inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\PurchaseController')
@@ -23,7 +27,10 @@
            color:#1434A4;
         }
         .main-head{
-            margin-top:50px;
+            margin-top:10px;
+            font-size:24px;
+            font-weight:bold;
+            font-style:Italic;
         }
         .col21{
             margin-top:-25px;
@@ -127,10 +134,18 @@
         <div class="col2" style="text-align:center;">
             <div class="attn">Kind Attn: {{$final_purchase['contact_person']}}</div>
             <div class="main-head">
-                @if(str_starts_with($final_purchase['po_number'] , 'PO') )
-                <h6>PURCHASE ORDER</h6>
+                @if($type=='cancel')
+                    @if(str_starts_with($final_purchase['po_number'] , 'PO') )
+                    Purchase Order Cancellation
+                    @else
+                    Work Order
+                    @endif
                 @else
-                <h6>WORK ORDER</h6>
+                @if(str_starts_with($final_purchase['po_number'] , 'PO') )
+                    Purchase Order 
+                    @else
+                    Work Order
+                    @endif
                 @endif
             </div>
         </div>
@@ -187,7 +202,9 @@
     </style>
     <div class="row3">
         <div class="intro">
-            We are pleased to place an order for the following items at the Terms and Conditions given herewith. Please sign a copy of the same and return it to us as an acceptance. 
+            @if($type!='cancel')
+                We are pleased to place an order for the following items at the Terms and Conditions given herewith. Please sign a copy of the same and return it to us as an acceptance. 
+            @endif
         </div>
         <table border="1">
             <tr>
@@ -281,7 +298,11 @@
             </div>
             <div class="supplier-accept" style="height:50px;">
                 <b>(Supplier Signature & Date)</b><br/>
+                @if($type=='cancel')
+                <span>I/We, hereby accept this order cancellation.</span>
+                @else
                 <span>I/We, hereby accept this order with the term mentioned herein.</span>
+                @endif
             </div>
         </div>
         <div class="col43">
@@ -339,10 +360,14 @@
     </div>
     <div class="row5">
         <div class="col51">
-            @if(str_starts_with($final_purchase['po_number'] , 'PO') )
-            Document Format - PUR/F-04-00
+            @if($type=='cancel')
+                Document Format - PUR/F-00-00
             @else
-            Document Format - PUR/F-20-00
+                @if(str_starts_with($final_purchase['po_number'] , 'PO') )
+                Document Format - PUR/F-04-00
+                @else
+                Document Format - PUR/F-20-00
+                @endif
             @endif
         </div>
         <div class="col52">

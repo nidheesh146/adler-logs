@@ -48,7 +48,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.getFinalPurchase','Purchase.addFinalPurchase','Purchase.Edit_PO_item','Purchase.viewFinalPurchase','Purchase.add1FinalPurchase','Purchase.editFinalPurchase'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase')}}" class="nav-sub-link">Purchase/Work Order</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.purchaseOderApproval','Purchase.viewFinalPurchase'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase/approval')}}" class="nav-sub-link">Order Approval</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.purchaseOderCancellation','Purchase.viewFinalPurchase'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase/cancellation')}}" class="nav-sub-link">Order Cancellation</a></li>
-            <li class="nav-sub-item  @if(in_array($Action,['Supplier.list_supplier','Supplier.add_supplier'])){{'active'}} @endif "><a href="{{url('inventory/suppliers-list')}}" class="nav-sub-link">Terms & Conditions</a></li>
+            <li class="nav-sub-item  @if(in_array($Action,['Supplier.list_supplier','Supplier.add_supplier'])){{'active'}} @endif "><a href="{{url('inventory/suppliers-list')}}" class="nav-sub-link">Supplier Master</a></li>
           </ul>
         </li><!-- nav-item -->
 
