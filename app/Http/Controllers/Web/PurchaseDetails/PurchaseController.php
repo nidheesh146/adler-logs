@@ -191,7 +191,7 @@ class PurchaseController extends Controller
                             if ($item_type == "Direct Items") {
                                 $data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
                             } else {
-                                $data['po_number'] = "POI3" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
+                                $data['po_number'] = "POI3-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
                             }
                             $data['type'] ="PO";
                         } else {
@@ -301,9 +301,17 @@ class PurchaseController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) 
             {
-                // if($request->status == 0){
+                if($request->status == 0){
+                    $po_number = inv_final_purchase_order_master::where('id','=',$request->po_id)->pluck('po_number')->first();
+                    $replaceWith = 'C';
+                    $findStr = 'I';
+                    $position = strpos($po_number, $findStr);
+                    if ($position !== false) {
+                        $poc_no = substr_replace($po_number, $replaceWith, $position, strlen($findStr));
+                        $this->inv_final_purchase_order_master->updatedata(['id'=>$request->po_id],['po_number'=>$poc_no]);
+                    }
                     
-                // }
+                }
                 $data = ['inv_final_purchase_order_master.status'=>$request->status,
                         'inv_final_purchase_order_master.remarks'=>$request->remarks,
                         'inv_final_purchase_order_master.processed_by'=>$request->approved_by,

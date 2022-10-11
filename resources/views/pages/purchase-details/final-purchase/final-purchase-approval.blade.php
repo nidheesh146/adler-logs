@@ -196,7 +196,6 @@
                             <input type="hidden" name="poa" value="poa">
                             <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                             <select class="form-control" name="status" id="status">
-							    <option value=""> --Select One-- </option>
 								<option value="1"> Approve</option>
                             </select>
                         </div> 
