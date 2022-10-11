@@ -97,13 +97,13 @@
 				</div>
 
 				<!-- form-group -->
-				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+				<!-- <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
 					<label>Contact</label>
 					<input type="text" name="contact" class="form-control" placeholder="Contact Number" 
 					@if(!empty($data['supplier_single']->contact_number))
 					    value="{{$data['supplier_single']->contact_number}}" 
 					@endif>
-				</div>
+				</div> -->
 				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
 					<label>Transportation & Freight Charge</label>
 					<input type="text" name="freight_charge" class="form-control" placeholder="Transportation & Freight Charge" 
@@ -222,9 +222,9 @@ $('#supplierquotationform').validate({
                 quotation_date: {
                     required: true
                 },
-                contact: {
-                    required: true
-                },
+                // contact: {
+                //     required: true
+                // },
             },
             submitHandler: function(form) {
               //  $('.spinner-button').show();

@@ -112,12 +112,12 @@
                             <tr>
                                 <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
                                 <th>Item code </th>
-                                <!-- <th>Supplier</th> -->
+                                 <th>Supplier</th>
                                 <th>Actual order Qty</th>
                                 <th>Rate</th>
                                 <th>Disc %</th>
                                 <th>GST %</th>
-                                <th>Currency</th>
+                                 <th>Currency</th>
                                 <th>Net value </th>
                                 <th>Approved By</th>
                                 <th>Approved Date</th>
@@ -135,7 +135,7 @@
                                     >
                                 <td>{{$item['pr_no']}}</td>
                                 <td>{{$item['item_code']}}</td>
-                                <!-- <td><span>{{$item['vendor_id']}}</span></td> -->
+                                <td><span>{{$item['vendor_name']}}</span></td>
                                 <td>{{$item['actual_order_qty']}}</td>
                                 <td>{{$item['rate']}}</td>
                                 <td>{{$item['discount_percent']}}</td>

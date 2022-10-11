@@ -5,11 +5,11 @@
         <br>
         <div class="container">
             <div class="az-content-body">
-                <div class="az-content-breadcrumb"> <span>Suppliers</span>
+                <div class="az-content-breadcrumb"> <span>Suppliers - Terms & Conditions </span>
              
                 </div>
                 <h4 class="az-content-title" style="font-size: 20px;">
-                    Suppliers
+                Suppliers-Terms & Conditions 
                     <div class="right-button">
 
                         <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">

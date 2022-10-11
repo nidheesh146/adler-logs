@@ -102,6 +102,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/final-purchase/change/status', 'PurchaseController@changeStatus');
     Route::get('inventory/final-purchase-view/{id}', 'PurchaseController@viewFinalPurchase');
     Route::get('inventory/final-purchase/cancellation', 'PurchaseController@purchaseOderCancellation');
+    Route::get('inventory/final-purchase/approval', 'PurchaseController@purchaseOderApproval');
 
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');

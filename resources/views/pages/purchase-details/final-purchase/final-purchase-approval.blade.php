@@ -8,17 +8,11 @@
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
 				<span><a href="">Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order</a></span>
+                <span><a href="">@if(request()->get('order_type')=='wo') Work @else Purchase @endif Order Approval</a></span>
 			</div>
-			<h4 class="az-content-title" style="font-size: 20px;">Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order list
-                <div class="right-button">
-                    <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
-                    <i class="fas fa-file-excel" aria-hidden="true"></i> Report <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-                    <div class="dropdown-menu">
-                        <a href="{{url('inventory/final-purchase/export/all')}}" class="dropdown-item">All</a>
-                        <a href="{{url('inventory/final-purchase/export/open')}}" class="dropdown-item">Open</a>
-                    </div>  
-                <div>  
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif  Order </button> 
+			<h4 class="az-content-title" style="font-size: 20px;">@if(request()->get('order_type')=='wo') Work @else Purchase @endif Order Approval
+                
+                
             </h4><br/>
 			
 		   @if (Session::get('success'))
@@ -157,18 +151,17 @@
                                     </button>
 								    <div class="dropdown-menu">
                                         <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
-                                        @if($po_data->status!=0)
-                                        <a href="{{url('inventory/final-purchase-edit/'.$po_data->id)}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
-                                        <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
-                                            <i class="fa fa-check-circle"></i> Change Status
-                                        </a>
-                                        <br/>
-                                        @endif
                                         <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
                                     </div>
-                                    @if($po_data->status==1)
+                                        @if($po_data->status!=0 && $po_data->status!=1)
+                                        <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model badge badge-success" style="color: #141c2b;text-decoration:none;padding:6px;color:white;">
+                                            <i class="fa fa-check-circle"></i> Approve
+                                        </a>
+                                       
+                                        @endif
+                                        @if($po_data->status==1)
                                         <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
-                                    @endif
+                                        @endif
                                     </td>
                                 </tr>
                                 
@@ -192,7 +185,7 @@
                 {{ csrf_field() }} 
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title"># @if(request()->get('order_type')=="wo") Work Order @else Purchase Order @endif Status Change<span class="po_number"></span></h4>
+                        <h4 class="modal-title"># @if(request()->get('order_type')=="wo") Work Order @else Purchase Order @endif Approval<span class="po_number"></span></h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -200,13 +193,11 @@
                             <label for="inputAddress2">Status *</label><br>
                             {{-- <input type="text" name="purchaseRequisitionMasterId" id ="purchaseRequisitionMasterId" value=" "> --}}
 							<input type="hidden" name="po_id" id ="po_id" >
+                            <input type="hidden" name="poa" value="poa">
                             <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                             <select class="form-control" name="status" id="status">
 							    <option value=""> --Select One-- </option>
-								{{-- <option value="0"> Pending </option> --}}
 								<option value="1"> Approve</option>
-								<option value="5">On hold</option>
-                                <option value="0">Cancel</option>
                             </select>
                         </div> 
                         <div class="form-group">

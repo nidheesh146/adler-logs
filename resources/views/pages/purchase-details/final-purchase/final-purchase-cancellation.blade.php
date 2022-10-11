@@ -10,7 +10,7 @@
 				<span><a href="">Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order</a></span>
                 <span><a> Order Cancellation </a></span>
 			</div>
-			<h4 class="az-content-title" style="font-size: 20px;">Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order Cancellation
+			<h4 class="az-content-title" style="font-size: 20px;">@if(request()->get('order_type')=='wo') Work @else Purchase @endif Order Cancellation
             </h4><br/>
 			
 		   @if (Session::get('success'))

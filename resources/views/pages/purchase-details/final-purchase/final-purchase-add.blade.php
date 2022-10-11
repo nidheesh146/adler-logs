@@ -46,16 +46,14 @@
 												<div class="row filter_search" style="margin-left: 0px;">
                                                     <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
 														<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+															<label  style="font-size: 12px;">Supplier</label>
+															<input type="text" value="{{request()->get('supplier')}}"  class="form-control " name="supplier" placeholder="Supplier" >
+														</div>
+														<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
 															<label>RQ No:</label>
 															<input type="text" value="{{request()->get('rq_no')}}" name="rq_no"  id="rq_no" class="form-control" placeholder="RQ NO">
 														</div><!-- form-group -->
-														<input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
-		
-														<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-															<label  style="font-size: 12px;">Supplier</label>
-															<input type="text" value="{{request()->get('supplier')}}"  class="form-control " name="supplier" placeholder="Supplier" >
-														</div> 
-																			
+														<input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">					
 													</div>
 													<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
 														<!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;"> -->
@@ -92,7 +90,7 @@
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" id="example1">
 							<thead>
-                                <tr>
+                                {{--<tr>
                                     <th colspan="6">
                                     <div class="form-group col-sm-12 col-md-5 col-lg-5 col-xl-5" style="float:left;">
                                         <label>@if(request()->get('order_type')=='wo') Work @else Purchase @endif order date</label>
@@ -107,7 +105,7 @@
                                         </select>
                                     </div>
                                     </th>
-                                </tr>
+                                </tr>--}}
 								<tr>
                                     <th></th>
 									<th style="width:120px;">RQ NO:</th>

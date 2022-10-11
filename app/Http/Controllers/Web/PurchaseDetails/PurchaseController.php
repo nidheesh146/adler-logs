@@ -173,9 +173,9 @@ class PurchaseController extends Controller
     }
 
     public function insertFinalPurchase(Request $request){
-        $validation['date'] = ['required','date'];
+        // $validation['date'] = ['required','date'];
         $validation['quotation_id'] = ['required'];
-        $validation['create_by'] = ['required'];
+        // $validation['create_by'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all()){
             //print_r($request->quotation_id);exit;
@@ -209,8 +209,8 @@ class PurchaseController extends Controller
                         $data['rq_master_id'] = $quotation_id;
                         $data['status'] = 4;
                         $data['supplier_id'] = $ByItemSupplier->supplier_id;
-                        $data['po_date'] = date('Y-m-d', strtotime($request->date));
-                        $data['created_by'] = $request->create_by;
+                        $data['po_date'] = date('Y-m-d');
+                        $data['created_by'] = config('user')['user_id'];
                 
                         $inv_supplier_terms = DB::table('inv_supplier')->select('*')->where('id', $data['supplier_id'])->first();
                         $POMaster = $this->inv_final_purchase_order_master->insert_data($data, $inv_supplier_terms->terms_and_conditions);
@@ -301,6 +301,9 @@ class PurchaseController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) 
             {
+                // if($request->status == 0){
+                    
+                // }
                 $data = ['inv_final_purchase_order_master.status'=>$request->status,
                         'inv_final_purchase_order_master.remarks'=>$request->remarks,
                         'inv_final_purchase_order_master.processed_by'=>$request->approved_by,
@@ -325,6 +328,13 @@ class PurchaseController extends Controller
                     return redirect('inventory/final-purchase/cancellation?order_type='.$request->order_type);
                     else
                     return redirect('inventory/final-purchase/cancellation');
+                }
+                else if(isset($request->poa))
+                {
+                    if($request->order_type)
+                    return redirect('inventory/final-purchase/approval?order_type='.$request->order_type);
+                    else
+                    return redirect('inventory/final-purchase/approval');
                 }
                 else
                 {
@@ -399,6 +409,43 @@ class PurchaseController extends Controller
         $data['users'] = $this->User->get_all_users([]);
         $data['po_data'] = $this->inv_final_purchase_order_master->get_purchase_master_list($condition1);
         return view('pages.purchase-details.final-purchase.final-purchase-cancellation', compact('data'));
+    }
+    public function purchaseOderApproval(Request $request){
+        $condition1 = [];
+            if (!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from && !$request->status) {
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
+            }
+            if ($request->order_type == "wo") {
+                $condition1[] = ['inv_final_purchase_order_master.type','=', "WO"];
+            }else{
+                $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
+            }
+            if ($request->rq_no) {
+                $condition1[] = ['inv_purchase_req_quotation.rq_no', 'like', '%' . $request->rq_no . '%'];
+            }
+            if ($request->supplier) {
+                $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+       
+            if ($request->po_from) {
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->po_from))];
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->po_from))];
+            }
+
+            if ($request->status) {
+                if ($request->status == "reject") {
+                    $condition1[] = ['inv_final_purchase_order_master.status', '=', 0];
+                }
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', $request->status];
+            }
+            if ($request->po_no) {
+                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $request->po_no . '%'];
+            }
+            
+
+        $data['users'] = $this->User->get_all_users([]);
+        $data['po_data'] = $this->inv_final_purchase_order_master->get_purchase_master_list($condition1);
+        return view('pages.purchase-details.final-purchase.final-purchase-approval', compact('data'));
     }
     public function find_rq_number(Request $request)
     {
