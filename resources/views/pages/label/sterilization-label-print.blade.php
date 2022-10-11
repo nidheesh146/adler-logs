@@ -63,10 +63,22 @@
                                             <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:28px;">
                                             {{$batchcard_data->batch_no}}
                                             <br/>
-                                            <img src="{{asset('/img/alderlogo/sterile_r.png')}}" alt="image" style="width:49px;">
+                                            <!-- <img src="{{asset('/img/alderlogo/sterile_r.png')}}" alt="image" style="width:49px;"> -->
+                                            <div style="display:block;float:left;font-family: Arial, sans-serif;font-size:7px;font-weight:400;margin-top:4px;">
+                                                <span style="padding:1.5px; border-style: solid;border-width: thin;border-color:#101010;">STERILE</span>
+                                                <span style="border-top: solid 0.1px #101010;border-bottom: solid 0.1px black;border-right: solid 0.1px black;border-width: thin;padding:1.5px; padding-left:4px;margin-left:-2px;">
+                                                @if($batchcard_data->sterilization_type=='R')
+                                                R
+                                                @elseif($batchcard_data->sterilization_type=='EO')
+                                                EO
+                                                @else
+                                                &nbsp;
+                                                @endif
+                                                </span>
+                                            </div>
                                             {{$lot_no}}
                                             <br/>
-                                            <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:18px;">&nbsp;
+                                            <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:18px;margin-top:3px;">&nbsp;
                                             {{$manufacture_date}}
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;">
@@ -193,10 +205,22 @@
                                             <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:28px;">
                                             {{$batchcard_data->batch_no}}
                                             <br/>
-                                            <img src="{{asset('/img/alderlogo/sterile_r.png')}}" alt="image" style="width:49px;">
+                                            <!-- <img src="{{asset('/img/alderlogo/sterile_r.png')}}" alt="image" style="width:49px;"> -->
+                                            <div style="display:block;float:left;font-family: Arial, sans-serif;font-size:7px;font-weight:400;margin-top:4px;">
+                                                <span style="padding:1.5px; border-style: solid;border-width: thin;border-color:#101010;">STERILE</span>
+                                                <span style="border-top: solid 0.1px #101010;border-bottom: solid 0.1px black;border-right: solid 0.1px black;border-width: thin;padding:1.5px; padding-left:4px;margin-left:-2px;">
+                                                @if($batchcard_data->sterilization_type=='R')
+                                                R
+                                                @elseif($batchcard_data->sterilization_type=='EO')
+                                                EO
+                                                @else
+                                                &nbsp;
+                                                @endif
+                                                </span>
+                                            </div>
                                             {{$lot_no}}
                                             <br/>
-                                            <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:18px;">&nbsp;
+                                            <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:18px;margin-top:3px;">&nbsp;
                                             {{$manufacture_date}}
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;">

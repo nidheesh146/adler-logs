@@ -53,9 +53,11 @@
                                         <span style="padding:1.5px; border-style: solid;border-width: thin;border-color:#101010;">STERILE</span>
                                         <span style="border-top: solid 0.1px #101010;border-bottom: solid 0.1px black;border-right: solid 0.1px black;border-width: thin;padding:1.5px; padding-left:4px;margin-left:-2px;">
                                         @if($batchcard_data->sterilization_type=='R')
-                                        R
+                                            R
+                                        @elseif($batchcard_data->sterilization_type=='EO')
+                                            EO
                                         @else
-                                        EO
+                                            &nbsp;
                                         @endif
                                         </span>
                                     </div>
@@ -126,9 +128,11 @@
                                         <span style="padding:1.5px; border-style: solid;border-width: thin;border-color:#101010;">STERILE</span>
                                         <span style="border-top: solid 0.1px #101010;border-bottom: solid 0.1px black;border-right: solid 0.1px black;border-width: thin;padding:1.5px; padding-left:4px;margin-left:-2px;">
                                         @if($batchcard_data->sterilization_type=='R')
-                                        R
+                                            R
+                                        @elseif($batchcard_data->sterilization_type=='EO')
+                                            EO
                                         @else
-                                        EO
+                                            &nbsp;
                                         @endif
                                         </span>
                                     </div>
