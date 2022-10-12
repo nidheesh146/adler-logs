@@ -338,10 +338,6 @@ class PurchaseController extends Controller
                                 $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);
                                 $pdf->set_paper('A4', 'landscape');
                                 $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $request->po_id]);
-                                // Mail::to('shilma33@gmail.com')->send(new OrderCancellation($po_master))
-                                //                               ->attachData($pdf->output(), "report.pdf");
-                                // Mail::to('shilma33@gmail.com')->send(new OrderCancellation($po_master)) 
-                                //                                 ->attachData($pdf->output(), "newfilename.pdf",['mime' => 'application/pdf',]); 
                                 $message = new OrderCancellation($po_master);
                                 $message->attachData($pdf->output(), "cancellation-report.pdf");
                                 Mail::to('shilma33@gmail.com')->send($message);
