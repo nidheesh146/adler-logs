@@ -151,13 +151,23 @@
     <div class="row2">
         <div class="col21">
             <table>
-                <tr>
+                <tr>@if($type=='cancel')
+                    <td>PO No</td>
+                    <?php $poc_no = substr_replace($final_purchase['po_number'], 'I', 2, strlen('I')); ?>
+                    <td>: {{$poc_no}}</td>
+                    @else
                     <td>Supplier Quotation No</td>
                     <td>: {{$final_purchase['rq_no']}}</td>
+                    @endif
                 </tr>
                 <tr>
+                    @if($type=='cancel')
+                    <td >PO Date</td>
+                    <td>: {{date('d-m-Y',strtotime($final_purchase['po_date']))}}</td>
+                    @else
                     <td >Supplier Quotation Date</td>
                     <td>: {{date('d-m-Y',strtotime($final_purchase['quotation_date']))}}</td>
+                    @endif
                 </tr>
                 <tr>
                     <td >Currency</td>
@@ -168,12 +178,12 @@
         <div class="col22">
             <table style="float:right;">
                 <tr>
-                    <td>PO No</td>
+                    <td>@if($type=='cancel')POC @else PO @endif No</td>
                     <td>: {{$final_purchase['po_number']}}</td>
                 </tr>
                 <tr>
-                    <td>PO Date</td>
-                    <td>: {{date('d-m-Y',strtotime($final_purchase['po_date']))}}</td>
+                    <td>@if($type=='cancel')POC @else PO @endif Date</td>
+                    <td>:@if($type=='cancel') {{date('d-m-Y',strtotime($final_purchase['updated_at']))}} @else {{date('d-m-Y',strtotime($final_purchase['po_date']))}} @endif</td>
                 </tr>
                 <tr>
                     <td>Department</td>
@@ -365,6 +375,7 @@
             Page: 1 of 2
         </div>
     </div><br/>
+    @if($type!='cancel')
     <div class="row6" style="font-size:10px;display:block;">
         <strong>Terms and Conditions</strong>
         <br/>
@@ -622,16 +633,14 @@
         Supplier with respect to such terminated purchase / Service order or orders shall be limited to: (1) Supplier's purchase price of all components for the PRODUCT, plus (2) the actual costs incurred by
         Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
         with proof satisfactory to Company.
-    @endif */ ?>
+        @endif */ ?>
 
-<?= nl2br($terms_condition->terms_and_conditions);?>
-
-
-
+        <?= nl2br($terms_condition->terms_and_conditions);?>
     </div>
     <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     Adler Ref No :
     </div>
+    @endif
      
    
 </body>
