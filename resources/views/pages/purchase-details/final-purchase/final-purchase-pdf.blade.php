@@ -91,7 +91,7 @@
             float:right;
         }
     </style>
-    <?php /*print_r(json_encode($final_purchase)); exit;*/?>
+   
     <div class="row1" style="height:130px;border-bottom:solid 2px black;">
         <div class="col1">
             To<br/>
@@ -104,12 +104,7 @@
                 $arr = explode(",",ltrim(rtrim($data,']'),'['));
                 $len = count($arr);
                 echo trim($arr[0],' " ');
-                // for($x = 0; $x < $len; $x++) {
-                //     echo trim($arr[$x],' " ');
-                //     if($x!=($len-1))
-                //     echo ",";
-                // }
-                //return $a;
+                
             }
             function SplitMail($data)
             {
@@ -117,13 +112,6 @@
                 $arr = explode(",",ltrim(rtrim($data,']'),'['));
                 $len = count($arr);
                 echo trim($arr[0],' " ');
-                // for($x = 0; $x < $len; $x++) {
-               
-                    //     echo trim($arr[$x]," ' ");
-                //     if($x!=($len-1))
-                //     echo ",";
-                // }
-                //return $a;
             }
             ?>
             Cell No : {{ SplitPhone($final_purchase['contact_number']) }}<br/>
@@ -299,7 +287,7 @@
             <div class="supplier-accept" style="height:50px;">
                 <b>(Supplier Signature & Date)</b><br/>
                 @if($type=='cancel')
-                <span>I/We, hereby accept this order cancellation.</span>
+                <span>I/We, hereby cancel this order.</span>
                 @else
                 <span>I/We, hereby accept this order with the term mentioned herein.</span>
                 @endif
