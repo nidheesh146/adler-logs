@@ -45,6 +45,8 @@ class inv_purchase_req_quotation extends Model
                     //$mailData->to =   json_decode($supp->email,true);
                     $mailData->vendor_id = $supp->vendor_id;
                     $mailData->vendor_name = $supp->vendor_name;
+
+                    if(count(json_decode($supp->email,true)) > 0 ){
                     $mailData->url = url('request-for-quotation/'.(new Controller)->encrypt($quotation_id).'/'.(new Controller)->encrypt($supplier_id));
                     $job = (new \App\Jobs\EmailJobs($mailData))
                     ->delay(
@@ -52,6 +54,7 @@ class inv_purchase_req_quotation extends Model
                             ->addSeconds(3)
                     );
                     dispatch($job);
+                }
             }
         }
         return true;
