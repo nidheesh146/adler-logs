@@ -40,7 +40,7 @@ class inv_purchase_req_quotation extends Model
                     $mailData = new \stdClass();
                     $mailData->module = 'add_quotation';
                     $mailData->subject = "Adler";
-                    $mailData->to = ['baijumca005@gmail.com'];
+                    $mailData->to = ['baijumca005@gmail.com','komal.murali@gmail.com'];
                     $supp = DB::table('inv_supplier')->select(['vendor_id','vendor_name','email'])->where(['id'=>$supplier_id])->first();
                     //$mailData->to =   json_decode($supp->email,true);
                     $mailData->vendor_id = $supp->vendor_id;
