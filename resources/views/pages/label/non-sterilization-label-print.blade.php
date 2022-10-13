@@ -18,9 +18,9 @@
             ?>
             <div class="label-div" id="label-div" style="margin:0px; padding:0px;">
                 @for ($i = 1; $i<= $page_count; $i++)
-                <div style="margin-top:0px;">
+                <div style="margin-top:0px;max-height:29.3cm;">
                 @for ($j = 1; $j<= $label_per_page; $j++)
-                <div class=" column " style="height:16%;float:left;width: 48%;padding:0px 2px;font-size:13px; margin-left:10px;@if($j==11 || $j==12) margin-bottom:0px; @else margin-bottom:11.3px;  @endif">
+                <div class=" column " style="height:16%;float:left;width: 48%;padding:0px 2px;font-size:13px; margin-left:10px;@if($j==11 || $j==12) margin-bottom:0px; @else margin-bottom:11.5px;  @endif">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
                         <div class="sub1" style="float:left;width:content-fit;font-weight:bold;">
                             <img src="{{asset('/img/alderlogo/IFU.png')}}" style="float:left; height:81px;">
@@ -76,7 +76,7 @@
                                 </div>
                                 <div style="margin-left:2px;float:left;width:68%;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">VL No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">ML No:{{$batchcard_data->drug_license_number}}</span> 
                                     <span class=" cls" style="padding-left:2px;font-size:7.5px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
                                     <div class="" style="display:block;margin-left: 35px;">
                                         <span style="font-weight:550;font-size:6.1px;display:block;padding-left:2px">
@@ -116,9 +116,9 @@
                             }
                         <?php }?>
                 </style>
-                <div  style="margin-top:0mm;"> 
+                <div  style="margin-top:0mm;max-height:29.3cm;"> 
                 @for ($j=1;$j<=$label_per_page;$j++)
-                <div class=" column " style="height:16%;float:left;width: 48%;padding:0px 2px;font-size:13px; margin-left:10px;@if($j==11 || $j==12) margin-bottom:0px; @else margin-bottom:11.3px;  @endif">
+                <div class=" column " style="height:16%;float:left;width: 48%;padding:0px 2px;font-size:13px; margin-left:10px;@if($j==11 || $j==12) margin-bottom:0px; @else margin-bottom:11.5px;  @endif">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
                         <div class="sub1" style="float:left;width:content-fit;font-weight:bold;">
                             <img src="{{asset('/img/alderlogo/IFU.png')}}" style="float:left; height:81px;">
@@ -174,7 +174,7 @@
                                 </div>
                                 <div style="margin-left:2px;float:left;width:68%;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">VL No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">ML No:{{$batchcard_data->drug_license_number}}</span> 
                                     <span class=" cls" style="padding-left:2px;font-size:7.5px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
                                     <div class="" style="display:block;margin-left: 35px;">
                                         <span style="font-weight:550;font-size:6.1px;display:block;padding-left:2px">

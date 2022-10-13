@@ -17,6 +17,8 @@ use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\User;
+use App\Mail\OrderCancellation;
+use Illuminate\Support\Facades\Mail;
 use DB;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -301,17 +303,6 @@ class PurchaseController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) 
             {
-                if($request->status == 0){
-                    $po_number = inv_final_purchase_order_master::where('id','=',$request->po_id)->pluck('po_number')->first();
-                    $replaceWith = 'C';
-                    $findStr = 'I';
-                    $position = strpos($po_number, $findStr);
-                    if ($position !== false) {
-                        $poc_no = substr_replace($po_number, $replaceWith, $position, strlen($findStr));
-                        $this->inv_final_purchase_order_master->updatedata(['id'=>$request->po_id],['po_number'=>$poc_no]);
-                    }
-                    
-                }
                 $data = ['inv_final_purchase_order_master.status'=>$request->status,
                         'inv_final_purchase_order_master.remarks'=>$request->remarks,
                         'inv_final_purchase_order_master.processed_by'=>$request->approved_by,
@@ -325,6 +316,33 @@ class PurchaseController extends Controller
                             $status="Cancelled";
 
                             $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$request->po_id],$data);
+                            if($request->status == 0){
+                                $po_number = inv_final_purchase_order_master::where('id','=',$request->po_id)->pluck('po_number')->first();
+                                $replaceWith = 'C';
+                                $findStr = 'I';
+                                $position = strpos($po_number, $findStr);
+                                if ($position !== false) {
+                                    $poc_no = substr_replace($po_number, $replaceWith, $position, strlen($findStr));
+                                    $this->inv_final_purchase_order_master->updatedata(['id'=>$request->po_id],['po_number'=>$poc_no]);
+                                }
+                                $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_master.id' => $request->po_id]);
+                                $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $request->po_id]);
+                                //print_r( json_encode($data['items']));exit;
+                                $data['terms_condition'] = DB::table('po_fpo_master_tc_rel')
+                                    ->select('po_supplier_terms_conditions.terms_and_conditions')
+                                    ->join('po_supplier_terms_conditions', 'po_supplier_terms_conditions.id', '=', 'po_fpo_master_tc_rel.terms_id')
+                                    ->where('fpo_id', $request->po_id)
+                                    ->first();
+                                $data['type'] = 'cancel';
+
+                                $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);
+                                $pdf->set_paper('A4', 'landscape');
+                                $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $request->po_id]);
+                                $message = new OrderCancellation($po_master);
+                                $message->attachData($pdf->output(), "cancellation-report.pdf");
+                                Mail::to('shilma33@gmail.com')->send($message);
+                                
+                            }
                             if($request->order_type=='wo')
                             $request->session()->flash('success', "You have successfully ".$status." a  Work Order ");
                             else
