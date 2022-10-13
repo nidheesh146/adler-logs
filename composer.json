@@ -7,6 +7,7 @@
     "require": {
         "php": "^7.3|^8.0",
         "ext-gd": "*",
+        "aws/aws-sdk-php": "^3.238",
         "barryvdh/laravel-dompdf": "^2.0",
         "box/spout": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
