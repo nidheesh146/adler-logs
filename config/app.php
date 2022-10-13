@@ -239,6 +239,6 @@ $config = [
 
     ],
 ];
-$config['title'] ="ADLER";
+$config['title'] ="ADLER HEALTHCARE PVT. LTD";
 $config['ApiURL'] ="http://server.malabarroots.com:8001";
 return $config;

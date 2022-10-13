@@ -29,6 +29,6 @@ class OrderCancellation extends Mailable
      */
     public function build()
     {
-        return $this->subject('Order Cancellation')->view('mails.order-cancellation');
+        return $this->subject('Order Cancellation')->view('emails.order-cancellation');
     }
 }
