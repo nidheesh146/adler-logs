@@ -116,6 +116,18 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
         function getItems($condition){
             return $this->select(['id','quotation_id','supplier_id','item_id','selected_item'])->where($condition)->get();
         }
+        function open_get_quotation($condition){
+            return $this->select(['inventory_rawmaterial.item_code','inventory_rawmaterial.item_name','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_unit.unit_name'])
+                ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
+                ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+               // ->leftjoin('currency_exchange_rate','inv_purchase_req_item.currency','=','currency_exchange_rate.currency_id')
+                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                ->orderBy('inventory_rawmaterial.id','DESC')
+                ->where($condition)
+                ->get();
+
+
+        }
 
 
 }

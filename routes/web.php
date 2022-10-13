@@ -24,6 +24,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
 
 });
 
+Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails'], function() {
+    Route::get('request-for-quotation/{q_id}/{s_id}', 'QuotationController@request_quotation');
+});
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middleware'=>['RolePermission']], function() {
     // purchase requisition master

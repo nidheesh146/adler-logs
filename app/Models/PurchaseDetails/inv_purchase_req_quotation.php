@@ -5,6 +5,14 @@ namespace App\Models\PurchaseDetails;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Mail;
+use App\Mail\quotation;
+
+
+use App\Http\Controllers\Controller;
+
+
+
 
 class inv_purchase_req_quotation extends Model
 {
@@ -21,17 +29,36 @@ class inv_purchase_req_quotation extends Model
     }
 
     function insert_data($data,$request){
-        $quotation_id =  $this->insertGetId($data);
+        $quotation_id = $this->insertGetId($data);
         if($quotation_id){
             foreach($request->Supplier as $supplier_id){
                 DB::table('inv_purchase_req_quotation_supplier')->insert(['supplier_id'=>$supplier_id,'quotation_id'=>$quotation_id]);
                 foreach($request->purchase_requisition_item as $purchase_requisition_item){
-                    DB::table('inv_purchase_req_quotation_item_supp_rel')->insert(['quotation_id'=>$quotation_id,'item_id'=>$purchase_requisition_item,'supplier_id'=>$supplier_id]);
+                   DB::table('inv_purchase_req_quotation_item_supp_rel')->insert(['quotation_id'=>$quotation_id,'item_id'=>$purchase_requisition_item,'supplier_id'=>$supplier_id]);
                 }
+                    // cron job
+                    $mailData = new \stdClass();
+                    $mailData->module = 'add_quotation';
+                    $mailData->subject = "Adler";
+                    $mailData->to = ['baijumca005@gmail.com'];
+                    $supp = DB::table('inv_supplier')->select(['vendor_id','vendor_name','email'])->where(['id'=>$supplier_id])->first();
+                    //$mailData->to =   json_decode($supp->email,true);
+                    $mailData->vendor_id = $supp->vendor_id;
+                    $mailData->vendor_name = $supp->vendor_name;
+                    $mailData->url = url('request-for-quotation/'.(new Controller)->encrypt($quotation_id).'/'.(new Controller)->encrypt($supplier_id));
+                    $job = (new \App\Jobs\EmailJobs($mailData))
+                    ->delay(
+                        now()
+                            ->addSeconds(3)
+                    );
+                    dispatch($job);
             }
         }
         return true;
     }
+
+
+
     function get_count(){
         return $this->get()->count();
     }
@@ -39,7 +66,6 @@ class inv_purchase_req_quotation extends Model
         return $this->where($condition)->update($data);
     }
     function get_quotation($condition){
-
         return $this->select('inv_purchase_req_quotation.*','inv_purchase_req_master.PR_SR')
                     ->rightjoin('inv_purchase_req_quotation_item_supp_rel','inv_purchase_req_quotation_item_supp_rel.quotation_id','=','inv_purchase_req_quotation.quotation_id')
                     ->rightjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')

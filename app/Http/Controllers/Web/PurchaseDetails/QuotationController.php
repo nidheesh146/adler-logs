@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Http;
 use Validator;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_quotation;
+use App\Models\PurchaseDetails\inv_supplier;
+use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
 
 
 class QuotationController extends Controller
@@ -16,6 +18,8 @@ class QuotationController extends Controller
     {
         $this->inv_purchase_req_item = new inv_purchase_req_item;
         $this->inv_purchase_req_quotation = new inv_purchase_req_quotation;
+        $this->inv_supplier = new inv_supplier;
+        $this->inv_purchase_req_quotation_item_supp_rel = new inv_purchase_req_quotation_item_supp_rel;
     }
 
     // list Quotation
@@ -81,184 +85,21 @@ class QuotationController extends Controller
 
     public function getItems(Request $request)
     {
-        //echo "jj";exit;
         $data['getdata'] = $this->inv_purchase_req_item->getdata(['inv_item_type.type_name'=>$request->type]);
         return view('pages/purchase-details/Quotation/quotation-add', compact('data'));
 
     }
-
-    // Edit Quotation
-    public function editQuotation(Request $request)
-    {
-        $validation['rq_no '] = ['required'];
-        $validation['date '] = ['required','date'];
-        $validation['requestor  '] = ['required'];
-        $validation['supplier  '] = ['required'];
-        $validation['deliver_schedule  '] = ['required'];
-        $validator = Validator::make($request->all(), $validation);
-        if(!$validator->errors()->all()) 
-        { 
-            $response = Http::post(config('app.ApiURL') . '/inventory/quotation-master-list-add-edit-delete
-            ', [
-                'action_type '=>'EditQuotationMaster',
-                'rq_no' => '11',//$request->rq_no,
-                'date' => '08-07-2022',//$request->date,
-                'requestor' =>3, //$request->requestor,
-                'supplier' => 1,//$request->supplier,
-                'deliver_schedule' => '10-07-2022',//$request->deliver_schedule,
-                'quotation_id'=>8
-            ]);
-
-            if ($response->status() == 200) {
-                if (!empty($response->json()['success'])) {
-
-                    //return redirect("inventory/get-purchase-reqisition");
-                } else {
-                    $error =  $response->json()['message'];
-                }
-            } else {
-                $error =  " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-            }
+    function request_quotation(Request $request,$q_id,$s_id){
+        if((!$this->decrypt($q_id)) ||  (!$this->decrypt($s_id))){
+            return response()->view('errors/404', [], 404);
         }
+        $q_id = $this->decrypt($q_id);
+        $s_id = $this->decrypt($s_id);
+        $data['inv_purchase_req_quotation'] = $this->inv_purchase_req_quotation->get_quotation_single(['quotation_id'=>$q_id]);
+        $data['inv_supplier'] = $this->inv_supplier->get_supplier(['id'=>$s_id]);
+        $data['inv_purchase_req_quotation_item_supp_rel'] = $this->inv_purchase_req_quotation_item_supp_rel->open_get_quotation(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$q_id,'inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$s_id]);
+//print_r( $data['inv_purchase_req_quotation_item_supp_rel']);die;
+        return view('pages/purchase-details/supplier-quotation/quotation-open-view', compact('data'));
     }
-
-    // Delete Quotation
-    public function deleteQuotation(Request $request)
-    {
-        $response = Http::post(config('app.ApiURL') . '/inventory/quotation-master-list-add-edit-delete
-        ', [
-            'action_type '=>'DeleteQuotationMaster',
-            'quotation_id'=>9
-        ]);
-
-        if ($response->status() == 200) {
-            if (!empty($response->json()['success'])) {
-
-                //return redirect("inventory/get-purchase-reqisition");
-            } else {
-                $error =  $response->json()['message'];
-            }
-        } else {
-            $error =  " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-        }
-    }
-
-    // Search Quotation
-
-    // Add Quotation item
-    public function AddQuotationItem(Request $request)
-    {
-        $validation['quotation'] = ['required'];
-        $validation['item_code'] = ['required','date'];
-        $validation['unit'] = ['required'];
-        $validation['required_qty  '] = ['required'];
-        $validation['description  '] = ['required'];
-        $validation['rate'] = ['required'];
-        $validation['currency  '] = ['required'];
-        $validation['moq'] = ['required'];
-        $validation['exstock_availability  '] = ['required'];
-        $validation['deliver_schedule  '] = ['required'];
-
-        $validator = Validator::make($request->all(), $validation);
-        if(!$validator->errors()->all()) 
-        { 
-            $response = Http::post(config('app.ApiURL').'/inventory/quotation-item-list-add-edit-delete/
-            ', [
-                'action_type '=>'AddQuotationItem',
-                'quotation ' => 8,
-                'item_code ' => '3',
-                'unit ' =>3, 
-                'required_qty' => 10,
-                'description '=>'nice product',
-                'rate '=> '4star',
-                'currency '=> 'INR',
-                'moq '=>'moqqq',
-                'exstock_availability '=> '10',
-                'deliver_schedule' => '10-07-2022',
-            ]);
-
-            if ($response->status() == 200) {
-                if (!empty($response->json()['success'])) {
-
-                    //return redirect("inventory/get-purchase-reqisition");
-                } else {
-                    $error =  $response->json()['message'];
-                }
-            } else {
-                $error =  " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-            }
-        }
-    }
-
-    // edit Quotation item
-    public function editQuotationItem(Request $request)
-    {
-        $validation['quotation '] = ['required'];
-        $validation['item_code '] = ['required','date'];
-        $validation['unit'] = ['required'];
-        $validation['required_qty  '] = ['required'];
-        $validation['description  '] = ['required'];
-        $validation['rate  '] = ['required'];
-        $validation['currency  '] = ['required'];
-        $validation['moq  '] = ['required'];
-        $validation['exstock_availability  '] = ['required'];
-        $validation['deliver_schedule  '] = ['required'];
-
-        $validator = Validator::make($request->all(), $validation);
-        if(!$validator->errors()->all()) 
-        { 
-            $response = Http::post(config('app.ApiURL') . '/inventory/inventory/quotation-item-list-add-edit-delete/
-
-            ', [
-                'action_type '=>'EditQuotationItem',
-                'quotation ' => 8,
-                'item_code ' => '3',
-                'unit ' =>3, 
-                'required_qty' => 10,
-                'description '=>'nice product',
-                'rate '=> '4star',
-                'currency '=> 'INR',
-                'moq '=>'moqqq',
-                'exstock_availability '=> '10',
-                'deliver_schedule' => '10-07-2022',
-                'quotation_id' => 11,
-            ]);
-
-            if ($response->status() == 200) {
-                if (!empty($response->json()['success'])) {
-
-                    //return redirect("inventory/get-purchase-reqisition");
-                } else {
-                    $error =  $response->json()['message'];
-                }
-            } else {
-                $error =  " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-            }
-        }
-    }
-
-        // Delete Quotation item
-    public function deleteQuotationItem(Request $request)
-    {
-        $response = Http::post(config('app.ApiURL') . '/inventory/quotation-item-list-add-edit-delete/
-
-        ', [
-            'action_type '=>'DeleteQuotationItem',
-            'quotation_id'=>9
-        ]);
-
-        if ($response->status() == 200) {
-            if (!empty($response->json()['success'])) {
-
-                //return redirect("inventory/get-purchase-reqisition");
-            } else {
-                $error =  $response->json()['message'];
-            }
-        } else {
-            $error =  " Networking Error: Server is not responding. Please contact System Administrator for assistance.";
-        }
-    }
-    
-
 
 }

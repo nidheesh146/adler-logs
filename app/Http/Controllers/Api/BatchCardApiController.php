@@ -13,9 +13,9 @@ class BatchCardApiController extends Controller
     {
         $this->batchcard = new batchcard;
         $this->product = new product;
-        $this->CompDetail = ["address" => "Smith & Nephew Healthcare Pvt.Ltd.
- B-501-509 Dynasty BusinessPark.AndheriEast 
- Mumbai-400059",
+        $this->CompDetail = ["address" => "Mktd and Distributed by : Smith & Nephew
+Healthcare Pvt. Ltd. B-501-509 Dynasty
+Business Park, Andheri East, Mumbai-400059",
                             "email" => "complaint.india@smith-nephew.com",
                             "phone" => "+91-22-80055090",
                             "ml_no" => "MFG/MD/2021/000369",
