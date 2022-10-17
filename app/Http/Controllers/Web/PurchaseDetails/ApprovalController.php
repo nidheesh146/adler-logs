@@ -36,9 +36,9 @@ class ApprovalController extends Controller
             }else{
                 $condition[] = ['inv_purchase_req_master.PR_SR', '=', "PR"];
             }
-            if ($request->supplier) {
-                $condition[] = ['inv_supplier.vendor_id',  'like', '%'.$request->supplier.'%'];
-            }
+            // if ($request->supplier) {
+            //     $condition[] = ['inv_supplier.vendor_id',  'like', '%'.$request->supplier.'%'];
+            // }
             if ($request->item_code) {
                 $condition[] = ['inventory_rawmaterial.Item_code','like', '%'.$request->item_code.'%'];
             }
@@ -63,35 +63,83 @@ class ApprovalController extends Controller
 
     public function approve(Request $request) 
     {
+        if($request->check_approve)
+        {
+            foreach($request->check_approve as $item_id){
+                $qty = inv_purchase_req_item::where('requisition_item_id','=',$item_id)->pluck('actual_order_qty')->first();
+                $data = ['inv_purchase_req_item_approve.approved_qty'=>$qty,
+                             'inv_purchase_req_item_approve.status'=>1,
+                             'inv_purchase_req_item_approve.remarks'=>"Approved",
+                             'inv_purchase_req_item_approve.created_user'=>config('user')['user_id'],
+                             'inv_purchase_req_item_approve.updated_at'=>date('Y-m-d H:i:s')
+                        ];
+                 $success[]=$this->inv_purchase_req_item->updatedata(['inv_purchase_req_item_approve.pr_item_id'=>$item_id],$data);
+            }
+        }
+        if($request->check_hold)
+        {
+            foreach($request->check_hold as $item_id){
+                $qty = inv_purchase_req_item::where('requisition_item_id','=',$item_id)->pluck('actual_order_qty')->first();
+                $data = ['inv_purchase_req_item_approve.approved_qty'=>$qty,
+                             'inv_purchase_req_item_approve.status'=>5,
+                             'inv_purchase_req_item_approve.remarks'=>"On Hold",
+                             'inv_purchase_req_item_approve.created_user'=>config('user')['user_id'],
+                             'inv_purchase_req_item_approve.updated_at'=>date('Y-m-d H:i:s')
+                        ];
+                $success[]=$this->inv_purchase_req_item->updatedata(['inv_purchase_req_item_approve.pr_item_id'=>$item_id],$data);
+            }
+        }
+        if($request->check_reject)
+        {
+            foreach($request->check_reject as $item_id){
+                $qty = inv_purchase_req_item::where('requisition_item_id','=',$item_id)->pluck('actual_order_qty')->first();
+                $data = ['inv_purchase_req_item_approve.approved_qty'=>$qty,
+                             'inv_purchase_req_item_approve.status'=>0,
+                             'inv_purchase_req_item_approve.remarks'=>"On Hold",
+                             'inv_purchase_req_item_approve.created_user'=>config('user')['user_id'],
+                             'inv_purchase_req_item_approve.updated_at'=>date('Y-m-d H:i:s')
+                        ];
+                $success[]=$this->inv_purchase_req_item->updatedata(['inv_purchase_req_item_approve.pr_item_id'=>$item_id],$data);
+            }
+        }
+        if(count($success) >0)
+        {
+            $request->session()->flash('success', "You have successfully changed status of ".count($success)."  requisition item ");
+        }
+        if($request->prsr)
+        return redirect('inventory/purchase-reqisition/approval?prsr='.$request->prsr);
+        else
+        return redirect('inventory/purchase-reqisition/approval');
+            //return redirect('inventory/purchase-reqisition/approval?prsr='.$request->prsr);
         
-            $validation['purchaseRequisitionItemId'] = ['required'];
-            $validation['status'] = ['required'];
-            //$validation['reason'] = ['required'];
-            $validation['approved_by'] = ['required'];
-            $validator = Validator::make($request->all(), $validation);
-            if(!$validator->errors()->all()) {
-                if($request->status == 1  && !$request->approved_qty){
-                    $validator->errors()->add('some_field', 'approved qty is empty !');
-                }
-            }
-            if(!$validator->errors()->all()) {
-                $data = ['inv_purchase_req_item_approve.approved_qty'=>$request->approved_qty,
-                         'inv_purchase_req_item_approve.status'=>$request->status,
-                         'inv_purchase_req_item_approve.remarks'=>$request->reason,
-                         'inv_purchase_req_item_approve.created_user'=>$request->approved_by,
-                         'inv_purchase_req_item_approve.updated_at'=>date('Y-m-d H:i:s')];
-                        if($request->status == 1)
-                        $status="Approved";
-                        if($request->status == 5)
-                        $status="Hold";
-                        if($request->status == 0)
-                        $status="Rejected";
-                         $this->inv_purchase_req_item->updatedata(['inv_purchase_req_item_approve.pr_item_id'=>$request->purchaseRequisitionItemId],$data);
-                         $request->session()->flash('success', "You have successfully ".$status." a  requisition item ");
-                         return redirect('inventory/purchase-reqisition/approval?prsr='.$request->prsr);
-            }
-            if($validator->errors()->all()) {
-                return redirect('inventory/purchase-reqisition/approval?prsr='.$request->prsr)->withErrors($validator)->withInput();
-            }
+            // $validation['purchaseRequisitionItemId'] = ['required'];
+            // $validation['status'] = ['required'];
+            // //$validation['reason'] = ['required'];
+            // $validation['approved_by'] = ['required'];
+            // $validator = Validator::make($request->all(), $validation);
+            // if(!$validator->errors()->all()) {
+            //     if($request->status == 1  && !$request->approved_qty){
+            //         $validator->errors()->add('some_field', 'approved qty is empty !');
+            //     }
+            // }
+            // if(!$validator->errors()->all()) {
+            //     $data = ['inv_purchase_req_item_approve.approved_qty'=>$request->approved_qty,
+            //              'inv_purchase_req_item_approve.status'=>$request->status,
+            //              'inv_purchase_req_item_approve.remarks'=>$request->reason,
+            //              'inv_purchase_req_item_approve.created_user'=>$request->approved_by,
+            //              'inv_purchase_req_item_approve.updated_at'=>date('Y-m-d H:i:s')];
+            //             if($request->status == 1)
+            //             $status="Approved";
+            //             if($request->status == 5)
+            //             $status="Hold";
+            //             if($request->status == 0)
+            //             $status="Rejected";
+            //              $this->inv_purchase_req_item->updatedata(['inv_purchase_req_item_approve.pr_item_id'=>$request->purchaseRequisitionItemId],$data);
+            //              $request->session()->flash('success', "You have successfully ".$status." a  requisition item ");
+            //              return redirect('inventory/purchase-reqisition/approval?prsr='.$request->prsr);
+            // }
+            // if($validator->errors()->all()) {
+            //     return redirect('inventory/purchase-reqisition/approval?prsr='.$request->prsr)->withErrors($validator)->withInput();
+            // }
     }
 }

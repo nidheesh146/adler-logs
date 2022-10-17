@@ -1,6 +1,37 @@
 @extends('layouts.default')
 @section('content')
+<style>
+    input[type="checkbox"]{
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        content: none;
+        outline: none;
+        margin: 0;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    
 
+    input[type="checkbox"]:checked {
+        appearance: none;
+        outline: none;
+        padding: 0;
+        content: none;
+        border: none;
+    }
+
+    input[type="checkbox"]:checked::before{
+        position: absolute;
+        color: white !important;
+        content: "\00A0\2713\00A0" !important;
+        border: 1px solid #d3d3d3;
+        font-weight: bolder;
+        font-size: 18px;
+    }
+
+               
+                
+</style>
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -57,23 +88,19 @@
                                             <div class="row filter_search" style="margin-left: 0px;">
                                             <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                                 
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                         <label for="exampleInputEmail1" style="font-size: 12px;">@if(request()->get('prsr')!='sr') PR No @else SR No @endif</label>
                                                         <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="@if(request()->get('prsr')!='sr') PR NO @else SR NO @endif">
                                                     </div><!-- form-group -->
                                                     <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
                                                     
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                     <label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
                                                         <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
                                                     
                                                     </div><!-- form-group -->
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                        <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
-                                                        <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
-                                                        
-                                                    </div>
-                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                
+                                                    <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                         <label  style="font-size: 12px;">Status</label>
                                                         <select name="status" class="form-control">
                                                             <option value=""> --Select One-- </option>
@@ -105,101 +132,100 @@
                         </table>
                     </div>
                 </div>
-            <div class="tab-pane active  show" id="purchase">
-                <div class="table-responsive">
-                    <table class="table table-bordered mg-b-0" id="example1">
-                        <thead>
-                            <tr>
-                                <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
-                                <th>Item code </th>
-                                 <th>Supplier</th>
-                                <th>Actual order Qty</th>
-                                <th>Rate</th>
-                                <th>Disc %</th>
-                                <th>GST %</th>
-                                 <th>Currency</th>
-                                <th>Net value </th>
-                                <th>Approved By</th>
-                                <th>Approved Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody >
-                    
-                            @foreach($data['inv_purchase'] as $item)
-                           
-                            <tr style="	@if($item['status'] == 5)
-                                    background: #ffc1074f;
-                                    @endif @if($item['status'] == 0) background: #ffc1074f;
-                                    @endif"
-                                    >
-                                <td>{{$item['pr_no']}}</td>
-                                <td>{{$item['item_code']}}</td>
-                                <td><span>{{$item['vendor_name']}}</span></td>
-                                <td>{{$item['actual_order_qty']}}</td>
-                                <td>{{$item['rate']}}</td>
-                                <td>{{$item['discount_percent']}}</td>
-                                <td>@if($item['igst']!=0)
-                                    IGST:{{$item['igst']}}%
-                                    &nbsp;
+            <div class="tab-pane active  show">
+                <form autocomplete="off" action="{{ url('inventory/purchase-reqisition/approval') }}?prsr={{request()->get('prsr')}}" method="POST" id="approve-form">
+                {{ csrf_field() }}  
+                    <div class="table-responsive">
+                        <table class="table table-bordered mg-b-0" id="example1">
+                            <thead>
+                                <tr>
+                                    <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
+                                    <th>Item code </th>
+                                    <th>Description</th>
+                                    <th>Qrder Qty</th>
+                                    <th style="width:15%;">Processed info</th>
+                                    <th>Status</th>
+                                    @if(request()->get('status')==4 || request()->get('status')==5 || !request()->get('status'))
+                                    <th>Action</th>
                                     @endif
-                                    
-                                    @if($item['sgst']!=0)
-                                    SGST:{{$item['sgst']}}%
-                                    &nbsp;
-                                    @endif
-                                    
-                                    @if($item['sgst']!=0)
-                                    CGST:{{$item['sgst']}}%
-                                    @endif
-                                    <!-- ,SGST:{{$item['sgst']}},CGST:{{$item['cgst']}}, -->
-                                </td>
-                                <td>{{$item['currency_code']}}</td>
-                                <td>{{$item['net_value']}}</td>
-                                <td>{{$item['f_name']}} {{$item['l_name']}}</td>
-                                <td>@if($item['updated_at']!=NULL) {{date( 'd-m-Y' , strtotime($item['updated_at']))}} @endif</td>
-                                {{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
-                                <td>
-                                @if($item['status'] == 4 || $item['status'] == 5 || $item['status'] == 0)
-                                <a href="#" data-toggle="modal" value="{{$item['requisition_item_id']}}" rel="{{$item['vendor_id']}}" orderqty="{{$item['actual_order_qty']}}" type="@if(request()->get('prsr')!='sr') Purchase @else Service @endif" data-target="#myModal" id="change-status" style="width: 64px;" 
-                                data-html="true" data-placement="top" 
-                                class="badge 
-                                @if($item['status'] == 4)
-                                    badge-info
-                                    @elseif($item['status'] == 5)
-                                    badge-warning
-                                    @elseif($item['status'] == 0)
-                                    badge-danger
-                                    @endif
-                                ">
-                                @if($item['status'] ==4)
-                                    Pending
-                                @elseif($item['status'] == 5)
-                                    On hold
-                                @elseif($item['status'] == 0)
-                                    Rejected
-                                @endif
-
-                                </a>
-                                @else
-                                @if($item['status'] == 1)
-                                    
-                                <a href="#" style="width: 64px;" class="badge badge-primary">Approved</a>
-                                @endif
-                                @endif
-                                </td>
-                            </tr>	
-                            
-                            @endforeach
+                                </tr>
+                            </thead>
+                            <tbody >
                         
-                        </tbody>
-                    </table>
+                                @foreach($data['inv_purchase'] as $item)
+                            
+                                <tr style="	@if($item['status'] == 5)
+                                        background: #ffc1074f;
+                                        @endif @if($item['status'] == 0) background: #ffc1074f;
+                                        @endif"
+                                        >
+                                    <td>{{$item['pr_no']}}</td>
+                                    <td>{{$item['item_code']}}</td>
+                                    <td>{{$item['short_description']}}</td>
+                                    <td>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
+                                    <td>@if($item['updated_at']!=NULL) on: {{date( 'd-m-Y' , strtotime($item['updated_at']))}} @endif<br/>
+                                        @if($item['f_name'])By:{{$item['f_name']}} {{$item['l_name']}} @endif</td>
+                                    <!-- <td>@if($item['updated_at']!=NULL) {{date( 'd-m-Y' , strtotime($item['updated_at']))}} @endif</td> -->
+                                    {{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
+                                    <td>
+                                        <a href="#"   id="change-status" style="width: 64px;" class="badge 
+                                        @if($item['status'] == 4)
+                                            badge-info
+                                            @elseif($item['status'] == 5)
+                                            badge-warning
+                                            @elseif($item['status'] == 0)
+                                            badge-danger
+                                            @elseif($item['status'] == 1)
+                                            badge-primary
+                                            @endif
+                                        ">
+                                        @if($item['status'] ==4)
+                                            Pending
+                                        @elseif($item['status'] == 5)
+                                            On hold
+                                        @elseif($item['status'] == 0)
+                                            Rejected
+                                        @elseif($item['status'] == 1)
+                                            Approved
+                                        @endif
 
-                    <div class="box-footer clearfix">
-                        {{ $data['inv_purchase']->appends(request()->input())->links() }}
+                                        </a>
+                                    </td>
+                                    @if(request()->get('status')==4 || request()->get('status')==5 || !request()->get('status'))
+                                    <td style="width:12%;" class="checkbox-group">
+                                        @if($item['status']==4 || $item['status']==5 )
+                                        <input type="checkbox" class="item-select-radio check-approve bg-success text-white" id="check-approve" name="check_approve[]" value="{{$item['requisition_item_id']}}" style="color:green;">
+                                        <input type="checkbox" class="item-select-radio check-hold bg-warning text-dark"  id="check-hold" @if($item['status'] == 5)  checked @endif name="check_hold[]" value="{{$item['requisition_item_id']}}" style="color:yellow;">
+                                        <input type="checkbox" class="item-select-radio check-reject bg-danger text-white" id="check-reject" name="check_reject[]" value="{{$item['requisition_item_id']}}" style="color:red;">
+                                        @endif
+                                    </td>
+                                   @endif
+                                  
+                                    
+                                </tr>	
+                                
+                                @endforeach
+                            
+                            </tbody>
+                        </table>
+
+                        <div class="box-footer clearfix">
+                            {{ $data['inv_purchase']->appends(request()->input())->links() }}
+                        </div><br/>
+                        @if($data['inv_purchase'])
+                            <div class="row">
+                                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                    <button type="submit" class="btn btn-primary btn-rounded btn-submit" style="float: right;" >
+                                        <span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  
+                                        <i class="fas fa-save"></i>
+                                        Save 
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
                     </div>
-            
-                </div>
+                    
+                </form>
             </div>
            
         </div>
@@ -326,13 +352,14 @@
         });
     
   });
+    
   
   $('.approved_by').select2({
         placeholder: 'Choose one',
         searchInputPlaceholder: 'Search',
     });
 
- $('.search-btn').on( "click", function(e)  {
+    $('.search-btn').on( "click", function(e)  {
 		var supplier = $('#supplier').val();
 		var item_code = $('#item_code').val();
 		var pr_no = $('#pr_no').val();
@@ -342,6 +369,31 @@
 			e.preventDefault();
 		}
 	});
+    $('.btn-submit').on( "click", function()  {
+		var approve = $('.check-approve').val();
+		var hold = $('.check-hold').val();
+		var reject = $('.check-reject').val();
+		if(!approve || !hold || !reject)
+		{
+			$('.btn-submit').removeAttr('disabled');
+		}
+	});
+    $(".checkbox-group").each(function (i, li) {
+        var currentgrp = $(li);
+        $(currentgrp).find(".check-approve").on('change', function () {
+            $(currentgrp).find(".check-hold").not(this).prop('checked',false);
+             $(currentgrp).find(".check-reject").not(this).prop('checked',false);
+        });
+
+        $(currentgrp).find(".check-hold").on('change', function () {
+            $(currentgrp).find(".check-approve").not(this).prop('checked', false);
+            $(currentgrp).find(".check-reject").not(this).prop('checked',false);
+        });
+         $(currentgrp).find(".check-reject").on('change', function () {
+            $(currentgrp).find(".check-approve").not(this).prop('checked', false);
+            $(currentgrp).find(".check-hold").not(this).prop('checked',false);
+        });
+    });
 
 </script>
 <script>

@@ -92,17 +92,17 @@
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Requestor *</label>
-                            <!-- <input type="text" class="form-control select2"  
-                            value="{{(!empty($data['inv_purchase_req_master']) ? $data['inv_purchase_req_master']['f_name'].' '.$data['inv_purchase_req_master']['l_name']  :  (config('user')['f_name'] ? config('user')['f_name'].' '.config('user')['l_name']  : 'Requestor 1'))}}" 
-                            name="Requestor" placeholder="Requestor"> -->
+                                {{config('user')['department']}}
                                 <select class="form-control select2 requestor" name="Requestor">
                                     @foreach($data['users'] as $user)
                                      <option value="{{$user['user_id']}}"
-                                     @if(!empty($data['inv_purchase_req_master']))
+                                     @if(!empty($data['inv_purchase_req_master'])) 
                                        @if($user['user_id'] == $data['inv_purchase_req_master']['requestor_id'])
                                            selected
                                        @endif
-                                     @endif
+                                     @elseif(config('user')['user_id']== $user['user_id'])
+                                        selected
+                                    @endif
                                      >{{$user['f_name']}} {{$user['l_name']}}</option>
                                     @endforeach
                                 </select>
@@ -115,10 +115,12 @@
                                     <option value="">--- select one ---</option>
                                     @foreach($data['Department'] as $item)
                                      <option value="{{$item['id']}}"
-                                     @if(!empty($data['inv_purchase_req_master']))
+                                    @if(!empty($data['inv_purchase_req_master']))
                                        @if($item['id'] == $data['inv_purchase_req_master']['department'])
                                            selected
                                        @endif
+                                    @elseif(config('user')['department']== $item['dept_name'])
+                                        selected
                                      @endif
                                      >{{$item['dept_name']}}</option>
                                     @endforeach

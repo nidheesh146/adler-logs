@@ -148,8 +148,10 @@
 							<th>Delivery schedule</th>
 							<th>Requested Qty</th>
 							<th>Supplier Qty</th>
-							<th>Supplier Rate</th>
-                            <th>Supplier Discount %</th>
+							<th>Rate</th>
+                            <th>Discount %</th>
+							<th>GST %</th>
+							<th>Currency</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -162,10 +164,25 @@
                             <th>{{$item['item_code']}}</th>
 							<th>{{$item['hsn_code']}}</th>
                             <th>{{date('d-m-Y',strtotime($item['delivery_schedule']))}}</th>
-							<th>{{$item['actual_order_qty']}}</td>
-							<th>{{$item['quantity']}}</td>
+							<th>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
+							<th>{{$item['quantity']}} {{$item['unit_name']}}</td>
 							<th>{{$item['rate']}}</td>
 							<th>{{$item['discount']}}</td>
+							<th>@if($item['igst']!=0)
+                                    IGST:{{$item['igst']}}%
+                                    &nbsp;
+                                    @endif
+                                    
+                                    @if($item['sgst']!=0)
+                                    SGST:{{$item['sgst']}}%,
+                                    &nbsp;
+                                    @endif
+                                    
+                                    @if($item['sgst']!=0)
+                                    CGST:{{$item['sgst']}}%
+                                    @endif
+							</th>
+							<th>{{$item['currency_code']}}</td>
                             <td><a href="{{url('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item['inv_item_id'])}}" class="badge badge-info"><i class="fas fa-edit"></i> Update</a>
 							</td>
 						</tr>    

@@ -59,13 +59,11 @@
 					<thead>
 						<tr>
 							<th>Item code </th>
-							<th>Supplier</th>
-							<th>Actual order Qty</th>
-							<th>Rate</th>
-							<th>Discount %</th>
-							<th>GST %</th>
-							<th>Currency</th>
-							<th>Net value </th>
+							<th>HSN/SAC Code </th>
+							<th>Description </th>
+							<th>Item Type </th>
+							<th>Order Qty</th>
+							<th>Unit</th>
 							<th>#</th>
 						</tr>
 					</thead>
@@ -73,27 +71,12 @@
 
 						@foreach($data['item'] as $item)
 						<tr>
-							<th>{{$item['item_code']}}</th>
-							<th>{{$item['vendor_id']}}</th>
+							<td>{{$item['item_code']}}</td>
+							<td>{{$item['hsn_code']}}</td>
+							<td>{{$item['short_description']}}</td>
+							<td>{{$item['type_name']}}</td>
 							<td>{{$item['actual_order_qty']}}</td>
-							<td>{{$item['rate']}}</td>
-							<td>{{$item['discount_percent']}}</td>
-							<td>@if($item['igst']!=0)
-                                    IGST:{{$item['igst']}}%
-                                    &nbsp;
-                                    @endif
-                                    
-                                    @if($item['sgst']!=0)
-                                    SGST:{{$item['sgst']}}%,
-                                    &nbsp;
-                                    @endif
-                                    
-                                    @if($item['sgst']!=0)
-                                    CGST:{{$item['sgst']}}%
-                                    @endif
-							</td>
-							<td>{{$item['currency_code']}}</td>
-							<th>{{$item['net_value']}}</th>
+							<td> {{$item['unit_name']}}</td>
 							<td>
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu"> 

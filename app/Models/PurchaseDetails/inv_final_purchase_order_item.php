@@ -92,7 +92,7 @@ class inv_final_purchase_order_item extends Model
                     ->leftjoin('inv_supplier', 'inv_supplier.id','=', 'inv_final_purchase_order_master.supplier_id')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
-                    ->leftjoin('inventory_gst','inventory_gst.id','=','inv_purchase_req_item.gst' )
+                    ->leftjoin('inventory_gst','inventory_gst.id','=','inv_final_purchase_order_item.gst' )
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')            
                     ->where($condition)
                     ->get();

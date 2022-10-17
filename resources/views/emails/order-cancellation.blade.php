@@ -1,12 +1,18 @@
-<p>Hi sir,<br/><br/></p>
-</p>
-<?php $poc_no = substr_replace($po_master->po_number, 'I', 2, strlen('I')); ?>
-        We regrat to inform you regarding the cancellation of purchase/work order <b>({{$poc_no}})</b> with your company.which was made on {{$po_master->po_date}}.
-We encloses the order cancellation report along with this mail. 
-
+<p>Dear Sir / Madam,<br/><br/>
+        This is to be informed to you that we are cancelled our purchase order; the order details & reason of cancelled order are mentioned in the attached purchase order cancellation no. {{$po_master->po_number}}.
 <br/><br/>
-Thank You
-<br/><br/>
-<b>ADLER HEALTHCARE PVT. LTD</b>
+Thanks & Regards,
+<br/>
+<br/>
+<img src="{{asset('/img/logo.png')}}"  style="width:80px;">
+<br>
+<div style="font-size:18px;font-weight:bold;color:#191970;">
+        Nayan Dhane <span style="color:red;">|</span> Manager - Procurement & Logistics <span style="color:red;">|</span> Adler Healthcare Pvt.Ltd.<span style="color:red;">|</span>
+</div><br/>
+<div style="color:black;">
+    Plot No. A-1, MIDC Sadavali, Tal. Sangameshwar, Dist. Ratnagiri, Maharashtra, INDIA, PIN 415804<br/>
+    Email - Nayan.Dhane@adler-healthcare.com<br/>
+    M +91 (0) 9422659403<br/>
+</div>
 
 </p>

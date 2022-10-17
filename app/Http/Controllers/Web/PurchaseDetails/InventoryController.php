@@ -217,12 +217,12 @@ class InventoryController extends Controller
             }
             $validation['Itemcode'] = ['required'];
             //$validation['Supplier'] = ['required'];
-            $validation['Currency'] = ['required'];
-            $validation['Rate'] = ['required'];
-            $validation['BasicValue'] = ['required'];
-            $validation['Discount'] = ['required'];
+            // $validation['Currency'] = ['required'];
+            // $validation['Rate'] = ['required'];
+            // $validation['BasicValue'] = ['required'];
+            // $validation['Discount'] = ['required'];
            // $validation['gst'] = ['required'];
-            $validation['Netvalue'] = ['required'];
+            // $validation['Netvalue'] = ['required'];
            // $validation['Remarks'] = ['required'];
             $validation['ActualorderQty'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
@@ -230,15 +230,15 @@ class InventoryController extends Controller
             if(!$validator->errors()->all()){
                 $Request = [
                     "item_code" => $request->Itemcode,
-                    "supplier"  => $request->Supplier,
                     "actual_order_qty"=> $request->ActualorderQty,
-                    "basic_value"=> $request->BasicValue,
-                    "rate"=> $request->Rate,
-                    "discount_percent"=> $request->Discount,
-                    "gst"=> $request->gst,
-                    "currency"  => $request->Currency ,
-                    "net_value"=>  $request->Netvalue,
-                    "remarks"=> $request->Remarks,
+                    //"supplier"  => $request->Supplier,
+                    // "basic_value"=> $request->BasicValue,
+                    // "rate"=> $request->Rate,
+                    // "discount_percent"=> $request->Discount,
+                    // "gst"=> $request->gst,
+                    // "currency"  => $request->Currency ,
+                    // "net_value"=>  $request->Netvalue,
+                    // "remarks"=> $request->Remarks,
                     "created_at" => date('Y-m-d H:i:s'),
                     "updated_at" => date('Y-m-d H:i:s'),
                     "created_user" =>  config('user')['user_id']   
@@ -266,8 +266,8 @@ class InventoryController extends Controller
             $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
         else
         $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
-        $data["currency"] = $this->currency_exchange_rate->get_currency([]);
-        $data['gst'] = $this->inventory_gst->get_gst();
+        // $data["currency"] = $this->currency_exchange_rate->get_currency([]);
+        // $data['gst'] = $this->inventory_gst->get_gst();
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data'));
       }
 
@@ -295,12 +295,12 @@ class InventoryController extends Controller
                     }
                 $validation['Itemcode'] = ['required'];
                 //$validation['Supplier'] = ['required'];
-                $validation['Currency'] = ['required'];
-                $validation['Rate'] = ['required'];
-                $validation['BasicValue'] = ['required'];
-                $validation['Discount'] = ['required'];
+                // $validation['Currency'] = ['required'];
+                // $validation['Rate'] = ['required'];
+                // $validation['BasicValue'] = ['required'];
+                // $validation['Discount'] = ['required'];
                 //$validation['gst'] = ['required'];
-                $validation['Netvalue'] = ['required'];
+                //$validation['Netvalue'] = ['required'];
                 //$validation['Remarks'] = ['required'];
                 $validation['ActualorderQty'] = ['required'];
                 $validator = Validator::make($request->all(), $validation);
@@ -308,15 +308,15 @@ class InventoryController extends Controller
                 if(!$validator->errors()->all()){
                     $Request = [
                         "item_code" => $request->Itemcode,
-                        "supplier"  => $request->Supplier,
                         "actual_order_qty"=> $request->ActualorderQty,
-                        "basic_value"=> $request->BasicValue,
-                        "rate"=> $request->Rate,
-                        "discount_percent"=> $request->Discount,
-                        "gst"=> $request->gst,
-                        "currency"  => $request->Currency ,
-                        "net_value"=>  $request->Netvalue,
-                        "inv_purchase_req_item.remarks"=> $request->Remarks,
+                        "supplier"  => $request->Supplier,
+                        // "basic_value"=> $request->BasicValue,
+                        // "rate"=> $request->Rate,
+                        // "discount_percent"=> $request->Discount,
+                        // "gst"=> $request->gst,
+                        // "currency"  => $request->Currency ,
+                        // "net_value"=>  $request->Netvalue,
+                        // "inv_purchase_req_item.remarks"=> $request->Remarks,
                         "inv_purchase_req_item.updated_at" => date('Y-m-d H:i:s'),
                         "inv_purchase_req_item.created_user" =>  config('user')['user_id']   
                     ];
@@ -347,8 +347,8 @@ class InventoryController extends Controller
             $data['master'] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
             else
             $data['master'] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
-            $data["currency"] = $this->currency_exchange_rate->get_currency([]);
-            $data['gst'] = $this->inventory_gst->get_gst();
+            // $data["currency"] = $this->currency_exchange_rate->get_currency([]);
+            // $data['gst'] = $this->inventory_gst->get_gst();
           
           
             return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data', 'datas'));
