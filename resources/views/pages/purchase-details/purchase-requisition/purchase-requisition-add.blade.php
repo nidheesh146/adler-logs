@@ -92,7 +92,6 @@
 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Requestor *</label>
-                                {{config('user')['department']}}
                                 <select class="form-control select2 requestor" name="Requestor">
                                     @foreach($data['users'] as $user)
                                      <option value="{{$user['user_id']}}"

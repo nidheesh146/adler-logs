@@ -136,6 +136,14 @@
                 <form autocomplete="off" action="{{ url('inventory/purchase-reqisition/approval') }}?prsr={{request()->get('prsr')}}" method="POST" id="approve-form">
                 {{ csrf_field() }}  
                     <div class="table-responsive">
+                        <div style="float:right;">
+                        <input type="checkbox" class="item-select-radio check-approve bg-success text-white"  style="color:green;width:20px;height:20px;">
+                        <span><label  style="font-size: 12px;">Approve</label></span>
+                        <input type="checkbox" class="item-select-radio check-hold bg-warning text-dark"   style="color:yellow;width:20px;height:20px;">
+                        <label  style="font-size: 12px;"><span>On Hold</span></label>
+                        <input type="checkbox" class="item-select-radio check-reject bg-danger text-white"  style="color:red;width:20px;height:20px;">
+                        <label  style="font-size: 12px;"><span>Reject</span></label>
+                        </div>
                         <table class="table table-bordered mg-b-0" id="example1">
                             <thead>
                                 <tr>
