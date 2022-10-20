@@ -334,7 +334,7 @@
     </style>
   </head>
   <body>
-    <span class="preheader">This is preheader text. Some clients will show this text as a preview.</span>
+    <span class="preheader">Pls. see attached our requirement and provide us your best quotation along with delivery schedule asap.</span>
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
       <tr>
         <td>&nbsp;</td>
@@ -350,8 +350,9 @@
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td>
-                        <p>Hi  {{$mailData->vendor_id}} {{$mailData->vendor_name}} ,</p>
-                        <p>Sometimes you just want to send a simple HTML email with a simple design and clear call to action. This is it.</p>
+                        <p>Dear {{$mailData->vendor_name}} ,</p>
+                        <p>Pls. see attached our requirement and provide us your best quotation along with delivery schedule asap.<br>
+                           Await quotation</p>
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>
                             <tr>
@@ -359,7 +360,7 @@
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                   <tbody>
                                     <tr>
-									<td> <a href="{{$mailData->url}}" target="_blank">Call To Action</a> </td>
+								              	<td> <a href="{{$mailData->url}}" target="_blank">Click for quotation list</a> </td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -367,8 +368,8 @@
                             </tr>
                           </tbody>
                         </table>
-                        <p>This is a really simple email template. Its sole purpose is to get the recipient to click the button with no distractions.</p>
-                        <p>Good luck! Hope it works.</p>
+                        <p></p>
+                        <p></p>
                       </td>
                     </tr>
                   </table>
@@ -390,7 +391,7 @@
                 </tr>
                 <tr>
                   <td class="content-block powered-by">
-				  Powered by Adler 
+				               Powered by {{config('app.title')}} 
                   </td>
                 </tr>
               </table>

@@ -94,8 +94,8 @@ tbody th{
                                         <td scope="row">{{$item['unit_name']}}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="row" >HSN Code</th>
-                                        <td scope="row">{{$item['hsn_code']}}</td>
+                                        <th scope="row" >Quantity</th>
+                                        <td scope="row">{{$item['actual_order_qty']}}</td>
                                         <th scope="row" >Discription</th>
                                         <td scope="row">{{$item['discription']}}</td>
                                     </tr>
