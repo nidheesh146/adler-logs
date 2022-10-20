@@ -17,6 +17,8 @@ use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\User;
+use App\Models\inventory_gst;
+use App\Models\currency_exchange_rate;
 use App\Mail\OrderCancellation;
 use Illuminate\Support\Facades\Mail;
 use DB;
@@ -39,6 +41,8 @@ class PurchaseController extends Controller
         $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
         $this->inv_supplier = new inv_supplier;
         $this->inventory_rawmaterial = new inventory_rawmaterial;
+        $this->inventory_gst = new inventory_gst;
+        $this->currency_exchange_rate = new currency_exchange_rate;
     }
 
     public function getFinalPurchase(Request $request)
@@ -169,13 +173,14 @@ class PurchaseController extends Controller
             $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
         }
         $data['quotation'] =  $this->inv_purchase_req_quotation->get_rq_final_purchase( $condition);
-        $condition1[] = ['user.status', '=', 1];
-        $data['users'] = $this->User->get_all_users($condition1);
+        // $condition1[] = ['user.status', '=', 1];
+        // $data['users'] = $this->User->get_all_users($condition1);
+        
+        
         return view('pages.purchase-details.final-purchase.final-purchase-add',compact('data'));
     }
 
     public function insertFinalPurchase(Request $request){
-        // $validation['date'] = ['required','date'];
         $validation['quotation_id'] = ['required'];
         // $validation['create_by'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
@@ -213,7 +218,6 @@ class PurchaseController extends Controller
                         $data['supplier_id'] = $ByItemSupplier->supplier_id;
                         $data['po_date'] = date('Y-m-d');
                         $data['created_by'] = config('user')['user_id'];
-                
                         $inv_supplier_terms = DB::table('inv_supplier')->select('*')->where('id', $data['supplier_id'])->first();
                         $POMaster = $this->inv_final_purchase_order_master->insert_data($data, $inv_supplier_terms->terms_and_conditions);
 

@@ -51,6 +51,7 @@ class Controller extends BaseController
         }
         return date('y').date('m').substr($decimal, 0, 4);
     }
+
     function po_num_gen($Number,$type)
     {
         $Number = (($Number + 1) / 999);
@@ -75,6 +76,15 @@ class Controller extends BaseController
             return date('y').date('y', strtotime('+1 year')).'-'."999";
         }
         return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
+    }
+
+    function lot_num_gen($Number){
+        $Number = (($Number + 1) / 999);
+        list($whole, $decimal) = explode('.', $Number);
+        if(!$decimal){
+            return "999".date('m').date('y');
+        }
+        return substr($decimal, 0, 3).date('m').date('y');
     }
 
     function ResponseApi($data,$code,$message = null){

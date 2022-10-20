@@ -71,7 +71,7 @@
 														</div> 
 														<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 															<label  style="font-size: 12px;">Supplier</label>
-															<input type="text" value="{{request()->get('supplier')}}"  class="form-control " name="supplier" placeholder="Supplier ID" >
+															<input type="text" value="{{request()->get('supplier')}}"  class="form-control " name="supplier" placeholder="Supplier" >
 														</div> 
 																			
 													</div>

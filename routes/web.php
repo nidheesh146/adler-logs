@@ -123,6 +123,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/lot-allocation-edit', 'LotAllocationController@addLotAllocation');
     Route::get('inventory/get-single-invoice-item/{itemId}','LotAllocationController@getInvoiceItem');
     Route::get('inventory/get-single-lot-allocation/{lot_allocation_id}','LotAllocationController@getsingleLot');
+    Route::get('inventory/lot-allocation/pdf/{id}', 'LotAllocationController@generatePdf');
 
    // MIQ
     Route::get('inventory/MIQ', 'MIQController@MIQlist');

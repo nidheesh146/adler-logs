@@ -64,6 +64,7 @@ class MIQController extends Controller
                 if(!$request->id)
                 {
                     $item_type = $this->item_type($request->invoice_number);
+                    //echo $item_type;exit;
                     if($item_type=="Direct Items"){
                         $Data['miq_number'] = "MIQ2-".$this->po_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ2%')->count(),1); 
                     }
@@ -136,10 +137,11 @@ class MIQController extends Controller
     }
 
     function item_type($invoice_number){
-        $item_type = inv_supplier_invoice_rel::leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_rel.item')
+        $item_type = inv_supplier_invoice_rel::leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                            ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
                             ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.requisition_item_id')
                             ->leftJoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
-                            ->where('master','=', $invoice_number)->pluck('inv_item_type.type_name')->first();
+                            ->where('inv_supplier_invoice_rel.master','=', $invoice_number)->pluck('inv_item_type.type_name')->first();
         return $item_type;
     }
 

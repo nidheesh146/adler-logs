@@ -11,6 +11,8 @@ use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_master_item_rel;
 use App\Models\PurchaseDetails\inv_purchase_req_master;
+use App\Models\currency_exchange_rate;
+use App\Models\inventory_gst;
 use Validator;
 
 USE DB;
@@ -26,6 +28,8 @@ class SupplierQuotationController extends Controller
         $this->inv_purchase_req_item = new inv_purchase_req_item;
         $this->inv_purchase_req_master_item_rel = new inv_purchase_req_master_item_rel;
         $this->inv_purchase_req_master = new inv_purchase_req_master;
+        $this->currency_exchange_rate = new currency_exchange_rate;
+        $this->inventory_gst = new inventory_gst;
     }
 
     public function getSupplierQuotation(Request $request) 
@@ -162,6 +166,8 @@ class SupplierQuotationController extends Controller
                 "rate"  => $request->rate,
                 "discount"=>$request->discount,
                 "quantity" =>$request->quantity,
+                "currency"  => $request->currency ,
+                "gst"  => $request->gst ,
                 "remarks" =>$request->Remarks,
             ];
             $request->session()->flash('success',"You have successfully updated a Supplier Quotation Item !");
@@ -173,6 +179,8 @@ class SupplierQuotationController extends Controller
             }
         }
         $data['get_item_single'] = $this->inv_purchase_req_quotation_item_supp_rel->get_item_single(['inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$supp_id,'inv_purchase_req_quotation_item_supp_rel.item_id'=>$item_id,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$rq_no]);
+        $data["currency"] = $this->currency_exchange_rate->get_currency([]);
+        $data['gst'] = $this->inventory_gst->get_gst();
         return view('pages/purchase-details/supplier-quotation/supplier-quotation-edit-item',compact('data','rq_no','supp_id'));
     }
 

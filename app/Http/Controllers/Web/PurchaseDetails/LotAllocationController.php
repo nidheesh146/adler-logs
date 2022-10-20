@@ -13,6 +13,7 @@ use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inv_final_purchase_order_master;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use App\Models\currency_exchange_rate;
+use PDF;
 
 use DB;
 class LotAllocationController extends Controller
@@ -64,23 +65,22 @@ class LotAllocationController extends Controller
     {
         if ($request->isMethod('post'))
         {
-
-            $validation['document_no'] = ['required'];
-            $validation['rev_no'] = ['required'];
-            $validation['rev_date'] = ['required','date'];
-            $validation['qty_received'] = ['required'];
-            $validation['qty_accepted'] = ['required'];
-            $validation['qty_rejected'] = ['required'];
-            $validation['test_report_no'] = ['required'];
-            $validation['test_report_date'] = ['required'];
+            // $validation['document_no'] = ['required'];
+            // $validation['rev_no'] = ['required'];
+            // $validation['rev_date'] = ['required','date'];
+            // $validation['qty_received'] = ['required'];
+            // $validation['qty_accepted'] = ['required'];
+            // $validation['qty_rejected'] = ['required'];
+            // $validation['test_report_no'] = ['required'];
+            // $validation['test_report_date'] = ['required'];
             // $validation['currency'] = ['required'];
             // $validation['conversion_rate'] = ['required'];
-            $validation['prepared_by'] = ['required'];
+            //$validation['prepared_by'] = ['required'];
 
-            $validator = Validator::make($request->all(), $validation);
-            if(!$validator->errors()->all()) 
-            { 
-                $data['lot_number'] = "LT-".$this->num_gen(DB::table('inv_lot_allocation')->count()); //$request->lot_number;
+            // $validator = Validator::make($request->all(), $validation);
+            // if(!$validator->errors()->all()) 
+            // { 
+                $data['lot_number'] = $this->lot_num_gen(DB::table('inv_lot_allocation')->count()); //$request->lot_number;
                 $data['doc_number'] = $request->document_no;
                 $data['rev_number'] = $request->rev_no;
                 $data['rev_date'] = $request->rev_date;
@@ -93,8 +93,8 @@ class LotAllocationController extends Controller
                 $data['mrr_date'] = $request->mrr_date;
                 $data['test_report_number'] = $request->test_report_no;
                 $data['test_report_date'] = $request->test_report_date;
-                $data['prepared_by'] = $request->prepared_by;
-                $data['approved_by'] = $request->approved_by;
+                $data['prepared_by'] = config('user')['user_id'];
+                $data['approved_by'] =config('user')['user_id'];
              
             if(!$request->lot_id){
                 $invoice_item = $this->inv_supplier_invoice_item->get_single_supplier_invoice_item_id(['inv_supplier_invoice_item.id'=>$request->si_id]);
@@ -105,7 +105,7 @@ class LotAllocationController extends Controller
               }
 
               $data['qty_rej_reason'] = $request->qty_rej_reason;
-              $data['rejected_user'] = $request->rejected_user;
+              $data['rejected_user'] = config('user')['user_id'];
               $data['invoice_rate'] = $request->invoice_rate;
             //   $data['currency'] = $request->currency;
             //   $data['conversion_rate'] = $request->conversion_rate;
@@ -121,12 +121,12 @@ class LotAllocationController extends Controller
                 }
                 
                 return redirect("inventory/lot-allocation-list");
-            }
-            if($validator->errors()->all()) 
-            { 
-                return redirect("inventory/lot-allocation-add")->withErrors($validator)->withInput();
+            //}
+            // if($validator->errors()->all()) 
+            // { 
+            //     return redirect("inventory/lot-allocation-add")->withErrors($validator)->withInput();
 
-            }
+            // }
         }
         // $all_lot_invoice_number = $this->inv_lot_allocation->all_lot_invoice_number();
         // $items = $this->inv_supplier_invoice_item->get_non_lot_alloted_supplier_invoice_items(['inv_supplier_invoice_item.status'=>1],$all_lot_invoice_number);
@@ -154,5 +154,13 @@ class LotAllocationController extends Controller
        
         $lot_data->total_rate = (float) sprintf('%.2f',($lot_data->rate - ($lot_data->discount/100)*$lot_data->rate));
         return $lot_data;
+    }
+
+    public function generatePdf($id){
+       // echo "jj";exit;
+        $data['lot']= $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$id]);
+        $pdf = PDF::loadView('pages.purchase-details.lot-allocation.lot-allocation-pdf', $data);
+        $file_name = "lotallocation_".$data['lot']['lot_number'];
+        return $pdf->stream($file_name . '.pdf');
     }
 }

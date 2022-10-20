@@ -90,22 +90,11 @@
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" id="example1">
 							<thead>
-                                {{--<tr>
+                                <tr>
                                     <th colspan="6">
-                                    <div class="form-group col-sm-12 col-md-5 col-lg-5 col-xl-5" style="float:left;">
-                                        <label>@if(request()->get('order_type')=='wo') Work @else Purchase @endif order date</label>
-                                        <input type="text"  class="form-control datepicker" value="{{ (!empty($data['master_data'])) ? date('d-m-Y',strtotime($data['master_data']->po_date)) : date("d-m-Y")}}" name="date" placeholder="Date">        <form id="Supplier_form">
-                                    </div>
-                                    <div class="form-group col-sm-12 col-md-5 col-lg-5 col-xl-5" style="float:left;">
-                                        <label>Created by: </label>
-                                        <select class="form-control user_list" name="create_by">
-                                        @foreach ($data['users'] as $user)
-                                        <option value="{{$user->user_id}}"   @if(!empty($data['master_data']) && $data['master_data']->created_by == $user->user_id) selected  @endif   >{{$user->f_name}} {{$user->l_name}}</option>
-                                        @endforeach                                                 
-                                        </select>
-                                    </div>
+										
                                     </th>
-                                </tr>--}}
+                                </tr>
 								<tr>
                                     <th></th>
 									<th style="width:120px;">RQ NO:</th>
@@ -193,6 +182,116 @@
 			e.preventDefault();
 		}
 	});
+
+	$('#IGST').on('change', function() {
+                let igst = $(this).val();
+                let igst_percent = $(this).find('option:selected').text();
+                var igst_val = parseInt(igst_percent.split('%', 1)[0]);
+               
+                let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+
+                new_net_val = (netvalue*igst_val/100)+netvalue;
+                $('#Netvalue').val(new_net_val.toFixed(2));
+
+                $('.append-option').remove();
+                $('.edit-zero').remove();
+                $('#gst-id').val('');
+                // $('#CGST').load();
+                // $('#SGST').load();
+                $.ajax ({
+                    type: 'GET',
+                    url: "{{url('getSGSTandCGST')}}",
+                    data: { id: '' + igst + '' },
+                    success : function(data) {
+                        $('#gst-id').val(data.id);
+                       $('#SGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.sgst + '%</option>');
+                       $('#CGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.cgst + '%</option>');
+    
+                    }
+                });
+                
+            });
+            $('#SGST').on('change', function() {
+                $('#Netvalue').val('');
+                let sgst = $(this).val();
+                let sgst_percent = $(this).find('option:selected').text();
+                var sgst_val = parseInt(sgst_percent.split('%', 1)[0]);
+               
+                let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+                
+                new_net_val = (netvalue*sgst_val/100)+(netvalue*sgst_val/100)+netvalue;
+                $('#Netvalue').val(new_net_val.toFixed(2));
+
+                $('#gst-id').val('');
+                $('.append-option').remove();
+                $('.edit-zero').remove();
+                $.ajax ({
+                    type: 'GET',
+                    url: "{{url('getSGSTandCGST')}}",
+                    data: { id: '' + sgst + '' },
+                    success : function(data) {
+                        // if(data.igst==0){
+                        //     $('.zero-option-igst').attr('value',data.id).show();
+                        //     $('.zero-option-igst').attr('selected','selected').show();
+                        // }
+                        // $('.zero-option-igst').hide();
+                       $('#gst-id').val(data.id);
+                       $('#IGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.igst + '%</option>');
+                       $('#CGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.cgst + '%</option>');
+    
+                    }
+                });
+                
+            });
+            $('#CGST').on('change', function() {
+                $('#Netvalue').val('');
+                let cgst = $(this).val();
+                let cgst_percent = $(this).find('option:selected').text();
+                var cgst_val = parseInt(cgst_percent.split('%', 1)[0]);
+               
+                let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+                
+                new_net_val = (netvalue*cgst_val/100)+(netvalue*cgst_val/100)+netvalue;
+                $('#Netvalue').val(new_net_val.toFixed(2));
+
+                $('.append-option').remove();
+                $('.edit-zero').remove();
+                $('#gst-id').val('');
+                //$("#SGST").selectmenu("refresh");
+                $.ajax ({
+                    type: 'GET',
+                    url: "{{url('getSGSTandCGST')}}",
+                    data: { id: '' + cgst + '' },
+                    success : function(data) {
+                        // if(data.igst==0){
+                        //     $('.zero-option-igst').attr('value',data.id).show();
+                        //     $('.zero-option-igst').attr('selected','selected').show();
+                        // }
+                        // $('.zero-option-igst').hide();
+                        $('#gst-id').val(data.id);
+                       $('#IGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.igst + '%</option>');
+                       $('#SGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.sgst + '%</option>');
+    
+                    }
+                });
+                
+            });
+
 
 </script>
 

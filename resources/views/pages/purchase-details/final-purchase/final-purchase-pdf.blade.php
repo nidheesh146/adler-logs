@@ -358,9 +358,7 @@
     </div>
     <div class="row5">
         <div class="col51">
-            @if($type=='cancel')
-                Document Format - PUR/F-00-00
-            @else
+            @if($type!='cancel')
                 @if(str_starts_with($final_purchase['po_number'] , 'PO') )
                 Document Format - PUR/F-04-00
                 @else

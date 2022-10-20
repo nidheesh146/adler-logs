@@ -116,18 +116,6 @@
                                         class="form-control" name="HSNSAC" id="HSNSAC" placeholder="">
                                 </div><!-- form-group -->
 
-
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Supplier </label>
-                                    <select class="form-control Supplier" name="Supplier">
-                                        @if (!empty($datas["item"]))
-                                            <option value="{{ $datas['item']['supplierId'] }}" selected>
-                                            {{ $datas['item']['vendorId'] }} - {{ $datas['item']['vendorName'] }}</option>
-                                        @endif
-                                    </select>
-                                </div>
-
-
                                 <!-- form-group -->
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label>Unit name*</label>
@@ -138,156 +126,13 @@
                                         value="{{ !empty($datas) ? $datas['item']['unit_id'] : '' }}"
                                         name="Unithidden" id="Unithidden">
                                 </div><!-- form-group -->
-
-
-                                @if(request()->pr_id)
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Stock Qty *</label>
-                                    <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['availble_quantity'] : '' }}"
-                                        id="StockQty" name="StockQty" placeholder="">
-                                </div>
-                                @endif
-
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Open PO Qty *</label>
-                                    <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['opening_quantity'] : '' }}"
-                                        id="OpenPOQty" name="OpenPOQty" placeholder="">
-                                </div>
-
-                                @if(request()->pr_id)
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Min Level *</label>
-                                    <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['min_stock'] : '' }}"
-                                        id="MinLevel" name="MinLevel" placeholder="">
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Max Level *</label>
-                                    <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['max_stock'] : '' }}"
-                                        id="MaxLevel" name="MaxLevel" placeholder="">
-                                </div>
-                                @endif
+                               
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Actual order Qty *</label>
                                     <input type="text" class="form-control"
                                         value="{{ !empty($datas) ? $datas['item']['actual_order_qty'] : '' }}"
                                         name="ActualorderQty" id="ActualorderQty" placeholder="Actual order Qty">
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Rate *</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['rate'] : '' }}" name="Rate" id="Rate"
-                                        placeholder="Rate">
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Basic Value *</label>
-                                    <input type="text" name="BasicValue"
-                                        value="{{ !empty($datas) ? $datas['item']['basic_value'] : '' }}" class="form-control"
-                                        placeholder="Basic Value" id="BasicValue">
-                                </div><!-- form-group -->
-
-                                
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Discount ( % ) *</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['discount_percent'] : '' }}" id="Discount"
-                                        name="Discount" placeholder="Discount ( % )">
-                                </div>
-                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                    <label> Discount Rate *</label>
-                                    <input type="text" class="form-control"
-                                        value="" id="DiscountRate"
-                                        name="DiscountRate" placeholder="Discount Rate">
-                                </div>
-                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                    <label> Discount Value *</label>
-                                    <input type="text" class="form-control"
-                                        value="" id="DiscountValue"
-                                        name="DiscountValue" placeholder="Discount Value">
-                                </div>
-                                
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> IGST ( % ) </label>
-                                    <input type="hidden" name="gst" id="gst-id" value="@if(!empty($datas)) {{$datas['item']['gst_id']}}  @endif">
-                                    <select class="form-control IGST" id="IGST" name="IGST">
-                                        <option value="">--- select one ---</option>
-                                        @if(!empty($datas))
-                                        @if($datas['item']['igst']==0)
-                                            <option class="edit-zero" selected>0%</option>
-                                        @endif
-                                        @endif
-                                        <option class="zero-option-igst" value="" style="display:none;">0%</option>
-                                        @foreach ($data['gst'] as $item)
-                                            @if($item['igst']!=0)
-                                            <option value="{{ $item['id'] }}" @if(!empty($datas))  @if($item['igst']==$datas['item']['igst'])
-                                                selected @endif @endif >{{ $item['igst'] }} %</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> SGST ( % ) </label>
-                                    <select class="form-control SGST" id="SGST" name="SGST">
-                                        <option value="">--- select one ---</option>
-                                        @if(!empty($datas))
-                                        @if($datas['item']['sgst']==0)
-                                            <option class="edit-zero"  selected>0%</option>
-                                        @endif
-                                        @endif
-                                        <option  class="zero-option" value="" style="display:none;">0%</option>
-                                        @foreach ($data['gst'] as $item)
-                                            @if($item['sgst']!=0)
-                                            <option value="{{ $item['id'] }}" @if(!empty($datas))  @if($item['sgst']==$datas['item']['sgst'])
-                                                selected @endif @endif >{{ $item['sgst'] }} %</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> CGST ( % ) </label>
-                                    <select class="form-control CGST" id="CGST" name="CGST">
-                                        <option value="">--- select one ---</option>
-                                        @if(!empty($datas))
-                                        @if($datas['item']['cgst']==0)
-                                            <option class="edit-zero" selected>0%</option>
-                                        @endif
-                                        @endif
-                                        <option class="zero-option" value="" style="display:none;">0%</option>
-                                        @foreach ($data['gst'] as $item)
-                                            @if($item['cgst']!=0)
-                                            <option value="{{ $item['id'] }}" @if(!empty($datas))  @if($item['cgst']==$datas['item']['cgst'])
-                                                selected @endif @endif >{{ $item['cgst'] }} %</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Currency *</label>
-                                    <select class="form-control Currency" name="Currency">
-                                        <option value="">--- select one ---</option>
-                                        @foreach ($data["currency"] as $item)
-                                            <option value="{{ $item['currency_id']}}" @if (!empty($datas))  @if ($item['currency_code']==$datas['item']['currency_code'])
-                                                selected @endif
-                                        @endif>{{ $item['currency_code'] }}</option>
-                                        @endforeach
-                                    </select>
-
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Net value *</label>
-                                    <input type="text" readonly class="form-control"
-                                        value="{{ !empty($datas) ? $datas['item']['net_value'] : '' }}" id="Netvalue"
-                                        name="Netvalue" placeholder="">
-                                </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label>Reason for Remarks </label>
-                                    <textarea value="" class="form-control" name="Remarks"
-                                        placeholder="Reason for Remarks">{{ !empty($datas) ? $datas['item']['remarks'] : '' }}</textarea>
-                                </div>
+                                </div>                               
                             </div>
 
                             <div class="row">
@@ -327,20 +172,6 @@
                 let discount_rate = (actual_qty*Rate*Discount)/100;
                 let netvalue = (total-discount_rate);
                 $('#Netvalue').val(netvalue.toFixed(2));
-                
-                // let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
-                // let gst = $('.GST').val() ? $('.GST').val() : 0;
-                // if(Rate)
-                // {
-                //     let total = ( Rate - ((Rate / 100) * Discount)) ;
-                //     let netvalue = (+total + ((total / 100) * gst));
-                //     $('#Netvalue').val(netvalue.toFixed(2));
-                // }
-                // else
-                // {
-                //    $('#Discount').val('');
-                //    $('.GST').val('');
-                // }
 
             }
 
@@ -388,39 +219,10 @@
                     Itemcode: {
                             required: true,
                     },
-                                
-                    // Supplier: {
-                    //         required: true,
-                    // },
-                    BasicValue: {
-                            required: true,
-                            number: true
-                    },
                     ActualorderQty: {
                                 required: true,
                                 number: true
                     },
-                    Rate: {
-                        required: true,
-                        number: true
-                    },
-                    Discount: {
-                        required: true,
-                        number: true
-                    },
-                    // GST: {
-                    //     required: true,
-                    // },
-                    Currency: {
-                            required: true,
-                    },
-                    Netvalue: {
-                        required: true,
-                        number: true
-                    },
-                    // Remarks: {
-                    //     required: true,
-                    // }
                 },
                 submitHandler: function(form) {
                     form.submit();

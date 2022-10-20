@@ -132,7 +132,8 @@
 						<td>{{$data['vehicle_number']}}</td> --}}
 						<td>
 							<!-- <a class="badge badge-info" style="font-size: 13px;" href="http://localhost/adler/public/inventory/final-purchase-add/3"><i class="fas fa-edit"></i> Edit</a> -->
-							<a class="badge badge-info lot-edit" style="font-size: 13px;" href="#" data-lotid ="{{$datas['id']}}" data-invoiceitem="{{$datas['invoice_number']}}" data-toggle="modal" data-target="#myModal"><i class="fas fa-edit"></i> Edit</a>                                    
+							<a class="badge badge-info lot-edit" style="font-size: 13px;" href="#" data-lotid ="{{$datas['id']}}" data-invoiceitem="{{$datas['invoice_number']}}" data-toggle="modal" data-target="#myModal"><i class="fas fa-edit"></i> Edit</a>   
+                            <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/lot-allocation/pdf/'.$datas['id'])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>                                 
 						</td>
 					</tr>
 					@endforeach
@@ -170,7 +171,7 @@
                                         <input type="text" class="form-control lot-number" name="lot_number" id="lot_number" placeholder="Lot Number">
 									
 									</div> --}}
-                                    <input type="hidden"  value="" class="form-control" name="lot_id" id="lot_id">
+                                    {{--<input type="hidden"  value="" class="form-control" name="lot_id" id="lot_id">
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Document No *</label>
                                         <input type="text"  class="form-control document-no" value="" name="document_no" id="document_no" placeholder="Document No">
@@ -185,7 +186,7 @@
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Revision Date *</label>
                                         <input type="date"  value="" class="form-control" name="rev_date" id="rev_date" placeholder="Revision Date">
-                                    </div><!-- form-group -->
+                                    </div><!-- form-group -->--}}
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Item Code </label>
                                         <input type="text"  value="" class="form-control" name="material_code" id="material_code" readonly placeholder="Item Code">
@@ -237,7 +238,7 @@
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Quantity rejected *</label>
+                                        <label>Quantity rejected </label>
                                         <input type="text"  value="" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Quantity Rejected">
                                     </div>
     
@@ -260,24 +261,24 @@
                                     </div>
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Unit *</label>
+                                        <label>Unit </label>
                                         <input type="text"  value="" class="form-control" name="unit_name" id="unit_name" readonly  placeholder="Unit">
                                         <input type="hidden"  value="" class="form-control" name="unit" id="unit">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>PO Number *</label>
+                                        <label>PO Number </label>
                                         <input type="text"  value="" class="form-control" name="po_number" disabled id="po_number" placeholder="PO number">
                                         <input type="hidden"  value="" class="form-control" name="po_id" id="po_id">
                                     </div>
                  
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> MRR Number*</label>
+                                        <label> MRR Number</label>
                                         <input type="text"  class="form-control" value="" id="mrr_no" name="mrr_no" placeholder="MRR Number">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> MRR Date*</label>
+                                        <label> MRR Date</label>
                                         <input type="date"  class="form-control" value="" id="mrr_date" name="mrr_date" placeholder="MRR Date">
                                     </div>
 
@@ -303,29 +304,29 @@
                                     </div> -->
   
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Test Report No *</label>
+                                        <label> Test Report No </label>
                                         <input type="text" class="form-control" value="" name="test_report_no" id="test_report_no"  placeholder="Test Report No">
                                     </div>
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Test Report Date *</label>
+                                        <label> Test Report Date </label>
                                         <input type="date" class="form-control" value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date">
                                     </div>
 
     
                                     <!-- form-group -->
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Vehicle Number*</label>
+                                        <label>Vehicle Number</label>
                                         <input type="text" value="" class="form-control" name="vehicle_no" id="vehicle_no" placeholder="Vehicle Number">
                                     </div><!-- form-group -->
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Transporter Name *</label>
+                                        <label> Transporter Name </label>
                                         <input type="text" value="" class="form-control" name="transporter_name" id="transporter_name" placeholder="Transporter Name">
                                     </div>
     
                                
 
-									<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+									{{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label> Prepared By *</label>
                                         <select class="form-control user_list" name="prepared_by" id="prepared_by">
                                             @foreach ($users as $item)
@@ -344,7 +345,7 @@
                                              >{{$item['f_name']}} {{$item['l_name']}}</option>
                                             @endforeach
                                         </select>                                  
-									</div>
+									</div>--}}
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">

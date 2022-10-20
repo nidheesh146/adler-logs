@@ -33,6 +33,7 @@ class inv_final_purchase_order_master extends Model
             $datas['discount'] =  $items->discount; 
             $datas['Specification'] =  $items->specification;
             $datas['rate'] =  $items->rate;
+            $datas['gst'] =  $items->gst;
             $or_item_id = DB::table('inv_final_purchase_order_item')->insertGetId($datas);
                 if( $or_item_id){
                     DB::table('inv_final_purchase_order_rel')->insertGetId(['master'=>$POMaster,'item'=>$or_item_id]);

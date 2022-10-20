@@ -218,7 +218,7 @@ function Labelprint(){
       var realContent = document.body.innerHTML;
       mywindow.document.write('<html><head><title></title>');
       mywindow.document.write( "<link rel='stylesheet' href='/public/css/print.css' type='text/css' media='print'/>" );
-      mywindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="print"/>');
+      mywindow.document.write('<link href="" rel="stylesheet" type="text/css" media="print"/>');
       mywindow.document.write('</head><body>');
 
       mywindow.document.write(content);

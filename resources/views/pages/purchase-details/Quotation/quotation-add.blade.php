@@ -52,7 +52,7 @@
                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3 type-form">
                                     <label>Type *</label>
                                     <div id="type-wrapper">
-                                    <select class="form-control " name="type" id="type">
+                                    <select class="form-control " name="type" id="type" required>
                                         <option value="">--select one--</option>
                                         <option value="1" @if(request()->get('type')==1) selected @endif>Indirect Items</option>
                                         <option value="2" @if(request()->get('type')==2) selected @endif>Direct Items</option>
@@ -94,13 +94,8 @@
                                             <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
                                             <th>Item code </th>
                                             <th>Type</th>
-                                            <th>Rate</th>
-                                            <th>Discount %</th>
-                                            <th>GST %</th>
-                                            <th>Currency</th>
-                                            <th>Net value </th>
-                                            <th>Actual Order Qty</th>
-                                            <th>Approved Qty</th>
+                                            <th>DESCRIPTION</th>
+                                            <th> Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody >
@@ -111,26 +106,8 @@
                                         <th>{{$item['pr_no']}}</th>
                                         <th>{{$item['item_code']}}</th>
                                         <td> {{$item['type_name']}}</td>
-                                        <td>{{$item['rate']}}</td>
-                                        <td>{{$item['discount_percent']}}</td>
-                                        <td>@if($item['igst']!=0)
-                                            IGST:{{$item['igst']}}%
-                                            &nbsp;
-                                            @endif
-                                            
-                                            @if($item['sgst']!=0)
-                                            SGST:{{$item['sgst']}}%,
-                                            &nbsp;
-                                            @endif
-                                            
-                                            @if($item['sgst']!=0)
-                                            CGST:{{$item['sgst']}}%
-                                            @endif
-                                        </td>
-                                        <td>{{$item['currency_code']}}</td>
-                                        <td>{{$item['net_value']}}</td>	
-                                        <td>{{$item['actual_order_qty']}}</td>
-                                        <td>{{$item['approved_qty']}}</td>	
+                                        <td> {{$item['short_description']}}</td>
+                                        <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>	
                                     </tr>
                                     
                                     @endforeach
@@ -199,7 +176,7 @@
                     required: true,
                 },
                 type: {
-                    required: true,
+                    selectcheck: true,
                 },
                 'Supplier[]': {
                    required: true,
@@ -214,6 +191,7 @@
                 form.submit();
             }
         });
+        
 
         $(".datepicker").datepicker({
     format: " dd-mm-yyyy",

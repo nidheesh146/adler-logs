@@ -116,7 +116,7 @@
                                         <input type="text" class="form-control lot-number" name="lot_number" id="lot_number" placeholder="Lot Number">
                                     </div> --}}
     
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                    {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Document No *</label>
                                         <input type="text"  class="form-control document-no" value="" name="document_no" id="document-no" placeholder="Document No">
                                     </div><!-- form-group -->
@@ -130,7 +130,7 @@
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Revision Date *</label>
                                         <input type="date"  value="" class="form-control" name="rev_date" id="rev_date" placeholder="Rev Date">
-                                    </div><!-- form-group -->
+                                    </div><!-- form-group -->--}}
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Item Code</label>
@@ -172,17 +172,17 @@
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Quantity Received *</label>
+                                        <label>Quantity Received </label>
                                         <input type="text"  value="" class="form-control" name="qty_received" id="qty_received" placeholder="Quantity Received">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Quantity accepted *</label>
+                                        <label>Quantity accepted </label>
                                         <input type="text"  value="0" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Qty Aceepted">
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Quantity rejected *</label>
+                                        <label>Quantity rejected </label>
                                         <input type="text"  value="0" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Qty Rejected">
                                     </div>
                                    
@@ -251,13 +251,13 @@
 
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Test Report Number *</label>
+                                        <label> Test Report Number </label>
                                         <input type="text" class="form-control" value="" name="test_report_no" placeholder="Test Report Number">
                                     </div>
 
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Test Report Date *</label>
+                                        <label> Test Report Date </label>
                                         <input type="date" class="form-control"value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date">
                                     </div>
 
@@ -273,25 +273,34 @@
                                     </div>
     
 
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label> Prepared By *</label>
+                                {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label> Prepared By I/C ST </label>
                                         <select class="form-control user_list" name="prepared_by">
                                             @foreach ($data['users'] as $item)
                                              <option value="{{$item['user_id']}}"
-                                             @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
+                                             @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected
+                                             @elseif(config('user')['user_id']== $item['user_id'])
+                                                selected
+                                            @endif 
+                                             
                                              >{{$item['f_name']}} {{$item['l_name']}}</option>
                                             @endforeach
-                                        </select>                                    </div>
+                                        </select>      
+                                    </div>
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                        <label>Approved By *</label>
+                                        <label>Approved By I/C Q.C </label>
                                         <select class="form-control user_list" name="approved_by">
                                             @foreach ($data['users'] as $item)
                                              <option value="{{$item['user_id']}}"
-                                             @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected @endif
+                                             @if(!empty($data['simaster']) && $data['simaster']->created_by == $item['user_id']) selected 
+                                             @elseif(config('user')['user_id']== $item['user_id'])
+                                                selected
+                                            @endif
                                              >{{$item['f_name']}} {{$item['l_name']}}</option>
                                             @endforeach
-                                        </select>                                  </div>
+                                        </select>  
+                                    </div> --}}
 
 
 
@@ -433,40 +442,40 @@
 
             $("#commentForm").validate({
                 rules: {
-                        document_no: {
-                            required: true,
-                        },
-                        rev_no: {
-                            required: true,
-                        },
-                        rev_date: {
-                            required: true,
-                        },
-                        qty_accepted: {
-                            required: true,
-                            number: true,
-                        },
-                        qty_rejected: {
-                            required: true,
-                            number: true,
-                            checkPrevValuePaxTo:true
-                        },
-                        qty_received: {
-                            required: true,
-                            number: true,
-                        },
-                        test_report_no: {
-                            required: true,
-                        },
-                        test_report_date: {
-                            required: true,
-                        },
-                        currency: {
-                            required: true,
-                        },
-                        conversion_rate: {
-                            required: true,
-                        },
+                        // document_no: {
+                        //     required: true,
+                        // },
+                        // rev_no: {
+                        //     required: true,
+                        // },
+                        // rev_date: {
+                        //     required: true,
+                        // },
+                        // qty_accepted: {
+                        //     required: true,
+                        //     number: true,
+                        // },
+                        // qty_rejected: {
+                        //     required: true,
+                        //     number: true,
+                        //     checkPrevValuePaxTo:true
+                        // },
+                        // qty_received: {
+                        //     required: true,
+                        //     number: true,
+                        // },
+                        // test_report_no: {
+                        //     required: true,
+                        // },
+                        // test_report_date: {
+                        //     required: true,
+                        // },
+                        // currency: {
+                        //     required: true,
+                        // },
+                        // conversion_rate: {
+                        //     required: true,
+                        // },
                         
                     },
                     submitHandler: function(form) {
