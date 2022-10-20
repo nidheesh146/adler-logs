@@ -138,11 +138,11 @@
                     <div class="table-responsive">
                         <div style="float:right;">
                         <input type="checkbox" class="item-select-radio check-approve bg-success text-white"  style="color:green;width:20px;height:20px;">
-                        <span><label  style="font-size: 12px;">Approve</label></span>
+                        <span style="vertical-align: middle;"><label  style="font-size: 12px;">Approve</label></span>
                         <input type="checkbox" class="item-select-radio check-hold bg-warning text-dark"   style="color:yellow;width:20px;height:20px;">
-                        <label  style="font-size: 12px;"><span>On Hold</span></label>
+                        <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>On Hold</span></label></span>
                         <input type="checkbox" class="item-select-radio check-reject bg-danger text-white"  style="color:red;width:20px;height:20px;">
-                        <label  style="font-size: 12px;"><span>Reject</span></label>
+                        <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>Reject</span></label></span>
                         </div>
                         <table class="table table-bordered mg-b-0" id="example1">
                             <thead>
