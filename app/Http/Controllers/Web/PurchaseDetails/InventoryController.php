@@ -363,14 +363,6 @@ class InventoryController extends Controller
                     $Request = [
                         "item_code" => $request->Itemcode,
                         "actual_order_qty"=> $request->ActualorderQty,
-                        "supplier"  => $request->Supplier,
-                        // "basic_value"=> $request->BasicValue,
-                        // "rate"=> $request->Rate,
-                        // "discount_percent"=> $request->Discount,
-                        // "gst"=> $request->gst,
-                        // "currency"  => $request->Currency ,
-                        // "net_value"=>  $request->Netvalue,
-                        // "inv_purchase_req_item.remarks"=> $request->Remarks,
                         "inv_purchase_req_item.updated_at" => date('Y-m-d H:i:s'),
                         "inv_purchase_req_item.created_user" =>  config('user')['user_id']   
                     ];
@@ -405,7 +397,7 @@ class InventoryController extends Controller
             // $data['gst'] = $this->inventory_gst->get_gst();
           
           
-            return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data', 'datas'));
+            return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-edit', compact('data', 'datas'));
             
         }
 
