@@ -59,7 +59,6 @@
 					<thead>
 						<tr>
 							<th>Item code </th>
-							<th>HSN/SAC Code </th>
 							<th>Description </th>
 							<th>Item Type </th>
 							<th>Order Qty</th>
@@ -72,7 +71,6 @@
 						@foreach($data['item'] as $item)
 						<tr>
 							<td>{{$item['item_code']}}</td>
-							<td>{{$item['hsn_code']}}</td>
 							<td>{{$item['short_description']}}</td>
 							<td>{{$item['type_name']}}</td>
 							<td>{{$item['actual_order_qty']}}</td>

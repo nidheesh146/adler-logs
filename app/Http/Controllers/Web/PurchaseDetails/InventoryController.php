@@ -201,73 +201,127 @@ class InventoryController extends Controller
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
         
     }
+    public function addItems(Request $request){
+        $number = count($_POST["Itemcode"]);   
+        echo $number;
+    }
       // Purchase Reqisition add item 
       public function add_purchase_reqisition_item(Request $request)
       {
         if((!$request->pr_id) && (!$request->sr_id)){
             return response()->view('errors/404', [], 404);
         }
-
-        if ($request->isMethod('post')) {
-            if($request->pr_id){
-            $validation['pr_id'] = ['required'];
+        if ($request->isMethod('post'))
+        {
+            // $number = count($_POST["Itemcode"]);   
+            // echo $number;
+            // exit;
+            if($request->pr_id)
+            {
+                $validation['pr_id'] = ['required'];
             }
             else{
                 $validation['sr_id'] = ['required'];
             }
-            $validation['Itemcode'] = ['required'];
-            //$validation['Supplier'] = ['required'];
-            // $validation['Currency'] = ['required'];
-            // $validation['Rate'] = ['required'];
-            // $validation['BasicValue'] = ['required'];
-            // $validation['Discount'] = ['required'];
-           // $validation['gst'] = ['required'];
-            // $validation['Netvalue'] = ['required'];
-           // $validation['Remarks'] = ['required'];
-            $validation['ActualorderQty'] = ['required'];
+           
+            $validation['moreItems.*.Itemcode'] = ['required'];
+            $validation['moreItems.*.ActualorderQty'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
-
-            if(!$validator->errors()->all()){
-                $Request = [
-                    "item_code" => $request->Itemcode,
-                    "actual_order_qty"=> $request->ActualorderQty,
-                    //"supplier"  => $request->Supplier,
-                    // "basic_value"=> $request->BasicValue,
-                    // "rate"=> $request->Rate,
-                    // "discount_percent"=> $request->Discount,
-                    // "gst"=> $request->gst,
-                    // "currency"  => $request->Currency ,
-                    // "net_value"=>  $request->Netvalue,
-                    // "remarks"=> $request->Remarks,
-                    "created_at" => date('Y-m-d H:i:s'),
-                    "updated_at" => date('Y-m-d H:i:s'),
-                    "created_user" =>  config('user')['user_id']   
-                ];
-                if($request->pr_id){
-                $this->inv_purchase_req_item->insert_data($Request,$request->pr_id);
-                $request->session()->flash('success',"You have successfully added a purchase requisition item !");
-                return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+            if(!$validator->errors()->all())
+            {
+                foreach ($request->moreItems as $key => $value) {
+                    $Request = [
+                                    "item_code" => $value['Itemcode'],
+                                    "actual_order_qty"=> $value['ActualorderQty'],
+                                    "created_at" => date('Y-m-d H:i:s'),
+                                    "updated_at" => date('Y-m-d H:i:s'),
+                                    "created_user" =>  config('user')['user_id']   
+                                ];
+                    if($request->pr_id)
+                        $this->inv_purchase_req_item->insert_data($Request,$request->pr_id);
+                    else
+                    $this->inv_purchase_req_item->insert_data($Request,$request->sr_id);
+                }
+                // $count = count($_POST["Itemcode"]);
+                // for($i=0;$i<$count;$i++)
+                // {
+                //     if(!empty($_POST['Itemcode'][$i]) && !empty($_POST['ActualorderQty'][$i]))
+                //     {
+                //         $Request = [
+                //             "item_code" => $_POST['Itemcode'][$i],
+                //             "actual_order_qty"=> $_POST['ActualorderQty'][$i],
+                //             "created_at" => date('Y-m-d H:i:s'),
+                //             "updated_at" => date('Y-m-d H:i:s'),
+                //             "created_user" =>  config('user')['user_id']   
+                //         ];
+                //         if($request->pr_id)
+                //         $this->inv_purchase_req_item->insert_data($Request,$request->pr_id);
+                //         else
+                //         $this->inv_purchase_req_item->insert_data($Request,$request->sr_id);
+                //     }
+                // }
+                if($request->pr_id)
+                {
+                    $request->session()->flash('success',"You have successfully added a purchase requisition item !");
+                    return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
                 }
                 else {
-                    $this->inv_purchase_req_item->insert_data($Request,$request->sr_id);
+                   
                     $request->session()->flash('success',"You have successfully added a service requisition item !");
                     return redirect('inventory/get-purchase-reqisition-item?sr_id='.$request->sr_id);
                 }
-
             }
-            if($validator->errors()->all()){
+            if($validator->errors()->all())
+            {
                 if($request->pr_id)
                     return redirect("inventory/add-purchase-reqisition-item?pr_id=".$request->pr_id)->withErrors($validator)->withInput();
                 else
-                return redirect("inventory/add-purchase-reqisition-item?sr_id=".$request->sr_id)->withErrors($validator)->withInput();
+                    return redirect("inventory/add-purchase-reqisition-item?sr_id=".$request->sr_id)->withErrors($validator)->withInput();
             }
         }
+
+        // if ($request->isMethod('post')) {
+        //     if($request->pr_id){
+        //     $validation['pr_id'] = ['required'];
+        //     }
+        //     else{
+        //         $validation['sr_id'] = ['required'];
+        //     }
+        //     $validation['Itemcode'] = ['required'];
+        //     $validation['ActualorderQty'] = ['required'];
+        //     $validator = Validator::make($request->all(), $validation);
+
+        //     if(!$validator->errors()->all()){
+        //         $Request = [
+        //             "item_code" => $request->Itemcode,
+        //             "actual_order_qty"=> $request->ActualorderQty,
+        //             "created_at" => date('Y-m-d H:i:s'),
+        //             "updated_at" => date('Y-m-d H:i:s'),
+        //             "created_user" =>  config('user')['user_id']   
+        //         ];
+        //         if($request->pr_id){
+        //         $this->inv_purchase_req_item->insert_data($Request,$request->pr_id);
+        //         $request->session()->flash('success',"You have successfully added a purchase requisition item !");
+        //         return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
+        //         }
+        //         else {
+        //             $this->inv_purchase_req_item->insert_data($Request,$request->sr_id);
+        //             $request->session()->flash('success',"You have successfully added a service requisition item !");
+        //             return redirect('inventory/get-purchase-reqisition-item?sr_id='.$request->sr_id);
+        //         }
+
+        //     }
+        //     if($validator->errors()->all()){
+        //         if($request->pr_id)
+        //             return redirect("inventory/add-purchase-reqisition-item?pr_id=".$request->pr_id)->withErrors($validator)->withInput();
+        //         else
+        //         return redirect("inventory/add-purchase-reqisition-item?sr_id=".$request->sr_id)->withErrors($validator)->withInput();
+        //     }
+        // }
         if($request->pr_id)
             $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
         else
         $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
-        // $data["currency"] = $this->currency_exchange_rate->get_currency([]);
-        // $data['gst'] = $this->inventory_gst->get_gst();
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-add', compact('data'));
       }
 
