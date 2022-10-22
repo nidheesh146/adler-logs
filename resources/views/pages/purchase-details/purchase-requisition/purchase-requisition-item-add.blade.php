@@ -322,8 +322,11 @@ function getsearch(){
                 }).on('change', function (e) {
                     var select_id = $(this).attr("id");
                     $('#Itemcode-error').remove();
-                    $('#Itemdescription').text('');
+                  //  $('#Itemdescription').text('');
                     $("#Itemtype"+select_id+"").val('');
+                    $("#Itemdescription"+select_id+"").val('');
+
+                    Itemdescription1
                     let res = $(this).select2('data')[0];
                         if(typeof(res) != "undefined" ){
                             if(res.type_name){
