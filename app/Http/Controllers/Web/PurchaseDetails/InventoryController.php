@@ -34,6 +34,29 @@ class InventoryController extends Controller
         
 
     }
+    function getSingleItem(Request $request){
+        $getFilter = $this->inventory_rawmaterial->getSingleDescription(['inventory_rawmaterial.id'=>$request->id]);
+        echo json_encode( $getFilter);die;
+    }
+    function get_description(Request $request){
+
+        $data['draw'] = $request->draw;
+        $data['recordsTotal'] = 0;
+        $data['recordsFiltered'] = 0;
+        $conditions = [];
+        $data['data'] = [];
+
+        if($request->value){
+            $conditions[] = ['inventory_rawmaterial.discription','like','%'.$request->value.'%'];
+            $getFilterDescription = $this->inventory_rawmaterial->getFilterDescription($conditions,$request->length,$request->start);
+            $getFilterDescription1 = $this->inventory_rawmaterial->getFilterDescription1($conditions);
+
+            $data['recordsTotal'] = $getFilterDescription1;
+            $data['recordsFiltered'] =  $getFilterDescription1;
+            $data['data'] = $getFilterDescription;
+        }
+       echo json_encode($data);die;
+    }
 
     // Purchase Reqisition Master get list
     public function get_purchase_reqisition(Request $request)

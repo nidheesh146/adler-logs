@@ -27,7 +27,18 @@ class inventory_rawmaterial extends Model
     {
         return $this->select('id','item_code')->get();
     }
-
+    function getFilterDescription($condition,$length,$start){
+        return $this->select(['inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.id'])
+               ->where($condition)->skip($start)->take($length)->get()->toArray();
+    }
+    function getFilterDescription1($condition){
+        return $this->select(['inventory_rawmaterial.discription','inventory_rawmaterial.id'])
+               ->where($condition)->get()->count();
+    }
+    function getSingleDescription($condition){
+        return $this->select(['inventory_rawmaterial.id','inventory_rawmaterial.item_code as text','inventory_rawmaterial.discription','inv_item_type.type_name'])
+        ->join('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')->where($condition)->first();
+    }
 
 
 
