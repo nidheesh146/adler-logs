@@ -228,7 +228,7 @@
                                 {{ $data['po_data']->appends(request()->input())->links() }}
                             </div> 
                             <br/>
-                            @if($data['po_data'])
+                            @if(count($data['po_data'])>0)
                                 <div class="row">
                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <button type="submit" class="btn btn-primary btn-rounded btn-submit" style="float: right;" >
