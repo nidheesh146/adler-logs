@@ -442,6 +442,7 @@ class PurchaseController extends Controller
     }
     public function purchaseOderApproval(Request $request){
         $condition1 = [];
+        $wherein = [4,5];
             if (!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from && !$request->status) {
                 $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
             }
@@ -476,6 +477,52 @@ class PurchaseController extends Controller
         $data['users'] = $this->User->get_all_users([]);
         $data['po_data'] = $this->inv_final_purchase_order_master->get_purchase_master_list($condition1);
         return view('pages.purchase-details.final-purchase.final-purchase-approval', compact('data'));
+    }
+
+    public function Approve(Request $request)
+    {
+        if($request->check_approve)
+        {
+            foreach($request->check_approve as $po_id){
+                $data = ['inv_final_purchase_order_master.status'=>1,
+                'inv_final_purchase_order_master.processed_by'=>config('user')['user_id'],
+                'inv_final_purchase_order_master.processed_date'=>date('Y-m-d'),
+                'inv_final_purchase_order_master.updated_at'=>date('Y-m-d H:i:s')];
+
+                 $success[]=$this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$po_id],$data);
+            }
+        }
+        if($request->check_hold)
+        {
+            foreach($request->check_hold as $po_id){
+                $data = ['inv_final_purchase_order_master.status'=>5,
+                'inv_final_purchase_order_master.processed_by'=>config('user')['user_id'],
+                'inv_final_purchase_order_master.processed_date'=>date('Y-m-d'),
+                'inv_final_purchase_order_master.updated_at'=>date('Y-m-d H:i:s')];
+                $success[]=$this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$po_id],$data);
+            }
+        }
+        if($request->check_reject)
+        {
+            foreach($request->check_reject as $po_id){
+                $data = ['inv_final_purchase_order_master.status'=>0,
+                'inv_final_purchase_order_master.processed_by'=>config('user')['user_id'],
+                'inv_final_purchase_order_master.processed_date'=>date('Y-m-d'),
+                'inv_final_purchase_order_master.updated_at'=>date('Y-m-d H:i:s')];
+                $success[]=$this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$po_id],$data);
+            }
+        }
+        if(count($success) >0)
+        {
+            if($request->order_type=='wo')
+            $request->session()->flash('success', "You have successfully changed status of ".count($success)."  Work Order ");
+            else 
+            $request->session()->flash('success', "You have successfully changed status of ".count($success)."  Purchase Order ");
+        }
+        if($request->order_type)
+        return redirect('inventory/final-purchase/approval?prsr='.$request->order_type);
+        else
+        return redirect('inventory/final-purchase/approval');
     }
     public function find_rq_number(Request $request)
     {

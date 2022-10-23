@@ -6,11 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\User;
+use App\Models\PurchaseDetails\inv_purchase_req_item_approve;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_master;
 use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
-
+use DB;
 use Validator;
 class ApprovalController extends Controller
 {
@@ -21,6 +22,7 @@ class ApprovalController extends Controller
         $this->inv_purchase_req_master = new inv_purchase_req_master;
         $this->inv_supplier = new inv_supplier;
         $this->inventory_rawmaterial = new inventory_rawmaterial;
+        //$this->inv_purchase_req_item_approve = new inv_purchase_req_item_approve;
     }
 
     public function getList(Request $request) 
@@ -41,6 +43,11 @@ class ApprovalController extends Controller
             // }
             if ($request->item_code) {
                 $condition[] = ['inventory_rawmaterial.Item_code','like', '%'.$request->item_code.'%'];
+            }
+            if ($request->requestor) {
+                //$condition[] = [DB::raw("CONCAT(user.f_name,user.l_name)"), 'like', '%' . $request->requestor . '%'];
+                //$condition[] = ['user.l_name','like', '%'.$request->requestor.'%'];
+                $condition[] = ['user.f_name','like', '%'.$request->requestor.'%'];
             }
             if ($request->status || $request->status == '0') {
                 $wherein = [$request->status];
@@ -141,5 +148,14 @@ class ApprovalController extends Controller
             // if($validator->errors()->all()) {
             //     return redirect('inventory/purchase-reqisition/approval?prsr='.$request->prsr)->withErrors($validator)->withInput();
             // }
+    }
+
+    public function get_updated_by($pr_item_id){
+        $updated_by = inv_purchase_req_item::select('user.f_name','user.l_name')
+        ->leftjoin('inv_purchase_req_item_approve','inv_purchase_req_item_approve.pr_item_id', '=', 'inv_purchase_req_item.requisition_item_id')
+                            ->leftjoin('user','user.user_id','=', 'inv_purchase_req_item_approve.created_user')
+                            ->where('inv_purchase_req_item_approve.pr_item_id','=',$pr_item_id)
+                            ->first();
+        return $updated_by;
     }
 }

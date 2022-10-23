@@ -2,6 +2,7 @@
 @section('content')
 
 @inject('SupplierQuotation', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
+
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -124,7 +125,7 @@
                                     <th>Created Date</th>
                                     <th>Created By</th>
                                     <th>Action</th>
-                                
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -170,6 +171,7 @@
                                         <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
                                     @endif
                                     </td>
+                                    
                                 </tr>
                                 
                                 @endforeach
@@ -178,6 +180,7 @@
                         <div class="box-footer clearfix">
                             {{ $data['po_data']->appends(request()->input())->links() }}
                     </div> 
+                
                 
                     </div>
                 </div>
@@ -341,6 +344,22 @@
         
     });
 
+    $(".checkbox-group").each(function (i, li) {
+        var currentgrp = $(li);
+        $(currentgrp).find(".check-approve").on('change', function () {
+            $(currentgrp).find(".check-hold").not(this).prop('checked',false);
+             $(currentgrp).find(".check-reject").not(this).prop('checked',false);
+        });
+
+        $(currentgrp).find(".check-hold").on('change', function () {
+            $(currentgrp).find(".check-approve").not(this).prop('checked', false);
+            $(currentgrp).find(".check-reject").not(this).prop('checked',false);
+        });
+         $(currentgrp).find(".check-reject").on('change', function () {
+            $(currentgrp).find(".check-approve").not(this).prop('checked', false);
+            $(currentgrp).find(".check-hold").not(this).prop('checked',false);
+        });
+    });
 	
 </script>
 

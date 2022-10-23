@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('approval', 'App\Http\Controllers\Web\PurchaseDetails\ApprovalController')
 <style>
     input[type="checkbox"]{
         appearance: none;
@@ -88,19 +89,24 @@
                                             <div class="row filter_search" style="margin-left: 0px;">
                                             <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                                 
-                                                    <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                         <label for="exampleInputEmail1" style="font-size: 12px;">@if(request()->get('prsr')!='sr') PR No @else SR No @endif</label>
                                                         <input type="text" value="{{request()->get('pr_no')}}" name="pr_no" class="form-control" placeholder="@if(request()->get('prsr')!='sr') PR NO @else SR NO @endif">
                                                     </div><!-- form-group -->
                                                     <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
                                                     
-                                                    <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                     <label for="exampleInputEmail1" style="font-size: 12px;">Item Code</label>
                                                         <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
                                                     
                                                     </div><!-- form-group -->
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                    <label for="exampleInputEmail1" style="font-size: 12px;">Requestor</label>
+                                                        <input type="text" value="{{request()->get('requestor')}}" name="requestor" id="requestor" class="form-control" placeholder="REQUESTOR">
+                                                    
+                                                    </div><!-- form-group -->
                                 
-                                                    <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                         <label  style="font-size: 12px;">Status</label>
                                                         <select name="status" class="form-control">
                                                             <option value=""> --Select One-- </option>
@@ -151,6 +157,7 @@
                                     <th>Item code </th>
                                     <th>Description</th>
                                     <th>Qrder Qty</th>
+                                    <th>Requestor</th>
                                     <th style="width:15%;">Processed info</th>
                                     <th>Status</th>
                                     @if(request()->get('status')==4 || request()->get('status')==5 || !request()->get('status'))
@@ -171,8 +178,12 @@
                                     <td>{{$item['item_code']}}</td>
                                     <td>{{$item['short_description']}}</td>
                                     <td>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
-                                    <td>@if($item['updated_at']!=NULL) on: {{date( 'd-m-Y' , strtotime($item['updated_at']))}} @endif<br/>
-                                        @if($item['f_name'])By:{{$item['f_name']}} {{$item['l_name']}} @endif</td>
+                                    <td>{{$item['f_name']}} {{$item['l_name']}}</td>
+                                    <td>@if($item['updated_at']!=NULL) on: {{date( 'd-m-Y' , strtotime($item['updated_at']))}} <br/>
+                                        <?php
+											$updated_by = $approval->get_updated_by($item['pr_item_id']);?>
+											{{$updated_by['f_name'] }} {{$updated_by['l_name'] }}
+									@endif</td>
                                     <!-- <td>@if($item['updated_at']!=NULL) {{date( 'd-m-Y' , strtotime($item['updated_at']))}} @endif</td> -->
                                     {{-- <td><span class="badge badge-pill badge-info ">waiting for Action<span></td> --}}
                                     <td>

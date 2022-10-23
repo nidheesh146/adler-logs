@@ -93,14 +93,15 @@ class inv_purchase_req_item extends Model
     }
     
     function getdata_approved($condition, $wherein = null){
-         $query = $this->select(['inv_purchase_req_item.requisition_item_id','inv_purchase_req_item.actual_order_qty','inventory_rawmaterial.item_code',
+         $query = $this->select(['inv_purchase_req_item_approve.pr_item_id','inv_purchase_req_item.requisition_item_id','inv_purchase_req_item.actual_order_qty','inventory_rawmaterial.item_code',
                                'inventory_rawmaterial.short_description','inv_purchase_req_master.pr_no','inv_purchase_req_item_approve.status','inv_purchase_req_master.PR_SR',
                                 'user.f_name','user.l_name','inv_purchase_req_item_approve.updated_at','inv_unit.unit_name'])
                      ->leftjoin('inv_purchase_req_item_approve','inv_purchase_req_item_approve.pr_item_id', '=', 'inv_purchase_req_item.requisition_item_id')
                      ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
                      ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
                      ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
-                     ->leftjoin('user','user.user_id','=', 'inv_purchase_req_item_approve.created_user')
+                    // ->leftjoin('user','user.user_id','=', 'inv_purchase_req_item_approve.created_user')
+                     ->leftjoin('user','user.user_id','=','inv_purchase_req_master.requestor_id')
                      ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id');
                      if($wherein ){
                         $query = $query->whereIn('inv_purchase_req_item_approve.status',$wherein);

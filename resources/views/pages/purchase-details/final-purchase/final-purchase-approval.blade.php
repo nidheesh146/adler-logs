@@ -2,6 +2,38 @@
 @section('content')
 
 @inject('SupplierQuotation', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
+<style>
+    input[type="checkbox"]{
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        content: none;
+        outline: none;
+        margin: 0;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    
+
+    input[type="checkbox"]:checked {
+        appearance: none;
+        outline: none;
+        padding: 0;
+        content: none;
+        border: none;
+    }
+
+    input[type="checkbox"]:checked::before{
+        position: absolute;
+        color: white !important;
+        content: "\00A0\2713\00A0" !important;
+        border: 1px solid #d3d3d3;
+        font-weight: bolder;
+        font-size: 18px;
+    }
+
+               
+                
+</style>
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -101,78 +133,115 @@
                         </div>
                     </div>
                 <div class="tab-pane active show " id="purchase">
-                    <style>
-                        tbody tr{
-                            font-size:12.9px;
-                        }
-                    </style>
-                    <div class="table-responsive">
-                        <table class="table table-bordered mg-b-0" id="example1">
-                            <thead>
-                                <tr>
-                                
-                                    <th style="width:120px;">RQ NO:</th>
-                                    <th>@if(request()->get('order_type')=="wo") WO @else PO @endif No</th>
-                                    <th>PO date</th>
-                                    <th>Supplier</th>
-                                    <th>Created Date</th>
-                                    <th>Created By</th>
-                                    <th>Action</th>
-                                
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($data['po_data'] as $po_data)
-                                <tr style="	@if($po_data->status == 5)
-                                    background: #ffc1074f;
-                                    @endif @if($po_data->status == 0) background: #ffc1074f;
-                                    @endif"
-                                    >
-                                    <td>{{$po_data->rq_no}}</td>
-                                    <td>{{$po_data->po_number}}</td>
-                                    <td>{{date('d-m-Y',strtotime($po_data->po_date))}}</td>
-                                    <td>{{$po_data->vendor_id}} - {{$po_data->vendor_name}}</td>
-                                    <td>{{date('d-m-Y',strtotime($po_data->created_at))}}</td>
-                                    <td>{{$po_data->f_name}} {{$po_data->l_name}}</td>
-                                    <td>
+                        <form autocomplete="off" action="{{ url('inventory/final-purchase/approval') }}?order_type={{request()->get('order_type')}}" method="POST" id="approve-form">
+                        {{ csrf_field() }} 
+                        <style>
+                            tbody tr{
+                                font-size:12.9px;
+                            }
+                        </style>
+                        <div class="table-responsive">
+                            <div style="float:right;">
+                                <input type="checkbox" class="item-select-radio check-approve bg-success text-white"  style="color:green;width:20px;height:20px;">
+                                <span style="vertical-align: middle;"><label  style="font-size: 12px;">Approve</label></span>
+                                <input type="checkbox" class="item-select-radio check-hold bg-warning text-dark"   style="color:yellow;width:20px;height:20px;">
+                                <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>On Hold</span></label></span>
+                                <input type="checkbox" class="item-select-radio check-reject bg-danger text-white"  style="color:red;width:20px;height:20px;">
+                                <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>Reject</span></label></span>
+                            </div>
+                            <table class="table table-bordered mg-b-0" id="example1">
+                                <thead>
+                                    <tr>
                                     
-                                    <button data-toggle="dropdown" style="width: 68px;" class="badge 
-                                        @if($po_data->status==1) badge-success @elseif($po_data->status==4)  badge-warning @elseif($po_data->status==5)  badge-warning @elseif($po_data->status==0) badge-danger @endif"> 
-                                        @if($po_data->status==1) 
-                                            Approved 
-                                        @elseif($po_data->status==4)  
-                                            pending
-                                        @elseif($po_data->status==5)  
-                                            On hold
-                                        @elseif($po_data->status==0)  
-                                            Cancelled
+                                        <th style="width:120px;">RQ NO:</th>
+                                        <th>@if(request()->get('order_type')=="wo") WO @else PO @endif No</th>
+                                        <th>PO date</th>
+                                        <th>Supplier</th>
+                                        <th>Created Date</th>
+                                        <th>Created By</th>
+                                        <th>Action</th>
+                                        @if(request()->get('status')==4 || request()->get('status')==5 || !request()->get('status'))
+                                        <th>Status Change</th>
                                         @endif
-                                        <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i>
-                                    </button>
-								    <div class="dropdown-menu">
-                                        <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
-                                        <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($data['po_data'] as $po_data)
+                                    <tr style="	@if($po_data->status == 5)
+                                        background: #ffc1074f;
+                                        @endif @if($po_data->status == 0) background: #ffc1074f;
+                                        @endif"
+                                        >
+                                        <td>{{$po_data->rq_no}}</td>
+                                        <td>{{$po_data->po_number}}</td>
+                                        <td>{{date('d-m-Y',strtotime($po_data->po_date))}}</td>
+                                        <td>{{$po_data->vendor_id}} - {{$po_data->vendor_name}}</td>
+                                        <td>{{date('d-m-Y',strtotime($po_data->created_at))}}</td>
+                                        <td>{{$po_data->f_name}} {{$po_data->l_name}}</td>
+                                        <td>
+                                        
+                                        <button data-toggle="dropdown" style="width: 68px;" class="badge 
+                                            @if($po_data->status==1) badge-success @elseif($po_data->status==4)  badge-warning @elseif($po_data->status==5)  badge-warning @elseif($po_data->status==0) badge-danger @endif"> 
+                                            @if($po_data->status==1) 
+                                                Approved 
+                                            @elseif($po_data->status==4)  
+                                                pending
+                                            @elseif($po_data->status==5)  
+                                                On hold
+                                            @elseif($po_data->status==0)  
+                                                Cancelled
+                                            @endif
+                                            <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            @if($po_data->status!=0 && $po_data->status!=1)
+                                            <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model dropdown-item "><i class="fa fa-check-circle"></i> Approve</a>
+                                            @endif
+                                            <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
+                                            <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                                        </div>
+                                           {{-- @if($po_data->status!=0 && $po_data->status!=1)
+                                            <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model badge badge-success" style="color: #141c2b;text-decoration:none;padding:6px;color:white;">
+                                                <i class="fa fa-check-circle"></i> Approve
+                                            </a>
+                                        
+                                            @endif  --}}
+                                            @if($po_data->status==1)
+                                            <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
+                                            @endif
+                                        </td>
+                                        @if(request()->get('status')==4 || request()->get('status')==5 || !request()->get('status'))
+                                        <td style="width:12%;" class="checkbox-group">
+                                            @if($po_data['status']==4 || $po_data['status']==5 )
+                                            <input type="checkbox" class="item-select-radio check-approve bg-success text-white" id="check-approve" name="check_approve[]" value="{{$po_data['id']}}" style="color:green;">
+                                            <input type="checkbox" class="item-select-radio check-hold bg-warning text-dark"  id="check-hold" @if($po_data['status'] == 5)  checked @endif name="check_hold[]" value="{{$po_data['id']}}" style="color:yellow;">
+                                            <input type="checkbox" class="item-select-radio check-reject bg-danger text-white" id="check-reject" name="check_reject[]" value="{{$po_data['id']}}" style="color:red;">
+                                            @endif
+                                        </td>
+                                    @endif
+                                    </tr>
+                                    
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div class="box-footer clearfix">
+                                {{ $data['po_data']->appends(request()->input())->links() }}
+                            </div> 
+                            <br/>
+                            @if($data['po_data'])
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                        <button type="submit" class="btn btn-primary btn-rounded btn-submit" style="float: right;" >
+                                            <span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  
+                                            <i class="fas fa-save"></i>
+                                            Save 
+                                        </button>
                                     </div>
-                                        @if($po_data->status!=0 && $po_data->status!=1)
-                                        <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model badge badge-success" style="color: #141c2b;text-decoration:none;padding:6px;color:white;">
-                                            <i class="fa fa-check-circle"></i> Approve
-                                        </a>
-                                       
-                                        @endif
-                                        @if($po_data->status==1)
-                                        <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
-                                        @endif
-                                    </td>
-                                </tr>
-                                
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <div class="box-footer clearfix">
-                            {{ $data['po_data']->appends(request()->input())->links() }}
-                    </div> 
-                
-                    </div>
+                                </div>
+                            @endif
+                    
+                        </div>
+                    </form>
                 </div>
 
             </div>
@@ -326,9 +395,24 @@
             });
             //$('#status')
 
+        });   
+        
+    });
+    $(".checkbox-group").each(function (i, li) {
+        var currentgrp = $(li);
+        $(currentgrp).find(".check-approve").on('change', function () {
+            $(currentgrp).find(".check-hold").not(this).prop('checked',false);
+             $(currentgrp).find(".check-reject").not(this).prop('checked',false);
         });
-        
-        
+
+        $(currentgrp).find(".check-hold").on('change', function () {
+            $(currentgrp).find(".check-approve").not(this).prop('checked', false);
+            $(currentgrp).find(".check-reject").not(this).prop('checked',false);
+        });
+         $(currentgrp).find(".check-reject").on('change', function () {
+            $(currentgrp).find(".check-approve").not(this).prop('checked', false);
+            $(currentgrp).find(".check-hold").not(this).prop('checked',false);
+        });
     });
 
 	
