@@ -246,6 +246,8 @@ function getsearch(){
             });
             $('#Itemtype'+divId).val(datas[0].type_name);
             $('#Itemdescription'+divId).val(datas[0].discription);
+            $("#unit-div"+divId+"").text(datas[0].unit_name);
+            //$('#u'+divId).val(datas[0].discription);
             $('#myModal1').modal('hide');
             initSelect2();
         });
@@ -322,7 +324,7 @@ function getsearch(){
                 }).on('change', function (e) {
                     var select_id = $(this).attr("id");
                     $('#Itemcode-error').remove();
-                  //  $('#Itemdescription').text('');
+                    $("#Itemdescription"+select_id+"").text('');
                     $("#Itemtype"+select_id+"").val('');
                     $("#Itemdescription"+select_id+"").val('');
 
@@ -335,6 +337,9 @@ function getsearch(){
                             if(res.unit_name){
                                 $('#Unit').val(res.unit_name);
                                 $("#unit-div"+select_id+"").text(res.unit_name);
+                            }
+                            if(res.discription){
+                                $("#Itemdescription"+select_id+"").val(res.discription);
                             }
                        }
                     });   
