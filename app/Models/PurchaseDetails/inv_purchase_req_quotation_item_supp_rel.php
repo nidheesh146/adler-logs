@@ -29,18 +29,17 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
     }
     function get_Item($condition){
        return $this->select(['inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_purchase_req_quotation.delivery_schedule',
-        'inv_purchase_req_item.actual_order_qty','inv_purchase_req_quotation_item_supp_rel.quantity','inv_purchase_req_quotation_item_supp_rel.rate',
-        'inv_purchase_req_quotation_item_supp_rel.discount','inv_purchase_req_quotation_item_supp_rel.item_id as inv_item_id','inv_unit.unit_name',
-        'inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst','currency_exchange_rate.currency_code',
-        'inventory_rawmaterial.is_fixed_rate','inventory_rawmaterial.rate_expiry_date','inventory_rawmaterial.company_purchase_rate'])
+        'inv_purchase_req_item.actual_order_qty','inv_purchase_req_quotation_item_supp_rel.quantity','inv_purchase_req_quotation_item_supp_rel.rate','inv_supplier.id as supplier_id','inventory_rawmaterial.id as itemId',
+        'inv_purchase_req_quotation_item_supp_rel.discount','inv_purchase_req_quotation_item_supp_rel.item_id as inv_item_id','inv_unit.unit_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst','currency_exchange_rate.currency_code'])
        ->join('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
-       ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+       ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code',)
        ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_purchase_req_quotation_item_supp_rel.quotation_id')
        ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_quotation_item_supp_rel.item_id')
        ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
        ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.receipt_unit_id')
        ->leftjoin('inventory_gst','inventory_gst.id','=','inv_purchase_req_quotation_item_supp_rel.gst')
         ->leftjoin('currency_exchange_rate','inv_purchase_req_quotation_item_supp_rel.currency','=','currency_exchange_rate.currency_id')
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_item_supp_rel.supplier_id')
        ->where($condition)
        ->groupBy('inv_purchase_req_quotation_item_supp_rel.id')
        ->get();
@@ -50,10 +49,10 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
         return $this->select(['inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_purchase_req_quotation.delivery_schedule',
         'inv_purchase_req_item.actual_order_qty','inv_purchase_req_quotation_item_supp_rel.quantity as supp_quantity','inv_purchase_req_quotation_item_supp_rel.rate as supp_rate',
         'inv_purchase_req_quotation_item_supp_rel.discount as supplier_discount','inv_purchase_req_quotation_item_supp_rel.currency','inv_purchase_req_quotation_item_supp_rel.gst',
-        'inv_purchase_req_quotation_item_supp_rel.item_id as inv_item_id','inv_supplier.vendor_id','inv_supplier.vendor_name',
+        'inv_purchase_req_quotation_item_supp_rel.item_id as inv_item_id','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier.id as supplier_id',
         'inv_purchase_req_quotation_item_supp_rel.specification as supp_specification','inv_purchase_req_quotation_item_supp_rel.remarks','inventory_rawmaterial.item_name',
         'inv_unit.unit_name','inventory_rawmaterial.short_description','inv_purchase_req_item_approve.approved_qty','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst',
-        'inventory_gst.gst','currency_exchange_rate.currency_code','inventory_rawmaterial.is_fixed_rate','inventory_rawmaterial.rate_expiry_date','inventory_rawmaterial.company_purchase_rate' ])
+        'inventory_gst.gst','currency_exchange_rate.currency_code','inventory_rawmaterial.id as itemId' ])
         ->join('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
         ->join('inv_purchase_req_item_approve','inv_purchase_req_item_approve.pr_item_id','=','inv_purchase_req_item.requisition_item_id')
         ->leftjoin('inventory_gst','inventory_gst.id','=','inv_purchase_req_quotation_item_supp_rel.gst')

@@ -11,6 +11,7 @@ use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_master_item_rel;
 use App\Models\PurchaseDetails\inv_purchase_req_master;
+use App\Models\PurchaseDetails\inv_supplier_itemrate;
 use App\Models\currency_exchange_rate;
 use App\Models\inventory_gst;
 use Validator;
@@ -23,6 +24,7 @@ class SupplierQuotationController extends Controller
     {
         $this->inv_purchase_req_quotation = new inv_purchase_req_quotation;
         $this->inv_supplier = new inv_supplier;
+        $this->inv_supplier_itemrate = new inv_supplier_itemrate;
         $this->inv_purchase_req_quotation_supplier = new inv_purchase_req_quotation_supplier;
         $this->inv_purchase_req_quotation_item_supp_rel = new inv_purchase_req_quotation_item_supp_rel;
         $this->inv_purchase_req_item = new inv_purchase_req_item;
@@ -319,6 +321,24 @@ class SupplierQuotationController extends Controller
                                                     ->pluck('remarks')
                                                     ->first();
           return $check;
+    }
+
+    function get_rate($supplier_id,$item_id)
+    {
+        $now = date('Y-m-d');
+        $data = inv_supplier_itemrate::select('*')
+                                    ->where('supplier_id','=',$supplier_id)
+                                    ->where('item_id','=',$item_id)
+                                    ->first();
+        if($data){
+            if($data['rate_expiry_startdate']<=$now && $data['rate_expiry_enddate']>=$now)
+            return $data['rate'];
+            else 
+            return 0;
+        }
+        else
+        return 0;
+
     }
 
 

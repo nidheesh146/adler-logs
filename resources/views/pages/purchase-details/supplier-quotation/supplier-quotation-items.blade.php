@@ -1,9 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<?php 
-                            	use Carbon\Carbon;
-                                $today_date = Carbon::now();
-                            ?>
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -74,7 +71,7 @@
 		</div>
 
 
-		<form method="post" action="{{url('inventory/supplierQuotationUpdate/'.$rq_no.'/'.$supp_id)}}"  id="supplierquotationform">
+		<form method="post" action="{{url('inventory/supplierQuotationUpdate/'.$rq_no.'/'.$supp_id)}}"  id="supplierquotationform" autocomplete="off">
 		{{ csrf_field() }}
 			<div class="row">
 				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -169,9 +166,13 @@
                             <td>{{date('d-m-Y',strtotime($item['delivery_schedule']))}}</td>
 							<td>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
 							<td>{{$item['quantity']}} {{$item['unit_name']}}</td>
-							
-							<td>@if($item['rate']!=NULL) {{$item['rate']}} 
-								@elseif($item['is_fixed_rate']==1 && $today_date->format("Y-m-d") <= $item['rate_expiry_date']) {{$item['company_purchase_rate']}}  @endif</td>
+							<td>@php $rate=$fn->get_rate($item['supplier_id'], $item['itemId']) @endphp
+								 @if($item['rate']!=NULL) 
+								 {{$item['rate']}}
+								 @elseif($rate!=0)
+								 {{$rate}}
+								 @endif
+							</td>
 							<td>{{$item['discount']}}</td>
 							<td>@if($item['igst']!=0)
                                     IGST:{{$item['igst']}}%
@@ -187,7 +188,7 @@
                                     CGST:{{$item['sgst']}}%
                                     @endif
 							</td>
-							<td>{{$item['currency_code']}}</td>
+							<th>{{$item['currency_code']}}</td>
                             <td><a href="{{url('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item['inv_item_id'])}}" class="badge badge-info"><i class="fas fa-edit"></i> Update</a>
 							</td>
 						</tr>    
