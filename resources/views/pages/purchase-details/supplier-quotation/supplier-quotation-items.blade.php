@@ -1,6 +1,9 @@
 @extends('layouts.default')
 @section('content')
-
+<?php 
+                            	use Carbon\Carbon;
+                                $today_date = Carbon::now();
+                            ?>
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -160,15 +163,17 @@
 						@foreach($data['inv_purchase_req'] as $item)
                         <tr>
                             {{-- <th>1</th> --}}
-                            <th>{{$item['pr_no']}}</th>
-                            <th>{{$item['item_code']}}</th>
-							<th>{{$item['hsn_code']}}</th>
-                            <th>{{date('d-m-Y',strtotime($item['delivery_schedule']))}}</th>
-							<th>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
-							<th>{{$item['quantity']}} {{$item['unit_name']}}</td>
-							<th>{{$item['rate']}}</td>
-							<th>{{$item['discount']}}</td>
-							<th>@if($item['igst']!=0)
+                            <td>{{$item['pr_no']}}</td>
+                            <td>{{$item['item_code']}}</td>
+							<td>{{$item['hsn_code']}}</td>
+                            <td>{{date('d-m-Y',strtotime($item['delivery_schedule']))}}</td>
+							<td>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
+							<td>{{$item['quantity']}} {{$item['unit_name']}}</td>
+							
+							<td>@if($item['rate']!=NULL) {{$item['rate']}} 
+								@elseif($item['is_fixed_rate']==1 && $today_date->format("Y-m-d") <= $item['rate_expiry_date']) {{$item['company_purchase_rate']}}  @endif</td>
+							<td>{{$item['discount']}}</td>
+							<td>@if($item['igst']!=0)
                                     IGST:{{$item['igst']}}%
                                     &nbsp;
                                     @endif
@@ -181,8 +186,8 @@
                                     @if($item['sgst']!=0)
                                     CGST:{{$item['sgst']}}%
                                     @endif
-							</th>
-							<th>{{$item['currency_code']}}</td>
+							</td>
+							<td>{{$item['currency_code']}}</td>
                             <td><a href="{{url('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item['inv_item_id'])}}" class="badge badge-info"><i class="fas fa-edit"></i> Update</a>
 							</td>
 						</tr>    

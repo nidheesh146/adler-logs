@@ -100,7 +100,18 @@
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Rate *</label>
+                                    @php 
+                                        use Carbon\Carbon;
+                                        $today_date = Carbon::now();
+                                    @endphp
+                                    @if($data['get_item_single']['supp_rate']!=NULL)
                                     <input type="text" class="form-control" value="{{$data['get_item_single']['supp_rate']}}" name="rate" id="rate" placeholder="Rate">
+                                    @elseif($data['get_item_single']['is_fixed_rate']==1 && $today_date->format("Y-m-d") <= $data['get_item_single']['rate_expiry_date'])
+                                    <input type="text" class="form-control" value="{{$data['get_item_single']['company_purchase_rate']}}" name="rate" id="rate" placeholder="Rate">
+                                    @else
+                                    <input type="text" class="form-control" value="" name="rate" id="rate" placeholder="Rate">
+                                    @endif
+
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Discount (%) *</label>
