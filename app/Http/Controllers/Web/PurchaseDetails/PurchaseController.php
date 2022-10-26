@@ -972,4 +972,48 @@ class PurchaseController extends Controller
          return $freight_charge;                   
     }
 
+    public function getOrderItems(Request $request)
+    {
+        $po_id = $request->po_id;
+        $items = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $po_id]);
+        $data = '<table class="table table-bordered mg-b-0">';
+        $i=1;
+        foreach($items as $item){
+            $data .= '<tr>
+                    <td style="vertical-align: middle;">' . $item->item_code . '</td>
+                    <td><label>Actual Order Quantity </label> <input type="text" class="order-qty" id="order-qty" name="qty" value="'. $item->order_qty+$item->cancelled_qty.'" disabled></td>
+                    <td><label>Quantity to be accepted </label> <input type="text" class="accept-qty" id="accept-qty" name="qty" value="'. $item->order_qty .'" disabled></td>
+                    <td><label>Quantity to be cancelled </label><input class="cancel-qty" id="cancel-qty"  type="text" name="cancel_qty'. $i.'"  value="'.$item->cancelled_qty.'"></td>
+                    <input type="hidden" name="purchase_item_id'. $i.'" value="'.$item->purchase_item_id.'">
+                    <tr>';
+                    $i++;
+        }
+        $data .= '</table>';
+        return $data; 
+    }
+
+    public function partialCancellation(Request $request){
+        $items = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $request->po_id]);
+        $item_count = count($items);
+        for($i=1;$i<=$item_count;$i++)
+        {
+            $data['cancelled_qty'] = $_POST['cancel_qty'.$i];
+            $success[] = $this->inv_final_purchase_order_item->updatedata(['id' => $_POST['purchase_item_id'.$i]], $data);
+            $ys[]= inv_final_purchase_order_item::where('id','=',$_POST['purchase_item_id'.$i])->decrement('order_qty',$_POST['cancel_qty'.$i]);
+        
+        }
+        if(count( $success)==$item_count)
+        {
+        $request->session()->flash('success', "");
+        if($request->order_type=='wo')
+            $request->session()->flash('success', "You have successfully updated Work order quantity !");
+            else 
+            $request->session()->flash('success', "You have successfully updated Purchase order quantity !");
+        }
+        if($request->order_type)
+        return redirect('inventory/final-purchase/cancellation?prsr='.$request->order_type);
+        else
+        return redirect('inventory/final-purchase/cancellation');
+    }
+
 }

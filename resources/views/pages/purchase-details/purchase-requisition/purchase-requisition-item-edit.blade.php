@@ -73,7 +73,7 @@
                       {{ $errorr }}
                     </div>
                    @endforeach 
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                     <label for="exampleInputEmail1">Item code * </label>
                                     <select class="form-control Item-code" name="Itemcode" id="Itemcode">
                                         @if (!empty($datas["item"]))
@@ -82,7 +82,7 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                     <label>Item type * </label>
                                     <input type="text" readonly class="form-control"
                                         value="{{ !empty($datas) ? $datas['item']['type_name'] : '' }}"
@@ -100,6 +100,10 @@
                                                 <span class="input-group-text unit-div" id="unit-div1">{{ !empty($datas) ? $datas['item']['unit_name'] : '' }}</span>
                                             </div>
                                         </div>
+                                </div>
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                                    <label>Description * </label>
+                                    <textarea type="text" readonly class="form-control"  id="Itemdescription1"name="Description" placeholder="Description">{{ !empty($datas) ? $datas['item']['discription'] : '' }}</textarea>
                                 </div>  
                             </div>        
                             <div class="row">

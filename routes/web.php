@@ -112,6 +112,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/final-purchase/cancellation', 'PurchaseController@purchaseOderCancellation');
     Route::get('inventory/final-purchase/approval', 'PurchaseController@purchaseOderApproval');
     Route::post('inventory/final-purchase/approval', 'PurchaseController@Approve');
+    Route::get('getOrderItems','PurchaseController@getOrderItems');
+    Route::post('inventory/final-purchase/partial-cancellation', 'PurchaseController@partialCancellation');
 
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');

@@ -155,6 +155,10 @@
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#cancelModal" id="cancel-model" class="cancel-model badge badge-danger" style="width: 68px;padding:6px;">
                                             <i class="fa fa-window-close"></i> Cancel
                                         </a>
+                                        <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" rq="{{$po_data->rq_no}}" podate="{{date('d-m-Y',strtotime($po_data->po_date))}}" supplier ="{{$po_data->vendor_name}}" value="{{$po_data->po_id}}" data-target="#parialCancelModal" 
+                                            id="partial-cancel-model" class="partial-cancel-model badge badge-danger" style="width: 85px;padding:6px;margin-top:2px;">
+                                            <i class="fa fa-window-close"></i> Partial Cancel
+                                        </a>
                                     @endif
                                     @if($po_data->status==0 )
                                     <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id.'?order=cancel')}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
@@ -240,6 +244,59 @@
             </form>
         </div>
     </div><!-- modal-dialog -->
+    <div id="parialCancelModal" class="modal">
+        <div class="modal-dialog modal-lg" role="document">
+            <form id="status-change-form" method="post" action="{{ url('inventory/final-purchase/partial-cancellation')}}">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#Partial Cancellation of @if(request()->get('order_type')=="wo") Work Order @else Purchase Order @endif <span class="po_number"></span></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8">
+                                <div class="po">
+                                    <label>
+                                        PO Number:
+                                    </label>
+                                    <span class="po-number"></span>
+                                </div>
+                                <div class="po">
+                                    <label>
+                                        Supplier:
+                                    </label>
+                                    <span class="supplier"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                                <label>
+                                    PO Date:
+                                </label>
+                                <span class="po-date"></span></br/>
+                                <label>
+                                    RQ  Number:
+                                </label>
+                                <span class="rq-number"></span>
+                            </div>
+                        </div>
+                        <div class="form-devider"></div>
+                        <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
+                        <input type="hidden" name="po_id" id ="po_id" class="po_id">
+                        <div class="binding">
+
+                        </div>
+                    
+                    </div>
+                    <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        <button type="submit" class="btn btn-primary" id="save"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+								role="status" aria-hidden="true"></span> <i class="fas fa-save"></i> Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div><!-- modal-dialog -->
 </div>
 
 
@@ -308,20 +365,28 @@
 	});
 
     $(document).ready(function() {
-        $('body').on('click', '#approve-model', function (event) {
+        $('body').on('click', '#partial-cancel-model', function (event) {
+            $(".binding").empty();
             event.preventDefault();
             var po = $(this).attr('po');
-            // alert(po);
+            $('.po-number').html(po);
             $('.po_number').html('('+po+')');
 			let po_id = $(this).attr('value');
 			$('#po_id').val(po_id);
-            let status = $(this).attr('status');
-            $('#status option').each(function(){
-                if (this.value == status) {
-                  $(this).remove();
-                }
-            });
-            //$('#status')
+            var rq = $(this).attr('rq');
+            $('.rq-number').html(rq);
+            var supplier = $(this).attr('supplier');
+            $('.supplier').html(supplier);
+            var po_date = $(this).attr('podate');
+            $('.po-date').html(po_date);
+            $.ajax ({
+                    type: 'GET',
+                    url: "{{url('getOrderItems')}}",
+                    data: { po_id: '' + po_id + '' },
+                    success : function(data) {
+                        $('.binding').append(data);
+                    }
+                });
 
         });
         $('body').on('click', '#cancel-model', function (event) {
@@ -332,9 +397,10 @@
            // alert(po_id);
 			$('#po-id').val(po_id);
         });
-        
+         
     });
-
+    
+    
 	
 </script>
 
