@@ -510,6 +510,7 @@ class PurchaseController extends Controller
                 'inv_final_purchase_order_master.processed_date'=>date('Y-m-d'),
                 'inv_final_purchase_order_master.updated_at'=>date('Y-m-d H:i:s')];
                 $success[]=$this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$po_id],$data);
+                $done =$this->order_cancellation_report_generation($po_id);
             }
         }
         if(count($success) >0)
@@ -523,6 +524,34 @@ class PurchaseController extends Controller
         return redirect('inventory/final-purchase/approval?prsr='.$request->order_type);
         else
         return redirect('inventory/final-purchase/approval');
+    }
+
+    public function order_cancellation_report_generation($po_id)
+    {
+        $po_number = inv_final_purchase_order_master::where('id','=',$po_id)->pluck('po_number')->first();
+        $replaceWith = 'C';
+        $findStr = 'I';
+        $position = strpos($po_number, $findStr);
+        if ($position !== false) 
+        {
+            $poc_no = substr_replace($po_number, $replaceWith, $position, strlen($findStr));
+            $this->inv_final_purchase_order_master->updatedata(['id'=>$po_id],['po_number'=>$poc_no]);
+        }
+        $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_master.id' => $po_id]);
+        $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $po_id]);
+                                //print_r( json_encode($data['items']));exit;
+        $data['terms_condition'] = DB::table('po_fpo_master_tc_rel')
+                                    ->select('po_supplier_terms_conditions.terms_and_conditions')
+                                    ->join('po_supplier_terms_conditions', 'po_supplier_terms_conditions.id', '=', 'po_fpo_master_tc_rel.terms_id')
+                                    ->where('fpo_id', $po_id)
+                                    ->first();
+        $data['type'] = 'cancel';
+        $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);
+        $pdf->set_paper('A4', 'landscape');
+        $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $po_id]);
+        $message = new OrderCancellation($po_master);
+        $message->attachData($pdf->output(), "cancellation-report.pdf");
+        Mail::to('shilma33@gmail.com')->send($message);
     }
     public function find_rq_number(Request $request)
     {

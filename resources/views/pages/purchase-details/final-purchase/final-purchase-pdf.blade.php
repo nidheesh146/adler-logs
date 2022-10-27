@@ -98,6 +98,8 @@
             <strong>{{$final_purchase['vendor_name']}}</strong>
             <p>{{$final_purchase['address']}}<br/>
             <?php  
+            if (!function_exists('SplitPhone'))
+            {
             function SplitPhone($data)
             {
                 $a = "";
@@ -106,12 +108,16 @@
                 echo trim($arr[0],' " ');
                 
             }
+            }
+            if (!function_exists('SplitMail'))
+            {
             function SplitMail($data)
             {
                 $a = "";
                 $arr = explode(",",ltrim(rtrim($data,']'),'['));
                 $len = count($arr);
                 echo trim($arr[0],' " ');
+            }
             }
             ?>
             Cell No : {{ SplitPhone($final_purchase['contact_number']) }}<br/>
