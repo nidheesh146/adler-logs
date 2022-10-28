@@ -156,8 +156,8 @@
 						</tr>
 					</thead>
 					<tbody id="prbody">
-					
 						@foreach($data['inv_purchase_req'] as $item)
+							@php $fixed_item= $fn->checkFixedItem($item['item_id'],$rq_no); @endphp
                         <tr>
                             {{-- <th>1</th> --}}
                             <td>{{$item['pr_no']}}</td>
@@ -165,6 +165,17 @@
 							<!-- <td>{{$item['hsn_code']}}</td> -->
                             <td>{{date('d-m-Y',strtotime($item['delivery_schedule']))}}</td>
 							<td>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
+							
+	
+							@if($fixed_item[0] && $fn->get_Fixeditem($fixed_item[0])==$item['item_code'] && $fn->get_fixed_supplier($fixed_item[0])!=$item['supplier_id']) 
+							<td colspan="7" style="vertical-align: middle;text-align:center;">
+								<div class="alert alert-success success" style="width: 100%;">
+								This is the fixed rate item, No need to add these informations
+								</div>
+							</td>
+							
+						
+							@else
 							<td>@if($item['quantity']) {{$item['quantity']}} {{$item['unit_name']}} @endif</td>
 							<td>@php $rate=$fn->get_rate($item['supplier_id'], $item['itemId']) @endphp
 								 @if($item['rate']!=NULL) 
@@ -192,6 +203,8 @@
 							<td>@if($item['committed_delivery_date']!=NULL) {{date('d-m-Y',strtotime($item['committed_delivery_date']))}} @endif</td>
                             <td><a href="{{url('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item['inv_item_id'])}}" class="badge badge-info"><i class="fas fa-edit"></i> Update</a>
 							</td>
+							@endif 
+							
 						</tr>    
 						@endforeach
 				

@@ -367,6 +367,56 @@ class SupplierQuotationController extends Controller
 
     }
 
+    public function checkFixedItem($requisition_item_id,$quotation_id)
+    {
+        // $item = inv_purchase_req_quotation_item_supp_rel::select('inv_purchase_req_item.Item_code','inv_purchase_req_quotation_item_supp_rel.supplier_id','inv_purchase_req_quotation_item_supp_rel.quotation_id')
+        //                                                 ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=', 'inv_purchase_req_quotation_item_supp_rel.item_id')
+        //                                                 ->where('inv_purchase_req_quotation_item_supp_rel.id','=',$quotation_item_id)
+        //                                                 ->first();
+        // $fixed_item_id = inv_supplier_itemrate::where('supplier_id','=',$item['supplier_id'])
+        //                             ->where('item_id','=',$item['Item_code'])
+        //                             ->pluck('item_id')
+        //                             ->first();
+        // if($fixed_item_id)
+        // {
+
+        // }
+        // else 
+        // {
+        //     return 0;
+        // }
+        $row_material_id = inv_purchase_req_item::where('requisition_item_id','=', $requisition_item_id)->pluck('Item_code')->first();
+        $suppliers = inv_purchase_req_quotation_item_supp_rel::select('inv_purchase_req_quotation_item_supp_rel.supplier_id')
+                                                         ->where('inv_purchase_req_quotation_item_supp_rel.item_id','=',$requisition_item_id)
+                                                         ->where('inv_purchase_req_quotation_item_supp_rel.quotation_id','=',$quotation_id)
+                                                         ->get();
+        foreach($suppliers as $supplier)
+        {
+            $fixed_item[] = inv_supplier_itemrate::where('supplier_id','=',$supplier['supplier_id'])
+                                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_supplier_itemrate.item_id')
+                                    ->where('inv_supplier_itemrate.item_id','=',$row_material_id)
+                                    ->select('inventory_rawmaterial.item_code','inv_supplier_itemrate.supplier_id')
+                                    //->pluck('inventory_rawmaterial.item_code')
+                                    ->first();
+        }
+        return $fixed_item;
+    }    
+    
+    public function get_Fixeditem($fixed_item)
+    {  
+        $Trimed= rtrim(ltrim($fixed_item,"{"),"}");
+        $Trimed_array=explode(",",$Trimed); 
+        $item = explode(':',$Trimed_array[0]);
+        return rtrim(ltrim($item[1],'"'),'"');
+    }
+    public function get_fixed_supplier($fixed_item)
+    {
+        $Trimed= rtrim(ltrim($fixed_item,"{"),"}");
+        $Trimed_array=explode(",",$Trimed); 
+        $supplier = explode(':',$Trimed_array[1]);
+        return $supplier[1];
+    }
+
 
 
 }
