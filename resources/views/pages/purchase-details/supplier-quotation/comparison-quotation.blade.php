@@ -58,6 +58,7 @@
                 }
                 
             </style>
+            @if($supplier_data)
 			<div class="table-responsive" style=" border-color:black;width:1000px; overflow-x: scroll;">
 				<table class="table table-bordered " id="example1" class="table1">
                 <colgroup>
@@ -157,6 +158,14 @@
 					</style>
 				</div>
 			</div>
+            @else
+            <div class="row">
+            <div class="alert alert-success success" style="width: 100%;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <i class="icon fa fa-check"></i> It is the fixed rate item, No need to Compare..
+            </div>
+            </div>
+            @endif
 		</div>
 	</div>
 	<!-- az-content-body -->

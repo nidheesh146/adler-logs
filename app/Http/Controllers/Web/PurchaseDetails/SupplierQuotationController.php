@@ -253,13 +253,10 @@ class SupplierQuotationController extends Controller
             $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
             $supplier_data = $this->arrage_items($items, $items_info);
         }
+        //print_r($supplier_data);exit;
         return view('pages/purchase-details/supplier-quotation/comparison-quotation',compact('suppliers', 'rq_number', 'supplier_data', 'rq_no'));
     }
-    public function removed_fixed_item($fixed_item,$rq_no)
-    {
-        $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details_without_fixed_item(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no], $fixed_item);
-        //print_r(json_encode($items));exit;
-    }
+    
     public function check_fixed_item($itemId, $supplier_id)
     {
         $fixed_item = inv_supplier_itemrate::where('item_id','=',$itemId)->where('supplier_id','=',$supplier_id)->pluck('item_id')->first();
