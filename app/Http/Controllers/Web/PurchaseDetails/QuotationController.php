@@ -65,6 +65,7 @@ class QuotationController extends Controller
                      'type'=> ($request->prsr == 'sr') ? 'SR' : 'PR'
                     ];
             $this->inv_purchase_req_quotation->insert_data($data,$request);
+
             $request->session()->flash('success', "You have successfully created a  Request For Quotation !");
             if($request->prsr)
             return redirect('inventory/quotation?prsr='.$request->prsr);

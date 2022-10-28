@@ -81,14 +81,14 @@
 					@if( !empty($data['supplier_single']->supplier_quotation_num)) value="{{$data['supplier_single']->supplier_quotation_num}}" @endif>
 				</div>       
 				
-				<div class="form-group col-sm-12 col-md-4 col-lg-6 col-xl-6">
+				{{--<div class="form-group col-sm-12 col-md-4 col-lg-6 col-xl-6">
 					<label for="exampleInputEmail1">Commited delivery date *</label>
 					<input type="text" class="form-control datepicker date-picker" name="commited_delivery_date" 
 					@if(!empty($data['supplier_single']->commited_delivery_date)) 
 				    	value="{{date('d-m-Y',strtotime($data['supplier_single']->commited_delivery_date))}}" 
 					@endif
 					>
-				</div>
+				</div>--}}
 				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
 					<label>Quotation date *</label>
 					<input type="text" name="quotation_date" class="form-control datepicker date-picker1" 
@@ -144,7 +144,6 @@
 						<tr>
 							<th>PR/SR NO.</th>
 							<th>Item Code:</th>
-							<th>HSN</th>
 							<th>Delivery schedule</th>
 							<th>Requested Qty</th>
 							<th>Supplier Qty</th>
@@ -152,6 +151,7 @@
                             <th>Discount %</th>
 							<th>GST %</th>
 							<th>Currency</th>
+							<th>Committed Delivery Date</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -162,10 +162,10 @@
                             {{-- <th>1</th> --}}
                             <td>{{$item['pr_no']}}</td>
                             <td>{{$item['item_code']}}</td>
-							<td>{{$item['hsn_code']}}</td>
+							<!-- <td>{{$item['hsn_code']}}</td> -->
                             <td>{{date('d-m-Y',strtotime($item['delivery_schedule']))}}</td>
 							<td>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
-							<td>{{$item['quantity']}} {{$item['unit_name']}}</td>
+							<td>@if($item['quantity']) {{$item['quantity']}} {{$item['unit_name']}} @endif</td>
 							<td>@php $rate=$fn->get_rate($item['supplier_id'], $item['itemId']) @endphp
 								 @if($item['rate']!=NULL) 
 								 {{$item['rate']}}
@@ -189,6 +189,7 @@
                                     @endif
 							</td>
 							<th>{{$item['currency_code']}}</td>
+							<td>@if($item['committed_delivery_date']!=NULL) {{date('d-m-Y',strtotime($item['committed_delivery_date']))}} @endif</td>
                             <td><a href="{{url('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item['inv_item_id'])}}" class="badge badge-info"><i class="fas fa-edit"></i> Update</a>
 							</td>
 						</tr>    

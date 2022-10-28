@@ -34,7 +34,20 @@ class inv_purchase_req_quotation extends Model
             foreach($request->Supplier as $supplier_id){
                 DB::table('inv_purchase_req_quotation_supplier')->insert(['supplier_id'=>$supplier_id,'quotation_id'=>$quotation_id]);
                 foreach($request->purchase_requisition_item as $purchase_requisition_item){
-                   DB::table('inv_purchase_req_quotation_item_supp_rel')->insert(['quotation_id'=>$quotation_id,'item_id'=>$purchase_requisition_item,'supplier_id'=>$supplier_id]);
+                    $item_id = DB::table('inv_purchase_req_item')->where('inv_purchase_req_item.requisition_item_id','=',$purchase_requisition_item)->pluck('Item_code')->first();
+                    $fixed = DB::table('inv_supplier_itemrate')
+                                ->select('inv_supplier_itemrate.*')
+                                ->where('inv_supplier_itemrate.supplier_id','=',$supplier_id)
+                                ->where('inv_supplier_itemrate.item_id','=',$item_id)->first();
+                    $now = date('Y-m-d');
+                    if($fixed && $fixed->rate_expiry_startdate<=$now && $fixed->rate_expiry_enddate>=$now)
+                    {
+                        $delivery_within = $fixed->delivery_within;
+                        $qty = DB::table('inv_purchase_req_item')->where('inv_purchase_req_item.requisition_item_id','=',$purchase_requisition_item)->pluck('actual_order_qty')->first();
+                        DB::table('inv_purchase_req_quotation_item_supp_rel')->insert(['quotation_id'=>$quotation_id,'item_id'=>$purchase_requisition_item,'supplier_id'=>$supplier_id,'rate'=>$fixed->rate,'gst'=>$fixed->gst,'discount'=>$fixed->discount,'currency'=>$fixed->currency,'quantity'=>$qty,'selected_item'=>1,'committed_delivery_date'=>date('Y-m-d', strtotime("+".$delivery_within." days"))]);  
+                    }else {
+                        DB::table('inv_purchase_req_quotation_item_supp_rel')->insert(['quotation_id'=>$quotation_id,'item_id'=>$purchase_requisition_item,'supplier_id'=>$supplier_id]);
+                    }
                 }
                     // cron job
                     $mailData = new \stdClass();

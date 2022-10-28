@@ -159,12 +159,13 @@ class SupplierQuotationController extends Controller
             $validation['rate'] = ['required'];
             $validation['discount'] = ['required'];
             $validation['Specification'] = ['required'];
-            //$validation['Remarks'] = ['required'];
+            $validation['committed_delivery_date'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
             if(!$validator->errors()->all()){
              $data =  [
                 "specification" =>  $request->Specification,
+                "committed_delivery_date"=>date('Y-m-d',strtotime($request->committed_delivery_date)),
                 "rate"  => $request->rate,
                 "discount"=>$request->discount,
                 "quantity" =>$request->quantity,
@@ -193,13 +194,13 @@ class SupplierQuotationController extends Controller
             return response()->view('errors/404', [], 404);
         }
         $validation['supplier_quotation_no'] = ['required'];
-        $validation['commited_delivery_date'] = ['required','date'];
+        //$validation['commited_delivery_date'] = ['required','date'];
          $validation['quotation_date'] = ['required','date'];
          //$validation['contact'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all()){
             $data = ['supplier_quotation_num'=>$request->supplier_quotation_no,
-                    'commited_delivery_date'=>date('Y-m-d',strtotime($request->commited_delivery_date)),
+                    //'commited_delivery_date'=>date('Y-m-d',strtotime($request->commited_delivery_date)),
                     'quotation_date'=>date('Y-m-d',strtotime($request->quotation_date)),
                     //'contact_number'=>$request->contact,
                     'freight_charge'=>$request->freight_charge];
@@ -234,16 +235,44 @@ class SupplierQuotationController extends Controller
     {
         $rq_number = $this->inv_purchase_req_quotation->get_quotation_number(['quotation_id'=> $rq_no]);
         $suppliers = $this->inv_purchase_req_quotation_supplier->get_suppliers(['inv_purchase_req_quotation_supplier.quotation_id'=>$rq_no]);
-        $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
         $item_details = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
-       // print_r(json_encode($item_details));exit;
-        $supplier_data = $this->arrage_items($items, $item_details);
+       //print_r(json_encode($item_details));exit;
+       foreach($item_details as $item){
+        $fixed_item[] = $this->check_fixed_item($item['itemId'], $item['supplier_id']);
+       }
+        $fixedItem =array_values(array_filter($fixed_item));
+        if(count($fixedItem)>0)
+        {
+            $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_without_fixed_item(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no],$fixedItem);
+            $items_info = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details_without_fixed_item(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no], $fixedItem);
+            $supplier_data = $this->arrage_items($items, $items_info);
+        }
+        else
+        {
+            $items_info = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
+            $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
+            $supplier_data = $this->arrage_items($items, $items_info);
+        }
         return view('pages/purchase-details/supplier-quotation/comparison-quotation',compact('suppliers', 'rq_number', 'supplier_data', 'rq_no'));
+    }
+    public function removed_fixed_item($fixed_item,$rq_no)
+    {
+        $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details_without_fixed_item(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no], $fixed_item);
+        //print_r(json_encode($items));exit;
+    }
+    public function check_fixed_item($itemId, $supplier_id)
+    {
+        $fixed_item = inv_supplier_itemrate::where('item_id','=',$itemId)->where('supplier_id','=',$supplier_id)->pluck('item_id')->first();
+        if($fixed_item)
+        return $fixed_item;
+        else
+        return 0;
     }
 
     public function arrage_items($items,$item_details)
     {
         $newdata = [];
+        $item1=[];
         $i=1;
         foreach($items as $item)
         {

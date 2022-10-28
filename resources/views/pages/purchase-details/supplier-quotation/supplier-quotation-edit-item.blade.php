@@ -93,9 +93,8 @@
                                 </div>
                                 <div class="row">   
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                  <label>Quantity *</label>
-                                <input type="text" name="quantity" value="@if($data['get_item_single']['supp_quantity']) {{$data['get_item_single']['supp_quantity']}} @else {{$data['get_item_single']['approved_qty']}} @endif" class="form-control" placeholder="Quantity">
-                              
+                                    <label>Quantity *</label>
+                                    <input type="text" name="quantity" value="@if($data['get_item_single']['supp_quantity']) {{$data['get_item_single']['supp_quantity']}} @else {{$data['get_item_single']['approved_qty']}} @endif" class="form-control" placeholder="Quantity">
                                 </div><!-- form-group -->
 
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -182,6 +181,10 @@
 
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label>Committed Delivery Date *</label>
+                                    <input type="text"  class="form-control datepicker" name="committed_delivery_date" value="@if(!empty($data['get_item_single']['committed_delivery_date']))  {{date('d-m-Y',strtotime($data['get_item_single']['committed_delivery_date']))}}  @endif" >
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Specification *</label>
                                     <textarea  class="form-control"  id="Specification" name="Specification" placeholder="Specification">{{$data['get_item_single']['supp_specification']}}</textarea>
                                 </div>
@@ -220,6 +223,10 @@
     <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
     <script>
       $(function(){   
+        $(".datepicker").datepicker({
+            format: " dd-mm-yyyy",
+            autoclose:true
+        });
         $("#commentForm").validate({
                 rules: {
                     quantity: {
