@@ -227,7 +227,6 @@ class SupplierQuotationController extends Controller
         $data['quotation']   = $this->inv_purchase_req_quotation->get_quotation_single(['quotation_id'=>$request->rq_no]);
         $data['supplier_single']= $this->inv_purchase_req_quotation_supplier->get_single_item(['inv_purchase_req_quotation_supplier.supplier_id'=>$supp_id,'inv_purchase_req_quotation_supplier.quotation_id'=>$rq_no]);
         $data['inv_purchase_req'] = $this->inv_purchase_req_quotation_item_supp_rel->get_Item(['inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$supp_id,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$rq_no]);
-
         return view('pages/purchase-details/supplier-quotation/supplier-quotation-items', compact('data','rq_no','supp_id'));
     }
 
