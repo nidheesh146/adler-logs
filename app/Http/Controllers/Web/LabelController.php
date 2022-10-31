@@ -8,6 +8,8 @@ use DB;
 use PDF;
 use Redirect;
 use Picqer;
+use App\Models\batchcard;
+use App\Models\product;
 class LabelController extends Controller
 {
     public function batchcardSearch(Request $request)
@@ -75,6 +77,12 @@ class LabelController extends Controller
 
     public function generatePatientLabel(Request $request)
     {
+        $is_sterile = $this->check_label_type($request->batchcard_no);
+        if($is_sterile==0)
+        {
+            $request->session()->flash('error', "This is non-sterile product batchcard.Try with sterile product batchcard...");
+            return redirect('label/patient-label');
+        }
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $lot_no = $request->sterilization_lot_no;
@@ -127,6 +135,12 @@ class LabelController extends Controller
 
     public function generateSterilizationProductLabel(Request $request)
     {
+        $is_sterile = $this->check_label_type($request->batchcard_no);
+        if($is_sterile==0)
+        {
+            $request->session()->flash('error', "This is non-sterile product batchcard.Try with sterile product batchcard...");
+            return redirect('label/sterilization-label');
+        }
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $lot_no = $request->sterilization_lot_no;
@@ -144,7 +158,15 @@ class LabelController extends Controller
 
         return view('pages/label/sterilization-label-print', compact('batchcard_data','no_of_label', 'lot_no','sku_code_barcode','gs1_code_barcode', 'manufacture_date','sterilization_expiry_date'));
     }
-    public function generateNonSterileProductLabel(Request $request) {
+    public function generateNonSterileProductLabel(Request $request) 
+    {
+      
+        $is_sterile = $this->check_label_type($request->batchcard_no);
+        if($is_sterile==1)
+        {
+            $request->session()->flash('error', "This is sterile product batchcard.Try with non-sterile product batchcard...");
+            return redirect('label/non-sterile-product-label');
+        }
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $manufacturing_date = $request->manufacturing_date;
@@ -183,5 +205,14 @@ class LabelController extends Controller
         $manf_date_combo_barcode = $generator->getBarcode($manf_date_combo, $generator::TYPE_CODE_128, 1,45,$color);
         $gs1_label_batch_combo_barcode = $generator->getBarcode($gs1_label_batch_combo, $generator::TYPE_CODE_128);
         return view('pages/label/instrument-label-print', compact('batchcard_data','no_of_label','sku_code_barcode', 'gs1_label_batch_combo', 'gs1_label_batch_combo_barcode','manf_date_combo','manf_date_combo_barcode','manufacturing_date','per_pack_quantity' ));
+    }
+
+    public function check_label_type($batch_card)
+    {
+       $prdt_id =  DB::table('batchcard_batchcard')->where('id','=',$batch_card)->pluck('product_id')->first();
+       $is_sterile =  DB::table('product_product')->where('id','=',$prdt_id)->pluck('is_sterile')->first();
+       //echo  $is_sterile;exit;
+       return $is_sterile;
+
     }
 }

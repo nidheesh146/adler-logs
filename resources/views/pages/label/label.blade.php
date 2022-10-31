@@ -33,10 +33,10 @@
                         <i class="icon fa fa-check"></i> {{ Session::get('success') }}
                     </div>
                     @endif
-                    @if(!empty($data['error']))
+                    @if(Session::get('error'))
                         <div class="alert alert-danger "  role="alert" style="width: 100%;">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        {{ $data['error'] }}
+                        {{ Session::get('error') }}
                     </div>
                     @endif                   
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->

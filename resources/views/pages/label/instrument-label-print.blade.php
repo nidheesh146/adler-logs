@@ -118,7 +118,7 @@
                 </style>
                 <div  style="margin-top:0mm;"> 
                 @for ($j=1;$j<=$label_per_page;$j++)
-                <div class=" column " style="height:16%;float:left;width: 48%;padding:0px 2px;font-size:13px; margin-left:10px;@if($j==11 || $j==12) margin-bottom:0px; @else margin-bottom:11.3px;  @endif">
+                <div class=" column label-content{{$j}}" style="height:16%;float:left;width: 48%;padding:0px 2px;font-size:13px; margin-left:10px;@if($j==11 || $j==12) margin-bottom:0px; @else margin-bottom:11.3px;  @endif">
                     <div class="subcolumn1" style="float:left;width:95%; height:content-fit;">
                         <div class="sub1" style="float:left;width:content-fit;font-weight:bold;">
                             <img src="{{asset('/img/alderlogo/IFU.png')}}" style="float:left; height:81px;">

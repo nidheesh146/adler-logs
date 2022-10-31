@@ -33,10 +33,10 @@
                         <i class="icon fa fa-check"></i> {{ Session::get('success') }}
                     </div>
                     @endif
-                    @if(!empty($data['error']))
+                    @if(Session::get('error'))
                         <div class="alert alert-danger "  role="alert" style="width: 100%;">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        {{ $data['error'] }}
+                        {{ Session::get('error') }}
                     </div>
                     @endif                   
                    
@@ -76,7 +76,8 @@
                             
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sterilization Expiry date *</label>
-                                <input type="date" value="{{date('Y-m-d', strtotime('+5 years'))}}" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" >
+                                @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
+                                <input type="date" value="{{date('Y-m-d', strtotime($date .' -1 day'))}}" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" >
                             </div><!-- form-group -->
 
                         </div>               
