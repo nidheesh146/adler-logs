@@ -176,8 +176,8 @@
                     @endif
                 </tr>
                 <tr>
-                    <td >Currency</td>
-                    <td>: {{$final_purchase['currency_code']}}</td>
+                    {{--<td >Currency</td>
+                    <td>: {{$final_purchase['currency_code']}}</td>--}}
                 </tr>
             </table>
         </div>
@@ -280,8 +280,11 @@
     </div>
     <div class="row4" style="border-bottom:solid 1px black;height:170px;">
         <div class="col41">
-            <div class="remarks">
-                <strong>Remarks/Notes </strong>
+            <div class="remarks" style="">
+                @if($final_purchase['remarks'])
+                <strong>Remarks/Notes </strong><br/>
+                {{$final_purchase['remarks']}}
+                @endif
             </div>
             <div class="adler">
                 <i>For</i>
