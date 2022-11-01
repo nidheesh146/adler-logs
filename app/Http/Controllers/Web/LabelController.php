@@ -188,6 +188,12 @@ class LabelController extends Controller
 
     public function generateInstrumentLabel(Request $request)
     {
+        $is_sterile = $this->check_label_type($request->batchcard_no);
+        if($is_sterile==1)
+        {
+            $request->session()->flash('error', "This is sterile product batchcard.Try with non-sterile product batchcard...");
+            return redirect('label/instrument-label');
+        }
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $per_pack_quantity = $request->per_pack_quantity;
@@ -214,5 +220,10 @@ class LabelController extends Controller
        //echo  $is_sterile;exit;
        return $is_sterile;
 
+    }
+
+    public function printingReport()
+    {
+        return view('pages/label/print-report');
     }
 }

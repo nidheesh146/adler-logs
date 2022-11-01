@@ -344,7 +344,7 @@ class PurchaseController extends Controller
                                 $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $request->po_id]);
                                 $message = new OrderCancellation($po_master);
                                 $message->attachData($pdf->output(), "cancellation-report.pdf");
-                                Mail::to('shilma33@gmail.com')->send($message);
+                                Mail::to('komal.murali@gmail.com')->send($message);
                                 
                             }
                             if($request->order_type=='wo')
@@ -551,7 +551,7 @@ class PurchaseController extends Controller
         $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $po_id]);
         $message = new OrderCancellation($po_master);
         $message->attachData($pdf->output(), "cancellation-report.pdf");
-        Mail::to('shilma33@gmail.com')->send($message);
+        Mail::to('komal.murali@gmail.com')->send($message);
     }
     public function find_rq_number(Request $request)
     {
