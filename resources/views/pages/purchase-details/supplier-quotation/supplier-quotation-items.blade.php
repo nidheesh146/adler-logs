@@ -155,9 +155,11 @@
 							<th>Action</th>
 						</tr>
 					</thead>
+					
 					<tbody id="prbody">
 						@foreach($data['inv_purchase_req'] as $item)
-							@php $fixed_item= $fn->checkFixedItem($item['item_id'],$rq_no); @endphp
+							@php $fixed_items= $fn->getFixedRateItems($rq_no,$item['item_id']);
+					 		@endphp
                         <tr>
                             {{-- <th>1</th> --}}
                             <td>{{$item['pr_no']}}</td>
@@ -167,7 +169,8 @@
 							<td>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
 							
 	
-							@if($fixed_item[0] && $fn->get_Fixeditem($fixed_item[0])==$item['item_code'] && $fn->get_fixed_supplier($fixed_item[0])!=$item['supplier_id']) 
+							{{--@if($fixed_item[0] && $fn->get_Fixeditem($fixed_item[0])==$item['item_code'] && $fn->get_fixed_supplier($fixed_item[0])!=$item['supplier_id']) --}}
+							@if($fixed_items==1)
 							<td colspan="7" style="vertical-align: middle;text-align:center;">
 								<div class="alert alert-success success" style="width: 100%;">
 								This is the fixed rate item, No need to add these informations

@@ -191,6 +191,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     //Route::get('label/print/patient-label', ['as' => 'patient-label', 'uses' => 'LabelController@patient']);
     Route::get('label/batchcardSearch','LabelController@batchcardSearch');
     Route::get('label/batchcardData/{batch_no_id}','LabelController@batchcardData');
+    Route::get('label/printing-report','LabelController@printingReport');
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Employee','middleware'=>['RolePermission']], function() {
