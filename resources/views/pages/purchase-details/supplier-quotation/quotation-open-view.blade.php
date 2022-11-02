@@ -1,5 +1,6 @@
 @extends('layouts.open-default')
 @section('content')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
 <style>
 tbody th{
     background: #9999993b;
@@ -77,6 +78,11 @@ tbody th{
                     
                             <tbody class="hr_change">
                                 @foreach($data['inv_purchase_req_quotation_item_supp_rel'] as $key => $item)
+                                @php $fixed_items= $fn->getFixedRateItems($item['quotation_id'],$item['requisition_item_id']);
+                                $fixed_item_supplier = $fn->getFixedItemSupplier($item['quotation_id'],$item['requisition_item_id'],$item['supplier_id']);
+                                echo $fixed_item_supplier;
+                                @endphp
+                                @if($fixed_items!=1 || $fixed_item_supplier==0)
                                 <tr>
                                   
                                     <td colspan="4">
@@ -99,7 +105,7 @@ tbody th{
                                         <th scope="row" >Discription</th>
                                         <td scope="row">{{$item['discription']}}</td>
                                     </tr>
-                               
+                                    @endif
                                       @endforeach
                          
                                     </tbody>

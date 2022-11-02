@@ -8,8 +8,12 @@ use DB;
 use PDF;
 use Redirect;
 use Picqer;
+use App\Models\label_print_report;
 use App\Models\batchcard;
 use App\Models\product;
+use App\Exports\PrintingReport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class LabelController extends Controller
 {
     public function batchcardSearch(Request $request)
@@ -90,7 +94,7 @@ class LabelController extends Controller
         $manufacture_date = $request->manufacturing_date;
         $sterilization_expiry_date = $request->sterilization_expiry_date;
         $batchcard_data = DB::table('batchcard_batchcard')
-                            ->select('batchcard_batchcard.*', 'product_product.label_format_number', 'product_product.sku_code','product_product.discription as discription','product_product.sterilization_type' )
+        ->select('batchcard_batchcard.id as batch_id','batchcard_batchcard.batch_no','batchcard_batchcard.product_id','batchcard_batchcard.id', 'product_product.*')
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
@@ -147,7 +151,7 @@ class LabelController extends Controller
         $manufacture_date = $request->manufacturing_date;
         $sterilization_expiry_date = $request->sterilization_expiry_date;
         $batchcard_data = DB::table('batchcard_batchcard')
-                            ->select('batchcard_batchcard.*', 'product_product.*')
+        ->select('batchcard_batchcard.id as batch_id','batchcard_batchcard.batch_no','batchcard_batchcard.product_id','batchcard_batchcard.id', 'product_product.*')
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
@@ -172,7 +176,7 @@ class LabelController extends Controller
         $manufacturing_date = $request->manufacturing_date;
         $per_pack_quantity = $request->per_pack_quantity;
         $batchcard_data = DB::table('batchcard_batchcard')
-                            ->select('batchcard_batchcard.*', 'product_product.*')
+        ->select('batchcard_batchcard.id as batch_id','batchcard_batchcard.batch_no','batchcard_batchcard.product_id','batchcard_batchcard.id', 'product_product.*')
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
@@ -199,7 +203,7 @@ class LabelController extends Controller
         $per_pack_quantity = $request->per_pack_quantity;
         $manufacturing_date = $request->manufacturing_date;
         $batchcard_data = DB::table('batchcard_batchcard')
-                            ->select('batchcard_batchcard.*', 'product_product.*')
+                            ->select('batchcard_batchcard.id as batch_id','batchcard_batchcard.batch_no','batchcard_batchcard.product_id','batchcard_batchcard.id', 'product_product.*')
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
                             ->where('batchcard_batchcard.id','=',$batcard_no)
                             ->first();
@@ -222,8 +226,49 @@ class LabelController extends Controller
 
     }
 
-    public function printingReport()
+    public function printingReport(Request $request)
     {
-        return view('pages/label/print-report');
+        $condition=[];
+        if ($request->batchcard) 
+        {
+            $condition[]=['batchcard_batchcard.batch_no','LIKE','%'.$request->batchcard.'%'];
+        }
+        if($request->label)
+        {
+            $condition[]=['label_print_report.label_name','LIKE','%'.$request->label.'%'];
+        }
+        if ($request->manufaturing_from) {
+            $condition[] = ['label_print_report.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->manufaturing_from))];
+            $condition[] = ['label_print_report.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->manufaturing_from))];
+        }
+        $data['labels'] = label_print_report::select('label_print_report.*','batchcard_batchcard.batch_no','product_product.sku_code')
+                                    ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','label_print_report.batchcard')
+                                    ->leftJoin('product_product','product_product.id','=','label_print_report.product_id')
+                                    ->where($condition)
+                                    ->paginate(10);
+
+        return view('pages/label/print-report',compact('data'));
+    }
+    public function insertPrintingData(Request $request)
+    {
+        $success = label_print_report::insert(
+            ['batchcard'=>$request->batch_id,
+            'no_of_labels_printed'=>$request->no_of_labels,
+            'manufacturing_date'=>date('Y-m-d',strtotime($request->manufacturing_date)),
+            'product_id'=>$request->product_id,
+            'expiry_date'=>date('Y-m-d',strtotime($request->expiry_date)),
+            'label_name'=>$request->label_name]
+        );
+        if($success)
+        return 1;
+        else
+        return 0;
+    }
+    public function exportPrintingReport(Request $request)
+    {
+        $batchcard = $request->batchcard;
+        $label = $request->label;
+        $manufaturing_from = $request->manufaturing_from;
+        return Excel::download(new PrintingReport($batchcard,$label,$manufaturing_from ), 'LabelPrintingReport' . date('d-m-Y') . '.xlsx');
     }
 }

@@ -425,6 +425,31 @@ class SupplierQuotationController extends Controller
         
     }
 
+    public function getFixedItemSupplier($quotation_id, $requisition_item_id,$supplier_id){
+        $items = inv_purchase_req_quotation_item_supp_rel::select('inv_purchase_req_quotation_item_supp_rel.supplier_id','inventory_rawmaterial.id as row_material_id')
+                                                                    ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
+                                                                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                                                                    ->where('quotation_id','=',$quotation_id)
+                                                                    ->get();
+        foreach($items as $item){
+            $fixed_item[] = inv_supplier_itemrate::where('supplier_id','=',$item['supplier_id'])
+                                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_supplier_itemrate.item_id')
+                                    ->where('inv_supplier_itemrate.item_id','=',$item['row_material_id'])
+                                    //->select('inventory_rawmaterial.item_code')
+                                    ->whereDate('rate_expiry_startdate', '<=', date("Y-m-d"))
+                                    ->whereDate('rate_expiry_enddate', '>=', date("Y-m-d"))
+                                    ->pluck('inv_supplier_itemrate.supplier_id')
+                                    ->first();
+        }
+        //$row_material_id = inv_purchase_req_item::where('requisition_item_id','=', $requisition_item_id)->pluck('Item_code')->first();
+        if (in_array($supplier_id,array_values(array_filter($fixed_item))))
+        return 1;
+        else
+        return 0;
+       // return array_values(array_filter($fixed_item));
+        
+    }
+
 
 
 }

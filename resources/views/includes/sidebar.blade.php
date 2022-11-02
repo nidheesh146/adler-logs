@@ -75,7 +75,7 @@
           </ul>
         </li>
 
-        <li class="nav-item @if(in_array($Action,['Label.sterilizationProductLabel', 'Label.nonSterileProductLabel' ,'Label.instrumentLabel','Label.patientLabel', 'Label.mrpLabel', 'Label.generateInstrumentLabel', 'Label.generateMRPLabel','Label.generateNonSterileProductLabel','Label.generateSterilizationProductLabel','Label.generatePatientLabel'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['Label.sterilizationProductLabel', 'Label.nonSterileProductLabel' ,'Label.instrumentLabel','Label.patientLabel', 'Label.mrpLabel', 'Label.generateInstrumentLabel', 'Label.generateMRPLabel','Label.generateNonSterileProductLabel','Label.generateSterilizationProductLabel','Label.generatePatientLabel','Label.printingReport'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Label Card</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['Label.instrumentLabel', 'Label.generateInstrumentLabel'])){{'active'}} @endif ">
@@ -92,6 +92,9 @@
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Label.patientLabel', 'Label.generatePatientLabel'])){{'active'}} @endif ">
               <a href="{{url('label/patient-label')}}"  class="nav-sub-link">Patient Label</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Label.printingReport'])){{'active'}} @endif ">
+              <a href="{{url('label/printing-report')}}"  class="nav-sub-link">Label Printing Report</a>
             </li>
           </ul>
         </li>

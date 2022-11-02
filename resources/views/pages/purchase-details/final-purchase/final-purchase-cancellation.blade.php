@@ -22,8 +22,8 @@
            
             @include('includes.purchase-details.purchase-work-order-tab')
             <div class="tab-content">
-            <div class="row row-sm mg-b-20 mg-lg-b-0">
-                        <div class="table-responsive" style="margin-bottom: 13px;">
+                <div class="row row-sm mg-b-20 mg-lg-b-0">
+                    <div class="table-responsive" style="margin-bottom: 13px;">
                             <table class="table table-bordered mg-b-0">
                                 <tbody>
                                     <tr>

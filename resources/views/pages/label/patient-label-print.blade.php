@@ -31,6 +31,13 @@
                     $page_count = (int)($no_of_label/36);
                     $remaining = $no_of_label%36;
                  ?>
+                 <input type="hidden" name="batch_id" id="batch_id" value="{{$batchcard_data->batch_id}}">
+                <input type="hidden" name="no_of_labels" id="no_of_labels" value="{{$no_of_label}}">
+                <input type="hidden" name="manufacturing_date" id="manufacturing_date" value="{{$manufacture_date}}">
+                <input type="hidden" name="product_id" id="product_id" value="{{$batchcard_data->product_id}}">
+                <input type="hidden" name="expiry_date" id="expiry_date" value="{{$sterilization_expiry_date}}">
+                <input type="hidden" name="label_name" id="label_name" value="Patient Label">
+
                 @for ($i = 0; $i< $page_count; $i++)
                 <!-- <div class="page-container" style="margin-top:6mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;"> -->
                 <div class="page-container" style="margin-top:5mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;margin-left:2px">
@@ -205,8 +212,25 @@ function Labelprint(){
       //return false;
 }
 $("#print").on("click", function () {
-Labelprint();
-      });
+    var batch_id = $('#batch_id').val();
+    var no_of_labels = $('#no_of_labels').val();
+    var manufacturing_date = $('#manufacturing_date').val();
+    var product_id = $('#product_id').val();
+    var expiry_date = $('#expiry_date').val();
+    var label_name = $('#label_name').val();
+    $.ajax({
+           type:'POST',
+           url:"{{ url('label/insert-printing-data') }}",
+           data:{ "_token": "{{ csrf_token() }}",batch_id:batch_id, no_of_labels:no_of_labels, manufacturing_date:manufacturing_date, product_id:product_id,expiry_date:expiry_date,label_name:label_name},
+           success:function(data)
+           {
+            if(data==1)
+            Labelprint();
+            else
+            alert('Label printing failed!!!')
+           }
+    });
+});
 </script>
 @stop
 
