@@ -1010,9 +1010,9 @@ class PurchaseController extends Controller
         foreach($items as $item){
             $data .= '<tr>
                     <td style="vertical-align: middle;">' . $item->item_code . '</td>
-                    <td><label>Actual Order Quantity </label> <input type="text" class="order-qty" id="order-qty" name="qty" value="'. $item->order_qty+$item->cancelled_qty.'" disabled></td>
-                    <td><label>Quantity to be accepted </label> <input type="text" class="accept-qty" id="accept-qty" name="qty" value="'. $item->order_qty .'" disabled></td>
-                    <td><label>Quantity to be cancelled </label><input class="cancel-qty" id="cancel-qty"  type="text" name="cancel_qty'. $i.'"  value="'.$item->cancelled_qty.'"></td>
+                    <td><label>Actual Order Quantity </label> <input type="text" class="order-qty orderQty'.$item->purchase_item_id.'" id="order-qty" name="qty" value="'.$item->order_qty+$item->cancelled_qty.'" disabled></td>
+                    <td><label>Quantity to be accepted </label> <input type="number" class="accept-qty orderQtyAccept'.$item->purchase_item_id.'" oninput="quantityCheck('.$item->purchase_item_id.','."'accept'".')" id="accept-qty" name="qty" value="'.$item->order_qty .'" ></td>
+                    <td><label>Quantity to be cancelled </label><input class="cancel-qty  orderQtyReject'.$item->purchase_item_id.'" id="cancel-qty"  oninput="quantityCheck('.$item->purchase_item_id.','."'reject'".')" type="number" name="cancel_qty'. $i.'"  value="'.$item->cancelled_qty.'"></td>
                     <input type="hidden" name="purchase_item_id'. $i.'" value="'.$item->purchase_item_id.'">
                     <tr>';
                     $i++;
