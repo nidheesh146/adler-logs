@@ -245,6 +245,7 @@ class LabelController extends Controller
                                     ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','label_print_report.batchcard')
                                     ->leftJoin('product_product','product_product.id','=','label_print_report.product_id')
                                     ->where($condition)
+                                    ->orderby('label_print_report.id','desc')
                                     ->paginate(10);
 
         return view('pages/label/print-report',compact('data'));
@@ -256,7 +257,7 @@ class LabelController extends Controller
             'no_of_labels_printed'=>$request->no_of_labels,
             'manufacturing_date'=>date('Y-m-d',strtotime($request->manufacturing_date)),
             'product_id'=>$request->product_id,
-            'expiry_date'=>date('Y-m-d',strtotime($request->expiry_date)),
+            'expiry_date'=>$request->expiry_date,
             'label_name'=>$request->label_name]
         );
         if($success)

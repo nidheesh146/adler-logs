@@ -83,8 +83,8 @@
 				            @foreach($suppliers as $supplier)
 							<th colspan="5" style="color:black; font-size:15px;">
                                 <center>{{$supplier['vendor_name']}}</center>
-                                <br/>
-                                <div style="font-size:10px;text-align:center;margin-top:-10px;">(Delivery Date :{{date('d-m-Y',strtotime($supplier['commited_delivery_date']))}})</div>
+                                
+                                <!-- <div style="font-size:10px;text-align:center;margin-top:-10px;">(Delivery Date :{{date('d-m-Y',strtotime($supplier['commited_delivery_date']))}})</div> -->
                             </th>
                             @endforeach
                             @endif
