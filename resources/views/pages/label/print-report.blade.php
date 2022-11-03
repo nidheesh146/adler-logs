@@ -90,7 +90,7 @@
 							<td>{{$label['label_name']}}</td>
 							<td>{{$label['no_of_labels_printed']}}</td>
 							<td>{{$label['manufacturing_date']}}</td>
-							<td>{{$label['expiry_date']}}</td>
+							<td>@if($label['expiry_date']!=NULL){{$label['expiry_date']}}@endif</td>
 						</tr>
 					@endforeach
 					</tbody>

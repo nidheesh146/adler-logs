@@ -41,6 +41,7 @@ class PrintingReport implements FromCollection, WithHeadings, WithStyles,WithEve
                                     ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','label_print_report.batchcard')
                                     ->leftJoin('product_product','product_product.id','=','label_print_report.product_id')
                                     ->where($condition)
+                                    ->orderby('label_print_report.id','desc')
                                     ->get();
         $i=1;
         foreach($labels as $label){
