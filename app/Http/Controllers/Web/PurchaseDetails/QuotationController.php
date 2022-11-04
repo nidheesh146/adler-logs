@@ -103,4 +103,75 @@ class QuotationController extends Controller
         return view('pages/purchase-details/supplier-quotation/quotation-open-view', compact('data'));
     }
 
+    public function directPurchase(Request $request)
+    {
+        if ($request->prsr) {
+            if($request->type)
+            {
+            $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
+            $condition[] = ['inventory_rawmaterial.item_type_id','=',$request->type];
+            }
+            if($request->Supplier)
+            {
+                $condition[] = ['inv_supplier_itemrate.supplier_id','=',$request->Supplier];
+            }
+            else
+            $condition[] = ['inv_purchase_req_master.PR_SR', '=', strtolower($request->prsr)];
+        }
+        if (!$request->prsr) {
+            if($request->type)
+            {
+            $condition[] = ['inv_purchase_req_master.PR_SR', '=','PR'];
+            $condition[] = ['inventory_rawmaterial.item_type_id','=',$request->type];
+            }
+            if($request->Supplier)
+            {
+                $condition[] = ['inv_supplier_itemrate.supplier_id','=',$request->Supplier];
+            }
+            $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
+        }
+        $data['getdata'] = $this->inv_purchase_req_item->getdataFixedItems($condition);
+        return view('pages/purchase-details/Quotation/direct-purchase', compact('data'));
+    }
+
+    public function directPurchaseQuotation(Request $request)
+    {
+        $validation['date'] = ['required','date'];
+        $validation['Supplier'] = ['required'];
+        $validation['delivery'] = ['required'];
+        $validation['purchase_requisition_item'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+       
+        if(!$validator->errors()->all()){
+            $data = ['date'=>date('Y-m-d',strtotime($request->date)),
+                     'delivery_schedule'=>date('Y-m-d',strtotime($request->delivery)),
+                     'rq_no'=>'RQ-'.$this->num_gen( $this->inv_purchase_req_quotation->get_count()),
+                     'created_at'=>date('Y-m-d H:i:s'),
+                     'created_user'=>config('user')['user_id'],
+                     'type'=> ($request->prsr == 'sr') ? 'SR' : 'PR'
+                    ];
+            $this->inv_purchase_req_quotation->insert_fixed_item_data($data,$request);
+
+            $request->session()->flash('success', "You have successfully created a  Request For Quotation !");
+            if($request->prsr)
+            return redirect('inventory/direct/purchase?prsr='.$request->prsr);
+            else
+            return redirect('inventory/direct/purchase');
+
+        }
+        if($validator->errors()->all()){
+            if($request->prsr)
+            return redirect('inventory/direct/purchase?prsr='.$request->prsr)->withErrors($validator)->withInput();
+            else
+            return redirect('inventory/direct/purchase')->withErrors($validator)->withInput();
+
+            //return redirect('inventory/quotation');
+        }
+    }
+
+    public function get_supplier($id){
+        $supplier = inv_supplier::where('id','=',$id)->pluck('vendor_name')->first();
+        return $supplier;
+    }
+
 }

@@ -73,6 +73,53 @@ class inv_purchase_req_quotation extends Model
         return true;
     }
 
+    function insert_fixed_item_data($data,$request){
+        $quotation_id = $this->insertGetId($data);
+        if($quotation_id){
+           
+                DB::table('inv_purchase_req_quotation_supplier')->insert(['supplier_id'=>$request->Supplier,'quotation_id'=>$quotation_id]);
+                foreach($request->purchase_requisition_item as $purchase_requisition_item)
+                {
+                    $item_id = DB::table('inv_purchase_req_item')->where('inv_purchase_req_item.requisition_item_id','=',$purchase_requisition_item)->pluck('Item_code')->first();
+                    $fixed = DB::table('inv_supplier_itemrate')
+                                ->select('inv_supplier_itemrate.*')
+                                ->where('inv_supplier_itemrate.supplier_id','=',$request->Supplier)
+                                ->where('inv_supplier_itemrate.item_id','=',$item_id)->first();
+                    $now = date('Y-m-d');
+                    if($fixed && $fixed->rate_expiry_startdate<=$now && $fixed->rate_expiry_enddate>=$now)
+                    {
+                        $delivery_within = $fixed->delivery_within;
+                        $qty = DB::table('inv_purchase_req_item')->where('inv_purchase_req_item.requisition_item_id','=',$purchase_requisition_item)->pluck('actual_order_qty')->first();
+                        DB::table('inv_purchase_req_quotation_item_supp_rel')->insert(['quotation_id'=>$quotation_id,'item_id'=>$purchase_requisition_item,'supplier_id'=>$request->Supplier,'rate'=>$fixed->rate,'gst'=>$fixed->gst,'discount'=>$fixed->discount,'currency'=>$fixed->currency,'quantity'=>$qty,'selected_item'=>1,'committed_delivery_date'=>date('Y-m-d', strtotime("+".$delivery_within." days"))]);  
+                    }else {
+                        DB::table('inv_purchase_req_quotation_item_supp_rel')->insert(['quotation_id'=>$quotation_id,'item_id'=>$purchase_requisition_item,'supplier_id'=>$request->Supplier]);
+                    }
+                }
+                    // cron job
+                    $mailData = new \stdClass();
+                    $mailData->module = 'add_quotation';
+                    $mailData->subject = "Adler";
+                    $mailData->to = ['shilma33@gmail.com','komal.murali@gmail.com'];
+                    $supp = DB::table('inv_supplier')->select(['vendor_id','vendor_name','email'])->where(['id'=>$request->Supplier])->first();
+                    //$mailData->to =   json_decode($supp->email,true);
+                    $mailData->vendor_id = $supp->vendor_id;
+                    $mailData->vendor_name = $supp->vendor_name;
+
+                    if(!empty($mailData->to) && count($mailData->to) > 0 )
+                    {
+                        $mailData->url = url('request-for-quotation/'.(new Controller)->encrypt($quotation_id).'/'.(new Controller)->encrypt($request->Supplier));
+                        $job = (new \App\Jobs\EmailJobs($mailData))
+                        ->delay(
+                            now()
+                                ->addSeconds(3)
+                        );
+                        dispatch($job);
+                    }
+                // }
+        }
+        return true;
+    }
+
 
 
     function get_count(){

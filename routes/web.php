@@ -65,6 +65,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     // Route::get('inventory/suppliersearch', 'QuotationController@suppliersearch');
     Route::post('inventory/add/quotation','QuotationController@postQuotation');
     Route::get('inventory/quotation/items','QuotationController@getItems');
+    Route::get('inventory/direct/purchase','QuotationController@directPurchase');
+    Route::post('inventory/add/fixed-item-quotation','QuotationController@directPurchaseQuotation');
+    
     
 
     // Quotation item

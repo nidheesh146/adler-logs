@@ -156,7 +156,7 @@
                                             <i class="fa fa-window-close"></i> Cancel
                                         </a>
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" rq="{{$po_data->rq_no}}" podate="{{date('d-m-Y',strtotime($po_data->po_date))}}" supplier ="{{$po_data->vendor_name}}" value="{{$po_data->po_id}}" data-target="#parialCancelModal" 
-                                            id="partial-cancel-model" class="partial-cancel-model badge badge-danger" style="width: 85px;padding:6px;margin-top:2px;">
+                                            id="partial-cancel-model" class="partial-cancel-model badge badge-warning" style="width: 85px;padding:6px;margin-top:2px;background-color:#FF5733 ;color:white;">
                                             <i class="fa fa-window-close"></i> Partial Cancel
                                         </a>
                                     @endif

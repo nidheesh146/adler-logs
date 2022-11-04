@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\QuotationController')
 <style>
      .select2-container--default .select2-selection--multiple .select2-selection__choice{
         color:white;
@@ -17,11 +18,15 @@
 		<div class="az-content-body">
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">QUOTATION</a></span> 
-                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">ADD REQUEST FOR QUOTATION </a></span>
+                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;"> Direct Purchase/Work Order </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-              Add request for quotation
+              Direct Purchase/Work Order
+                <a style="float: right;font-size: 14px;width:100px;" href="{{url()->current();}}" class="badge badge-pill badge-warning ">
+                <i class="fas fa-sync"></i> 
+                    Reset
+                </a>
             </h4>
             
 
@@ -42,7 +47,7 @@
                    @include('includes.purchase-details.pr-sr-tab')
                     <div class="tab-content">
                         <div class="tab-pane active  show " id="purchase">
-                        <form method="POST" autocomplete="off" action="{{ url('inventory/add/quotation') }}?prsr={{request()->get('prsr')}}" id="commentForm" >
+                        <form method="POST" autocomplete="off" action="{{ url('inventory/add/fixed-item-quotation') }}?prsr={{request()->get('prsr')}}" id="commentForm" >
                             {{ csrf_field() }}  
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
@@ -58,7 +63,7 @@
                                     <label style="float:left;">Type * </label>
                                         <span class="error" id="select_error"  >
                                         You have to Select Type.
-                                        </span>
+                                    </span>
                                     <div id="type-wrapper">
                                     <select class="form-control " name="type" id="type" required>
                                         <option value="0">--select one--</option>
@@ -66,7 +71,22 @@
                                         <option value="2" @if(request()->get('type')==2) selected @endif>Direct Items</option>
                                     </select>
                                     <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
+                                    <input type="hidden" value="{{request()->get('Supplier')}}" id="Supplier"  name="Supplier">
                                     </div>
+                                </div>
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                <div id="supplier-wrapper">
+                                    <label>Supplier *</label>
+                                    <select class="form-control Supplier" name="Supplier" >
+                                        @if(request()->get('Supplier'))
+                                        <option value="{{request()->get('Supplier')}}" selected>{{$fn->get_supplier(request()->get('Supplier'))}}</option>
+                                        @else
+                                        <option value="">--- select one ---</option>
+                                        @endif
+                                    </select>
+                                    <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
+                                    <input type="hidden" value="{{request()->get('type')}}" id=""  name="type">
+                                </div><!-- form-group -->
                                 </div>
                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                     <label>Date *</label>
@@ -77,12 +97,8 @@
                                     <input type="text"  class="form-control datepicker" value="{{date('d-m-Y')}}" name="delivery" placeholder="Date">
                                 </div>
                                 <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
-                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                    <label>Supplier *</label>
-                                    <select class="form-control Supplier" name="Supplier[]" multiple="multiple">
-                                            <option value="">--- select one ---</option>
-                                    </select>
-                                </div><!-- form-group -->
+                                <input type="hidden" value="{{request()->get('Supplier')}}" id="Supplier"  name="Supplier">
+                                
                             </div> 
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
@@ -103,6 +119,7 @@
                                             <th>Item code </th>
                                             <th>Type</th>
                                             <th>DESCRIPTION</th>
+                                            <th>SUPPLIER</th>
                                             <th> Quantity</th>
                                         </tr>
                                     </thead>
@@ -115,6 +132,7 @@
                                         <th>{{$item['item_code']}}</th>
                                         <td> {{$item['type_name']}}</td>
                                         <td> {{$item['short_description']}}</td>
+                                        <td> {{$item['vendor_name']}}</td>
                                         <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>	
                                     </tr>
                                     
@@ -159,7 +177,7 @@
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 
 <script>
-            $('.Supplier').select2({
+        $('.Supplier').select2({
                     placeholder: 'Choose one',
                     searchInputPlaceholder: 'Search',
                     minimumInputLength: 3,
@@ -173,7 +191,7 @@
                     }
                   }
             });
-
+                
             $(".submit-btn").on("click", function() {
                 if($('#type').val()==0)
                 {
@@ -181,7 +199,7 @@
                     //document.getElementById("#select_error").css("display","block");
                 }
             });
-            
+
            $("#commentForm").validate({
             rules: {
                 date: {
@@ -190,10 +208,7 @@
                 delivery: {
                     required: true,
                 },
-                // type: {
-                //     selectcheck: true,
-                // },
-                'Supplier[]': {
+                supplier: {
                    required: true,
                 },
                 'purchase_requisition_item[]':{
@@ -202,6 +217,7 @@
       
             },
             submitHandler: function(form) {
+                //$('.submit-btn').show();
                 $('.spinner-button').show();
                 form.submit();
             }
@@ -217,20 +233,17 @@
     $('#type').change(function() {
         let type= $(this).val();
         this.form.submit();
-        // $.ajax({
-        //    type:'GET',
-        //    url:"{{ url('inventory/quotation/items') }}",
-        //    data: { type: '' + type + '' },
-        //    success:function(data){
-        //         $("tbody").append(html);
-        //    }
-        // });
+    });
+    $('.Supplier').change(function() {
+        let supplier= $(this).val();
+        this.form.submit();
     });
 
     $(document).ready(function () {
         (function () {
                                     
             $('#type-wrapper').wrap('<form id="Form2"></form>');
+            $('#supplier-wrapper').wrap('<form id="Form3"></form>');
             //$('#Form2').append('{{csrf_field()}}');
     })();});
 
