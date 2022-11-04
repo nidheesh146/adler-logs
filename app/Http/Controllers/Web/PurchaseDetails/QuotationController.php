@@ -174,4 +174,19 @@ class QuotationController extends Controller
         return $supplier;
     }
 
+    public function checkFixedItem($item_id)
+    {
+        $supplier = inv_purchase_req_item::where('inv_purchase_req_item.requisition_item_id','=',$item_id)
+                        ->leftjoin('inv_supplier_itemrate','inv_supplier_itemrate.item_id','=','inv_purchase_req_item.Item_code')
+                        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_itemrate.supplier_id')
+                        ->whereIn('inv_purchase_req_item.Item_code',function($query){
+                            $query->select('inv_supplier_itemrate.item_id')->from('inv_supplier_itemrate');
+                        })
+                        ->pluck('inv_supplier.vendor_name')->first();
+        if($supplier)
+        return $supplier;
+        else 
+        return 0;
+    }
+
 }

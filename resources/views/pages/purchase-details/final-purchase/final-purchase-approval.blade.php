@@ -204,11 +204,11 @@
                                             <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model badge badge-success" style="color: #141c2b;text-decoration:none;padding:6px;color:white;">
                                                 <i class="fa fa-check-circle"></i> Approve
                                             </a>
-                                        
                                             @endif  --}}
-                                            @if($po_data->status==1)
+                                            
+                                           {{-- @if($po_data->status==1) --}}
                                             <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
-                                            @endif
+                                            {{-- @endif --}}
                                         </td>
                                         @if(request()->get('status')==4 || request()->get('status')==5 || !request()->get('status'))
                                         <td style="width:12%;" class="checkbox-group">

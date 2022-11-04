@@ -159,7 +159,9 @@
 								    <div class="dropdown-menu">
                                         <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
                                         @if($po_data->status!=0)
+                                        @if($po_data->status!=1 && $po_data->status!=0)
                                         <a href="{{url('inventory/final-purchase-edit/'.$po_data->id)}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                                        @endif
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
                                             <i class="fa fa-check-circle"></i> Change Status
                                         </a>
@@ -167,9 +169,8 @@
                                         @endif
                                         <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
                                     </div>
-                                    @if($po_data->status==1)
-                                        <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
-                                    @endif
+                                    <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
+                                    
                                     </td>
                                     
                                 </tr>

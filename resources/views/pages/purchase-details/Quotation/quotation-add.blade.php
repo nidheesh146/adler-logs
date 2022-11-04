@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\QuotationController')
 <style>
      .select2-container--default .select2-selection--multiple .select2-selection__choice{
         color:white;
@@ -108,15 +109,20 @@
                                     </thead>
                                     <tbody >
                                     @foreach($data['getdata'] as $item)
-                                  
-                                    <tr>
-                                        <td><input type="checkbox" class="purchase_requisition_item" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['requisition_item_id']}}"></td>
-                                        <th>{{$item['pr_no']}}</th>
-                                        <th>{{$item['item_code']}}</th>
-                                        <td> {{$item['type_name']}}</td>
-                                        <td> {{$item['short_description']}}</td>
-                                        <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>	
-                                    </tr>
+                                        @php $supplier = $fn->checkFixedItem($item['requisition_item_id']);
+                                        echo $supplier; @endphp
+                                        @if($supplier!=0)
+                                        <tr style="background-color:#B2BEB5;">
+                                        @else
+                                        <tr>
+                                        @endif
+                                            <td><input type="checkbox" class="purchase_requisition_item" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['requisition_item_id']}}"></td>
+                                            <th>{{$item['pr_no']}}</th>
+                                            <th> @if($supplier!=0) <a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$supplier}}" >{{$item['item_code']}}</a> @else {{$item['item_code']}} @endif</th>
+                                            <td> {{$item['type_name']}}</td>
+                                            <td> {{$item['short_description']}}</td>
+                                            <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>	
+                                        </tr>
                                     
                                     @endforeach
                             
