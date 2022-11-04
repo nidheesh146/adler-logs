@@ -311,6 +311,39 @@
 
 
 <script>
+ function cancelQuantity(id){
+   let orderQtyAccept = parseInt($(".orderQtyAccept"+id).val());
+   let orderQty =  parseInt($(".orderQty"+id).val());
+   $('.orderQtyReject'+id).val((isNaN(parseInt(orderQty - orderQtyAccept)) ? orderQty : parseInt(orderQty - orderQtyAccept) )  );
+ }
+ function acceptQuantity(id){
+   let orderQtyReject = parseInt($(".orderQtyReject"+id).val());
+   let orderQty =  parseInt($(".orderQty"+id).val());
+   $('.orderQtyAccept'+id).val((isNaN(parseInt(orderQty - orderQtyReject)) ? orderQty : parseInt(orderQty - orderQtyReject) )  );
+ }
+function quantityCheck(id,type){
+    if(type =='accept'){
+        if( parseInt($(".orderQtyAccept"+id).val()) >  parseInt($(".orderQty"+id).val())){
+            $(".orderQtyAccept"+id).val(Math.floor($(".orderQtyAccept"+id).val() /10));
+        }
+        if( parseInt($(".orderQtyAccept"+id).val()) < 0){
+            $(".orderQtyAccept"+id).val(0);
+        }
+         cancelQuantity(id);
+    }
+    if(type =='reject'){
+        if( parseInt($(".orderQtyReject"+id).val()) >  parseInt($(".orderQty"+id).val())){
+            $(".orderQtyReject"+id).val(Math.floor($(".orderQtyReject"+id).val() /10));
+        }
+        
+        if( parseInt($(".orderQtyReject"+id).val()) < 0){
+            $(".orderQtyReject"+id).val(0);
+        }
+        acceptQuantity(id);
+
+    }
+}
+
   $(function(){
     'use strict'
     var date = new Date();
@@ -326,7 +359,7 @@
         format: " dd-mm-yyyy",
         autoclose:true
     });
-    $("#status-change-form").validate({
+  /*  $("#status-change-form").validate({
             rules: {
                 status: {
                     required: true,
@@ -346,7 +379,7 @@
                 //form.submit();
             }
     });
-
+*/
   });
     
 
@@ -379,6 +412,7 @@
             $('.supplier').html(supplier);
             var po_date = $(this).attr('podate');
             $('.po-date').html(po_date);
+          //  quantityCheck();
             $.ajax ({
                     type: 'GET',
                     url: "{{url('getOrderItems')}}",
