@@ -1011,7 +1011,7 @@ class PurchaseController extends Controller
             $data .= '<tr>
                     <td style="vertical-align: middle;">' . $item->item_code . '</td>
                     <td><label>Actual Order Quantity </label> <input type="text" class="order-qty orderQty'.$item->purchase_item_id.'" id="order-qty" name="qty" value="'.$item->order_qty+$item->cancelled_qty.'" disabled></td>
-                    <td><label>Quantity to be accepted </label> <input type="number" class="accept-qty orderQtyAccept'.$item->purchase_item_id.'" oninput="quantityCheck('.$item->purchase_item_id.','."'accept'".')" id="accept-qty" name="qty" value="'.$item->order_qty .'" ></td>
+                    <td><label>Quantity to be accepted </label> <input type="number" class="accept-qty orderQtyAccept'.$item->purchase_item_id.'" oninput="quantityCheck('.$item->purchase_item_id.','."'accept'".')" id="accept-qty" name="qty'. $i.'" value="'.$item->order_qty .'" ></td>
                     <td><label>Quantity to be cancelled </label><input class="cancel-qty  orderQtyReject'.$item->purchase_item_id.'" id="cancel-qty"  oninput="quantityCheck('.$item->purchase_item_id.','."'reject'".')" type="number" name="cancel_qty'. $i.'"  value="'.$item->cancelled_qty.'"></td>
                     <input type="hidden" name="purchase_item_id'. $i.'" value="'.$item->purchase_item_id.'">
                     <tr>';
@@ -1026,6 +1026,16 @@ class PurchaseController extends Controller
         $item_count = count($items);
         for($i=1;$i<=$item_count;$i++)
         {
+            $purchase_item = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id' => $_POST['purchase_item_id'.$i]]);
+            $tot_qty = $_POST['cancel_qty'.$i]+ $_POST['qty'.$i];
+            if($tot_qty!=$purchase_item['order_qty'])
+            {
+                $request->session()->flash('error', "Accepted and cancelled quantity is not matching.. !");
+                if($request->order_type)
+                return redirect('inventory/final-purchase/cancellation?prsr='.$request->order_type);
+                else
+                return redirect('inventory/final-purchase/cancellation');
+            }
             $data['cancelled_qty'] = $_POST['cancel_qty'.$i];
             $success[] = $this->inv_final_purchase_order_item->updatedata(['id' => $_POST['purchase_item_id'.$i]], $data);
             $ys[]= inv_final_purchase_order_item::where('id','=',$_POST['purchase_item_id'.$i])->decrement('order_qty',$_POST['cancel_qty'.$i]);

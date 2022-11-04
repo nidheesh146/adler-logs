@@ -19,6 +19,12 @@
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		   @endif
+           @if (Session::get('error'))
+		   <div class="alert alert-danger " style="width: 100%;">
+			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+			   <i class="icon fa fa-check"></i> {{ Session::get('error') }}
+		   </div>
+		   @endif
            
             @include('includes.purchase-details.purchase-work-order-tab')
             <div class="tab-content">
