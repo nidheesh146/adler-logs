@@ -109,8 +109,7 @@
                                     </thead>
                                     <tbody >
                                     @foreach($data['getdata'] as $item)
-                                        @php $supplier = $fn->checkFixedItem($item['requisition_item_id']);
-                                        echo $supplier; @endphp
+                                        @php $supplier = $fn->checkFixedItem($item['requisition_item_id']); @endphp
                                         @if($supplier!=0)
                                         <tr style="background-color:#B2BEB5;">
                                         @else
