@@ -10,6 +10,9 @@ use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_quotation;
 use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
+use App\Models\PurchaseDetails\inv_purchase_req_quotation_supplier;
+use App\Models\PurchaseDetails\inv_final_purchase_order_rel;
+
 
 
 class QuotationController extends Controller
@@ -20,10 +23,12 @@ class QuotationController extends Controller
         $this->inv_purchase_req_quotation = new inv_purchase_req_quotation;
         $this->inv_supplier = new inv_supplier;
         $this->inv_purchase_req_quotation_item_supp_rel = new inv_purchase_req_quotation_item_supp_rel;
+        $this->inv_purchase_req_quotation_supplier = new inv_purchase_req_quotation_supplier;
+        $this->inv_final_purchase_order_rel = new inv_final_purchase_order_rel;
     }
 
     // list Quotation
-    public function getQuotation(Request $request)
+    public function getQuotation(Request $request,$id=null)
     { 
 
         if ($request->prsr) {
@@ -43,8 +48,15 @@ class QuotationController extends Controller
             }
             $condition[] = ['inv_purchase_req_master.PR_SR', '=', 'PR'];
         }
+
+
+
+      //  $data['reopen_supplier'] = $this->inv_purchase_req_quotation_supplier->inv_purchase_req_quotation_data(['inv_purchase_req_quotation_supplier.quotation_id'=>$id]);
+
+        $data['reopen_data_single'] = $this->inv_final_purchase_order_rel->singleGetData(['inv_final_purchase_order_rel.id'=>$id]);
+        $data['reopen_data'] = $this->inv_final_purchase_order_rel->getData(['inv_final_purchase_order_rel.id'=>$id]);
         $data['getdata'] = $this->inv_purchase_req_item->getdata($condition);
-        return view('pages/purchase-details/Quotation/quotation-add', compact('data'));
+        return view('pages/purchase-details/Quotation/quotation-add', compact('data','id'));
     }
 
     // Add Quotation
