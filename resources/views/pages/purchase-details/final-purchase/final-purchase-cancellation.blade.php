@@ -155,7 +155,7 @@
                                     </button>
 								    <div class="dropdown-menu">
                                         @if($po_data->status==0)  
-                                           <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"><i class="fas fa-reply"></i> Reopen</a>
+                                           <a href="{{url('inventory/quotation/'.$po_data->id)}}" class="dropdown-item"><i class="fas fa-reply"></i> Reopen</a>
                                         @endif
 
 
