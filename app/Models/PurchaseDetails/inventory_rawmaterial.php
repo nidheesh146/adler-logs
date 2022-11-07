@@ -40,6 +40,16 @@ class inventory_rawmaterial extends Model
         ->join('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')->where($condition)->first();
     }
 
+    function getData(){
+        return $this->select(['inventory_rawmaterial.*','inv_item_type.type_name as type1','unit_name','inv_item_type_2.type_name as type2'])
+        ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.receipt_unit_id')
+        ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+        ->leftjoin('inv_item_type_2','inv_item_type_2.id','=','inventory_rawmaterial.item_type_id_2')
+        ->where('inventory_rawmaterial.is_active','=',1)
+        ->orderBy('inventory_rawmaterial.id','desc')
+        ->paginate(15);
+    }
+
 
 
 }

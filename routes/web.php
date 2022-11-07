@@ -197,6 +197,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('label/printing-report','LabelController@printingReport');
     Route::post('label/insert-printing-data','LabelController@insertPrintingData');
     Route::get('label/exportPrinting-report', 'LabelController@exportPrintingReport')->name('ExportPrintingData');
+
+    // Row material
+    Route::get('row-material/list','RowMaterialController@materialList');
+    Route::get('row-material/add','RowMaterialController@materialAdd');
+    Route::post('row-material/add','RowMaterialController@materialAdd');
+    Route::get('row-material/edit','RowMaterialController@materialEdit');
+    Route::get('row-material/edit','RowMaterialController@materialEdit');
+
+
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Employee','middleware'=>['RolePermission']], function() {

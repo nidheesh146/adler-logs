@@ -179,6 +179,7 @@ class inv_purchase_req_quotation extends Model
         $query =  $this->select('inv_purchase_req_quotation.*')
                     ->leftjoin('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+                    ->leftjoin('inv_purchase_req_quotation_item_supp_rel','inv_purchase_req_quotation_item_supp_rel.quotation_id','=','inv_purchase_req_quotation.quotation_id')
                     ->distinct('inv_purchase_req_quotation.quotation_id')
                     ->orderby('inv_purchase_req_quotation.quotation_id','desc')
                    //  ->join('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
@@ -186,6 +187,7 @@ class inv_purchase_req_quotation extends Model
                          $query->select('inv_final_purchase_order_master.rq_master_id')->from('inv_final_purchase_order_master');
                        })
                      ->where($condition1)
+                     ->where('inv_purchase_req_quotation_item_supp_rel.selected_item','=',1)
                      ->paginate(15);
                      return $query;
     }
