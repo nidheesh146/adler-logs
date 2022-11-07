@@ -2,9 +2,12 @@
 @section('content')
 @inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\QuotationController')
 <style>
-     .select2-container--default .select2-selection--multiple .select2-selection__choice{
+     .select2-select2-search__field .select2-selection--multiple .select2-selection__choice{
         color:white;
         background-color:#5897fb;
+    }
+    .select2-search__field {
+        width:100px !important;
     }
     #select_error{
         float:left;
@@ -18,11 +21,11 @@
 		<div class="az-content-body">
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">QUOTATION</a></span> 
-                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">ADD REQUEST FOR QUOTATION </a></span>
+                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">  {{$id ? 'Quotation reopen ' :  "Add request for quotation" }} </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-              Add request for quotation
+               {{$id ? 'Quotation reopen ' :  "Add request for quotation" }}  @if($id) (RQ NO:  {{$data['reopen_data_single']['rq_no']}} , PO NO: {{$data['reopen_data_single']['po_number']}} ) @endif
             </h4>
             
 
@@ -81,21 +84,63 @@
                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                     <label>Supplier *</label>
                                     <select class="form-control Supplier" name="Supplier[]" multiple="multiple">
-                                            <option value="">--- select one ---</option>
+                                            {{-- <option value="">--- select one ---</option>  --}}
+                                            {{-- @if(!empty($data['reopen_supplier']))
+                                            @foreach($data['reopen_supplier'] as $supplier)
+                                                <option value="{{$supplier['supplier_id']}}" selected>{{$supplier['vendor_name']}}</option>
+                                            @endforeach
+                                            @endif --}}
+                                           
+
                                     </select>
                                 </div><!-- form-group -->
                             </div> 
-                            <div class="row">
-                                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                                    <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                                        <i class="fas fa-address-card"></i>@if(request()->get('prsr')!='sr') Purchase @else Service @endif Requisition Approved List
-                                    </label>
-                                    {{-- <div class="form-devider"></div> --}}
-                                </div>
-                            </div>
+                 
 
                             <div class="table-responsive">
                                 {{-- <h4> Purchase Requisition Approved List </h4> --}}
+                                @if($id)
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                                        <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                                            <i class="fas fa-reply"></i> Reopen Items (RQ NO:  {{$data['reopen_data_single']['rq_no']}} , PO NO: {{$data['reopen_data_single']['po_number']}} )
+                                        </label>
+                                        {{-- <div class="form-devider"></div> --}}
+                                    </div>
+                                </div>
+                                <table class="table table-bordered mg-b-0" id="example1" style="margin-bottom: 17px;">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
+                                            <th>Item code </th>
+                                            <th>Type</th>
+                                            <th>DESCRIPTION</th>
+                                            <th> Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody >
+                                    @foreach ( $data['reopen_data'] as $item)
+                                    <tr>
+                                        <td><input type="checkbox" class="purchase_requisition_item" checked id="purchase_requisition_item" name="purchase_requisition_item[]"  value="{{$item['requisition_item_id']}}"></td>
+                                        <th>{{$item['pr_no']}}</th>
+                                        <th> {{$item['item_code']}} </th>
+                                        <td> {{$item['type_name']}}</td>
+                                        <td> {{$item['short_description']}}</td>
+                                        <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>	
+                                    </tr>
+                                    @endforeach
+                                  </tbody >
+                                </table>
+                                @endif
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                                        <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                                            <i class="fas fa-address-card"></i>@if(request()->get('prsr')!='sr') Purchase @else Service @endif Requisition Approved List
+                                        </label>
+                                        {{-- <div class="form-devider"></div> --}}
+                                    </div>
+                                </div>
                                 <table class="table table-bordered mg-b-0" id="example1">
                                     <thead>
                                         <tr>
@@ -169,6 +214,7 @@
                     searchInputPlaceholder: 'Search',
                     minimumInputLength: 3,
                     allowClear: true,
+                    theme: "classic",
                     ajax: {
                     url: "{{url('inventory/suppliersearch')}}",
                     processResults: function (data) {
@@ -177,7 +223,16 @@
                       };
                     }
                   }
-            });
+            }).trigger('change');
+
+
+
+            $("button").click(function(){
+  var wanted_id = $(this).attr("data-val");
+  var wanted_option = $('#selectTwo option[value="'+ wanted_id +'"]');
+  wanted_option.prop('selected', false);
+  $('.Supplier').trigger('change.select2');
+});
 
             $(".submit-btn").on("click", function() {
                 if($('#type').val()==0)

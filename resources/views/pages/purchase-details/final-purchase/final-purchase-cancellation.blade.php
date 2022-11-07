@@ -140,7 +140,7 @@
                                     <td>{{$po_data->f_name}} {{$po_data->l_name}}</td>
                                     <td>
                                     
-                                    <button data-toggle="dropdown" style="width: 68px;" class="badge 
+                                    <button data-toggle="dropdown" style="width: 75px;" class="badge 
                                         @if($po_data->status==1) badge-success @elseif($po_data->status==4)  badge-warning @elseif($po_data->status==5)  badge-warning @elseif($po_data->status==0) badge-danger @endif"> 
                                         @if($po_data->status==1) 
                                             Approved 
@@ -154,6 +154,12 @@
                                         <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i>
                                     </button>
 								    <div class="dropdown-menu">
+                                        @if($po_data->status==0)  
+                                           <a href="{{url('inventory/quotation/'.$po_data->id)}}" class="dropdown-item"><i class="fas fa-reply"></i> Reopen</a>
+                                        @endif
+
+
+
                                         <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
                                         <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
                                     </div>
@@ -162,7 +168,7 @@
                                             <i class="fa fa-window-close"></i> Cancel
                                         </a>
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" rq="{{$po_data->rq_no}}" podate="{{date('d-m-Y',strtotime($po_data->po_date))}}" supplier ="{{$po_data->vendor_name}}" value="{{$po_data->po_id}}" data-target="#parialCancelModal" 
-                                            id="partial-cancel-model" class="partial-cancel-model badge badge-warning" style="width: 85px;padding:6px;margin-top:2px;background-color:#FF5733 ;color:white;">
+                                            id="partial-cancel-model" class="partial-cancel-model badge badge-warning" style="width:92px;padding:6px;margin-top:2px;background-color:#FF5733 ;color:white;">
                                             <i class="fa fa-window-close"></i> Partial Cancel
                                         </a>
                                     @endif
