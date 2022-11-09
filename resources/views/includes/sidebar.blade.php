@@ -3,7 +3,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
-       //echo $Action;
+      //echo $Action;
 @endphp
   <div class="az-sidebar">
     <div class="az-sidebar-header">
@@ -97,6 +97,32 @@
             <li class="nav-sub-item @if(in_array($Action,['Label.printingReport'])){{'active'}} @endif ">
               <a href="{{url('label/printing-report')}}"  class="nav-sub-link">Label Printing Report</a>
             </li>
+          </ul>
+        </li>
+        <li class="nav-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit','RowMaterial.fixedRateList'])){{'active show'}} @endif ">
+          <a href="#" class="nav-link with-sub"><i class="fas fa-swatchbook" style="font-size: 19px"></i>Row Material</a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit'])){{'active'}} @endif ">
+            <a href="{{url('row-material/list')}}"  class="nav-sub-link">Row Materials</a>
+            </li>
+            <!-- <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
+            <a href="{{url('batchcard/batchcard-add')}}"  class="nav-sub-link">Row Material Upload</a>
+            </li> -->
+            <li class="nav-sub-item @if(in_array($Action,['RowMaterial.fixedRateList'])){{'active'}} @endif ">
+            <a href="{{url('row-material/fixed-rate')}}"  class="nav-sub-link">Fixed Rate Row Material</a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload'])){{'active show'}} @endif ">
+          <a href="#" class="nav-link with-sub"><i class="fab fa-product-hunt" style="font-size: 19px"></i>Product</a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item @if(in_array($Action,['Product.productList'])){{'active'}} @endif ">
+            <a href="{{url('product/list')}}"  class="nav-sub-link">Products</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Product.productFileUpload'])){{'active'}} @endif ">
+            <a href="{{url('product/file/upload')}}"  class="nav-sub-link">Product Upload</a>
+            </li> 
           </ul>
         </li>
 

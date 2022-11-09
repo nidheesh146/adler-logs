@@ -26,6 +26,16 @@ class product extends Model
         
     }
 
+    function get_products($condition){
+        return $this->select(['product_product.*','product_productfamily.family_name','product_productgroup.group_name','product_productbrand.brand_name'])
+                    ->leftjoin('product_productfamily','product_productfamily.id','=','product_product.product_family_id')
+                    ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
+                    ->leftjoin('product_productbrand','product_productbrand.id','=','product_product.brand_details_id')
+                    ->where($condition)
+                    ->orderBy('product_product.id','desc')
+                    ->paginate(15);
+    }
+
 
 
     

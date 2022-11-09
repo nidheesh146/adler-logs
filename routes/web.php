@@ -203,8 +203,22 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('row-material/add','RowMaterialController@materialAdd');
     Route::post('row-material/add','RowMaterialController@materialAdd');
     Route::get('row-material/edit','RowMaterialController@materialEdit');
-    Route::get('row-material/edit','RowMaterialController@materialEdit');
+    Route::post('row-material/edit','RowMaterialController@materialEdit');
+    Route::get('row-material/delete', 'RowMaterialController@materialDelete');
 
+    //fixed rate row material
+    Route::get('row-material/fixed-rate','RowMaterialController@fixedRateList');
+    Route::get('row-material/fixed-rate/add','RowMaterialController@fixedRateAdd');
+    Route::post('row-material/fixed-rate/add','RowMaterialController@fixedRateAdd');
+    Route::get('row-material/fixed-rate/edit','RowMaterialController@fixedRateEdit');
+    Route::post('row-material/fixed-rate/edit','RowMaterialController@fixedRateEdit');
+    Route::get('row-material/fixed-rate/delete', 'RowMaterialController@fixedRateDelete');
+
+    //Product
+    Route::get('product/list','ProductController@productList');
+    Route::get('product/file/upload','ProductController@getProductUpload');
+    Route::post('product/product-upload','ProductController@productFileUpload');
+   
 
 });
 
