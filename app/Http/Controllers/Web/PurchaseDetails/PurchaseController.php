@@ -1098,8 +1098,7 @@ class PurchaseController extends Controller
 
     public function excessPurchaseOrder(Request $request)
     {
-        ini_set('max_execution_time', 500);
-        set_time_limit(300);
+        
         $item_id =$request->purchase_item_id;
         $po_id = $request->po_id;
         $master = $this->inv_final_purchase_order_master->get_master_details(['inv_final_purchase_order_master.id' => $po_id]);
@@ -1156,9 +1155,9 @@ class PurchaseController extends Controller
             $request->session()->flash('success', "You have successfully created a Purchase order for the excess quantity  !");
             else 
             $request->session()->flash('success', "You have successfully created a Work order for the excess quantity  !");
-            return redirect('inventory/final-purchase-view/99/excess-quantity');
+            return redirect('inventory/final-purchase-view/'.$po_id.'/excess-quantity');
         }
-        return redirect('inventory/final-purchase-view/99/excess-quantity');
+        return redirect('inventory/final-purchase-view/'.$po_id.'/excess-quantity');
 
     }
 
