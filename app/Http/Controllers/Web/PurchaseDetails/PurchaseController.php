@@ -1157,6 +1157,7 @@ class PurchaseController extends Controller
             $request->session()->flash('success', "You have successfully created a Work order for the excess quantity  !");
             return redirect('inventory/final-purchase-view/99/excess-quantity');
         }
+        return redirect('inventory/final-purchase-view/99/excess-quantity');
 
     }
 
