@@ -6,15 +6,15 @@
 	<div class="container">
 		<div class="az-content-body">
 
-            <div class="az-content-breadcrumb"> 
-                <span><a href="" style="color: #596881;">Material Inwards To Quarantine</a></span>
+            <div class="az-content-breadcrumb">  
+                <span><a href="" style="color: #596881;">Material Acceptance</a></span>
                 <span><a href="">
-                   MIQ Item
+                   MAC Item
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                    MIQ Item
+                    MAC Item
             </h4>
             <div class="az-dashboard-nav">
                 
@@ -54,59 +54,46 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Item code </label>
-                                <input type="text" value="@if($data) {{$data['item_code']}} @endif" class="form-control" name="Type" readonly>
+                                <input type="text" value="" class="form-control" name="Type" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Item Type </label>
-                                <input type="text" value="@if($data) {{$data['type_name']}} @endif" class="form-control" name="Type" readonly>
+                                <input type="text" value="" class="form-control" name="Type" readonly>
                             </div><!-- form-group -->
-                            @if($data['type_name']=="Direct Items")
+                            
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Lot Number *</label>
-                                <input type="text" value="@if($data) {{$data['lot_number']}} @endif" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number">
+                                <input type="text" value="" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number" readonly>
                             </div><!-- form-group -->
-                            @endif
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Supplier Unit Rate </label>
+                                <input type="text" value="" class="form-control" name="rate" id="rate" placeholder="Supplier Unit Rate" readonly>
+                            </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Quantity </label>
-                                <input type="text" value="@if($data) {{$data['order_qty']}} @endif" class="form-control " name="Quantity" placeholder="Quantity" readonly>
+                                <input type="text" value="" class="form-control " name="Quantity" placeholder="Quantity" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Stk Kpng Unit </label>
-                                <input type="text" value="@if($data) {{$data['unit_name']}} @endif" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
+                                <input type="text" value="" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
                             </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Supplier Unit Rate  @if($data)( Rate : {{$data['rate']}} , Discount(%) : {{$data['discount']}}) @endif</label>
-                                <input type="text" value="@if($data) {{$data['rate']-($data['rate']*$data['discount']/100)}} @endif" class="form-control" name="rate" id="rate" placeholder="Supplier Unit Rate" readonly>
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 $col-md-6 col-lg-6 col-xl-6">
-                                <label>Currency *</label>
-                                <select class="form-control" name="currency" id="currency">
-                                <option value="">--- select one ---</option> 
-                                    @foreach ($currency as $item)
-                                        <option value="{{$item->currency_id}}" @if($item->currency_id == $data['currency']) selected  @endif >{{$item->currency_code}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            
+                            
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Conversion rate (INR) *</label>
-                                <input type="text" class="form-control" value="@if($data) {{$data['conversion_rate']}} @endif" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
+                                <input type="text" class="form-control" value="" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Value in INR </label>
-                                <input type="text" readonly class="form-control" value="@if($data) {{$data['value_inr']}} @endif" name="value_inr" id="value_inr" placeholder="Value in INR">
+                                <input type="text" readonly class="form-control" value="" name="value_inr" id="value_inr" placeholder="Value in INR">
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Expiry Control *</label>
-                                <select class="form-control" name="expiry_control" id="expiry_control">
-                                    <option value="">--- select one ---</option>
-                                    <option value="1" @if($data) @if($data['expiry_control']==1 && $data['expiry_control']!=NULL) selected @endif @endif>Yes</option>
-                                    <option value="0" @if($data) @if($data['expiry_control']==0 && $data['expiry_control']!=NULL) selected @endif @endif>No</option>
-                                </select>
-                                
+                                <label>Work Center *</label>
+                                <input type="text" value=" " class="form-control" name="expiry_date" placeholder="Expiry Date">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Expiry Date *</label>
-                                <input type="text" value=" {{(!empty($data) &&($data['expiry_date']!=NULL) ) ? date('d-m-Y',strtotime($data['expiry_date'])) : date('d-m-Y') }}" class="form-control datepicker" name="expiry_date" placeholder="Expiry Date">
+                                <label>Reason *</label>
+                                <textarea type="text" value=" " class="form-control" name="expiry_date" placeholder=""></textarea>
                             </div><!-- form-group -->
                         </div> 
                       

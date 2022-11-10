@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use App\Models\PurchaseDetails\inv_miq;
 use App\Models\PurchaseDetails\inv_miq_item;
+use App\Models\PurchaseDetails\inv_miq_rel;
 use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\currency_exchange_rate;
@@ -21,6 +22,7 @@ class MIQController extends Controller
         $this->User = new User;
         $this->inv_miq = new inv_miq;
         $this->inv_miq_item = new inv_miq_item;
+        $this->inv_miq_rel = new inv_miq_rel;
         $this->inv_supplier_invoice_rel = new inv_supplier_invoice_rel;
         $this->inv_supplier_invoice_master = new inv_supplier_invoice_master;
         $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;

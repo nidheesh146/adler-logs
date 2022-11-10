@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 use App\Exports\FinalPurchaseOrderExport;
 use App\Http\Controllers\Controller;
 use App\Models\PurchaseDetails\inv_final_purchase_order_item;
+use App\Models\PurchaseDetails\inv_final_purchase_order_rel;
 use App\Models\PurchaseDetails\inv_final_purchase_order_master;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_master;
@@ -205,11 +206,11 @@ class PurchaseController extends Controller
                             $item_type = $this->check_item_type($quotation_id,$ByItemSupplier->supplier_id);
                             if ($item_type == "Direct Items") {
                             $data['po_number'] = "WOI2-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
-                            $data['type'] ="WO";
                             }
                             else{
                                 $data['po_number'] = "WOI3-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
                             }
+                            $data['type'] ="WO";
                         }
                         $data['created_at'] = date('Y-m-d H:i:s');
                         $data['updated_at'] = date('Y-m-d H:i:s');
@@ -1054,5 +1055,109 @@ class PurchaseController extends Controller
         else
         return redirect('inventory/final-purchase/cancellation');
     }
+
+    public function getExcessQty(Request $request)
+    {
+        $condition1 = [];
+            if (!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from ) {
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+            }
+            if ($request->order_type == "wo") {
+                $condition1[] = ['inv_final_purchase_order_master.type','=', "WO"];
+            }else{
+                $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
+            }
+            if ($request->rq_no) {
+                $condition1[] = ['inv_purchase_req_quotation.rq_no', 'like', '%' . $request->rq_no . '%'];
+            }
+            if ($request->supplier) {
+                $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+       
+            if ($request->po_from) {
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->po_from))];
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->po_from))];
+            }
+
+            if ($request->po_no) {
+                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $request->po_no . '%'];
+            }
+            
+
+        $data['users'] = $this->User->get_all_users([]);
+        $data['po_data'] = $this->inv_final_purchase_order_master->get_purchase_master_list($condition1);
+        return view('pages.purchase-details.final-purchase.excess-order-qty', compact('data'));
+    }
+
+    public function viewFinalPurchaseExcess($id)
+    {
+        $data['master'] = $this->inv_final_purchase_order_master->get_master_details(['inv_final_purchase_order_master.id' => $id]);
+        $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $id]);
+        return view('pages.purchase-details.final-purchase.excess-order-items', compact('data'));
+    }
+
+    public function excessPurchaseOrder(Request $request)
+    {
+        $item_id =$request->purchase_item_id;
+        $po_id = $request->po_id;
+        $master = $this->inv_final_purchase_order_master->get_master_details(['inv_final_purchase_order_master.id' => $po_id]);
+        $item = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id' => $item_id]);
+        $item_type = $this->check_item_type($master['rq_master_id'],$master['supplier_id']);
+        if($master['type']=='PO')
+        {
+            if ($item_type == "Direct Items") {
+                $data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
+            } else {
+                $data['po_number'] = "POI3" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
+            }
+            $data['type'] ="PO";
+        }
+        else
+        {
+            if ($item_type == "Direct Items")
+            {
+              $data['po_number'] = "WOI2-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+            }
+            else{
+                $data['po_number'] = "WOI3-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+            }
+            $data['type'] ="WO";
+        }
+        $data['created_at'] = date('Y-m-d H:i:s');
+        $data['updated_at'] = date('Y-m-d H:i:s');
+        $data['rq_master_id'] = $master['rq_master_id'];
+        $data['status'] = 4;
+        $data['supplier_id'] = $master['supplier_id'];
+        $data['po_date'] = $master['po_date'];
+        $data['created_by'] = config('user')['user_id'];
+        $data['excess_order_of']=$po_id;
+        //$inv_supplier_terms = DB::table('inv_supplier')->select('*')->where('id', $data['supplier_id'])->first();
+        //$$inv_supplier_terms=[];
+        $POMaster =inv_final_purchase_order_master::insertGetId($data);
+        $purchase_item = inv_final_purchase_order_item::insertGetId([
+            'order_qty'=>$request->excess_qty,
+            'rate'=>$item['rate'],
+            'discount'=>$item['discount'],
+            'gst'=>$item['gst'],
+            'Specification'=>$item['Specification'],
+            'item_id'=>$item['purchase_item_id'],
+            'status'=>1,
+        ]);
+        $rel = inv_final_purchase_order_rel::insert([
+            'master'=>$POMaster,
+            'item'=>$purchase_item,
+        ]);
+
+        if($POMaster && $purchase_item && $rel)
+        {
+            if($master['type']=='PO')
+            $request->session()->flash('success', "You have successfully created a Purchase order for the excess quantity  !");
+            else 
+            $request->session()->flash('success', "You have successfully created a Work order for the excess quantity  !");
+            return redirect('inventory/final-purchase-view/99/excess-quantity');
+        }
+
+    }
+
 
 }

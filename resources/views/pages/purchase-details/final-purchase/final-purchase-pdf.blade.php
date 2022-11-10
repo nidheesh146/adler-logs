@@ -383,6 +383,7 @@
         </div>
     </div><br/>
     @if($type!='cancel')
+    @if($terms_condition)
     <div class="row6" style="font-size:10px;display:block;">
         <strong>Terms and Conditions</strong>
         <br/>
@@ -641,12 +642,13 @@
         Supplier in procuring and manufacturing PRODUCT in process at the date of the notice of termination; less (3) any salvage value thereof. If requested, Supplier agrees to substantiate such costs
         with proof satisfactory to Company.
         @endif */ ?>
-
+      
         <?= nl2br($terms_condition->terms_and_conditions);?>
     </div>
     <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     Adler Ref No :
     </div>
+    @endif
     @endif
      
    

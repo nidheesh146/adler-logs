@@ -38,11 +38,11 @@ class inv_final_purchase_order_item extends Model
 
     function get_purchase_order_single_item($condition){
       
-        return $this->select(['inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_final_purchase_order_item.delivery_schedule',
+        return $this->select(['inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_final_purchase_order_item.delivery_schedule','inv_final_purchase_order_item.item_id as purchase_item_id',
         'inv_purchase_req_item.actual_order_qty', 'inv_final_purchase_order_item.order_qty','inv_unit.unit_name','inv_final_purchase_order_item.rate','inv_final_purchase_order_item.discount','inv_final_purchase_order_item.Specification',
         'inv_final_purchase_order_item.id', 'inv_purchase_req_master.pr_no', 'department.dept_name', 'inv_purchase_req_master.date as requisition_date', 'inv_purchase_req_master.PR_SR',
         'inv_purchase_req_quotation.rq_no', 'inv_purchase_req_quotation_supplier.quotation_date','inv_purchase_req_quotation_supplier.commited_delivery_date', 'inv_supplier.vendor_id', 'inv_supplier.vendor_name',
-        'inv_final_purchase_order_master.type','inv_final_purchase_order_master.id as fpo_master_id','inv_purchase_req_quotation_supplier.freight_charge'])
+        'inv_final_purchase_order_master.type','inv_final_purchase_order_master.id as fpo_master_id','inv_purchase_req_quotation_supplier.freight_charge','inv_final_purchase_order_item.gst'])
                     ->leftjoin('inv_final_purchase_order_rel','inv_final_purchase_order_rel.item','=','inv_final_purchase_order_item.id')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
                     ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
@@ -87,7 +87,7 @@ class inv_final_purchase_order_item extends Model
     {
         return $this->select(['inv_final_purchase_order_item.id as purchase_item_id','inventory_rawmaterial.hsn_code','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.short_description',
             'inv_final_purchase_order_item.order_qty', 'inv_final_purchase_order_item.rate', 'inv_final_purchase_order_item.discount', 'inv_unit.unit_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst',
-            'inv_purchase_req_item.gst','inv_final_purchase_order_item.cancelled_qty'])
+            'inv_purchase_req_item.gst','inv_final_purchase_order_item.cancelled_qty','inv_final_purchase_order_item.item_id as requisition_item_id', 'inv_final_purchase_order_item.gst'])
                     ->leftjoin('inv_final_purchase_order_rel','inv_final_purchase_order_rel.item','=','inv_final_purchase_order_item.id','inv_final_purchase_order_item.cancelled_qty')
                     ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_final_purchase_order_rel.master')
                     ->leftjoin('inv_supplier', 'inv_supplier.id','=', 'inv_final_purchase_order_master.supplier_id')

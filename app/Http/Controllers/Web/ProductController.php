@@ -74,6 +74,7 @@ class ProductController extends Controller
     }
     public function Excelsplitsheet($ExcelOBJ)
     {
+        ini_set('max_execution_time', 500);
         $ExcelOBJ->SQLdata = [];
         $ExcelOBJ->arrayinc = 0;
 

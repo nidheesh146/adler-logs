@@ -117,7 +117,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/final-purchase/approval', 'PurchaseController@Approve');
     Route::get('getOrderItems','PurchaseController@getOrderItems');
     Route::post('inventory/final-purchase/partial-cancellation', 'PurchaseController@partialCancellation');
-
+    Route::get('inventory/final-purchase/excess-quantity', 'PurchaseController@getExcessQty');
+    Route::get('inventory/final-purchase-view/{id}/excess-quantity', 'PurchaseController@viewFinalPurchaseExcess');
+    Route::post('inventory/final-purchase/excess-qty-order','PurchaseController@excessPurchaseOrder');
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');
     Route::get('inventory/supplier-invoice-add/{id?}', 'PurchaseController@supplierInvoiceAdd');
@@ -143,6 +145,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
     Route::post('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
     Route::get('inventory/find-invoice-number','MIQController@findInvoiceNumber');
+
+    // MAC
+    Route::get('inventory/MAC', 'MACController@MAClist');
+    Route::get('inventory/MAC-add/{id?}', 'MACController@MACAdd');
+    Route::get('inventory/MAC/{id}/item', 'MACController@MACAddItemInfo');
+    
+    // MRD
+    Route::get('inventory/MRD', 'MRDController@MRDlist');
+    Route::get('inventory/MRD-add/{id?}', 'MRDController@MRDAdd');
+    Route::get('inventory/MRD/{id}/item', 'MRDController@MRDAddItemInfo');
 
     // suppliers
     // Route::get('inventory/terms-and-conditions-list','TermsconditionsController@list_terms_conditions');
