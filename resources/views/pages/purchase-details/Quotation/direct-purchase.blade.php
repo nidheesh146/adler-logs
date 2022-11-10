@@ -18,7 +18,7 @@
 		<div class="az-content-body">
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">QUOTATION</a></span> 
-                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;"> Direct Purchase/Work Order </a></span>
+                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;"> Fixed Rate- Purchase/Work Order </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">

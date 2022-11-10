@@ -1098,6 +1098,7 @@ class PurchaseController extends Controller
 
     public function excessPurchaseOrder(Request $request)
     {
+        ini_set('max_execution_time', 500);
         $item_id =$request->purchase_item_id;
         $po_id = $request->po_id;
         $master = $this->inv_final_purchase_order_master->get_master_details(['inv_final_purchase_order_master.id' => $po_id]);
