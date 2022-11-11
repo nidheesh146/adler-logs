@@ -130,7 +130,7 @@
                                 </div>
                                 <div class="subcolumn3" style="float:right;width:5px;">
                                     <span class="smalltext" style="font-size:8px;margin-top:75px;margin-left: -18px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
-                                        <!-- LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}} -->
+                                        {{-- LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}} --}}
                                         LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
                                     </span>
                                 </div>
@@ -272,7 +272,7 @@
                                 </div>
                                 <div class="subcolumn3" style="float:right;width:5px;">
                                     <span class="smalltext" style="font-size:8px;margin-top:75px;margin-left: -18px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
-                                        <!-- LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}} -->
+                                        {{-- LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{date( 'd-M-y' , strtotime($batchcard_data->start_date) )}} --}}
                                         LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
                                     </span>
                                 </div>

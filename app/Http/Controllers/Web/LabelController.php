@@ -81,12 +81,12 @@ class LabelController extends Controller
 
     public function generatePatientLabel(Request $request)
     {
-        $is_sterile = $this->check_label_type($request->batchcard_no);
-        if($is_sterile==0)
-        {
-            $request->session()->flash('error', "This is non-sterile product batchcard.Try with sterile product batchcard...");
-            return redirect('label/patient-label');
-        }
+        // $is_sterile = $this->check_label_type($request->batchcard_no);
+        // if($is_sterile==0)
+        // {
+        //     $request->session()->flash('error', "This is non-sterile product batchcard.Try with sterile product batchcard...");
+        //     return redirect('label/patient-label');
+        // }
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $lot_no = $request->sterilization_lot_no;
@@ -139,12 +139,12 @@ class LabelController extends Controller
 
     public function generateSterilizationProductLabel(Request $request)
     {
-        $is_sterile = $this->check_label_type($request->batchcard_no);
-        if($is_sterile==0)
-        {
-            $request->session()->flash('error', "This is non-sterile product batchcard.Try with sterile product batchcard...");
-            return redirect('label/sterilization-label');
-        }
+        // $is_sterile = $this->check_label_type($request->batchcard_no);
+        // if($is_sterile==0)
+        // {
+        //     $request->session()->flash('error', "This is non-sterile product batchcard.Try with sterile product batchcard...");
+        //     return redirect('label/sterilization-label');
+        // }
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $lot_no = $request->sterilization_lot_no;
@@ -165,12 +165,12 @@ class LabelController extends Controller
     public function generateNonSterileProductLabel(Request $request) 
     {
       
-        $is_sterile = $this->check_label_type($request->batchcard_no);
-        if($is_sterile==1)
-        {
-            $request->session()->flash('error', "This is sterile product batchcard.Try with non-sterile product batchcard...");
-            return redirect('label/non-sterile-product-label');
-        }
+        // $is_sterile = $this->check_label_type($request->batchcard_no);
+        // if($is_sterile==1)
+        // {
+        //     $request->session()->flash('error', "This is sterile product batchcard.Try with non-sterile product batchcard...");
+        //     return redirect('label/non-sterile-product-label');
+        // }
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $manufacturing_date = $request->manufacturing_date;
@@ -192,12 +192,12 @@ class LabelController extends Controller
 
     public function generateInstrumentLabel(Request $request)
     {
-        $is_sterile = $this->check_label_type($request->batchcard_no);
+       /* $is_sterile = $this->check_label_type($request->batchcard_no);
         if($is_sterile==1)
         {
             $request->session()->flash('error', "This is sterile product batchcard.Try with non-sterile product batchcard...");
             return redirect('label/instrument-label');
-        }
+        }*/
         $batcard_no = $request->batchcard_no;
         $no_of_label = $request->no_of_label;
         $per_pack_quantity = $request->per_pack_quantity;
