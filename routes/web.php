@@ -122,13 +122,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/final-purchase/excess-qty-order','PurchaseController@excessPurchaseOrder');
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');
-    Route::get('inventory/supplier-invoice-add/{id?}', 'PurchaseController@supplierInvoiceAdd');
-    Route::post('inventory/supplier-invoice-add/{id?}', 'PurchaseController@supplierInvoiceAdd');
+    Route::get('inventory/supplier-invoice-add', 'PurchaseController@supplierInvoiceAdd');
+    Route::post('inventory/supplier-invoice-add', 'PurchaseController@supplierInvoiceAdd');
+    Route::post('inventory/supplier-invoice-edit', 'PurchaseController@supplierInvoiceEdit');
     Route::get('inventory/find-po-number', 'PurchaseController@find_po_number');
     Route::get('inventory/supplier-invoice-delete/{id}', 'PurchaseController@supplier_invoice_delete');
     Route::get('inventory/supplier-invoice-item-edit/{master}/{id}', 'PurchaseController@supplierInvoiceItemEdit');
     Route::post('inventory/supplier-invoice-item-edit/{master}/{id}', 'PurchaseController@supplierInvoiceItemEdit');
-   
+    Route::get('inventory/getPurchaseOrderItem','PurchaseController@getPurchaseOrderItem');
+    Route::get('inventory/getInvoiceData','PurchaseController@getInvoiceData');
     //lot allocation
     Route::get('inventory/lot-allocation-list', 'LotAllocationController@lotAllocation');
     Route::get('inventory/lot-allocation-add', 'LotAllocationController@addLotAllocation');
@@ -149,18 +151,37 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     // MAC
     Route::get('inventory/MAC', 'MACController@MAClist');
     Route::get('inventory/MAC-add/{id?}', 'MACController@MACAdd');
+    Route::post('inventory/MAC-add/{id?}', 'MACController@MACAdd');
     Route::get('inventory/MAC/{id}/item', 'MACController@MACAddItemInfo');
-    
+    Route::get('inventory/find-miq-no', 'MACController@findMiqNumber');
+    Route::get('inventory/find-miq-info', 'MACController@find_miq_info');
+   
     // MRD
     Route::get('inventory/MRD', 'MRDController@MRDlist');
     Route::get('inventory/MRD-add/{id?}', 'MRDController@MRDAdd');
     Route::get('inventory/MRD/{id}/item', 'MRDController@MRDAddItemInfo');
+
+    //Stock To Production
+    Route::get('inventory/Stock/ToProduction', 'StockController@StockToProduction');
+    Route::get('inventory/Stock/ToProduction-add/{id?}', 'StockController@StockToProductionAdd');
+    Route::get('inventory/Stock/ToProduction/{id}/item', 'StockController@StockToProductionAddItem');
+
+     //Stock From Production
+     Route::get('inventory/Stock/FromProduction', 'StockController@StockFromProduction');
+     Route::get('inventory/Stock/FromProduction-add/{id?}', 'StockController@StockFromProductionAdd');
+     Route::get('inventory/Stock/FromProduction/{id}/item', 'StockController@StockFromProductionAddItem');
+
+      //Stock transfer
+      Route::get('inventory/Stock/transfer', 'StockController@StockTransfer');
+      Route::get('inventory/Stock/transfer-add/{id?}', 'StockController@StockTransferAdd');
+      Route::get('inventory/Stock/transfer/{id}/item', 'StockController@StockTransferAddItem');
 
     // suppliers
     // Route::get('inventory/terms-and-conditions-list','TermsconditionsController@list_terms_conditions');
     // Route::get('inventory/terms-and-conditions-add/{id?}','TermsconditionsController@add_terms_conditions');
     // Route::post('inventory/terms-and-conditions-add/{id?}','TermsconditionsController@add_terms_conditions');
     // Route::get('inventory/terms-and-conditions-get/{id}','TermsconditionsController@get_terms_conditions');
+    
     // suppliers
     Route::get('inventory/suppliers-list','SupplierController@list_supplier');
     Route::get('inventory/suppliers-add/{id?}','SupplierController@add_supplier');

@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use App\Models\PurchaseDetails\inv_miq;
 use App\Models\PurchaseDetails\inv_miq_item;
-use App\Models\PurchaseDetails\inv_miq_rel;
+use App\Models\PurchaseDetails\inv_miq_item_rel;
 use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\currency_exchange_rate;
@@ -22,7 +22,7 @@ class MIQController extends Controller
         $this->User = new User;
         $this->inv_miq = new inv_miq;
         $this->inv_miq_item = new inv_miq_item;
-        $this->inv_miq_rel = new inv_miq_rel;
+        $this->inv_miq_item_rel = new inv_miq_item_rel;
         $this->inv_supplier_invoice_rel = new inv_supplier_invoice_rel;
         $this->inv_supplier_invoice_master = new inv_supplier_invoice_master;
         $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
@@ -82,10 +82,13 @@ class MIQController extends Controller
                         $Data['updated_at'] =date('Y-m-d H:i:s');
                     
                     $add_id = $this->inv_miq->insert_data($Data);
-                    $invoice_items = inv_supplier_invoice_rel::select('item')->where('master','=',$request->invoice_number)->get();
+                    $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item','inv_supplier_invoice_item.item_id')
+                                           ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                                            ->where('inv_supplier_invoice_rel.master','=',$request->invoice_number)->get();
                     foreach($invoice_items as $item){
                         $dat=[
                             'invoice_item_id'=>$item->item,
+                            'item_id'=>$item->item_id,
                             'status'=>1,
                             'created_at'=>date('Y-m-d H:i:s'),
                             'updated_at'=>date('Y-m-d H:i:s')
@@ -165,7 +168,7 @@ class MIQController extends Controller
                 $data['expiry_date']=date('Y-m-d', strtotime($request->expiry_date));
                 $data['expiry_control'] =$request->expiry_control;
                 $update = $this->inv_miq_item->update_data(['inv_miq_item.id'=>$request->id],$data);
-                $miq_id = inv_miq_rel::where('item','=',$request->id)->pluck('master')->first();
+                $miq_id = inv_miq_item_rel::where('item','=',$request->id)->pluck('master')->first();
                 if($update)
                     $request->session()->flash('success', "You have successfully updated a MIQ Item Info!");
                 else

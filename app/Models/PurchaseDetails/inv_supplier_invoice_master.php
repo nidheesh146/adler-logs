@@ -76,7 +76,7 @@ class inv_supplier_invoice_master extends Model
     function get_supplier_invoices($condition1){
         return $this->select(['inv_supplier_invoice_master.id','user.employee_id','user.f_name','user.l_name','inv_final_purchase_order_master.po_number',
         'inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_supplier_invoice_master.created_at',
-        'inv_supplier.vendor_id','inv_supplier.vendor_name'])
+        'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.po_master_id'])
                 ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_master.po_master_id')
                 ->leftjoin('user','user.user_id','=','inv_supplier_invoice_master.created_by')
                 ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')

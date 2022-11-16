@@ -119,7 +119,8 @@
 							<td>{{date('d-m-Y',strtotime($item->created_at)) }}</td>
 							<td>{{$item->f_name}} {{$item->l_name}}</td>
 							<td>
-								<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-add/'.$item->id)}}"><i class="fas fa-edit"></i> Edit</a>
+								<!-- <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-add/'.$item->id)}}">-->
+								<a href="" data-toggle="modal"  data-target="#invoiceAddModal" class="invoice-add-model badge badge-info"   id="invoice-add-model" po="{{$item['po_number']}}" invoiceId="{{$item['id']}}" invoiceNo="{{$item['invoice_number']}}" invoiceDate="{{date('d-m-Y',strtotime($item->invoice_date)) }}"  poId="{{$item['po_master_id']}}" style="font-size: 13px;"><i class="fas fa-edit"></i> Edit</a> 
 							<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-delete/'.$item->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
 								
 							</td>
@@ -137,6 +138,50 @@
 	</div>
 </div>
 	<!-- az-content-body -->
+	<div id="invoiceAddModal" class="modal">
+        <div class="modal-dialog modal-xl" role="document">
+            <form id="excess-order-form" method="post" action="{{url('inventory/supplier-invoice-edit')}}" autocomplete="off">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#Edit Supplier Invoice <span class="invoice_number"></span></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                                <label>
+                                   Invoice Number
+                                </label>
+                                <input type="text" name="invoice_number" id="invoice_number"  placeholder="Invoice Number">
+                                <input type="hidden" name="invoice_id" id="invoice_id" value="">
+                            </div>
+							<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                                <label>
+                                   Invoice Date
+                                </label>
+                                <input type="text" name="invoice_date" id="invoice_date" value="{{date("d-m-Y")}}" class="datepicker1">
+                            </div>
+                            <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                                  <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                        Update
+                                  </button>
+                              </div>
+                        </div>
+                        <div class="form-devider"></div>
+                        <div class="row binding">
+                        </div>
+                             
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                       
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 
@@ -161,7 +206,34 @@
         // startDate: date,
         autoclose:true
     });
+	$(".datepicker1").datepicker({
+    format: " dd-mm-yyyy",
+    autoclose:true
+    });
 
+  });
+  $(document).ready(function() {
+        $('body').on('click', '#invoice-add-model', function (event) {
+            event.preventDefault();
+            $('.binding').empty();
+            var po_id = $(this).attr('poId');
+			var invoice_id = $(this).attr('invoiceId');
+            $('#invoice_id').val(invoice_id);
+            var invoice_no = $(this).attr('invoiceNo');
+            $('#invoice_number').val(invoice_no);
+            var invoice_date = $(this).attr('invoiceDate');
+            $('#invoice_date').val(invoice_date);
+           
+            $.ajax ({
+                    type: 'GET',
+                    url: "{{url('inventory/getPurchaseOrderItem')}}",
+                    data: { po_id: '' + po_id + '' },
+                    success : function(data) {
+                        $('.binding').append(data);
+                    }
+            });
+
+        });
   });
 
   

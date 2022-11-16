@@ -919,50 +919,97 @@ class PurchaseController extends Controller
         return view('pages.purchase-details.supplier-invoice.supplier-invoice-list', compact('data'));
     }
 
-    public function supplierInvoiceAdd(Request $request, $id = null)
+    public function supplierInvoiceAdd(Request $request)
     {
-
         if ($request->isMethod('post')) {
             $validation['invoice_number'] = ['required'];
-            $validation['po_number'] = ['required'];
-            $validation['date'] = ['required', 'date'];
-            $validation['create_by'] = ['required'];
+            $validation['po_id'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
-            if (!$validator->errors()->all()) {
-                if (!$id) {
-                    $data['po_master_id'] = $request->po_number;
-                    $data['created_at'] = date('Y-m-d H:i:s');
-                    $data['updated_at'] = date('Y-m-d H:i:s');
-                    $order_master = $this->inv_final_purchase_order_master->get_master_data(['inv_final_purchase_order_master.id' => $request->po_number]);
-                    $data['supplier_id'] = $order_master->supplier_id;
-                }
+            if (!$validator->errors()->all()) 
+            {
+                $data['po_master_id'] = $request->po_id;
+                $data['created_at'] = date('Y-m-d H:i:s');
+                $data['updated_at'] = date('Y-m-d H:i:s');
+                $order_master = $this->inv_final_purchase_order_master->get_master_data(['inv_final_purchase_order_master.id' => $request->po_id]);
+                $data['supplier_id'] = $order_master->supplier_id;
+        
                 $data['invoice_number'] = $request->invoice_number;
-                $data['invoice_date'] = date('Y-m-d', strtotime($request->date));
-                $data['created_by'] = $request->create_by;
-                if (!$id) {
-                    $SIMaster = $this->inv_supplier_invoice_master->insert_data($data);
-                    $request->session()->flash('success', "You have successfully created a  supplier invoice master !");
-                    return redirect("inventory/supplier-invoice-add/" . $SIMaster);
-                } else {
-                    $this->inv_supplier_invoice_master->updatedata(['inv_supplier_invoice_master.id' => $id], $data);
-                    $request->session()->flash('success', "You have successfully updated a supplier invoice master !");
-                    return redirect("inventory/supplier-invoice-add/" . $id);
-                }
+                $data['invoice_date'] = date('Y-m-d');
+                $data['created_by'] = config('user')['user_id'];
+                
+                $SIMaster = $this->inv_supplier_invoice_master->insert_data($data);
+                $request->session()->flash('success', "You have successfully created a  supplier invoice master !");
+                if($request->order_type)
+                return redirect("inventory/supplier-invoice-add?order_type=".$request->order_type);
+                else
+                return redirect("inventory/supplier-invoice-add");
             }
             if ($validator->errors()->all()) {
-                return redirect("inventory/supplier-invoice-add/" . $id)->withErrors($validator)->withInput();
+                if($request->order_type)
+                return redirect("inventory/supplier-invoice-add?order_type=".$request->order_type)->withErrors($validator)->withInput();
+                else
+                return redirect("inventory/supplier-invoice-add")->withErrors($validator)->withInput();
             }
         }
-        $condition[] = ['user.status', '=', 1];
-        $data['users'] = $this->User->get_all_users($condition);
-        if ($id) {
-            $data['simaster'] = $this->inv_supplier_invoice_master->get_master_data(['inv_supplier_invoice_master.id' => $id]);
-            $data['master_list'] = $this->rq_details_po($data['simaster']->id, $id);
-        }
+        else
+        {
+            if ($request->order_type == "wo") {
+                $condition1[] = ['inv_final_purchase_order_master.type','=', "WO"];
+            }else{
+                $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
+            }
+            if ($request->supplier) {
+                $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+    
+            if ($request->from) {
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
 
-        return view('pages.purchase-details.supplier-invoice.supplier-invoice-add', compact('data', 'id'));
+            if ($request->po_no) {
+                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $request->po_no . '%'];
+            }
+            $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+            $data['po_data'] = $this->inv_final_purchase_order_master->get_purchase_master_list_not_in_invoice($condition1);
+            $condition[] = ['user.status', '=', 1];
+            $data['users'] = $this->User->get_all_users($condition);
+            return view('pages.purchase-details.supplier-invoice.supplier-invoice-add', compact('data'));
+        }
     }
+
+    public function supplierInvoiceEdit(Request $request)
+    {
+        if ($request->isMethod('post')) 
+        {
+            $validation['invoice_number'] = ['required'];
+            $validation['invoice_date'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if (!$validator->errors()->all()) 
+            {
+                
+                $data['invoice_number'] = $request->invoice_number;
+                $data['invoice_date'] = date('Y-m-d',strtotime($request->invoice_date));
+                $data['updated_at'] = date('Y-m-d H:i:s');
+
+                $this->inv_supplier_invoice_master->updatedata(['inv_supplier_invoice_master.id' => $request->invoice_id], $data);
+                $request->session()->flash('success', "You have successfully updated a supplier invoice master !");
+                if($request->order_type)
+                return redirect("inventory/supplier-invoice?order_type=".$request->order_type);
+                else
+                return redirect("inventory/supplier-invoice");
+
+            }
+            if ($validator->errors()->all()) {
+                if($request->order_type)
+                return redirect('inventory/supplier-invoice?order_type='.$request->order_type)->withErrors($validator)->withInput();
+                else
+                return redirect("inventory/supplier-invoice")->withErrors($validator)->withInput();
+            }
+        }
+    }
+
     public function supplier_invoice_delete(Request $request, $id)
     {
         $this->inv_supplier_invoice_master->deleteData(['id' => $id]);
@@ -1146,7 +1193,7 @@ class PurchaseController extends Controller
             if ($item_type == "Direct Items") {
                 $data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
             } else {
-                $data['po_number'] = "POI3" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
+                $data['po_number'] = "POI3-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
             }
             $data['type'] ="PO";
         }
@@ -1197,6 +1244,62 @@ class PurchaseController extends Controller
         return redirect('inventory/final-purchase-view/'.$po_id.'/excess-quantity');
 
     }
+
+    public function getPurchaseOrderItem(Request $request)
+    {
+        $items = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $request->po_id]);
+        $data = '<div class="table-responsive">
+           <table class="table table-bordered mg-b-0" id="example1">
+           <tr>
+                <th rowspan="2">Item Code</th>
+                <th rowspan="2">Qty</th>
+                <th rowspan="2">Rate</th>
+                <th rowspan="2">Value</th>
+                <th colspan="2">Disc</th>
+                <th colspan="2">IGST</th>
+                <th colspan="2">SGST</th>
+                <th colspan="2">CGST</th>
+           </tr>
+           <tr>
+                <th>%</th>
+                <th>Value</th>
+                <th>%</th>
+                <th>Value</th>
+                <th>%</th>
+                <th>Value</th>
+                <th>%</th>
+                <th>Value</th>
+            </tr>';
+            $total = 0;
+            $total_discount = 0;
+            $total_igst = 0;
+            $total_cgst = 0;
+            $total_sgst = 0;
+        foreach($items as $item)
+        {
+            $data .='<tr>
+                    <td>'.$item['item_code'].'</td>
+                    <td>'.$item['order_qty'].' ' .$item['unit_name'] .'</td>
+                    <td>'.number_format((float)$item['rate'], 2, '.', '').'</td>
+                    <td>'.number_format((float)($item['rate']* $item['order_qty']), 2, '.', '') .'</td>
+                    <td>'.$item['discount'].'</td>';
+
+                    $discount_value = ($item['rate']* $item['order_qty'])-(($item['rate']* $item['order_qty']*$item['discount'])/100);
+            $data .='<td>'.number_format((float)(($item['rate']* $item['order_qty']*$item['discount'])/100), 2, '.', '').'</td>
+                    <td>'.$item['igst'].'</td>
+                    <td>'.number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '').'</td>
+                    <td>'.$item['sgst'].'</td>
+                    <td>'.number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '').'</td>
+                    <td>'.$item['cgst'].'</td>
+                    <td>'.number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '').'</td>
+                    </tr>';
+        } 
+        $data .='</table></div>';
+        return $data;
+
+    }
+
+
 
 
 }

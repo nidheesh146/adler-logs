@@ -5,7 +5,7 @@
         <div class="container" data-select2-id="9">
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
-                    <span><a href="{{ url('inventory/supplier-invoice') }}">Material Inwards To Quarantine</a></span>
+                    <span><a href="{{ url('inventory/supplier-invoice') }}"> Material Acceptance</a></span>
                     <span>@if(!empty($edit)) Edit @else Add @endif Material Acceptance Info</span>
                 </div>
                 <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($edit)) Edit @else Add @endif Material Acceptance Info
@@ -35,7 +35,7 @@
                 <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                        Material Inwards To Quarantine :
+                        Material Acceptance :
                         </label>
                         <div class="form-devider"></div>
                     </div>
@@ -47,22 +47,22 @@
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
                             <label>MIQ number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
-                           
-                            <select class="form-control invoice_number" name="invoice_number" @if(!empty($data['miq'])) disabled @endif>
-                                <!-- <option value="" ></option> -->
-                               
+                            <select class="form-control miq_number" name="miq_number" @if(!empty($data['miq'])) disabled @endif>
+                                <!-- <option value="" ></option> -->            
                             </select>
                         </div>
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>MAC date *</label>
-                            <input type="text" class="form-control datepicker" value="{{ (!empty($data['miq'])) ? date('d-m-Y',strtotime($data['miq']->miq_date)) : date("d-m-Y")}}" name="miq_date" placeholder="MIQ date">
+                            <input type="text" class="form-control datepicker" value="{{ (!empty($data['miq'])) ? date('d-m-Y',strtotime($data['miq']->miq_date)) : date("d-m-Y")}}" name="mac_date" placeholder="MIQ date">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>Created by: *</label>
                             <select class="form-control user_list" name="created_by">
-                                                                         
+                            @foreach ($data['users'] as $user)
+                                <option value="{{$user->user_id}}"   @if(!empty($data['miq']) && $data['miq']->created_by == $user->user_id) selected  @endif   >{{$user->f_name}} {{$user->l_name}}</option>
+                            @endforeach                                          
                             </select>
                         </div>
 
@@ -78,74 +78,12 @@
                         </div>
                     </div>
                 </form>
-                @if(!empty($edit))
+                {{-- @if(!empty($edit)) --}}
                 <div class="data-bindings">
-                    <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                            <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                                MIQ NUMber (MIQ3-2223-001)
-                                </label>
-                            <div class="form-devider"></div>
-                        </div>
-                    </div>
-                    <table class="table table-bordered mg-b-0">    
-                        <thead>
-                            <tr>
-                                <th>MIQ No</th>
-                                <th>MIQ3-2223-001</th>
-                                <th>MIQ Date</th>
-                                <th>10-11-2022</th>
-                            </tr>
-                            <tr>
-                                <th>Supplier</th>
-                                <th>Aarya Vision</th>
-                                <th>Prepared By</th>
-                                <th>Nayan</th>
-                            </tr>
-                            
-                        </thead> 
-                    </table>
-                    <br/>
-                    <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                            <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                            Supplier Invoice items</label>
-                            <div class="form-devider"></div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered mg-b-0" id="example1">
-                            <thead>
-                                <tr>
-                                    <th>Item Code</th>
-                                    <th>Item Type</th>
-                                    <th>LOT No.</th>
-                                    <th>Quantity</th>
-                                    <th>Stk Kpng Unit</th>
-                                    <th>unit Rate</th>
-                                    <th>Expiry Control</th>
-                                    <th>Expiry Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        <tbody >
-                            <tr>
-                                    <th>Item Code</th>
-                                    <th>Item Type</th>
-                                    <th>LOT No.</th>
-                                    <th>Quantity</th>
-                                    <th>Stk Kpng Unit</th>
-                                    <th>unit Rate</th>
-                                    <th>Expiry Control</th>
-                                    <th>Expiry Date</th>
-                                <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MAC/1/item')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</th>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
+                   
                 </div>
             </div>
-        @endif
+        {{--@endif--}}
     </div>
         <!-- az-content-body -->
     </div>
@@ -163,10 +101,10 @@
 
         $("#commentForm").validate({
         rules: {
-            invoice_number: {
+            miq_number: {
                 required: true,
             },
-            miq_date:{
+            mac_date:{
                 required: true,
             },
             created_by:{
@@ -188,13 +126,13 @@
       });
 
 
-        $('.invoice_number').select2({
+        $('.miq_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/find-invoice-number') }}",
+          url: "{{ url('inventory/find-miq-no') }}",
           processResults: function (data) {
 
             return { results: data };
@@ -206,7 +144,7 @@
 
         let res = $(this).select2('data')[0];
         if(res){
-          $.get("{{ url('inventory/find-po-number') }}?id="+res.id,function(data){
+          $.get("{{ url('inventory/find-miq-info') }}?id="+res.id,function(data){
             $('.data-bindings').html(data);
             $('.spinner-button').hide();
           });

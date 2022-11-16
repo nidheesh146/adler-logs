@@ -41,5 +41,27 @@ class inv_miq extends Model
                     ->where('inv_miq.status','=',1)
                     ->first();
     }
+
+    function find_miq_num($condition)
+    {
+        return $this->select(['inv_miq.miq_number as text','inv_miq.id'])->where($condition)
+        ->whereNotIn('inv_miq.id',function($query) {
+
+            $query->select('inv_mac.miq_id')->from('inv_mac');
+        
+        })->where('inv_miq.status','=',1)
+        ->get();
+    }
+
+    function find_miq_data($condition)
+    {
+        return $this->select(['inv_miq.miq_number','inv_miq.id','inv_miq.created_at','user.f_name','user.l_name','inv_miq.miq_date',
+        'inv_supplier.vendor_id','inv_supplier.vendor_name'])
+                    ->join('user','user.user_id','=','inv_miq.created_by')
+                    ->join('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                    ->where($condition)
+                    ->first();
+    }
 }
 

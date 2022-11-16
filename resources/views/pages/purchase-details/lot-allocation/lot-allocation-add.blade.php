@@ -378,7 +378,7 @@
                             $('#po_number').val(data.po_number);
                             $('#si_id').val(data.invoice_item_id);
                             $('#supplier').val(data.supplier_id);
-                            $('#supplier_name').val(data.vendor_id+"-"+data.vendor_name);
+                            $('#supplier_name').val(data.vendor_name);
                             $('#supplier').val(data.supplier_id);
                             $('#unit_name').val(data.unit_name);
                             $('#unit').val(data.unit_id);
