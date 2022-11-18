@@ -71,25 +71,29 @@
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Rejected Quantity (Actual Quantity:{{$data['order_qty']}} {{$data['unit_name']}})</label>
-                                <input type="text" value="@if($data['rejected_quantity']) {{$data['rejected_quantity']}} @endif" class="form-control " name="rejected_quantity" placeholder="Rejected Quantity" >
+                                <input type="text" value="@if($data['rejected_quantity']) {{$data['rejected_quantity']}} @endif" class="form-control " name="rejected_quantity" id="rejected_quantity"  placeholder="Rejected Quantity" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Stk Kpng Unit </label>
                                 <input type="text" value="@if($data) {{$data['unit_name']}} @endif" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
                             </div><!-- form-group -->
-                            <div class="form-group col-sm-12 $col-md-6 col-lg-6 col-xl-6">
+                            <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                <label>Value</label>
+                                <input type="text" readonly class="form-control" value=""  name="value" id="value" placeholder="Value">
+                            </div>
+                            <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Currency *</label>
-                                <select class="form-control" name="currency" id="currency">
+                                <select class="form-control" name="currency" id="currency" readonly>
                                 <option value="">--- select one ---</option> 
                                     @foreach ($currency as $item)
-                                        <option value="{{$item->currency_id}}" @if($item->currency_id == $data['currency']) selected  @endif >{{$item->currency_code}}</option>
+                                        <option value="{{$item->currency_id}}" @if($item->currency_id == $data['currency_id']) selected  @endif >{{$item->currency_code}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Conversion rate (INR) *</label>
-                                <input type="text" class="form-control" value="@if($data) {{$data['conversion_rate']}} @endif"  name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
+                                <input type="text" class="form-control" value="@if($data['mrd_conversion_rate']!=NULL) {{$data['mrd_conversion_rate']}} @else {{$data['conversion_rate']}}  @endif"  name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Value in INR </label>
@@ -161,12 +165,16 @@
     $("#conversion_rate").on('input',function(){
         curr_net_value()
     });
+    $("#rejected_quantity").on('input',function(){
+        $("#value").val(($("#rate").val()*$("#rejected_quantity").val()).toFixed(2));
+        $("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
+    });
     $("#currency").on('change',function(){
         curr_net_value()
     });
     function curr_net_value(){
-        $("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()).toFixed(2));
-    }       
+        $("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
+    }      
 
     $("#commentForm").validate({
             rules: {

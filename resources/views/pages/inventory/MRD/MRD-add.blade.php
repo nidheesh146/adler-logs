@@ -134,7 +134,10 @@
                                 <th>Item Code</th>
                                 <th>Item Type</th>
                                 <th>Lot No</th>
+                                <th>Currency</th>
+                                <th>Conversion Rate</th>
                                 <th>Rejected Qty</th>
+                                <th>Value in Inr</th>
                                 <th>Remarks</th>
                                 <th>Action</th>
                             </tr>
@@ -145,7 +148,10 @@
                                 <th>{{$item['item_code']}}</th>
                                 <th>{{$item['type_name']}}</th>
                                 <th>{{$item['lot_number']}}</th>
+                                <th>{{$item['currency_code']}}</th>
+                                <th>@if($item['mrd_conversion_rate']!=NULL) {{$item['mrd_conversion_rate']}} @else {{$item['conversion_rate']}} @endif</th>
                                 <th>@if($item['rejected_quantity']!=NULL) {{$item['rejected_quantity']}} {{$item['unit_name']}} @endif</th>
+                                <th>{{$item['value_inr']}}</th>
                                 <th>@if($item['remarks']!=NULL) {{$item['remarks']}} @endif</th>
                                 <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRD/'.$item['id'].'/item')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</th>
                             </tr>
