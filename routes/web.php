@@ -147,19 +147,25 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
     Route::post('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
     Route::get('inventory/find-invoice-number','MIQController@findInvoiceNumber');
-
+    Route::get('inventory/MIQ-delete/{id}', 'MIQController@miq_delete');
     // MAC
     Route::get('inventory/MAC', 'MACController@MAClist');
     Route::get('inventory/MAC-add/{id?}', 'MACController@MACAdd');
     Route::post('inventory/MAC-add/{id?}', 'MACController@MACAdd');
     Route::get('inventory/MAC/{id}/item', 'MACController@MACAddItemInfo');
+    Route::post('inventory/MAC/{id}/item', 'MACController@MACAddItemInfo');
     Route::get('inventory/find-miq-no', 'MACController@findMiqNumber');
     Route::get('inventory/find-miq-info', 'MACController@find_miq_info');
+    Route::get('inventory/MAC-delete/{id}', 'MACController@mac_delete');
    
     // MRD
     Route::get('inventory/MRD', 'MRDController@MRDlist');
     Route::get('inventory/MRD-add/{id?}', 'MRDController@MRDAdd');
+    Route::post('inventory/MRD-add/{id?}', 'MRDController@MRDAdd');
     Route::get('inventory/MRD/{id}/item', 'MRDController@MRDAddItemInfo');
+    Route::post('inventory/MRD/{id}/item', 'MRDController@MRDAddItemInfo');
+    Route::get('inventory/find-miq-for_mrd', 'MRDController@findMiqNumberForMRD');
+    Route::get('inventory/MRD-delete/{id}', 'MRDController@mrd_delete');
 
     //Stock To Production
     Route::get('inventory/Stock/ToProduction', 'StockController@StockToProduction');

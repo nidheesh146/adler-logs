@@ -47,22 +47,18 @@
                                 <th scope="row">
                                     <div class="row filter_search" style="margin-left: 0px;">
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                       <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label>MRD No:</label>
-                                                <input type="text" value="{{request()->get('mac_no')}}" name="mac_no" id="mac_no" class="form-control" placeholder="MAC NO">
+                                                <input type="text" value="{{request()->get('mrd_no')}}" name="mrd_no" id="mrd_no" class="form-control" placeholder="MRD NO">
                                             
                                             </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>MIQ No:</label>
                                                 <input type="text" value="{{request()->get('miq_no')}}" name="miq_no" id="miq_no" class="form-control" placeholder="MIQ No"> 
                                                 
                                             </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                <label for="exampleInputEmail1" style="font-size: 12px;">Item </label>
-                                                <input type="text" value="{{request()->get('item')}}" id="item" class="form-controll" name="item" placeholder="ITEM">
-                                                
-                                            </div>
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                            
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                 <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                 
@@ -106,32 +102,29 @@
 					<tr>
 						<th>MRD No</th>
                         <th>MIQ No</th>
-						<th>PO/WO No</th>
 						<th>Supplier</th>
-                        <th>Item Code</th> 
-						<th>Quantity</th> 
-						<th>Reasson</th>
+                        <th>Prepared By</th> 
+                        <th>MRD Date</th>
                         <th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
-                   
+                   @foreach($data as $mrd)
                     <tr>
-                       <td>MRD3-2223-0001</td>
-                       <td>MIQ3-2223-001	</td>
-                       <td>P0/WO No</td>
-                       <td>supplier name</td>
-                       <td>Item Code</td>
-                       <td>100</td>
-                       <td>Reason</td>
-                        <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRD-add/1')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</td>
+                       <td>{{$mrd['mrd_number']}}</td>
+                       <td>{{$mrd['miq_number']}}</td>
+                       <td>{{$mrd['vendor_name']}}</td>
+                       <td>{{$mrd['f_name']}} {{$mrd['l_name']}}</td>
+                       <td>{{date('d-m-Y', strtotime($mrd['mrd_date']))}}</td>
+                        <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRD-add/'.$mrd['mrd_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRD-delete/'.$mrd['mrd_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
                     </tr>
-                    
+                    @endforeach
 					
 				</tbody>
 			</table>
 			<div class="box-footer clearfix">
-                
+            {{ $data->appends(request()->input())->links() }}
 				
 		   </div> 
 		</div>
@@ -161,11 +154,11 @@
     });
     $('.search-btn').on( "click", function(e)  {
 		var miq_no = $('#miq_no').val();
-		var invoice_no = $('#invoice_no').val();
+		var mrd_no = $('#mrd_no').val();
 		var from = $('#from').val();
         var supplier = $('#supplier').val();
-        var prepared = $('#prepared').val();
-		if(!miq_no  & !invoice_no & !from & !supplier & !prepared)
+        //var prepared = $('#prepared').val();
+		if(!miq_no  & !invoice_no & !from & !supplier )
 		{
 			e.preventDefault();
 		}

@@ -52,12 +52,12 @@
                                                 <input type="text" value="{{request()->get('miq_no')}}" name="miq_no" id="miq_no" class="form-control" placeholder="MIQ NO">
                                             
                                             </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>Invoice No:</label>
                                                 <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" id="invoice_no" class="form-control" placeholder="INVOICE NO"> 
                                                 
                                             </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                 <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                 
@@ -116,7 +116,9 @@
                        <td>{{$miq['miq_date']}}</td>
                        <td>{{$miq['vendor_name']}}</td>
                        <td>{{$miq['f_name']}} {{$miq['l_name']}}</td>
-                        <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MIQ-add/'.$miq['miq_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</td>
+                        <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MIQ-add/'.$miq['miq_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	
+                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MIQ-delete/'.$miq['miq_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        </td>
                     </tr>
                     @endforeach
 					

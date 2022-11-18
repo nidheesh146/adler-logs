@@ -4,7 +4,7 @@ namespace App\Models\PurchaseDetails;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use DB;
 class inv_miq extends Model
 {
     protected $table = 'inv_miq';
@@ -63,5 +63,28 @@ class inv_miq extends Model
                     ->where($condition)
                     ->first();
     }
+    function find_miq_num_for_mrd($condition)
+    {
+        return $this->select(['inv_miq.miq_number as text','inv_miq.id'])->where($condition)
+        ->whereNotIn('inv_miq.id',function($query) {
+
+            $query->select('inv_mrd.miq_id')->from('inv_mrd');
+        
+        })->where('inv_miq.status','=',1)
+        ->get();
+    }
+
+    function deleteData($condition)
+    {
+         DB::table('inv_miq_item') 
+            ->join('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
+            ->where(['inv_miq_item_rel.master'=>$condition['id']])
+            ->delete();
+        DB::table('inv_miq_item_rel')
+            ->where(['inv_miq_item_rel.master'=>$condition['id']])
+            ->delete();
+     return  $this->where($condition)->delete();
+    }
 }
+
 

@@ -5,7 +5,7 @@
         <div class="container" data-select2-id="9">
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
-                    <span><a href="{{ url('inventory/supplier-invoice') }}">Material Inwards To Quarantine</a></span>
+                    <span><a href="{{ url('inventory/MRD') }}"> Material Rejection</a></span>
                     <span>@if(!empty($edit)) Edit @else Add @endif Material Rejection Info</span>
                 </div>
                 <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($edit)) Edit @else Add @endif Material Rejection Info
@@ -35,7 +35,7 @@
                 <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                        Material Inwards To Quarantine :
+                        Material Rejection :
                         </label>
                         <div class="form-devider"></div>
                     </div>
@@ -47,22 +47,27 @@
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
                             <label>MIQ number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
-                           
-                            <select class="form-control invoice_number" name="invoice_number" @if(!empty($data['miq'])) disabled @endif>
-                                <!-- <option value="" ></option> -->
-                               
+                            <select class="form-control miq_number" name="miq_number" @if(!empty($edit['mrd'])) disabled @endif>
+                            @if(!empty($edit['mrd']))
+                                <option value="{{$edit['mrd']->miq_id}}" selected>{{$edit['mrd']->miq_number}}</option>
+                            @endif            
                             </select>
+                            @if(!empty($edit['mrd']))
+                                <input type="hidden" name="miq_number" value="{{$edit['mrd']->miq_id}}">
+                            @endif
                         </div>
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>MRD date *</label>
-                            <input type="text" class="form-control datepicker" value="{{ (!empty($data['miq'])) ? date('d-m-Y',strtotime($data['miq']->miq_date)) : date("d-m-Y")}}" name="miq_date" placeholder="MIQ date">
+                            <input type="text" class="form-control datepicker" value="{{ (!empty($edit['mrd'])) ? date('d-m-Y',strtotime($edit['mrd']->mrd_date)) : date("d-m-Y")}}" name="mrd_date" placeholder="MRD date">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>Created by: *</label>
                             <select class="form-control user_list" name="created_by">
-                                                                         
+                            @foreach ($data['users'] as $user)
+                                <option value="{{$user->user_id}}"   @if(!empty($edit['mrd']) && $edit['mrd']->created_by == $user->user_id) selected  @endif   >{{$user->f_name}} {{$user->l_name}}</option>
+                            @endforeach                                          
                             </select>
                         </div>
 
@@ -73,79 +78,84 @@
                             <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span
                                     class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
-                                    @if(!empty($data['miq'])) Update @else Submit @endif
+                                    @if(!empty($edit['mrd'])) Update @else Submit @endif
                             </button>
                         </div>
                     </div>
                 </form>
-                @if(!empty($edit))
                 <div class="data-bindings">
-                    <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                            <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                                MIQ NUMber (MIQ3-2223-001)
-                                </label>
-                            <div class="form-devider"></div>
-                        </div>
+                </div>
+                @if(!empty($edit)) 
+                 <div class="row">
+                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                        <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                            Material Rejection & Delivery ({{$edit['mrd']['mrd_number']}})
+                        </label>
+                        <div class="form-devider"></div>
                     </div>
-                    <table class="table table-bordered mg-b-0">    
+                </div>
+                <table class="table table-bordered mg-b-0">
+                    <thead>
+                        
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>MRD Date</th>
+                            <td>{{date('d-m-Y', strtotime($edit['mrd']['mrd_date']))}}</td>
+                            
+                        </tr>
+                        <tr>
+                            <th>Created By & Created Date</th>
+                            <td>{{$edit['mrd']['f_name']}} {{$edit['mrd']['l_name']}}, {{date('d-m-Y', strtotime($edit['mrd']['created_at']))}}</td>
+                        <tr>
+                        <tr>
+                            <th>Supplier ID</th>
+                            <td>{{$edit['mrd']['vendor_id']}}</td>
+                        </tr>
+                        <tr>
+                            <th>Supplier Name</th>
+                            <td>{{$edit['mrd']['vendor_name']}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <div class="row">
+                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                        <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                        MRD Items
+                        </label>
+                        <div class="form-devider"></div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered mg-b-0" id="example1">
                         <thead>
                             <tr>
-                                <th>MIQ No</th>
-                                <th>MIQ3-2223-001</th>
-                                <th>MIQ Date</th>
-                                <th>10-11-2022</th>
+                                <th>Item Code</th>
+                                <th>Item Type</th>
+                                <th>Lot No</th>
+                                <th>Rejected Qty</th>
+                                <th>Remarks</th>
+                                <th>Action</th>
                             </tr>
-                            <tr>
-                                <th>Supplier</th>
-                                <th>Aarya Vision</th>
-                                <th>Prepared By</th>
-                                <th>Nayan</th>
-                            </tr>
-                            
-                        </thead> 
-                    </table>
-                    <br/>
-                    <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                            <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                            Supplier Invoice items</label>
-                            <div class="form-devider"></div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered mg-b-0" id="example1">
-                            <thead>
-                                <tr>
-                                    <th>Item Code</th>
-                                    <th>Item Type</th>
-                                    <th>LOT No.</th>
-                                    <th>Quantity</th>
-                                    <th>Stk Kpng Unit</th>
-                                    <th>unit Rate</th>
-                                    <th>Expiry Control</th>
-                                    <th>Expiry Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
+                        </thead>
                         <tbody >
+                            @foreach($edit['items'] as $item)
                             <tr>
-                                    <th>Item Code</th>
-                                    <th>Item Type</th>
-                                    <th>LOT No.</th>
-                                    <th>Quantity</th>
-                                    <th>Stk Kpng Unit</th>
-                                    <th>unit Rate</th>
-                                    <th>Expiry Control</th>
-                                    <th>Expiry Date</th>
-                                <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRD/1/item')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</th>
+                                <th>{{$item['item_code']}}</th>
+                                <th>{{$item['type_name']}}</th>
+                                <th>{{$item['lot_number']}}</th>
+                                <th>@if($item['rejected_quantity']!=NULL) {{$item['rejected_quantity']}} {{$item['unit_name']}} @endif</th>
+                                <th>@if($item['remarks']!=NULL) {{$item['remarks']}} @endif</th>
+                                <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRD/'.$item['id'].'/item')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</th>
                             </tr>
-                           
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>
-        @endif
+            @endif
+        </div>
+        
     </div>
         <!-- az-content-body -->
     </div>
@@ -163,10 +173,10 @@
 
         $("#commentForm").validate({
         rules: {
-            invoice_number: {
+            miq_number: {
                 required: true,
             },
-            miq_date:{
+            mrd_date:{
                 required: true,
             },
             created_by:{
@@ -188,13 +198,13 @@
       });
 
 
-        $('.invoice_number').select2({
+        $('.miq_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/find-invoice-number') }}",
+          url: "{{ url('inventory/find-miq-for_mrd') }}",
           processResults: function (data) {
 
             return { results: data };
@@ -206,7 +216,7 @@
 
         let res = $(this).select2('data')[0];
         if(res){
-          $.get("{{ url('inventory/find-po-number') }}?id="+res.id,function(data){
+          $.get("{{ url('inventory/find-miq-info') }}?id="+res.id,function(data){
             $('.data-bindings').html(data);
             $('.spinner-button').hide();
           });
@@ -217,7 +227,7 @@
       });
       });
 
-    $(".datepicker").datepicker({
+      $(".datepicker").datepicker({
     format: " dd-mm-yyyy",
     autoclose:true,
     endDate: new Date()

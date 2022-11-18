@@ -47,21 +47,26 @@
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
                             <label>MIQ number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
-                            <select class="form-control miq_number" name="miq_number" @if(!empty($data['miq'])) disabled @endif>
-                                <!-- <option value="" ></option> -->            
+                            <select class="form-control miq_number" name="miq_number" @if(!empty($edit['mac'])) disabled @endif>
+                            @if(!empty($edit['mac']))
+                                <option value="{{$edit['mac']->miq_id}}" selected>{{$edit['mac']->miq_number}}</option>
+                            @endif            
                             </select>
+                            @if(!empty($edit['mac']))
+                                <input type="hidden" name="miq_number" value="{{$edit['mac']->miq_id}}">
+                            @endif
                         </div>
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>MAC date *</label>
-                            <input type="text" class="form-control datepicker" value="{{ (!empty($data['miq'])) ? date('d-m-Y',strtotime($data['miq']->miq_date)) : date("d-m-Y")}}" name="mac_date" placeholder="MIQ date">
+                            <input type="text" class="form-control datepicker" value="{{ (!empty($edit['mac'])) ? date('d-m-Y',strtotime($edit['mac']->mac_date)) : date("d-m-Y")}}" name="mac_date" placeholder="MIQ date">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>Created by: *</label>
                             <select class="form-control user_list" name="created_by">
                             @foreach ($data['users'] as $user)
-                                <option value="{{$user->user_id}}"   @if(!empty($data['miq']) && $data['miq']->created_by == $user->user_id) selected  @endif   >{{$user->f_name}} {{$user->l_name}}</option>
+                                <option value="{{$user->user_id}}"   @if(!empty($edit['mac']) && $edit['mac']->created_by == $user->user_id) selected  @endif   >{{$user->f_name}} {{$user->l_name}}</option>
                             @endforeach                                          
                             </select>
                         </div>
@@ -73,17 +78,84 @@
                             <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span
                                     class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
-                                    @if(!empty($data['miq'])) Update @else Submit @endif
+                                    @if(!empty($edit['mac'])) Update @else Submit @endif
                             </button>
                         </div>
                     </div>
                 </form>
-                {{-- @if(!empty($edit)) --}}
                 <div class="data-bindings">
-                   
                 </div>
-            </div>
-        {{--@endif--}}
+                @if(!empty($edit)) 
+                 <div class="row">
+                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                        <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                            Material Acceptance ({{$edit['mac']['mac_number']}})
+                        </label>
+                        <div class="form-devider"></div>
+                    </div>
+                </div>
+                <table class="table table-bordered mg-b-0">
+                    <thead>
+                        
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>MAC Date</th>
+                            <td>{{date('d-m-Y', strtotime($edit['mac']['mac_date']))}}</td>
+                            
+                        </tr>
+                        <tr>
+                            <th>Created Date</th>
+                            <td>{{date('d-m-Y', strtotime($edit['mac']['created_at']))}}</td>
+                        <tr>
+                        <tr>
+                            <th>Supplier ID</th>
+                            <td>{{$edit['mac']['vendor_id']}}</td>
+                        </tr>
+                        <tr>
+                            <th>Supplier Name</th>
+                            <td>{{$edit['mac']['vendor_name']}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <div class="row">
+                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                        <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                        MAC Items
+                        </label>
+                        <div class="form-devider"></div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered mg-b-0" id="example1">
+                        <thead>
+                            <tr>
+                                <th>Item Code</th>
+                                <th>Item Type</th>
+                                <th>Lot No</th>
+                                <th>Expiry Date</th>
+                                <th>Accepted Qty</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                            @foreach($edit['items'] as $item)
+                            <tr>
+                                <th>{{$item['item_code']}}</th>
+                                <th>{{$item['type_name']}}</th>
+                                <th>{{$item['lot_number']}}</th>
+                                <th>@if($item['expiry_date']!=NULL) {{date('d-m-Y', strtotime($item['expiry_date']))}} @endif</th>
+                                <th>@if($item['accepted_quantity']!=NULL) {{$item['accepted_quantity']}} {{$item['unit_name']}} @endif</th>
+                                <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MAC/'.$item['id'].'/item')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</th>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+        
     </div>
         <!-- az-content-body -->
     </div>

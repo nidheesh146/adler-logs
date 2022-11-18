@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
-
+use DB;
 use App\Models\PurchaseDetails\inv_miq;
 use App\Models\PurchaseDetails\inv_miq_item;
 use App\Models\PurchaseDetails\inv_miq_item_rel;
 use App\Models\PurchaseDetails\inv_mac;
+use App\Models\PurchaseDetails\inv_mac_item;
+use App\Models\PurchaseDetails\inv_mac_item_rel;
 use App\Models\User;
+use App\Models\currency_exchange_rate;
 class MACController extends Controller
 {
     public function __construct()
@@ -19,13 +22,38 @@ class MACController extends Controller
         $this->inv_miq_item = new inv_miq_item;
         $this->inv_miq_item_rel = new inv_miq_item_rel;
         $this->inv_mac = new inv_mac;
+        $this->inv_mac_item = new inv_mac_item;
+        $this->inv_mac_item_rel = new inv_mac_item_rel;
         $this->User = new User;
-     
+        $this->currency_exchange_rate = new currency_exchange_rate;
     }
 
-    public function MAClist()
+    public function MAClist(Request $request)
     {
-        return view('pages.inventory.MAC.MAC-list');
+        $condition = [];
+        if($request)
+        {
+            if ($request->miq_no) {
+                $condition[] = ['inv_miq.miq_number','like', '%' . $request->miq_no . '%'];
+            }
+            if ($request->mac_no) {
+                $condition[] = ['inv_mac.mac_number','like', '%' . $request->mac_no . '%'];
+            }
+            if($request->supplier)
+            {
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+            
+            if ($request->from) {
+                $condition[] = ['inv_mac.mac_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition[] = ['inv_mac.mac_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
+            $data= $this->inv_mac->get_all_data($condition);
+        }
+        else
+        $data = $this->inv_mac->get_all_data($condition=null);
+        //$data = $this->inv_mac->get_all_data([]);
+        return view('pages.inventory.MAC.MAC-list', compact('data'));
     }
 
     public function MACAdd(Request $request)
@@ -38,23 +66,25 @@ class MACController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                $item_type = $this->get_item_type($request->miq_number);
-                if($item_type=="Direct Items"){
-                    $Data['mac_number'] = "MAC2-".$this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2%')->count(),1); 
-                }
-                if($item_type=="Indirect Items"){
-                    $Data['mac_number'] = "MAC3-" . $this->po_num_gen(DB::table('inv_mac')->where('inv_miq.mac_number', 'LIKE', 'MAC3%')->count(),1); 
-                }
-                $Data['mac_date'] = date('Y-m-d', strtotime($request->miq_date));
-                $Data['miq_id'] = $request->invoice_number;
-                $Data['created_by']= $request->created_by;
-                $Data['status']=1;
-                $Data['created_at'] =date('Y-m-d H:i:s');
-                $Data['updated_at'] =date('Y-m-d H:i:s');
-                $add_id = $this->inv_mac->insert_data($Data);
-                $miq_items = inv_miq_item_rel::select('inv_miq_item_rel.item','inv_miq_item.item_id')
-                            ->leftJoin('inv_miq_item','inv_miq_item.id','=','inv_miq_item_rel.item')
-                            ->where('master','=',$request->miq_number)->get();
+                if(!$request->id)
+                {
+                    $item_type = $this->get_item_type($request->miq_number);
+                    if($item_type=="Direct Items"){
+                        $Data['mac_number'] = "MAC2-".$this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2%')->count(),1); 
+                    }
+                    if($item_type=="Indirect Items"){
+                        $Data['mac_number'] = "MAC3-" . $this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC3%')->count(),1); 
+                    }
+                    $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
+                    $Data['miq_id'] = $request->miq_number;
+                    $Data['created_by']= $request->created_by;
+                    $Data['status']=1;
+                    $Data['created_at'] =date('Y-m-d H:i:s');
+                    $Data['updated_at'] =date('Y-m-d H:i:s');
+                    $add_id = $this->inv_mac->insert_data($Data);
+                    $miq_items = inv_miq_item_rel::select('inv_miq_item_rel.item','inv_miq_item.item_id')
+                                ->leftJoin('inv_miq_item','inv_miq_item.id','=','inv_miq_item_rel.item')
+                                ->where('master','=',$request->miq_number)->get();
                     foreach($miq_items as $item){
                         $dat=[
                             'miq_item_id'=>$item->item,
@@ -76,7 +106,20 @@ class MACController extends Controller
                         $request->session()->flash('success', "You have successfully created a MAC !");
                     else
                         $request->session()->flash('error', "MAC creation is failed. Try again... !");
-                    return redirect('inventory/MIQ-add/'.$add_id);
+                    return redirect('inventory/MAC-add/'.$add_id);
+                }
+                else
+                {
+                    $data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
+                    $data['created_by']= $request->created_by;
+                    $data['updated_at'] =date('Y-m-d H:i:s');
+                    $update = $this->inv_mac->update_data(['id'=>$request->id],$data);
+                    if($update)
+                        $request->session()->flash('success', "You have successfully updated a MAC !");
+                    else
+                        $request->session()->flash('error', "MAC updation is failed. Try again... !");
+                    return redirect('inventory/MAC-add/'.$request->id);
+                }
             }
             if($validator->errors()->all())
             {
@@ -87,7 +130,9 @@ class MACController extends Controller
         $data['users'] = $this->User->get_all_users($condition1);
 
         if($request->id){
-            $edit=1;
+            $edit['mac'] = $this->inv_mac->find_mac_data(['inv_mac.id' => $request->id]);
+
+            $edit['items'] = $this->inv_mac_item->get_items(['inv_mac_item_rel.master' =>$request->id]);
             return view('pages.inventory.MAC.MAC-Add',compact('edit','data'));
         }
         else
@@ -105,10 +150,25 @@ class MACController extends Controller
         return $item_type;
     }
 
-    public function MACAddItemInfo()
+    public function MACAddItemInfo(Request $request, $id)
     {
-        
-        return view('pages.inventory.MAC.MAC-itemInfo');
+        if ($request->isMethod('post')) {
+            $validation['accepted_quantity'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all()){
+                $data['accepted_quantity'] =$request->accepted_quantity;
+                $update = $this->inv_mac_item->update_data(['inv_mac_item.id'=>$request->id],$data);
+                $mac_id = inv_mac_item_rel::where('item','=',$request->id)->pluck('master')->first();
+                if($update)
+                    $request->session()->flash('success', "You have successfully updated a MAC Item Info!");
+                else
+                    $request->session()->flash('error', "MAC Item info updation is failed. Try again... !");
+                return redirect('inventory/MAC-add/'.$mac_id);
+            }
+        }
+        $data = $this->inv_mac_item->get_item(['inv_mac_item.id'=>$id]);
+        $currency = $this->currency_exchange_rate->get_currency([]);
+        return view('pages.inventory.MAC.MAC-itemInfo', compact('data','currency'));
     }
 
     public function findMiqNumber(Request $request)
@@ -162,35 +222,30 @@ class MACController extends Controller
            </div>
            </div>
            <table class="table table-bordered mg-b-0">
-           <thead>
-           <tr>
-               <th>MIQ Date</th>
-               <th>Created Date</th>
-           </tr>
-          </thead>
-           <tbody>
-           <tr>
-               <td>' . date('d-m-Y', strtotime($miq->miq_date)) . '</td>
-               <td>' . date('d-m-Y', strtotime($miq->created_at)) . '</td>
-           </tr>
-           </tbody>
+                <thead>
+            
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>MIQ Date</th>
+                        <td>' . date('d-m-Y', strtotime($miq->miq_date)) . '</td>
+                    </tr>
+                    <tr>
+                            <th>Created Date</th>
+                            <td>' . date('d-m-Y', strtotime($miq->created_at)) . '</td>
+                    </tr>
+                    <tr>
+                        <th>Supplier ID</th>
+                        <td>'.$miq->vendor_id.'</td>
+                        
+                    </tr>
+                    <tr>
+                        <th>Supplier Name</th>
+                        <td>'.$miq->vendor_name.'</td>
+                    </tr>
+                </tbody>
            </table>
-
-           <table class="table table-bordered mg-b-0">
-           <thead>
-           <tr>
-               <th>Supplier ID</th>
-               <th>Supplier Name</th>
-           </tr>
-          </thead>
-           <tbody>
-           <tr>
-               <td>'.$miq->vendor_id.'</td>
-               <td>'.$miq->vendor_name.'</td>
-           </tr>
-           </tbody>
-
-           </table><br>
+           <br>
            <div class="row">
            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">';
@@ -243,10 +298,6 @@ class MACController extends Controller
                    <th>Discount </th>
                    <th>Price </th>
                    <th>Price In Inr </th>
-                   <th>Accepted Quantity</th>
-                   <th>Work Center</th>
-                   <th>Reason</th>
-                   <th></th>
                    </tr>
                </thead>
                <tbody >';
@@ -259,10 +310,6 @@ class MACController extends Controller
                        <td>'.$item->discount.'</td>
                        <td>'.(($item->rate*$item->order_qty*$item->discount)/100) . $item->currency_code.'</td>
                        <td>'.$item->value_inr.'</td>
-                       <td>'.$item->value_inr.'</td>
-                       <td>'.$item->value_inr.'</td>
-                       <td>'.$item->value_inr.'</td>
-                       <td>'.$item->value_inr.'</td>
                    </tr>';
             }
             $data .= '</tbody>';
@@ -271,5 +318,12 @@ class MACController extends Controller
         $data .= '</table>
        </div>';
         return $data;
+    }
+
+    public function mac_delete(Request $request, $id)
+    {
+        $this->inv_mac->deleteData(['id' => $id]);
+        $request->session()->flash('success', "You have successfully deleted a MAC !");
+        return redirect("inventory/MAC");
     }
 }

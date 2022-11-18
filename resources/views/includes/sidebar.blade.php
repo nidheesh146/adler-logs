@@ -55,7 +55,8 @@
         </li><!-- nav-item -->
         
 
-        <li class="nav-item @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','LotAllocation.addLotAllocation','LotAllocation.lotAllocation','MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MAC.MACAddItemInfo','MAC.MAClist','MAC.MACAdd'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','LotAllocation.addLotAllocation','LotAllocation.lotAllocation','MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MAC.MACAddItemInfo','MAC.MAClist','MAC.MACAdd',
+        'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub">
             <i class="fas fa-boxes" style="font-size:19px"></i>Inventory</a>
             

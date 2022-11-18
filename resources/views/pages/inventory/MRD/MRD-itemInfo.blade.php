@@ -54,46 +54,50 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Item code </label>
-                                <input type="text" value="" class="form-control" name="Type" readonly>
+                                <input type="text" value="@if($data) {{$data['item_code']}} @endif" class="form-control" name="Type" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Item Type </label>
-                                <input type="text" value="" class="form-control" name="Type" readonly>
+                                <input type="text" value="@if($data) {{$data['type_name']}} @endif" class="form-control" name="Type" readonly>
                             </div><!-- form-group -->
                             
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Lot Number *</label>
-                                <input type="text" value="" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number" readonly>
+                                <input type="text" value="@if($data) {{$data['lot_number']}} @endif" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Supplier Unit Rate </label>
-                                <input type="text" value="" class="form-control" name="rate" id="rate" placeholder="Supplier Unit Rate" readonly>
+                                <label>Unit Rate @if($data['rate']) (Rate:{{$data['rate']}}, Discount: {{$data['discount']}} %) @endif</label>
+                                <input type="text" value="@if($data['rate']) {{$data['rate']-($data['rate']*$data['discount']/100)}} @endif" class="form-control" name="rate" id="rate" placeholder="Supplier Unit Rate" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Quantity </label>
-                                <input type="text" value="" class="form-control " name="Quantity" placeholder="Quantity" >
+                                <label>Rejected Quantity (Actual Quantity:{{$data['order_qty']}} {{$data['unit_name']}})</label>
+                                <input type="text" value="@if($data['rejected_quantity']) {{$data['rejected_quantity']}} @endif" class="form-control " name="rejected_quantity" placeholder="Rejected Quantity" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Stk Kpng Unit </label>
-                                <input type="text" value="" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
+                                <input type="text" value="@if($data) {{$data['unit_name']}} @endif" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
                             </div><!-- form-group -->
-                            
+                            <div class="form-group col-sm-12 $col-md-6 col-lg-6 col-xl-6">
+                                <label>Currency *</label>
+                                <select class="form-control" name="currency" id="currency">
+                                <option value="">--- select one ---</option> 
+                                    @foreach ($currency as $item)
+                                        <option value="{{$item->currency_id}}" @if($item->currency_id == $data['currency']) selected  @endif >{{$item->currency_code}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Conversion rate (INR) *</label>
-                                <input type="text" class="form-control" value="" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
+                                <input type="text" class="form-control" value="@if($data) {{$data['conversion_rate']}} @endif"  name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Value in INR </label>
-                                <input type="text" readonly class="form-control" value="" name="value_inr" id="value_inr" placeholder="Value in INR">
+                                <input type="text" readonly class="form-control" value="@if($data) {{$data['value_inr']}} @endif"  name="value_inr" id="value_inr" placeholder="Value in INR">
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Work Center *</label>
-                                <input type="text" value=" " class="form-control" name="expiry_date" placeholder="Expiry Date">
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Reason *</label>
-                                <textarea type="text" value=" " class="form-control" name="expiry_date" placeholder=""></textarea>
+                                <label>Remarks *</label>
+                                <textarea type="text"  class="form-control" name="remarks" placeholder="Remarks">@if($data) {{$data['remarks']}} @endif</textarea>
                             </div><!-- form-group -->
                         </div> 
                       
@@ -166,9 +170,6 @@
 
     $("#commentForm").validate({
             rules: {
-                lot_number: {
-                    required: true,
-                },
                 currency: {
                     required: true,
                 },
@@ -178,10 +179,10 @@
                  value_inr: {
                     required: true,
                 },
-                expiry_control: {
+                rejected_quantity: {
                     required: true,
                 },
-                expiry_date: {
+                remarks: {
                     required: true,
                 },
             },

@@ -75,7 +75,7 @@
                                 <input type="text" value="@if($data) {{$data['unit_name']}} @endif" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Supplier Unit Rate  @if($data)( Rate : {{$data['rate']}} , Discount(%) : {{$data['discount']}}) @endif</label>
+                                <label>Unit Rate  @if($data)( Rate : {{$data['rate']}} , Discount(%) : {{$data['discount']}}) @endif</label>
                                 <input type="text" value="@if($data) {{$data['rate']-($data['rate']*$data['discount']/100)}} @endif" class="form-control" name="rate" id="rate" placeholder="Supplier Unit Rate" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 $col-md-6 col-lg-6 col-xl-6">
