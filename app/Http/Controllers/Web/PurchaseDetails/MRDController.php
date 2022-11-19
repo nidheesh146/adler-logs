@@ -135,10 +135,10 @@ class MRDController extends Controller
             $edit['mrd'] = $this->inv_mrd->find_mrd_data(['inv_mrd.id' => $request->id]);
 
             $edit['items'] = $this->inv_mrd_item->get_items(['inv_mrd_item_rel.master' =>$request->id]);
-            return view('pages.inventory.MRD.MRD-Add',compact('edit','data'));
+            return view('pages.inventory.MRD.MRD-add',compact('edit','data'));
         }
         else
-        return view('pages.inventory.MRD.MRD-Add',compact('data'));
+        return view('pages.inventory.MRD.MRD-add',compact('data'));
     }
 
     public function get_item_type($miq_number)

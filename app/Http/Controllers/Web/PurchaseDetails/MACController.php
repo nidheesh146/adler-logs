@@ -133,10 +133,10 @@ class MACController extends Controller
             $edit['mac'] = $this->inv_mac->find_mac_data(['inv_mac.id' => $request->id]);
 
             $edit['items'] = $this->inv_mac_item->get_items(['inv_mac_item_rel.master' =>$request->id]);
-            return view('pages.inventory.MAC.MAC-Add',compact('edit','data'));
+            return view('pages.inventory.MAC.MAC-add',compact('edit','data'));
         }
         else
-        return view('pages.inventory.MAC.MAC-Add',compact('data'));
+        return view('pages.inventory.MAC.MAC-add',compact('data'));
     }
 
     public function get_item_type($miq_number)
