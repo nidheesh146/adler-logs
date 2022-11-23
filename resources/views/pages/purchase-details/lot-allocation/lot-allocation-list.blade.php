@@ -49,17 +49,17 @@
                                 <th scope="row">
                                     <div class="row filter_search" style="margin-left: 0px;">
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-3 col-xl-2">
                                                 <label>Lot No:</label>
                                                 <input type="text" value="{{request()->get('lot_no')}}" name="lot_no" id="lot_no" class="form-control" placeholder="LOT NO">
                                         
                                             </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                            {{--<div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label>PO No:</label>
                                                 <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="PO NO">
                                           
-                                            </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                            </div>--}}<!-- form-group -->
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>Invoice No:</label>
                                                 <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" id="" class="form-control" placeholder="INVOICE NO"> 
                                           
@@ -70,7 +70,7 @@
    
 
                                             </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                 <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier1" class="form-control" placeholder="SUPPLIER">
                                      
@@ -102,7 +102,6 @@
 				<thead>
 					<tr>
 						<th>Lot No:</th>
-                        <th>PO number :</th>
                         <th>Item Code:</th>
 						<th>Invoice No.</th>
 						<th>Invoice Qty</th>
@@ -120,7 +119,6 @@
 					@foreach( $data['lot_data']  as $datas)
 					<tr>
 						<td>{{$datas['lot_number']}}</td>
-                        <td>{{$datas['po_number']}}</td>
                         <td>{{$datas['item_code']}}</td>
 						<td>{{$datas['invoice_number']}}</td>
 						<td>{{$datas['inv_odr_qty']}}</td>
@@ -435,9 +433,9 @@
             var supplier = $('#supplier1').val();
             var lot_no = $('#lot_no').val();
             var invoice_no = $('#invoice_no').val();
-            var po_no = $('#po_no').val();
+            //var po_no = $('#po_no').val();
             var from = $('#from').val();
-            if(!supplier & !lot_no & !invoice_no & !po_no & !from)
+            if(!supplier & !lot_no & !invoice_no  & !from)
             {
                 e.preventDefault();
             }

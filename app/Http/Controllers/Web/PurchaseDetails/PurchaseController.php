@@ -886,6 +886,110 @@ class PurchaseController extends Controller
         return $data;
     }
 
+
+/*Supplier Invoice */
+    public function supplierInvoiceAdd(Request $request)
+    {
+        if ($request->isMethod('post'))
+        {
+            $validation['invoice_number'] = ['required'];
+            $validation['po_item_id'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                $data['invoice_number'] = $request->invoice_number;
+                $data['invoice_date'] = date('Y-m-d');
+                $data['created_by'] = config('user')['user_id'];
+                $data['created_at'] = date('Y-m-d H:i:s');
+                $data['updated_at'] = date('Y-m-d H:i:s');
+                if($request->supplier){
+                    $data['supplier_id'] = inv_supplier::where('vendor_name', 'like', '%' . $request->supplier . '%')->pluck('id')->first();
+                }
+                if($request->po_no){
+                    $data['supplier_id'] = inv_final_purchase_order_master::where('po_number', 'like', '%' . $request->po_no . '%')->pluck('supplier_id')->first();
+                }
+                // $order_master = $this->inv_final_purchase_order_master->get_master_data(['inv_final_purchase_order_master.id' => $request->po_no]);
+                // $data['supplier_id'] = $order_master->supplier_id;
+                $SIMaster = $this->inv_supplier_invoice_master->insert_data($data,$request->po_item_id);
+                if($SIMaster)
+                {
+                    $request->session()->flash('success', "You have successfully created a  supplier invoice master !");
+                    if($request->order_type)
+                    return redirect("inventory/supplier-invoice-add?order_type=".$request->order_type);
+                    else
+                    return redirect("inventory/supplier-invoice-add");
+                }
+            }
+            if($validator->errors()->all())
+             {
+            //     if($request->order_type)
+            //     return redirect("inventory/supplier-invoice-add?order_type=".$request->order_type)->withErrors($validator)->withInput();
+            //     else
+            //     return redirect("inventory/supplier-invoice-add")->withErrors($validator)->withInput();
+                return redirect()->back()->withInput();
+            }
+        }
+        else
+        {
+            if($request->supplier || $request->po_no)
+            {
+                if ($request->supplier) {
+                    $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+                    $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+                }
+                if ($request->po_no) {
+                    $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $request->po_no . '%'];
+                    $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+                    
+                }
+                $po_data = $this->inv_final_purchase_order_master->get_purchase_master_list_not_in_invoice($condition1);
+                //print_r(json_encode($po_data));exit;
+                $po_items=[];
+                foreach($po_data as $po)
+                {
+                    $po_items[] = inv_final_purchase_order_rel::select('inv_final_purchase_order_rel.master','inv_final_purchase_order_rel.item','inv_final_purchase_order_item.order_qty',
+                                    'inv_final_purchase_order_item.rate','inv_final_purchase_order_item.discount','inv_final_purchase_order_item.gst','inventory_rawmaterial.item_code',
+                                    'inv_unit.unit_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst','inv_item_type.type_name','inv_final_purchase_order_master.po_number','inv_supplier.vendor_name')
+                                            ->leftJoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_final_purchase_order_rel.item')
+                                            ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
+                                            ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_final_purchase_order_rel.master')
+                                            ->leftjoin('inv_supplier','inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
+                                            ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                                            ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                            ->leftjoin('inventory_gst','inventory_gst.id','=','inv_final_purchase_order_item.gst' )
+                                            ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                            ->where('inv_final_purchase_order_rel.master','=',$po['po_id'])
+                                            ->get();
+                }
+               // print_r(json_encode($po_items));exit;
+                $data = [];
+                foreach($po_items as $po_item)
+                {
+                    foreach($po_item as $item)
+                    {
+                        $data[]=['master'=>$item['master'],
+                                'po_number'=>$item['po_number'],
+                                'po_item'=>$item['item'],
+                                'type'=>$item['type_name'],
+                                'item_code'=>$item['item_code'],
+                                'order_qty'=>$item['order_qty'],
+                                'unit_name'=>$item['unit_name'],
+                                'rate'=>$item['unit_name'],
+                                'discount'=>$item['discount'],
+                                'igst'=>$item['igst'],
+                                'sgst'=>$item['sgst'],
+                                'cgst'=>$item['cgst'],
+                                'vendor'=>$item['vendor_name']
+                            ];
+                    }
+                }
+                //print_r(json_encode($data));exit;
+                return view('pages.purchase-details.supplier-invoice.supplier-invoice-add',compact('data'));
+            }
+            return view('pages.purchase-details.supplier-invoice.supplier-invoice-add');
+        }
+    }
+
     public function supplierInvoice(Request $request)
     {
         $condition1 = [];
@@ -919,7 +1023,7 @@ class PurchaseController extends Controller
         return view('pages.purchase-details.supplier-invoice.supplier-invoice-list', compact('data'));
     }
 
-    public function supplierInvoiceAdd(Request $request)
+    public function supplierInvoiceAdd1(Request $request)
     {
         if ($request->isMethod('post')) {
             $validation['invoice_number'] = ['required'];
@@ -975,11 +1079,11 @@ class PurchaseController extends Controller
             $data['po_data'] = $this->inv_final_purchase_order_master->get_purchase_master_list_not_in_invoice($condition1);
             $condition[] = ['user.status', '=', 1];
             $data['users'] = $this->User->get_all_users($condition);
-            return view('pages.purchase-details.supplier-invoice.supplier-invoice-add', compact('data'));
+            return view('pages.purchase-details.supplier-invoice.supplier-invoice-add1', compact('data'));
         }
     }
 
-    public function supplierInvoiceEdit(Request $request)
+    public function supplierInvoiceEdit1(Request $request)
     {
         if ($request->isMethod('post')) 
         {
@@ -1010,13 +1114,13 @@ class PurchaseController extends Controller
         }
     }
 
-    public function supplier_invoice_delete(Request $request, $id)
+    public function supplier_invoice_delete1(Request $request, $id)
     {
         $this->inv_supplier_invoice_master->deleteData(['id' => $id]);
         $request->session()->flash('success', "You have successfully deleted a supplier invoice master !");
         return redirect("inventory/supplier-invoice");
     }
-    public function supplierInvoiceItemEdit(Request $request, $master, $item)
+    public function supplierInvoiceItemEdit1(Request $request, $master, $item)
     {
         if ($request->isMethod('post')) {
             $validation['quantity'] = ['required'];
@@ -1247,7 +1351,9 @@ class PurchaseController extends Controller
 
     public function getPurchaseOrderItem(Request $request)
     {
-        $items = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $request->po_id]);
+        //$items = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $request->po_id]);
+        $items = $this->inv_supplier_invoice_item->get_supplier_invoice_item(['inv_supplier_invoice_rel.master' =>$request->invoice_id]);
+        //print_r($items);exit;
         $data = '<div class="table-responsive">
            <table class="table table-bordered mg-b-0" id="example1">
            <tr>

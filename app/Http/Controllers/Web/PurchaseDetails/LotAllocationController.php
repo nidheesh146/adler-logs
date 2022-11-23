@@ -12,6 +12,7 @@ use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inv_final_purchase_order_master;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
+use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
 use App\Models\currency_exchange_rate;
 use PDF;
 
@@ -23,6 +24,7 @@ class LotAllocationController extends Controller
         $this->inv_lot_allocation = new inv_lot_allocation;
         $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
         $this->User = new User;
+        $this->inv_supplier_invoice_rel = new inv_supplier_invoice_rel;
         $this->inventory_rawmaterial = new inventory_rawmaterial;
         $this->inv_supplier = new inv_supplier;
         $this->inv_final_purchase_order_master = new inv_final_purchase_order_master;
@@ -98,9 +100,12 @@ class LotAllocationController extends Controller
              
             if(!$request->lot_id){
                 $invoice_item = $this->inv_supplier_invoice_item->get_single_supplier_invoice_item_id(['inv_supplier_invoice_item.id'=>$request->si_id]);
+                $invoice_master_supplier = inv_supplier_invoice_rel::leftJoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_supplier_invoice_rel.master')
+                                       ->where('inv_supplier_invoice_rel.item','=', $invoice_item['invoice_item_id'])->pluck('inv_supplier_invoice_master.supplier_id')->first();
+
                 $data['pr_item_id'] = $invoice_item->requisition_item_id;
                 $data['si_invoice_item_id'] = $invoice_item->invoice_item_id;
-                $data['supplier_id'] = $invoice_item->supp_id;
+                $data['supplier_id'] = $invoice_master_supplier;
                 $data['po_id'] = $invoice_item->po_master_id;
               }
 

@@ -209,4 +209,13 @@ class MRDController extends Controller
             exit;
         }
     }
+
+    public function MRMDlist()
+    {
+        return view('pages.inventory.MRMD.MRMD-list');
+    }
+    public function MRMDAdd()
+    {
+        return view('pages.inventory.MRMD.MRMD-add');
+    }
 }

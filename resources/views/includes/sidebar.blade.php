@@ -56,7 +56,7 @@
         
 
         <li class="nav-item @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','LotAllocation.addLotAllocation','LotAllocation.lotAllocation','MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MAC.MACAddItemInfo','MAC.MAClist','MAC.MACAdd',
-        'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active show'}} @endif ">
+        'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','Stock.StockToProduction','Stock.StockToProductionAdd'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub">
             <i class="fas fa-boxes" style="font-size:19px"></i>Inventory</a>
             
@@ -66,9 +66,11 @@
             <li class="nav-sub-item  @if(in_array($Action,['MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MIQ.MIQAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/MIQ')}}" class="nav-sub-link">MIQ</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['MAC.MAClist','MAC.MACAdd','MAC.MACAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/MAC')}}" class="nav-sub-link">MAC</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/MRD')}}" class="nav-sub-link">MRD</a></li>
-            <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
+            <li class="nav-sub-item  @if(in_array($Action,['MRMD.MRMDlist','MRMD.MRMDAdd'])){{'active'}} @endif "><a href="{{url('inventory/MRMD')}}" class="nav-sub-link">MRMD</a></li>  
+            <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/Stock/FromProduction')}}" class="nav-sub-link">Stock From Production</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  
+            
           </ul>
         </li> 
         

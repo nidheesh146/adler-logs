@@ -26,6 +26,10 @@
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                {{$id ? 'Quotation reopen ' :  "Add request for quotation" }}  @if($id) (RQ NO:  {{$data['reopen_data_single']['rq_no']}} , PO NO: {{$data['reopen_data_single']['po_number']}} ) @endif
+               <div style="float: right;">
+                    <div style="background-color:#B2BEB5;width:30px;height:30px;float:left;"></div>
+                    <div style="font-size: 14px;float:left;margin-top:10px;">&nbsp;indicates Fixed rate Item</div>
+                </div>
             </h4>
             
 
@@ -156,11 +160,11 @@
                                     @foreach($data['getdata'] as $item)
                                         @php $supplier = $fn->checkFixedItem($item['requisition_item_id']); @endphp
                                         @if($supplier!=0)
-                                        <tr style="background-color:#B2BEB5;">
+                                        <tr class="" style="background-color:#B2BEB5;">
                                         @else
                                         <tr>
                                         @endif
-                                            <td><input type="checkbox" class="purchase_requisition_item" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['requisition_item_id']}}"></td>
+                                            <td><input type="checkbox"   @if($supplier!=0) class="fixed purchase_requisition_item"  @else class="purchase_requisition_item" @endif  id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['requisition_item_id']}}"></td>
                                             <th>{{$item['pr_no']}}</th>
                                             <th> @if($supplier!=0) <a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$supplier}}" >{{$item['item_code']}}</a> @else {{$item['item_code']}} @endif</th>
                                             <td> {{$item['type_name']}}</td>
@@ -180,7 +184,7 @@
                                 @if(count($data['getdata'])>0)
                                     <div class="row">
                                         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                            <button type="submit" class="btn btn-primary btn-rounded submit-btn" style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                            <button type="submit" class="btn btn-primary btn-rounded submit-btn" style="float: right;" ><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                                 role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
                                                 Save 
                                             </button>
@@ -228,18 +232,33 @@
 
 
             $("button").click(function(){
-  var wanted_id = $(this).attr("data-val");
-  var wanted_option = $('#selectTwo option[value="'+ wanted_id +'"]');
-  wanted_option.prop('selected', false);
-  $('.Supplier').trigger('change.select2');
-});
+            var wanted_id = $(this).attr("data-val");
+            var wanted_option = $('#selectTwo option[value="'+ wanted_id +'"]');
+            wanted_option.prop('selected', false);
+            $('.Supplier').trigger('change.select2');
+            });
 
-            $(".submit-btn").on("click", function() {
+            $(".submit-btn").on("click", function(event) {
                 if($('#type').val()==0)
                 {
                     $('#select_error').css('display','block');
                     //document.getElementById("#select_error").css("display","block");
                 }
+                if($('.fixed').is(':checked'))
+                {
+                    if(!confirm('You checked fixed rate item,Are you sure that you want to submit the form?' )) 
+                    { 
+                        return false; 
+                    } 
+
+                }
+
+                // if(('.fixed').attr('checked', true))
+                // {
+                //     alert('cheked');
+                //     event.preventDefault();
+                //    // return confirm("You checked fixed item,Are you sure that you want to submit the form?");
+                // }
             });
             
            $("#commentForm").validate({
@@ -263,7 +282,11 @@
             },
             submitHandler: function(form) {
                 $('.spinner-button').show();
-                form.submit();
+                if(('.fixed').attr('checked', true))
+                {
+                    return confirm("You checked fixed item,Are you sure that you want to submit the form?");
+                }
+                //form.submit();
             }
         });
         

@@ -167,10 +167,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/find-miq-for_mrd', 'MRDController@findMiqNumberForMRD');
     Route::get('inventory/MRD-delete/{id}', 'MRDController@mrd_delete');
 
+    //MRMD
+    Route::get('inventory/MRMD', 'MRDController@MRMDlist');
+    Route::get('inventory/MRMD-add/{id?}', 'MRDController@MRMDAdd');
+
     //Stock To Production
     Route::get('inventory/Stock/ToProduction', 'StockController@StockToProduction');
-    Route::get('inventory/Stock/ToProduction-add/{id?}', 'StockController@StockToProductionAdd');
+    Route::get('inventory/Stock/ToProduction-add', 'StockController@StockToProductionAdd');
+    Route::post('inventory/stock/issueToProduction', 'StockController@issueToProduction');
     Route::get('inventory/Stock/ToProduction/{id}/item', 'StockController@StockToProductionAddItem');
+    Route::get('inventory/Stock/ToProduction/delete/{id}', 'StockController@StockToProductionDelete');
 
      //Stock From Production
      Route::get('inventory/Stock/FromProduction', 'StockController@StockFromProduction');

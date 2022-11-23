@@ -85,10 +85,10 @@ class inv_final_purchase_order_master extends Model
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
                     ->whereNotIn('inv_final_purchase_order_master.id',function($query) {
 
-                        $query->select('inv_supplier_invoice_master.po_master_id')->from('inv_supplier_invoice_master');
+                        $query->select('inv_supplier_invoice_item.po_master_id')->from('inv_supplier_invoice_item');
                     
                     })->orderby('inv_final_purchase_order_master.id','desc')
-                    ->paginate(15);
+                    ->get();
 
     }
 

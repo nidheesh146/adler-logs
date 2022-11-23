@@ -22,7 +22,7 @@
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-              Direct Purchase/Work Order
+            Fixed Rate- Purchase/Work Order
                 <a style="float: right;font-size: 14px;width:100px;" href="{{url()->current();}}" class="badge badge-pill badge-warning ">
                 <i class="fas fa-sync"></i> 
                     Reset

@@ -7,14 +7,14 @@
 		<div class="az-content-body">
 
             <div class="az-content-breadcrumb">  
-                <span><a href="" style="color: #596881;">Stock Issue To Production</a></span>
+                <span><a href="" style="color: #596881;">Material Rejection</a></span>
                 <span><a href="">
-                Stock Issue To Production Item
+                   MRD Item
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            Stock Issue To Production Item
+                    MRD Item
             </h4>
             <div class="az-dashboard-nav">
                 
@@ -54,42 +54,35 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Item code </label>
-                                <input type="text" value="" class="form-control" name="Type" readonly>
+                                <input type="text"  class="form-control" name="Type" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Item Type </label>
-                                <input type="text" value="" class="form-control" name="Type" readonly>
-                            </div><!-- form-group -->
-                            
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Lot Number *</label>
-                                <input type="text" value="" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number" readonly>
+                                <input type="text"  class="form-control" name="Type" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Supplier Unit Rate </label>
-                                <input type="text" value="" class="form-control" name="rate" id="rate" placeholder="Supplier Unit Rate" readonly>
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Quantity </label>
-                                <input type="text" value="" class="form-control " name="Quantity" placeholder="Quantity" >
+                                <label>Rejected Quantity </label>
+                                <input type="text" class="form-control " name="rejected_quantity" id="rejected_quantity" readonly  placeholder="Rejected Quantity" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Stk Kpng Unit </label>
-                                <input type="text" value="" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
+                                <input type="text"  class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
                             </div><!-- form-group -->
-                            
-                            
-                            <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                <label>Conversion rate (INR) *</label>
-                                <input type="text" class="form-control" value="" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
-                            </div>
-                            <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                <label>Value in INR </label>
-                                <input type="text" readonly class="form-control" value="" name="value_inr" id="value_inr" placeholder="Value in INR">
-                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Rejected/Dispatched Date</label>
+                                <input type="text"  class="form-control " name="unit" placeholder="Rejected/Dispatched Date" readonly>
+                            </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Reason *</label>
-                                <textarea type="text" value=" " class="form-control" name="expiry_date" placeholder=""></textarea>
+                                <textarea type="text"  class="form-control" name="reason" placeholder="Remarks" readonly>Reason for cabcellation</textarea>
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Courier /Transport Name</label>
+                                <input type="text"  class="form-control " name="unit" placeholder="Courier /Transport Name" >
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Receipt /LR Number</label>
+                                <input type="text"  class="form-control " name="unit" placeholder="Receipt /LR Number" >
                             </div><!-- form-group -->
                         </div> 
                       
@@ -153,18 +146,19 @@
     $("#conversion_rate").on('input',function(){
         curr_net_value()
     });
+    $("#rejected_quantity").on('input',function(){
+        $("#value").val(($("#rate").val()*$("#rejected_quantity").val()).toFixed(2));
+        $("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
+    });
     $("#currency").on('change',function(){
         curr_net_value()
     });
     function curr_net_value(){
-        $("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()).toFixed(2));
-    }       
+        $("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
+    }      
 
     $("#commentForm").validate({
             rules: {
-                lot_number: {
-                    required: true,
-                },
                 currency: {
                     required: true,
                 },
@@ -174,10 +168,10 @@
                  value_inr: {
                     required: true,
                 },
-                expiry_control: {
+                rejected_quantity: {
                     required: true,
                 },
-                expiry_date: {
+                remarks: {
                     required: true,
                 },
             },

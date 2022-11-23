@@ -150,6 +150,7 @@ class LabelController extends Controller
         $lot_no = $request->sterilization_lot_no;
         $manufacture_date = $request->manufacturing_date;
         $sterilization_expiry_date = $request->sterilization_expiry_date;
+        $per_pack_quantity = $request->per_pack_quantity;
         $batchcard_data = DB::table('batchcard_batchcard')
         ->select('batchcard_batchcard.id as batch_id','batchcard_batchcard.batch_no','batchcard_batchcard.product_id','batchcard_batchcard.id', 'product_product.*')
                             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
@@ -160,7 +161,7 @@ class LabelController extends Controller
         $sku_code_barcode = $generator->getBarcode($batchcard_data->sku_code, $generator::TYPE_CODE_128, 1,40, $color);
         $gs1_code_barcode = $generator->getBarcode($batchcard_data->gs1_code, $generator::TYPE_CODE_128, 1,70, $color );
 
-        return view('pages/label/sterilization-label-print', compact('batchcard_data','no_of_label', 'lot_no','sku_code_barcode','gs1_code_barcode', 'manufacture_date','sterilization_expiry_date'));
+        return view('pages/label/sterilization-label-print', compact('batchcard_data','no_of_label', 'lot_no','sku_code_barcode','gs1_code_barcode', 'manufacture_date','sterilization_expiry_date','per_pack_quantity'));
     }
     public function generateNonSterileProductLabel(Request $request) 
     {

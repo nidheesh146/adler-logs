@@ -89,7 +89,7 @@
                                             {{$manufacture_date}}
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;">
-                                            <span style="text-align:right;"><strong>Qty: </strong>{{$batchcard_data->quantity_per_pack}}Nos</span>
+                                            <span style="text-align:right;"><strong>Qty: </strong>{{$per_pack_quantity}}Nos</span>
                                             <div style=" height: 6px; border-bottom: 1px solid black; text-align: center">
                                                 <span style=" font-weight:bold;position: absolute;font-size: 8px; background-color: #f4f5f8; padding: 0 10px;margin-top: 1px;position: absolute;margin-left: -42px">
                                                     STERILIZATION<!--Padding is optional-->
@@ -231,7 +231,7 @@
                                             {{$manufacture_date}}
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;">
-                                            <span style="text-align:right;"><strong>Qty: </strong>{{$batchcard_data->quantity_per_pack}}Nos</span>
+                                            <span style="text-align:right;"><strong>Qty: </strong>{{$per_pack_quantity}}Nos</span>
                                             <div style=" height: 6px; border-bottom: 1px solid black; text-align: center">
                                                 <span style=" font-weight:bold;position: absolute;font-size: 8px; background-color: #f4f5f8; padding: 0 10px;margin-top: 1px;position: absolute;margin-left: -42px">
                                                     STERILIZATION<!--Padding is optional-->

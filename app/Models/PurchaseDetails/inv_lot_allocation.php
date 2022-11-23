@@ -34,6 +34,30 @@ class inv_lot_allocation extends Model
                 ->orderby('inv_lot_allocation.id','desc')
                 ->paginate(10);
     }
+    function getLot_Not_In_StockToProduction($condition)
+    {
+        return $this->select(['inv_lot_allocation.*', 'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_final_purchase_order_master.po_number','inventory_rawmaterial.item_code',
+        'inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_supplier_invoice_item.order_qty as inv_odr_qty','inv_item_type.type_name'])
+                ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_lot_allocation.po_id','inv_lot_allocation.pr_item_id')
+                ->leftjoin('inv_supplier', 'inv_supplier.id','=','inv_lot_allocation.supplier_id')
+                ->leftjoin('inv_purchase_req_item', 'inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
+                ->leftjoin('inventory_rawmaterial', 'inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                ->leftjoin('inv_supplier_invoice_item', 'inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
+                ->leftjoin('inv_supplier_invoice_rel', 'inv_supplier_invoice_rel.item','=','inv_lot_allocation.si_invoice_item_id')
+                ->leftjoin('inv_supplier_invoice_master', 'inv_supplier_invoice_master.id','=','inv_supplier_invoice_rel.master')
+                ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                // ->leftjoin('inv_miq', 'inv_miq.invoice_master_id','=','inv_supplier_invoice_master.id')
+                // ->leftjoin('inv_mac', 'inv_mac.miq_id','=','inv_miq.id')
+                // ->leftjoin('inv_mac', 'inv_mac.miq_id','=','inv_miq.id')
+                ->where($condition)
+                ->groupBy('inv_lot_allocation.id')
+                ->whereNotIn('inv_lot_allocation.id',function($query) {
+
+                    $query->select('inv_stock_to_production.lot_id')->from('inv_stock_to_production');
+                
+                })->orderby('inv_lot_allocation.id','asc')
+                ->paginate(10);
+    }
 
     function get_single_lot($condition)
     {

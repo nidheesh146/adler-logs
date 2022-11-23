@@ -23,26 +23,49 @@ class inv_supplier_invoice_master extends Model
     function updatedata($condition,$data){
         return $this->where($condition)->update($data);
     }
-    function insert_data($data){
-      $SIMaster =  $this->insertGetId($data);
-      if( $SIMaster ){
-       $inv_final_purchase_order_master =  DB::table('inv_final_purchase_order_rel')
-                            ->leftjoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_final_purchase_order_rel.item')
-                            ->where(['inv_final_purchase_order_rel.master'=>$data['po_master_id']])->get();
+    function insert_data($data,$po_item_id){
+    //   $SIMaster =  $this->insertGetId($data);
+    //   if( $SIMaster ){
+    //    $inv_final_purchase_order_master =  DB::table('inv_final_purchase_order_rel')
+    //                         ->leftjoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_final_purchase_order_rel.item')
+    //                         ->where(['inv_final_purchase_order_rel.master'=>$data['po_master_id']])->get();
 
-    foreach($inv_final_purchase_order_master as $items){
-            $datas['item_id'] = $items->item_id;
-            $datas['order_qty'] = $items->order_qty;
-            $datas['discount'] =  $items->discount; 
-            $datas['specification'] =  $items->Specification;
-            $datas['rate'] =  $items->rate;
-            $or_item_id = DB::table('inv_supplier_invoice_item')->insertGetId($datas);
-                if( $or_item_id){
-                    DB::table('inv_supplier_invoice_rel')->insertGetId(['master'=>$SIMaster,'item'=>$or_item_id]);
+    // foreach($inv_final_purchase_order_master as $items){
+    //         $datas['item_id'] = $items->item_id;
+    //         $datas['order_qty'] = $items->order_qty;
+    //         $datas['discount'] =  $items->discount; 
+    //         $datas['specification'] =  $items->Specification;
+    //         $datas['rate'] =  $items->rate;
+    //         $or_item_id = DB::table('inv_supplier_invoice_item')->insertGetId($datas);
+    //             if( $or_item_id){
+    //                 DB::table('inv_supplier_invoice_rel')->insertGetId(['master'=>$SIMaster,'item'=>$or_item_id]);
+    //             }
+    //     }
+    //   }
+    //   return $SIMaster;
+        $SIMaster =  $this->insertGetId($data);
+        $datas =[];
+        foreach($po_item_id as $POitem_id){
+              $item = DB::table('inv_final_purchase_order_item')->where('id','=',$POitem_id)->first();
+              //print_r($item);exit;
+              $po_master = DB::table('inv_final_purchase_order_rel')->where('item','=',$POitem_id)->pluck('master')->first();
+              $datas['rate'] = $item->rate;
+              $datas['order_qty']= $item->order_qty;
+              $datas['discount']= $item->discount;
+              $datas['gst']= $item->gst;
+              $datas['specification']= $item->Specification;
+              $datas['item_id']= $item->item_id;
+              $datas['po_item_id']= $POitem_id;
+              $datas['status']= 1;
+              $datas['po_master_id']= $po_master;
+              $or_item_id = DB::table('inv_supplier_invoice_item')->insertGetId($datas);
+              if( $or_item_id)
+              {
+                DB::table('inv_supplier_invoice_rel')->insertGetId(['master'=>$SIMaster,'item'=>$or_item_id]);
                 }
+
         }
-      }
-      return $SIMaster;
+        return $SIMaster;
     }
 
     function get_master_data($condition){

@@ -50,8 +50,6 @@
                     <table class="table table-bordered mg-b-0" id="example1">
                         <thead>
                             <tr>
-                            
-                                <th style="width:100px;">PO Number</th>
                                 <th>Invoice number:</th>
                                 <th>Invoice date</th>
                                 <th>Supplier</th>
@@ -66,7 +64,7 @@
                         <tbody>
                             @foreach( $data['items']  as $item)
                             <tr @if($item['lot_id']) style="background:#3bb00133;" @endif>
-                                <td>{{$item['po_number']}}</td>
+                                
                                 <td>{{$item['invoice_number']}}</td>
                                 <td>{{$item['invoice_date']}}</td>
                                 <td>{{$item['vendor_id']}}-{{$item['vendor_name']}}</td>

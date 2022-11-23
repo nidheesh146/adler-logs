@@ -49,23 +49,23 @@
                                     <div class="row filter_search" style="margin-left: 0px;">
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
                         
-                                           {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>@if(request()->get('order_type')=='wo') WO @else PO @endif No:</label>
                                                 <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="@if(request()->get('order_type')=='wo') WO NO @else PO NO @endif"> 
 												<input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
-                                            </div><!-- form-group -->--}}
-                                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                            </div><!-- form-group -->
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>Invoice No:</label>
                                                 <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" id="invoice_no" class="form-control" placeholder="INVOICE NO">
                                                 
                                             </div><!-- form-group -->
                                             
-                                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                 <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                 
                                             </div>
-											 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+											 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label  style="font-size: 12px;">Invoice at </label>
                                                 <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Created at (MM-YYYY)">
                                             </div> 
@@ -99,7 +99,7 @@
 					<thead>
 						<tr>
 						
-							<!-- <th style="width:120px;">@if(request()->get('order_type')=="wo") WO @else PO @endif number :</th> -->
+							<th style="width:120px;">@if(request()->get('order_type')=="wo") WO @else PO @endif number :</th>
 							<th>Invoice number:</th>
 							<th>Invoice date</th>
 							<th>Supplier</th>
@@ -112,7 +112,7 @@
 					<tbody>
 						@foreach ($data['Requisition'] as $item)
 						<tr>
-							<!-- <td>{{$item->po_number}}</td> -->
+							<td>{{$item->po_number}}</td>
 							<td>{{$item->invoice_number}}</td>
 							<td>{{date('d-m-Y',strtotime($item->invoice_date)) }}</td>
 							<td>{{$item->vendor_id}} - {{$item->vendor_name}}</td>
@@ -227,7 +227,7 @@
             $.ajax ({
                     type: 'GET',
                     url: "{{url('inventory/getPurchaseOrderItem')}}",
-                    data: { invoice_id: '' + invoice_id + '' },
+                    data: { po_id: '' + po_id + '' },
                     success : function(data) {
                         $('.binding').append(data);
                     }

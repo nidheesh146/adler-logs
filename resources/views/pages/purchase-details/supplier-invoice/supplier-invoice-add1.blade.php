@@ -27,18 +27,6 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		</div>
 		@endif
-        @if (Session::get('error'))
-		<div class="alert alert-success " style="width: 100%;">
-			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
-		</div>
-		@endif
-        @if(!empty($data['error']))
-                    <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                     {{ $data['error'] }}
-                   </div>
-                  @endif   
 		@include('includes.purchase-details.purchase-work-order-tab')
 		<div class="tab-content">
 		<div class="row row-sm mg-b-20 mg-lg-b-0">
@@ -58,17 +46,21 @@
                             <form autocomplete="off">
                                 <th scope="row">
                                     <div class="row filter_search" style="margin-left: 0px;">
-                                       <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
-                                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                       <div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+                                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                 <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                 
                                             </div>
-                                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                 <label style="font-size: 12px;">@if(request()->get('order_type')=='wo') WO @else PO @endif No:</label>
                                                 <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="@if(request()->get('order_type')=='wo') WO NO @else PO NO @endif"> 
 												<input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                                             </div><!-- form-group -->        
+											<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                                <label  style="font-size: 12px;">PO Date </label>
+                                                <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Created at (MM-YYYY)">
+                                            </div> 
                                                                  
                                         </div>
                                         <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
@@ -89,88 +81,91 @@
                 </table>
             </div>
         </div>
-        @isset($data)
-        <form autocomplete="off"  id="form1" method="POST">
-        {{ csrf_field() }}
+
+		
+	   
+
 		<div class="tab-pane active show " id="purchase">
-            <div class="row">
-                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                    <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                        <i class="fas fa-address-card"></i> Add Supplier Invoice  
-                    </label>
-                    <div class="form-devider"></div>
-                    <div class="row">
-                        <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2" style="margin-top: 6px;padding:0px;text-align:right;">
-                            <label>Supplier Invoice Number</label>
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                            <input type="text"  name="invoice_number" id="invoice_number" class="form-control" placeholder="Invoice number">                            
-                        </div>
-                    </div>
-                </div>
-            </div>
 			<div class="table-responsive">
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-                            <th></th>
+						
 							<th style="width:120px;">@if(request()->get('order_type')=="wo") WO @else PO @endif number :</th>
-							<th>Item Code</th>
-							<th>Type</th>
-							<th>Quantity</th>
-                            <th>RATE</th>
-                            <th>DISCOUNT</th>
-							<th>GST</th>
-                            <th>Supplier</th>
+							<th>PO date</th>
+							<th>Supplier</th>
+							<th>Created Date</th>
+							<th>Created By</th>
+							<th>Action</th>
+						
 						</tr>
 					</thead>
 					<tbody>
-    					@foreach($data as $item)
+						@foreach($data['po_data'] as $po)
                         <tr>
-                            <td><input type="checkbox" name="po_item_id[]" id="po_item_id" value="{{$item['po_item']}}"></td>
-                            <td>{{$item['po_number']}}</td>
-                            <td>{{$item['item_code']}}</td>
-                            <td>{{$item['type']}}</td>
-                            <td>{{$item['order_qty']}}</td>
-                            <td>{{$item['rate']}}</td>
-                            <td>{{$item['discount']}}</td>
-                            <td>@if($item['igst']!=0)
-                                    IGST:{{$item['igst']}}%<br/>
-                                    @endif
-                                @if($item['cgst']!=0)
-                                    CGST:{{$item['cgst']}}%<br/>
-                                    @endif
-                                @if($item['sgst']!=0)
-                                    SGST:{{$item['sgst']}}%
-                                 @endif
+                            <td>{{$po->po_number}}</td>
+                            <td>{{$po->po_date}}</td>
+                            <td>{{$po->vendor_name}}</td>
+                            <td>{{date('d-m-Y',strtotime($po->created_at)) }}</td>
+                            <td>{{$po->f_name}} {{$po->l_name}}</td>
+                            <td><a href="" data-toggle="modal"  data-target="#invoiceAddModal" class="invoice-add-model badge badge-primary"   id="invoice-add-model" po="{{$po['po_number']}}" poId="{{$po['id']}}" style="width:70px;padding:4px;margin-top:2px;color:white;">
+                                <i class="fa fa-plus"> Invoice</i> 
+                                </a>
                             </td>
-                            <td>{{$item['vendor']}}</td>
                         </tr>
                         @endforeach
 					</tbody>
 				</table>
 				<div class="box-footer clearfix">
-                
+                    {{ $data['po_data']->appends(request()->input())->links() }}
 				</div>
-                <div class="form-devider"></div>
-                @if(count($data)>0)
-                    <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
-                                Save 
-                            </button>
-                        </div>
-                    </div>
-                @endif
+		
 			</div>
 		</div>
-        </form>
-		@endif
+		
 	</div>
 </div>
 	<!-- az-content-body -->
 
-  
+    <div id="invoiceAddModal" class="modal">
+        <div class="modal-dialog modal-xl" role="document">
+            <form id="excess-order-form" method="post" action="{{url('inventory/supplier-invoice-add')}}" autocomplete="off">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#Add Supplier Invoice-@if(request()->get('order_type')=="wo") Work Order @else Purchase Order @endif <span class="po_number"></span></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8">
+                                <label>
+                                   Invoice Number
+                                </label>
+                                <input type="text" name="invoice_number" id="invoice_number"  placeholder="Invoice Number">
+                                <input type="hidden" name="po_id" id="po_id" value="">
+                                <span class="rq-number"></span>
+                            </div>
+                            <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                                  <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                          Save
+                                  </button>
+                              </div>
+                        </div>
+                        <div class="form-devider"></div>
+                        <div class="row binding">
+                        </div>
+                             
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                       
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 
@@ -215,23 +210,6 @@
 
         });
   });
-  $("#form1").validate({
-    rules: {
-        invoice_number: {
-            required: true,
-        },
-        po_item_id: {
-            required: true,
-        },
-        submitHandler: function(form) {
-                $('.spinner-button').show();
-                form.submit();
-        }
-    }
-  });
-
-    
-  
 
   
 	$('.search-btn').on( "click", function(e)  {
