@@ -13,7 +13,7 @@
                 </a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Fixed Rate Row Materials
-			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('row-material/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Row Material</button>
+			<button style="float: right;font-size: 14px;" onclick="document.location.href=''" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Fixed Rate Row Material</button>
             </h4>
 			
 		   @if (Session::get('success'))
@@ -95,6 +95,7 @@
 									<th>GST</th>
 									<th>Discount</th>
                                     <th>Delivery Within</th>
+									<th>Currency</th>
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -124,10 +125,11 @@
                                     @endif
                                 @endif
                             </td>
-                            <td>{{$item['discount'] ? $item['discount'] : '-'}}</td>
+                            <td>{{($item['discount']!=NULL) ? $item['discount'] : 0}}</td>
                             <td>{{$item['delivery_within']}} Days</td>
+							<td>{{$item['currency_code']}}</td>
 							<td>
-                                <a href="{{url('row-material/edit?id='.$item["id"])}}" class="badge badge-success"><i class="fas fa-edit"></i> Edit</a> 
+                                <a href="" class="badge badge-success"><i class="fas fa-edit"></i> Edit</a> 
 							</td>
                         </tr>
                         @endforeach

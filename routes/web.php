@@ -258,6 +258,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('row-material/fixed-rate/edit','RowMaterialController@fixedRateEdit');
     Route::post('row-material/fixed-rate/edit','RowMaterialController@fixedRateEdit');
     Route::get('row-material/fixed-rate/delete', 'RowMaterialController@fixedRateDelete');
+    Route::get('row-material/fixed-rate/upload','RowMaterialController@getfixedRateUpload');
+    Route::post('row-material/fixed-item-upload','RowMaterialController@fixedRateItemUpload');
 
     //Product
     Route::get('product/list','ProductController@productList');

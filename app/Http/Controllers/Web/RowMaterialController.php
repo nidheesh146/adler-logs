@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_supplier_itemrate;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use DB;
 use Validator;
 class RowMaterialController extends Controller
@@ -198,13 +200,123 @@ class RowMaterialController extends Controller
 
     public function fixedRateList()
     {
-        $data['items'] = inv_supplier_itemrate::select('inv_supplier_itemrate.*','inventory_rawmaterial.item_code','inv_supplier.vendor_name','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst')
+        $data['items'] = inv_supplier_itemrate::select('inv_supplier_itemrate.*','inventory_rawmaterial.item_code','inv_supplier.vendor_name','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','currency_exchange_rate.currency_code')
                                         ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_supplier_itemrate.item_id')
                                         ->leftJoin('inv_supplier','inv_supplier.id','=','inv_supplier_itemrate.supplier_id')
                                         ->leftJoin('inventory_gst','inventory_gst.id','=','inv_supplier_itemrate.gst')
+                                        ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','inv_supplier_itemrate.currency')
                                         ->orderBy('inv_supplier_itemrate.id','DESC')
                                         ->paginate(15);
         return view('pages/row-material/fixed-rate-list',compact('data'));
+    }
+
+    public function getfixedRateUpload()
+    {
+        return view('pages/row-material/fixed-rate-list-upload');
+    }
+    public function fixedRateItemUpload(Request $request)
+    {
+        $file = $request->file('file');
+        if ($file) {
+
+            $ExcelOBJ = new \stdClass();
+
+            // CONF
+            $path = storage_path().'/app/'.$request->file('file')->store('temp');
+
+            $ExcelOBJ->inputFileName = $path;
+            $ExcelOBJ->inputFileType = 'Xlsx';
+
+            // $ExcelOBJ->filename = 'Book1.xlsx';
+            // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
+            $ExcelOBJ->spreadsheet = new Spreadsheet();
+            $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
+            $ExcelOBJ->reader->setReadDataOnly(true);
+            $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
+            $no_column = 13;
+            $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
+            if($sheet1_column_count == $no_column)
+            {
+                 $res = $this->Excelsplitsheet($ExcelOBJ);
+                 //print_r($res);exit;
+                 if($res==1)
+                 {
+                    $request->session()->flash('success',  "Successfully uploaded.");
+                    return redirect('row-material/fixed-rate/upload');
+                 }
+                 else{
+                    $request->session()->flash('error',  "The data already uploaded.");
+                    return redirect('row-material/fixed-rate/upload');
+                 }
+            }
+            else 
+            {
+                $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
+                return redirect('row-material/fixed-rate/upload');
+            }
+            
+            //dd($ExcelOBJ->worksheetData);
+            //exit;
+        }
+    }
+    public function Excelsplitsheet($ExcelOBJ)
+    {
+        $ExcelOBJ->SQLdata = [];
+        $ExcelOBJ->arrayinc = 0;
+        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) 
+        {
+            $ExcelOBJ->sectionName = '';
+            $ExcelOBJ->sheetName = $worksheet['worksheetName'];
+            $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
+            $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
+            $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
+            $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
+            //print_r(json_encode($ExcelOBJ->excelworksheet));
+            $ExcelOBJ->date_created = date('Y-m-d H:i:s');
+            $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
+            $res = $this->insert_fixed_item($ExcelOBJ);
+            return $res;
+        }
+        //print_r($res);exit;
+       // exit;
+    }
+
+    function insert_fixed_item($ExcelOBJ)
+    {
+        $data = [];
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
+        {
+            if ($key > 1 &&  $excelsheet[1]) 
+            {
+                $item_id = DB::table('inventory_rawmaterial')->where('item_code','=' ,$excelsheet[2])->pluck('id')->first();
+                $supplier_id = DB::table('inv_supplier')->where('vendor_id','=' ,$excelsheet[6])->pluck('id')->first();
+                $gst = DB::table('inventory_gst')->where('cgst',trim($excelsheet[9],"%")*100)->where('sgst',trim($excelsheet[10],"%")*100)->where('igst',trim($excelsheet[11],"%")*100)->pluck('id')->first();
+                $inv_supplier_itemrate =  DB::table('inv_supplier_itemrate')->select(['*'])->where('item_id', $item_id)->where('supplier_id', $supplier_id)->first();
+                $currency = DB::table('currency_exchange_rate')->where('currency_code',$excelsheet[12])->pluck('currency_id')->first();
+                if(!($inv_supplier_itemrate) && $item_id && $supplier_id)
+                {
+                    $data = [
+                            'supplier_id' =>$supplier_id,
+                            'item_id' =>$item_id,
+                            'rate'=>$excelsheet[7],
+                            'discount'=>trim($excelsheet[8],"%"),
+                            'gst'=>$gst,
+                            'currency'=>$currency,
+                            'is_active'=>1,
+                            'created_at'=>date('Y-m-d H:i:s'),
+                            'updated_at'=>date('Y-m-d H:i:s'),
+                            'delivery_within' => 30,
+
+                    ];
+                    $res = DB::table('inv_supplier_itemrate')->insert($data);
+                }
+            }
+         
+        }
+        if($res)
+        return 1;
+        else 
+        return 0;
     }
         
        

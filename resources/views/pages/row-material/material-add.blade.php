@@ -7,12 +7,12 @@
             <div class="az-content-breadcrumb"> 
                 <span><a href="" style="color: #596881;">ROW MATERIAL</a></span> 
                 <span><a href="" style="color: #596881;">
-                @if($edit) Edit @else ADD @endif ROW MATERIAL 
+                @isset($edit) Edit @else ADD @endif ROW MATERIAL 
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            @if($edit) Edit @else Add @endif Row Material 
+            @isset($edit) Edit @else Add @endif Row Material 
 			</h4>
             @if(Session::get('error'))
                 <div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -50,8 +50,8 @@
                                 <select class="form-control" name="item_type1" id="item_type1">
                                     <option value="">--select one--</option>
                                     @foreach($data['type1'] as $type)
-                                    <option value="{{$type->id}}" @if($type->id == $edit['item_type_id'])
-                                           selected @endif>{{$type->type_name}}</option>
+                                    <option value="{{$type->id}}" @if(!empty($edit)) @if($type->id == $edit['item_type_id'])
+                                           selected @endif @endif>{{$type->type_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -60,8 +60,8 @@
                                 <select class="form-control" name="item_type2" id="item_type2">
                                     <option value="">--select one--</option>
                                     @foreach($data['type2'] as $type)
-                                    <option value="{{$type->id}}" @if($type->id == $edit['item_type_id_2'])
-                                           selected @endif >{{$type->type_name}}</option>
+                                    <option value="{{$type->id}}" @if(!empty($edit)) @if($type->id == $edit['item_type_id_2'])
+                                           selected @endif @endif >{{$type->type_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -70,8 +70,8 @@
                                 <select class="form-control" name="issue_unit" id="issue_unit">
                                     <option value="">--select one--</option>
                                     @foreach($data['units'] as $unit)
-                                    <option value="{{$unit->id}}" @if($unit->id == $edit['issue_unit_id'])
-                                           selected @endif>{{$unit->unit_name}}</option>
+                                    <option value="{{$unit->id}}" @if(!empty($edit)) @if($unit->id == $edit['issue_unit_id'])
+                                           selected @endif @endif>{{$unit->unit_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -80,8 +80,8 @@
                                 <select class="form-control" name="receipt_unit" id="receipt_unit">
                                     <option value="">--select one--</option>
                                     @foreach($data['units'] as $unit)
-                                    <option value="{{$unit->id}}" @if($unit->id == $edit['receipt_unit_id'])
-                                           selected @endif >{{$unit->unit_name}}</option>
+                                    <option value="{{$unit->id}}" @if(!empty($edit)) @if($unit->id == $edit['receipt_unit_id'])
+                                           selected @endif @endif>{{$unit->unit_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -90,16 +90,16 @@
                                 <select class="form-control" name="stock_keeping_unit" id="stock_keeping_unit">
                                     <option value="">--select one--</option>
                                     @foreach($data['units'] as $unit)
-                                    <option value="{{$unit->id}}" @if($unit->id == $edit['stock_keeping_unit_id'])
-                                           selected @endif>{{$unit->unit_name}}</option>
+                                    <option value="{{$unit->id}}" @if(!empty($edit)) @if($unit->id == $edit['stock_keeping_unit_id'])
+                                           selected @endif @endif>{{$unit->unit_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Stock Type</label>
                                 <select class="form-control" name="stock_type" id="stock_type">
-                                    <option value="0" @if($edit['stock_type'])==0) selected @endif>0</option>
-                                    <option value="1" @if($edit['stock_type'])==1) selected @endif>1</option>
+                                    <option value="0" @if(!empty($edit)) @if($edit['stock_type'])==0) selected @endif @endif>0</option>
+                                    <option value="1" @if(!empty($edit)) @if($edit['stock_type'])==1) selected @endif @endif>1</option>
                                 </select>
                             </div> 
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -142,16 +142,16 @@
                                 <label>Item Origin</label>
                                 <select class="form-control" name="item_origin" id="item_origin">
                                     <option value="">--Select one--</option>
-                                    <option value="1" @if($edit['item_origin'])==2) selected @endif>origin1</option>
-                                    <option value="2" @if($edit['item_origin'])==2) selected @endif>origin2</option>
+                                    <option value="1" @if((!empty($edit)) && $edit['item_origin'])==2) selected @endif>origin1</option>
+                                    <option value="2" @if( (!empty($edit)) && $edit['item_origin'])==2) selected @endif>origin2</option>
                                 </select>
                             </div> 
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Brand</label>
                                 <select class="form-control" name="brand" id="brand">
                                     <option value="">--Select one--</option>
-                                    <option value="1" @if($edit['brand_id'])==1) selected @endif>brand1</option>
-                                    <option value="2" @if($edit['brand_id'])==2) selected @endif>brand2</option>
+                                    <option value="1" @if((!empty($edit)) && $edit['brand_id'])==1) selected @endif>brand1</option>
+                                    <option value="2" @if((!empty($edit)) && $edit['brand_id'])==2) selected @endif>brand2</option>
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -234,7 +234,7 @@
                                 <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span
                                         class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                         role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
-                                    @if($edit)
+                                    @isset($edit)
                                         Update
                                     @else
                                         Save

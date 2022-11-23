@@ -109,7 +109,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit','RowMaterial.fixedRateList'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit','RowMaterial.fixedRateList','RowMaterial.getfixedRateUpload'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-swatchbook" style="font-size: 19px"></i>Row Material</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit'])){{'active'}} @endif ">
@@ -120,6 +120,9 @@
             </li> -->
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.fixedRateList'])){{'active'}} @endif ">
             <a href="{{url('row-material/fixed-rate')}}"  class="nav-sub-link">Fixed Rate Row Material</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['RowMaterial.getfixedRateUpload'])){{'active'}} @endif ">
+            <a href="{{url('row-material/fixed-rate/upload')}}"  class="nav-sub-link">Fixed Rate Material Upload</a>
             </li>
           </ul>
         </li>
