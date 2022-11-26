@@ -198,13 +198,21 @@ class RowMaterialController extends Controller
             return view('pages/row-material/material-add',compact('data','edit'));
     }
 
-    public function fixedRateList()
+    public function fixedRateList(Request $request)
     {
+        $condition = [];
+        if ($request->item_code) {
+            $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+        }
+        if ($request->supplier) {
+            $condition[] = ['inv_supplier.vendor_name','like', '%' . $request->supplier . '%'];
+        }
         $data['items'] = inv_supplier_itemrate::select('inv_supplier_itemrate.*','inventory_rawmaterial.item_code','inv_supplier.vendor_name','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','currency_exchange_rate.currency_code')
                                         ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_supplier_itemrate.item_id')
                                         ->leftJoin('inv_supplier','inv_supplier.id','=','inv_supplier_itemrate.supplier_id')
                                         ->leftJoin('inventory_gst','inventory_gst.id','=','inv_supplier_itemrate.gst')
                                         ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','inv_supplier_itemrate.currency')
+                                        ->where($condition)
                                         ->orderBy('inv_supplier_itemrate.id','DESC')
                                         ->paginate(15);
         return view('pages/row-material/fixed-rate-list',compact('data'));
@@ -233,7 +241,7 @@ class RowMaterialController extends Controller
             $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
             $ExcelOBJ->reader->setReadDataOnly(true);
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
-            $no_column = 13;
+            $no_column = 15;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
             if($sheet1_column_count == $no_column)
             {
@@ -306,6 +314,8 @@ class RowMaterialController extends Controller
                             'created_at'=>date('Y-m-d H:i:s'),
                             'updated_at'=>date('Y-m-d H:i:s'),
                             'delivery_within' => 30,
+                            'rate_expiry_startdate'=>($excelsheet[13]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[13]))->format('Y-m-d')) : NULL,
+                            'rate_expiry_enddate'=>($excelsheet[14]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[14]))->format('Y-m-d')) : NULL,
 
                     ];
                     $res = DB::table('inv_supplier_itemrate')->insert($data);

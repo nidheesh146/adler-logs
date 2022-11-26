@@ -7,9 +7,9 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Material Acceptance(MAC)</a></span>
+			 <span><a href="">@if(request()->get('order_type')=='wo') Work Order Acceptance(WOA) @else Material Acceptance(MAC) @endif</a></span>
 		</div>
-		<h4 class="az-content-title" style="font-size: 20px;">Material Acceptance(MAC)
+		<h4 class="az-content-title" style="font-size: 20px;">@if(request()->get('order_type')=='wo') Work Order Acceptance(WOA) @else Material Acceptance(MAC) @endif
 		  	<div class="right-button">
 			  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
 				  <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -17,18 +17,23 @@
 			  <a href="#" class="dropdown-item">Excel</a>
 
 			  </div> -->
+                @if(request()->get('order_type')=='wo')
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/WOA-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> WOC</button> 
+                @else
 				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MAC-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> MAC</button> 
+                @endif
 	  		</div>
 		</h4>
-		<div class="az-dashboard-nav">
+		<!-- <div class="az-dashboard-nav">
 			<nav class="nav"> </nav>	
-		</div>
+		</div> -->
         @if (Session::get('success'))
 		<div class="alert alert-success " style="width: 100%;">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 			<i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		</div>
 		@endif
+        @include('includes.purchase-details.purchase-work-order-tab')
         <div class="row row-sm mg-b-20 mg-lg-b-0">
             <div class="table-responsive" style="margin-bottom: 13px;">
                 <table class="table table-bordered mg-b-0">
@@ -48,8 +53,8 @@
                                     <div class="row filter_search" style="margin-left: 0px;">
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                <label>MAC No:</label>
-                                                <input type="text" value="{{request()->get('mac_no')}}" name="mac_no" id="mac_no" class="form-control" placeholder="MAC NO">
+                                                <label>@if(request()->get('order_type')=='wo') WOA @else MAC @endif No:</label>
+                                                <input type="text" value="{{request()->get('mac_no')}}" name="mac_no" id="mac_no" class="form-control" placeholder="@if(request()->get('order_type')=='wo') WOA @else MAC @endif NO">
                                             
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
@@ -100,7 +105,7 @@
 			<table class="table table-bordered mg-b-0" id="example1">
 				<thead>
 					<tr>
-						<th>MAC No</th>
+						<th>@if(request()->get('order_type')=='wo') WOA @else MAC @endif No</th>
                         <th>MIQ No</th>
 						<th>Supplier</th>
                         <th>Prepared By</th> 

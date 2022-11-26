@@ -210,12 +210,29 @@ class MRDController extends Controller
         }
     }
 
-    public function MRMDlist()
+    public function RMRNlist()
     {
-        return view('pages.inventory.MRMD.MRMD-list');
+        return view('pages.inventory.RMRN.RMRN-list');
     }
-    public function MRMDAdd()
+    public function RMRNAdd()
     {
-        return view('pages.inventory.MRMD.MRMD-add');
+        return view('pages.inventory.RMRN.RMRN-add');
+    }
+
+    public function WORAdd()
+    {
+        $condition1[] = ['user.status', '=', 1];
+        $data['users'] = $this->User->get_all_users($condition1);
+        return view('pages.inventory.MRD.WOR-add',compact('data'));
+    }
+
+    public function receiptReport()
+    {
+        return view('pages.inventory.MRR.mrr-list');
+    }
+    public function receiptReportPDF()
+    {
+        $pdf = PDF::loadView('pages.inventory.MRR.pdf-view');
+        return $pdf->stream($file_name . '.pdf');
     }
 }

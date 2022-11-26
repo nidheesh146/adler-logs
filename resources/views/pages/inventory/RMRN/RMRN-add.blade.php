@@ -9,12 +9,12 @@
             <div class="az-content-breadcrumb">  
                 <span><a href="" style="color: #596881;">Material Rejection</a></span>
                 <span><a href="">
-                   MRD Item
+                   RMRN Item
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                    MRD Item
+                    RMRN Item
             </h4>
             <div class="az-dashboard-nav">
                 

@@ -41,25 +41,15 @@
 											<th scope="row">
 												<div class="row filter_search" style="margin-left: 0px;">
 													<div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
-														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+														<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
 															<label>Item Code:</label>
 															<input type="text" value="{{request()->get('item_code')}}" name="item_code"  id="item_code" class="form-control" placeholder="ITEM CODE">
 														</div><!-- form-group -->
 									
-														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Type1</label>
-															<input type="text" value="{{request()->get('type1')}}" id="type1" class="form-control" name="type1" placeholder="TYPE1">
-														</div> 
-														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Type2</label>
-															<input type="text" value="{{request()->get('type2')}}"  class="form-control " name="type2" placeholder="TYPE2" >
-														</div> 
-														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Origin</label>
-															<input type="text" value="{{request()->get('origin')}}"  class="form-control " name="origin" placeholder="ORIGIN" >
-														</div> 
-														
-																			
+														<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+															<label  style="font-size: 12px;">Supplier</label>
+															<input type="text" value="{{request()->get('supplier')}}" id="type1" class="form-control" name="supplier" placeholder="SUPPLIER">
+														</div> 					
 													</div>
 													<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
 														<!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;"> -->

@@ -326,4 +326,11 @@ class MACController extends Controller
         $request->session()->flash('success', "You have successfully deleted a MAC !");
         return redirect("inventory/MAC");
     }
+
+    public function WOAAdd()
+    {
+        $condition1[] = ['user.status', '=', 1];
+        $data['users'] = $this->User->get_all_users($condition1);
+        return view('pages.inventory.MAC.WOA-add',compact('data'));
+    }
 }
