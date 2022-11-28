@@ -1085,6 +1085,7 @@ class PurchaseController extends Controller
 
     public function supplierInvoiceEdit1(Request $request)
     {
+        //echo "ff";exit;
         if ($request->isMethod('post')) 
         {
             $validation['invoice_number'] = ['required'];
@@ -1097,8 +1098,16 @@ class PurchaseController extends Controller
                 $data['invoice_date'] = date('Y-m-d',strtotime($request->invoice_date));
                 $data['updated_at'] = date('Y-m-d H:i:s');
 
-                $this->inv_supplier_invoice_master->updatedata(['inv_supplier_invoice_master.id' => $request->invoice_id], $data);
-                $request->session()->flash('success', "You have successfully updated a supplier invoice master !");
+                $invoice_update= $this->inv_supplier_invoice_master->updatedata(['inv_supplier_invoice_master.id' => $request->invoice_id], $data);
+                $items = $this->inv_supplier_invoice_item->get_supplier_invoice_item(['inv_supplier_invoice_rel.master' => $request->invoice_id]);
+                $item_count = count($items);
+                for($i=1;$i<=$item_count;$i++)
+                {
+                    $update[] = inv_supplier_invoice_item::where('id', '=', $_POST['item'.$i])->update(['order_qty' => $_POST['qty'.$i]]);
+                    
+                }
+                if($invoice_update && $update)
+                $request->session()->flash('success', "You have successfully updated a supplier invoice  !");
                 if($request->order_type)
                 return redirect("inventory/supplier-invoice?order_type=".$request->order_type);
                 else
@@ -1381,11 +1390,20 @@ class PurchaseController extends Controller
             $total_igst = 0;
             $total_cgst = 0;
             $total_sgst = 0;
+            $i=1;
         foreach($items as $item)
-        {
+        {/*<td>'.$item['order_qty'].' ' .$item['unit_name'] .'</td> */
             $data .='<tr>
                     <td>'.$item['item_code'].'</td>
-                    <td>'.$item['order_qty'].' ' .$item['unit_name'] .'</td>
+                    <td>
+                        <div class="input-group">
+                            <input type="hidden" value="'.$item['id'].'" name="item'. $i.'">
+                            <input type="text" class="order-qty " id="order-qty" name="qty'. $i.'" value="'.$item['order_qty'].'" aria-describedby="unit-div">
+                            <div class="input-group-append">
+                                <span class="input-group-text unit-div" id="unit-div">'.$item['unit_name'] .'</span>
+                            </div>
+                        </div>
+                    </td>
                     <td>'.number_format((float)$item['rate'], 2, '.', '').'</td>
                     <td>'.number_format((float)($item['rate']* $item['order_qty']), 2, '.', '') .'</td>
                     <td>'.$item['discount'].'</td>';
@@ -1399,6 +1417,7 @@ class PurchaseController extends Controller
                     <td>'.$item['cgst'].'</td>
                     <td>'.number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '').'</td>
                     </tr>';
+                    $i++;
         } 
         $data .='</table></div>';
         return $data;

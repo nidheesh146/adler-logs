@@ -162,21 +162,26 @@
                                 </label>
                                 <input type="text" name="invoice_date" id="invoice_date" value="{{date("d-m-Y")}}" class="datepicker1">
                             </div>
-                            <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                            {{--<div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
                                   <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                         Update
                                   </button>
-                              </div>
+                              </div>--}}
                         </div>
                         <div class="form-devider"></div>
                         <div class="row binding">
                         </div>
-                             
-                        </div>
+                        
                         
                     </div>
                     <div class="modal-footer">
-                       
+                    <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                                  <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                        Update
+                                  </button>
+                              </div>
+                             
+                        </div>
                     </div>
                 </div>
             </form>
@@ -247,6 +252,10 @@
 			e.preventDefault();
 		}
 	});
+    //$('.order-qty').on('input')
+    $(".order-qty").on("input", function() {
+        alert($(this).val()); 
+    });
 </script>
 
 

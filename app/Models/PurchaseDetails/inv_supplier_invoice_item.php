@@ -23,7 +23,7 @@ class inv_supplier_invoice_item extends Model
     function get_supplier_invoice_item($condition){
         return $this->select(['inv_supplier_invoice_item.id','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
         'inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_final_purchase_order_master.po_number','inv_supplier_invoice_master.invoice_number'
-        ,'inv_supplier_invoice_master.invoice_date','inv_supplier.vendor_id', 'inv_supplier.vendor_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst'])
+        ,'inv_supplier_invoice_master.invoice_date','inv_supplier.vendor_id', 'inv_supplier.vendor_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst','inv_unit.unit_name'])
                     ->join('inv_supplier_invoice_rel','inv_supplier_invoice_rel.item','=','inv_supplier_invoice_item.id')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
                     ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_supplier_invoice_item.item_id')
@@ -33,6 +33,7 @@ class inv_supplier_invoice_item extends Model
                     ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id', '=','inv_supplier_invoice_master.po_master_id')
                     ->leftjoin('inv_supplier', 'inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
                     ->leftjoin('inventory_gst','inventory_gst.id','=','inv_supplier_invoice_item.gst')
+                    ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.issue_unit_id')
                     ->where($condition)
                     ->groupBy('inv_supplier_invoice_item.id')
                     ->orderBy('inv_supplier_invoice_item.id','desc')

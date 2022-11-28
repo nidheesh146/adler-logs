@@ -77,7 +77,7 @@
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sterilization Expiry date *</label>
                                 @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
-                                <input type="date" value="{{date('Y-m-d', strtotime($date .' -1 day'))}}" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" >
+                                <input type="date" value="{{date('Y-m-d', strtotime($date .' -1 day'))}}" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" readonly>
                             </div><!-- form-group -->
 
                         </div>               
