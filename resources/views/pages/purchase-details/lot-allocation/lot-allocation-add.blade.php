@@ -54,6 +54,7 @@
                                 <th>Invoice date</th>
                                 <th>Supplier</th>
                                 <th>ITEM CODE:</th>
+                                <th>TYPE</th>
                                 <th>HSN</th>
                                 <th>QUANTITY</th>
                                 <th>RATE</th>
@@ -69,6 +70,7 @@
                                 <td>{{$item['invoice_date']}}</td>
                                 <td>{{$item['vendor_id']}}-{{$item['vendor_name']}}</td>
                                 <td>{{$item['item_code']}}</td>
+                                <td>{{$item['type_name']}}</td>
                                 <td>{{$item['hsn_code']}}</td>
                                 <td>{{$item['order_qty']}}</td>
                                 <td>{{$item['rate']}}</td>

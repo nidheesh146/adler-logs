@@ -94,29 +94,32 @@
 			<table class="table table-bordered mg-b-0" id="example1">
 				<thead>
 					<tr>
-						<th>SRP No</th>
-                        <th>Depatment</th>
-                        <th>Issues Person</th>
-						<th>Date</th>
+                        <th>SRP Number</th>
+                        <th>Item Code</th>
+                        <th>Item Type</th>
+						<th>Lot Number</th>
+                        <th>Quantity</th>
+                        <th>Supplier</th>
                         <th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
-                   
+                    @foreach($data['srp'] as $srp)
                     <tr>
-                       <td>SRP3-2223-0001</td>
-                       <td>	Production</td>
-                       <td>Nayan</td>
-                       <td>12-11-2022</td>
-                        <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/Stock/FromProduction-add/1')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</td>
+                        <td>{{$srp['srp_number']}}</td>
+                        <td>{{$srp['item_code']}}</td>
+                        <td>{{$srp['type_name']}}</td>
+                        <td>{{$srp['lot_number']}}</td>
+                        <td>{{$srp['quantity']}} {{$srp['unit_name']}}</td>
+                        <td>{{$srp['vendor_name']}}</td>
+                        <td><a class="badge badge-info sip-edit" id="sip-edit" style="font-size: 13px;" data-toggle="modal" sipId="{{$srp['id']}}" sip="{{$srp['sip_number']}}" item="{{$srp['item_code']}}" qty="{{$srp['quantity']}}" data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>
+                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/Stock/ToProduction/delete/'.$srp['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
                     </tr>
-                    
-					
+                    @endforeach
 				</tbody>
 			</table>
 			<div class="box-footer clearfix">
-                
-				
+            {{ $data['srp']->appends(request()->input())->links() }}
 		   </div> 
 		</div>
 	</div>

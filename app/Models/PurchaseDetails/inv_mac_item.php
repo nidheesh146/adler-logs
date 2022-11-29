@@ -37,7 +37,8 @@ class inv_mac_item extends Model
 
     function get_item($condition){
         return $this->select('inv_mac_item.id as id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inventory_rawmaterial.item_code','inv_item_type.type_name','inv_supplier_invoice_item.order_qty',
-                    'inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_mac_item.accepted_quantity')
+                    'inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_mac_item.accepted_quantity',
+                    'inv_purchase_req_item.requisition_item_id','inv_lot_allocation.id as lot_id','inv_supplier_invoice_item.id as invoice_item_id')
                     ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
                     ->leftjoin('inv_miq_item','inv_miq_item.id','=','inv_mac_item.miq_item_id')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
@@ -48,5 +49,31 @@ class inv_mac_item extends Model
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->where($condition)
                     ->first();
+    }
+
+    function getMAC_items_Not_In_StockToProduction($condition)
+    {
+        return $this->select(['inv_mac_item.*', 'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_final_purchase_order_master.po_number','inventory_rawmaterial.item_code',
+        'inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_item_type.type_name','inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number',
+        'inv_supplier_invoice_item.id as si_invoice_item_id','inv_unit.unit_name'])
+                ->leftjoin('inv_purchase_req_item', 'inv_purchase_req_item.requisition_item_id','=','inv_mac_item.item_id')
+                ->leftjoin('inventory_rawmaterial', 'inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                ->leftjoin('inv_miq_item','inv_miq_item.id','=','inv_mac_item.miq_item_id')
+                ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
+                ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                ->leftjoin('inv_supplier_invoice_rel', 'inv_supplier_invoice_rel.item','=','inv_miq_item.invoice_item_id')
+                ->leftjoin('inv_supplier_invoice_master', 'inv_supplier_invoice_master.id','=','inv_supplier_invoice_rel.master')
+                ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_lot_allocation.po_id')
+                ->leftjoin('inv_supplier', 'inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                ->where($condition)
+                ->groupBy('inv_mac_item.id')
+                ->whereNotIn('inv_mac_item.id',function($query) {
+
+                    $query->select('inv_stock_to_production.mac_item_id')->from('inv_stock_to_production');
+                
+                })->orderby('inv_mac_item.id','asc')
+                ->paginate(10);
     }
 }

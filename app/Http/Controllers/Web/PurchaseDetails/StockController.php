@@ -9,7 +9,9 @@ use DB;
 use App\Models\User;
 use App\Models\PurchaseDetails\inv_lot_allocation;
 use App\Models\PurchaseDetails\inv_miq_item;
+use App\Models\PurchaseDetails\inv_mac_item;
 use App\Models\PurchaseDetails\inv_stock_to_production;
+use App\Models\PurchaseDetails\inv_stock_from_production;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 
@@ -19,10 +21,12 @@ class StockController extends Controller
     {
         $this->User = new User;
         $this->inv_miq_item = new inv_miq_item;
+        $this->inv_mac_item = new inv_mac_item;
         $this->inv_purchase_req_item = new inv_purchase_req_item;
         $this->inventory_rawmaterial = new inventory_rawmaterial;
         $this->inv_lot_allocation = new inv_lot_allocation;
         $this->inv_stock_to_production = new inv_stock_to_production;
+        $this->inv_stock_from_production = new inv_stock_from_production;
     }
     public function StockToProduction(Request $request)
     {
@@ -64,22 +68,23 @@ class StockController extends Controller
             }
            
         }
-        $data['lot'] =$this->inv_lot_allocation->getLot_Not_In_StockToProduction($condition);
+        $data['items'] =$this->inv_mac_item->getMAC_items_Not_In_StockToProduction($condition);
         
         return view('pages.inventory.stock.stock-issue-to-production-add',compact('data'));
     }
 
     public function issueToProduction(Request $request)
     {
-        $validation['lot_id'] = ['required'];
+        $validation['mac_item_id'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
-            foreach($request->lot_id as $lot_id)
+            foreach($request->mac_item_id as $mac_item_id)
             {
-                $lot_data = $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_id]);
+                //$lot_data = $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_id]);
+                $mac_item_data = $this->inv_mac_item->get_item(['inv_mac_item.id'=>$mac_item_id]);
                // print_r(json_encode($lot_data));exit;
-                $item_type = $this->get_item_type($lot_data['pr_item_id']);
+                $item_type = $this->get_item_type($mac_item_data['requisition_item_id']);
                 if($item_type=="Direct Items")
                 {
                     $data['sip_number'] = "SIP2-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2%')->count(),1); 
@@ -88,26 +93,41 @@ class StockController extends Controller
                 {
                     $data['sip_number'] = "SIP3-" . $this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP3%')->count(),1); 
                 }
-                $mac_qty = $this->get_mac_qty($lot_data['si_invoice_item_id']);
+                $mac_qty = $this->get_mac_qty($mac_item_data['invoice_item_id']);
                 if($mac_qty)
                 $data['quantity']=$mac_qty;
                 else
-                $data['quantity']=$lot_data['qty_accepted'];
-                $data['lot_id']= $lot_data['id'];
-                $data['pr_item_id']= $lot_data['pr_item_id'];
+                $data['quantity']=$mac_item_data['accepted_quantity'];
+                $data['lot_id']= $mac_item_data['lot_id'];
+                $data['pr_item_id']= $mac_item_data['requisition_item_id'];
+                $data['mac_item_id']=$mac_item_data['id'];
                 $data['status']= 1;
                 $data['created_at']= date('Y-m-d H:i:s');
                 $data['updated_at']= date('Y-m-d H:i:s');
                 $add[] = $this->inv_stock_to_production->insert_data($data);
 
             }
-            if(count($add)==count($request->lot_id))
+            if(count($add)==count($request->mac_item_id))
             $request->session()->flash('success', "You have successfully added Stock issue to production !");
             else
             $request->session()->flash('error', "You have failed to add Stock issue to production !");
             return redirect("inventory/Stock/ToProduction");
         }
+        if($validator->errors()->all())
+        {
+            $request->session()->flash('error', "Stock issue to production updation failed!");
+            return redirect("inventory/Stock/FromProduction");
+        }
 
+    }
+    public function getSingleSIP(Request $request)
+    {
+        $sip = inv_stock_to_production::select('inv_stock_to_production.*','inventory_rawmaterial.item_code','inv_unit.unit_name')
+                                ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_to_production.pr_item_id')
+                                ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                ->where('inv_stock_to_production.id','=', $request->sip_id)->first();
+        return $sip;
     }
 
     public function get_mac_qty($invoice_item_id)
@@ -128,7 +148,28 @@ class StockController extends Controller
                                             ->pluck('inv_item_type.type_name')
                                             ->first();
         return $item_type;
-    }                       
+    }     
+    public function StockToProductionEdit(Request $request)
+    {
+        $validation['quantity'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all())
+        {
+            $data['quantity'] = $request->quantity;
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            $update = $this->inv_stock_to_production->update_data(['id' => $request->sipId],$data);
+            if($update)
+            $request->session()->flash('success', "You have successfully updated Stock issue to production !");
+            else
+            $request->session()->flash('error', "Stock issue to production updation failed!");
+            return redirect("inventory/Stock/ToProduction");
+        }
+        if($validator->errors()->all())
+        {
+            $request->session()->flash('error', "Stock issue to production updation failed!");
+            return redirect("inventory/Stock/ToProduction");
+        }
+    }                  
 
     public function StockToProductionDelete(Request $request,$id)
     {
@@ -138,22 +179,97 @@ class StockController extends Controller
     }
     
 
-    public function StockFromProduction()
+    public function StockFromProduction(Request $request)
     {
-        return view('pages.inventory.stock.stock-from-production');
+       
+        $condition = [];
+        if($request)
+        {
+            if ($request->sip_number) {
+                $condition[] = ['inv_stock_to_production.sip_number','like', '%' . $request->sip_number . '%'];
+            }
+            if ($request->lot_number) {
+                $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
+            }
+            if ($request->item_code) {
+                $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+            }
+            if($request->supplier)
+            {
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+           
+        }
+        $data['srp'] =$this->inv_stock_from_production->get_all_data($condition);
+        return view('pages.inventory.stock.stock-from-production',compact('data'));
     }
     public function StockFromProductionAdd(Request $request)
     {
-        if($request->id){
-            $edit=1;
-            return view('pages.inventory.stock.stock-from-production-add',compact('edit'));
+        $condition = [];
+        if($request)
+        {
+            if ($request->lot_number) {
+                $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
+            }
+            if ($request->item_code) {
+                $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+            }
+            if($request->supplier)
+            {
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+           
         }
-        else
-        return view('pages.inventory.stock.stock-from-production-add');
+        $data['items'] =$this->inv_stock_to_production->getSIP_Not_In_StockFromProduction($condition);
+        
+        return view('pages.inventory.stock.stock-from-production-add',compact('data'));
     }
-    public function StockFromProductionAddItem()
+    public function returnFromProduction(Request $request)
     {
-        return view('pages.inventory.stock.stock-from-production-item');
+        $validation['sip_id'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all())
+        {
+            foreach($request->sip_id as $sip_id)
+            {
+                //$lot_data = $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_id]);
+                $sip_data = inv_stock_to_production::select('*')->where('id','=',$sip_id)->first();
+               // print_r(json_encode($lot_data));exit;
+                $item_type = $this->get_item_type($sip_data['pr_item_id']);
+                if($item_type=="Direct Items")
+                {
+                    $data['srp_number'] = "SRP2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.srp_number', 'LIKE', 'SRP2%')->count(),1); 
+                }
+                if($item_type=="Indirect Items")
+                {
+                    $data['srp_number'] = "SRP3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.srp_number', 'LIKE', 'SRP3%')->count(),1); 
+                }
+                // $mac_qty = $this->get_mac_qty($mac_item_data['invoice_item_id']);
+                // if($mac_qty)
+                // $data['quantity']=$mac_qty;
+                // else
+                $data['quantity']=$sip_data['quantity'];
+                $data['lot_id']= $sip_data['lot_id'];
+                $data['pr_item_id']= $sip_data['pr_item_id'];
+                $data['sip_id']=$sip_data['id'];
+                $data['status']= 1;
+                $data['created_at']= date('Y-m-d H:i:s');
+                $data['updated_at']= date('Y-m-d H:i:s');
+                $add[] = $this->inv_stock_from_production->insert_data($data);
+
+            }
+            if(count($add)==count($request->sip_id))
+            $request->session()->flash('success', "You have successfully added Stock return from production !");
+            else
+            $request->session()->flash('error', "You have failed to add Stock return from production !");
+            return redirect("inventory/Stock/FromProduction");
+        }
+        if($validator->errors()->all())
+        {
+            $request->session()->flash('error', "You have failed to add Stock return from production !");
+            return redirect("inventory/Stock/FromProduction");
+        }
+
     }
 
     public function StockTransfer()

@@ -107,26 +107,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($data['lot'] as $lot)
-                       @php  $mac_qty =$stock->get_mac_qty($lot['si_invoice_item_id']) @endphp
+                        @foreach($data['items'] as $item)
+                       @php  $mac_qty =$stock->get_mac_qty($item['si_invoice_item_id']) @endphp
                         <tr>
-                        <td><input type="checkbox" class="lot_id" id="lot_id" name="lot_id[]" value="{{$lot['id']}}"></td>
-                        <td>{{$lot['item_code']}}</td>
-                        <td>{{$lot['type_name']}}</td>
-                        <td>{{$lot['lot_number']}}</td>
-                        <td>@if($mac_qty) {{$mac_qty}} @else {{$lot['qty_accepted']}} @endif</td>
-                        <td>{{$lot['vendor_name']}}</td>
+                        <td><input type="checkbox" class="mac_item_id" id="mac_item_id" name="mac_item_id[]" value="{{$item['id']}}"></td>
+                        <td>{{$item['item_code']}}</td>
+                        <td>{{$item['type_name']}}</td>
+                        <td>{{$item['lot_number']}}</td>
+                        {{--<td>@if($mac_qty) {{$mac_qty}} @else {{$item['qty_accepted']}} @endif</td>--}}
+                        <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
+                        <td>{{$item['vendor_name']}}</td>
                         </tr>
                         @endforeach                    
                         
                     </tbody>
                 </table>
                 <div class="box-footer clearfix">
-                {{ $data['lot']->appends(request()->input())->links() }}
+                {{ $data['items']->appends(request()->input())->links() }}
             </div> 
             <br/>
            <div class="form-devider"></div>
-            @if(count($data['lot'])>0)
+            @if(count($data['items'])>0)
                 <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                         <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>

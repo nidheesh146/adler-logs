@@ -101,8 +101,9 @@
 			<table class="table table-bordered mg-b-0" id="example1">
 				<thead>
 					<tr>
-						<th>Lot No:</th>
-                        <th>Item Code:</th>
+						<th>Lot No</th>
+                        <th>Item Code</th>
+                        <th>TYPE</th>
 						<th>Invoice No.</th>
 						<th>Invoice Qty</th>
 						<th>Supplier</th>
@@ -120,6 +121,7 @@
 					<tr>
 						<td>{{$datas['lot_number']}}</td>
                         <td>{{$datas['item_code']}}</td>
+                        <td>{{$datas['type_name']}}</td>
 						<td>{{$datas['invoice_number']}}</td>
 						<td>{{$datas['inv_odr_qty']}}</td>
 						<td>{{$datas['vendor_id']}}-{{$datas['vendor_name']}}</td>

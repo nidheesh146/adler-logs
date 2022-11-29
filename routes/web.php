@@ -183,10 +183,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/stock/issueToProduction', 'StockController@issueToProduction');
     Route::get('inventory/Stock/ToProduction/{id}/item', 'StockController@StockToProductionAddItem');
     Route::get('inventory/Stock/ToProduction/delete/{id}', 'StockController@StockToProductionDelete');
-
+    Route::post('inventory/stock-ToProduction-edit', 'StockController@StockToProductionEdit');
+    Route::get('getSingleSIP', 'StockController@getSingleSIP');
      //Stock From Production
      Route::get('inventory/Stock/FromProduction', 'StockController@StockFromProduction');
-     Route::get('inventory/Stock/FromProduction-add/{id?}', 'StockController@StockFromProductionAdd');
+     Route::get('inventory/Stock/FromProduction-add', 'StockController@StockFromProductionAdd');
+     Route::post('inventory/stock/returnFromProduction', 'StockController@returnFromProduction');
      Route::get('inventory/Stock/FromProduction/{id}/item', 'StockController@StockFromProductionAddItem');
 
       //Stock transfer
