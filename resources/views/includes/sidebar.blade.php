@@ -3,7 +3,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
-     // echo $Action;
+      //echo $Action;
 @endphp
   <div class="az-sidebar">
     <div class="az-sidebar-header">
@@ -56,7 +56,7 @@
         
 
         <li class="nav-item @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','LotAllocation.addLotAllocation','LotAllocation.lotAllocation','MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MAC.MACAddItemInfo','MAC.MAClist','MAC.MACAdd',
-        'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.RMRNlist','MRD.RMRNAdd','Stock.StockToProduction','Stock.StockToProductionAdd','MAC.WOAAdd','MRD.WORAdd','Stock.StockFromProduction','Stock.StockFromProductionAdd'])){{'active show'}} @endif ">
+        'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.RMRNlist','MRD.RMRNAdd','Stock.StockToProduction','Stock.StockToProductionAdd','MAC.WOAAdd','MRD.WORAdd','Stock.StockFromProduction','Stock.StockFromProductionAdd','Stock.StockTransfer','Stock.StockTransferAdd'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub">
             <i class="fas fa-boxes" style="font-size:19px"></i>Inventory</a>
             
@@ -70,7 +70,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/receipt-report')}}" class="nav-sub-link">MRR/SRR</a></li>  
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockFromProduction','Stock.StockFromProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/FromProduction')}}" class="nav-sub-link">Stock Return From Production</a></li>
-            <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  
+            <li class="nav-sub-item  @if(in_array($Action,['Stock.StockTransfer','Stock.StockTransferAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  
             
           </ul>
         </li> 

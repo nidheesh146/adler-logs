@@ -12,6 +12,7 @@ use App\Models\PurchaseDetails\inv_miq_item;
 use App\Models\PurchaseDetails\inv_mac_item;
 use App\Models\PurchaseDetails\inv_stock_to_production;
 use App\Models\PurchaseDetails\inv_stock_from_production;
+use App\Models\PurchaseDetails\inv_stock_transfer_order;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 
@@ -27,6 +28,7 @@ class StockController extends Controller
         $this->inv_lot_allocation = new inv_lot_allocation;
         $this->inv_stock_to_production = new inv_stock_to_production;
         $this->inv_stock_from_production = new inv_stock_from_production;
+        $this->inv_stock_transfer_order = new inv_stock_transfer_order;
     }
     public function StockToProduction(Request $request)
     {
@@ -173,8 +175,11 @@ class StockController extends Controller
 
     public function StockToProductionDelete(Request $request,$id)
     {
-        $this->inv_stock_to_production->deleteData(['id' => $id]);
+        $delete = $this->inv_stock_to_production->deleteData(['id' => $id]);
+        if($delete)
         $request->session()->flash('success', "You have successfully deleted Stock issue to production !");
+        else
+        $request->session()->flash('error', "You have failed to delete Stock issue to production !");
         return redirect("inventory/Stock/ToProduction");
     }
     
@@ -238,11 +243,11 @@ class StockController extends Controller
                 $item_type = $this->get_item_type($sip_data['pr_item_id']);
                 if($item_type=="Direct Items")
                 {
-                    $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SRP2%')->count(),1); 
+                    $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2%')->count(),1); 
                 }
                 if($item_type=="Indirect Items")
                 {
-                    $data['sir_number'] = "SIR3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SRP3%')->count(),1); 
+                    $data['sir_number'] = "SIR3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3%')->count(),1); 
                 }
                 // $mac_qty = $this->get_mac_qty($mac_item_data['invoice_item_id']);
                 // if($mac_qty)
@@ -272,21 +277,173 @@ class StockController extends Controller
 
     }
 
-    public function StockTransfer()
+    public function StockFromProductionDelete(Request $request,$id)
     {
-        return view('pages.inventory.stock.stock-transfer');
+        $delete = $this->inv_stock_from_production->deleteData(['id' => $id]);
+        if($delete)
+        $request->session()->flash('success', "You have successfully deleted Stock return from production !");
+        else
+        $request->session()->flash('error', "You have failed to delete Stock return from production !");
+        return redirect("inventory/Stock/FromProduction");
+    }
+    public function getSingleSIR(Request $request)
+    {
+        $sir = inv_stock_from_production::select('inv_stock_from_production.*','inventory_rawmaterial.item_code','inv_unit.unit_name')
+                                ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_from_production.pr_item_id')
+                                ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                ->where('inv_stock_from_production.id','=', $request->sir_id)->first();
+        return $sir;
+    }
+    public function StockFromProductionEdit(Request $request)
+    {
+        $validation['quantity'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all())
+        {
+            $data['quantity'] = $request->quantity;
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            $update = $this->inv_stock_from_production->update_data(['id' => $request->sirId],$data);
+            if($update)
+            $request->session()->flash('success', "You have successfully updated Stock return from production !");
+            else
+            $request->session()->flash('error', "Stock return from production updation failed!");
+            return redirect("inventory/Stock/FromProduction");
+        }
+        if($validator->errors()->all())
+        {
+            $request->session()->flash('error', "Stock return from production updation failed!");
+            return redirect("inventory/Stock/FromProduction");
+        }
+    }
+
+    public function StockTransfer(Request $request)
+    {
+        $condition = [];
+        if($request)
+        {
+            if ($request->sto_number) {
+                $condition[] = ['inv_stock_transfer_order.sto_number','like', '%' . $request->sto_number . '%'];
+            }
+            if ($request->lot_number) {
+                $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
+            }
+            if ($request->item_code) {
+                $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+            }
+            if($request->supplier)
+            {
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+           
+        }
+        $data['sto'] =$this->inv_stock_transfer_order->get_all_data($condition);
+        return view('pages.inventory.stock.stock-transfer',compact('data'));
     }
     public function StockTransferAdd(Request $request)
     {
-        if($request->id){
-            $edit=1;
-            return view('pages.inventory.stock.stock-transfer-add',compact('edit'));
+        $condition = [];
+        if($request)
+        {
+            if ($request->lot_number) {
+                $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
+            }
+            if ($request->item_code) {
+                $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+            }
+            if($request->supplier)
+            {
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+           
         }
-        else
-        return view('pages.inventory.stock.stock-transfer-add');
+        $data['items'] =$this->inv_stock_from_production->getSIR_Not_In_StockTransferOrder($condition);
+        return view('pages.inventory.stock.stock-transfer-add',compact('data'));
     }
-    public function StockTransferAddItem()
+    public function transferOrder(Request $request)
     {
-        return view('pages.inventory.stock.stock-transfer-item');
+        $validation['sir_id'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all())
+        {
+            foreach($request->sir_id as $sir_id)
+            {
+                //$lot_data = $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_id]);
+                $sir_data = inv_stock_from_production::select('*')->where('id','=',$sir_id)->first();
+               // print_r(json_encode($lot_data));exit;
+                $item_type = $this->get_item_type($sir_data['pr_item_id']);
+                if($item_type=="Direct Items")
+                {
+                    $data['sto_number'] = "STO2-".$this->po_num_gen(DB::table('inv_stock_transfer_order')->where('inv_stock_transfer_order.sto_number', 'LIKE', 'STO2%')->count(),1); 
+                }
+                if($item_type=="Indirect Items")
+                {
+                    $data['sto_number'] = "STO3-" . $this->po_num_gen(DB::table('inv_stock_transfer_order')->where('inv_stock_transfer_order.sto_number', 'LIKE', 'STO3%')->count(),1); 
+                }
+                // $mac_qty = $this->get_mac_qty($mac_item_data['invoice_item_id']);
+                // if($mac_qty)
+                // $data['quantity']=$mac_qty;
+                // else
+                $data['quantity']=$sir_data['quantity'];
+                $data['lot_id']= $sir_data['lot_id'];
+                $data['pr_item_id']= $sir_data['pr_item_id'];
+                $data['sir_id']=$sir_data['id'];
+                $data['status']= 1;
+                $data['created_at']= date('Y-m-d H:i:s');
+                $data['updated_at']= date('Y-m-d H:i:s');
+                $add[] = $this->inv_stock_transfer_order->insert_data($data);
+
+            }
+            if(count($add)==count($request->sir_id))
+            $request->session()->flash('success', "You have successfully added Stock Transfer Order !");
+            else
+            $request->session()->flash('error', "You have failed to add  Stock Transfer Order !");
+            return redirect("inventory/Stock/transfer");
+        }
+        if($validator->errors()->all())
+        {
+            $request->session()->flash('error', "You have failed to add Stock Transfer Order !");
+            return redirect("inventory/Stock/transfer-add");
+        }
     }
+    public function getSingleSTO(Request $request)
+    {
+        $sto = inv_stock_transfer_order::select('inv_stock_transfer_order.*','inventory_rawmaterial.item_code','inv_unit.unit_name')
+                                ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_transfer_order.pr_item_id')
+                                ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                ->where('inv_stock_transfer_order.id','=', $request->sto_id)->first();
+        return $sto;
+    }
+    public function StockTransferEdit(Request $request)
+    {
+        $validation['quantity'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all())
+        {
+            $data['quantity'] = $request->quantity;
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            $update = $this->inv_stock_transfer_order->update_data(['id' => $request->stoId],$data);
+            if($update)
+            $request->session()->flash('success', "You have successfully updated Stock transfer order !");
+            else
+            $request->session()->flash('error', "Stock transfer Order updation failed!");
+            return redirect("inventory/Stock/transfer");
+        }
+        if($validator->errors()->all())
+        {
+            $request->session()->flash('error', "Stock transfer order updation failed!");
+            return redirect("inventory/Stock/transfer");
+        }
+    }
+    public function StockTransferDelete(Request $request,$id)
+    {
+        $delete = $this->inv_stock_transfer_order->deleteData(['id' => $id]);
+        if($delete)
+        $request->session()->flash('success', "You have successfully deleted Stock transfer Order!");
+        else
+        $request->session()->flash('error', "You have failed to delete Stock transfer Order !");
+        return redirect("inventory/Stock/transfer");
+    }
+
 }

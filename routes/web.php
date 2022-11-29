@@ -181,20 +181,25 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/Stock/ToProduction', 'StockController@StockToProduction');
     Route::get('inventory/Stock/ToProduction-add', 'StockController@StockToProductionAdd');
     Route::post('inventory/stock/issueToProduction', 'StockController@issueToProduction');
-    Route::get('inventory/Stock/ToProduction/{id}/item', 'StockController@StockToProductionAddItem');
     Route::get('inventory/Stock/ToProduction/delete/{id}', 'StockController@StockToProductionDelete');
     Route::post('inventory/stock-ToProduction-edit', 'StockController@StockToProductionEdit');
     Route::get('getSingleSIP', 'StockController@getSingleSIP');
      //Stock From Production
-     Route::get('inventory/Stock/FromProduction', 'StockController@StockFromProduction');
-     Route::get('inventory/Stock/FromProduction-add', 'StockController@StockFromProductionAdd');
-     Route::post('inventory/stock/returnFromProduction', 'StockController@returnFromProduction');
-     Route::get('inventory/Stock/FromProduction/{id}/item', 'StockController@StockFromProductionAddItem');
+    Route::get('inventory/Stock/FromProduction', 'StockController@StockFromProduction');
+    Route::get('inventory/Stock/FromProduction-add', 'StockController@StockFromProductionAdd');
+    Route::post('inventory/stock/returnFromProduction', 'StockController@returnFromProduction');
+    Route::get('inventory/Stock/FromProduction/delete/{id}', 'StockController@StockFromProductionDelete');
+    Route::post('inventory/stock-FromProduction-edit', 'StockController@StockFromProductionEdit');
+    Route::get('getSingleSIR', 'StockController@getSingleSIR');
+    
 
       //Stock transfer
       Route::get('inventory/Stock/transfer', 'StockController@StockTransfer');
-      Route::get('inventory/Stock/transfer-add/{id?}', 'StockController@StockTransferAdd');
-      Route::get('inventory/Stock/transfer/{id}/item', 'StockController@StockTransferAddItem');
+      Route::get('inventory/Stock/transfer-add', 'StockController@StockTransferAdd');
+      Route::post('inventory/stock/transfer-order', 'StockController@transferOrder');
+      Route::get('inventory/Stock/transfer/delete/{id}', 'StockController@StockTransferDelete');
+      Route::post('inventory/stock-transfer-edit', 'StockController@StockTransferEdit');
+      Route::get('getSingleSTO', 'StockController@getSingleSTO');
 
     // suppliers
     // Route::get('inventory/terms-and-conditions-list','TermsconditionsController@list_terms_conditions');

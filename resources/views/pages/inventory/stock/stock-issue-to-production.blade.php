@@ -200,6 +200,7 @@
             var sip_id = $(this).attr('sipId');
             $('.quantity').val('');
             $('.sip_Id').val('');
+            $('#quantity-error').empty();
             $.ajax ({
                     type: 'GET',
                     url: "{{url('getSingleSIP')}}",

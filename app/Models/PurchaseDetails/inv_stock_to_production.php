@@ -34,6 +34,7 @@ class inv_stock_to_production extends Model
         ->leftjoin('inv_supplier', 'inv_supplier.id', '=','inv_final_purchase_order_master.supplier_id' )
         ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
         ->where($condition)
+        ->where('inv_stock_to_production.status','=',1)
         ->orderby('inv_stock_to_production.id','desc')
         ->paginate(15);
     }
@@ -61,6 +62,7 @@ class inv_stock_to_production extends Model
                 ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_lot_allocation.po_id')
                 ->leftjoin('inv_supplier', 'inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
                 ->where($condition)
+                ->where('inv_stock_to_production.status','=',1)
                 ->groupBy('inv_mac_item.id')
                 ->whereNotIn('inv_stock_to_production.id',function($query) {
 
