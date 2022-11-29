@@ -185,8 +185,8 @@ class StockController extends Controller
         $condition = [];
         if($request)
         {
-            if ($request->sip_number) {
-                $condition[] = ['inv_stock_to_production.sip_number','like', '%' . $request->sip_number . '%'];
+            if ($request->sir_number) {
+                $condition[] = ['inv_stock_from_production.sir_number','like', '%' . $request->sir_number . '%'];
             }
             if ($request->lot_number) {
                 $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
@@ -200,7 +200,7 @@ class StockController extends Controller
             }
            
         }
-        $data['srp'] =$this->inv_stock_from_production->get_all_data($condition);
+        $data['sir'] =$this->inv_stock_from_production->get_all_data($condition);
         return view('pages.inventory.stock.stock-from-production',compact('data'));
     }
     public function StockFromProductionAdd(Request $request)
@@ -238,11 +238,11 @@ class StockController extends Controller
                 $item_type = $this->get_item_type($sip_data['pr_item_id']);
                 if($item_type=="Direct Items")
                 {
-                    $data['srp_number'] = "SRP2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.srp_number', 'LIKE', 'SRP2%')->count(),1); 
+                    $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SRP2%')->count(),1); 
                 }
                 if($item_type=="Indirect Items")
                 {
-                    $data['srp_number'] = "SRP3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.srp_number', 'LIKE', 'SRP3%')->count(),1); 
+                    $data['sir_number'] = "SIR3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SRP3%')->count(),1); 
                 }
                 // $mac_qty = $this->get_mac_qty($mac_item_data['invoice_item_id']);
                 // if($mac_qty)

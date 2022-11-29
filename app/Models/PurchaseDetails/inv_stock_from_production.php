@@ -21,7 +21,7 @@ class inv_stock_from_production extends Model
 
     function get_all_data($condition)
     {
-        return $this->select(['inv_stock_from_production.id','inv_stock_from_production.srp_number','inv_stock_to_production.quantity','inv_supplier.vendor_name',
+        return $this->select(['inv_stock_from_production.id','inv_stock_from_production.sir_number','inv_stock_to_production.quantity','inv_supplier.vendor_name',
             'inv_stock_to_production.created_at','inv_lot_allocation.lot_number','inventory_rawmaterial.item_code','inv_item_type.type_name','inv_unit.unit_name'])
         ->leftjoin('inv_stock_to_production','inv_stock_to_production.id','=','inv_stock_from_production.sip_id')
         ->leftjoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_stock_from_production.lot_id')
