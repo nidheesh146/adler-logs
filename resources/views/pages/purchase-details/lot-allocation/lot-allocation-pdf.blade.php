@@ -31,7 +31,7 @@
             </table>
             <table  border='1' style="width:32%;float:left;margin-left:10px;">
                 <tr>
-                    <th>MATERIAL CODE</th>
+                    <th>ITEM CODE</th>
                 </tr>
                 <tr style="height:200px;">
                     <td><br/>{{$lot['item_code']}}<br/><br/><br/></td>

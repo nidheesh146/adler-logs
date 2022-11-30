@@ -183,7 +183,7 @@
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Quantity rejected </label>
-                                        <input type="text"  value="0" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Qty Rejected">
+                                        <input type="text"  value="0" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Qty Rejected" readonly>
                                     </div>
                                    
                                         <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3 rejobj">
@@ -218,18 +218,18 @@
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label> MRR Number </label>
-                                        <input type="text"  class="form-control" value="" id="mrr_no" name="mrr_no" placeholder="MRR Number">
+                                        <input type="text"  class="form-control" value="" id="mrr_no" name="mrr_no" placeholder="MRR Number" readonly>
                                     </div>
     
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label> MRR Date </label>
-                                        <input type="date"  class="form-control" value="" id="mrr_date" name="mrr_date" placeholder="MRR Date">
+                                        <input type="date"  class="form-control" value="" id="mrr_date" name="mrr_date" placeholder="MRR Date" readonly>
                                     </div>
     
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                    <!-- <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Invoice rate <span id="inv_rate"></span> </label>
                                         <input type="text" readonly class="form-control" value="" name="invoice_rate" id="invoice_rate" placeholder="Invoice rate">
-                                    </div>
+                                    </div> -->
                                     <!-- <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Currency *</label>
                                         <select class="form-control" name="currency" id="currency">
@@ -252,13 +252,13 @@
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label> Test Report Number </label>
-                                        <input type="text" class="form-control" value="" name="test_report_no" placeholder="Test Report Number">
+                                        <input type="text" class="form-control" value="" name="test_report_no" placeholder="Test Report Number" readonly>
                                     </div>
 
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label> Test Report Date </label>
-                                        <input type="date" class="form-control"value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date">
+                                        <input type="date" class="form-control"value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date" readonly>
                                     </div>
 
                                     <!-- form-group -->
