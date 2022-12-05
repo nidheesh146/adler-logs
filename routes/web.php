@@ -158,7 +158,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/find-miq-info', 'MACController@find_miq_info');
     Route::get('inventory/MAC-delete/{id}', 'MACController@mac_delete');
 
-    Route::get('inventory/WOA-add', 'MACController@WOAAdd');
+    Route::get('inventory/WOA-add/{id?}', 'MACController@WOAAdd');
+    Route::post('inventory/WOA-add/{id?}', 'MACController@WOAAdd');
    
     // MRD
     Route::get('inventory/MRD', 'MRDController@MRDlist');
@@ -170,6 +171,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/MRD-delete/{id}', 'MRDController@mrd_delete');
 
     Route::get('inventory/WOR-add/{id?}', 'MRDController@WORAdd');
+    Route::post('inventory/WOR-add/{id?}', 'MRDController@WORAdd');
 
     //MRMD
     Route::get('inventory/RMRN', 'MRDController@RMRNlist');

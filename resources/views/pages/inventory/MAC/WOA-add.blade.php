@@ -5,7 +5,7 @@
         <div class="container" data-select2-id="9">
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
-                    <span><a href="{{ url('inventory/supplier-invoice') }}"> Work Order Acceptance</a></span>
+                    <span><a href="{{ url('inventory/MAC') }}"> Work Order Acceptance</a></span>
                     <span>@if(!empty($edit)) Edit @else Add @endif Work Order Acceptance Info</span>
                 </div>
                 <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($edit)) Edit @else Add @endif Work Order Acceptance Info
@@ -45,7 +45,7 @@
                         {{ csrf_field() }}
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
-                            <label>Invoice number *<span class="spinner-border spinner-button spinner-border-sm"
+                            <label>MIQ Number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
                             <select class="form-control miq_number" name="miq_number" @if(!empty($edit['mac'])) disabled @endif>
                             @if(!empty($edit['mac']))
@@ -204,7 +204,7 @@
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/find-miq-no') }}",
+          url: "{{ url('inventory/find-miq-no') }}?type=wo",
           processResults: function (data) {
 
             return { results: data };

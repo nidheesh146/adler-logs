@@ -902,6 +902,11 @@ class PurchaseController extends Controller
                 $data['created_by'] = config('user')['user_id'];
                 $data['created_at'] = date('Y-m-d H:i:s');
                 $data['updated_at'] = date('Y-m-d H:i:s');
+                if($request->order_type=='wo')
+                $data['type'] = 'WO';
+                else
+                $data['type'] = 'PO';
+
                 if($request->supplier){
                     $data['supplier_id'] = inv_supplier::where('vendor_name', 'like', '%' . $request->supplier . '%')->pluck('id')->first();
                 }
@@ -934,6 +939,7 @@ class PurchaseController extends Controller
             if($request->supplier || $request->po_no)
             {
                 if ($request->supplier) {
+    
                     $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
                     $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
                 }
@@ -941,6 +947,17 @@ class PurchaseController extends Controller
                     $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $request->po_no . '%'];
                     $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
                     
+                }
+                if($request->order_type)
+                {
+                    if($request->order_type=='wo')
+                    {
+                        $condition1[] = ['inv_final_purchase_order_master.type', '=', 'WO'];
+                    }
+                    else
+                    {
+                        $condition1[] = ['inv_final_purchase_order_master.type', '=', 'PO'];
+                    }
                 }
                 $po_data = $this->inv_final_purchase_order_master->get_purchase_master_list_not_in_invoice($condition1);
                 //print_r(json_encode($po_data));exit;
@@ -995,7 +1012,13 @@ class PurchaseController extends Controller
         $condition1 = [];
         
         if ($request->order_type) {
-            $condition1[] = ['inv_final_purchase_order_master.type', 'like', '%' .$request->order_type . '%'];
+            if($request->order_type=='wo')
+            $condition1[] = ['inv_supplier_invoice_master.type', '=', 'WO'];
+            else
+            $condition1[] = ['inv_supplier_invoice_master.type', '=', 'PO'];
+        }
+        if (!$request->order_type) {
+            $condition1[] = ['inv_supplier_invoice_master.type', '=', 'PO'];
         }
 
         if ($request->po_no) {

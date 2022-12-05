@@ -44,6 +44,14 @@ class MRDController extends Controller
             {
                 $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
             }
+            if($request->order_type)
+            {  
+                $condition[] = ['inv_supplier_invoice_master.type','=',  strtoupper($request->order_type)];
+            }
+            if(!$request->order_type)
+            {  
+                $condition[] = ['inv_supplier_invoice_master.type','=', 'PO'];
+            }
             
             if ($request->from) {
                 $condition[] = ['inv_mrd.mrd_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
@@ -52,7 +60,10 @@ class MRDController extends Controller
             $data= $this->inv_mrd->get_all_data($condition);
         }
         else
-        $data = $this->inv_mrd->get_all_data($condition=null);
+        {
+            $condition[] = ['inv_supplier_invoice_master.type','=', 'PO'];
+            $data = $this->inv_mrd->get_all_data($condition);
+        }
         //$data = $this->inv_mrd->get_all_data([]);
         return view('pages.inventory.MRD.MRD-list',compact('data'));
     }
@@ -197,7 +208,7 @@ class MRDController extends Controller
     {
         if ($request->q) {
             $condition[] = ['inv_miq.miq_number', 'like', '%' . strtoupper($request->q) . '%'];
-           
+            $condition[] = ['inv_supplier_invoice_master.type','=',strtoupper($request->type)];
             $data = $this->inv_miq->find_miq_num_for_mrd($condition);
             if (!empty($data[0])) {
                 return response()->json($data, 200);
@@ -219,10 +230,87 @@ class MRDController extends Controller
         return view('pages.inventory.RMRN.RMRN-add');
     }
 
-    public function WORAdd()
+    public function WORAdd(Request $request)
     {
+        if($request->isMethod('post'))
+        {
+            $validation['mrd_date'] = ['required','date'];
+            $validation['miq_number'] = ['required'];
+            $validation['created_by'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                if(!$request->id)
+                {
+                    $item_type = $this->get_item_type($request->miq_number);
+                    if($item_type=="Direct Items"){
+                        $Data['mrd_number'] = "WOR2-".$this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR2%')->count(),1); 
+                    }
+                    if($item_type=="Indirect Items"){
+                        $Data['mrd_number'] = "WOR3-" . $this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR3%')->count(),1); 
+                    }
+                    $Data['mrd_date'] = date('Y-m-d', strtotime($request->mrd_date));
+                    $Data['miq_id'] = $request->miq_number;
+                    $Data['created_by']= $request->created_by;
+                    $Data['status']=1;
+                    $Data['created_at'] =date('Y-m-d H:i:s');
+                    $Data['updated_at'] =date('Y-m-d H:i:s');
+                    $add_id = $this->inv_mrd->insert_data($Data);
+                    $miq_items = inv_miq_item_rel::select('inv_miq_item_rel.item','inv_miq_item.item_id')
+                                ->leftJoin('inv_miq_item','inv_miq_item.id','=','inv_miq_item_rel.item')
+                                ->where('master','=',$request->miq_number)->get();
+                    foreach($miq_items as $item){
+                        $dat=[
+                            'miq_item_id'=>$item->item,
+                            'item_id'=>$item->item_id,
+                            'status'=>1,
+                            'created_at'=>date('Y-m-d H:i:s'),
+                            'updated_at'=>date('Y-m-d H:i:s')
+
+                        ];
+                        $item_id = $this->inv_mrd_item->insert_data($dat);
+                        $dat2 =[
+                            'master'=>$add_id,
+                            'item'=>$item_id,
+                        ];
+                        $rel =DB::table('inv_mrd_item_rel')->insert($dat2);
+                    }
+                    
+                    if($add_id && $item_id && $rel)
+                        $request->session()->flash('success', "You have successfully created a MRD !");
+                    else
+                        $request->session()->flash('error', "MRD creation is failed. Try again... !");
+                    return redirect('inventory/WOR-add/'.$add_id);
+                }
+                else
+                {
+                    //echo $request->created_by;exit;
+                        $data['mrd_date'] = date('Y-m-d', strtotime($request->mrd_date));
+                        $data['created_by']= $request->created_by;
+                        $data['updated_at'] =date('Y-m-d H:i:s');
+                        $update = $this->inv_mrd->update_data(['id'=>$request->id],$data);
+                    if($update)
+                        $request->session()->flash('success', "You have successfully updated a MRD !");
+                    else
+                        $request->session()->flash('error', "MRD updation is failed. Try again... !");
+                    return redirect('inventory/WOR-add/'.$request->id);
+                }
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('inventory/WOR-add')->withErrors($validator)->withInput();
+            }
+        }
         $condition1[] = ['user.status', '=', 1];
         $data['users'] = $this->User->get_all_users($condition1);
+
+        if($request->id){
+            $edit['mrd'] = $this->inv_mrd->find_mrd_data(['inv_mrd.id' => $request->id]);
+
+            $edit['items'] = $this->inv_mrd_item->get_items(['inv_mrd_item_rel.master' =>$request->id]);
+            return view('pages.inventory.MRD.WOR-add',compact('edit','data'));
+        }
+        else
         return view('pages.inventory.MRD.WOR-add',compact('data'));
     }
 

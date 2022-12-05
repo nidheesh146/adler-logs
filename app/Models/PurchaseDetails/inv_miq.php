@@ -44,7 +44,9 @@ class inv_miq extends Model
 
     function find_miq_num($condition)
     {
-        return $this->select(['inv_miq.miq_number as text','inv_miq.id'])->where($condition)
+        return $this->select(['inv_miq.miq_number as text','inv_miq.id'])
+        ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
+        ->where($condition)
         ->whereNotIn('inv_miq.id',function($query) {
 
             $query->select('inv_mac.miq_id')->from('inv_mac');
@@ -65,7 +67,9 @@ class inv_miq extends Model
     }
     function find_miq_num_for_mrd($condition)
     {
-        return $this->select(['inv_miq.miq_number as text','inv_miq.id'])->where($condition)
+        return $this->select(['inv_miq.miq_number as text','inv_miq.id'])
+        ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
+        ->where($condition)
         ->whereNotIn('inv_miq.id',function($query) {
 
             $query->select('inv_mrd.miq_id')->from('inv_mrd');

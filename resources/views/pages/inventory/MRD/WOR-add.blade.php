@@ -45,7 +45,7 @@
                         {{ csrf_field() }}
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
-                            <label>Invoice number *<span class="spinner-border spinner-button spinner-border-sm"
+                            <label>MIQ Number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
                             <select class="form-control miq_number" name="miq_number" @if(!empty($edit['mrd'])) disabled @endif>
                             @if(!empty($edit['mrd']))
@@ -210,7 +210,7 @@
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/find-miq-for_mrd') }}",
+          url: "{{ url('inventory/find-miq-for_mrd') }}?type=wo",
           processResults: function (data) {
 
             return { results: data };

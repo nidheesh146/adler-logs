@@ -204,7 +204,7 @@
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/find-miq-no') }}",
+          url: "{{ url('inventory/find-miq-no') }}?type=po",
           processResults: function (data) {
 
             return { results: data };

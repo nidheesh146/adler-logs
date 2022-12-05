@@ -210,7 +210,7 @@
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/find-miq-for_mrd') }}",
+          url: "{{ url('inventory/find-miq-for_mrd') }}?type=po",
           processResults: function (data) {
 
             return { results: data };

@@ -18,7 +18,7 @@
 
 			  </div> -->
                 @if(request()->get('order_type')=='wo')
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/WOA-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> WOC</button> 
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/WOA-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> WOA</button> 
                 @else
 				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MAC-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> MAC</button> 
                 @endif

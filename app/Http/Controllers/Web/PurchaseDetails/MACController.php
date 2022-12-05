@@ -48,10 +48,21 @@ class MACController extends Controller
                 $condition[] = ['inv_mac.mac_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition[] = ['inv_mac.mac_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
             }
+            if($request->order_type)
+            {  
+                $condition[] = ['inv_supplier_invoice_master.type','=',  strtoupper($request->order_type)];
+            }
+            if(!$request->order_type)
+            {  
+                $condition[] = ['inv_supplier_invoice_master.type','=', 'PO'];
+            }
             $data= $this->inv_mac->get_all_data($condition);
         }
         else
-        $data = $this->inv_mac->get_all_data($condition=null);
+        {
+        $condition[] = ['inv_supplier_invoice_master.type','=', 'PO'];
+        $data = $this->inv_mac->get_all_data($condition);
+        }
         //$data = $this->inv_mac->get_all_data([]);
         return view('pages.inventory.MAC.MAC-list', compact('data'));
     }
@@ -174,8 +185,9 @@ class MACController extends Controller
     public function findMiqNumber(Request $request)
     {
         if ($request->q) {
+            //echo $request->type;exit;
             $condition[] = ['inv_miq.miq_number', 'like', '%' . strtoupper($request->q) . '%'];
-           
+            $condition[] = ['inv_supplier_invoice_master.type','=',strtoupper($request->type)];
             $data = $this->inv_miq->find_miq_num($condition);
             if (!empty($data[0])) {
                 return response()->json($data, 200);
@@ -327,10 +339,87 @@ class MACController extends Controller
         return redirect("inventory/MAC");
     }
 
-    public function WOAAdd()
+    public function WOAAdd(Request $request)
     {
+        if($request->isMethod('post'))
+        {
+            $validation['mac_date'] = ['required','date'];
+            $validation['miq_number'] = ['required'];
+            $validation['created_by'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                if(!$request->id)
+                {
+                    $item_type = $this->get_item_type($request->miq_number);
+                    if($item_type=="Direct Items"){
+                        $Data['mac_number'] = "WOA2-".$this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA2%')->count(),1); 
+                    }
+                    if($item_type=="Indirect Items"){
+                        $Data['mac_number'] = "WOA3-" . $this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA3%')->count(),1); 
+                    }
+                    $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
+                    $Data['miq_id'] = $request->miq_number;
+                    $Data['created_by']= $request->created_by;
+                    $Data['status']=1;
+                    $Data['created_at'] =date('Y-m-d H:i:s');
+                    $Data['updated_at'] =date('Y-m-d H:i:s');
+                    $add_id = $this->inv_mac->insert_data($Data);
+                    $miq_items = inv_miq_item_rel::select('inv_miq_item_rel.item','inv_miq_item.item_id')
+                                ->leftJoin('inv_miq_item','inv_miq_item.id','=','inv_miq_item_rel.item')
+                                ->where('master','=',$request->miq_number)->get();
+                    foreach($miq_items as $item){
+                        $dat=[
+                            'miq_item_id'=>$item->item,
+                            'item_id'=>$item->item_id,
+                            'status'=>1,
+                            'created_at'=>date('Y-m-d H:i:s'),
+                            'updated_at'=>date('Y-m-d H:i:s')
+
+                        ];
+                        $item_id = $this->inv_mac_item->insert_data($dat);
+                        $dat2 =[
+                            'master'=>$add_id,
+                            'item'=>$item_id,
+                        ];
+                        $rel =DB::table('inv_mac_item_rel')->insert($dat2);
+                    }
+                    
+                    if($add_id && $item_id && $rel)
+                        $request->session()->flash('success', "You have successfully created a WOA !");
+                    else
+                        $request->session()->flash('error', "WOA creation is failed. Try again... !");
+                    return redirect('inventory/WOA-add/'.$add_id);
+                }
+                else
+                {
+                    $data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
+                    $data['created_by']= $request->created_by;
+                    $data['updated_at'] =date('Y-m-d H:i:s');
+                    $update = $this->inv_mac->update_data(['id'=>$request->id],$data);
+                    if($update)
+                        $request->session()->flash('success', "You have successfully updated a WOA !");
+                    else
+                        $request->session()->flash('error', "WOA updation is failed. Try again... !");
+                    return redirect('inventory/WOA-add/'.$request->id);
+                }
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('inventory/WOA-add')->withErrors($validator)->withInput();
+            }
+        }
+       
         $condition1[] = ['user.status', '=', 1];
         $data['users'] = $this->User->get_all_users($condition1);
+
+        if($request->id){
+            $edit['mac'] = $this->inv_mac->find_mac_data(['inv_mac.id' => $request->id]);
+
+            $edit['items'] = $this->inv_mac_item->get_items(['inv_mac_item_rel.master' =>$request->id]);
+            return view('pages.inventory.MAC.MAC-add',compact('edit','data'));
+        }
+        
         return view('pages.inventory.MAC.WOA-add',compact('data'));
     }
 }
