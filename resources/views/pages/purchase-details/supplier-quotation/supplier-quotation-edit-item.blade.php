@@ -185,7 +185,7 @@
                                     <input type="text"  class="form-control datepicker" name="committed_delivery_date" value="@if(!empty($data['get_item_single']['committed_delivery_date']))  {{date('d-m-Y',strtotime($data['get_item_single']['committed_delivery_date']))}}  @endif" >
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                    <label> Specification *</label>
+                                    <label> Specification </label>
                                     <textarea  class="form-control"  id="Specification" name="Specification" placeholder="Specification">{{$data['get_item_single']['supp_specification']}}</textarea>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -241,9 +241,9 @@
                       required: true,
                       number: true,
                     },
-                    Specification: {
-                        required: true,
-                    },
+                    // Specification: {
+                    //     required: true,
+                    // },
                     // Remarks: {
                     //   required: true,
                     // },

@@ -84,6 +84,10 @@
                                 <label>Receipt /LR Number</label>
                                 <input type="text"  class="form-control " name="unit" placeholder="Receipt /LR Number" >
                             </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Upload Receipt</label>
+                                <input type="file"  class="form-control " name="unit" placeholder="Receipt /LR Number" >
+                            </div><!-- form-group -->
                         </div> 
                       
 

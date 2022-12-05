@@ -961,7 +961,7 @@ class PurchaseController extends Controller
                                             ->where('inv_final_purchase_order_rel.master','=',$po['po_id'])
                                             ->get();
                 }
-               // print_r(json_encode($po_items));exit;
+               //print_r(json_encode($po_items));exit;
                 $data = [];
                 foreach($po_items as $po_item)
                 {
@@ -995,7 +995,7 @@ class PurchaseController extends Controller
         $condition1 = [];
         
         if ($request->order_type) {
-            $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', $request->order_type . '%'];
+            $condition1[] = ['inv_final_purchase_order_master.type', 'like', '%' .$request->order_type . '%'];
         }
 
         if ($request->po_no) {
@@ -1197,6 +1197,13 @@ class PurchaseController extends Controller
         $freight_charge = inv_purchase_req_quotation_supplier::where('quotation_id','=',$rq_id)->where('supplier_id','=',$supplierId)
                             ->pluck('freight_charge')->first();
          return $freight_charge;                   
+    }
+    public function find_currency_code($rq_id,$supplierId)
+    {
+        $currency = inv_purchase_req_quotation_item_supp_rel::where('quotation_id','=',$rq_id)->where('supplier_id','=',$supplierId)
+        ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id', '=', 'inv_purchase_req_quotation_item_supp_rel.currency')
+                            ->pluck('currency_code')->first();
+        return $currency;
     }
 
     public function getOrderItems(Request $request)

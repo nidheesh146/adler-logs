@@ -96,14 +96,16 @@
 					value="{{date('d-m-Y',strtotime($data['supplier_single']->quotation_date))}}" @endif>
 				</div>
 
-				<!-- form-group -->
-				<!-- <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-					<label>Contact</label>
-					<input type="text" name="contact" class="form-control" placeholder="Contact Number" 
-					@if(!empty($data['supplier_single']->contact_number))
-					    value="{{$data['supplier_single']->contact_number}}" 
-					@endif>
-				</div> -->
+				{{--<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <label> Currency *</label>
+                    <select class="form-control currency" name="currency">
+                        <option value="">--- select one ---</option>
+                        @foreach ($data["currency"] as $item)
+                        <option value="{{ $item['currency_id']}}" >{{ $item['currency_code'] }}</option>
+                        @endforeach
+                    </select>
+
+                </div>--}}
 				<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
 					<label>Transportation & Freight Charge</label>
 					<input type="text" name="freight_charge" class="form-control" placeholder="Transportation & Freight Charge" 

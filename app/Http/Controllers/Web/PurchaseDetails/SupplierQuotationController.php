@@ -158,7 +158,7 @@ class SupplierQuotationController extends Controller
             $validation['quantity'] = ['required'];
             $validation['rate'] = ['required'];
             $validation['discount'] = ['required'];
-            $validation['Specification'] = ['required'];
+           // $validation['Specification'] = ['required'];
             $validation['committed_delivery_date'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
@@ -222,7 +222,7 @@ class SupplierQuotationController extends Controller
             $supp_id  = $request->Supplier;
         }
   
-
+        $data["currency"] = $this->currency_exchange_rate->get_currency([]);
         $data['supplier'] = $this->inv_purchase_req_quotation_supplier->get_Item(['quotation_id'=>$request->rq_no]);
         $data['quotation']   = $this->inv_purchase_req_quotation->get_quotation_single(['quotation_id'=>$request->rq_no]);
         $data['supplier_single']= $this->inv_purchase_req_quotation_supplier->get_single_item(['inv_purchase_req_quotation_supplier.supplier_id'=>$supp_id,'inv_purchase_req_quotation_supplier.quotation_id'=>$rq_no]);

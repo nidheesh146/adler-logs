@@ -297,7 +297,14 @@ class RowMaterialController extends Controller
             if ($key > 1 &&  $excelsheet[1]) 
             {
                 $item_id = DB::table('inventory_rawmaterial')->where('item_code','=' ,$excelsheet[2])->pluck('id')->first();
-                $supplier_id = DB::table('inv_supplier')->where('vendor_id','=' ,$excelsheet[6])->pluck('id')->first();
+                // if($item_id)
+                // {
+                //     $res= DB::table('inventory_rawmaterial')->where('id', $item_id)
+                //     ->update([
+                //         'hsn_code' => $excelsheet[3]
+                //         ]);
+                // }
+                 $supplier_id = DB::table('inv_supplier')->where('vendor_id','=' ,$excelsheet[6])->pluck('id')->first();
                 $gst = DB::table('inventory_gst')->where('cgst',trim($excelsheet[9],"%")*100)->where('sgst',trim($excelsheet[10],"%")*100)->where('igst',trim($excelsheet[11],"%")*100)->pluck('id')->first();
                 $inv_supplier_itemrate =  DB::table('inv_supplier_itemrate')->select(['*'])->where('item_id', $item_id)->where('supplier_id', $supplier_id)->first();
                 $currency = DB::table('currency_exchange_rate')->where('currency_code',$excelsheet[12])->pluck('currency_id')->first();
@@ -319,7 +326,7 @@ class RowMaterialController extends Controller
 
                     ];
                     $res = DB::table('inv_supplier_itemrate')->insert($data);
-                }
+               }
             }
          
         }

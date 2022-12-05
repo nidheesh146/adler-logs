@@ -147,8 +147,8 @@
             From<br/>
             <span style="color:#1434A4;"><strong>ADLER HEALTHCARE PVT. LTD</strong></span>
             <p> Plot No-A1 MIDC, Sadavali(Devrukh),  Tal- Sangmeshwar, Dist -Ratnagiri ,  PIN-415804, Maharashtra, India<br/>
-            CIN : <br/>
-            Company GSTIN :</p>
+            CIN :U33125PN2020PTC195161 <br/>
+            Company GSTIN :27AAJCB3689C1J</p>
         </div>
         <div class="col4" style="float:right;">
             <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
@@ -169,15 +169,15 @@
                 <tr>
                     @if($type=='cancel')
                     <td >PO Date</td>
-                    <td>: {{date('d-m-Y',strtotime($final_purchase['po_date']))}}</td>
+                    <td>: {{date('d M y',strtotime($final_purchase['po_date']))}}</td>
                     @else
                     <td >Supplier Quotation Date</td>
-                    <td>: {{date('d-m-Y',strtotime($final_purchase['quotation_date']))}}</td>
+                    <td>: {{date('d M y',strtotime($final_purchase['quotation_date']))}}</td>
                     @endif
                 </tr>
                 <tr>
-                    {{--<td >Currency</td>
-                    <td>: {{$final_purchase['currency_code']}}</td>--}}
+                    <td >Currency</td>
+                    <td>: <?php echo( $fn->find_currency_code($final_purchase['rq_master_id'],$final_purchase['supplierId'])); ?></td>
                 </tr>
             </table>
         </div>
@@ -189,7 +189,7 @@
                 </tr>
                 <tr>
                     <td>@if($type=='cancel')POC @else PO @endif Date</td>
-                    <td>:@if($type=='cancel') {{date('d-m-Y',strtotime($final_purchase['updated_at']))}} @else {{date('d-m-Y',strtotime($final_purchase['po_date']))}} @endif</td>
+                    <td>:@if($type=='cancel') {{date('d M y',strtotime($final_purchase['updated_at']))}} @else {{date('d M y',strtotime($final_purchase['po_date']))}} @endif</td>
                 </tr>
                 <tr>
                     <td>Department</td>
@@ -213,7 +213,7 @@
         <table border="1">
             <tr>
                 <th rowspan="2">S.NO</th>
-                <th rowspan="2">
+                <th rowspan="2" style="width:10%;">
                     @if(str_starts_with($final_purchase['po_number'] , 'PO') ) HSN CODE 
                     @else
                     SAC CODE
@@ -226,9 +226,9 @@
                 <th rowspan="2">RATE</th>
                 <th rowspan="2">VALUE</th>
                 <th colspan="2">DISC</th>
-                <th colspan="2">IGST</th>
-                <th colspan="2">SGST/UTGST</th>
                 <th colspan="2">CGST</th>
+                <th colspan="2">SGST/UTGST</th>
+                <th colspan="2">IGST</th>
             </tr>
             <tr>
                 <th>%</th>
@@ -260,12 +260,12 @@
                 <td>{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['order_qty'])-(($item['rate']* $item['order_qty']*$item['discount'])/100);?>
                 <td>{{number_format((float)(($item['rate']* $item['order_qty']*$item['discount'])/100), 2, '.', '')}}</td>
-                <td>{{$item['igst']}}</td>
-                <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
-                <td>{{$item['sgst']}}</td>
-                <td>{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
                 <td>{{$item['cgst']}}</td>
                 <td>{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
+                <td>{{$item['sgst']}}</td>
+                <td>{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
+                <td>{{$item['igst']}}</td>
+                <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
                 <?php 
                 $total =$total+ $item['rate']* $item['order_qty'];
                 $total_discount = $total_discount+($item['rate']* $item['order_qty']*$item['discount'])/100;
@@ -281,8 +281,8 @@
     <div class="row4" style="border-bottom:solid 1px black;height:170px;">
         <div class="col41">
             <div class="remarks" style="">
-                @if($final_purchase['remarks'])
                 <strong>Remarks/Notes </strong><br/>
+                @if($final_purchase['remarks'])
                 {{$final_purchase['remarks']}}
                 @endif
             </div>
@@ -300,7 +300,7 @@
         <div class="col42">
             <div class="" style="height:50px;">
             </div>
-            <div class="supplier-accept" style="height:50px;">
+            <div class="supplier-accept" style="height:50px;margin-top:15px;">
                 <b>Supplier Acceptance</b>
             </div>
             <div class="supplier-accept" style="height:50px;">
@@ -326,7 +326,7 @@
                 </tr>
                 <tr>
                     <td style="width:160px">Transportation & Freight Charge</td>
-                    <td style="width:30px;"><?php $freight_charge = $fn->find_freight_charge($final_purchase['rq_master_id'],$final_purchase['supplierId']); ?>{{--$final_purchase['rq_master_id']}}:{{$final_purchase['supplierId']--}}</td>
+                    <td style="width:30px;">:<?php $freight_charge = $fn->find_freight_charge($final_purchase['rq_master_id'],$final_purchase['supplierId']); ?>{{--$final_purchase['rq_master_id']}}:{{$final_purchase['supplierId']--}}</td>
                     <td style="text-align:right;">{{number_format((float)($freight_charge), 2, '.', '')}}</td>
                 </tr>
                 <tr>
@@ -335,9 +335,9 @@
                     <td style="text-align:right;">{{number_format((float)($total-$total_discount+$freight_charge), 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:160px">Total IGST</td>
+                    <td style="width:160px">Total CGST</td>
                     <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
+                    <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
                 </tr>
                 <tr>
                     <td style="width:160px">Total SGST/UTGST</td>
@@ -345,9 +345,9 @@
                     <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:160px">Total CGST</td>
+                    <td style="width:160px">Total IGST</td>
                     <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
+                    <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
                 </tr>
                 <!-- <tr>
                     <td style="width:130px">Transportation & Freight Charge</td>
@@ -646,7 +646,7 @@
         <?= nl2br($terms_condition->terms_and_conditions);?>
     </div>
     <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
-    Adler Ref No :
+    
     </div>
     @endif
     @endif
