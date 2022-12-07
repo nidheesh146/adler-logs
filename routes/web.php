@@ -176,6 +176,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     //MRMD
     Route::get('inventory/RMRN', 'MRDController@RMRNlist');
     Route::get('inventory/RMRN-add/{id?}', 'MRDController@RMRNAdd');
+    Route::post('inventory/RMRN-add/{id?}', 'MRDController@RMRNAdd');
+    Route::get('inventory/RMRN/{id}/item', 'MRDController@RMRNAddItemInfo');
+    Route::post('inventory/RMRN/{id}/item', 'MRDController@RMRNAddItemInfo');
+    Route::get('inventory/RMRN-delete/{id}', 'MRDController@RMRNDelete');
+    Route::get('inventory/RMRN/pdf/{id}', 'MRDController@RMRNpdf');
+    Route::get('inventory/find-mrd', 'MRDController@find_mrd');
+    Route::get('inventory/find-mrd-info', 'MRDController@find_mrd_info');
     Route::get('inventory/receipt-report', 'MRDController@receiptReport');
     Route::get('inventory/receipt-report/1/report', 'MRDController@receiptReportPDF');
 

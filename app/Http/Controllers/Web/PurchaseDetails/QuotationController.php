@@ -53,8 +53,21 @@ class QuotationController extends Controller
 
       //  $data['reopen_supplier'] = $this->inv_purchase_req_quotation_supplier->inv_purchase_req_quotation_data(['inv_purchase_req_quotation_supplier.quotation_id'=>$id]);
         if($id){
-        $data['reopen_data_single'] = $this->inv_final_purchase_order_rel->singleGetData(['inv_final_purchase_order_rel.master'=>$id]);
-        $data['reopen_data'] = $this->inv_final_purchase_order_rel->getData(['inv_final_purchase_order_rel.master'=>$id]);
+            if ($request->prsr=='sr') 
+            {
+                $data['reopen_data_single'] = $this->inv_final_purchase_order_rel->singleGetData(['inv_final_purchase_order_rel.master'=>$id,'inv_final_purchase_order_master.type'=>'WO']);
+                $data['reopen_data'] = $this->inv_final_purchase_order_rel->getData(['inv_final_purchase_order_rel.master'=>$id, 'inv_final_purchase_order_master.type'=>'WO']);
+            }
+            else if($request->prsr=='pr') {
+                $data['reopen_data_single'] = $this->inv_final_purchase_order_rel->singleGetData(['inv_final_purchase_order_rel.master'=>$id, 'inv_final_purchase_order_master.type'=>'PO']);
+                $data['reopen_data'] = $this->inv_final_purchase_order_rel->getData(['inv_final_purchase_order_rel.master'=>$id,'inv_final_purchase_order_master.type'=>'PO']);
+            }
+            else
+            {
+                $data['reopen_data_single'] = $this->inv_final_purchase_order_rel->singleGetData(['inv_final_purchase_order_rel.master'=>$id, 'inv_final_purchase_order_master.type'=>'PO']);
+                $data['reopen_data'] = $this->inv_final_purchase_order_rel->getData(['inv_final_purchase_order_rel.master'=>$id,'inv_final_purchase_order_master.type'=>'PO']);
+            }
+            //print_r(json_encode($data['reopen_data']));exit;
         }
       
         $data['getdata'] = $this->inv_purchase_req_item->getdata($condition);

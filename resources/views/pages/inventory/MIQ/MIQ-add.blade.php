@@ -8,7 +8,7 @@
                     <span><a href="{{ url('inventory/supplier-invoice') }}">Material Inwards To Quarantine</a></span>
                     <span>@if(!empty($data['miq'])) Edit @else Add @endif Material Inwards To Quarantine</span>
                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($data['miq'])) Edit @else Add @endif Material Inwards To Quarantine
+                <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($data['miq'])) Edit @else Add @endif Material Inwards To Quarantine @if(!empty($data)) ({{$data['miq']->miq_number}}) @endif
 
                 </h4>
                 @foreach ($errors->all() as $errorr)

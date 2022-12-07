@@ -8,7 +8,7 @@
                     <span><a href="{{ url('inventory/supplier-invoice') }}"> Material Acceptance</a></span>
                     <span>@if(!empty($edit)) Edit @else Add @endif Material Acceptance Info</span>
                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($edit)) Edit @else Add @endif Material Acceptance Info
+                <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($edit)) Edit @else Add @endif Material Acceptance @if(!empty($edit)) ({{$edit['mac']->mac_number}}) @endif
 
                 </h4>
                 @foreach ($errors->all() as $errorr)

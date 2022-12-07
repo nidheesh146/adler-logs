@@ -110,7 +110,7 @@
                                         <div class="ss" style="float:left;width:150px; font-size:11px;">
                                             <span style="margin-left:25px;"><strong>{{$batchcard_data->ad_sp1}}</strong></span><br/>
                                             <!-- <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;"> -->
-                                            <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;">
+                                            <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;width:140px;">
                                             <br/>
                                             <small><span style="margin-left:26px;font-weight:550">{{$batchcard_data->sku_code}}</span></small>
                                             <br/>
@@ -252,7 +252,7 @@
                                         <div class="ss" style="float:left;width:150px; font-size:11px;">
                                             <span style="margin-left:25px;"><strong>{{$batchcard_data->ad_sp1}}</strong></span><br/>
                                             <!-- <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="width:90px;height:25px;margin-top:5px;"> -->
-                                            <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;">
+                                            <img src="data:image/png;base64,{{ base64_encode($sku_code_barcode)}}" style="margin-top:5px;width:140px;">
                                             <br/>
                                             <span style="margin-left:26px;"><small>{{$batchcard_data->sku_code}}</small></span>
                                             <br/>

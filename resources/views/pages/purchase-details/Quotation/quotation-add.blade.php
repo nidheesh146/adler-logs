@@ -21,11 +21,11 @@
 		<div class="az-content-body">
             <div class="az-content-breadcrumb"> 
                 <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">QUOTATION</a></span> 
-                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">  {{$id ? 'Quotation reopen ' :  "Add request for quotation" }} </a></span>
+                <span><a href="{{url('inventory/quotation')}}" style="color: #596881;">  {{($id) ? 'Quotation reopen ' :  "Add request for quotation" }} </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-               {{$id ? 'Quotation reopen ' :  "Add request for quotation" }}  @if($id) (RQ NO:  {{$data['reopen_data_single']['rq_no']}} , PO NO: {{$data['reopen_data_single']['po_number']}} ) @endif
+               {{($id) ? 'Quotation reopen ' :  "Add request for quotation" }}  @if($id && count($data['reopen_data'])>0) (RQ NO:  {{$data['reopen_data_single']['rq_no']}} , PO NO: {{$data['reopen_data_single']['po_number']}} ) @endif
                <div style="float: right;">
                     <div style="background-color:#B2BEB5;width:30px;height:30px;float:left;"></div>
                     <div style="font-size: 14px;float:left;margin-top:10px;">&nbsp;indicates Fixed rate Item</div>
@@ -103,7 +103,7 @@
 
                             <div class="table-responsive">
                                 {{-- <h4> Purchase Requisition Approved List </h4> --}}
-                                @if($id)
+                                @if($id && count($data['reopen_data'])>0)
                                 <div class="row">
                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
@@ -181,7 +181,7 @@
                                 </div>   
                                 <br/>
                                 <div class="form-devider"></div>
-                                @if(count($data['getdata'])>0)
+                                @if(count($data['getdata'])>0 || isset($data['reopen_data']))
                                     <div class="row">
                                         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                             <button type="submit" class="btn btn-primary btn-rounded submit-btn" style="float: right;" ><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
@@ -190,6 +190,7 @@
                                             </button>
                                         </div>
                                     </div>
+                                
                                 @endif
                             </div>
                         </form>

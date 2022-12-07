@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
+use PDF;
 use App\Models\PurchaseDetails\inv_miq;
 use App\Models\PurchaseDetails\inv_miq_item;
 use App\Models\PurchaseDetails\inv_miq_item_rel;
 use App\Models\PurchaseDetails\inv_mrd;
 use App\Models\PurchaseDetails\inv_mrd_item;
 use App\Models\PurchaseDetails\inv_mrd_item_rel;
+use App\Models\PurchaseDetails\inv_rmrn;
+use App\Models\PurchaseDetails\inv_rmrn_item;
+use App\Models\PurchaseDetails\inv_rmrn_item_rel;
 use App\Models\User;
 use App\Models\currency_exchange_rate;
 
@@ -25,6 +29,9 @@ class MRDController extends Controller
         $this->inv_mrd = new inv_mrd;
         $this->inv_mrd_item = new inv_mrd_item;
         $this->inv_mrd_item_rel = new inv_mrd_item_rel;
+        $this->inv_rmrn = new inv_rmrn;
+        $this->inv_rmrn_item = new inv_rmrn_item;
+        $this->inv_rmrn_item_rel = new inv_rmrn_item_rel;
         $this->User = new User;
         $this->currency_exchange_rate = new currency_exchange_rate;
     }
@@ -220,15 +227,9 @@ class MRDController extends Controller
             exit;
         }
     }
+    
 
-    public function RMRNlist()
-    {
-        return view('pages.inventory.RMRN.RMRN-list');
-    }
-    public function RMRNAdd()
-    {
-        return view('pages.inventory.RMRN.RMRN-add');
-    }
+   
 
     public function WORAdd(Request $request)
     {
@@ -313,6 +314,275 @@ class MRDController extends Controller
         else
         return view('pages.inventory.MRD.WOR-add',compact('data'));
     }
+    public function RMRNlist(Request $request)
+    {
+        $condition=[];
+        if($request)
+        {
+            if ($request->mrd_no) {
+                $condition[] = ['inv_mrd.mrd_number','like', '%' . $request->mrd_no . '%'];
+            }
+            if($request->supplier)
+            {
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+            
+            if ($request->from) {
+                $condition[] = ['inv_rmrn.rmrn_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition[] = ['inv_rmrn.rmrn_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
+            $data= $this->inv_rmrn->get_all_data($condition);
+        }
+        else
+        {
+            $data = $this->inv_rmrn->get_all_data($condition=null);
+        }
+        
+        return view('pages.inventory.RMRN.RMRN-list',compact('data'));
+    }
+    public function RMRNAdd(Request $request)
+    {
+        if($request->isMethod('post'))
+        {
+            $validation['rmrn_date'] = ['required','date'];
+            $validation['mrd_number'] = ['required'];
+            $validation['created_by'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                if(!$request->id)
+                {
+                    $item_type = $this->get_item_type($request->mrd_number);
+                    if($item_type=="Direct Items"){
+                        $Data['mrd_number'] = "RMRN2-".$this->po_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrd_number', 'LIKE', 'RMRN2%')->count(),1); 
+                    }
+                    if($item_type=="Indirect Items"){
+                        $Data['mrd_number'] = "RMRN3-" . $this->po_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrd_number', 'LIKE', 'RMRN3%')->count(),1); 
+                    }
+                    $Data['rmrn_date'] = date('Y-m-d', strtotime($request->rmrn_date));
+                    $Data['mrd_id'] = $request->mrd_number;
+                    $Data['created_by']= $request->created_by;
+                    $Data['status']=1;
+                    $Data['created_at'] =date('Y-m-d H:i:s');
+                    $Data['updated_at'] =date('Y-m-d H:i:s');
+                    $add_id = $this->inv_rmrn->insert_data($Data);
+                    $mrd_items = inv_mrd_item_rel::select('inv_mrd_item_rel.item','inv_mrd_item.item_id')
+                                ->leftJoin('inv_mrd_item','inv_mrd_item.id','=','inv_mrd_item_rel.item')
+                                ->where('master','=',$request->mrd_number)->get();
+                    foreach($mrd_items as $item){
+                        $dat=[
+                            'mrd_item_id'=>$item->item,
+                            'item_id'=>$item->item_id,
+                            //'status'=>1,
+                            'created_at'=>date('Y-m-d H:i:s'),
+                            'updated_at'=>date('Y-m-d H:i:s')
+
+                        ];
+                        $item_id = $this->inv_rmrn_item->insert_data($dat);
+                        $dat2 =[
+                            'master'=>$add_id,
+                            'item'=>$item_id,
+                        ];
+                        $rel =DB::table('inv_rmrn_item_rel')->insert($dat2);
+                    }
+                    
+                    if($add_id && $item_id && $rel)
+                        $request->session()->flash('success', "You have successfully created a RMRN !");
+                    else
+                        $request->session()->flash('error', "RMRN creation is failed. Try again... !");
+                    return redirect('inventory/RMRN-add/'.$add_id);
+                }
+                else
+                {
+                    //echo $request->created_by;exit;
+                        $data['rmrd_date'] = date('Y-m-d', strtotime($request->rmrd_date));
+                        $data['created_by']= $request->created_by;
+                        $data['updated_at'] =date('Y-m-d H:i:s');
+                        $update = $this->inv_rmrd->update_data(['id'=>$request->id],$data);
+                    if($update)
+                        $request->session()->flash('success', "You have successfully updated a RMRN !");
+                    else
+                        $request->session()->flash('error', "RMRN updation is failed. Try again... !");
+                    return redirect('inventory/RMRN-add/'.$request->id);
+                }
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('inventory/RMRN-add')->withErrors($validator)->withInput();
+            }
+        }
+        $condition1[] = ['user.status', '=', 1];
+        $data['users'] = $this->User->get_all_users($condition1);
+
+        if($request->id){
+            $edit['rmrn'] = $this->inv_rmrn->find_rmrn_data(['inv_rmrn.id' => $request->id]);
+
+            $edit['items'] = $this->inv_rmrn_item->get_items(['inv_rmrn_item_rel.master' =>$request->id]);
+            return view('pages.inventory.RMRN.RMRN-add',compact('edit','data'));
+        }
+        else
+        return view('pages.inventory.RMRN.RMRN-add',compact('data'));
+    }
+    public function find_mrd(Request $request)
+    {
+        if ($request->q) {
+            //echo $request->type;exit;
+            $condition[] = ['inv_mrd.mrd_number', 'like', '%' . strtoupper($request->q) . '%'];
+            
+            $data = $this->inv_mrd->find_mrd_not_in_rmrn($condition);
+            if (!empty($data[0])) {
+                return response()->json($data, 200);
+            } else {
+                return response()->json(['message' => 'item code is not valid'], 500);
+            }
+        } else {
+            echo $this->mrd_details($request->id, null);
+            exit;
+        }
+    }
+
+    public function find_mrd_info(Request $request)
+    {
+        if ($request->q) {
+            $condition[] = ['inv_mrd.mrd_number', 'like', '%' . strtoupper($request->q) . '%'];
+           
+            $data = $this->inv_mrd->find_mrd_not_in_rmrn($condition);
+            if (!empty($data[0])) {
+                return response()->json($data, 200);
+            } else {
+                return response()->json(['message' => 'item code is not valid'], 500);
+            }
+        } else {
+            echo $this->mrd_details($request->id, null);
+            exit;
+        }
+    }
+    public function mrd_details($id, $active = null)
+    {
+        $mrd = $this->inv_mrd->find_mrd_data(['inv_mrd.id' => $id]);
+
+        $inv_mrd_items = $this->inv_mrd_item->get_items_for_rmrn(['inv_mrd_item_rel.master' => $id]);
+        // if ($active) {
+        //     $inv_mac_item = $this->inv_mac_item->get_mac_items(['inv_mac_rel.master' => $active]);
+        // }
+
+        $data = '<div class="row">
+           <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+               <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                Material Inwards To Quarantine (' . $mrd->mrd_number . ')
+                   </label>
+               <div class="form-devider"></div>
+           </div>
+           </div>
+           <table class="table table-bordered mg-b-0">
+                <thead>
+            
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>MIQ Date</th>
+                        <td>' . date('d-m-Y', strtotime($mrd->mrd_date)) . '</td>
+                    </tr>
+                    <tr>
+                            <th>Created Date</th>
+                            <td>' . date('d-m-Y', strtotime($mrd->created_at)) . '</td>
+                    </tr>
+                    <tr>
+                        <th>Supplier ID</th>
+                        <td>'.$mrd->vendor_id.'</td>
+                        
+                    </tr>
+                    <tr>
+                        <th>Supplier Name</th>
+                        <td>'.$mrd->vendor_name.'</td>
+                    </tr>
+                </tbody>
+           </table>
+           <br>
+           <div class="row">
+           <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+               <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">';
+       
+            $data .= 'MRD Items ';
+        $data .= '</label>
+               <div class="form-devider"></div>
+           </div>
+           </div>
+           <div class="table-responsive">
+           <table class="table table-bordered mg-b-0" id="example1">';
+            $data .= '<thead>
+                   <tr>
+                   <th>Item Code:</th>
+                   <th>Item Type</th>
+                   <th>Rejected Qty</th>
+                   <th>Currency</th>
+                   <th>conversion rate </th>
+                   <th>Price In Inr </th>
+                   <th>Reason</th>
+                   </tr>
+               </thead>
+               <tbody >';
+            foreach ($inv_mrd_items as $item) {
+                $data .= '<tr>
+                       <td>'.$item->item_code.'</td>
+                       <td>'.$item->type_name.'</td>
+                       <td>'.$item->rejected_quantity. $item->unit_name.'</td>
+                       <td>'.$item->currency_code.'</td>
+                       <td>'.$item->mrd_conversion_rate.'</td>
+                       <td>'. $item->value_inr.'</td>
+                       <td>'.$item->remarks.'</td>
+                   </tr>';
+            }
+            $data .= '</tbody>';
+        
+
+        $data .= '</table>
+       </div>';
+        return $data;
+    }
+
+    public function RMRNDelete($id)
+    {
+        $this->inv_rmrn->deleteData(['id' => $id]);
+        $request->session()->flash('success', "You have successfully deleted a RMRN !");
+        return redirect("inventory/RMRN");
+    }
+    public function RMRNAddItemInfo(Request $request,$id)
+    {
+        if ($request->isMethod('post')) {
+            $validation['courier_transport_name'] = ['required'];
+            $validation['receipt_lr_number'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all()){
+                if($request->file('receipt_file')){
+                    $file= $request->file('receipt_file');
+                    $filename= date('YmdHi').$file->getClientOriginalName();
+                    $file-> move(public_path('public/receipt/Image'), $filename);
+                    //$data['image']= $filename;
+                }
+                else {
+                    $filename= "";
+                }
+                $data['receipt_path']=$filename;
+                $data['courier_transport_name'] =$request->courier_transport_name;
+                $data['receipt_lr_number'] =$request->receipt_lr_number;
+                $update = $this->inv_rmrn_item->update_data(['inv_rmrn_item.id'=>$request->id],$data);
+                $mrd_id = inv_rmrn_item_rel::where('item','=',$request->id)->pluck('master')->first();
+                if($update)
+                    $request->session()->flash('success', "You have successfully updated a RMRN Item Info!");
+                else
+                    $request->session()->flash('error', "RMRN Item info updation is failed. Try again... !");
+                return redirect('inventory/RMRN-add/'.$mrd_id);
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('inventory/RMRN/'.$id.'/item')->withErrors($validator)->withInput();
+            }
+        }
+        $data = $this->inv_rmrn_item->get_item(['inv_rmrn_item.id'=>$id]);
+        return view('pages.inventory.RMRN.RMRN-itemInfo', compact('data'));
+
+    }
 
     public function receiptReport()
     {
@@ -321,6 +591,15 @@ class MRDController extends Controller
     public function receiptReportPDF()
     {
         $pdf = PDF::loadView('pages.inventory.MRR.pdf-view');
+        return $pdf->stream($file_name . '.pdf');
+    }
+    public function RMRNpdf($id)
+    {
+        $data['rmrn'] = $this->inv_rmrn->find_rmrn_data(['inv_rmrn.id' => $id]);
+        $data['items'] = $this->inv_rmrn_item->get_items(['inv_rmrn_item_rel.master' => $id]);
+        $pdf = PDF::loadView('pages.inventory.RMRN.RMRN-pdf', $data);
+        //$pdf->set_paper('A4', 'portait');
+        $file_name = "RMRN_" . $data['rmrn']['vendor_name'] . "_" . $data['rmrn']['rmr_date'];
         return $pdf->stream($file_name . '.pdf');
     }
 }

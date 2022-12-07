@@ -47,17 +47,11 @@
                                 <th scope="row">
                                     <div class="row filter_search" style="margin-left: 0px;">
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
-                                       <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                       <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>MRD No:</label>
                                                 <input type="text" value="{{request()->get('mrd_no')}}" name="mrd_no" id="mrd_no" class="form-control" placeholder="MRD NO">
                                             
                                             </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>MIQ No:</label>
-                                                <input type="text" value="{{request()->get('miq_no')}}" name="miq_no" id="miq_no" class="form-control" placeholder="MIQ No"> 
-                                                
-                                            </div><!-- form-group -->
-                                            
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                 <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
@@ -100,20 +94,30 @@
 			<table class="table table-bordered mg-b-0" id="example1">
 				<thead>
 					<tr>
-						<th>MRMD No</th>
-                        <th>MIQ No</th>
+						<th>MRD No</th>
 						<th>Supplier</th>
                         <th>Prepared By</th> 
-                        <th>MRD Date</th>
+                        <th>RMRN Date</th>
                         <th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
-					
+					@foreach($data as $rmrn)
+                    <tr>
+                        <td>{{$rmrn['mrd_number']}}</td>
+                        <td>{{$rmrn['vendor_name']}}</td>
+                        <td>{{$rmrn['f_name']}} {{$rmrn['l_name']}}</td>
+                        <td>{{date('d-m-Y', strtotime($rmrn['rmrn_date']))}}</td>
+                        <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/RMRN-add/'.$rmrn['rmrn_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/RMRN-delete/'.$rmrn['rmrn_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/RMRN/pdf/'.$rmrn['rmrn_id'])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> 
+                        </td>
+                    </tr>
+                    @endforeach
 				</tbody>
 			</table>
 			<div class="box-footer clearfix">
-            
+            {{ $data->appends(request()->input())->links() }}
 				
 		   </div> 
 		</div>
