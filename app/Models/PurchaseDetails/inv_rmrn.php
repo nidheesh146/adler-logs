@@ -4,7 +4,7 @@ namespace App\Models\PurchaseDetails;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use DB;
 class inv_rmrn extends Model
 {
     protected $table = 'inv_rmrn';
