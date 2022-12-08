@@ -541,7 +541,7 @@ class MRDController extends Controller
         return $data;
     }
 
-    public function RMRNDelete($id)
+    public function RMRNDelete(Request $request, $id)
     {
         $this->inv_rmrn->deleteData(['id' => $id]);
         $request->session()->flash('success', "You have successfully deleted a RMRN !");
