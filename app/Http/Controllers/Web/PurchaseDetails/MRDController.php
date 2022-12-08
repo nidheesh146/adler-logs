@@ -398,7 +398,7 @@ class MRDController extends Controller
                         $data['rmrd_date'] = date('Y-m-d', strtotime($request->rmrd_date));
                         $data['created_by']= $request->created_by;
                         $data['updated_at'] =date('Y-m-d H:i:s');
-                        $update = $this->inv_rmrd->update_data(['id'=>$request->id],$data);
+                        $update = $this->inv_rmrn->update_data(['id'=>$request->id],$data);
                     if($update)
                         $request->session()->flash('success', "You have successfully updated a RMRN !");
                     else

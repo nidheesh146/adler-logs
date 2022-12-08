@@ -49,12 +49,12 @@ class inv_rmrn extends Model
 
     function deleteData($condition)
     {
-         DB::table('inv_mrd_item') 
-            ->join('inv_mrd_item_rel','inv_mrd_item_rel.item','=','inv_mrd_item.id')
-            ->where(['inv_mrd_item_rel.master'=>$condition['id']])
+         DB::table('inv_rmrn_item') 
+            ->join('inv_rmrn_item_rel','inv_rmrn_item_rel.item','=','inv_rmrn_item.id')
+            ->where(['inv_rmrn_item_rel.master'=>$condition['id']])
             ->delete();
-        DB::table('inv_mrd_item_rel') 
-            ->where(['inv_mrd_item_rel.master'=>$condition['id']])
+        DB::table('inv_rmrn_item_rel') 
+            ->where(['inv_rmrn_item_rel.master'=>$condition['id']])
             ->delete();
      return  $this->where($condition)->delete();
     }
