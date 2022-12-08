@@ -395,7 +395,7 @@ class MRDController extends Controller
                 else
                 {
                     //echo $request->created_by;exit;
-                        $data['rmrd_date'] = date('Y-m-d', strtotime($request->rmrd_date));
+                        $data['rmrn_date'] = date('Y-m-d', strtotime($request->rmrn_date));
                         $data['created_by']= $request->created_by;
                         $data['updated_at'] =date('Y-m-d H:i:s');
                         $update = $this->inv_rmrn->update_data(['id'=>$request->id],$data);

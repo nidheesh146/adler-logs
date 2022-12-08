@@ -226,10 +226,10 @@
                                         <input type="date"  class="form-control" value="" id="mrr_date" name="mrr_date" placeholder="MRR Date" readonly>
                                     </div>
     
-                                    <!-- <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Invoice rate <span id="inv_rate"></span> </label>
                                         <input type="text" readonly class="form-control" value="" name="invoice_rate" id="invoice_rate" placeholder="Invoice rate">
-                                    </div> -->
+                                    </div> 
                                     <!-- <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Currency *</label>
                                         <select class="form-control" name="currency" id="currency">
