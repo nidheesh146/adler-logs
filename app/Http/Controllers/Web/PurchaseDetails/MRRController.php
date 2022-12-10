@@ -69,7 +69,7 @@ class MRRController extends Controller
             $condition[] = ['inv_supplier_invoice_master.type','=', 'PO'];
             $data = $this->inv_mrr->get_all_data($condition);
         }
-        return view('pages.inventory.MRR.MRR-list',compact('data'));
+        return view('pages.inventory.MRR.mrr-list',compact('data'));
     }
     public function addMRR(Request $request,$id=Null)
     {
