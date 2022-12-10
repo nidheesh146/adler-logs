@@ -21,7 +21,7 @@ class inv_rmrn_item extends Model
     }
     function get_items($condition){
         return $this->select('inv_rmrn_item.id as id','inv_rmrn_item.courier_transport_name','inv_rmrn_item.receipt_lr_number','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inventory_rawmaterial.item_code',
-        'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_mrd_item.value_inr','currency_exchange_rate.currency_code','inventory_rawmaterial.hsn_code',
+        'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_mrd_item.value_inr','currency_exchange_rate.currency_code','inventory_rawmaterial.hsn_code','inventory_rawmaterial.short_description',
         'inv_mrd_item.rejected_quantity','inv_mrd_item.remarks','inv_miq_item.conversion_rate','inv_mrd_item.conversion_rate as mrd_conversion_rate','inv_mrd_item.created_at as rejected_date')
                     ->leftjoin('inv_rmrn_item_rel','inv_rmrn_item_rel.item','=','inv_rmrn_item.id')
                     ->leftjoin('inv_mrd_item','inv_mrd_item.id','=','inv_rmrn_item.mrd_item_id')

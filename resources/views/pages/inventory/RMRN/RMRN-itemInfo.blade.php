@@ -65,17 +65,22 @@
                                 <input type="text" class="form-control " name="rejected_quantity" id="rejected_quantity" readonly value="{{$data['rejected_quantity']}}" placeholder="Rejected Quantity" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Stk Kpng Unit </label>
+                                <label>Stock Keeping Unit </label>
                                 <input type="text"  class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly value="{{$data['unit_name']}}">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Rejected/Dispatched Date</label>
-                                <input type="text"  class="form-control " name="unit" placeholder="Rejected/Dispatched Date" readonly value="{{date('d-m-Y', strtotime($data['rejected_date']))}}">
-                            </div><!-- form-group -->
+                                <label>Rejected Date</label>
+                                <input type="text"  class="form-control " name="unit" placeholder="Rejected Date" readonly value="{{date('d-m-Y', strtotime($data['created_at']))}}">
+                            </div><!-- form-group --> 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Reason</label>
                                 <textarea type="text"  class="form-control" name="reason" placeholder="Remarks" readonly>{{$data['remarks']}}</textarea>
                             </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Dispatched Date</label>
+                                <input type="text"  class="form-control datepicker" name="dispatched_date" placeholder="Dispatched Date"  value="{{ (!empty($data['dispatched_date'])) ? date('d-m-Y',strtotime($data['dispatched_date'])) : date("d-m-Y")}}">
+                            </div>
+                           
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Courier /Transport Name</label>
                                 <input type="text"  class="form-control " name="courier_transport_name" placeholder="Courier /Transport Name" value="{{$data['courier_transport_name']}}">

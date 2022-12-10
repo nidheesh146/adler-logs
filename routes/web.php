@@ -173,7 +173,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/WOR-add/{id?}', 'MRDController@WORAdd');
     Route::post('inventory/WOR-add/{id?}', 'MRDController@WORAdd');
 
-    //MRMD
+    //RMRN
     Route::get('inventory/RMRN', 'MRDController@RMRNlist');
     Route::get('inventory/RMRN-add/{id?}', 'MRDController@RMRNAdd');
     Route::post('inventory/RMRN-add/{id?}', 'MRDController@RMRNAdd');
@@ -183,8 +183,17 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/RMRN/pdf/{id}', 'MRDController@RMRNpdf');
     Route::get('inventory/find-mrd', 'MRDController@find_mrd');
     Route::get('inventory/find-mrd-info', 'MRDController@find_mrd_info');
-    Route::get('inventory/receipt-report', 'MRDController@receiptReport');
-    Route::get('inventory/receipt-report/1/report', 'MRDController@receiptReportPDF');
+
+    //MRR/SRR
+    Route::get('inventory/receipt-report', 'MRRController@receiptReport');
+    Route::get('inventory/MRR-add/{id?}', 'MRRController@addMRR');
+    Route::post('inventory/MRR-add/{id?}', 'MRRController@addMRR');
+    Route::get('inventory/find-mac-for-mrr', 'MRRController@find_mac_for_mrr');
+    Route::get('inventory/find-mac-info', 'MRRController@find_mac_info');
+    Route::get('inventory/find-woa-for-mrr', 'MRRController@find_woa_for_mrr');
+    Route::get('inventory/find-woa-info', 'MRRController@find_woa_info');
+    Route::get('inventory/MRR-delete/{id}', 'MRRController@mrr_delete');
+    Route::get('inventory/receipt-report/{id}/report', 'MRRController@receiptReportPDF');
 
     //Stock To Production
     Route::get('inventory/Stock/ToProduction', 'StockController@StockToProduction');

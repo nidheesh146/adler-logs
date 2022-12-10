@@ -231,7 +231,7 @@ class MRDController extends Controller
 
    
 
-    public function WORAdd(Request $request)
+    public function WORAdd(Request $request, $id=null)
     {
         if($request->isMethod('post'))
         {
@@ -340,7 +340,7 @@ class MRDController extends Controller
         
         return view('pages.inventory.RMRN.RMRN-list',compact('data'));
     }
-    public function RMRNAdd(Request $request)
+    public function RMRNAdd(Request $request,$id=null)
     {
         if($request->isMethod('post'))
         {
@@ -368,7 +368,9 @@ class MRDController extends Controller
                     $add_id = $this->inv_rmrn->insert_data($Data);
                     $mrd_items = inv_mrd_item_rel::select('inv_mrd_item_rel.item','inv_mrd_item.item_id')
                                 ->leftJoin('inv_mrd_item','inv_mrd_item.id','=','inv_mrd_item_rel.item')
-                                ->where('master','=',$request->mrd_number)->get();
+                                ->where('master','=',$request->mrd_number)
+                                ->where('inv_mrd_item.rejected_quantity','!=',NULL)
+                                ->get();
                     foreach($mrd_items as $item){
                         $dat=[
                             'mrd_item_id'=>$item->item,
@@ -552,6 +554,7 @@ class MRDController extends Controller
         if ($request->isMethod('post')) {
             $validation['courier_transport_name'] = ['required'];
             $validation['receipt_lr_number'] = ['required'];
+            $validation['dispatched_date'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()){
                 if($request->file('receipt_file')){
@@ -564,6 +567,7 @@ class MRDController extends Controller
                     $filename= "";
                 }
                 $data['receipt_path']=$filename;
+                $data['dispatched_date']=$request->dispatched_date;
                 $data['courier_transport_name'] =$request->courier_transport_name;
                 $data['receipt_lr_number'] =$request->receipt_lr_number;
                 $update = $this->inv_rmrn_item->update_data(['inv_rmrn_item.id'=>$request->id],$data);
@@ -583,16 +587,6 @@ class MRDController extends Controller
         return view('pages.inventory.RMRN.RMRN-itemInfo', compact('data'));
 
     }
-
-    public function receiptReport()
-    {
-        return view('pages.inventory.MRR.mrr-list');
-    }
-    public function receiptReportPDF()
-    {
-        $pdf = PDF::loadView('pages.inventory.MRR.pdf-view');
-        return $pdf->stream($file_name . '.pdf');
-    }
     public function RMRNpdf($id)
     {
         $data['rmrn'] = $this->inv_rmrn->find_rmrn_data(['inv_rmrn.id' => $id]);
@@ -602,4 +596,6 @@ class MRDController extends Controller
         $file_name = "RMRN_" . $data['rmrn']['vendor_name'] . "_" . $data['rmrn']['rmr_date'];
         return $pdf->stream($file_name . '.pdf');
     }
+
+    
 }

@@ -6,9 +6,9 @@
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
                     <span><a href="{{ url('inventory/MRD') }}"> Work Order Rejection</a></span>
-                    <span>@if(!empty($edit)) Edit @else Add @endif Work Order Rejection Info</span>
+                    <span> Work Order Rejection Info</span>
                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($edit)) Edit @else Add @endif Work Order Rejection Info
+                <h4 class="az-content-title" style="font-size: 20px;"> Work Order Rejection Info
 
                 </h4>
                 @foreach ($errors->all() as $errorr)

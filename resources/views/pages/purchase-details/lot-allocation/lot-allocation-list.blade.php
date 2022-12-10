@@ -237,14 +237,14 @@
                                         <input type="text"  value="" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Quantity Aceepted">
                                     </div>
     
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                    {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Quantity rejected </label>
                                         <input type="text"  value="" class="form-control" name="qty_rejected" id="qty_rejected" placeholder="Quantity Rejected" readonly>
-                                    </div>
+                                    </div>--}}
     
 
 
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3 rejobj">
+                                    {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3 rejobj">
                                         <label>Rejected Reason</label>
                                         <textarea value="" class="form-control" name="qty_rej_reason"  id="qty_rej_reason"
                                         placeholder="Rejected Reason" ></textarea>
@@ -258,7 +258,7 @@
                                              >{{$item['f_name']}} {{$item['l_name']}}</option>
                                             @endforeach
                                         </select>  
-                                    </div>
+                                    </div>--}}
 
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Unit </label>

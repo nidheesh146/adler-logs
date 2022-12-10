@@ -74,7 +74,7 @@
                                 <input type="text" value="@if($data['accepted_quantity']) {{$data['accepted_quantity']}} @endif" class="form-control " name="accepted_quantity" placeholder="Accepted Quantity" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Stk Kpng Unit </label>
+                                <label>Stock keeping Unit </label>
                                 <input type="text" value="@if($data) {{$data['unit_name']}} @endif" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
                             </div><!-- form-group -->
                             

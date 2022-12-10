@@ -6,9 +6,10 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">@if(request()->get('order_type')=='wo') Service Receipt Report(SRR) @else Material Receipt Report(SRR) @endif </a></span>
+            <span><a href="{{ url('inventory/MRD') }}"> Receipt Report</a></span>
+			 <span><a href="">@if(request()->get('order_type')=='wo') Service Receipt Report(SRR) @else Material Inspection &  Receipt Report(MRR) @endif </a></span>
 		</div>
-		<h4 class="az-content-title" style="font-size: 20px;">@if(request()->get('order_type')=='wo') Service Receipt Report(SRR) @else Material Receipt Report(SRR) @endif 
+		<h4 class="az-content-title" style="font-size: 20px;">@if(request()->get('order_type')=='wo') Service Inspection & Receipt Report(SRR) @else Material Inspection & Receipt Report(MRR) @endif 
 		  	<div class="right-button">
 			  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
 				  <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -16,11 +17,9 @@
 			  <a href="#" class="dropdown-item">Excel</a>
 
 			  </div> -->
-              @if(request()->get('order_type')=='wo') 
-              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/RMRN-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-download"></i> SRR </button> 
-               @else 
-               <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/RMRN-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-download"></i> MRR</button> 
-               @endif 
+             
+              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MRR-add')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i>  @if(request()->get('order_type')=='wo') SRR @else MRR @endif </button> 
+               
 				
 	  		</div>
 		</h4>
@@ -51,13 +50,13 @@
                                     <div class="row filter_search" style="margin-left: 0px;">
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                <label>@if(request()->get('order_type')=='wo') WOR  @else MRD @endif No:</label>
-                                                <input type="text" value="{{request()->get('mrd_no')}}" name="mrd_no" id="mrd_no" class="form-control" placeholder="@if(request()->get('order_type')=='wo') WOR  @else MRD @endif NO">
+                                                <label>@if(request()->get('order_type')=='wo') SRR  @else MRR @endif No:</label>
+                                                <input type="text" value="{{request()->get('mrr_no')}}" name="mrr_no" id="mrd_no" class="form-control" placeholder="@if(request()->get('order_type')=='wo') SRR  @else MRR @endif NO">
                                             
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>MIQ No:</label>
-                                                <input type="text" value="{{request()->get('miq_no')}}" name="miq_no" id="miq_no" class="form-control" placeholder="MIQ No"> 
+                                                <label>@if(request()->get('order_type')=='wo') WOA  @else MAC @endif No:</label>
+                                                <input type="text" value="{{request()->get('mac_no')}}" name="mac_no" id="mac_no" class="form-control" placeholder="@if(request()->get('order_type')=='wo') WOA  @else MAC @endif No"> 
                                                 
                                             </div><!-- form-group -->
                                             
@@ -69,7 +68,7 @@
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Month</label>
                                                 <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
-                                                
+                                                <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                                             </div>
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
                                                 <label style="width: 100%;">&nbsp;</label>
@@ -103,27 +102,32 @@
 			<table class="table table-bordered mg-b-0" id="example1">
 				<thead>
 					<tr>
-						<th>@if(request()->get('order_type')=='wo') WOR  @else MRD @endif  No</th>
-                        @if(request()->get('order_type')!='wo')<th> MIQ No</th> @endif
+						<th>@if(request()->get('order_type')=='wo') SRR  @else MRR @endif  No</th>
+                        <th>@if(request()->get('order_type')!='wo') WOA No @else MAC No @endif
 						<th>Supplier</th>
                         <th>Prepared By</th> 
-                        <th>MRD Date</th>
+                        <th>@if(request()->get('order_type')=='wo') SRR  @else MRR @endif Date</th>
                         <th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
                     <tr>
-                        <th>23445</th>
-                        @if(request()->get('order_type')!='wo')<th> MIQ-12345</th> @endif
-						<th>Supplier</th>
-                        <th>Prepared By</th> 
-                        <th>12-11-2022</th>
-                        <th>@if(request()->get('order_type')=='wo') 
-                            <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/receipt-report/1/report')}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;SRR</a>
+                        @foreach($data as $mrr)
+                        <td>{{$mrr['mrr_number']}}</td>
+                        <td>{{$mrr['mac_number']}}</td>
+                        <td>{{$mrr['vendor_name']}}</td>
+                        <td>{{$mrr['f_name']}} {{$mrr['l_name']}}</td>
+                        <td>{{date('d-m-Y', strtotime($mrr['mrr_date']))}}</td>
+                        <td>
+                            <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRR-add/'.$mrr['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                            <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRR-delete/'.$mrr['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                            @if(request()->get('order_type')=='wo') 
+                            <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/receipt-report/'.$mrr['id'].'/report')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;SRR</a>
                             @else 
-                            <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/receipt-report/1/report')}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;MRR</a>
-                            @endif  
-                        </th>
+                            <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/receipt-report/'.$mrr['id'].'/report')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;MRR</a>
+                            @endif
+                        </td>
+                        @endforeach
                     </tr>
 				</tbody>
 			</table>

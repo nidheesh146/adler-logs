@@ -1,215 +1,180 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <title> MRR_{{$mrr['vendor_name']}}_{{$mrr['mrr_date']}}</title>
 </head>
-    <title>lotallocation</title>
-    <body style="font-size:12px;">
-        <div class="top-head">
-            <table border='1' style="width:100%;">
-                <tr>
-                    <td rowspan="3" style="text-align:center;"><img src="{{asset('/img/logo.png')}}"  style="width:60px;"></td>
-                    <td rowspan="3" style="text-align:center;font-weight:bold;">LOTCARD FOR RECEIVED MATERIAL</td>
-                    <td style="font-size:12px;">DOC NO: ST/F-02</td>  
-                </tr>
-                <tr>
-                    <td style="font-size:12px;">REV NO: 03</td>
-                </tr>
-                <tr>
-                    <td style="font-size:12px;">REV DATE: 16-MAY-2017</td>
-                </tr>
-            </table>
+<style>
+    .main-heading{
+        font-weight:500;
+        font-size:20px;
+        text-align:center;
+        
+    }
+    .mrr_info{
+        width:20%;
+        font-size:12px;
+        float:right;
+        text-align:left;
+        margin-top:40px;
+    }
+    .adler-address{
+        width:30%;
+        font-size:12px;
+        float:left;
+    }
+    .row1{
+        border-bottom: double;
+    }
+    .rmrn-info{
+        width:50%;
+        font-size:12px;
+        float:left;
+    }
+    .mrd-info{
+        width:50%;
+        font-size:12px;
+        float:right;
+        text-align:right;
+
+    }
+    .supplier-info{
+        float:left;
+        width:25%;
+        font-size:12px;
+    }
+    .reference{
+        float:right;
+        width:20%;
+        font-size:12px;
+        text-align:left;
+    }
+</style>
+<body>
+<?php  
+            if (!function_exists('SplitPhone'))
+            {
+            function SplitPhone($data)
+            {
+                $a = "";
+                $arr = explode(",",ltrim(rtrim($data,']'),'['));
+                $len = count($arr);
+                echo trim($arr[0],' " ');
+                
+            }
+            }
+            ?>
+    <div class="row1" style="height:16%;">
+        
+        <div class="adler-address">
+            <strong>ADLER HEALTHCARE PVT. LTD</strong>
+            <p> Plot No-A1 MIDC, Sadavali(Devrukh), <br/>
+             Tal- Sangmeshwar, Dist -Ratnagiri ,<br/>
+               PIN-415804, Maharashtra, India<br/>
+                CIN :U33125PN2020PTC195161 <br/>
+                Company GSTIN :27AAJCB3689C1J</p>
         </div>
-        <div class="" style="margin-top:20px;">
-            <table  border='1' style="width:67%;float:left;">
+        <div style="width:30%"></div>
+        <div class="mrr_info">
+            <strong>REPORT</strong>
+            <table style="border-top:solid;">
                 <tr>
-                    <th>ITEM DESCRIPTION</th>
+                    <td>Date</td>
+                    <td>: {{date('d-m-Y g:i a',strtotime($mrr['created_at']))}}</td>
                 </tr>
-                <tr style="max-height:200px;">
-                    <td><br/><br/></td>
+                <tr>
+                    <td>No</td>
+                    <td>: {{$mrr['mrr_number']}}</td>
                 </tr>
             </table>
-            <table  border='1' style="width:32%;float:left;margin-left:10px;">
-                <tr>
-                    <th>MATERIAL CODE</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/><br/></td>
-                </tr>
-            </table>
+            <!-- <strong>{{$mrr['vendor_name']}}</strong>
+            <p>{{$mrr['address']}}</p>
+            Cell No : {{ SplitPhone($mrr['contact_number']) }}<br/> -->
         </div>
-        <div class="" style="margin-top:15%;">
-            <table  border='1' style="width:40%;float:left;">
-                <tr>
-                    <th>MATERIAL SPECIFICATION</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:30%;float:right;">
-                <tr>
-                    <th>LOT NUMBER</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/></td>
-                </tr>
-            </table>
-        </div>
-        <div class="" style="margin-top:10%;">
-            <table  border='1' style="width:30%;float:right;">
-                <tr>
-                    <th>INVOICE QTY</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/></td>
-                </tr>
-            </table>
+        
+    </div><br/>
+    <div class="main-heading">
+        <div style="margin-top:-10px;">@if($type=='po') Material @else Service @endif Inspection & Receipt Report( @if($type=='po') MRR @else SRR @endif)</div>
+    </div><br/>
+    <div class="third-row" style="display:block;height:150px;">
+    <div class="supplier-info" style="">
+       <strong>SUPPLIER</strong>
+       <table style="border-top:solid;">
+            <tr>
+                <td>{{$mrr['vendor_name']}}</td>
+            </tr>
+            <tr>
+                <td>{{$mrr['address']}}</td>
+            </tr>
+            <tr>
+                <td>Cell No : {{ SplitPhone($mrr['contact_number']) }}</td>
+            </tr>
+        </table>
+    </div>
+    <div style="width:50%"></div>
+    <div class="reference" style="">
+       <strong>REFEREANCE DETAILS</strong>
+       <table style="border-top:solid;">
+            <tr>
+                <td>MIQ No</td>
+                <td>: &nbsp; &nbsp; &nbsp; {{$mrr['miq_number']}}</td>
+            </tr>
+            <tr>
+                <td>MIQ Date</td>
+                <td>:  &nbsp; &nbsp; &nbsp; {{date('d-m-Y', strtotime($mrr['miq_date']))}}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>MAC No</td>
+                <td>:  &nbsp; &nbsp; &nbsp; {{$mrr['mac_number']}}</td>
+            </tr>
+            <tr>
+                <td>MAC Date</td>
+                <td>:  &nbsp; &nbsp; &nbsp; {{date('d-m-Y', strtotime($mrr['mac_date']))}}</td>
+            </tr>
+        </table>
+    </div>
+    <br/>
+    <br/>
+    </div>
+    <div class="paragraph" style=" display:block;">
+        <p style="font-size:12px;">
+        Dear Sir, <br/>
+        We acknowledge the receipt of the following items mentioned below.
+        </p><br>
+    </div>
+    <table border="1" style="font-size:12px;width:100%;">
+        <tr class="head" style="font-size:10px;">
+            <th>SI NO</th>
+            <th>ITEM CODE</th>
+            <th style="width:20%">DESCRIPTION</th>
+            <th>ORDERED QTY</th>
+            <th>RECEIVED QTY</th>
+            <th>ACCEPTED QTY</th>
+            <th>REJECTED QTY</th>
+            <th>UNIT</th>
+            <th style="width:20%">REASON FOR REJECTION</th>
+            <th style="width:20%">REMARKS</th>
+        </tr>
+        @php $i=1; @endphp
+            @foreach($items as $item)
+        <tr>
+            <td>{{$i++}}</td>
+            <td>{{$item['item_code']}}</td>
+            <td>{{$item['item_description']}}</td>
+            <td>{{$item['actual_order_qty']}}</td>
+            <td>{{$item['received_qty']}}</td>
+            <td>{{$item['accepted_quantity']}}</td>
+            <td>{{$item['rejected_quantity']}}</td>
+            <td>{{$item['unit_name']}}</td>
+            <td>{{$item['rejection_reason']}}</td>
+            <td>{{$item['lot_number']}}</td>
             
-        </div>
-        <div class="" style="margin-top:12%;">
-            <table  border='1' style="width:25%;float:left;">
-                <tr>
-                    <th>QUANTITY RECEIVED</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:25%;float:left;margin-left:15px;">
-                <tr>
-                    <th>QUANTITY ACCEPTED</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:25%;float:left;margin-left:15px;">
-                <tr>
-                    <th>QUANTITY REJECTED </th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:10%;float:left;margin-left:25px;">
-                <tr>
-                    <th>UNIT </th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/></td>
-                </tr>
-            </table>
-        </div>
-        <div class="" style="margin-top:13%;">
-            <table  border='1' style="width:25%;float:left;">
-                <tr>
-                    <th>RECEIVED DATE</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:25%;float:left;margin-left:15px;">
-                <tr>
-                    <th>INVOICE NUMBER</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:25%;float:left;margin-left:15px;">
-                <tr>
-                    <th>INVOICE DATE </th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/></td>
-                </tr>
-            </table>
-        </div>
-        <div class="" style="margin-top:14%;">
-            <table  border='1' style="width:60%;float:left;">
-                <tr>
-                    <th>SUPPLIER CODE & NAME</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:40%;float:left;margin-left:15px;">
-                <tr>
-                    <th>PURCHASE ORDER NO</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/></td>
-                </tr>
-            </table>
-            
-        </div>
-        <div class="" style="margin-top:14%;">
-            <table  border='1' style="width:40%;float:left;">
-                <tr>
-                    <th>VEHICLE NO</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:60%;float:left;margin-left:15px;">
-                <tr>
-                    <th>TRANSPORTER NAME</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/></td>
-                </tr>
-            </table>
-            
-        </div>
-        <div class="" style="margin-top:14%;">
-            <table  border='1' style="width:25%;float:left;">
-                <tr>
-                    <th>MRR NUMBER</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:25%;float:left;margin-left:5px;">
-                <tr>
-                    <th>MRR DATE</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:25%;float:left;margin-left:5px;">
-                <tr>
-                    <th>TEST REPORT NUMBER </th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:25%;float:left;margin-left:5px;">
-                <tr>
-                    <th>TEST REPORT DATE  </th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br/><br/></td>
-                </tr>
-            </table>
-        </div>
-        <div class="" style="margin-top:14%;">
-            <table  border='1' style="width:102%;float:left;">
-                <tr>
-                    <th>PREPARED BY I/C ST</th>
-                    <th>APPROVED BY I/C QC</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/><br><br/></td>
-                    <td><br/><br><br/></td>
-                </tr>
-            </table>        
-        </div>
-    </body>
+        </tr>
+        @endforeach
+    </table> 
+</body>
 </html>

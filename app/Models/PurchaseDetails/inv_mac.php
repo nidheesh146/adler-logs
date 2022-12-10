@@ -56,4 +56,29 @@ class inv_mac extends Model
             ->delete();
      return  $this->where($condition)->delete();
     }
+
+    function find_mac_not_in_mrr($condition)
+    {
+        return $this->select(['inv_mac.mac_number as text','inv_mac.id'])
+        ->where($condition)
+        ->whereNotIn('inv_mac.id',function($query) {
+
+            $query->select('inv_mrr.mac_id')->from('inv_mrr');
+        
+        })->where('inv_mac.status','=',1)
+        ->where('inv_mac.mac_number', 'LIKE', 'MAC%')
+        ->get();
+    }
+    function find_woa_not_in_mrr($condition)
+    {
+        return $this->select(['inv_mac.mac_number as text','inv_mac.id'])
+        ->where($condition)
+        ->whereNotIn('inv_mac.id',function($query) {
+
+            $query->select('inv_mrr.mac_id')->from('inv_mrr');
+        
+        })->where('inv_mac.status','=',1)
+        ->where('inv_mac.mac_number', 'LIKE', 'WOA%')
+        ->get();
+    }
 }

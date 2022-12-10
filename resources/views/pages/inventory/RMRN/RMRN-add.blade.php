@@ -6,9 +6,9 @@
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
                     <span><a href="{{ url('inventory/MRD') }}">Rejected Material Return Note(RMRN)</a></span>
-                    <span>@if(!empty($edit)) Edit @else Add @endif Rejected Material Return Note @if(!empty($edit)) ({{$edit['rmrn']->mrd_number}}) @endif</span>
+                    <span> Rejected Material Return Note @if(!empty($edit)) ({{$edit['rmrn']->mrd_number}}) @endif</span>
                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($edit)) Edit @else Add @endif Rejected Material Return Note @if(!empty($edit)) ({{$edit['rmrn']->mrd_number}}) @endif
+                <h4 class="az-content-title" style="font-size: 20px;">Rejected Material Return Note @if(!empty($edit)) ({{$edit['rmrn']->mrd_number}}) @endif
 
                 </h4>
                 @foreach ($errors->all() as $errorr)
@@ -67,7 +67,7 @@
                             <label>Created by: *</label>
                             <select class="form-control user_list" name="created_by">
                             @foreach ($data['users'] as $user)
-                                <option value="{{$user->user_id}}"   @if(!empty($edit['rmrn']) && $edit['rmrn']->created_by == $user->user_id) selected @elseif(config('user')['user_id']== $user['user_id']) selected @endif   >{{$user->f_name}} {{$user->l_name}}</option>
+                                <option value="{{$user->user_id}}"   @if(!empty($edit['rmrn']) && $edit['rmrn']->created_by == $user['user_id']) selected  @elseif(config('user')['user_id']== $user['user_id']) selected @endif   >{{$user->f_name}} {{$user->l_name}}</option>
                             @endforeach                                          
                             </select>
                         </div>

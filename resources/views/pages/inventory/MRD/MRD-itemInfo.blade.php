@@ -24,7 +24,7 @@
 			<div class="row">
                     
                 <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
-                    @if (Session::get('success'))
+                    @if(Session::get('success'))
                     <div class="alert alert-success " style="width: 100%;">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         <i class="icon fa fa-check"></i> {{ Session::get('success') }}
@@ -74,13 +74,14 @@
                                 <input type="text" value="@if($data['rejected_quantity']) {{$data['rejected_quantity']}} @endif" class="form-control " name="rejected_quantity" id="rejected_quantity"  placeholder="Rejected Quantity" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Stk Kpng Unit </label>
+                                <label>Stock Keeping Unit </label>
                                 <input type="text" value="@if($data) {{$data['unit_name']}} @endif" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Value</label>
                                 <input type="text" readonly class="form-control" value=""  name="value" id="value" placeholder="Value">
                             </div>
+                            
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Currency *</label>
                                 <select class="form-control" name="currency" id="currency" readonly>
@@ -100,8 +101,8 @@
                                 <input type="text" readonly class="form-control" value="@if($data) {{$data['value_inr']}} @endif"  name="value_inr" id="value_inr" placeholder="Value in INR">
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Remarks *</label>
-                                <textarea type="text"  class="form-control" name="remarks" placeholder="Remarks">@if($data) {{$data['remarks']}} @endif</textarea>
+                                <label>Reason for Rejection *</label>
+                                <textarea type="text"  class="form-control" name="remarks" placeholder="Reason for Rejection">@if($data) {{$data['remarks']}} @endif</textarea>
                             </div><!-- form-group -->
                         </div> 
                       

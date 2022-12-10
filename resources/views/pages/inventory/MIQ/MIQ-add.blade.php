@@ -6,9 +6,9 @@
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
                     <span><a href="{{ url('inventory/supplier-invoice') }}">Material Inwards To Quarantine</a></span>
-                    <span>@if(!empty($data['miq'])) Edit @else Add @endif Material Inwards To Quarantine</span>
+                    <span> Material Inwards To Quarantine info</span>
                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;">@if(!empty($data['miq'])) Edit @else Add @endif Material Inwards To Quarantine @if(!empty($data['miq'])) ({{$data['miq']['miq_number']}}) @endif
+                <h4 class="az-content-title" style="font-size: 20px;">Material Inwards To Quarantine Info @if(!empty($data['miq'])) ({{$data['miq']['miq_number']}}) @endif
 
                 </h4>
                 @foreach ($errors->all() as $errorr)
@@ -127,7 +127,7 @@
                                     <th>Item Type</th>
                                     <th>LOT No.</th>
                                     <th>Quantity</th>
-                                    <th>Stk Kpng Unit</th>
+                                    <th>Stock keeping Unit</th>
                                     <th>unit Rate</th>
                                     <th>Expiry Control</th>
                                     <th>Expiry Date</th>

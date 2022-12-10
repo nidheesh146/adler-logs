@@ -37,7 +37,7 @@ class inv_rmrn extends Model
     function find_rmrn_data($condition)
     {
         return $this->select(['inv_rmrn.rmrn_number','inv_rmrn.id','inv_rmrn.created_at','inv_rmrn.rmrn_date','inv_rmrn.created_by','inv_mrd.id as mrd_id','inv_mrd.mrd_number','user.f_name','user.l_name','inv_mrd.mrd_date',
-        'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier.address'])
+        'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier.address','inv_supplier.contact_number'])
                     ->leftjoin('inv_mrd','inv_mrd.id','=','inv_rmrn.mrd_id')
                     ->leftjoin('inv_miq','inv_miq.id','=','inv_mrd.miq_id')
                     ->join('user','user.user_id','=','inv_rmrn.created_by')
