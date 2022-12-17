@@ -110,6 +110,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/final-purchase/pdf/{id}', 'PurchaseController@generateFinalPurchasePdf');
     Route::get('inventory/final-purchase/export/all', 'PurchaseController@exportFinalPurchaseAll');
     Route::get('inventory/final-purchase/export/open', 'PurchaseController@exportFinalPurchaseOpen');
+    Route::get('inventory/final-purchase/excel-export', 'PurchaseController@exportFinalPurchase');
+
     Route::post('inventory/final-purchase/change/status', 'PurchaseController@changeStatus');
     Route::get('inventory/final-purchase-view/{id}', 'PurchaseController@viewFinalPurchase');
     Route::get('inventory/final-purchase/cancellation', 'PurchaseController@purchaseOderCancellation');
@@ -196,12 +198,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/receipt-report/{id}/report', 'MRRController@receiptReportPDF');
 
     //Stock To Production
-    Route::get('inventory/Stock/ToProduction', 'StockController@StockToProduction');
-    Route::get('inventory/Stock/ToProduction-add', 'StockController@StockToProductionAdd');
+   
     Route::post('inventory/stock/issueToProduction', 'StockController@issueToProduction');
     Route::get('inventory/Stock/ToProduction/delete/{id}', 'StockController@StockToProductionDelete');
     Route::post('inventory/stock-ToProduction-edit', 'StockController@StockToProductionEdit');
     Route::get('getSingleSIP', 'StockController@getSingleSIP');
+
+    Route::get('inventory/Stock/ToProduction', 'StockController@StockToProduction');
+    Route::get('inventory/Stock/ToProduction-add', 'StockController@StockToProductionAdd');
+    Route::get('inventory/stock/find-batchcard','StockController@findBatchCard');
+    Route::get('inventory/stock/fetchBatchCard-info','StockController@fetchBatchCard_info');
      //Stock From Production
     Route::get('inventory/Stock/FromProduction', 'StockController@StockFromProduction');
     Route::get('inventory/Stock/FromProduction-add', 'StockController@StockFromProductionAdd');

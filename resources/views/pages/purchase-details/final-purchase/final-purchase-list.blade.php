@@ -11,15 +11,17 @@
 				<span><a href="">Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order</a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order list
-                <div class="right-button">
+                <!-- <div class="right-button">
                     <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                     <i class="fas fa-file-excel" aria-hidden="true"></i> Report <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
                     <div class="dropdown-menu">
-                        <a href="{{url('inventory/final-purchase/export/all')}}" class="dropdown-item">All</a>
+                        <a href="{{url('inventory/final-purchase/export/all').'?'.http_build_query(array_merge(request()->all()))}}" class="dropdown-item">All</a>
                         <a href="{{url('inventory/final-purchase/export/open')}}" class="dropdown-item">Open</a>
                     </div>  
-                <div>  
+                <div>  exportFinalPurchase -->
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button> 
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif  Order </button> 
+               
             </h4><br/>
 			
 		   @if (Session::get('success'))

@@ -37,17 +37,22 @@ class BatchCardController extends Controller
             $validation['product'] = ['required'];
             $validation['batchcard'] = ['required'];
             $validation['process_sheet'] = ['required'];
-            $validation['quantity'] = ['required'];
+            $validation['sku_quantity'] = ['required'];
             $validation['start_date'] = ['required'];
             $validation['target_date'] = ['required'];
             $validation['description'] = ['required'];
+            $validation['input_material'] = ['required'];
+            $validation['input_material_qty'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
-            if(!$validator->errors()->all()){
+            if(!$validator->errors()->all())
+            {
                 $datas['product_id'] = $request->product;
-                $datas['process_sheet_id'] = 1;
+                $datas['process_sheet_id'] = $request->process_sheet;
+                $datas['input_material'] = $request->input_material;
+                $datas['input_material_qty']=$request->input_material_qty;
                 $datas['batch_no'] = $request->batchcard;
-                $datas['quantity'] = $request->quantity;
+                $datas['quantity'] = $request->sku_quantity;
                 $datas['start_date'] = date('Y-m-d',strtotime($request->start_date));
                 $datas['target_date'] = date('Y-m-d',strtotime($request->target_date));
                 $datas['description'] = $request->description;

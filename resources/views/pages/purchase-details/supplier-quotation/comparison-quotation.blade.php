@@ -65,7 +65,7 @@
                 <?php
                     function bgcolor(){return dechex(rand(0,10000000));}
                 ?>
-                    <col span="3">
+                    <col span="2">
                     @if(!empty($suppliers))
                     <?php $i=0; ?>
                     @foreach($suppliers as $supplier)
@@ -77,7 +77,7 @@
 					<thead>
 						<tr>
 							<th  rowspan="2" style="color:#1c273c;">Item </th>
-							<th  rowspan="2" style="color:#1c273c;">Item Code</th>
+							<!-- <th  rowspan="2" style="color:#1c273c;">Item Code</th> -->
 							<th  rowspan="2" style="color:#1c273c;">Item HSN</th>
                             @if(!empty($suppliers))
 				            @foreach($suppliers as $supplier)
@@ -95,7 +95,7 @@
                             <th></th>
                             <th width="5%" style="color:#1c273c;">Rate</th>
                             <th style="color:#1c273c;">Qty</th>
-                            <th style="color:#1c273c;">Discount</th>
+                            <th style="color:#1c273c;">Discount(%)</th>
                             <th style="color:#1c273c;">Total</th>
                         @endforeach
                             @endif
@@ -108,16 +108,16 @@
                         <tr>
                             <?php $i=1;?>
                             <td >{{$item['item_name']}}</td>
-                            <td>{{$item['item_code']}}</td>
+                            <!-- <td>{{$item['item_code']}}</td> -->
                             <td>{{$item['hsn_code']}}</td>
                             @foreach($item['price_data'] as $data)
-                           
+                            <?php $j=1;?>
                             <td>
-                                <input type="radio" class="item-select-radio" name="{{$data['radio_name']}}" value="{{$data['itemId']}}" data-quotation="{{$rq_no}}"  data-supplier="{{$data['supplier_id']}}" @if($data["selected_item"]==1) checked @endif></td>
-                            <td class="supplier_rate" >@if($data['rate']==NULL) 0 @else {{ $data['rate'] }} {{$item['currency_code']}} @endif</td>
+                            <input type="radio" class="item-select-radio" name="{{$data['radio_name']}}" value="{{$data['itemId']}}" data-quotation="{{$rq_no}}"  data-supplier="{{$data['supplier_id']}}" @if($data["selected_item"]==1) checked @endif></td>
+                            <td class="supplier_rate" >@if($data['rate']==NULL) 0 @else {{ $data['rate'] }} {{$data['currency_code']}} @endif</td>
                             <td class="quantity" >{{ $data['quantity'] }} {{$item['unit_name']}}</td>
                             <td class="quantity" >{{ $data['discount'] }}</td>
-                            <td class="total{{$i++}}">{{ $data['total'] }} {{$item['currency_code']}}</td>
+                            <td class="total{{$i++}}">{{ $data['total'] }} <span class="currency">{{$data['currency_code']}}</span></td>
                             @endforeach
                             
 						</tr>                 
@@ -125,18 +125,18 @@
         
                     @endif
                     <tr>
-                    <td colspan="3"></td>
+                    <td colspan="2"></td>
                     @if(!empty($suppliers))
 				    @foreach($suppliers as $supplier)
                         <td colspan="4">
                             <span style="float:right">Total :</span>
                         </td>
-                        <td class="grant_total"><span class="tot"></span> {{$item['currency_code']}}</td>
+                        <td class="grant_total"><span class="tot"></span><span class="currency_coe">{{$fn->getCurrency_code($rq_no,$supplier['id'])}}</span></td>
                         
                     @endforeach
                     </tr>
                     <tr>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                         @foreach($suppliers as $supplier)
                             <td colspan="5"><strong>Remarks:</strong>{{$fn->getRemarks($rq_no,$supplier['id'])}}</td>
                         @endforeach
@@ -192,6 +192,9 @@
 
 $('#example1').find('.tot').each(function (index, element) {
     $(this).text(  getSum(index + 1)); 
+    var currency = $('#example1').find('.currency:first').text();
+    //alert(currency);
+    $(this).next('.currency_code').text(currency);
 });
 $('.item-select-radio').on('change', function() {
     let item_id = $(this).val();

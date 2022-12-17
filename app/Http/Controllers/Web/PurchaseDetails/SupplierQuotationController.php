@@ -244,12 +244,14 @@ class SupplierQuotationController extends Controller
         {
             $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_without_fixed_item(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no],$fixedItem);
             $items_info = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details_without_fixed_item(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no], $fixedItem);
+            //print_r(json_encode($items_info));exit;
             $supplier_data = $this->arrage_items($items, $items_info);
         }
         else
         {
             $items_info = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
             $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no]);
+            //print_r(json_encode($items_info));exit;
             $supplier_data = $this->arrage_items($items, $items_info);
         }
         //print_r($supplier_data);exit;
@@ -284,6 +286,7 @@ class SupplierQuotationController extends Controller
                         'quantity' => $details['quantity'],
                         'rate' => $details['rate'],
                         'discount' => $details['discount'],
+                        'currency_code' => $details['currency_code'],
                         'itemId'=>$details['itemid'],
                         'remarks'=>$details['remarks'],
                         'selected_item'=>$details['selected_item'],
@@ -450,7 +453,14 @@ class SupplierQuotationController extends Controller
         
     }
 
-
-
+    public function getCurrency_code($rq_no,$supplier_id)
+    {
+        $currency = inv_purchase_req_quotation_item_supp_rel::where('quotation_id','=',$rq_no)
+                                ->leftjoin('currency_exchange_rate','inv_purchase_req_quotation_item_supp_rel.currency','=','currency_exchange_rate.currency_id')
+                                 ->where('supplier_id','=',$supplier_id)
+                                ->pluck('currency_exchange_rate.currency_code')
+                                ->first();
+          return $currency;
+    }
 }
 

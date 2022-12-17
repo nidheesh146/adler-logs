@@ -1,6 +1,6 @@
 <p>Dear Sir / Madam,<br/><br/>
-        This is to be informed to you that we are approved your purchase order; the order details & billing details are mentioned in the attached purchase order no. {{$po_master->po_number}}.
-<br/><br/>
+        This is to be informed to you that we are approved your purchase order; the order details & billing details are mentioned in the attached purchase order no. {{$po_master->po_number}}. 
+If any query please contact me the mail id :Nayan.Dhane@adler-healthcare.com<br/><br/>
 Thanks & Regards,
 <br/>
 <br/>

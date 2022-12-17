@@ -35,6 +35,33 @@ class batchcard extends Model
         return $this->insertGetId($data);
     }
 
+    function get_batchcard_not_in_sip($condition)
+    {
+        return $this->select(['batchcard_batchcard.batch_no as text','batchcard_batchcard.id'])
+        //->leftjoin('inv_purchase_req_item','inv_purchase_req_item.item_code','batchcard_batchcard.input_material')
+        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','batchcard_batchcard.input_material')
+        ->where($condition)
+         ->whereNotIn('batchcard_batchcard.id',function($query) {
+
+            $query->select('inv_stock_to_production.batch_no_id')->from('inv_stock_to_production');
+        
+         })
+        ->orderBy('batchcard_batchcard.id', 'desc')
+        ->get();
+
+    }
+
+    function get_batchcard($condition)
+    {
+        return $this->select(['batchcard_batchcard.id','batchcard_batchcard.batch_no','batchcard_batchcard.quantity','batchcard_batchcard.input_material','batchcard_batchcard.input_material_qty',
+        'inventory_rawmaterial.item_code','inv_unit.unit_name','product_product.sku_code','inventory_rawmaterial.id as rawmaterial_id'])
+        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','batchcard_batchcard.input_material')
+        //->leftjoin('product_product', 'product_product.id','=','batchcard_batchcard.product_id')
+        ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.issue_unit_id')
+        ->where($condition)
+        ->first();
+    }
+
 
 
 }

@@ -36,7 +36,7 @@
                                 <input type="hidden" name="user_id" id="user_id" value="{{ !empty($user) ? $user['user_id'] : '' }}"> 
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Last Name *</label>
+                                <label>Last Name </label>
                                 <input type="text" class="form-control"  value="{{ !empty($user) ? $user['l_name'] : '' }}" name="l_name" id="l_name" placeholder="Last Name">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -44,7 +44,7 @@
                                 <input type="text" class="form-control"  value="{{ !empty($user) ? $user['employee_id'] : '' }}" name="employee_code" id="employee_code" placeholder="Employee Code">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <label>Profile Image *</label>
+                                    <label>Profile Image </label>
                                 <input type="file" class="form-control" name="profile_img"  id="profile_img" value="{{ !empty($user) ? $user['profile_img'] : '' }}" placeholder="Department">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -66,7 +66,7 @@
                                 <input type="text" class="form-control" name="designation" value="{{ !empty($user) ? $user['designation'] : '' }}" id="designation" placeholder="Designation">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Role *</label>
+                                <label>Role </label>
                                 <select class="form-control" name="role_permission" id="role_permission">
                                     <option value="">--- select one ---</option>
                                     @foreach($roles as $role)
@@ -80,8 +80,8 @@
                                 </select>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <label>Date of hire *</label>
-                                <input type="text" class="form-control datepicker" name="date_of_hire" value="{{ !empty($user) ? date('d-m-Y',strtotime($user['date_of_hire'])) : '' }}"  id="date_of_hire" placeholder="Date of hire ">
+                                    <label>Date of hire </label>
+                                <input type="text" class="form-control datepicker" name="date_of_hire" value="{{ (!empty($user) && $user['date_of_hire']!=NULL) ? date('d-m-Y',strtotime($user['date_of_hire'])) : '' }}"  id="date_of_hire" placeholder="Date of hire ">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label>Email *</label>
@@ -92,7 +92,7 @@
                                 <input type="text" class="form-control" name="phone"  id="phone" value="{{ !empty($user) ? $user['phone'] : '' }}" placeholder="Phone">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Address *</label>
+                                <label>Address </label>
                                 <textarea value="" class="form-control" name="address" id="address" placeholder="Address">{{ !empty($user) ? $user['address'] : '' }}</textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">

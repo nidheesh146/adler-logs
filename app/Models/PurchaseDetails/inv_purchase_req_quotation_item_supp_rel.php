@@ -74,10 +74,11 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
         return $this->select('inventory_rawmaterial.id as itemId','inventory_rawmaterial.item_code','inventory_rawmaterial.item_name', 'inventory_rawmaterial.hsn_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id',
                              'inv_purchase_req_quotation_item_supp_rel.quantity','inv_purchase_req_quotation_item_supp_rel.rate', 'inv_purchase_req_quotation_item_supp_rel.discount','inv_purchase_req_quotation_item_supp_rel.remarks',
                              'inv_purchase_req_quotation_item_supp_rel.supplier_id','inv_purchase_req_quotation_item_supp_rel.item_id','inv_supplier.vendor_id','inv_supplier.vendor_name', 'inventory_rawmaterial.id as itemId',
-                             'inv_purchase_req_quotation_item_supp_rel.item_id as itemid','inv_purchase_req_quotation_item_supp_rel.selected_item')
+                             'inv_purchase_req_quotation_item_supp_rel.item_id as itemid','inv_purchase_req_quotation_item_supp_rel.selected_item','currency_exchange_rate.currency_code')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_item_supp_rel.supplier_id')
+                    ->leftjoin('currency_exchange_rate','inv_purchase_req_quotation_item_supp_rel.currency','=','currency_exchange_rate.currency_id')
                     ->where($condition)
                     ->groupBy('inventory_rawmaterial.item_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')
                     ->orderBy('inventory_rawmaterial.id','DESC')
@@ -89,10 +90,11 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
         return $this->select('inventory_rawmaterial.id as itemId','inventory_rawmaterial.item_code','inventory_rawmaterial.item_name', 'inventory_rawmaterial.hsn_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id',
                              'inv_purchase_req_quotation_item_supp_rel.quantity','inv_purchase_req_quotation_item_supp_rel.rate', 'inv_purchase_req_quotation_item_supp_rel.discount','inv_purchase_req_quotation_item_supp_rel.remarks',
                              'inv_purchase_req_quotation_item_supp_rel.supplier_id','inv_purchase_req_quotation_item_supp_rel.item_id','inv_supplier.vendor_id','inv_supplier.vendor_name', 'inventory_rawmaterial.id as itemId',
-                             'inv_purchase_req_quotation_item_supp_rel.item_id as itemid','inv_purchase_req_quotation_item_supp_rel.selected_item')
+                             'inv_purchase_req_quotation_item_supp_rel.item_id as itemid','inv_purchase_req_quotation_item_supp_rel.selected_item','currency_exchange_rate.currency_code')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_quotation_item_supp_rel.item_id')
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_item_supp_rel.supplier_id')
+                    ->leftjoin('currency_exchange_rate','inv_purchase_req_quotation_item_supp_rel.currency','=','currency_exchange_rate.currency_id')
                     ->where($condition)
                     ->whereNotIn('inventory_rawmaterial.id', $fixed_items)
                     ->groupBy('inventory_rawmaterial.item_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')

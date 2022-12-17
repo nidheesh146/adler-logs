@@ -104,7 +104,7 @@
 					<tr>
 						<th>SIP Number</th>
                         <th>Item Code</th>
-                        <th>Item Type</th>
+                        <th>Batch Number</th>
 						<th>Lot Number</th>
                         <th>Quantity</th>
                         <th>Supplier</th>
@@ -116,9 +116,9 @@
                     <tr>
                         <td>{{$sip['sip_number']}}</td>
                         <td>{{$sip['item_code']}}</td>
-                        <td>{{$sip['type_name']}}</td>
+                        <td>{{$sip['batch_no']}}</td>
                         <td>{{$sip['lot_number']}}</td>
-                        <td>{{$sip['quantity']}} {{$sip['unit_name']}}</td>
+                        <td>{{$sip['qty_to_production']}} {{$sip['unit_name']}}</td>
                         <td>{{$sip['vendor_name']}}</td>
                         <td><a class="badge badge-info sip-edit" id="sip-edit" style="font-size: 13px;" data-toggle="modal" sipId="{{$sip['id']}}" sip="{{$sip['sip_number']}}" item="{{$sip['item_code']}}" qty="{{$sip['quantity']}}" data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>
                         <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/Stock/ToProduction/delete/'.$sip['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>

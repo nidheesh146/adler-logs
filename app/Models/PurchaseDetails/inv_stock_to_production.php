@@ -21,22 +21,21 @@ class inv_stock_to_production extends Model
 
     function get_all_data($condition)
     {
-        return $this->select(['inv_stock_to_production.id','inv_stock_to_production.sip_number','inv_stock_to_production.quantity','inv_supplier.vendor_name',
-            'inv_stock_to_production.created_at','inv_lot_allocation.lot_number','inventory_rawmaterial.item_code','inv_item_type.type_name','inv_unit.unit_name'])
+        return $this->select(['inv_stock_to_production.id','inv_stock_to_production.sip_number','inv_stock_to_production.qty_to_production',
+            'inv_stock_to_production.created_at','inventory_rawmaterial.item_code','inv_item_type.type_name','inv_unit.unit_name',
+            'batchcard_batchcard.batch_no','inv_lot_allocation.lot_number','inv_supplier.vendor_name'])
         ->leftjoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_stock_to_production.lot_id')
-        ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_to_production.pr_item_id')
-        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','inv_stock_to_production.batch_no_id')
+        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','batchcard_batchcard.input_material')
         ->leftjoin('inv_item_type', 'inv_item_type.id', '=','inventory_rawmaterial.item_type_id' )
-        ->leftjoin('inv_mac_item', 'inv_mac_item.id', '=','inv_stock_to_production.mac_item_id' )
-        ->leftjoin('inv_miq_item', 'inv_miq_item.id', '=','inv_mac_item.miq_item_id' )
-        ->leftjoin('inv_supplier_invoice_item', 'inv_supplier_invoice_item.id', '=','inv_miq_item.invoice_item_id' )
-        ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
-        ->leftjoin('inv_supplier', 'inv_supplier.id', '=','inv_final_purchase_order_master.supplier_id' )
+        ->leftjoin('inv_supplier', 'inv_supplier.id', '=','inv_lot_allocation.supplier_id' )
         ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
         ->where($condition)
         ->where('inv_stock_to_production.status','=',1)
         ->orderby('inv_stock_to_production.id','desc')
         ->paginate(15);
+
+       
     }
 
     function deleteData($condition)

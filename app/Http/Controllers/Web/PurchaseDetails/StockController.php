@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Validator;
 use DB;
 use App\Models\User;
+use App\Models\batchcard;
 use App\Models\PurchaseDetails\inv_lot_allocation;
 use App\Models\PurchaseDetails\inv_miq_item;
 use App\Models\PurchaseDetails\inv_mac_item;
@@ -21,6 +22,7 @@ class StockController extends Controller
     public function __construct()
     {
         $this->User = new User;
+        $this->batchcard = new batchcard;
         $this->inv_miq_item = new inv_miq_item;
         $this->inv_mac_item = new inv_mac_item;
         $this->inv_purchase_req_item = new inv_purchase_req_item;
@@ -55,38 +57,70 @@ class StockController extends Controller
     }
     public function StockToProductionAdd(Request $request)
     {
-        $condition = [];
-        if($request)
-        {
-            if ($request->lot_number) {
-                $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
-            }
-            if ($request->item_code) {
-                $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
-            }
-            if($request->supplier)
-            {
-                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
-            }
+        // $condition = [];
+        // if($request)
+        // {
+        //     if ($request->lot_number) {
+        //         $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
+        //     }
+        //     if ($request->item_code) {
+        //         $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+        //     }
+        //     if($request->supplier)
+        //     {
+        //         $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+        //     }
            
-        }
-        $data['items'] =$this->inv_mac_item->getMAC_items_Not_In_StockToProduction($condition);
+        // }
+        //$data['items'] =$this->inv_mac_item->getMAC_items_Not_In_StockToProduction($condition);
         
-        return view('pages.inventory.stock.stock-issue-to-production-add',compact('data'));
+        return view('pages.inventory.stock.stock-issue-to-production-add');
+    }
+
+    public function findBatchCard(Request $request)
+    {
+        if(!$request->q){
+            return response()->json(['message'=>'Batchcard is not valid'], 500); 
+        }
+        $condition[] = ['batchcard_batchcard.batch_no','like','%'.strtoupper($request->q).'%'];
+        $data = $this->batchcard->get_batchcard_not_in_sip($condition);
+       // $data  = $this->inventory_rawmaterial->getItems($condition);
+        if(!empty( $data)){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'Batchcard is not valid'], 500); 
+        }
+    }
+
+    public function fetchBatchCard_info(Request $request)
+    {
+        $batchcard_id = $request->batchcard_id;
+        $data['batchcard'] = $this->batchcard->get_batchcard(['batchcard_batchcard.id'=>$request->batchcard_id]);
+
+        $lotcard = $this->inv_lot_allocation->getLots_sip(['inv_purchase_req_item.item_code'=>$data['batchcard']['input_material']]);
+        $data['lot'] = '&nbsp;';
+        foreach($lotcard as $lot)
+        {
+            $data['lot'] .= '<tr>
+                    <td><input type="radio" id="lot_radio" name="lot_id" lot="'.$lot['lot_number'].'" qty="'.$lot['available_qty'].'" value="'.$lot['id'].'"></td>
+                    <td>'.$lot['lot_number'].'</td>
+                    <td>'.$lot['item_code'].'</td>
+                    <td>'.$lot['available_qty'].'</td>
+                    </tr>';
+        }
+        return $data;
     }
 
     public function issueToProduction(Request $request)
     {
-        $validation['mac_item_id'] = ['required'];
+        $validation['batch_card'] = ['required'];
+        $validation['lot_number'] = ['required'];
+        $validation['quantity'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
-            foreach($request->mac_item_id as $mac_item_id)
-            {
-                //$lot_data = $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_id]);
-                $mac_item_data = $this->inv_mac_item->get_item(['inv_mac_item.id'=>$mac_item_id]);
-               // print_r(json_encode($lot_data));exit;
-                $item_type = $this->get_item_type($mac_item_data['requisition_item_id']);
+                $item_type = $this->get_item_type($request->raw_material_id);
+                $lotcard = inv_lot_allocation::where('id','=',$request->lot_number)->select('pr_item_id','available_qty')->first();
                 if($item_type=="Direct Items")
                 {
                     $data['sip_number'] = "SIP2-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2%')->count(),1); 
@@ -95,21 +129,20 @@ class StockController extends Controller
                 {
                     $data['sip_number'] = "SIP3-" . $this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP3%')->count(),1); 
                 }
-                $mac_qty = $this->get_mac_qty($mac_item_data['invoice_item_id']);
-                if($mac_qty)
-                $data['quantity']=$mac_qty;
-                else
-                $data['quantity']=$mac_item_data['accepted_quantity'];
-                $data['lot_id']= $mac_item_data['lot_id'];
-                $data['pr_item_id']= $mac_item_data['requisition_item_id'];
-                $data['mac_item_id']=$mac_item_data['id'];
+                $data['batch_no_id']=$request->batch_card;
+                $data['qty_to_production']=$request->quantity;
+                $data['lot_id']= $request->lot_number;
+                $data['pr_item_id']= $lotcard->pr_item_id;
+                //$data['lot_qty_received']= $lotcard->qty_accepted;
+               // $data['mac_item_id']=$mac_item_data['id'];
                 $data['status']= 1;
                 $data['created_at']= date('Y-m-d H:i:s');
                 $data['updated_at']= date('Y-m-d H:i:s');
-                $add[] = $this->inv_stock_to_production->insert_data($data);
+                $add= $this->inv_stock_to_production->insert_data($data);
+                $lot_qty['available_qty'] = $lotcard['available_qty']-$request->quantity;
+                $update_lot = $this->inv_lot_allocation->updatedata(['inv_lot_allocation.id'=>$request->lot_number],$lot_qty);
 
-            }
-            if(count($add)==count($request->mac_item_id))
+            if($add)
             $request->session()->flash('success', "You have successfully added Stock issue to production !");
             else
             $request->session()->flash('error', "You have failed to add Stock issue to production !");
@@ -118,7 +151,7 @@ class StockController extends Controller
         if($validator->errors()->all())
         {
             $request->session()->flash('error', "Stock issue to production updation failed!");
-            return redirect("inventory/Stock/FromProduction");
+            return redirect("inventory/Stock/ToProduction-add");
         }
 
     }
@@ -142,11 +175,10 @@ class StockController extends Controller
         return $mac_qty;
         
     }
-    public function get_item_type($pr_item_id)
+    public function get_item_type($raw_material_id)
     {
-        $item_type = inv_purchase_req_item::leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
-                                            ->leftJoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
-                                            ->where('inv_purchase_req_item.requisition_item_id','=',$pr_item_id)
+        $item_type = inventory_rawmaterial::leftJoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                            ->where('inventory_rawmaterial.id','=',$raw_material_id)
                                             ->pluck('inv_item_type.type_name')
                                             ->first();
         return $item_type;
@@ -444,6 +476,11 @@ class StockController extends Controller
         else
         $request->session()->flash('error', "You have failed to delete Stock transfer Order !");
         return redirect("inventory/Stock/transfer");
+    }
+
+    public function item_batch()
+    {
+        return view('pages.inventory.stock.item-batch-master');
     }
 
 }

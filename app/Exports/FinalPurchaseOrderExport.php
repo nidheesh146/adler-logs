@@ -8,21 +8,46 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use DB;
 class FinalPurchaseOrderExport implements FromCollection, WithHeadings, WithStyles, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
     */
-    private $status;
+   // private $status;
+   private $request;
 
-    public function __construct($status) 
+    public function __construct($request) 
     {
-        $this->status = $status;
+        //$this->status = $status;
+        $this->request = $request;
     }
     public function collection()
     {
         ## 2. Export specific columns
-        if($this->status=='all')
+        // if($this->status=='all')
+        // {
+        //     $orders = inv_final_purchase_order_master::select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_master.status',
+        //                                         'user.f_name','user.l_name','user.employee_id','inv_supplier.vendor_id' ,'inv_supplier.vendor_name','inv_purchase_req_quotation.rq_no', 'inv_final_purchase_order_master.created_at',
+        //                                         'inv_final_purchase_order_master.updated_at')
+        //                                         ->leftjoin('user','user.user_id','=', 'inv_final_purchase_order_master.created_by')
+        //                                         ->leftjoin('inv_supplier', 'inv_supplier.id', '=', 'inv_final_purchase_order_master.supplier_id')
+        //                                         ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=', 'inv_final_purchase_order_master.rq_master_id')
+        //                                         ->get();
+        // }
+        // else 
+        // {
+        //     $orders = inv_final_purchase_order_master::select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_master.status',
+        //                                         'user.f_name','user.l_name','user.employee_id','inv_supplier.vendor_id' ,'inv_supplier.vendor_name','inv_purchase_req_quotation.rq_no', 'inv_final_purchase_order_master.created_at',
+        //                                         'inv_final_purchase_order_master.updated_at')
+        //                                         ->leftjoin('user','user.user_id','=', 'inv_final_purchase_order_master.created_by')
+        //                                         ->leftjoin('inv_supplier', 'inv_supplier.id', '=', 'inv_final_purchase_order_master.supplier_id')
+        //                                         ->where('inv_final_purchase_order_master.status', '=', $this->status)
+        //                                         ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=', 'inv_final_purchase_order_master.rq_master_id')
+        //                                         ->get();
+        // }
+       // print_r($this->request);exit;
+        if($this->request=='null')
         {
             $orders = inv_final_purchase_order_master::select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_master.status',
                                                 'user.f_name','user.l_name','user.employee_id','inv_supplier.vendor_id' ,'inv_supplier.vendor_name','inv_purchase_req_quotation.rq_no', 'inv_final_purchase_order_master.created_at',
@@ -30,26 +55,62 @@ class FinalPurchaseOrderExport implements FromCollection, WithHeadings, WithStyl
                                                 ->leftjoin('user','user.user_id','=', 'inv_final_purchase_order_master.created_by')
                                                 ->leftjoin('inv_supplier', 'inv_supplier.id', '=', 'inv_final_purchase_order_master.supplier_id')
                                                 ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=', 'inv_final_purchase_order_master.rq_master_id')
+                                                ->where('inv_final_purchase_order_master.type','=','PO')
+                                                ->orderby('inv_final_purchase_order_master.id','desc')
                                                 ->get();
         }
-        else 
+        else
         {
+            $condition1 =[];
+            if($this->request->order_type)
+            {
+                if($this->request->order_type == 'wo')
+                {
+                    $condition1[] = ['inv_final_purchase_order_master.type','=', "WO"];
+                }
+                else
+                {
+                    $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
+                }
+            }
+            if ($this->request->rq_no) {
+                $condition1[] = ['inv_purchase_req_quotation.rq_no', 'like', '%' . $this->request->rq_no . '%'];
+            }
+            if ($this->request->supplier) {
+                $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $this->request->supplier . '%'];
+            }
+            if ($this->request->status) {
+                if ($this->request->status == "reject") {
+                    $condition1[] = ['inv_final_purchase_order_master.status', '=', 0];
+                }
+                $condition1[] = ['inv_final_purchase_order_master.status', '=', $this->request->status];
+            }
+            if ($this->request->po_no) {
+                $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $this->request->po_no . '%'];
+            }
+            if ($this->request->po_from) {
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $this->request->po_from))];
+                $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $this->request->po_from))];
+            }
+
+           
             $orders = inv_final_purchase_order_master::select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_master.status',
-                                                'user.f_name','user.l_name','user.employee_id','inv_supplier.vendor_id' ,'inv_supplier.vendor_name','inv_purchase_req_quotation.rq_no', 'inv_final_purchase_order_master.created_at',
-                                                'inv_final_purchase_order_master.updated_at')
-                                                ->leftjoin('user','user.user_id','=', 'inv_final_purchase_order_master.created_by')
-                                                ->leftjoin('inv_supplier', 'inv_supplier.id', '=', 'inv_final_purchase_order_master.supplier_id')
-                                                ->where('inv_final_purchase_order_master.status', '=', $this->status)
-                                                ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=', 'inv_final_purchase_order_master.rq_master_id')
-                                                ->get();
+                'user.f_name','user.l_name','user.employee_id','inv_supplier.vendor_id' ,'inv_supplier.vendor_name','inv_purchase_req_quotation.rq_no', 'inv_final_purchase_order_master.created_at',
+                'inv_final_purchase_order_master.updated_at')
+                ->leftjoin('user','user.user_id','=', 'inv_final_purchase_order_master.created_by')
+                ->leftjoin('inv_supplier', 'inv_supplier.id', '=', 'inv_final_purchase_order_master.supplier_id')
+                ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=', 'inv_final_purchase_order_master.rq_master_id')
+                ->where($condition1)
+                ->orderby('inv_final_purchase_order_master.id','desc')
+                ->get();
         }
         $i=1;
         foreach($orders as $order)
         {
             if($order['status']==0)
-                $status = "Deactive";
+                $status = "Cancelled";
             if($order['status']==1)
-                $status = "Active";
+                $status = "Approved";
             if($order['status']==2)
                 $status = "Delete";
             if($order['status']==3)
@@ -78,8 +139,8 @@ class FinalPurchaseOrderExport implements FromCollection, WithHeadings, WithStyl
     {
         return [
             '#',
-            'PO Number',
-            'PO Date',
+            'PO/WO Number',
+            'PO/WO Date',
             'Status',
             'Created By',
             'Supplier',

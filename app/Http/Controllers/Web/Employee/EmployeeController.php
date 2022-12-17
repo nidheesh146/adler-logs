@@ -27,18 +27,18 @@ class EmployeeController extends Controller
         if ($request->isMethod('post')) 
         {
             $validation['f_name'] = ['required'];
-            $validation['l_name'] = ['required'];
+            //$validation['l_name'] = ['required'];
             $validation['employee_code'] = ['required'];
             $validation['department'] = ['required'];
             $validation['designation'] = ['required'];
-            $validation['date_of_hire'] = ['required'];
-            $validation['role_permission'] =['required'];
+            //$validation['date_of_hire'] = ['required'];
+            //$validation['role_permission'] =['required'];
             $validation['email'] = ['required','email','unique:user'];
             $validation['phone'] = ['required'];
-            $validation['address'] = ['required'];
+            //$validation['address'] = ['required'];
             $validation['username'] = ['required'];
             $validation['password'] = ['required'];
-            $validation['confirm_password'] = ['required','same:pas/////sword'];
+            $validation['confirm_password'] = ['required','same:password'];
             $validator = Validator::make($request->all(), $validation);
     
             if(!$validator->errors()->all()){
@@ -85,15 +85,15 @@ class EmployeeController extends Controller
         if ($request->isMethod('post')) 
         {
             $validation['f_name'] = ['required'];
-            $validation['l_name'] = ['required'];
+            //$validation['l_name'] = ['required'];
             $validation['employee_code'] = ['required'];
             $validation['department'] = ['required'];
             $validation['designation'] = ['required'];
-            $validation['date_of_hire'] = ['required'];
+            //$validation['date_of_hire'] = ['required'];
             $validation['email'] = ['required','email'];
-            $validation['role_permission'] =['required'];
+            //$validation['role_permission'] =['required'];
             $validation['phone'] = ['required'];
-            $validation['address'] = ['required'];
+           // $validation['address'] = ['required'];
             $validation['username'] = ['required'];
             $validation['password'] = ['required'];
             $validation['confirm_password'] = ['required','same:password'];

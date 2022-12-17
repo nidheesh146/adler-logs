@@ -9,7 +9,7 @@
                 <span><a href="" style="color: #596881;">BATCH CARD</a></span> 
                 <span><a href="">BATCH CARD ADD</a></span>
             </div>
-            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">Batch Card Add</h4>
+            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">Batch Card</h4>
             
 			<div class="row">  
                 <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
@@ -45,9 +45,18 @@
                                 <input type="text" class="form-control"  value="" name="process_sheet" placeholder="Process Sheet No">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Quantity *</label>
-                                <input type="text" class="form-control"  value="" name="quantity" placeholder="Quantity">
+                                <label>SKU Quantity *</label>
+                                <input type="text" class="form-control"  value="" name="sku_quantity" placeholder="SKU Quantity">
                             </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Input Material *</label>
+                                <select class="form-control input_material" name="input_material" id="input_material">
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Input Material Quantity*</label>
+                                <input type="text" class="form-control"  value="" name="input_material_qty" placeholder="Input Material Quantity">
+                            </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label>Start Date *</label>
                                 <input type="text" class="form-control datepicker" name="start_date" placeholder="Start Date">
@@ -115,8 +124,9 @@
                 product: {
                     required: true,
                 },
-                quantity: {
+                sku_quantity: {
                     required: true,
+                    number: true,
                 },
                 process_sheet:{
                     required: true,
@@ -133,6 +143,13 @@
                 batchcard: {
                     required: true,
                 },
+                input_material:{
+                    required:true,
+                },
+                input_material_qty:{
+                    required:true,
+                    number: true,
+                }
             },
             submitHandler: function(form) {
                 $('.spinner-button').show();
@@ -149,6 +166,18 @@
         allowClear: true,
         ajax: {
             url: "{{ url('batchcard/productsearch') }}",
+            processResults: function (data) {
+                return { results: data };
+            }
+        }
+    });
+    $('.input_material').select2({
+        placeholder: 'Choose one',
+        searchInputPlaceholder: 'Search',
+        minimumInputLength: 3,
+        allowClear: true,
+        ajax: {
+            url: "{{ url('inventory/itemcodesearch') }}",
             processResults: function (data) {
                 return { results: data };
             }

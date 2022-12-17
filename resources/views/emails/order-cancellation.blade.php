@@ -1,6 +1,6 @@
 <p>Dear Sir / Madam,<br/><br/>
         This is to be informed to you that we are cancelled our purchase order; the order details & reason of cancelled order are mentioned in the attached purchase order cancellation no. {{$po_master->po_number}}.
-<br/><br/>
+If any query please contact me the mail id :Nayan.Dhane@adler-healthcare.com<br/><br/>
 Thanks & Regards,
 <br/>
 <br/>

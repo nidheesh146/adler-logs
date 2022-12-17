@@ -291,7 +291,7 @@
                 <br/>
                 <strong>ADLER HEALTHCARE PVT. LTD</strong>
             </div>
-            <div class="sign">
+            <div class="sign" style="margin-top:15px;">
                 (Authorized Signatory)<br/>
                 (Software Generated Document-No Signature Required)
             </div>

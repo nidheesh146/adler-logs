@@ -588,7 +588,7 @@ class PurchaseController extends Controller
         $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $po_id]);
         $message = new OrderApproved($po_master);
         $message->attachData($pdf->output(), "order-report.pdf");
-        Mail::to('shilma33@gmail.com')->send($message);
+        Mail::to('shilma33@gmail.com')->cc(['shilma33@gmail.com'])->send($message);
     }
 
     public function find_rq_number(Request $request)
@@ -1201,12 +1201,25 @@ class PurchaseController extends Controller
     public function exportFinalPurchaseAll()
     {
         $status = "all";
-        return Excel::download(new FinalPurchaseOrderExport($status), 'FinalPurchaseOrder' . date('d-m-Y') . '.xlsx');
+        return Excel::download(new FinalPurchaseOrderExport($status), 'Purchase/WorkOrder' . date('d-m-Y') . '.xlsx');
     }
     public function exportFinalPurchaseOpen()
     {
         $status = 1;
-        return Excel::download(new FinalPurchaseOrderExport($status), 'FinalPurchaseOrder' . date('d-m-Y') . '.xlsx');
+        return Excel::download(new FinalPurchaseOrderExport($status), 'Purchase/WorkOrder' . date('d-m-Y') . '.xlsx');
+    }
+
+    public function exportFinalPurchase(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new FinalPurchaseOrderExport($request), 'PurchaseWorkOrder' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new FinalPurchaseOrderExport($request), 'PurchaseWorkOrder' . date('d-m-Y') . '.xlsx');
+        }
     }
 
     public function find_user($user_id)

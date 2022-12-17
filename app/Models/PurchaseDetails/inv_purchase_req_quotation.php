@@ -105,7 +105,7 @@ class inv_purchase_req_quotation extends Model
                     $mailData->vendor_id = $supp->vendor_id;
                     $mailData->vendor_name = $supp->vendor_name;
 
-                    if(!empty($mailData->to) && count($mailData->to) > 0 )
+                    if(!empty($mailData->to) && count($mailData->to) > 0 && 1==2)
                     {
                         $mailData->url = url('request-for-quotation/'.(new Controller)->encrypt($quotation_id).'/'.(new Controller)->encrypt($request->Supplier));
                         $job = (new \App\Jobs\EmailJobs($mailData))

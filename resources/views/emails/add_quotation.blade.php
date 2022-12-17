@@ -351,7 +351,7 @@
                     <tr>
                       <td>
                         <p>Dear {{$mailData->vendor_name}} ,</p>
-                        <p>Pls. see attached our requirement and provide us your best quotation along with delivery schedule asap.<br>
+                        <p>Pls. see attached our requirement and provide us your best quotation along with delivery schedule asap.To respond or reply back to the mail id :Nayan.Dhane@adler-healthcare.com<br>
                            Await quotation</p>
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>

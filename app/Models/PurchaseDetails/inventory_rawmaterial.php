@@ -34,6 +34,10 @@ class inventory_rawmaterial extends Model
     {
         return $this->select('id','item_code')->get();
     }
+    function getItems($condition)
+    {
+        return $this->select('id','item_code as text')->where($condition)->get();
+    }
     function getFilterDescription($condition,$length,$start){
         return $this->select(['inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.id'])
                ->where($condition)->skip($start)->take($length)->get()->toArray();
