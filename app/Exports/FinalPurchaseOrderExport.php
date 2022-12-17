@@ -105,6 +105,7 @@ class FinalPurchaseOrderExport implements FromCollection, WithHeadings, WithStyl
                 ->get();
         }
         $i=1;
+        $data = [];
         foreach($orders as $order)
         {
             if($order['status']==0)
