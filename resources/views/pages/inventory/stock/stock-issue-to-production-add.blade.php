@@ -7,9 +7,9 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Add Stock Issue To Production</a></span>
+			 <span><a href="">Stock Issue To Production</a></span>
 		</div>
-		<h4 class="az-content-title" style="font-size: 20px;">Add Stock Issue To Production
+		<h4 class="az-content-title" style="font-size: 20px;">Stock Issue To Production
 		  	<div class="right-button">
 			  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
 				  <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -63,7 +63,11 @@
                         <input type="hidden"  name="raw_material_id" id="raw_material_id" value="">
                     </div><!-- form-group -->
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                        <label for="exampleInputEmail1">Quantity Required</label>
+                        <label>Item Description </label>
+                        <textarea type="text" class="form-control" name="item_description" id="item_description" placeholder="Item Description" readonly></textarea>
+                    </div><!-- form-group -->
+                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                        <label for="exampleInputEmail1">Item Quantity Required</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="qty_required" id="qty_required" readonly placeholder="Quantity Required" aria-label="Recipient's username" aria-describedby="unit-div">
                             <div class="input-group-append">
@@ -73,9 +77,10 @@
                     </div>
                    
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                        <label for="exampleInputEmail1">Lot Selected*</label>
+                        <label for="exampleInputEmail1">Lot/Batchcard Selected*</label>
                         <input type="text" class="form-control" name="lot_selected" id="lot_selected" value="" placeholder="Lot Selected">
-                        <input type="hidden" class="form-control" name="lot_number" id="lot_number" value="123" >
+                        <input type="hidden" class="form-control" name="lot_number" id="lot_number" value="" >
+                        <input type="hidden" class="form-control" name="primary_batch_id" id="primary_batch_id" value="" >
                     </div>
                     <div class="form-groupcol-sm-12 col-md-12 col-lg-12 col-xl-12">
                         <label for="exampleInputEmail1">Quantity*</label>
@@ -85,7 +90,8 @@
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                        <label>Lotcard</label>
+                        <div class="data-bindings">
+                        <!-- <label>Lotcard</label>
                         <table  class="table table-bordered mg-b-0" id="example1">
                             <tr>
                                 <th>#</th>
@@ -93,10 +99,11 @@
                                 <th>Item</th>
                                 <th>Qty</th>
                             </tr>
-                            <tbody class="data-bindings">
+                            <tbody class="data-bindings1">
                             
                             <tbody>
-                        </table>
+                        </table> -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -156,12 +163,14 @@
           $.get("{{ url('inventory/stock/fetchBatchCard-info') }}?batchcard_id="+res.id,function(data)
           {
             $('#item_code').val(data['batchcard']['item_code']);
+            $('#item_description').val(data['batchcard']['discription']);
             $('#qty_required').val(data['batchcard']['input_material_qty']);
             $('#unit-div').text(data['batchcard']['unit_name']);
             $('#sku_code').val(data['batchcard']['sku_code']);
             $('#sku_qty').val(data['batchcard']['quantity']);
             $('#raw_material_id').val(data['batchcard']['rawmaterial_id']);
             $('.data-bindings').html(data['lot']);
+            $('.data-bindings').html(data['batch']);
             // $('.spinner-button').hide();
           });
         }else{
@@ -176,6 +185,30 @@
             $('#lot_selected').val(lot_number);
             $('#lot_number').val(value);
             $('#quantity').val(qty);
+        });
+        $('.data-bindings').on('change', 'input[id=batch_radio]', function(){
+            var batch_id = $(this).val();
+            var batch_no = $(this).data('batchno');
+            var qty = $(this).data('qty');
+            $('#quantity').val(qty);
+            if(batch_id)
+            {
+                $.get("{{ url('inventory/stock/fetchBatchCard-info') }}?batchcard_id="+batch_id,function(data)
+                {
+                    $('#item_code').val(data['batchcard']['item_code']);
+                    $('#item_description').val(data['batchcard']['discription']);
+                    $('#qty_required').val(data['batchcard']['input_material_qty']);
+                    $('#unit-div').text(data['batchcard']['unit_name']);
+                    $('#lot_selected').val(data['batchcard']['batch_no']);
+                    $('#primary_batch_id').val(data['batchcard']['id']);
+                    //$('#quantity').val(qty);
+                });
+            }
+            else
+            {
+                $('.data-bindings').html('');
+                $('.spinner-button').hide();
+            }
         });
 
 </script>

@@ -69,6 +69,58 @@ class BatchCardController extends Controller
         }
         return view('pages/batchcard/batchcard-add');
     }
+
+    public function assemblebatchcardAdd(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $validation['product1'] = ['required'];
+            $validation['batchcard'] = ['required'];
+            $validation['primary_sku_batchcards'] = ['required'];
+            $validation['process_sheet'] = ['required'];
+            $validation['sku_quantity'] = ['required'];
+            $validation['start_date'] = ['required'];
+            $validation['target_date'] = ['required'];
+            $validation['description'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            //print_r( $request->primary_sku_batchcards);exit;
+            if(!$validator->errors()->all())
+            {
+                $datas['product_id'] = $request->product1;
+                $datas['process_sheet_id'] = $request->process_sheet;
+                $datas['input_material'] = $request->input_material;
+                $datas['input_material_qty']=$request->input_material_qty;
+                $datas['batch_no'] = $request->batchcard;
+                $datas['quantity'] = $request->sku_quantity;
+                $datas['start_date'] = date('Y-m-d',strtotime($request->start_date));
+                $datas['target_date'] = date('Y-m-d',strtotime($request->target_date));
+                $datas['description'] = $request->description;
+                $datas['is_active'] = 1;
+                $datas['is_assemble'] = 1;
+                $datas['created'] = date('Y-m-d H:i:s');
+                $datas['updated'] = date('Y-m-d H:i:s');
+                $batchcard =  $this->batchcard->insertdata($datas);
+                    foreach($request->primary_sku_batchcards as $card)
+                    {
+                        $batch =$this->batchcard->get_batchcard(['batchcard_batchcard.id'=> $card]); 
+                        $dat2 =[
+                            'main_batchcard_id'=>$batchcard,
+                            'primary_sku_batchcard_id'=>$card,
+                            'quantity'=>$batch->quantity,
+                        ];
+                        $rel =DB::table('assembly_batchcards')->insert($dat2);
+                    }
+                
+                if(count($dat2))
+                $request->session()->flash('success',  "You have successfully inserted a batchcard !");
+                else
+                $request->session()->flash('error',  "You have failed to insert a batchcard !");
+                return redirect('batchcard/batchcard-add');
+            }
+            if ($validator->errors()->all()) {
+                return redirect("batchcard/batchcard-add")->withErrors($validator)->withInput();
+            }
+        }
+    }
     public function getBatchcardUpload()
     {
         return view('pages/batchcard/batchcard-upload');

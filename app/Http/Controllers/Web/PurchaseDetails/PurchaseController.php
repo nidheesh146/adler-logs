@@ -65,8 +65,12 @@ class PurchaseController extends Controller
         }
    
         if ($request->po_from) {
-            $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-' . $request->po_from))];
-            $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime('01-' . $request->po_from))];
+            $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime($request->po_from))];
+            //$condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-d', strtotime($this->request->po_from))];
+        }
+        if ($request->po_to) {
+            //$condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime($this->request->po_from))];
+            $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime($request->po_from))];
         }
 
         if ($request->status) {

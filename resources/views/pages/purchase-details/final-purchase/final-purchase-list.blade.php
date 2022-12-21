@@ -64,16 +64,20 @@
                                                             
                                                         </div><!-- form-group -->
                                                         
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                             <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                             <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
                                                             
                                                         </div>
                                                         <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                            <label  style="font-size: 12px;">@if(request()->get('order_type')=='wo') WO @else PO @endif Date </label>
-                                                            <input type="text" value="{{request()->get('po_from')}}" id="po_from" class="form-control datepicker" name="po_from" placeholder="MM-YYYY">
+                                                            <label  style="font-size: 12px;">@if(request()->get('order_type')=='wo') WO @else PO @endif Date (From)</label>
+                                                            <input type="text" value="{{request()->get('po_from')}}" id="po_from" class="form-control datepicker" name="po_from" placeholder="DD-MM-YYYY">
                                                         </div>
-                                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                            <label  style="font-size: 12px;">@if(request()->get('order_type')=='wo') WO @else PO @endif Date(To) </label>
+                                                            <input type="text" value="{{request()->get('po_to')}}" id="po_to" class="form-control datepicker" name="po_to" placeholder="DD-MM-YYYY">
+                                                        </div>
+                                                        <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                             <label  style="font-size: 12px;">Status</label>
                                                             <!-- <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="@if(request()->get('order_type')=='work-order') WO @else PO @endif DATE (MM-YYYY)"> -->
                                                             <select name="status" id="status" class="form-control">
@@ -278,10 +282,10 @@
     var date = new Date();
     date.setDate(date.getDate());
 	$(".datepicker").datepicker({
-        format: "mm-yyyy",
-        viewMode: "months",
-        minViewMode: "months",
-        // startDate: date,
+        format: "dd-mm-yyyy",
+        // viewMode: "months",
+        // minViewMode: "months",
+         endDate: date,
         autoclose:true
     });
     $(".datepicker2").datepicker({
@@ -317,10 +321,11 @@
 		var supplier = $('#supplier').val();
 		var rq_no = $('#rq_no').val();
 		var po_no = $('#po_no').val();
-		var po_from = $('#from').val();
-        var processed_from = $('#processed_from').val();
+		var po_from = $('#po_from').val();
+        var po_to = $('#po_to').val();
+        //var processed_from = $('#processed_from').val();
         var status = $('#status').val();
-		if(!supplier & !rq_no & !po_no & !from & !processed_from & !status)
+		if(!supplier & !rq_no & !po_no & !po_from & !po_to & !status)
 		{
 			e.preventDefault();
 		}

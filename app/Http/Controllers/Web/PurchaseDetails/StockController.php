@@ -8,6 +8,7 @@ use Validator;
 use DB;
 use App\Models\User;
 use App\Models\batchcard;
+use App\Models\assembly_batchcards;
 use App\Models\PurchaseDetails\inv_lot_allocation;
 use App\Models\PurchaseDetails\inv_miq_item;
 use App\Models\PurchaseDetails\inv_mac_item;
@@ -23,6 +24,7 @@ class StockController extends Controller
     {
         $this->User = new User;
         $this->batchcard = new batchcard;
+        $this->assembly_batchcards = new assembly_batchcards;
         $this->inv_miq_item = new inv_miq_item;
         $this->inv_mac_item = new inv_mac_item;
         $this->inv_purchase_req_item = new inv_purchase_req_item;
@@ -96,30 +98,98 @@ class StockController extends Controller
     {
         $batchcard_id = $request->batchcard_id;
         $data['batchcard'] = $this->batchcard->get_batchcard(['batchcard_batchcard.id'=>$request->batchcard_id]);
-
-        $lotcard = $this->inv_lot_allocation->getLots_sip(['inv_purchase_req_item.item_code'=>$data['batchcard']['input_material']]);
-        $data['lot'] = '&nbsp;';
-        foreach($lotcard as $lot)
+        if($data['batchcard']['is_assemble']==1)
         {
-            $data['lot'] .= '<tr>
-                    <td><input type="radio" id="lot_radio" name="lot_id" lot="'.$lot['lot_number'].'" qty="'.$lot['available_qty'].'" value="'.$lot['id'].'"></td>
-                    <td>'.$lot['lot_number'].'</td>
-                    <td>'.$lot['item_code'].'</td>
-                    <td>'.$lot['available_qty'].'</td>
-                    </tr>';
+            $primary_sku_batchcards = assembly_batchcards::select('assembly_batchcards.id','batchcard_batchcard.id as batch_id','batchcard_batchcard.batch_no','assembly_batchcards.quantity','inventory_rawmaterial.item_code')
+                                    ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','assembly_batchcards.primary_sku_batchcard_id')
+                                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','batchcard_batchcard.input_material')
+                                    ->where('assembly_batchcards.main_batchcard_id','=',$request->batchcard_id)
+                                    ->get();
+            //return $primary_sku_batchcards;
+            $data['batch'] = '&nbsp;
+                            <label>BatchCard</label>
+                            <table  class="table table-bordered mg-b-0" id="example1">
+                            <tr>
+                            <th>#</th>
+                                <th>Batch Number</th>
+                                <th>Qty</th>
+                            </tr>
+                            <tbody class="data-bindings1">';
+            foreach($primary_sku_batchcards as $batch)
+            {
+                $data['batch'] .= '<tr>
+                        <td><input type="radio" id="batch_radio" name="assemble_item_id"  value="'.$batch['batch_id'].'" data-batchno="'.$batch['batch_no'].'" data-qty="'.$batch['quantity'].'" ></td>
+                        <td>'.$batch['batch_no'].'</td>
+                    
+                        <td>'.$batch['quantity'].'</td>
+                        </tr>';
+            }
+            $data['batch'] .='<tbody>
+            </table>';
+        
+            
+        }
+        else
+        {
+            $lotcard = $this->inv_lot_allocation->getLots_sip(['inv_purchase_req_item.item_code'=>$data['batchcard']['input_material']]);
+            $data['lot'] = '&nbsp;
+                            <label>Lotcard</label>
+                            <table  class="table table-bordered mg-b-0" id="example1">
+                            <tr>
+                            <th>#</th>
+                                <th>Lot Number</th>
+                                <th>Item</th>
+                                <th>Qty</th>
+                            </tr>
+                            <tbody class="data-bindings1">';
+            foreach($lotcard as $lot)
+            {
+                $data['lot'] .= '<tr>
+                        <td><input type="radio" id="lot_radio" name="lot_id" lot="'.$lot['lot_number'].'" qty="'.$lot['available_qty'].'" value="'.$lot['id'].'"></td>
+                        <td>'.$lot['lot_number'].'</td>
+                        <td>'.$lot['item_code'].'</td>
+                        <td>'.$lot['available_qty'].'</td>
+                        </tr>';
+            }
+            $data['lot'] .='<tbody>
+            </table>';
         }
         return $data;
     }
 
+    public function fetchPrimaryBatchCard_info(Request $request)
+    {
+        echo "hh";
+        $primary_sku_batchcards = assembly_batchcards::select('assembly_batchcards.id','batchcard_batchcard.batch_no','assembly_batchcards.quantity','inventory_rawmaterial.item_code','inventory_rawmaterial.discription')
+                                    ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','assembly_batchcards.primary_sku_batchcard_id')
+                                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','batchcard_batchcard.input_material')
+                                    ->where('assembly_batchcards.primary_sku_batchcard_id','=',$request->batchcard_id)
+                                    ->get();
+        return $primary_sku_batchcards;
+    }
     public function issueToProduction(Request $request)
     {
         $validation['batch_card'] = ['required'];
-        $validation['lot_number'] = ['required'];
+        //$validation['lot_number'] = ['required'];
         $validation['quantity'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
+            if($request->raw_material_id)
+            {
                 $item_type = $this->get_item_type($request->raw_material_id);
+            }
+            else
+            {
+                if($request->primary_batch_id)
+                {
+                    $item_type = batchcard::leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','batchcard_batchcard.input_material')
+                                    ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                    ->pluck('inv_item_type.type_name')
+                                    ->first();
+                }
+            }
+            //echo $item_type;exit;
                 $lotcard = inv_lot_allocation::where('id','=',$request->lot_number)->select('pr_item_id','available_qty')->first();
                 if($item_type=="Direct Items")
                 {
@@ -132,15 +202,26 @@ class StockController extends Controller
                 $data['batch_no_id']=$request->batch_card;
                 $data['qty_to_production']=$request->quantity;
                 $data['lot_id']= $request->lot_number;
-                $data['pr_item_id']= $lotcard->pr_item_id;
+               
+                if(!$request->primary_batch_id)
+                {
+                    $data['pr_item_id']= $lotcard->pr_item_id;
+                }
+                else
+                {
+                    $data['primary_sku_batch_id']= $request->primary_batch_id;
+                }
                 //$data['lot_qty_received']= $lotcard->qty_accepted;
                // $data['mac_item_id']=$mac_item_data['id'];
                 $data['status']= 1;
                 $data['created_at']= date('Y-m-d H:i:s');
                 $data['updated_at']= date('Y-m-d H:i:s');
                 $add= $this->inv_stock_to_production->insert_data($data);
+                if(!$request->primary_batch_id)
+                {
                 $lot_qty['available_qty'] = $lotcard['available_qty']-$request->quantity;
                 $update_lot = $this->inv_lot_allocation->updatedata(['inv_lot_allocation.id'=>$request->lot_number],$lot_qty);
+                }
 
             if($add)
             $request->session()->flash('success', "You have successfully added Stock issue to production !");
@@ -154,6 +235,18 @@ class StockController extends Controller
             return redirect("inventory/Stock/ToProduction-add");
         }
 
+    }
+    public function get_primary_batch($primary_sku_batch_id)
+    {
+        $batch_no = batchcard::where('batchcard_batchcard.id','=',$primary_sku_batch_id)->pluck('batch_no')->first();
+        return $batch_no;
+    }
+    public function get_primary_batch_item($primary_sku_batch_id)
+    {
+        $item_code = batchcard::leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','batchcard_batchcard.input_material')
+                    ->where('batchcard_batchcard.id','=',$primary_sku_batch_id)
+                    ->pluck('inventory_rawmaterial.item_code')->first();
+        return $item_code;
     }
     public function getSingleSIP(Request $request)
     {
@@ -189,7 +282,7 @@ class StockController extends Controller
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
-            $data['quantity'] = $request->quantity;
+            $data['qty_to_production'] = $request->quantity;
             $data['updated_at'] = date('Y-m-d H:i:s');
             $update = $this->inv_stock_to_production->update_data(['id' => $request->sipId],$data);
             if($update)

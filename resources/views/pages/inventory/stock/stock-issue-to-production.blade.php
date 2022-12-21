@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 
-@inject('SupplierQuotation', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\StockController')
 <div class="az-content az-content-dashboard">
   <br>
   <div class="container">
@@ -104,10 +104,12 @@
 					<tr>
 						<th>SIP Number</th>
                         <th>Item Code</th>
+                        <th>Type</th>
                         <th>Batch Number</th>
 						<th>Lot Number</th>
+                        <th>Primary SKU Batch</th>
                         <th>Quantity</th>
-                        <th>Supplier</th>
+                        <!-- <th>Supplier</th> -->
                         <th>Action</th>
 					</tr>
 				</thead>
@@ -115,13 +117,15 @@
                     @foreach($data['sip'] as $sip)
                     <tr>
                         <td>{{$sip['sip_number']}}</td>
-                        <td>{{$sip['item_code']}}</td>
+                        <td>@if($sip['primary_sku_batch_id']) {{ $fn->get_primary_batch_item($sip['primary_sku_batch_id']) }}  @else {{$sip['item_code']}} @endif</td>
+                        <td>@if($sip['lot_number']) Primary SKU @else Assemble @endif</td>
                         <td>{{$sip['batch_no']}}</td>
                         <td>{{$sip['lot_number']}}</td>
+                        <td>@if($sip['primary_sku_batch_id']) {{ $fn->get_primary_batch($sip['primary_sku_batch_id']) }} @endif</td>
                         <td>{{$sip['qty_to_production']}} {{$sip['unit_name']}}</td>
-                        <td>{{$sip['vendor_name']}}</td>
+                        <!-- <td>{{$sip['vendor_name']}}</td> -->
                         <td><a class="badge badge-info sip-edit" id="sip-edit" style="font-size: 13px;" data-toggle="modal" sipId="{{$sip['id']}}" sip="{{$sip['sip_number']}}" item="{{$sip['item_code']}}" qty="{{$sip['quantity']}}" data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>
-                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/Stock/ToProduction/delete/'.$sip['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
+                        <!-- <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/Stock/ToProduction/delete/'.$sip['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td> -->
                     </tr>
                     @endforeach
 				</tbody>
@@ -208,7 +212,7 @@
                     success : function(data) {
                         $('.sipNumber').html(data['sip_number']);
                         $('.item').val(data['item_code']);
-                        $('.quantity').val(data['quantity']);
+                        $('.quantity').val(data['qty_to_production']);
                         $('.sip_Id').val(data['id']);
                         $('.unit-div').html(data['unit_name']);
                     }

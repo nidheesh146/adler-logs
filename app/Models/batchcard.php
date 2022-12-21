@@ -40,6 +40,7 @@ class batchcard extends Model
         return $this->select(['batchcard_batchcard.batch_no as text','batchcard_batchcard.id'])
         //->leftjoin('inv_purchase_req_item','inv_purchase_req_item.item_code','batchcard_batchcard.input_material')
         ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','batchcard_batchcard.input_material')
+       // ->where('batchcard_batchcard.is_assemble','=',0)
         ->where($condition)
          ->whereNotIn('batchcard_batchcard.id',function($query) {
 
@@ -54,7 +55,7 @@ class batchcard extends Model
     function get_batchcard($condition)
     {
         return $this->select(['batchcard_batchcard.id','batchcard_batchcard.batch_no','batchcard_batchcard.quantity','batchcard_batchcard.input_material','batchcard_batchcard.input_material_qty',
-        'inventory_rawmaterial.item_code','inv_unit.unit_name','product_product.sku_code','inventory_rawmaterial.id as rawmaterial_id'])
+        'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_unit.unit_name','product_product.sku_code','inventory_rawmaterial.id as rawmaterial_id','batchcard_batchcard.is_assemble'])
         ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','batchcard_batchcard.input_material')
         //->leftjoin('product_product', 'product_product.id','=','batchcard_batchcard.product_id')
         ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.issue_unit_id')

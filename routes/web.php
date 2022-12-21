@@ -208,6 +208,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/Stock/ToProduction-add', 'StockController@StockToProductionAdd');
     Route::get('inventory/stock/find-batchcard','StockController@findBatchCard');
     Route::get('inventory/stock/fetchBatchCard-info','StockController@fetchBatchCard_info');
+    Route::get('inventory/stock/fetchPrimaryBatchCard-info','StockController@fetchPrimaryBatchCard_info');
      //Stock From Production
     Route::get('inventory/Stock/FromProduction', 'StockController@StockFromProduction');
     Route::get('inventory/Stock/FromProduction-add', 'StockController@StockFromProductionAdd');
@@ -260,6 +261,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('batchcard/batchcard-add', 'BatchCardController@BatchcardAdd');
     Route::post('batchcard/batchcard-add', 'BatchCardController@BatchcardAdd');
     Route::get('batchcard/productsearch', 'BatchCardController@productsearch');
+    Route::post('batchcard/assemble-batchcard-add','BatchCardController@assemblebatchcardAdd');
 
     //Label card
     Route::get('label/mrp-label','LabelController@mrpLabel');

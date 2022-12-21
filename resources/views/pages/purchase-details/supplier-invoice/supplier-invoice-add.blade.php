@@ -8,9 +8,9 @@
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
             <span><a href="{{ url('inventory/supplier-invoice') }}">SUPPLIER INVOICE</a></span>
-            <span>Add  SUPPLIER INVOICE</span>
+            <span> SUPPLIER INVOICE</span>
 		</div>
-		<h4 class="az-content-title" style="font-size: 20px;">Add Supplier Invoice 
+		<h4 class="az-content-title" style="font-size: 20px;">Supplier Invoice 
 		  <div class="right-button">
 			  
 		  <div>  
