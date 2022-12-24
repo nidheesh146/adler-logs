@@ -178,7 +178,7 @@
           $('.spinner-button').hide();
         }
       });
-      $('.data-bindings').on('change', 'input[name=lot_id]', function(){
+      $('.data-bindings').on('change', 'input[id=lot_radio]', function(){
             var value = $(this).val();
             var lot_number = $(this).attr('lot');
             var qty = $(this).attr('qty');
