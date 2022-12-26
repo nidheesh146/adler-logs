@@ -19,6 +19,7 @@ class EmployeeController extends Controller
     }
     public function employeeList() {
         $data['users'] = $this->User->all_users($condition=null);
+        
         return view('pages\employee\employee-list',compact('data'));
     }
 
