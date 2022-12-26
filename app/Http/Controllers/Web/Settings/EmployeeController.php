@@ -19,8 +19,8 @@ class EmployeeController extends Controller
     }
     public function employeeList() {
         $data['users'] = $this->User->all_users($condition=null);
-        
-        return view('pages\employee\employee-list',compact('data'));
+
+        return view('pages.employee.employee-list',compact('data'));
     }
 
     public function employeeAdd(Request $request)
@@ -79,7 +79,7 @@ class EmployeeController extends Controller
         }
         $roles = $this->Role->get_roles();
         $department = $this->Department->get_dept($condition=null);
-        return view('pages\employee\employee-add',compact('department','roles'));
+        return view('pages.employee.employee-add',compact('department','roles'));
     }
     public function employeeEdit(Request $request, $id)
     {
@@ -145,7 +145,7 @@ class EmployeeController extends Controller
         //print_r($user);exit;
         $department = $this->Department->get_dept($condition=null);
         $roles = $this->Role->get_roles();
-        return view('pages\employee\employee-add',compact('department','user','roles'));
+        return view('pages.employee.employee-add',compact('department','user','roles'));
     }
 
     public function employeeDelete(Request $request, $id)
