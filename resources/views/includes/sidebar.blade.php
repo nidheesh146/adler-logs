@@ -148,14 +148,20 @@
             <li class="nav-sub-item @if(in_array($Action,['Employee.employeeList','Employee.employeeAdd','Employee.employeeEdit'])){{'active'}} @endif ">
             <a href="{{url('employee/list')}}"  class="nav-sub-link">Employee</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
-            <a href="{{url('batchcard/batchcard-add')}}"  class="nav-sub-link">Permissions</a>
+            
+          </ul>
+        </li>
+        <li class="nav-item @if(in_array($Action,['RolePermission.roleList','RolePermission.moduleList','RolePermission.permissionList','RolePermission.rolePermission'])){{'active show'}} @endif ">
+          <a href="#" class="nav-link with-sub"><i class="fa fa-cog" style="font-size: 19px"></i>Settings</a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item @if(in_array($Action,['RolePermission.roleList','RolePermission.rolePermission'])){{'active'}} @endif ">
+            <a href="{{url('settings/role')}}"  class="nav-sub-link">Role</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
-            <a href="{{url('module/list')}}"  class="nav-sub-link">Modules</a>
+            <li class="nav-sub-item @if(in_array($Action,['RolePermission.moduleList'])){{'active'}} @endif ">
+            <a href="{{url('settings/module')}}"  class="nav-sub-link">Module</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
-            <a href="{{url('batchcard/batchcard-add')}}"  class="nav-sub-link">Role</a>
+            <li class="nav-sub-item @if(in_array($Action,['RolePermission.permissionList'])){{'active'}} @endif ">
+            <a href="{{url('settings/permission')}}"  class="nav-sub-link">Permissions</a>
             </li>
           </ul>
         </li>

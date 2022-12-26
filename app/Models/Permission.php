@@ -14,7 +14,19 @@ class Permission extends Model
 
     function get_modules()
     {
-        return $this->select(['permission_id','per_module'])
-                ->get();
+        return $this->select(['per_module'])
+                //->groupBy('permissions.per_module')
+                ->distinct('permissions.per_module')
+                ->get()->toArray();
     }
+
+    function get_permission(){
+        
+        return $this->select(['*'])
+        //->join('permission_type_rel','permission_type_rel.permission_id','=','permissions.permission_id')
+        //->where('type_id',$type_id)
+        ->orderBy('permissions.per_order', 'asc')
+        ->get()->toArray();
+    }
+    
 }

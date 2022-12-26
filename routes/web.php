@@ -308,7 +308,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
 
 });
 
-Route::group(['namespace' => 'App\Http\Controllers\Web\Employee','middleware'=>['RolePermission']], function() {
+Route::group(['namespace' => 'App\Http\Controllers\Web\Settings','middleware'=>['RolePermission']], function() {
     Route::get('employee/list', 'EmployeeController@employeeList');
     Route::get('employee/add', 'EmployeeController@employeeAdd');
     Route::post('employee/add', 'EmployeeController@employeeAdd');
@@ -316,8 +316,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\Employee','middleware'=>[
     Route::post('employee/edit/{id}', 'EmployeeController@employeeEdit');
     Route::get('employee/delete/{id}', 'EmployeeController@employeeDelete');
 
-    //Module 
-    Route::get('module/list', 'ModuleController@moduleList');
-    Route::get('module/add', 'ModuleController@moduleAdd');
+    //Role 
+    Route::get('settings/role', 'RolePermissionController@roleList');
+    Route::post('settings/role', 'RolePermissionController@roleList');
+    Route::get('settings/role/{role_id}', 'RolePermissionController@roleList');
+    Route::post('settings/role/{role_id}', 'RolePermissionController@roleList');
+    Route::get('settings/delete-role/{role_id}', 'RolePermissionController@deleteRole');
+    Route::get('settings/module', 'RolePermissionController@moduleList');
+    Route::get('settings/permission', 'RolePermissionController@permissionList');
+    Route::get('settings/role-permission/{role_id}', 'RolePermissionController@rolePermission');
+    Route::post('settings/role-permission/{role_id}', 'RolePermissionController@rolePermission');
 
 });

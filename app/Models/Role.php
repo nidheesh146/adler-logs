@@ -13,8 +13,22 @@ class Role extends Model
     protected $guarded = [];
     public $timestamps = false;
 
+    function get_role($role_id){
+        return $this->select(['*'])
+       ->where('role_id',$role_id)
+        ->first();
+    }
     public function get_roles(){
-        return $this->select(['role_id','role_name'])
+        return $this->select(['role_id','role_name','role_description'])
                     ->get();
+    }
+    function insert_role($data){
+        return $this->insert($data);   
+    }
+    function update_role($data,$role_id){
+        return $this->where('role_id',$role_id)->update($data);
+    }
+    function delete_role($role_id){
+        return $this->where('role_id', $role_id)->delete();
     }
 }

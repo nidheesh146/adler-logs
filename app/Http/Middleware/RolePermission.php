@@ -6,6 +6,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
+use App\Models\role_permission_rel;
 
 class RolePermission
 {
@@ -26,7 +28,24 @@ class RolePermission
         if(empty($config['user']) || $config['user']['status'] != 1){
             return redirect("logout");
         }
+        //$role_permission = $this->role_permission($config['user']->role_permission);
+       // $config['permission'] = $role_permission['permission'];
         config($config);
         return $next($request);
     }
+
+    public function role_permission($role_id)
+    {
+        $role = new Role;
+        //$permission_type_rel = new permission_type_rel;
+        $role_permission_rel = new role_permission_rel;
+        $role_data = $role->get_role($role_id);
+        if (!$role_data) 
+        {
+            return redirect("logout");
+        }
+        $module = [];
+        $permission = [];
+    }
+
 }
