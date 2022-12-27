@@ -24,13 +24,13 @@
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                     @if((request()->pr_id) AND (!request()->sr_id)) 
-                        Edit Purchase Requestor Details
+                        Purchase Requestor Details
                     @elseif((!request()->pr_id) AND (request()->sr_id))
-                        Edit Service Requestor Details  
+                         Service Requestor Details  
                     @elseif(request()->get('prsr')=="sr")
-                        Add Service Requestor Details
+                         Service Requestor Details
                     @else
-                        Add Purchase Requestor Details
+                         Purchase Requestor Details
                    @endif
             </h4>
             <div class="az-dashboard-nav">

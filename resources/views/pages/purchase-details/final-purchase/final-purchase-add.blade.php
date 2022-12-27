@@ -7,10 +7,10 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-		
-				 <span><a href="">Add Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order</a></span>
+				<span><a href="">Order</a></span>
+				 <span><a href=""> Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order</a></span>
 				 </div>
-			<h4 class="az-content-title" style="font-size: 20px;">Add Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order
+			<h4 class="az-content-title" style="font-size: 20px;"> Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif Order
               <div class="right-button">
               <div>  
               </div>

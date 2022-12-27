@@ -68,7 +68,7 @@
                             @endif
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Quantity </label>
-                                <input type="text" value="@if($data) {{$data['order_qty']}} @endif" class="form-control " name="Quantity" placeholder="Quantity" readonly>
+                                <input type="text" value="@if($data) {{$data['order_qty']}} @endif" class="form-control " name="Quantity" id="qty" placeholder="Quantity" readonly>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Stock Keeping Unit</label>
@@ -92,7 +92,7 @@
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                <label>Landed Value (INR) *</label>
+                                <label>Landed Rate (INR) *</label>
                                 <input type="text" class="form-control" value="@if($data) {{$data['conversion_rate']}} @endif" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -122,7 +122,6 @@
                                 <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                Save
-                                
                                 </button>
                             </div>
                         </div>
@@ -178,7 +177,7 @@
         curr_net_value()
     });
     function curr_net_value(){
-        $("#value_inr").val(($("#value").val()*$("#conversion_rate").val()).toFixed(2));
+        $("#value_inr").val(($("#qty").val()*$("#conversion_rate").val()).toFixed(2));
     }       
 
     $("#commentForm").validate({

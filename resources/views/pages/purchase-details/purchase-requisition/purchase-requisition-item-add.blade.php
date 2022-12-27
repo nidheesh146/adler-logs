@@ -13,11 +13,11 @@
                             REQUISITION</a></span>
                     <span><a href="">
                             @if (request()->pr_id)
-                                {{ request()->item ? 'Edit' : 'Add' }} Purchase Requisition Details (
+                                Purchase Requisition Details (
                                 {{ $data['master']['pr_no'] }} )
                             @endif
                             @if (request()->sr_id)
-                                {{ request()->item ? 'Edit' : 'Add' }} service requisition Details (
+                                 service requisition Details (
                                 {{ $data['master']['pr_no'] }} )
                             @endif
                         </a></span>
@@ -25,11 +25,11 @@
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                     @if (request()->pr_id)
-                        {{ request()->item ? 'Edit' : 'Add' }} Purchase Requisition Details (
+                         Purchase Requisition Details (
                         {{ $data['master']['pr_no'] }} )
                     @endif
                     @if (request()->sr_id)
-                        {{ request()->item ? 'Edit' : 'Add' }} Service Requisition Details (
+                         Service Requisition Details (
                         {{ $data['master']['pr_no'] }} )
                     @endif
                 </h4>

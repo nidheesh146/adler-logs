@@ -28,8 +28,9 @@ class RolePermission
         if(empty($config['user']) || $config['user']['status'] != 1){
             return redirect("logout");
         }
-        //$role_permission = $this->role_permission($config['user']->role_permission);
-       // $config['permission'] = $role_permission['permission'];
+        $role_permission = $this->role_permission($config['user']['role_permission']);
+        // print_r($role_permission); exit;
+        $config['permission'] = $role_permission['permission'];
         config($config);
         return $next($request);
     }
@@ -37,7 +38,6 @@ class RolePermission
     public function role_permission($role_id)
     {
         $role = new Role;
-        //$permission_type_rel = new permission_type_rel;
         $role_permission_rel = new role_permission_rel;
         $role_data = $role->get_role($role_id);
         if (!$role_data) 
@@ -46,6 +46,17 @@ class RolePermission
         }
         $module = [];
         $permission = [];
+        $get_permission = $role_permission_rel->get_permissions(['role_id'=>$role_id]);
+        if(!$get_permission)
+        {
+            return redirect("logout");
+        }
+        foreach($get_permission as $get_permission)
+        {
+            $permission[] = $get_permission->per_name;
+            $module[$get_permission->per_module] = $get_permission->per_module;
+        }
+        return ['module' => $module, 'permission' => $permission];
     }
 
 }

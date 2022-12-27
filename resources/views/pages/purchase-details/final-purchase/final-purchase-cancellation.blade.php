@@ -159,18 +159,25 @@
                                         @endif
 
 
-
+                                        @if(in_array('order.view',config('permission')))
                                         <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
+                                        @endif
+                                        @if(in_array('order.delete',config('permission')))
                                         <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                                        @endif
                                     </div>
                                     @if($po_data->status!=0)
+                                        @if(in_array('order.cancellation',config('permission')))
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#cancelModal" id="cancel-model" class="cancel-model badge badge-danger" style="width: 68px;padding:6px;">
                                             <i class="fa fa-window-close"></i> Cancel
                                         </a>
+                                        @endif
+                                        @if(in_array('order.partial_cancellation',config('permission')))
                                         <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" rq="{{$po_data->rq_no}}" podate="{{date('d-m-Y',strtotime($po_data->po_date))}}" supplier ="{{$po_data->vendor_name}}" value="{{$po_data->po_id}}" data-target="#parialCancelModal" 
                                             id="partial-cancel-model" class="partial-cancel-model badge badge-warning" style="width:92px;padding:6px;margin-top:2px;background-color:#FF5733 ;color:white;">
                                             <i class="fa fa-window-close"></i> Partial Cancel
                                         </a>
+                                        @endif
                                     @endif
                                     @if($po_data->status==0 )
                                     <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id.'?order=cancel')}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>

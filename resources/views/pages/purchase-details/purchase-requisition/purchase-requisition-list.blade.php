@@ -31,15 +31,17 @@
               <div>  
 				
               </div>
-				@if(request()->get('prsr')=="sr")
-				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}?prsr=sr'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-					Service Requisition
-				</button>
-				@else
-				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}?prsr=pr'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-					Purchase Requisition
-				</button>
-				@endif
+			  
+					@if(request()->get('prsr')=="sr")
+					<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}?prsr=sr'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+						Service Requisition
+					</button>
+					@else
+					<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition')}}?prsr=pr'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+						Purchase Requisition
+					</button>
+					@endif
+			
 			
           </div>
         </h4>
@@ -152,19 +154,33 @@
 										<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 										<div class="dropdown-menu">
 											@if($item['prsr_type']=="PR")
-											<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-											<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
-											<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+												@if(in_array('purchase_details.requisition_edit',config('permission')))
+												<a href="{{url('inventory/edit-purchase-reqisition?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+												@endif
+												@if(in_array('purchase_details.requisition_item_list',config('permission')))
+												<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
+												@endif
+												@if(in_array('purchase_details.requisition_delete',config('permission')))
+												<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+												@endif
 											@else
-											<a href="{{url('inventory/edit-service-reqisition?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-											<a href="{{url('inventory/add-purchase-reqisition-item?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
-											<a href="{{url('inventory/delete-service-reqisition?sr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+												@if(in_array('purchase_details.requisition_edit',config('permission')))
+												<a href="{{url('inventory/edit-service-reqisition?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+												@endif
+												@if(in_array('purchase_details.requisition_item_list',config('permission')))
+												<a href="{{url('inventory/add-purchase-reqisition-item?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
+												@endif
+												@if(in_array('purchase_details.requisition_delete',config('permission')))
+												<a href="{{url('inventory/delete-service-reqisition?sr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+												@endif
 											@endif
 										</div>
-										@if($item['prsr_type']=="PR")
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-purchase-reqisition-item?pr_id='.$item["master_id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
-										@else
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-service-reqisition-item?sr_id='.$item["master_id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
+										@if(in_array('purchase_details.requisition_item_list',config('permission')))
+											@if($item['prsr_type']=="PR")
+											<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-purchase-reqisition-item?pr_id='.$item["master_id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
+											@else
+											<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/get-service-reqisition-item?sr_id='.$item["master_id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	
+											@endif
 										@endif
 									</span>
 									</td>

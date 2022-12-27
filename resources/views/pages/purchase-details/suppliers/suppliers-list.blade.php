@@ -20,7 +20,9 @@
                         </div> -->
                         
                         <div>
-                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/suppliers-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Supplier</button> 
+                            @if(in_array('supplier.add',config('permission')))
+                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/suppliers-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Supplier</button>
+                            @endif 
                         </div>
                     </div>
                 </h4>
@@ -127,10 +129,13 @@
                                         <td>{{$item->supplier_type}}</td>
                                         <td>{{$item->remarks}}</td>
                                         <td> <button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-                                            <div class="dropdown-menu"> 
+                                            <div class="dropdown-menu">
+                                            @if(in_array('supplier.edit',config('permission'))) 
                                             <a href="{{url('inventory/suppliers-add/'.$item->id)}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+                                            @endif
+                                            @if(in_array('supplier.delete',config('permission')))
                                             <a href="{{url("inventory/suppliers-delete/".$item->id)}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
-                                      
+                                            @endif
                                             </div>
                                         
                                         </td>

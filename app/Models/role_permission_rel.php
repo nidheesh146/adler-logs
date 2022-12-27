@@ -27,4 +27,12 @@ class role_permission_rel extends Model
         ->where($data)
         ->first();
       }
+
+      function get_permissions($condition)
+      {
+        return $this->select(['permissions.per_module','permissions.per_display_name','permissions.per_name'])
+              ->join('permissions','permissions.permission_id','=','role_permission_rel.permission_id')
+              ->where($condition)
+              ->get();
+      }
 }

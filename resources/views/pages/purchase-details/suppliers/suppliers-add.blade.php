@@ -13,9 +13,9 @@
           <div class="az-content-body">
               <div class="az-content-breadcrumb"> 
               <span><a href="{{url('inventory/suppliers-list')}}" style="color: #596881;">Suppliers</a></span> 
-                  <span><a href="">{{ $id ? "Edit" : "Add" }} Suppliers </a></span>
+                  <span><a href=""> Suppliers </a></span>
               </div>
-              <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">{{ $id ? "Edit" : "Add" }} Terms and Conditions</h4>
+              <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;"> Terms and Conditions</h4>
               @foreach ($errors->all() as $errorr)
               <div class="alert alert-danger "  role="alert" style="width: 100%;">
                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>

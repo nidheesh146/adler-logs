@@ -93,7 +93,7 @@
                             </div>
                             
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                <label>Conversion rate (INR) *</label>
+                                <label>Landed rate (INR) *</label>
                                 <input type="text" class="form-control" value="@if($data['mrd_conversion_rate']!=NULL) {{$data['mrd_conversion_rate']}} @else {{$data['conversion_rate']}}  @endif"  name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -168,13 +168,15 @@
     });
     $("#rejected_quantity").on('input',function(){
         $("#value").val(($("#rate").val()*$("#rejected_quantity").val()).toFixed(2));
-        $("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
+        //$("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
+        $("#value_inr").val(($("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
     });
     $("#currency").on('change',function(){
         curr_net_value()
     });
     function curr_net_value(){
-        $("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
+        //$("#value_inr").val(($("#rate").val()*$("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
+        $("#value_inr").val(($("#conversion_rate").val()*$("#rejected_quantity").val()).toFixed(2));
     }      
 
     $("#commentForm").validate({

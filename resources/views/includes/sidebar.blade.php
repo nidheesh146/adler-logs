@@ -37,20 +37,39 @@
         'Supplier.add_supplier','Purchase.viewFinalPurchase','Purchase.add1FinalPurchase','Purchase.editFinalPurchase','Purchase.purchaseOderApproval','Quotation.directPurchase','Purchase.viewFinalPurchaseExcess','Purchase.getExcessQty'])) {{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-shopping-cart" style="font-size: 17px;"></i>Purchase Details</a>
           <ul class="nav-sub">
+            @if (in_array('purchase_details.requisition_list',config('permission')) || in_array('purchase_details.requisition_add',config('permission')) || in_array('purchase_details.requisition_edit',config('permission')) || in_array('purchase_details.requisition_delete',config('permission')) ||
+            in_array('purchase_details.requisition_item_list',config('permission')) || in_array('purchase_details.requisition_item_add',config('permission')) || in_array('purchase_details.requisition_item_edit',config('permission')) ) 
             <li class="nav-sub-item @if(in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
             'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
             'Inventory.add_purchase_reqisition_item'])){{'active'}} @endif"><a href="{{url('inventory/get-purchase-reqisition')}}"  class="nav-sub-link">Requisition</a></li>
+            @endif
+            @if (in_array('purchase_details.requisition_approval',config('permission'))) 
             <li class="nav-sub-item @if(in_array($Action,['Approval.getList'])){{'active'}} @endif"><a href="{{url('inventory/purchase-reqisition/approval')}}"  class="nav-sub-link">Requisition Approval</a></li>
-          
+            @endif
+            @if (in_array('purchase_details.request_for_quotation',config('permission'))) 
             <li class="nav-sub-item  @if(in_array($Action,['Quotation.getQuotation'])){{'active'}} @endif "><a href="{{url('inventory/quotation')}}" class="nav-sub-link">Request for Quotation</a></li>
+            @endif
+            @if (in_array('purchase_details.fixed_rate',config('permission'))) 
             <li class="nav-sub-item  @if(in_array($Action,['Quotation.directPurchase'])){{'active'}} @endif "><a href="{{url('inventory/direct/purchase')}}" class="nav-sub-link">Fixed Rate-Purchase/Work Order</a></li>
+            @endif
+            @if (in_array('supplier_qotation.list',config('permission')) || in_array('supplier_qotation.comparison',config('permission')) || in_array('supplier_qotation.item_edit',config('permission'))) 
             <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.getSupplierQuotation', 'SupplierQuotation.viewSupplierQuotationItems', 'SupplierQuotation.getSupplierQuotationEditItem','SupplierQuotation.comparisonOfQuotation'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Supplier Quotation</a></li>
-            {{-- <li class="nav-sub-item @if(in_array($Action,['SupplierQuotation.comparisonOfQuotation'])){{'active'}} @endif"><a href="{{url('inventory/supplier-quotation')}}" class="nav-sub-link">Comparison of Quotation</a></li> --}}
+            @endif
+            @if (in_array('order.list',config('permission')) || in_array('order.creation',config('permission')) || in_array('order.edit',config('permission')) || in_array('order.delete',config('permission')) || in_array('order.change_status',config('permission')) ||  in_array('order.view',config('permission')))
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.getFinalPurchase','Purchase.addFinalPurchase','Purchase.Edit_PO_item','Purchase.viewFinalPurchase','Purchase.add1FinalPurchase','Purchase.editFinalPurchase'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase')}}" class="nav-sub-link">Purchase/Work Order</a></li>
+            @endif
+            @if (in_array('order.approval',config('permission')))
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.purchaseOderApproval','Purchase.viewFinalPurchase'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase/approval')}}" class="nav-sub-link">Order Approval</a></li>
+            @endif
+            @if (in_array('order.cancellation',config('permission')) || in_array('order.partial_cancellation',config('permission')))
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.purchaseOderCancellation','Purchase.viewFinalPurchase'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase/cancellation')}}" class="nav-sub-link">Order Cancellation</a></li>
+            @endif
+            @if (in_array('order.excess_order_qty',config('permission')))
             <li class="nav-sub-item  @if(in_array($Action,['Purchase.viewFinalPurchaseExcess','Purchase.getExcessQty'])){{'active'}} @endif "><a href="{{url('inventory/final-purchase/excess-quantity')}}" class="nav-sub-link">Excess Order Quatity </a></li>
+            @endif
+            @if(in_array('supplier.list',config('permission')) || in_array('supplier.add',config('permission')) || in_array('supplier.edit',config('permission')) || in_array('supplier.delete',config('permission')))
             <li class="nav-sub-item  @if(in_array($Action,['Supplier.list_supplier','Supplier.add_supplier'])){{'active'}} @endif "><a href="{{url('inventory/suppliers-list')}}" class="nav-sub-link">Supplier Master</a></li>
+            @endif
           </ul>
         </li><!-- nav-item -->
         
@@ -68,8 +87,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['MAC.MAClist','MAC.MACAdd','MAC.MACAddItemInfo','MAC.WOAAdd'])){{'active'}} @endif "><a href="{{url('inventory/MAC')}}" class="nav-sub-link">MAC/WOA</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.WORAdd'])){{'active'}} @endif "><a href="{{url('inventory/MRD')}}" class="nav-sub-link">MRD/WOR</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['MRD.RMRNlist','MRD.RMRNAdd','MRD.RMRNAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/RMRN')}}" class="nav-sub-link">RMRN</a></li>  
-            <li class="nav-sub-item  @if(in_array($Action,['MRR.addMRR','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/receipt-report')}}" class="nav-sub-link">MRR/SRR</a></li> 
-            <li class="nav-sub-item  @if(in_array($Action,['MRR.addMRR','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/item_batch')}}" class="nav-sub-link">Item Batch</a></li>  
+            <li class="nav-sub-item  @if(in_array($Action,['MRR.addMRR','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/receipt-report')}}" class="nav-sub-link">MRR/SRR</a></li>  
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockFromProduction','Stock.StockFromProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/FromProduction')}}" class="nav-sub-link">Stock Return From Production</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockTransfer','Stock.StockTransferAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  

@@ -197,8 +197,12 @@
                                             @if($po_data->status!=0 && $po_data->status!=1)
                                             <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model dropdown-item "><i class="fa fa-check-circle"></i> Approve</a>
                                             @endif
+                                            @if(in_array('order.view',config('permission')))
                                             <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
+                                            @endif
+                                            @if(in_array('order.delete',config('permission')))
                                             <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                                            @endif
                                         </div>
                                            {{-- @if($po_data->status!=0 && $po_data->status!=1)
                                             <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model badge badge-success" style="color: #141c2b;text-decoration:none;padding:6px;color:white;">

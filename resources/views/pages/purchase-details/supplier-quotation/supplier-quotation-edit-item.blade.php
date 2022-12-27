@@ -9,12 +9,12 @@
                 <div class="az-content-breadcrumb">
                     <span><a href="{{ url('inventory/supplier-quotation') }}">SUPPLIER QUOTATION </a></span>
                      <span> <a href="{{ url('inventory/view-supplier-quotation-items/'.$rq_no.'/'.$supp_id) }}">Supplier Quotation Items</a></span>
-                      <span><a> Edit Supplier Quotation Item</a></span>
+                      <span><a>  Supplier Quotation Item</a></span>
                 </div>
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                     <!-- {{ request()->item ? 'Edit' : 'Add' }}  Supplier quotation item</h4> -->
-                    Edit Supplier Quotation Item for  ( {{$data['get_item_single']['vendor_id'] }} - {{$data['get_item_single']['vendor_name'] }} ) 
+                     Supplier Quotation Item for  ( {{$data['get_item_single']['vendor_id'] }} - {{$data['get_item_single']['vendor_name'] }} ) 
                 </h4>
                 <!-- <div class="az-dashboard-nav">
                     <nav class="nav">

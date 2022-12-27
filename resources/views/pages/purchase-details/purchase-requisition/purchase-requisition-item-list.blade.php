@@ -22,10 +22,12 @@
                     </div> -->
                 <div>  
             	</div>
-				@if(request()->pr_id)
-              	<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase Requisition Details</button>
-				@else
-				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?sr_id='.request()->sr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Service Requisition Details</button>
+				@if(in_array('purchase_details.requisition_item_add',config('permission')))
+					@if(request()->pr_id)
+					<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase Requisition Details</button>
+					@else
+					<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?sr_id='.request()->sr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Service Requisition Details</button>
+					@endif
 				@endif
             </div>
           </h4>
@@ -77,15 +79,19 @@
 							<td> {{$item['unit_name']}}</td>
 							<td>
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-								<div class="dropdown-menu"> 
-								@if(request()->pr_id)
-									<a href="{{url('inventory/edit-purchase-reqisition-item?pr_id='.request()->pr_id.'&item='.$item['requisition_item_id'])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-									<a href="{{url('inventory/delete-purchase-reqisition-item?pr_id='.request()->pr_id).'&'.'item_id='.$item['requisition_item_id']}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
-								@else
-								<a href="{{url('inventory/edit-purchase-reqisition-item?sr_id='.request()->sr_id.'&item='.$item['requisition_item_id'])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-									<a href="{{url('inventory/delete-purchase-reqisition-item?sr_id='.request()->sr_id).'&'.'item_id='.$item['requisition_item_id']}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+								@if(in_array('purchase_details.requisition_item_edit',config('permission')))
+									<div class="dropdown-menu"> 
+									@if(request()->pr_id)
+										<a href="{{url('inventory/edit-purchase-reqisition-item?pr_id='.request()->pr_id.'&item='.$item['requisition_item_id'])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+										<a href="{{url('inventory/delete-purchase-reqisition-item?pr_id='.request()->pr_id).'&'.'item_id='.$item['requisition_item_id']}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+										
+									@else
+										<a href="{{url('inventory/edit-purchase-reqisition-item?sr_id='.request()->sr_id.'&item='.$item['requisition_item_id'])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+										<a href="{{url('inventory/delete-purchase-reqisition-item?sr_id='.request()->sr_id).'&'.'item_id='.$item['requisition_item_id']}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+										
+									@endif
+									</div>
 								@endif
-								</div>
 							</td>
 						</tr>
 						@endforeach

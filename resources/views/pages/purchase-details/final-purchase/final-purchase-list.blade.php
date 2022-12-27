@@ -20,8 +20,9 @@
                     </div>  
                 <div>  exportFinalPurchase -->
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button> 
+                @if(in_array('order.creation',config('permission')))
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif  Order </button> 
-               
+                @endif
             </h4><br/>
 			
 		   @if (Session::get('success'))
@@ -163,17 +164,25 @@
                                         <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i>
                                     </button>
 								    <div class="dropdown-menu">
+                                        @if(in_array('order.view',config('permission')))
                                         <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
+                                        @endif
                                         @if($po_data->status!=0)
-                                        @if($po_data->status!=1 && $po_data->status!=0)
-                                        <a href="{{url('inventory/final-purchase-edit/'.$po_data->id)}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                                            @if($po_data->status!=1 && $po_data->status!=0)
+                                                @if(in_array('order.edit',config('permission')))
+                                                <a href="{{url('inventory/final-purchase-edit/'.$po_data->id)}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                                                @endif
+                                            @endif
+                                            @if(in_array('order.change_status',config('permission')))
+                                            <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
+                                                <i class="fa fa-check-circle"></i> Change Status
+                                            </a>
+                                            <br/>
+                                            @endif
                                         @endif
-                                        <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" status="{{$po_data->status}}" orderqty="" value="{{$po_data->po_id}}" data-target="#approveModal" id="approve-model" class="approve-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
-                                            <i class="fa fa-check-circle"></i> Change Status
-                                        </a>
-                                        <br/>
-                                        @endif
+                                        @if(in_array('order.delete',config('permission')))
                                         <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                                        @endif
                                     </div>
                                     <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/final-purchase/pdf/'.$po_data->id)}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
                                     

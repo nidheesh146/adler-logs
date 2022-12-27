@@ -17,8 +17,13 @@ class Permission
      */
     public function handle(Request $request, Closure $next, $permission =null)
     {
-        if (!session('user')) {return redirect("/");}
-        return $next($request);
+        //if (!session('user')) {return redirect("/");}
+        //return $next($request);
+        if (in_array($permission, config('permission'))) {
+            return $next($request);
+        }
+        return response()->view('errors/404', [], 404);
+        
     }
 
 }
