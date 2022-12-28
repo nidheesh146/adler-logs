@@ -60,7 +60,10 @@
                                 <label>Item Type </label>
                                 <input type="text" value="@if($data) {{$data['type_name']}} @endif" class="form-control" name="Type" readonly>
                             </div><!-- form-group -->
-                            
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Item Description </label>
+                                <textarea type="text" class="form-control" name="item_description" id="item_description" placeholder="Item Description" readonly>@if($data) {{$data['discription']}} @endif</textarea>
+                            </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Lot Number *</label>
                                 <input type="text" value="@if($data) {{$data['lot_number']}} @endif" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number" readonly>

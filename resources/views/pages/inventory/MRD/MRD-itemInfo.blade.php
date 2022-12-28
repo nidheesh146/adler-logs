@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\MRDController')
 
 <div class="az-content az-content-dashboard">
   <br>
@@ -50,7 +51,8 @@
                                 <div class="form-devider"></div>
                             </div>
                          </div>
-
+                         
+                        <?php $currency_id = $fn->getCurrency($data['invoice_item']); ?> 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Item code </label>
@@ -60,7 +62,10 @@
                                 <label>Item Type </label>
                                 <input type="text" value="@if($data) {{$data['type_name']}} @endif" class="form-control" name="Type" readonly>
                             </div><!-- form-group -->
-                            
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Item Description </label>
+                                <textarea type="text" class="form-control" name="item_description" id="item_description" placeholder="Item Description" readonly>@if($data) {{$data['discription']}} @endif</textarea>
+                            </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Lot Number *</label>
                                 <input type="text" value="@if($data) {{$data['lot_number']}} @endif" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number" readonly>
@@ -87,7 +92,7 @@
                                 <select class="form-control" name="currency" id="currency" readonly>
                                 <option value="">--- select one ---</option> 
                                     @foreach ($currency as $item)
-                                        <option value="{{$item->currency_id}}" @if($item->currency_id == $data['currency_id']) selected  @endif >{{$item->currency_code}}</option>
+                                        <option value="{{$item->currency_id}}" @if($item->currency_id == $data['currency_id']) selected @elseif($item->currency_id==$currency_id) selected  @endif >{{$item->currency_code}}</option>
                                     @endforeach
                                 </select>
                             </div>

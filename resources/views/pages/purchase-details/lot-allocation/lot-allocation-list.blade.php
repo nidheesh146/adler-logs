@@ -108,8 +108,8 @@
 						<th>Invoice Qty</th>
 						<th>Supplier</th>
 						<th>Received Qty</th>
-						<th>Accepted Qty</th>
-						<th>Rejected Qty</th>
+						{{--<th>Accepted Qty</th>
+						<th>Rejected Qty</th>--}}
 						{{-- <th>Transporter</th>
 						<th>Vehicle No</th> --}}
 						<th>Action</th>
@@ -126,8 +126,8 @@
 						<td>{{$datas['inv_odr_qty']}}</td>
 						<td>{{$datas['vendor_id']}}-{{$datas['vendor_name']}}</td>
 						<td>{{$datas['qty_received']}}</td>
-						<td>{{$datas['qty_accepted']}}</td>
-						<td>{{$datas['qty_rejected']}}</td>
+						{{--<td>{{$datas['qty_accepted']}}</td>
+						<td>{{$datas['qty_rejected']}}</td>--}}
 						{{-- <td>{{$data['transporter_name']}}</td>
 						<td>{{$data['vehicle_number']}}</td> --}}
 						<td>
@@ -232,10 +232,10 @@
                                         <input type="text"  value="" class="form-control" name="qty_received" id="qty_received" placeholder="Quantity Received">
                                     </div>
     
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                    {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Quantity accepted </label>
-                                        <input type="text"  value="" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Quantity Aceepted">
-                                    </div>
+                                        <input type="text"  value="" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Quantity Aceepted" >
+                                    </div>--}}
     
                                     {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Quantity rejected </label>

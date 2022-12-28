@@ -176,10 +176,10 @@
                                         <input type="text"  value="" class="form-control" name="qty_received" id="qty_received" placeholder="Quantity Received">
                                     </div>
     
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                    {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Quantity accepted </label>
-                                        <input type="text"  value="0" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Qty Aceepted">
-                                    </div>
+                                        <input type="text"  value="0" class="form-control" name="qty_accepted" id="qty_accepted" placeholder="Qty Aceepted" disabled>
+                                    </div>--}}
     
                                     {{-- <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Quantity rejected </label>

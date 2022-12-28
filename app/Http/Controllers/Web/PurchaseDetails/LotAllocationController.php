@@ -87,8 +87,8 @@ class LotAllocationController extends Controller
                 $data['rev_number'] = $request->rev_no;
                 $data['rev_date'] = $request->rev_date;
                 $data['qty_received'] = $request->qty_received;
-                $data['qty_accepted'] = $request->qty_accepted;
-                $data['available_qty'] = $request->qty_accepted;
+                $data['qty_accepted'] = $request->qty_received;
+                $data['available_qty'] = $request->qty_received;
                 $data['qty_rejected'] = $request->qty_rejected;
                 $data['vehicle_number'] = $request->vehicle_no;
                 $data['transporter_name'] = $request->transporter_name;
