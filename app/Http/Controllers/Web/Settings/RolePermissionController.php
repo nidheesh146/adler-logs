@@ -48,10 +48,10 @@ class RolePermissionController extends Controller
         if ($request->role_id) {
             $edit = $this->Role->get_role($request->role_id);
             //print_r($edit);exit;
-            return view('pages\settings\role',compact('data','edit'));
+            return view('pages.settings.role',compact('data','edit'));
         }
         else
-        return view('pages\settings\role',compact('data'));
+        return view('pages.settings.role',compact('data'));
     }
     public function deleteRole(Request $request,)
     {
@@ -71,7 +71,7 @@ class RolePermissionController extends Controller
         foreach ($get_permission as $get_permission) {
             $data['permission'][$get_permission['per_module']][$get_permission['permission_id']] = $get_permission['per_display_name'];
         }
-        return view('pages\settings\permission',compact('data'));
+        return view('pages.settings.permission',compact('data'));
     }
     public function rolePermission(Request $request, $role_id)
     {
@@ -107,6 +107,6 @@ class RolePermissionController extends Controller
             $get_perm = $this->role_permission_rel->select_permission(['permission_id' => $get_permission['permission_id'], 'role_id' => $role_id]);
             //$data['permission'][$get_permission['per_module']][$get_permission['permission_id']]['checked'] = $get_perm ? 'checked' : '';
         }
-        return view('pages\settings\role-permission',compact('data'));
+        return view('pages.settings.role-permission',compact('data'));
     }
 }
