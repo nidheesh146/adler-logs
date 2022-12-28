@@ -63,7 +63,7 @@ class RolePermissionController extends Controller
     public function moduleList()
     {
         $data['module'] = $this->Permission->get_modules();
-        return view('pages\settings\module',compact('data'));
+        return view('pages.settings.module',compact('data'));
     }
     public function permissionList()
     {
