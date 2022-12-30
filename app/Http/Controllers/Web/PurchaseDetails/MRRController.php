@@ -83,13 +83,16 @@ class MRRController extends Controller
             {
                 if(!$request->id)
                 {
-                    $item_type = $this->get_item_type($request->mac_number);
-                    if($item_type=="Direct Items"){
-                        $Data['mrr_number'] = "MRR2-".$this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR2%')->count(),1); 
-                    }
-                    if($item_type=="Indirect Items"){
-                        $Data['mrr_number'] = "MRR3-" . $this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR3%')->count(),1); 
-                    }
+                    // $item_type = $this->get_item_type($request->mac_number);
+                    // if($item_type=="Direct Items"){
+                    //     $Data['mrr_number'] = "MRR2-".$this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR2%')->count(),1); 
+                    // }
+                    // if($item_type=="Indirect Items"){
+                    //     $Data['mrr_number'] = "MRR3-" . $this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR3%')->count(),1); 
+                    // }
+                    $miq_number = inv_mac::leftJoin('inv_miq','inv_miq.id','=','inv_mac.miq_id')
+                                        ->where('inv_mac.id','=',$request->mac_number)->pluck('inv_miq.miq_number')->first();
+                    $Data['mrr_number'] = str_replace("MIQ", "MRR", $miq_number);                    
                     $Data['mrr_date'] = date('Y-m-d', strtotime($request->mrr_date));
                     $Data['mac_id'] = $request->mac_number;
                     $Data['created_by']= $request->created_by;

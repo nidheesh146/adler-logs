@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('fn', 'App\Http\Controllers\Web\Settings\RolePermissionController')
 <div class="az-content az-content-dashboard">
   <br>
   <div class="container">
@@ -13,10 +14,10 @@
         <div class="row ">
             <div class="col-lg-12 col-xl-12 mg-t-20 mg-lg-t-0">
                 <!-- <div class="card card-table-one" style="min-height: 500px;"> -->
-                    @if (Session::get('succs'))
+                    @if (Session::get('success'))
                     <div class="alert alert-success " style="width: 100%;">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <i class="icon fa fa-check"></i> {{ Session::get('succs') }}
+                        <i class="icon fa fa-check"></i> {{ Session::get('success') }}
                     </div>
                     @endif
                             <p class="az-content-text mg-b-20"></p>
@@ -27,7 +28,7 @@
                                     <thead>
                                         <tr>
                                             <th>&nbsp;<input type="checkbox"  class="parend-module">&nbsp;Module</th>
-                                            <th>&nbsp;&nbsp;Permission</th>
+                                            <th>&nbsp;&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -39,7 +40,10 @@
                                             @foreach ($organization as $keys => $organizations)
                                             <tr>
                                             <th></th>
-                                            <td><input type="checkbox" class="{{str_replace(' ', '', $key)}} allmodule"  name="permission[]"  value="{{$keys}}" >&nbsp;{{$organizations}}</td>
+                                            {{--$keys--}}
+                                            <td>@php $flag = $fn->hasPermission($role['role_id'], $keys); @endphp
+                                                <input type="checkbox" class="{{str_replace(' ', '', $key)}} allmodule" @if($flag==1) checked @endif name="permission[]"  value="{{$keys}}" >&nbsp;{{$organizations}}
+                                            </td>
                                         </tr>
                                         @endforeach
                                         @endforeach

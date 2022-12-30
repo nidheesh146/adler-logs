@@ -80,10 +80,16 @@ class RolePermissionController extends Controller
             if ($request->permission) {
                 $permarray = [];
                 foreach ($request->permission as $perm) {
-                    $permarray[] = [
-                        'role_id' => $role_id,
-                        'permission_id' => $perm,
-                    ];
+                    $role_permission = role_permission_rel::where('role_id','=', $role_id)
+                                    ->where('permission_id','=',$perm,)
+                                    ->exists();
+                    if(!$role_permission)
+                    {
+                        $permarray[] = [
+                            'role_id' => $role_id,
+                            'permission_id' => $perm,
+                        ];
+                    }
                 }
                 $roleper = $this->Role->get_role($role_id);
                 // if (count($permarray) > 0 && $roleper->created_org != 0) {
@@ -107,6 +113,17 @@ class RolePermissionController extends Controller
             $get_perm = $this->role_permission_rel->select_permission(['permission_id' => $get_permission['permission_id'], 'role_id' => $role_id]);
             //$data['permission'][$get_permission['per_module']][$get_permission['permission_id']]['checked'] = $get_perm ? 'checked' : '';
         }
-        return view('pages.settings.role-permission',compact('data'));
+        $role = $this->Role->get_role($role_id);
+        return view('pages.settings.role-permission',compact('data','role'));
+    }
+    function hasPermission($role_id, $permission)
+    {
+        $role_permission = role_permission_rel::where('role_id','=', $role_id)
+                                    ->where('permission_id','=',$permission,)
+                                    ->exists();
+        if($role_permission)
+        return 1;
+        else
+        return 0;
     }
 }

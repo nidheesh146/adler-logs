@@ -83,7 +83,7 @@
                     <td>: {{date('d-m-Y g:i a',strtotime($mrr['created_at']))}}</td>
                 </tr>
                 <tr>
-                    <td>No</td>
+                    <td>MRR No</td>
                     <td>: {{$mrr['mrr_number']}}</td>
                 </tr>
             </table>
@@ -135,6 +135,14 @@
                 <td>MAC Date</td>
                 <td>:  &nbsp; &nbsp; &nbsp; {{date('d-m-Y', strtotime($mrr['mac_date']))}}</td>
             </tr>
+            <tr>
+                <td>MRD No</td>
+                <td>:  &nbsp; &nbsp; &nbsp; @if($mrr['mrd_number']) {{$mrr['mrd_number']}} @endif</td>
+            </tr>
+            <tr>
+                <td>MRD Date</td>
+                <td>:  &nbsp; &nbsp; &nbsp; @if($mrr['mrd_date']) {{date('d-m-Y', strtotime($mrr['mrd_date']))}} @endif</td>
+            </tr>
         </table>
     </div>
     <br/>
@@ -148,16 +156,18 @@
     </div>
     <table border="1" style="font-size:12px;width:100%;">
         <tr class="head" style="font-size:10px;">
-            <th>SI NO</th>
-            <th>ITEM CODE</th>
-            <th style="width:20%">DESCRIPTION</th>
-            <th>ORDERED QTY</th>
-            <th>RECEIVED QTY</th>
-            <th>ACCEPTED QTY</th>
-            <th>REJECTED QTY</th>
-            <th>UNIT</th>
-            <th style="width:20%">REASON FOR REJECTION</th>
-            <th style="width:20%">REMARKS</th>
+            <th>SI No</th>
+            <th style="width:8%">Item Code</th>
+            <th style="width:20%">Description</th>
+            <th>Ordered Qty</th>
+            <th>Received Qty</th>
+            <th>Accepted Qty</th>
+            <th>Rejected Qty</th>
+            <th>Unit Rate</th>
+            <th style="width:7%">PO No.</th>
+            <th style="width:5%">PO Date</th>
+            <th style="width:10%">Reason for rejection</th>
+            <th style="width:6%">Lot Number</th>
         </tr>
         @php $i=1; @endphp
             @foreach($items as $item)
@@ -165,11 +175,13 @@
             <td>{{$i++}}</td>
             <td>{{$item['item_code']}}</td>
             <td>{{$item['item_description']}}</td>
-            <td>{{$item['actual_order_qty']}}</td>
-            <td>{{$item['received_qty']}}</td>
-            <td>{{$item['accepted_quantity']}}</td>
-            <td>{{$item['rejected_quantity']}}</td>
-            <td>{{$item['unit_name']}}</td>
+            <td>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
+            <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
+            <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
+            <td>{{$item['rejected_quantity']}} {{$item['unit_name']}}</td>
+            <td>{{$item['rate']}}</td>
+            <td>{{$item['po_number']}}</td>
+            <td>{{date('d-m-Y', strtotime($item['po_date']))}}</td>
             <td>{{$item['rejection_reason']}}</td>
             <td>{{$item['lot_number']}}</td>
             

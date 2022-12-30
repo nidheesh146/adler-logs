@@ -17,6 +17,7 @@ use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\currency_exchange_rate;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
+use App\Models\PurchaseDetails\inv_purchase_req_item_approve;
 
 class InventoryController extends Controller
 {
@@ -467,4 +468,13 @@ class InventoryController extends Controller
 
 
         }
+
+    public function getStatus($pr_item_id)
+    {
+        $status = inv_purchase_req_item::leftjoin('inv_purchase_req_item_approve','inv_purchase_req_item_approve.pr_item_id', '=', 'inv_purchase_req_item.requisition_item_id')
+                            ->where('inv_purchase_req_item_approve.pr_item_id','=',$pr_item_id)
+                            ->pluck('inv_purchase_req_item_approve.status')
+                            ->first();
+        return $status;
+    }
 }
