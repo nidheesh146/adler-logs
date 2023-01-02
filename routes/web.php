@@ -284,6 +284,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
 
     // Row material
     Route::get('row-material/list','RowMaterialController@materialList');
+    Route::get('row-material/upload','RowMaterialController@materialUpload');
+    Route::post('row-material/upload','RowMaterialController@materialPostUpload');
     Route::get('row-material/add','RowMaterialController@materialAdd');
     Route::post('row-material/add','RowMaterialController@materialAdd');
     Route::get('row-material/edit','RowMaterialController@materialEdit');

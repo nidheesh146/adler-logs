@@ -130,15 +130,16 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit','RowMaterial.fixedRateList','RowMaterial.getfixedRateUpload'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit','RowMaterial.fixedRateList','RowMaterial.getfixedRateUpload',
+        'RowMaterial.materialUpload'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-swatchbook" style="font-size: 19px"></i>Row Material</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit'])){{'active'}} @endif ">
             <a href="{{url('row-material/list')}}"  class="nav-sub-link">Row Materials</a>
             </li>
-            <!-- <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
-            <a href="{{url('batchcard/batchcard-add')}}"  class="nav-sub-link">Row Material Upload</a>
-            </li> -->
+            <li class="nav-sub-item @if(in_array($Action,['RowMaterial.materialUpload'])){{'active'}} @endif ">
+            <a href="{{url('row-material/upload')}}"  class="nav-sub-link">Row Material Upload</a>
+            </li>
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.fixedRateList'])){{'active'}} @endif ">
             <a href="{{url('row-material/fixed-rate')}}"  class="nav-sub-link">Fixed Rate Row Material</a>
             </li>

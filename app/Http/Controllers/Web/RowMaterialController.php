@@ -198,6 +198,144 @@ class RowMaterialController extends Controller
             return view('pages/row-material/material-add',compact('data','edit'));
     }
 
+    public function materialUpload(Request $request)
+    {
+        return view('pages/row-material/material-list-upload');
+    }
+    public function materialPostUpload(Request $request)
+    {
+        $file = $request->file('file');
+        if ($file) 
+        {
+            $ExcelOBJ = new \stdClass();
+            $path = storage_path().'/app/'.$request->file('file')->store('temp');
+            $ExcelOBJ->inputFileName = $path;
+            $ExcelOBJ->inputFileType = 'Xlsx';
+            $ExcelOBJ->spreadsheet = new Spreadsheet();
+            $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
+            $ExcelOBJ->reader->setReadDataOnly(true);
+            $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
+            $no_column = 36;
+            $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
+            //echo $sheet1_column_count;exit;
+            if($sheet1_column_count == $no_column)
+            {
+                $res = $this->rawmaterialsplitsheet($ExcelOBJ);
+                //print_r($res);exit;
+                if($res==1)
+                {
+                   $request->session()->flash('success',  "Successfully uploaded.");
+                   return redirect('row-material/upload');
+                }
+                else{
+                   $request->session()->flash('error',  "The data already uploaded.");
+                   return redirect('row-material/upload');
+                }
+           }
+           else 
+           {
+               $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
+               return redirect('row-material/upload');
+           }
+        }
+
+    }
+    function rawmaterialsplitsheet($ExcelOBJ)
+    {
+        $ExcelOBJ->SQLdata = [];
+        $ExcelOBJ->arrayinc = 0;
+        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) 
+        {
+            $ExcelOBJ->sectionName = '';
+            $ExcelOBJ->sheetName = $worksheet['worksheetName'];
+            $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
+            $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
+            $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
+            $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
+            //print_r(json_encode($ExcelOBJ->excelworksheet));
+            $ExcelOBJ->date_created = date('Y-m-d H:i:s');
+            $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
+            $res = $this->insert_rawmaterial($ExcelOBJ);
+            return $res;
+        }
+    }
+    public function insert_rawmaterial($ExcelOBJ)
+    {
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
+        {
+            if($key > 1)
+            { 
+                if(!DB::table('inventory_rawmaterial')->where('item_code',$excelsheet[1])->first())
+                {   
+                    $data['item_code'] = $excelsheet[1];
+                    $data['item_name'] = $excelsheet[2];
+                    $data['item_short_name'] = $excelsheet[3];
+                    $data['discription'] = $excelsheet[4];
+                    $data['short_description'] =  $excelsheet[5];
+                    $data['item_type_id'] = $this->identify_id($excelsheet[6],"ITEM TYPE");
+                    $data['item_type_id_2'] = $this->identify_id($excelsheet[7],"ITEM TYPE 2");
+                    $data['receipt_unit_id'] = $this->identify_id($excelsheet[8],"RECEIPT UNIT");
+                    $data['issue_unit_id'] = $this->identify_id($excelsheet[8],"ISSUE UNIT");
+                    $data['stock_keeping_unit_id'] =  $this->identify_id($excelsheet[8],"STOCK KEEPING UNIT");
+                    $data['conv_fact_in_ru'] =  $excelsheet[11];
+                    $data['conv_fact_in_iu'] =  $excelsheet[12];
+                    $data['reorder_level'] = $excelsheet[13];
+                    $data['min_stock'] = $excelsheet[14];
+                    $data['max_stock'] = $excelsheet[15];
+                    $data['over_stock'] = $excelsheet[16];
+                    $data['item_origin'] = $excelsheet[17];
+                    $data['min_stock_set_date'] =   (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[18]))->format('Y-m-d') == '1970-01-01') ? '2000-01-01' : \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[18]))->format('Y-m-d');
+                    $data['max_stock_set_date'] =   (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[19]))->format('Y-m-d') == '1970-01-01') ? '2000-01-01' : \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[19]))->format('Y-m-d');
+                    $data['reorder_set_date']   =   (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[20]))->format('Y-m-d') == '1970-01-01') ? '2000-01-01' : \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[20]))->format('Y-m-d');
+                    $data['overstock_set_date'] =   (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[21]))->format('Y-m-d') == '1970-01-01') ? '2000-01-01' : \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[21]))->format('Y-m-d');
+                    $data['quantity'] = $excelsheet[22];
+                    $data['stock_type'] = $excelsheet[23];
+                    $data['brand_id'] = $excelsheet[24];
+                    $data['company_purchase_rate'] = $excelsheet[25];
+                    $data['purchase_rate'] = $excelsheet[26];
+                    $data['sales_rate'] = $excelsheet[27];
+                    $data['ad_sp1'] = $excelsheet[28];
+                    $data['ad_sp2'] = $excelsheet[29];
+                    $data['path'] = $excelsheet[30];
+                    $data['hierarchy_path'] = $excelsheet[31];
+                    $data['unit_weight_kgs'] = $excelsheet[32];
+                    $data['revision_record'] = $excelsheet[33];
+                    $data['is_active'] = 1;
+                    $data['expiry_control'] = ($excelsheet[35] == 'N') ? 0 : 1;
+                    $data['created'] = date('Y-m-d');
+                    $res = DB::table('inventory_rawmaterial')->insert($data);
+                }
+                
+            }
+    
+        }
+        if($res)
+        return 1;
+        else 
+        return 0;
+    }
+    function identify_id($data,$type)
+    {
+        if($type=='ITEM TYPE'){
+           return DB::table('inv_item_type')->where('type_name',$data)->first()->id;
+        }
+        if($type=='ITEM TYPE 2'){
+           return DB::table('inv_item_type_2')->where('type_name',$data)->first()->id;
+        }
+        if($type=='RECEIPT UNIT'){
+         return   DB::table('inv_unit')->where('unit_name',$data)->first()->id;
+        }
+    
+        if($type=='ISSUE UNIT')
+        {
+            return   DB::table('inventory_rawmaterial_issue_unit')->where('unit_name',$data)->first()->id;
+        }
+        if($type=='STOCK KEEPING UNIT')
+        {
+            return   DB::table('inventory_rawmaterial_stock_keeping_unit')->where('unit_name',$data)->first()->id;
+        }
+    }
+
     public function fixedRateList(Request $request)
     {
         $condition = [];
@@ -225,16 +363,14 @@ class RowMaterialController extends Controller
     public function fixedRateItemUpload(Request $request)
     {
         $file = $request->file('file');
-        if ($file) {
+        if ($file) 
+        {
 
             $ExcelOBJ = new \stdClass();
-
             // CONF
             $path = storage_path().'/app/'.$request->file('file')->store('temp');
-
             $ExcelOBJ->inputFileName = $path;
             $ExcelOBJ->inputFileType = 'Xlsx';
-
             // $ExcelOBJ->filename = 'Book1.xlsx';
             // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
             $ExcelOBJ->spreadsheet = new Spreadsheet();
