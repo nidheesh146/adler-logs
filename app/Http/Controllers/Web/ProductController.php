@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use App\Models\product;
-
+use App\Models\product_input_material;
+use Validator;
+use Redirect;
 class ProductController extends Controller
 {
     public function __construct()
     {
        
         $this->product = new product;
+        $this->product_input_material = new product_input_material;
     }
 
     public function productList()
@@ -21,7 +24,54 @@ class ProductController extends Controller
         $data['products'] = $this->product->get_products([]);
         return view('pages/product/product-list',compact('data'));
     }
+    public function addInputMaterial(Request $request,$product_id=null)
+    {
+        if ($request->isMethod('post')) 
+        {
+            $validation['product_id'] = ['required'];
+            $validation['moreItems.*.Itemcode'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                foreach ($request->moreItems as $key => $value) 
+                {
+                    $Request = [
+                                    "product_id"=>$request['product_id'],
+                                    "item_id" => $value['Itemcode'],
+                                    "created_at" => date('Y-m-d H:i:s'),
 
+                                ];
+                    $add[]=$this->product_input_material->insert_data($Request);
+                }
+                if(count($add)==count($request->moreItems))
+                $request->session()->flash('success', "Input material added successfully..");
+                else
+                $request->session()->flash('error', "Input material adding failed..");
+                return redirect("product/add-input-material?product_id=".$request->product_id);
+            }
+            if($validator->errors()->all())
+            {
+                return redirect("product/add-input-material?product_id=".$request->product_id)->withErrors($validator)->withInput();
+            }
+        }
+        else
+        {
+            $product = product::find($request->product_id);
+            $materials = $this->product_input_material->getAllData(['product_input_material.product_id'=>$request->product_id]);
+            //print_r($materials);exit;
+            return view('pages/product/add-input-material', compact('product','materials'));
+        }
+    }
+
+    public function deleteInputMaterial(Request $request)
+    {
+        $delete = product_input_material::where('id','=',$request->id)->delete();
+        if($delete)
+        $request->session()->flash('succ', "Input material deleted successfully..");
+        else
+        $request->session()->flash('err', "Input material deleting failed..");
+        return Redirect::back();
+    }
     public function getProductUpload()
     {
         return view('pages/product/product-upload');

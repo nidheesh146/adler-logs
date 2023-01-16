@@ -2,7 +2,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-    <title> MRR_{{$mrr['vendor_name']}}_{{$mrr['mrr_date']}}</title>
+    <title> @if($type=='po') MRR_{{$mrr['vendor_name']}}_{{$mrr['mrr_date']}} @else SRR_{{$mrr['vendor_name']}}_{{$mrr['mrr_date']}} @endif </title>
 </head>
 <style>
     .main-heading{
@@ -83,7 +83,7 @@
                     <td>: {{date('d-m-Y g:i a',strtotime($mrr['created_at']))}}</td>
                 </tr>
                 <tr>
-                    <td>MRR No</td>
+                    <td>@if($type=='po') MRR @else SRR @endif No</td>
                     <td>: {{$mrr['mrr_number']}}</td>
                 </tr>
             </table>
@@ -128,19 +128,19 @@
                 <td></td>
             </tr>
             <tr>
-                <td>MAC No</td>
+                <td>@if($type=='po') MAC @else WOA @endif No</td>
                 <td>:  &nbsp; &nbsp; &nbsp; {{$mrr['mac_number']}}</td>
             </tr>
             <tr>
-                <td>MAC Date</td>
+                <td>@if($type=='po') MAC @else WOA @endif Date</td>
                 <td>:  &nbsp; &nbsp; &nbsp; {{date('d-m-Y', strtotime($mrr['mac_date']))}}</td>
             </tr>
             <tr>
-                <td>MRD No</td>
+                <td>@if($type=='po') MRD @else WOR @endif No</td>
                 <td>:  &nbsp; &nbsp; &nbsp; @if($mrr['mrd_number']) {{$mrr['mrd_number']}} @endif</td>
             </tr>
             <tr>
-                <td>MRD Date</td>
+                <td>@if($type=='po') MRD @else WOR @endif Date</td>
                 <td>:  &nbsp; &nbsp; &nbsp; @if($mrr['mrd_date']) {{date('d-m-Y', strtotime($mrr['mrd_date']))}} @endif</td>
             </tr>
         </table>
@@ -163,14 +163,15 @@
             <th>Received Qty</th>
             <th>Accepted Qty</th>
             <th>Rejected Qty</th>
-            <th>Unit Rate</th>
-            <th style="width:7%">PO No.</th>
-            <th style="width:5%">PO Date</th>
+            <th>MIQ Rate</th>
+            <th>@if($type=='po') PO @else WO @endif Rate</th>
+            <th style="width:7%">@if($type=='po') PO @else WO @endif No.</th>
+            <th style="width:5%">@if($type=='po') PO @else WO @endif Date</th>
             <th style="width:10%">Reason for rejection</th>
             <th style="width:6%">Lot Number</th>
         </tr>
         @php $i=1; @endphp
-            @foreach($items as $item)
+        @foreach($items as $item)
         <tr>
             <td>{{$i++}}</td>
             <td>{{$item['item_code']}}</td>
@@ -179,6 +180,7 @@
             <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
             <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
             <td>{{$item['rejected_quantity']}} {{$item['unit_name']}}</td>
+            <td>{{$item['rate']}}</td>
             <td>{{$item['rate']}}</td>
             <td>{{$item['po_number']}}</td>
             <td>{{date('d-m-Y', strtotime($item['po_date']))}}</td>

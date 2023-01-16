@@ -111,8 +111,8 @@
 					</tr>
 				</thead>
 				<tbody>
+                    @foreach($data as $mrr)
                     <tr>
-                        @foreach($data as $mrr)
                         <td>{{$mrr['mrr_number']}}</td>
                         <td>{{$mrr['mac_number']}}</td>
                         <td>{{$mrr['vendor_name']}}</td>
@@ -127,8 +127,8 @@
                             <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/receipt-report/'.$mrr['id'].'/report')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;MRR</a>
                             @endif
                         </td>
-                        @endforeach
                     </tr>
+                    @endforeach
 				</tbody>
 			</table>
 			<div class="box-footer clearfix">

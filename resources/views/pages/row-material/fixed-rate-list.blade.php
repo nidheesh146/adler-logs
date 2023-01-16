@@ -7,12 +7,12 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				<span><a href="" style="color: #596881;">ROW MATERIAL</a></span> 
+				<span><a href="" style="color: #596881;">RAW MATERIAL</a></span> 
                 <span><a href="" style="color: #596881;">
-                FIXED RATE ROW MATERIAL 
+                FIXED RATE RAW MATERIAL 
                 </a></span>
 			</div>
-			<h4 class="az-content-title" style="font-size: 20px;">Fixed Rate Row Materials
+			<h4 class="az-content-title" style="font-size: 20px;">Fixed Rate Raw Materials
 			<button style="float: right;font-size: 14px;" onclick="document.location.href=''" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Fixed Rate Row Material</button>
             </h4>
 			

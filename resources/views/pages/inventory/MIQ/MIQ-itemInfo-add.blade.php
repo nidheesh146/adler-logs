@@ -68,7 +68,7 @@
                             @if($data['type_name']=="Direct Items")
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Lot Number *</label>
-                                <input type="text" value="@if($data) {{$data['lot_number']}} @endif" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number">
+                                <input type="text" value="@if($data) {{$data['lot_number']}} @endif" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number" readonly>
                             </div><!-- form-group -->
                             @endif
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">

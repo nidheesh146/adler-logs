@@ -60,6 +60,9 @@ class inv_purchase_req_quotation extends Model
                     $mailData->vendor_name = $supp->vendor_name;
 
                     if(!empty($mailData->to) && count($mailData->to) > 0 ){
+                        $mailData->quotation_id = $quotation_id;
+                        $mailData->supplier_id = $supplier_id;
+                   // $mailData->url = url('request-for-quotation/'.(new Controller)->encrypt($quotation_id).'/'.(new Controller)->encrypt($supplier_id));
                     $mailData->url = url('request-for-quotation/'.(new Controller)->encrypt($quotation_id).'/'.(new Controller)->encrypt($supplier_id));
                     $job = (new \App\Jobs\EmailJobs($mailData))
                     ->delay(
@@ -107,7 +110,9 @@ class inv_purchase_req_quotation extends Model
 
                     if(!empty($mailData->to) && count($mailData->to) > 0 && 1==2)
                     {
-                        $mailData->url = url('request-for-quotation/'.(new Controller)->encrypt($quotation_id).'/'.(new Controller)->encrypt($request->Supplier));
+                        $mailData->quotation_id = $quotation_id;
+                        $mailData->supplier_id = $request->Supplier;
+                        //$mailData->url = url('request-for-quotation/'.(new Controller)->encrypt($quotation_id).'/'.(new Controller)->encrypt($request->Supplier));
                         $job = (new \App\Jobs\EmailJobs($mailData))
                         ->delay(
                             now()

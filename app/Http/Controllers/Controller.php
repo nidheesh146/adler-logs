@@ -47,8 +47,15 @@ class Controller extends BaseController
         $Number = (($Number + 1) / 9999);
         list($whole, $decimal) = explode('.', $Number);
         if(!$decimal){
+            if(date('m')==01 || date('m')==02 || date('m')=='03')
+            return date('y',strtotime("-1 year")).date('m')."9999";
+            else
             return date('y').date('m')."9999";
+
         }
+        if(date('m')==01 || date('m')==02 || date('m')==03)
+        return date('y',strtotime("-1 year")).date('m').substr($decimal, 0, 4);
+        else
         return date('y').date('m').substr($decimal, 0, 4);
     }
 
@@ -58,23 +65,49 @@ class Controller extends BaseController
         list($whole, $decimal) = explode('.', $Number);
         if(!$decimal){
             if($type==1)
-            return date('y').date('y', strtotime('+1 year')).'-'."999";
+            {
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                return date('y', strtotime('-1 year')).date('y').'-'."999";
+                else
+                return date('y').date('y', strtotime('+1 year')).'-'."999";
+            }
             else
-            return date('y').date('y', strtotime('+1 year')).'ID-'."999";
+            {
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                return date('y', strtotime('-1 year')).date('y').'ID-'."999";
+                else
+                return date('y').date('y', strtotime('+1 year')).'ID-'."999";
+            }
 
         }
         if($type==1)
-        return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
+        {
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            return date('y', strtotime('-1 year')).date('y').'-'.substr($decimal, 0, 3);
+            else
+            return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
+        }
         else
-        return date('y').date('y', strtotime('+1 year')).'ID-'.substr($decimal, 0, 3);
+        {
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            return  date('y', strtotime('-1 year')).date('y').'ID-'.substr($decimal, 0, 3);
+            else
+            return date('y').date('y', strtotime('+1 year')).'ID-'.substr($decimal, 0, 3);
+        }
     }
 
     function wo_num_gen($Number){
         $Number = (($Number + 1) / 999);
         list($whole, $decimal) = explode('.', $Number);
         if(!$decimal){
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            return date('y', strtotime('-1 year')).date('y').'-'."999";
+            else
             return date('y').date('y', strtotime('+1 year')).'-'."999";
         }
+        if(date('m')==01 || date('m')==02 || date('m')==03)
+        return date('y', strtotime('-1 year')).date('y').'-'.substr($decimal, 0, 3);
+        else
         return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
     }
 
@@ -82,8 +115,14 @@ class Controller extends BaseController
         $Number = (($Number + 1) / 999);
         list($whole, $decimal) = explode('.', $Number);
         if(!$decimal){
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            return "999".date('m').date('y', strtotime('-1 year'));
+            else
             return "999".date('m').date('y');
         }
+        if(date('m')==01 || date('m')==02 || date('m')==03)
+        return substr($decimal, 0, 3).date('m').date('y', strtotime('-1 year'));
+        else
         return substr($decimal, 0, 3).date('m').date('y');
     }
 

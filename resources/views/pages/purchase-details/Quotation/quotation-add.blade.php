@@ -118,6 +118,7 @@
                                             <th>#</th>
                                             <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
                                             <th>Item code </th>
+                                            <th>HSN/SAC Code</th>
                                             <th>Type</th>
                                             <th>DESCRIPTION</th>
                                             <th> Quantity</th>
@@ -129,6 +130,7 @@
                                         <td><input type="checkbox" class="purchase_requisition_item" checked id="purchase_requisition_item" name="purchase_requisition_item[]"  value="{{$item['requisition_item_id']}}"></td>
                                         <th>{{$item['pr_no']}}</th>
                                         <th> {{$item['item_code']}} </th>
+                                        <td>{{$item['hsn_code']}}</td>
                                         <td> {{$item['type_name']}}</td>
                                         <td> {{$item['short_description']}}</td>
                                         <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>	
@@ -151,6 +153,7 @@
                                             <th>#</th>
                                             <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
                                             <th>Item code </th>
+                                            <th>HSN/SAC Code</th>
                                             <th>Type</th>
                                             <th>DESCRIPTION</th>
                                             <th> Quantity</th>
@@ -167,6 +170,7 @@
                                             <td><input type="checkbox"   @if($supplier!=0) class="fixed purchase_requisition_item"  @else class="purchase_requisition_item" @endif  id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['requisition_item_id']}}"></td>
                                             <th>{{$item['pr_no']}}</th>
                                             <th> @if($supplier!=0) <a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$supplier}}" >{{$item['item_code']}}</a> @else {{$item['item_code']}} @endif</th>
+                                            <td>{{$item['hsn_code']}}</td>
                                             <td> {{$item['type_name']}}</td>
                                             <td> {{$item['short_description']}}</td>
                                             <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>	

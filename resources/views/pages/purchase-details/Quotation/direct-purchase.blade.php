@@ -117,6 +117,7 @@
                                             <th>#</th>
                                             <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
                                             <th>Item code </th>
+                                            <th>HSN/SAC Code</th>
                                             <th>Type</th>
                                             <th>DESCRIPTION</th>
                                             <th>SUPPLIER</th>
@@ -130,6 +131,7 @@
                                         <td><input type="checkbox" class="purchase_requisition_item" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['requisition_item_id']}}"></td>
                                         <th>{{$item['pr_no']}}</th>
                                         <th>{{$item['item_code']}}</th>
+                                        <td>{{$item['hsn_code']}}</td>
                                         <td> {{$item['type_name']}}</td>
                                         <td> {{$item['short_description']}}</td>
                                         <td> {{$item['vendor_name']}}</td>

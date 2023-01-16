@@ -1,6 +1,8 @@
 
 <!doctype html>
 <html>
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\QuotationController')
+@inject('supplierfn', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -353,17 +355,17 @@
                         <p>Dear {{$mailData->vendor_name}} ,</p>
                         <p>Pls. see attached our requirement and provide us your best quotation along with delivery schedule asap.To respond or reply back to the mail id :Nayan.Dhane@adler-healthcare.com<br>
                            Await quotation</p>
-                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="background-color: #D3D3D3 !important;">
                           <tbody>
                             <tr>
                               <td align="left">
-                                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                <table role="presentation" border="0" cellpadding="0" cellspacing="0"> 
                                   <tbody>
-                                    <tr>
-								              	<td> <a href="{{$mailData->url}}" target="_blank">Click for quotation list</a> </td>
+                                    <tr> 
+                                    <td> {{$fn->request_quotation($mailData->quotation_id,$mailData->supplier_id)}} </td> 
                                     </tr>
                                   </tbody>
-                                </table>
+                                </table> 
                               </td>
                             </tr>
                           </tbody>

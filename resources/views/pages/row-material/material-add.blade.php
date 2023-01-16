@@ -5,14 +5,14 @@
 	<div class="container">
 		<div class="az-content-body">
             <div class="az-content-breadcrumb"> 
-                <span><a href="" style="color: #596881;">ROW MATERIAL</a></span> 
+                <span><a href="" style="color: #596881;">RAW MATERIAL</a></span> 
                 <span><a href="" style="color: #596881;">
-                @isset($edit) Edit @else ADD @endif ROW MATERIAL 
+                @isset($edit) Edit @else ADD @endif RAW MATERIAL 
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            @isset($edit) Edit @else Add @endif Row Material 
+            Raw Material 
 			</h4>
             @if(Session::get('error'))
                 <div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -66,6 +66,10 @@
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                <label>HSN/SAC Code</label>
+                                <input type="text"  value="{{(!empty($edit)) ? $edit['hsn_code'] : ' '}}" class="form-control" name="hsn_code" id="hsn_code"  placeholder="HSN/SAC Code">
+                            </div>
+                            <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Issue Unit *</label>
                                 <select class="form-control" name="issue_unit" id="issue_unit">
                                     <option value="">--select one--</option>
@@ -98,8 +102,8 @@
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Stock Type</label>
                                 <select class="form-control" name="stock_type" id="stock_type">
-                                    <option value="0" @if(!empty($edit)) @if($edit['stock_type'])==0) selected @endif @endif>0</option>
-                                    <option value="1" @if(!empty($edit)) @if($edit['stock_type'])==1) selected @endif @endif>1</option>
+                                    <option value="0" {{ (!empty($edit) && $edit['stock_type']==0) ? 'selected' : ' ' }}>0</option>
+                                    <option value="1" {{ (!empty($edit) && $edit['stock_type']==1) ? 'selected' : ' ' }}>1</option>
                                 </select>
                             </div> 
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -141,9 +145,9 @@
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Item Origin</label>
                                 <select class="form-control" name="item_origin" id="item_origin">
-                                    <option value="">--Select one--</option>
-                                    <option value="1" @if((!empty($edit)) && $edit['item_origin'])==2) selected @endif>origin1</option>
-                                    <option value="2" @if( (!empty($edit)) && $edit['item_origin'])==2) selected @endif>origin2</option>
+                                    <option value="">--Select one--</option> 
+                                    <option value="Indegeneous Item" {{ ((!empty($edit)) && $edit['item_origin']=="Indegeneous Item") ? 'selected' : '' }}>Indegeneous Item</option>
+                                    <option value="Imported Item" {{ ((!empty($edit)) && $edit['item_origin']=="Imported Item")  ? 'selected' : '' }}>Imported  Item</option>
                                 </select>
                             </div> 
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -193,8 +197,8 @@
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Expiry Control Required</label>
                                 <select class="form-control" name="expiry_control_required" id="expiry_control_required">
-                                    <option value="0">No</option>
-                                    <option value="1">Yes</option>
+                                    <option value="0"  @if((!empty($edit)) && $edit['expiry_control'])==0) selected @endif >No</option>
+                                    <option value="1"  @if((!empty($edit)) && $edit['expiry_control'])==1) selected @endif>Yes</option>
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">

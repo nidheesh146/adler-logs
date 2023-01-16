@@ -119,16 +119,15 @@ class QuotationController extends Controller
         return view('pages/purchase-details/Quotation/quotation-add', compact('data'));
 
     }
-    function request_quotation(Request $request,$q_id,$s_id){
-        if((!$this->decrypt($q_id)) ||  (!$this->decrypt($s_id))){
-            return response()->view('errors/404', [], 404);
-        }
-        $q_id = $this->decrypt($q_id);
-        $s_id = $this->decrypt($s_id);
+    function request_quotation($q_id,$s_id){
+        // if((!$this->decrypt($q_id)) ||  (!$this->decrypt($s_id))){
+        //     return response()->view('errors/404', [], 404);
+        // }
+        // $q_id = $this->decrypt($q_id);
+        // $s_id = $this->decrypt($s_id);
         $data['inv_purchase_req_quotation'] = $this->inv_purchase_req_quotation->get_quotation_single(['quotation_id'=>$q_id]);
         $data['inv_supplier'] = $this->inv_supplier->get_supplier(['id'=>$s_id]);
         $data['inv_purchase_req_quotation_item_supp_rel'] = $this->inv_purchase_req_quotation_item_supp_rel->open_get_quotation(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$q_id,'inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$s_id]);
-//print_r( $data['inv_purchase_req_quotation_item_supp_rel']);die;
         return view('pages/purchase-details/supplier-quotation/quotation-open-view', compact('data'));
     }
 

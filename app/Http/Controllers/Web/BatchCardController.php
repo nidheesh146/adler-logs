@@ -11,6 +11,8 @@ use Validator;
 
 use App\Models\batchcard;
 use App\Models\product;
+use App\Models\product_input_material;
+use App\Models\batchcard_material;
 
 class BatchCardController extends Controller
 {
@@ -18,6 +20,8 @@ class BatchCardController extends Controller
     {
         $this->batchcard = new batchcard;
         $this->product = new product;
+        $this->product_input_material = new product_input_material;
+        $this->batchcard_material = new batchcard_material;
     }
     public function productsearch(Request $request)
     {
@@ -41,12 +45,13 @@ class BatchCardController extends Controller
             $validation['start_date'] = ['required'];
             $validation['target_date'] = ['required'];
             $validation['description'] = ['required'];
-            $validation['input_material'] = ['required'];
-            $validation['input_material_qty'] = ['required'];
+           // $validation['input_material'] = ['required'];
+           // $validation['input_material_qty'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
 
             if(!$validator->errors()->all())
             {
+
                 $datas['product_id'] = $request->product;
                 $datas['process_sheet_id'] = $request->process_sheet;
                 $datas['input_material'] = $request->input_material;
@@ -60,7 +65,22 @@ class BatchCardController extends Controller
                 $datas['created'] = date('Y-m-d H:i:s');
                 $datas['updated'] = date('Y-m-d H:i:s');
                 $batchcard =  $this->batchcard->insertdata($datas);
+                if($batchcard)
+                {
+                    $product_inputmaterial_count = product_input_material::where('product_id','=',$request->product)->count();
+                    for($i=1;$i<=$product_inputmaterial_count;$i++)
+                    {
+                        $data['batchcard_id'] = $batchcard;
+                        $data['product_inputmaterial_id'] = $_POST['product_inputmaterial_id'.$i];
+                        $data['item_id'] = $_POST['rawmaterial_id'.$i];
+                        $data['quantity'] = $_POST['qty'.$i];
+                        $batchcard_material[] =  $this->batchcard_material->insert_data($data);
+                    }
+                }
+                if(count($batchcard_material)==$product_inputmaterial_count)
                 $request->session()->flash('success',  "You have successfully inserted a batchcard !");
+                else
+                $request->session()->flash('error',  "You have failed to insert a batchcard !");
                 return redirect('batchcard/batchcard-add');
             }
             if ($validator->errors()->all()) {
@@ -227,9 +247,43 @@ class BatchCardController extends Controller
             // $res = DB::table('batchcard_batchcard')->insert($data);  
             // }   
         }
-        return $data;
-    
+        return $data;  
             
+    }
+
+    public function findInputMaterials(Request $request)
+    {
+        $input_materials = product_input_material::select('product_input_material.id','inventory_rawmaterial.id as rawmaterial_id','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_unit.unit_name')
+                                                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id')
+                                                    ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                                    ->where('product_input_material.product_id','=',$request->product_id)
+                                                    ->get();
+       // echo $input_materials; exit;
+        $data = '<tbody>';
+        $i=1;
+        foreach( $input_materials as $material)
+        {
+            $data .= '<tr>
+                        <td>Item Code<input type="text" class="form-control"  value="'.$material['item_code'].'" readonly><input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
+                            <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['rawmaterial_id'].'">
+                        </td>
+                        <td width="50%">
+                            Description<textarea value="" class="form-control" name="description" placeholder="Description">'.$material['discription'].'</textarea>
+                        </td>
+                        <td>
+                            Quantity
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" name="qty'.$i++.'" required aria-describedby="unit-div1">
+                                <div class="input-group-append">
+                                    <span class="input-group-text unit-div" id="unit-div1">'.$material['unit_name'].'</span>
+                                </div>
+                            </div>
+                        </td>
+                        </tr>';
+        }
+        $data .='</tbody>';
+        return $data;
+
     }
     
 

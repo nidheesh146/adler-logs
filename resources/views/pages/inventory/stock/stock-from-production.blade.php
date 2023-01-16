@@ -106,7 +106,6 @@
                         <th>Item Type</th>
 						<th>Lot Number</th>
                         <th>Quantity</th>
-                        <th>Supplier</th>
                         <th>Action</th>
 					</tr>
 				</thead>
@@ -118,7 +117,6 @@
                         <td>{{$srp['type_name']}}</td>
                         <td>{{$srp['lot_number']}}</td>
                         <td>{{$srp['quantity']}} {{$srp['unit_name']}}</td>
-                        <td>{{$srp['vendor_name']}}</td>
                         <td><a class="badge badge-info sip-edit" id="sip-edit" style="font-size: 13px;" data-toggle="modal" sirId="{{$srp['id']}}" sip="{{$srp['sir_number']}}" item="{{$srp['item_code']}}" qty="{{$srp['quantity']}}" data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>
                         <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/Stock/FromProduction/delete/'.$srp['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
                     </tr>

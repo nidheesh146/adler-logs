@@ -208,11 +208,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/Stock/ToProduction-add', 'StockController@StockToProductionAdd');
     Route::get('inventory/stock/find-batchcard','StockController@findBatchCard');
     Route::get('inventory/stock/fetchBatchCard-info','StockController@fetchBatchCard_info');
+    Route::get('inventory/stock/fetchBatchCard-items','StockController@fetchBatchCard_items');
+    Route::get('inventory/stock/fetchLotcard','StockController@fetchLotcard');
     Route::get('inventory/stock/fetchPrimaryBatchCard-info','StockController@fetchPrimaryBatchCard_info');
+    Route::get('inventory/Stock/ToProduction/Direct','StockController@DirectSIP');
+    Route::post('inventory/Stock/ToProduction/Direct','StockController@addDirectSIP');
+    Route::get('inventory/stock/fetchBatchCards','StockController@fetchBatchCards');
      //Stock From Production
     Route::get('inventory/Stock/FromProduction', 'StockController@StockFromProduction');
     Route::get('inventory/Stock/FromProduction-add', 'StockController@StockFromProductionAdd');
-    Route::post('inventory/stock/returnFromProduction', 'StockController@returnFromProduction');
+    Route::post('inventory/stock/return-FromProduction', 'StockController@returnFromProduction');
     Route::get('inventory/Stock/FromProduction/delete/{id}', 'StockController@StockFromProductionDelete');
     Route::post('inventory/stock-FromProduction-edit', 'StockController@StockFromProductionEdit');
     Route::get('getSingleSIR', 'StockController@getSingleSIR');
@@ -262,6 +267,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::post('batchcard/batchcard-add', 'BatchCardController@BatchcardAdd');
     Route::get('batchcard/productsearch', 'BatchCardController@productsearch');
     Route::post('batchcard/assemble-batchcard-add','BatchCardController@assemblebatchcardAdd');
+    Route::get('batchcard/product/find-input-materials','BatchCardController@findInputMaterials');
 
     //Label card
     Route::get('label/mrp-label','LabelController@mrpLabel');
@@ -304,6 +310,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
 
     //Product
     Route::get('product/list','ProductController@productList');
+    Route::get('product/add-input-material','ProductController@addInputMaterial');
+    Route::post('product/add-input-material','ProductController@addInputMaterial');
+    Route::get('product/delete-input-material','ProductController@deleteInputMaterial');
     Route::get('product/file/upload','ProductController@getProductUpload');
     Route::post('product/product-upload','ProductController@productFileUpload');
    

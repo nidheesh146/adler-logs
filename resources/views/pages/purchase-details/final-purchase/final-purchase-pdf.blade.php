@@ -92,7 +92,7 @@
         }
     </style>
    
-    <div class="row1" style="height:130px;border-bottom:solid 2px black;">
+    <div class="row1" style="height:150px;border-bottom:solid 2px black;">
         <div class="col1">
             To<br/>
             <strong>{{$final_purchase['vendor_name']}}</strong>

@@ -103,7 +103,7 @@
 							<th>Invoice number:</th>
 							<th>Invoice date</th>
 							<th>Supplier</th>
-							<th>Created Date</th>
+							<th>Transaction Date</th>
 							<th>Created By</th>
 							<th>Action</th>
 						
@@ -120,7 +120,7 @@
 							<td>{{$item->f_name}} {{$item->l_name}}</td>
 							<td>
 								<!-- <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-add/'.$item->id)}}">-->
-								<a href="" data-toggle="modal"  data-target="#invoiceAddModal" class="invoice-add-model badge badge-info"   id="invoice-add-model" po="{{$item['po_number']}}" invoiceId="{{$item['id']}}" invoiceNo="{{$item['invoice_number']}}" invoiceDate="{{date('d-m-Y',strtotime($item->invoice_date)) }}"  poId="{{$item['po_master_id']}}" style="font-size: 13px;"><i class="fas fa-edit"></i> Edit</a> 
+								<a href="" data-toggle="modal"  data-target="#invoiceAddModal" class="invoice-add-model badge badge-info"   id="invoice-add-model" po="{{$item['po_number']}}" invoiceId="{{$item['id']}}" invoiceNo="{{$item['invoice_number']}}" invoiceDate="{{date('d-m-Y',strtotime($item->invoice_date)) }}" transactionDate="{{date('d-m-Y',strtotime($item->created_at)) }}"  poId="{{$item['po_master_id']}}" style="font-size: 13px;"><i class="fas fa-edit"></i> Edit</a> 
 							<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-delete/'.$item->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
 								
 							</td>
@@ -161,6 +161,12 @@
                                    Invoice Date
                                 </label>
                                 <input type="text" name="invoice_date" id="invoice_date" value="{{date("d-m-Y")}}" class="datepicker1">
+                            </div>
+                            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                                <label>
+                                   Transaction Date
+                                </label>
+                                <input type="text" name="" id="transaction_date" value=""  disabled>
                             </div>
                             {{--<div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
                                   <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
@@ -228,6 +234,9 @@
             $('#invoice_number').val(invoice_no);
             var invoice_date = $(this).attr('invoiceDate');
             $('#invoice_date').val(invoice_date);
+            var transaction_date = $(this).attr('transactionDate');
+            if( transaction_date!=0)
+            $('#transaction_date').val(transaction_date);
            
             $.ajax ({
                     type: 'GET',

@@ -103,8 +103,14 @@
                         <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2" style="margin-top: 6px;padding:0px;text-align:right;">
                             <label>Supplier Invoice Number</label>
                         </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <input type="text"  name="invoice_number" id="invoice_number" class="form-control" placeholder="Invoice number">                            
+                        </div>
+                        <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2" style="margin-top: 6px;padding:0px;text-align:right;">
+                            <label>Supplier Invoice Date</label>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                            <input type="date"  name="invoice_date" id="invoice_date" value="{{date("d-m-Y")}}" class="form-control" placeholder="Invoice Date">                            
                         </div>
                     </div>
                 </div>
@@ -129,7 +135,7 @@
                         <tr>
                             <td><input type="checkbox" name="po_item_id[]" id="po_item_id" value="{{$item['po_item']}}"></td>
                             <td>{{$item['po_number']}}</td>
-                            <td>{{$item['item_code']}}</td>
+                            <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['short_description']}}" >{{$item['item_code']}}</td>
                             <td>{{$item['type']}}</td>
                             <td>{{$item['order_qty']}}</td>
                             <td>{{$item['rate']}}</td>

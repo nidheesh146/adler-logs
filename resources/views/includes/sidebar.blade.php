@@ -76,7 +76,7 @@
 
         <li class="nav-item @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','LotAllocation.addLotAllocation','LotAllocation.lotAllocation','MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MAC.MACAddItemInfo','MAC.MAClist','MAC.MACAdd',
         'MRD.RMRNAddItemInfo','MRR.addMRR',
-        'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.RMRNlist','MRD.RMRNAdd','Stock.StockToProduction','Stock.StockToProductionAdd','MAC.WOAAdd','MRD.WORAdd','Stock.StockFromProduction','Stock.StockFromProductionAdd','Stock.StockTransfer','Stock.StockTransferAdd'])){{'active show'}} @endif ">
+        'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.RMRNlist','MRD.RMRNAdd','Stock.StockToProduction','Stock.StockToProductionAdd','MAC.WOAAdd','MRD.WORAdd','Stock.StockFromProduction','Stock.StockFromProductionAdd','Stock.StockTransfer','Stock.StockTransferAdd','Stock.DirectSIP'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub">
             <i class="fas fa-boxes" style="font-size:19px"></i>Inventory</a>
             
@@ -88,7 +88,8 @@
             <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.WORAdd'])){{'active'}} @endif "><a href="{{url('inventory/MRD')}}" class="nav-sub-link">MRD/WOR</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['MRD.RMRNlist','MRD.RMRNAdd','MRD.RMRNAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/RMRN')}}" class="nav-sub-link">RMRN</a></li>  
             <li class="nav-sub-item  @if(in_array($Action,['MRR.addMRR','MRD.MRDAdd','MRD.MRDAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/receipt-report')}}" class="nav-sub-link">MRR/SRR</a></li>  
-            <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
+            <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd','Stock.DirectSIP'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
+            <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction/Direct')}}" class="nav-sub-link">SIP-Direct</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockFromProduction','Stock.StockFromProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/FromProduction')}}" class="nav-sub-link">Stock Return From Production</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockTransfer','Stock.StockTransferAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  
             
@@ -132,16 +133,16 @@
         </li>
         <li class="nav-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit','RowMaterial.fixedRateList','RowMaterial.getfixedRateUpload',
         'RowMaterial.materialUpload'])){{'active show'}} @endif ">
-          <a href="#" class="nav-link with-sub"><i class="fas fa-swatchbook" style="font-size: 19px"></i>Row Material</a>
+          <a href="#" class="nav-link with-sub"><i class="fas fa-swatchbook" style="font-size: 19px"></i>Raw Material</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit'])){{'active'}} @endif ">
-            <a href="{{url('row-material/list')}}"  class="nav-sub-link">Row Materials</a>
+            <a href="{{url('row-material/list')}}"  class="nav-sub-link">Raw Materials</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.materialUpload'])){{'active'}} @endif ">
-            <a href="{{url('row-material/upload')}}"  class="nav-sub-link">Row Material Upload</a>
+            <a href="{{url('row-material/upload')}}"  class="nav-sub-link">Raw Material Upload</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.fixedRateList'])){{'active'}} @endif ">
-            <a href="{{url('row-material/fixed-rate')}}"  class="nav-sub-link">Fixed Rate Row Material</a>
+            <a href="{{url('row-material/fixed-rate')}}"  class="nav-sub-link">Fixed Rate Raw Material</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.getfixedRateUpload'])){{'active'}} @endif ">
             <a href="{{url('row-material/fixed-rate/upload')}}"  class="nav-sub-link">Fixed Rate Material Upload</a>
@@ -149,10 +150,10 @@
           </ul>
         </li>
 
-        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fab fa-product-hunt" style="font-size: 19px"></i>Product</a>
           <ul class="nav-sub">
-            <li class="nav-sub-item @if(in_array($Action,['Product.productList'])){{'active'}} @endif ">
+            <li class="nav-sub-item @if(in_array($Action,['Product.productList','Product.addInputMaterial'])){{'active'}} @endif ">
             <a href="{{url('product/list')}}"  class="nav-sub-link">Products</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Product.productFileUpload'])){{'active'}} @endif ">

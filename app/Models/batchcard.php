@@ -52,6 +52,14 @@ class batchcard extends Model
 
     }
 
+    function get_all_batchcards($condition)
+    {
+        return $this->select('batchcard_batchcard.id','batchcard_batchcard.batch_no')
+            ->where($condition)
+            ->orderBy('batchcard_batchcard.id', 'desc')
+            ->get()->toArray();
+    }
+
     function get_batchcard($condition)
     {
         return $this->select(['batchcard_batchcard.id','batchcard_batchcard.batch_no','batchcard_batchcard.quantity','batchcard_batchcard.input_material','batchcard_batchcard.input_material_qty',

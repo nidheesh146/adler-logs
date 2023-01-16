@@ -6,7 +6,7 @@
 	<div class="container">
 		<div class="az-content-body">
             <div class="az-content-breadcrumb"> 
-                <span><a href="{{url('row-material/list')}}" style="color: #596881;">ROW MATERIALS </a></span> 
+                <span><a href="{{url('row-material/list')}}" style="color: #596881;">RAW MATERIALS </a></span> 
                 <span><a href="{{url('row-material/fixed-rate/upload')}}" style="color: #596881;">Raw Material Upload</a></span>
             </div>
 

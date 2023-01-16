@@ -92,7 +92,11 @@ class MRRController extends Controller
                     // }
                     $miq_number = inv_mac::leftJoin('inv_miq','inv_miq.id','=','inv_mac.miq_id')
                                         ->where('inv_mac.id','=',$request->mac_number)->pluck('inv_miq.miq_number')->first();
-                    $Data['mrr_number'] = str_replace("MIQ", "MRR", $miq_number);                    
+                    if($request->order_type=='po')
+                    $Data['mrr_number'] = str_replace("MIQ", "MRR", $miq_number);  
+                    else
+                    $Data['mrr_number'] = str_replace("MIQ", "SRR", $miq_number);
+
                     $Data['mrr_date'] = date('Y-m-d', strtotime($request->mrr_date));
                     $Data['mac_id'] = $request->mac_number;
                     $Data['created_by']= $request->created_by;

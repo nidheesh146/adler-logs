@@ -54,7 +54,7 @@ class inv_purchase_req_item extends Model
 
     function getdata($condition){
        return  $this->select(['inv_purchase_req_item.requisition_item_id','inv_purchase_req_item.actual_order_qty','inv_unit.unit_name', 
-                             'inv_purchase_req_item_approve.created_user','inventory_rawmaterial.item_code','inv_purchase_req_item_approve.approved_qty',
+                             'inv_purchase_req_item_approve.created_user','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_purchase_req_item_approve.approved_qty',
                              'inv_purchase_req_master.pr_no','inv_purchase_req_master.PR_SR','inv_item_type.type_name','inventory_rawmaterial.item_type_id','inventory_rawmaterial.short_description'])
                     ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
                     ->leftjoin('inv_purchase_req_item_approve','inv_purchase_req_item_approve.pr_item_id', '=', 'inv_purchase_req_item.requisition_item_id')
@@ -76,7 +76,7 @@ class inv_purchase_req_item extends Model
     }
     function getdataFixedItems($condition){
         return  $this->select(['inv_purchase_req_item.requisition_item_id','inv_purchase_req_item.actual_order_qty','inv_unit.unit_name', 
-                              'inv_purchase_req_item_approve.created_user','inventory_rawmaterial.item_code','inv_purchase_req_item_approve.approved_qty',
+                              'inv_purchase_req_item_approve.created_user','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_purchase_req_item_approve.approved_qty',
                               'inv_purchase_req_master.pr_no','inv_purchase_req_master.PR_SR','inv_item_type.type_name','inventory_rawmaterial.item_type_id',
                               'inventory_rawmaterial.short_description','inv_supplier.vendor_name'])
                      ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')

@@ -70,7 +70,7 @@ class PurchaseController extends Controller
         }
         if ($request->po_to) {
             //$condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime($this->request->po_from))];
-            $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-t', strtotime($request->po_from))];
+            $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-d', strtotime($request->po_to))];
         }
 
         if ($request->status) {
@@ -897,12 +897,14 @@ class PurchaseController extends Controller
         if ($request->isMethod('post'))
         {
             $validation['invoice_number'] = ['required'];
+            $validation['invoice_date'] = ['required'];
             $validation['po_item_id'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
                 $data['invoice_number'] = $request->invoice_number;
-                $data['invoice_date'] = date('Y-m-d');
+                $data['invoice_date'] = date('Y-m-d',strtotime($request->invoice_date));
+                //$data['transaction_date'] =date('Y-m-d');
                 $data['created_by'] = config('user')['user_id'];
                 $data['created_at'] = date('Y-m-d H:i:s');
                 $data['updated_at'] = date('Y-m-d H:i:s');
@@ -969,7 +971,7 @@ class PurchaseController extends Controller
                 foreach($po_data as $po)
                 {
                     $po_items[] = inv_final_purchase_order_rel::select('inv_final_purchase_order_rel.master','inv_final_purchase_order_rel.item','inv_final_purchase_order_item.order_qty',
-                                    'inv_final_purchase_order_item.rate','inv_final_purchase_order_item.discount','inv_final_purchase_order_item.gst','inventory_rawmaterial.item_code',
+                                    'inv_final_purchase_order_item.rate','inv_final_purchase_order_item.discount','inv_final_purchase_order_item.gst','inventory_rawmaterial.item_code','inventory_rawmaterial.short_description',
                                     'inv_unit.unit_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst','inv_item_type.type_name','inv_final_purchase_order_master.po_number','inv_supplier.vendor_name')
                                             ->leftJoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_final_purchase_order_rel.item')
                                             ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
@@ -993,6 +995,7 @@ class PurchaseController extends Controller
                                 'po_item'=>$item['item'],
                                 'type'=>$item['type_name'],
                                 'item_code'=>$item['item_code'],
+                                'short_description'=>$item['short_description'],
                                 'order_qty'=>$item['order_qty'],
                                 'unit_name'=>$item['unit_name'],
                                 'rate'=>$item['unit_name'],

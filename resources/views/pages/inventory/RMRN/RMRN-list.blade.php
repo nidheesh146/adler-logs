@@ -48,7 +48,7 @@
                                     <div class="row filter_search" style="margin-left: 0px;">
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>MRD No:</label>
+                                                <label>MRD/WOR No:</label>
                                                 <input type="text" value="{{request()->get('mrd_no')}}" name="mrd_no" id="mrd_no" class="form-control" placeholder="MRD NO">
                                             
                                             </div><!-- form-group -->
@@ -94,7 +94,7 @@
 			<table class="table table-bordered mg-b-0" id="example1">
 				<thead>
 					<tr>
-						<th>MRD No</th>
+						<th>MRD/WOR No</th>
 						<th>Supplier</th>
                         <th>Prepared By</th> 
                         <th>RMRN Date</th>

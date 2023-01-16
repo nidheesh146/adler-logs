@@ -58,6 +58,7 @@ class RowMaterialController extends Controller
                 $data['item_short_name']= $request->item_short_name;
                 $data['item_type_id']= $request->item_type1;
                 $data['item_type_id_2']= $request->item_type2;
+                $data['hsn_code']= $request->hsn_code;
                 $data['issue_unit_id']= $request->issue_unit;
                 $data['receipt_unit_id']= $request->receipt_unit;
                 $data['stock_keeping_unit_id']= $request->stock_keeping_unit;
@@ -143,6 +144,7 @@ class RowMaterialController extends Controller
                 $data['item_short_name']= $request->item_short_name;
                 $data['item_type_id']= $request->item_type1;
                 $data['item_type_id_2']= $request->item_type2;
+                $data['hsn_code']= $request->hsn_code;
                 $data['issue_unit_id']= $request->issue_unit;
                 $data['receipt_unit_id']= $request->receipt_unit;
                 $data['stock_keeping_unit_id']= $request->stock_keeping_unit;

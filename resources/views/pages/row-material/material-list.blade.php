@@ -7,12 +7,12 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				<span><a href="" style="color: #596881;">ROW MATERIAL</a></span> 
+				<span><a href="" style="color: #596881;">RAW MATERIAL</a></span> 
                 <span><a href="" style="color: #596881;">
-                ROW MATERIAL LIST
+                RAW MATERIAL LIST
                 </a></span>
 			</div>
-			<h4 class="az-content-title" style="font-size: 20px;">Row Material List
+			<h4 class="az-content-title" style="font-size: 20px;">Raw Material List
 			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('row-material/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Row Material</button>
             </h4>
 			

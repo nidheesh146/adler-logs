@@ -5,6 +5,10 @@
 tbody th{
     background: #9999993b;
 }
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
 
 </style>
 
@@ -46,25 +50,25 @@ tbody th{
                                 <div class="form-devider"></div>
                             </div>
                         </div>
-                            <table class="table table-bordered mg-b-0">
+                            <table class="table table-bordered mg-b-0" style="border: 1px solid #696969;border-collapse: collapse;">
                                 <thead>
-                                    <th scope="row">RQ NO:</th>
-                                    <th scope="row">Date</th>
-                                    <th scope="row">Delivery Schedule</th>
+                                    <th scope="row"  style="border: 1px solid #696969;border-collapse: collapse;">RQ NO:</th>
+                                    <th scope="row"  style="border: 1px solid #696969;border-collapse: collapse;">Date</th>
+                                    <th scope="row"  style="border: 1px solid #696969;border-collapse: collapse;">Delivery Schedule</th>
                                 </thead>
                                 <tbody>
                                   <tr>
-                                   <td>{{$data['inv_purchase_req_quotation']['rq_no']}}</td>
-                                    <td>{{date('d-m-Y',strtotime($data['inv_purchase_req_quotation']['date']))}}</td>
-                                    <td>{{date('d-m-Y',strtotime($data['inv_purchase_req_quotation']['delivery_schedule']))}}</td>
+                                   <td  style="border: 1px solid #696969;border-collapse: collapse;">{{$data['inv_purchase_req_quotation']['rq_no']}}</td>
+                                    <td  style="border: 1px solid #696969;border-collapse: collapse;">{{date('d-m-Y',strtotime($data['inv_purchase_req_quotation']['date']))}}</td>
+                                    <td  style="border: 1px solid #696969;border-collapse: collapse;">{{date('d-m-Y',strtotime($data['inv_purchase_req_quotation']['delivery_schedule']))}}</td>
                                   </tr>
                                 </tbody>
-                              </table><br>
+                              </table><br/>
 
 
 
-
-                              <div class="row">
+                            
+                              <div class="row" style->
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                                     <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
                                         <i class="fas fa-list"></i> Item Details  : </label>
@@ -74,18 +78,18 @@ tbody th{
 
                 
                          
-                                <table class="table table-bordered mg-b-0">
+                        <table class="table table-bordered mg-b-0"  style="border: 1px solid #696969;border-collapse: collapse;">
                     
                             <tbody class="hr_change">
                                 @foreach($data['inv_purchase_req_quotation_item_supp_rel'] as $key => $item)
                                 @php $fixed_items= $fn->getFixedRateItems($item['quotation_id'],$item['requisition_item_id']);
                                 $fixed_item_supplier = $fn->getFixedItemSupplier($item['quotation_id'],$item['requisition_item_id'],$item['supplier_id']);
-                                echo $fixed_item_supplier;
+                                //echo $fixed_item_supplier;
                                 @endphp
                                 @if($fixed_items!=1 || $fixed_item_supplier==0)
                                 <tr>
                                   
-                                    <td colspan="4">
+                                    <td colspan="4" style="border: 1px solid #696969;border-collapse: collapse;">
 
                                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
                                             {{++$key}})  {{$item['item_code']}} </label>
@@ -94,16 +98,16 @@ tbody th{
                                   </tr>
                                 
                                     <tr>
-                                        <th scope="row" >Item Code</th>
-                                        <td scope="row">{{$item['item_code']}}</td>
-                                        <th scope="row">Unit</th>
-                                        <td scope="row">{{$item['unit_name']}}</td>
+                                        <th scope="row" style="border: 1px solid #696969;border-collapse: collapse;">Item Code</th>
+                                        <td scope="row" style="border: 1px solid #696969;border-collapse: collapse;">{{$item['item_code']}}</td>
+                                        <th scope="row" style="border: 1px solid #696969;border-collapse: collapse;">Unit</th>
+                                        <td scope="row" style="border: 1px solid #696969;border-collapse: collapse;">{{$item['unit_name']}}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="row" >Quantity</th>
-                                        <td scope="row">{{$item['actual_order_qty']}}</td>
-                                        <th scope="row" >Discription</th>
-                                        <td scope="row">{{$item['discription']}}</td>
+                                        <th scope="row" style="border: 1px solid #696969;border-collapse: collapse;">Quantity</th>
+                                        <td scope="row" style="border: 1px solid #696969;border-collapse: collapse;">{{$item['actual_order_qty']}}</td>
+                                        <th scope="row" style="border: 1px solid #696969;border-collapse: collapse;">Discription</th>
+                                        <td scope="row" style="border: 1px solid #696969;border-collapse: collapse;">{{$item['discription']}}</td>
                                     </tr>
                                     @endif
                                       @endforeach

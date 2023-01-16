@@ -45,7 +45,7 @@
                         {{ csrf_field() }}
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
-                            <label>MRD number *<span class="spinner-border spinner-button spinner-border-sm"
+                            <label>MRD/WOR number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
                             <select class="form-control mrd_number" name="mrd_number" @if(!empty($edit['rmrn'])) disabled @endif>
                             @if(!empty($edit['rmrn']))

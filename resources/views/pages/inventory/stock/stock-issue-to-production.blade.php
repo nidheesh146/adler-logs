@@ -19,7 +19,7 @@
 			  </div> -->
 				
 	  		</div>
-              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/Stock/ToProduction-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Stock Issue To Production</button>
+              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/Stock/ToProduction/Direct')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Stock Issue To Production</button>
 		</h4>
 		<div class="az-dashboard-nav">
 			<nav class="nav"> </nav>	
@@ -103,13 +103,9 @@
 				<thead>
 					<tr>
 						<th>SIP Number</th>
-                        <th>Item Code</th>
                         <th>Type</th>
-                        <th>Batch Number</th>
 						<th>Lot Number</th>
-                        <th>Primary SKU Batch</th>
                         <th>Quantity</th>
-                        <!-- <th>Supplier</th> -->
                         <th>Action</th>
 					</tr>
 				</thead>
@@ -117,13 +113,9 @@
                     @foreach($data['sip'] as $sip)
                     <tr>
                         <td>{{$sip['sip_number']}}</td>
-                        <td>@if($sip['primary_sku_batch_id']) {{ $fn->get_primary_batch_item($sip['primary_sku_batch_id']) }}  @else {{$sip['item_code']}} @endif</td>
-                        <td>@if($sip['lot_number']) Primary SKU @else Assemble @endif</td>
-                        <td>{{$sip['batch_no']}}</td>
+                        <td>@if($sip['type']==2) Direct  @else Indirect @endif</td>
                         <td>{{$sip['lot_number']}}</td>
-                        <td>@if($sip['primary_sku_batch_id']) {{ $fn->get_primary_batch($sip['primary_sku_batch_id']) }} @endif</td>
-                        <td>{{$sip['qty_to_production']}} {{$sip['unit_name']}}</td>
-                        <!-- <td>{{$sip['vendor_name']}}</td> -->
+                        <td>{{$sip['qty_to_production']}}</td>
                         <td><a class="badge badge-info sip-edit" id="sip-edit" style="font-size: 13px;" data-toggle="modal" sipId="{{$sip['id']}}" sip="{{$sip['sip_number']}}" item="{{$sip['item_code']}}" qty="{{$sip['quantity']}}" data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>
                         <!-- <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/Stock/ToProduction/delete/'.$sip['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td> -->
                     </tr>

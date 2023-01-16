@@ -35,108 +35,46 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
-        <div class="row row-sm mg-b-20 mg-lg-b-0">
-            <div class="table-responsive" style="margin-bottom: 13px;">
-                <table class="table table-bordered mg-b-0">
-                    <tbody>
-                        <tr>
-                            <style>
-                                .select2-container .select2-selection--single {
-                                    height: 26px;
-                                    width: 122px;
-                                }
-                                .select2-selection__rendered {
-                                    font-size:12px;
-                                }
-                            </style>
-                            <form autocomplete="off">
-                                <th scope="row">
-                                    <div class="row filter_search" style="margin-left: 0px;">
-                                       <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
-                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label style="font-size: 12px;">ITEM CODE</label>
-                                                <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
-                                            </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label style="font-size: 12px;">LOT NUMBER</label>
-                                                <input type="text" value="{{request()->get('lot_number')}}" name="lot_number" id="lot_number" class="form-control" placeholder="LOT NUMBER"> 
-                                            </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label style="font-size: 12px;">SUPPLIER</label>
-                                                <input type="text" value="{{request()->get('supplier')}}" id="supplier" class="form-control" name="supplier" placeholder="SUPPLIER">
-                                            </div>
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
-                                                <label style="width: 100%;">&nbsp;</label>
-                                                <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                @if(count(request()->all('')) > 1)
-                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-                                                    style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-                                            <!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-                                                <label style="width: 100%;">&nbsp;</label>
-                                                <button type="submit" class="badge badge-pill badge-primary" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                @if(count(request()->all('')) > 1)
-                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-                                                    style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-                                                @endif
-                                            </div> -->
-                                        </div>
-                                    </div>
-                                </th>
-                            </form>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-		<form method="post" action="{{url('inventory/stock/returnFromProduction')}}">
+        <form method="post" action="{{url('inventory/stock/return-FromProduction')}}">
             {{ csrf_field() }}
-		    <div class="table-responsive">
-                <table class="table table-bordered mg-b-0" id="example1">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>SIP Number</th>
-                            <th>Item Code</th>
-                            <th>Item Type</th>
-                            <th>Lot Number</th>
-                            <th>Quantity</th>
-                            <th>Supplier</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($data['items'] as $item)
-                       @php  $mac_qty =$stock->get_mac_qty($item['si_invoice_item_id']) @endphp
-                        <tr>
-                        <td><input type="checkbox" class="sip_id" id="sip_id" name="sip_id[]" value="{{$item['id']}}"></td>
-                        <td>{{$item['sip_number']}}</td>
-                        <td>{{$item['item_code']}}</td>
-                        <td>{{$item['type_name']}}</td>
-                        <td>{{$item['lot_number']}}</td>
-                        <td>{{$item['quantity']}} {{$item['unit_name']}}</td>
-                        <td>{{$item['vendor_name']}}</td>
-                        </tr>
-                        @endforeach                    
-                        
-                    </tbody>
-                </table>
-                <div class="box-footer clearfix">
-                {{ $data['items']->appends(request()->input())->links() }}
-            </div> 
-            <br/>
-           <div class="form-devider"></div>
-            @if(count($data['items'])>0)
-                <div class="row">
-                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                        <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
-                            Save 
-                        </button>
-                    </div>
+            <div class="row">
+                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <label for="exampleInputEmail1">Batch Card*</label>
+                    <select class="form-control  batch_card" name="batch_card">
+                    </select> 
                 </div>
-            @endif
+                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <label for="exampleInputEmail1">Item Code*</label>
+                    <select class="form-control  item_code" name="item_id">
+                        <option>Select</option>
+                    </select> 
+                </div>
+                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <label for="exampleInputEmail1">Batchcard item quantity</label>
+                    <input type="text" class="form-control batchcard_item_qty" name="batchcard_item_qty" readonly>
+                </div>
+                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <label for="exampleInputEmail1">lot Card</label>
+                    <input type="text" class="form-control lotcard" name="lotcard" readonly>
+                    <input type="hidden" class="form-control lotcard_id" name="lotcard_id" readonly>
+                </div>
+                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <label for="exampleInputEmail1">lot Card quantity*</label>
+                    <input type="text" class="form-control lotcard_qty" name="lotcard_qty" readonly>
+                </div>
+                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <label for="exampleInputEmail1">Quantity to be Return*</label>
+                    <input type="text" class="form-control qty_return" name="qty_return" >
+                </div>
+            </div>       
+           <div class="form-devider"></div>
+            <div class="row save-btn" style="display:none;">
+                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
+                        Save 
+                    </button>
+                </div>
+            </div>
         </form>
 		</div>
 	</div>
@@ -156,21 +94,51 @@
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script>
-    $(".datepicker").datepicker({
-        format: "mm-yyyy",
-        viewMode: "months",
-        minViewMode: "months",
-        // startDate: date,
-        autoclose:true
-    });
-    $('.search-btn').on( "click", function(e)  {
-		var lot_number = $('#lot_number').val();
-		var item_code = $('#item_code').val();
-        var supplier = $('#supplier').val();
-		if(!lot_number  & !item_code & !supplier)
-		{
-			e.preventDefault();
-		}
-	});
+    //$('.item_code').select2();
+    $('.batch_card').select2({
+          placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 3,
+          allowClear: true,
+          ajax: {
+          url: "{{url('label/batchcardSearch')}}",
+          processResults: function (data) {
+
+            return { results: data };
+
+          }
+        }
+      }).on('change', function (e) {
+        $('.spinner-button').show();
+        let res = $(this).select2('data')[0];
+        if(res){
+          $.get("{{ url('inventory/stock/fetchBatchCard-items') }}?batchcard_id="+res.id,function(response)
+          {
+            $.each(response,function(key, value)
+            {
+                $(".item_code").append('<option value=' + value.rawmaterial_id + '>' + value.item_code + '</option>');
+            });
+          });
+        }else{
+          $('.spinner-button').hide();
+        }
+      });
+      $(".item_code").on('change', function()
+      {
+        var item_id = $(this).val();
+        let res = $('.batch_card').select2('data')[0];
+        if(res){
+          $.get("{{ url('inventory/stock/fetchLotcard') }}?batchcard_id="+res.id+"&item_id="+item_id,function(response)
+          {
+            $('.lotcard').val(response['lot_number']);
+            $('.lotcard_id').val(response['lot_id']);
+            $('.lotcard_qty').val(response['qty_received']);
+            $('.batchcard_item_qty').val(response['batch_qty']);
+            $('.save-btn').show();
+          });
+        }
+      });
+
+
 </script>
 @stop
