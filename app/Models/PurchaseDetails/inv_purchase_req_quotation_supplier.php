@@ -41,7 +41,7 @@ class inv_purchase_req_quotation_supplier extends Model
         return $this->select(['inv_supplier.id','inv_supplier.vendor_id', 'inv_supplier.vendor_name', 'inv_purchase_req_quotation_supplier.commited_delivery_date','inv_purchase_req_quotation_supplier.quotation_id'])
                     ->join('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
                     ->where($condition)
-                    ->orderBy('inv_purchase_req_quotation_supplier.id','desc')
+                    ->orderBy('inv_purchase_req_quotation_supplier.id','asc')
                     ->get();
     }
 
