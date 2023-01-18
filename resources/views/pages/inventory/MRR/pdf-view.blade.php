@@ -180,7 +180,7 @@
             <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
             <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
             <td>{{$item['rejected_quantity']}} {{$item['unit_name']}}</td>
-            <td>{{$item['rate']}}</td>
+            <td>{{$item['conversion_rate']}}</td>
             <td>{{$item['rate']}}</td>
             <td>{{$item['po_number']}}</td>
             <td>{{date('d-m-Y', strtotime($item['po_date']))}}</td>
@@ -190,5 +190,11 @@
         </tr>
         @endforeach
     </table> 
+    <br>
+    <br>
+    <div>
+        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="left"; style="float:left;">Signature of I/C QC</label>
+        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="right"; style="float:right;">Signature of I/C Finance</label>
+    </div>
 </body>
 </html>

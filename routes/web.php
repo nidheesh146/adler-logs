@@ -260,6 +260,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
 
 Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePermission']], function() {
   
+    //DashBoard
+    Route::get('dashboard','DashboardController@index');
    //Batchcard
     Route::get('batchcard/batchcard-upload', 'BatchCardController@getBatchcardUpload');
     Route::post('batchcard/batchcard-upload', 'BatchCardController@batchcardUpload');

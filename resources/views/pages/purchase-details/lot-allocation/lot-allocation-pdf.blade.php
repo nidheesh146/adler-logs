@@ -21,25 +21,7 @@
             </table>
         </div>
         <div class="" style="margin-top:20px;">
-            <table  border='1' style="width:67%;float:left;">
-                <tr>
-                    <th>ITEM DESCRIPTION</th>
-                </tr>
-                <tr style="max-height:200px;">
-                    <td><br/>{{$lot['discription']}}<br/></td>
-                </tr>
-            </table>
-            <table  border='1' style="width:32%;float:left;margin-left:10px;">
-                <tr>
-                    <th>ITEM CODE</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td><br/>{{$lot['item_code']}}<br/><br/><br/></td>
-                </tr>
-            </table>
-        </div>
-        <div class="" style="margin-top:15%;">
-            <table  border='1' style="width:40%;float:left;">
+            <table  border='1' style="width:24%;float:left;">
               <tr>
                     <th>LOT NUMBER</th>
                 </tr>
@@ -47,7 +29,26 @@
                     <td>{{$lot['lot_number']}}<br/><br/></td>
                 </tr>
             </table>
-            <table  border='1' style="width:40%;float:left;margin-left:15px;">
+            <table  border='1' style="width:24%;float:left;margin-left:10px;">
+                <tr>
+                    <th>ITEM CODE</th>
+                </tr>
+                <tr style="height:200px;">
+                    <td>{{$lot['item_code']}}<br/><br/></td>
+                </tr>
+            </table>
+            <table  border='1' style="width:49%;float:left;margin-left:10px;">
+                <tr>
+                    <th>ITEM DESCRIPTION</th>
+                </tr>
+                <tr style="height:500px;">
+                    <td><br/>{{$lot['discription']}}<br/></td>
+                </tr>
+            </table>
+            
+        </div>
+        <div class="" style="margin-top:12%;">
+            <table  border='1' style="width:24%;float:left;">
                  <tr>
                     <th>INVOICE QTY</th>
                 </tr>
@@ -56,7 +57,7 @@
                 </tr>
             </table>
                  
-        <table  border='1' style="width:10%;float:left;margin-left:15px;">
+            <table  border='1' style="width:24%;float:left;margin-left:10px;">
                 <tr>
                     <th>UNIT </th>
                 </tr>

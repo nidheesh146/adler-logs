@@ -20,7 +20,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         if (session('user.id')) {
-            return redirect("inventory/get-purchase-reqisition");
+            return redirect("dashboard");
         }
         if ($request->isMethod('post')) {
         $validator = Validator::make($request->all(), [
@@ -36,7 +36,7 @@ class UserController extends Controller
             if (!empty($user_data->user_id)) {
                 if ($user_data->status == 1) {
                     session(['user.id' => $user_data->user_id]);
-                    return redirect("inventory/get-purchase-reqisition");
+                    return redirect("dashboard");
                 }else{
                     $validator->errors()->add('Action', 'Your account has been deactivated!');
                 }
@@ -53,6 +53,7 @@ class UserController extends Controller
         session()->flush();
         return redirect("");
     }
+    
 }
 
 
