@@ -49,14 +49,24 @@
                                     <tbody id="dynamic_field">
                                         <tr id="row1" rel="1">
                                             <td>
-                                                <div class="form-group col-sm-8 col-md-8 col-lg-8 col-xl-8" style="float:left;">
-                                                    <label for="exampleInputEmail1">Item code * </label>
+                                                <div class="form-group col-sm-5 col-md-5 col-lg-5 col-xl-5" style="float:left;">
+                                                    <label for="exampleInputEmail1">Item code * </label><br/>
                                                     <select class="form-control Item-code item_code1" id="1" name="moreItems[0][Itemcode]" id="Itemcode">
                                                     </select>
-                                                    
                                                 </div>
-                                                <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2" style="float:left; margin-left:55px;">
-                                                    <button type="button" name="add" id="add" class="btn btn-success" style="height:38px;">
+                                                <div class="form-group col-sm-5 col-md-5 col-lg-5 col-xl-5" style="float:left;">
+                                                    <label for="exampleInputEmail1">Quantity</label>
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="moreItems[0][quantity]" id="quantity"
+                                                            placeholder="Quantity"  aria-describedby="unit-div1">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text unit-div"
+                                                                id="unit-div1">Unit</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                                    <button type="button" name="add" id="add" class="btn btn-success" style="height:38px;margin-top:29px;">
                                                     <i class="fas fa-plus"></i>
                                                     </button>
                                                 </div>
@@ -97,14 +107,16 @@
                                 <thead>
                                     <tr>
                                         <th>Item Code</th>
-                                        <!-- <th>Item Description</th> -->
+                                        <!-- <th>Description</th> -->
+                                        <th>Quantity</th> 
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($materials as $material)
                                     <tr>
-                                        <td>{{$material->item_code}}</td>
+                                        <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$material->short_description}}" >{{$material->item_code}}</a></td>
+                                        <td style>{{$material->quantity}} {{$material->unit_name}}</td>
                                         <!-- <td width="10%">{{$material->short_description}}</td> -->
                                         <td><a href="{{url('product/delete-input-material?id='.$material->id)}}" onclick="return confirm('Are you sure you want to delete this ?');" class="badge badge-danger"><i class="fas fa-trash-alt"></i>  Delete</a> </td>
                                     </tr>
@@ -144,11 +156,21 @@ $(document).ready(function(){
         $('#dynamic_field').append(`
             <tr id="row${i}" rel="${i}">
             <td>
-                <div class="form-group col-sm-8 col-md-8 col-lg-8 col-xl-8" style="float:left;"><label for="exampleInputEmail1">Item code * </label>
+                <div class="form-group col-sm-5 col-md-5 col-lg-5 col-xl-5" style="float:left;"><label for="exampleInputEmail1">Item code * </label><br/>
                     <select class="form-control Item-code item_code${i}" id="${i}" name="moreItems[${i}][Itemcode]"  id="" required></select>
                 </div>
-                <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2" style="float:left; margin-left:55px;">
-                <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;">X</button>
+
+                <div class="form-group col-sm-5 col-md-5 col-lg-5 col-xl-5" style="float:left;">
+                    <label for="exampleInputEmail1">Quantity</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="moreItems[${i}][quantity]" id="quantity" placeholder="Quantity"  aria-describedby="unit-div${i}">
+                        <div class="input-group-append">
+                            <span class="input-group-text unit-div" id="unit-div${i}">Unit</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2" style="float:left; margin-top:29px;">
+                    <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;">X</button>
                 </div>
             </td>
             </tr>`);
@@ -174,30 +196,39 @@ function initSelect2() {
         }
     }).on('change', function (e) {
             var select_id = $(this).attr("id");
+            //alert(select_id);
             $('#Itemcode-error').remove();
-            $("#Itemdescription"+select_id+"").text('');
-            $("#Itemtype"+select_id+"").val('');
-            $("#Itemdescription"+select_id+"").val('');
-            Itemdescription1
             let res = $(this).select2('data')[0];
             if(typeof(res) != "undefined" ){
-                if(res.type_name){
-                    $("#Itemtype"+select_id+"").val(res.type_name);
-                }
                 if(res.unit_name){
                     $('#Unit').val(res.unit_name);
                     $("#unit-div"+select_id+"").text(res.unit_name);
                 }
-                if(res.discription){
-                    $("#Itemdescription"+select_id+"").val(res.discription);
-                }
             }
         });   
     } 
+    function selectItem(itemId,divId){
+        $('#Itemtype'+divId).val('');
+        $.get("<?=url('inventory/get-single-item');?>?id="+itemId,function(response){
+            let datas = [JSON.parse(response)];
+            $(".item_code"+divId).select2({
+                data: datas
+            });
+            $('#Itemtype'+divId).val(datas[0].type_name);
+            $('#Itemdescription'+divId).val(datas[0].discription);
+            $("#unit-div"+divId+"").text(datas[0].unit_name);
+            //$('#u'+divId).val(datas[0].discription);
+            $('#myModal1').modal('hide');
+            initSelect2();
+        });
+    }
     $(function(){
         $("#commentForm").validate({
             rules: {
                 Itemcode: {
+                    required: true,
+                },
+                quantity: {
                     required: true,
                 },
             },

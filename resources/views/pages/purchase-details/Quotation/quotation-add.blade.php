@@ -14,6 +14,13 @@
          display:none;
         color:red !important;
     }
+    #example1_filter{
+        display:none; 
+    }
+    #example1_length{
+        float:right;
+        margin-top:-2px;
+    }
 </style>
 <div class="az-content az-content-dashboard">
     <br>
@@ -181,8 +188,9 @@
                                     </tbody>
                                 </table>
                                 <div class="box-footer clearfix">
-                                    {{ $data['getdata']->appends(request()->input())->links() }}
+                                     {{-- $data['getdata']->appends(request()->input())->links() --}} 
                                 </div>   
+                                <br/>
                                 <br/>
                                 <div class="form-devider"></div>
                                 @if(count($data['getdata'])>0 || isset($data['reopen_data']))
@@ -216,109 +224,105 @@
 <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
-
+<script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+    <script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
 <script>
-            $('.Supplier').select2({
-                    placeholder: 'Choose one',
-                    searchInputPlaceholder: 'Search',
-                    minimumInputLength: 3,
-                    allowClear: true,
-                    theme: "classic",
-                    ajax: {
-                    url: "{{url('inventory/suppliersearch')}}",
-                    processResults: function (data) {
-                      return {
-                        results: data
-                      };
-                    }
-                  }
-            }).trigger('change');
-
-
-
-            $("button").click(function(){
-            var wanted_id = $(this).attr("data-val");
-            var wanted_option = $('#selectTwo option[value="'+ wanted_id +'"]');
-            wanted_option.prop('selected', false);
-            $('.Supplier').trigger('change.select2');
-            });
-
-            $(".submit-btn").on("click", function(event) {
-                if($('#type').val()==0)
-                {
-                    $('#select_error').css('display','block');
-                    //document.getElementById("#select_error").css("display","block");
-                }
-                if($('.fixed').is(':checked'))
-                {
-                    if(!confirm('You checked fixed rate item,Are you sure that you want to submit the form?' )) 
-                    { 
-                        return false; 
-                    } 
-
-                }
-
-                // if(('.fixed').attr('checked', true))
-                // {
-                //     alert('cheked');
-                //     event.preventDefault();
-                //    // return confirm("You checked fixed item,Are you sure that you want to submit the form?");
-                // }
-            });
-            
-           $("#commentForm").validate({
-            rules: {
-                date: {
-                    required: true,
-                },
-                delivery: {
-                    required: true,
-                },
-                // type: {
-                //     selectcheck: true,
-                // },
-                'Supplier[]': {
-                   required: true,
-                },
-                'purchase_requisition_item[]':{
-                    required: true
-                }
-      
-            },
-            submitHandler: function(form) {
-                $('.spinner-button').show();
-                if(('.fixed').attr('checked', true))
-                {
-                    return confirm("You checked fixed item,Are you sure that you want to submit the form?");
-                }
-                //form.submit();
+    var dataTable = $('#example1').dataTable({
+        "sPaginationType": "full_numbers",
+        "ordering": false,
+    });
+    $('.Supplier').select2({
+        placeholder: 'Choose one',
+        searchInputPlaceholder: 'Search',
+        minimumInputLength: 3,
+        allowClear: true,
+        theme: "classic",
+        ajax: {
+            url: "{{url('inventory/suppliersearch')}}",
+            processResults: function (data) {
+                return {
+                    results: data
+                };
             }
-        });
+        }
+    }).trigger('change');
+
+    
+    $("button").click(function(){
+        var wanted_id = $(this).attr("data-val");
+        var wanted_option = $('#selectTwo option[value="'+ wanted_id +'"]');
+        wanted_option.prop('selected', false);
+        $('.Supplier').trigger('change.select2');
+    });
+
+    $(".submit-btn").on("click", function(event) {
+        if($('#type').val()==0)
+        {
+            $('#select_error').css('display','block');
+            //document.getElementById("#select_error").css("display","block");
+        }
+        if($('.fixed').is(':checked'))
+        {
+            if(!confirm('You checked fixed rate item,Are you sure that you want to submit the form?' )) 
+            { 
+                return false; 
+            } 
+
+        }
+        // var selectedRowIds = [];
+        // $('.purchase_requisition_item:checked)').each(function(){
+           
+        //     selectedRowIds.push($(this).val());
+        // });
+        // alert(selectedRowIds);
+    });
+            
+    $("#commentForm").validate({
+        rules: {
+            date: {
+            required: true,
+            },
+            delivery: {
+            required: true,
+            },
+            // type: {
+            //     selectcheck: true,
+            // },
+            'Supplier[]': {
+                required: true,
+            },
+            'purchase_requisition_item[]':{
+                required: true
+            }
+      
+        },
+        submitHandler: function(form) {
+            $('.spinner-button').show();
+            if(('.fixed').attr('checked', true))
+            {
+                return confirm("You checked fixed item,Are you sure that you want to submit the form?");
+            }
+            //form.submit();
+        }
+    });
         
 
-        $(".datepicker").datepicker({
-    format: " dd-mm-yyyy",
-    autoclose:true
+    $(".datepicker").datepicker({
+        format: " dd-mm-yyyy",
+        autoclose:true
     });
     $('.datepicker').mask('99-99-9999');
 
     $('#type').change(function() {
         let type= $(this).val();
         this.form.submit();
-        // $.ajax({
-        //    type:'GET',
-        //    url:"{{ url('inventory/quotation/items') }}",
-        //    data: { type: '' + type + '' },
-        //    success:function(data){
-        //         $("tbody").append(html);
-        //    }
-        // });
     });
 
     $(document).ready(function () {
         (function () {
-                                    
-            $('#type-wrapper').wrap('<form id="Form2"></form>');
+        $('#type-wrapper').wrap('<form id="Form2"></form>');
             //$('#Form2').append('{{csrf_field()}}');
     })();});
 

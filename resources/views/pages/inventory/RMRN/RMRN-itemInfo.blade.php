@@ -7,8 +7,8 @@
 		<div class="az-content-body">
 
             <div class="az-content-breadcrumb">  
-                <span><a href="" style="color: #596881;">Material Rejection</a></span>
-                <span><a href="">
+                <span><a href=""  style="color: #97a3b9;">Material Rejection</a></span>
+                <span><a href="" style="color: #596881;">
                    RMRN Item
                 </a></span>
             </div>

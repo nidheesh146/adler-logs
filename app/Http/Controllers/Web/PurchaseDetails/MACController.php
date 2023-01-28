@@ -168,6 +168,7 @@ class MACController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()){
                 $data['accepted_quantity'] =$request->accepted_quantity;
+                $data['available_qty'] = $request->accepted_quantity;
                 $update = $this->inv_mac_item->update_data(['inv_mac_item.id'=>$request->id],$data);
                 $mac_id = inv_mac_item_rel::where('item','=',$request->id)->pluck('master')->first();
                 if($update)

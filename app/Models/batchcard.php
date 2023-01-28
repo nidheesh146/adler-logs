@@ -35,6 +35,16 @@ class batchcard extends Model
         return $this->insertGetId($data);
     }
 
+    function get_all_batchcard_list($condition)
+    {
+        return $this->select(['batchcard_batchcard.*','product_product.sku_code'])
+                    //->leftjoin('product_product', 'product_product.id','=','batchcard_batchcard.product_id')
+                    ->where($condition)
+                    ->where('batchcard_batchcard.is_active','=',1)
+                    ->orderBy('batchcard_batchcard.id', 'desc')
+                    ->paginate(15);
+    }
+
     function get_batchcard_not_in_sip($condition)
     {
         return $this->select(['batchcard_batchcard.batch_no as text','batchcard_batchcard.id'])

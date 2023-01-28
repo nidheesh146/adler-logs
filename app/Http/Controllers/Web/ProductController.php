@@ -30,6 +30,7 @@ class ProductController extends Controller
         {
             $validation['product_id'] = ['required'];
             $validation['moreItems.*.Itemcode'] = ['required'];
+            $validation['moreItems.*.quantity'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
@@ -38,6 +39,7 @@ class ProductController extends Controller
                     $Request = [
                                     "product_id"=>$request['product_id'],
                                     "item_id" => $value['Itemcode'],
+                                    "quantity"=> $value['quantity'],
                                     "created_at" => date('Y-m-d H:i:s'),
 
                                 ];

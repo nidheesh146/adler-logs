@@ -7,7 +7,7 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Rejected Material Return Note(RMRN) </a></span>
+			 <span><a href="" style="color: #596881;">Rejected Material Return Note(RMRN) </a></span>
 		</div>
 		<h4 class="az-content-title" style="font-size: 20px;">Rejected Material Return Note(RMRN)
 		  	<div class="right-button">

@@ -5,8 +5,8 @@
         <div class="container" data-select2-id="9">
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
-                    <span><a href="{{ url('inventory/receipt-report') }}"> Receipt Report</a></span>
-                    <span>@if(request()->get('order_type')=='wo') Service Inspection & Receipt Report(MRR) @else Material Inspection & Receipt Report(MRR) @endif</span>
+                    <span><a href="{{ url('inventory/receipt-report') }}" style="color: #97a3b9;"> Receipt Report</a></span>
+                    <span style="color: #596881;">@if(request()->get('order_type')=='wo') Service Inspection & Receipt Report(MRR) @else Material Inspection & Receipt Report(MRR) @endif</span>
                 </div>
                 <h4 class="az-content-title" style="font-size: 20px;">{{--@if(!empty($edit)) Edit @else Add @endif--}} @if(request()->get('order_type')=='wo') Service @else Material @endif Inspection & Receipt Report Info @if(!empty($edit)) ({{$edit['mrr']->mrr_number}}) @endif
 

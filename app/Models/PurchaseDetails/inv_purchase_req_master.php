@@ -37,6 +37,7 @@ class inv_purchase_req_master extends Model
            ->leftjoin('user','user.user_id','=','inv_purchase_req_master.requestor_id')
            ->leftjoin('department','department.id','=','inv_purchase_req_master.department')
            ->where($condition)
+           ->where('requestor_id','=',config('user')['user_id'])
            ->orderby('master_id','desc')
            ->paginate(15);
     }

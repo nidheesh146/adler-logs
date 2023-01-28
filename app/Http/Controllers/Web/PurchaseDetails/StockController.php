@@ -19,6 +19,7 @@ use App\Models\PurchaseDetails\inv_stock_transfer_order;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_stock_to_production_item;
+use App\Models\PurchaseDetails\inv_batchcard_qty_updation_request;
 
 class StockController extends Controller
 {
@@ -37,6 +38,7 @@ class StockController extends Controller
         $this->inv_stock_transfer_order = new inv_stock_transfer_order;
         $this->inv_stock_to_production_item = new inv_stock_to_production_item;
         $this->batchcard_material = new batchcard_material;
+        $this->inv_batchcard_qty_updation_request = new inv_batchcard_qty_updation_request;
     }
     
     public function StockToProductionAdd(Request $request)
@@ -534,70 +536,97 @@ class StockController extends Controller
     }
     public function fetchBatchCards(Request $request)
     {
-        $batchcards = batchcard_material::select('batchcard_batchcard.id as batchcard_id','batchcard_batchcard.batch_no','batchcard_materials.item_id','batchcard_materials.quantity as material_qty',
-        'batchcard_batchcard.quantity as sku_quantity','product_product.sku_code')
+        $batchmaterials_in_sip_item = inv_stock_to_production_item::pluck('batchcard_material_id')->toArray();
+        $arr=array_filter($batchmaterials_in_sip_item);
+       // ->whereNotIn('batchcard_materials.id',$batchmaterials_in_sip_item)
+       
+        $batchcards = batchcard_material::select('batchcard_materials.id as batchcard_material_id','batchcard_batchcard.id as batchcard_id','batchcard_batchcard.batch_no','batchcard_materials.item_id','batchcard_materials.quantity as material_qty',
+        'batchcard_batchcard.quantity as sku_quantity','product_product.sku_code','inv_unit.unit_name')
                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'batchcard_materials.batchcard_id')
                 ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','batchcard_materials.item_id')
+                ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                ->whereNotIn('batchcard_materials.id',$arr)
                 ->where('batchcard_materials.item_id','=',$request->item_id)
                 ->get();
-        $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_lot_allocation.available_qty')
+        
+        $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_mac_item.available_qty','inv_mac_item.accepted_quantity',
+        'inv_unit.unit_name','inv_mac_item.id as mac_item_id')
                             ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
-                            ->where('inv_purchase_req_item.Item_code','=', $request->item_id)
-                            ->where('inv_lot_allocation.available_qty','!=',0)
+                            ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
+                            ->leftJoin('inv_mac_item','inv_mac_item.miq_item_id','=','inv_miq_item.id')
+                            ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                            ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                            ->where('inventory_rawmaterial.id','=', $request->item_id)
+                            ->where('inv_mac_item.available_qty','!=',0)
+                            ->orderBy('inv_lot_allocation.id','asc')
                             ->get();
         $itemcode = inventory_rawmaterial::where('id','=',$request->item_id)->pluck('item_code')->first();
-        $data['batchcards'] = "<div style='color:#3366ff;font: size 15px;'><i class='typcn typcn-tabs-outline' style='font-size:21px;'></i>&nbsp;<strong>BatchCards</strong></div>
-                                <div class='row'>
-                                        <div class='table-responsive'>
-			                                <table class='table table-bordered mg-b-0' id='example1'>
-                                                <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>BatchCard</th>
-                                                    <th>SKU Code</th>
-                                                    <th>SKU Quantity</th>
-                                                    <th>Item(".$itemcode.") Quantity Required</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>";
-        $i=1;
-        foreach($batchcards as $card)
+        if(count($batchcards)>0)
         {
-            $data['batchcards'] .="<tr>
-                                        <td><input type='checkbox' class='batchcard-checkbox'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></td>
-                                        <th>".$card->batch_no."</th>
-                                        <th>".$card->sku_code."</th>
-                                        <th>".$card->sku_quantity."</th>
-                                        <th>".$card->material_qty."</th>
-                                    </tr> ";                                               
-            $i++;
+            $data['batchcards'] = "<div style='color:#3366ff;font: size 15px;'><i class='typcn typcn-tabs-outline' style='font-size:21px;'></i>&nbsp;<strong>BatchCards</strong></div>
+                                    <div class='row'>
+                                            <div class='table-responsive'>
+                                                <table class='table table-bordered mg-b-0' id='example1'>
+                                                    <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>BatchCard</th>
+                                                        <th>SKU Code</th>
+                                                        <th>SKU Quantity</th>
+                                                        <th>Item(".$itemcode.") Quantity Required</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>";
+            $i=1;
+            foreach($batchcards as $card)
+            {
+                $data['batchcards'] .="<tr>
+                                            <th><input type='checkbox' class='batchcard-checkbox'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
+                                            <th>".$card->batch_no."</th>
+                                            <th>".$card->sku_code."</th>
+                                            <th>".$card->sku_quantity."</th>
+                                            <th class='qty'>
+                                                <span>".$card->material_qty." ".$card->unit_name."</span>
+                                                <span class='' style='float:right;'>
+                                                    <a href='#' data-toggle='modal' data-target='#requestModal'  class='badge badge-pill badge-primary request-btn' id='request-btn' style='border:none;display:none;'batchid='".$card->batchcard_id."'  batchno='".$card->batch_no."' skucode='".$card->sku_code."' skuqty='".$card->sku_quantity."' unit='".$card->unit_name."' batchqty='".$card->material_qty."' batchmaterialId='".$card->batchcard_material_id."'>
+                                                    Quantity Update Request
+                                                    </a>
+                                                </span>
+                                            </th>
+                                        </tr> ";                                               
+                $i++;
+            }
+            $data['batchcards'] .="<tbody></table></div></div><br/>";
         }
-        $data['batchcards'] .="<tbody></table></div></div><br/>";
-        $data['lotcards'] = "<div style='color:#3366ff;font: size 15px;'><i class='fas fa-address-card' style='font-size:21px;'></i>&nbsp;<strong>LotCards</strong></div>
-                                <div class='row'>
-                                        <div class='table-responsive'>
-			                                <table class='table table-bordered mg-b-0' id='example1' >
-                                                <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>LotCard</th>
-                                                    <th>Item Code</th>
-                                                    <th>Quantity</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>";
-         foreach($lotcards as $card)
+        if(count($lotcards)>0)
         {
-            $data['lotcards'] .="<tr>
-                                        <td><input type='radio' required class='lot-radio' name='lot_id' value='".$card->lot_id."' lotqty='".$card->available_qty."'></td>
-                                        <th>".$card->lot_number."</th>
-                                        <th>".$itemcode."</th>
-                                        <th>".$card->available_qty."</th>
-                                    </tr> ";                                               
-            $i++;
+            $data['lotcards'] = "<div style='color:#3366ff;font: size 15px;'><i class='fas fa-address-card' style='font-size:21px;'></i>&nbsp;<strong>LotCards</strong></div>
+                                    <div class='row'>
+                                            <div class='table-responsive'>
+                                                <table class='table table-bordered mg-b-0' id='example1' >
+                                                    <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>LotCard</th>
+                                                        <th>Item Code</th>
+                                                        <th>Quantity</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>";
+            $i=1;                                       
+            foreach($lotcards as $card)
+            {
+                $data['lotcards'] .="<tr>
+                                            <td><input type='radio' required class='lot-radio' name='lot_id' value='".$card->lot_id."' lotqty='".$card->available_qty."' lotno='".$card->lot_number."' macItemid=".$card->mac_item_id."></td>
+                                            <th>".$card->lot_number."</th>
+                                            <th>".$itemcode."</th>
+                                            <th>".$card->available_qty." ".$card->unit_name."</th>
+                                        </tr> ";                                               
+                $i++;
+            }
+            $data['lotcards'] .="<tbody></table></div></div>";
         }
-        $data['lotcards'] .="<tbody></table></div></div>";
-
                                             
         return $data;
 
@@ -614,14 +643,24 @@ class StockController extends Controller
             $lot_data= $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$request->lot_id]);
             $data['sip_number'] = "SIP2-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2%')->count(),1); 
             $data['lot_id'] = $request->lot_id;
-            $data['qty_to_production'] = $lot_data['available_qty'];
+            //$data['qty_to_production'] = $lot_data['available_qty'];
             $data['type'] = 2;
             $data['status'] = 1;
             $data['created_at']= date('Y-m-d H:i:s');
             $data['updated_at']= date('Y-m-d H:i:s');
+        
+            $mac_item = inv_mac_item::leftJoin('inv_miq_item','inv_miq_item.id','=','inv_mac_item.miq_item_id')
+                                 ->leftJoin('inv_lot_allocation','inv_lot_allocation.lot_number','=','inv_miq_item.lot_number')
+                                 ->where('inv_lot_allocation.id','=',$request->lot_id)
+                                 ->select('inv_mac_item.id','inv_mac_item.item_id','inv_mac_item.accepted_quantity')->first();
+            $inv_mac_item = inv_mac_item::where('id',$mac_item['id'])->first();
+            $inv_mac_item->available_qty = 0;
+            $inv_mac_item->save();
+            $data['pr_item_id'] = $inv_mac_item['item_id'];
+            $data['qty_to_production'] = $inv_mac_item['accepted_quantity'];
             $sip_master = $this->inv_stock_to_production->insert_data($data);
             if($sip_master)
-            {
+            { 
                 foreach($request->batchcard as $batchcard)
                 {
                     $batchdata = batchcard_material::where('batchcard_id','=',$batchcard)
@@ -630,7 +669,7 @@ class StockController extends Controller
                     $batch['batchcard_id']=$batchcard;
                     $batch['batchcard_material_id']=$batchdata['id'];
                     $batch['material_id']=$request->item_code;
-                    $batch['qty']=$batchdata['quantity'];
+                    $batch['qty_to_production']=$batchdata['quantity'];
                     $sip_item = $this->inv_stock_to_production_item->insert_data($batch);
 
                     $rel['master'] = $sip_master;
@@ -647,6 +686,74 @@ class StockController extends Controller
             return redirect("inventory/Stock/ToProduction");
 
         }
+        
+    }
+    public function IndirectSIP()
+    {
+        return view('pages.inventory.stock.indirect-sip'); 
+    }
+    public function addIndirectSIP(Request $request)
+    {
+        
+        $validation['item_code'] = ['required'];
+        $validation['qty_to_production'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all())
+        {
+            $data['sip_number'] = "SIP3-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP3%')->count(),1); 
+            //$data['lot_id'] = $request->lot_id;
+            //$data['qty_to_production'] = $lot_data['available_qty'];
+            $data['type'] = 3;
+            $data['status'] = 1;
+            $data['created_by']= config('user')['user_id'];
+            $data['created_at']= date('Y-m-d H:i:s');
+            $data['updated_at']= date('Y-m-d H:i:s');
+            $data['qty_to_production'] = $request->qty_to_production;
+            $mac_item = inv_mac_item::where('id',$request->mac_item_id)->first();
+            $data['pr_item_id'] = $mac_item['item_id'];
+            $sip_master = $this->inv_stock_to_production->insert_data($data);
+            if($sip_master)
+            {
+                $item['mac_item_id'] = $request->mac_item_id;
+                $item['material_id']=$request->item_code;
+                $item['qty_to_production'] = $request->qty_to_production;
+                $sip_item = $this->inv_stock_to_production_item->insert_data($item);
+
+                $inv_mac_item = inv_mac_item::where('id',$request->mac_item_id)->first();
+                $inv_mac_item->available_qty = $inv_mac_item->available_qty - $request->qty_to_production;
+                $inv_mac_item->save();
+
+                $rel['master'] = $sip_master;
+                $rel['item'] = $sip_item;
+                DB::table('inv_stock_to_production_item_rel')->insert($rel);
+                $request->session()->flash('success', "You have successfully added Stock issue to production !");
+            }
+            else
+            {
+                $request->session()->flash('error', "You have failed to add Stock issue to production !");
+            }
+            return redirect("inventory/Stock/ToProduction");
+        }
+        if($validator->errors()->all())
+        {
+            $request->session()->flash('error', "Stock transfer order updation failed!");
+            return redirect("inventory/ToProduction/Indirect");
+        }
+    }
+
+    public function itemMacDetails(Request $request)
+    {
+        $mac_details = inv_mac_item::select('inv_mac.mac_number','inv_mac_item.accepted_quantity','inv_mac_item.available_qty','inv_unit.unit_name','inv_mac_item.id as mac_item_id')
+                        ->leftJoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
+                        ->leftJoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
+                        ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.item_id')
+                        ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                        ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                        ->where('inv_purchase_req_item.Item_code','=', $request->item_id)
+                        ->where('inventory_rawmaterial.item_type_id','!=',2 )
+                        ->where('inv_mac_item.available_qty','!=',0 )
+                        ->first();
+        return $mac_details;
         
     }
 
@@ -671,6 +778,14 @@ class StockController extends Controller
            
         }
         $data['sip'] =$this->inv_stock_to_production->get_all_data($condition);
+        foreach($data['sip'] as $sip)
+        {
+            $sip['items']=inv_stock_to_production_item::select('batchcard_batchcard.batch_no','inv_stock_to_production_item.qty_to_production')
+                                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','inv_stock_to_production_item.batchcard_id')
+                                        ->leftJoin('inv_stock_to_production_item_rel','inv_stock_to_production_item_rel.item','=','inv_stock_to_production_item.id')
+                                        ->where('inv_stock_to_production_item_rel.master','=',$sip['id'])
+                                        ->get();
+        }
         return view('pages.inventory.stock.stock-issue-to-production',compact('data'));
     }
 
@@ -742,5 +857,35 @@ class StockController extends Controller
         }
 
     }
+
+    public function quantityUpdationRequest(Request $request)
+    {
+        $is_exist = inv_batchcard_qty_updation_request::where('item_id','=',$request->item_id)
+                                    ->where('batchcard_id','=',$request->batch_id)
+                                    ->where('sku_qty_to_be_update','=', $request->request_sku_qty)
+                                    ->where('material_qty_to_be_update','=', $request->request_qty)
+                                    ->where('status','!=',0)
+                                    ->exists();
+        if($is_exist)
+        {
+            $request->session()->flash('error', "The request already exist !");
+            return redirect()->back();
+        }   
+        {    
+            $data['item_id'] = $request->item_id;
+            $data['batchcard_id'] = $request->batch_id;
+            $data['batchcard_material_id'] = $request->batchcard_material_id;
+            $data['sku_qty_to_be_update']= $request->request_sku_qty;
+            $data['material_qty_to_be_update']= $request->request_qty;
+            $data['status']= 2;
+            $data['created_at']= date('Y-m-d H:i:s');
+            $data['updated_at']= date('Y-m-d H:i:s');
+            $add =$this->inv_batchcard_qty_updation_request->insert_data($data);
+            $request->session()->flash('success', "You have successfully send a quantity updation request !");
+            return redirect()->back();
+        }
+    }
+
+   
 
 }

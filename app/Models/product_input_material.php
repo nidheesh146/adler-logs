@@ -18,9 +18,11 @@ class product_input_material extends Model
     }
     function getAllData($condition)
     {
-        return $this->select(['product_input_material.id','inventory_rawmaterial.item_code','inventory_rawmaterial.short_description'])
+        return $this->select(['product_input_material.id','product_input_material.quantity','inventory_rawmaterial.item_code',
+        'inventory_rawmaterial.short_description','inv_unit.unit_name'])
         ->leftjoin('product_product','product_product.id','=','product_input_material.product_id')
         ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id')
+        ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.receipt_unit_id')
         ->where($condition)
         ->orderBy('product_input_material.id', 'desc')
         ->get();

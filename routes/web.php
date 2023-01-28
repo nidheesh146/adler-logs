@@ -21,6 +21,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web'], function() {
 
     Route::get('user-add', 'WebapiController@insert_user');
     Route::get('user-dept', 'WebapiController@insert_dept');
+    
+
 
 });
 
@@ -213,6 +215,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/stock/fetchPrimaryBatchCard-info','StockController@fetchPrimaryBatchCard_info');
     Route::get('inventory/Stock/ToProduction/Direct','StockController@DirectSIP');
     Route::post('inventory/Stock/ToProduction/Direct','StockController@addDirectSIP');
+    Route::get('inventory/Stock/ToProduction/Indirect','StockController@IndirectSIP');
+    Route::post('inventory/Stock/ToProduction/Indirect','StockController@addIndirectSIP');
+    Route::get('inventory/stock/item-mac-info','StockController@itemMacDetails');
+    Route::post('inventory/stock/quantity-updation-request','StockController@quantityUpdationRequest');
+
     Route::get('inventory/stock/fetchBatchCards','StockController@fetchBatchCards');
      //Stock From Production
     Route::get('inventory/Stock/FromProduction', 'StockController@StockFromProduction');
@@ -262,7 +269,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
   
     //DashBoard
     Route::get('dashboard','DashboardController@index');
+    Route::get('profile','ProfileController@profile');
+    Route::post('updateprofile','ProfileController@updateProfile');
    //Batchcard
+    Route::get('batchcard/batchcard-list', 'BatchCardController@BatchcardList');
     Route::get('batchcard/batchcard-upload', 'BatchCardController@getBatchcardUpload');
     Route::post('batchcard/batchcard-upload', 'BatchCardController@batchcardUpload');
     Route::get('batchcard/batchcard-add', 'BatchCardController@BatchcardAdd');
@@ -270,6 +280,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('batchcard/productsearch', 'BatchCardController@productsearch');
     Route::post('batchcard/assemble-batchcard-add','BatchCardController@assemblebatchcardAdd');
     Route::get('batchcard/product/find-input-materials','BatchCardController@findInputMaterials');
+    Route::get('batchcard/request-list','BatchCardController@requestList');
+    Route::get('batchcard/quantity-update/approve','BatchCardController@approveRequest');
+    Route::get('batchcard/quantity-update/reject','BatchCardController@rejectRequest');
 
     //Label card
     Route::get('label/mrp-label','LabelController@mrpLabel');

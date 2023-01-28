@@ -41,7 +41,7 @@ class inv_rmrn extends Model
                     ->leftjoin('inv_mrd','inv_mrd.id','=','inv_rmrn.mrd_id')
                     ->leftjoin('inv_miq','inv_miq.id','=','inv_mrd.miq_id')
                     ->join('user','user.user_id','=','inv_rmrn.created_by')
-                    ->join('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
                     ->where($condition)
                     ->first();

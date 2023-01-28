@@ -7,7 +7,7 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Stock Issue To Production</a></span>
+			 <span><a href="" style="color: #596881;">Stock Issue To Production</a></span>
 		</div>
 		<h4 class="az-content-title" style="font-size: 20px;">Stock Issue To Production
 		  	<div class="right-button">
@@ -35,11 +35,7 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
-        <div class="row row-sm mg-b-20 mg-lg-b-0">
-            <div class="table-responsive" style="margin-bottom: 13px;">
-                
-            </div>
-        </div>
+        
 		<form method="post" action="{{url('inventory/stock/issueToProduction')}}">
             {{ csrf_field() }}
             <div class="row">
@@ -157,7 +153,6 @@
           }
         }
       }).on('change', function (e) {
-        $('.spinner-button').show();
         let res = $(this).select2('data')[0];
         if(res){
           $.get("{{ url('inventory/stock/fetchBatchCard-info') }}?batchcard_id="+res.id,function(data)
@@ -171,6 +166,11 @@
             $('#raw_material_id').val(data['batchcard']['rawmaterial_id']);
             $('.data-bindings').html(data['lot']);
             $('.data-bindings').html(data['batch']);
+            // if(data['batch'] && data['lot'] )
+            // {
+            //     $('.save-btn').show();
+            //     $('.spinner-button').show();
+            // }
             // $('.spinner-button').hide();
           });
         }else{

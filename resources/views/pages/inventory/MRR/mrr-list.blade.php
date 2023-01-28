@@ -6,8 +6,8 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-            <span><a href="{{ url('inventory/MRD') }}"> Receipt Report</a></span>
-			 <span><a href="">@if(request()->get('order_type')=='wo') Service Receipt Report(SRR) @else Material Inspection &  Receipt Report(MRR) @endif </a></span>
+            <span><a href="{{ url('inventory/MRD') }}"  style="color: #97a3b9;"> Receipt Report</a></span>
+			 <span><a href="" style="color: #596881;">@if(request()->get('order_type')=='wo') Service Receipt Report(SRR) @else Material Inspection &  Receipt Report(MRR) @endif </a></span>
 		</div>
 		<h4 class="az-content-title" style="font-size: 20px;">@if(request()->get('order_type')=='wo') Service Inspection & Receipt Report(SRR) @else Material Inspection & Receipt Report(MRR) @endif 
 		  	<div class="right-button">

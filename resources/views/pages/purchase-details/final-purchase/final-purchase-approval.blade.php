@@ -43,7 +43,7 @@
                 <span><a href="">@if(request()->get('order_type')=='wo') Work @else Purchase @endif Order Approval</a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">@if(request()->get('order_type')=='wo') Work @else Purchase @endif Order Approval
-                
+            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>  
                 
             </h4><br/>
 			

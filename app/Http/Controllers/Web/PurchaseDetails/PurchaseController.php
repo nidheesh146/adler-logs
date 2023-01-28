@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Web\PurchaseDetails;
-
+use Illuminate\Validation\Rule;
 use App\Exports\FinalPurchaseOrderExport;
 use App\Http\Controllers\Controller;
 use App\Models\PurchaseDetails\inv_final_purchase_order_item;
@@ -897,7 +897,7 @@ class PurchaseController extends Controller
     {
         if ($request->isMethod('post'))
         {
-            $validation['invoice_number'] = ['required'];
+            $validation['invoice_number'] = ['required','unique:inv_supplier_invoice_master'];
             $validation['invoice_date'] = ['required'];
             $validation['po_item_id'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
@@ -913,15 +913,17 @@ class PurchaseController extends Controller
                 $data['type'] = 'WO';
                 else
                 $data['type'] = 'PO';
-
-                if($request->supplier){
-                    $data['supplier_id'] = inv_supplier::where('vendor_name', 'like', '%' . $request->supplier . '%')->pluck('id')->first();
-                }
-                if($request->po_no){
-                    $data['supplier_id'] = inv_final_purchase_order_master::where('po_number', 'like', '%' . $request->po_no . '%')->pluck('supplier_id')->first();
-                }
-                // $order_master = $this->inv_final_purchase_order_master->get_master_data(['inv_final_purchase_order_master.id' => $request->po_no]);
-                // $data['supplier_id'] = $order_master->supplier_id;
+                // echo $request->po_item_id[0];
+                // exit;
+                // if($request->supplier){
+                //     $data['supplier_id'] = inv_supplier::where('vendor_name', 'like', '%' . $request->supplier . '%')->pluck('id')->first();
+                // }
+                // if($request->po_no){
+                //     $data['supplier_id'] = inv_final_purchase_order_master::where('inv_final_purchase_order_master.id', '=', $request->po_item_id[0])->pluck('supplier_id')->first();
+                // }
+                $order_master_id = inv_final_purchase_order_rel::where('item','=', $request->po_item_id[0])->pluck('master')->first();
+                $order_master = $this->inv_final_purchase_order_master->get_master_data(['inv_final_purchase_order_master.id' =>$order_master_id]);
+                $data['supplier_id'] = $order_master->supplier_id;
                 $SIMaster = $this->inv_supplier_invoice_master->insert_data($data,$request->po_item_id);
                 if($SIMaster)
                 {
@@ -934,11 +936,12 @@ class PurchaseController extends Controller
             }
             if($validator->errors()->all())
              {
-            //     if($request->order_type)
-            //     return redirect("inventory/supplier-invoice-add?order_type=".$request->order_type)->withErrors($validator)->withInput();
-            //     else
-            //     return redirect("inventory/supplier-invoice-add")->withErrors($validator)->withInput();
-                return redirect()->back()->withInput();
+               
+                // if($request->order_type)
+                // return redirect("inventory/supplier-invoice-add?order_type=".$request->order_type)->withErrors($validator)->withInput();
+                // else
+                // return redirect("inventory/supplier-invoice-add")->withErrors($validator)->withInput();
+                return redirect()->back()->withErrors($validator)->withInput();
             }
         }
         else
@@ -1119,7 +1122,7 @@ class PurchaseController extends Controller
         //echo "ff";exit;
         if ($request->isMethod('post')) 
         {
-            $validation['invoice_number'] = ['required'];
+            $validation['invoice_number'] = ['required','unique:inv_supplier_invoice_master,invoice_number,'.$this->inv_supplier_invoice_master->id];
             $validation['invoice_date'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if (!$validator->errors()->all()) 
@@ -1154,7 +1157,7 @@ class PurchaseController extends Controller
         }
     }
 
-    public function supplier_invoice_delete1(Request $request, $id)
+    public function supplier_invoice_delete(Request $request, $id)
     {
         $this->inv_supplier_invoice_master->deleteData(['id' => $id]);
         $request->session()->flash('success', "You have successfully deleted a supplier invoice master !");

@@ -52,7 +52,7 @@
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>Batch Card No *</label>
-                                            <input type="text" class="form-control"  value="" name="batchcard" placeholder="Batch Card No">
+                                            <input type="text" class="form-control"  value="{{$batch_no}}" name="batchcard" placeholder="Batch Card No" readonly>
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>Process Sheet No *</label>
@@ -60,7 +60,7 @@
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>SKU Quantity *</label>
-                                            <input type="text" class="form-control"  value="" name="sku_quantity" placeholder="SKU Quantity">
+                                            <input type="text" class="form-control"  value="" name="sku_quantity" id="sku_quantity" placeholder="SKU Quantity">
                                         </div><!-- form-group -->
                                        {{-- <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>Input Material *</label>
@@ -305,6 +305,26 @@
                 return { results: data };
             }
         }
+    });
+    $('#sku_quantity').on("input", function() {
+        var material_count = ($(".material-qty").length );
+        if($(this).val()!='')
+        {
+            for(i=1;i<=material_count;i++)
+            {
+                qty_per_sku = $(this).val()*$(".materialqty"+i+"").val();
+                //alert(qty_per_sku);
+                $(".qty"+i+"").val(qty_per_sku);
+            }
+        }
+        else
+        {
+            for(i=1;i<=material_count;i++)
+            {
+                $(".qty"+i+"").val($(".materialqty"+i+"").val());
+            }
+        }
+       
     });
     $('.input_material').select2({
         placeholder: 'Choose one',

@@ -3,19 +3,14 @@
 <div class="az-content-body">
   
          <div class="az-content-header-top">
-          <div>
-            <h2 class="az-content-title mg-b-5 mg-b-lg-8 mg-t-20">Hi, welcome back!</h2>
-            
-          
-            <div class="dash az-dashboard-date mg-t-30" >
-            
-            
-            <div class="date">
-              <div><?php echo date("d");?></div>
-              <div>
-                <span><?php echo date("m-y");?></span>
+         <div class="date card" style="float:right; width:20%;text-align:center;padding:2px;">
+                <div><h4> <i class="fas fa-calendar-alt"></i><?php echo date("d-m-Y");?></h4></div>
                 <span><?php echo date("l");?></span>
               </div>
+          <div>
+            <h2 class="az-content-title mg-b-5 mg-b-lg-8 mg-t-20">Hi, welcome back!</h2>
+            <div class="dash az-dashboard-date mg-t-30" >
+            <div>
           </div>
             </div><!-- az-dashboard-date -->
           </div><!-- az-dashboard-date -->

@@ -13,6 +13,9 @@ use App\Models\batchcard;
 use App\Models\product;
 use App\Models\product_input_material;
 use App\Models\batchcard_material;
+use App\Models\PurchaseDetails\inv_lot_allocation;
+use App\Models\PurchaseDetails\inventory_rawmaterial;
+use App\Models\PurchaseDetails\inv_batchcard_qty_updation_request;
 
 class BatchCardController extends Controller
 {
@@ -22,6 +25,8 @@ class BatchCardController extends Controller
         $this->product = new product;
         $this->product_input_material = new product_input_material;
         $this->batchcard_material = new batchcard_material;
+        $this->inv_lot_allocation= new inv_lot_allocation;
+        $this->inv_batchcard_qty_updation_request = new inv_batchcard_qty_updation_request;
     }
     public function productsearch(Request $request)
     {
@@ -34,6 +39,25 @@ class BatchCardController extends Controller
         }else{
             return response()->json(['message'=>'Product is not exist'], 500); 
         }
+    }
+    public function BatchcardList(Request $request)
+    {
+        $condition=[];
+        if ($request->batch_no) {
+            $condition[] = ['batchcard_batchcard.batch_no', 'like', '%' . $request->batch_no . '%'];
+        }
+        if ($request->sku_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->sku_code . '%'];
+        }
+        if ($request->process_sheet) {
+            $condition[] = ['batchcard_batchcard.process_sheet_id', 'like', '%' . $request->process_sheet . '%'];
+        }
+        $data['batchcards'] = $this->batchcard->get_all_batchcard_list($condition);
+        foreach($data['batchcards'] as $card)
+        {
+            $card['material'] = $this->batchcard_material->get_batchcard_material(['batchcard_materials.batchcard_id'=>$card['id']]);
+        }
+        return view('pages/batchcard/batchcard-list',compact('data'));
     }
     public function BatchcardAdd(Request $request)
     {
@@ -54,8 +78,8 @@ class BatchCardController extends Controller
 
                 $datas['product_id'] = $request->product;
                 $datas['process_sheet_id'] = $request->process_sheet;
-                $datas['input_material'] = $request->input_material;
-                $datas['input_material_qty']=$request->input_material_qty;
+                // $datas['input_material'] = $request->input_material;
+                // $datas['input_material_qty']=$request->input_material_qty;
                 $datas['batch_no'] = $request->batchcard;
                 $datas['quantity'] = $request->sku_quantity;
                 $datas['start_date'] = date('Y-m-d',strtotime($request->start_date));
@@ -87,7 +111,9 @@ class BatchCardController extends Controller
                 return redirect("batchcard/batchcard-add")->withErrors($validator)->withInput();
             }
         }
-        return view('pages/batchcard/batchcard-add');
+        $batch_no = $this->batchcardNumberGeneration();
+        //echo  $batch_no;
+        return view('pages/batchcard/batchcard-add',compact('batch_no'));
     }
 
     public function assemblebatchcardAdd(Request $request)
@@ -107,8 +133,8 @@ class BatchCardController extends Controller
             {
                 $datas['product_id'] = $request->product1;
                 $datas['process_sheet_id'] = $request->process_sheet;
-                $datas['input_material'] = $request->input_material;
-                $datas['input_material_qty']=$request->input_material_qty;
+                // $datas['input_material'] = $request->input_material;
+                // $datas['input_material_qty']=$request->input_material_qty;
                 $datas['batch_no'] = $request->batchcard;
                 $datas['quantity'] = $request->sku_quantity;
                 $datas['start_date'] = date('Y-m-d',strtotime($request->start_date));
@@ -253,27 +279,50 @@ class BatchCardController extends Controller
 
     public function findInputMaterials(Request $request)
     {
-        $input_materials = product_input_material::select('product_input_material.id','inventory_rawmaterial.id as rawmaterial_id','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_unit.unit_name')
+        $input_materials = product_input_material::select('product_input_material.id','inventory_rawmaterial.id as rawmaterial_id','inventory_rawmaterial.item_code',
+        'inventory_rawmaterial.discription','inv_unit.unit_name','product_input_material.quantity')
                                                     ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id')
                                                     ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                                                     ->where('product_input_material.product_id','=',$request->product_id)
+                                                    ->get();
+        $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_lot_allocation.available_qty')
+                                                    ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
+                                                    ->where('inv_purchase_req_item.Item_code','=', $request->item_id)
+                                                    ->where('inv_lot_allocation.available_qty','!=',0)
                                                     ->get();
        // echo $input_materials; exit;
         $data = '<tbody>';
         $i=1;
         foreach( $input_materials as $material)
         {
+            $lotcard = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_lot_allocation.available_qty','inv_unit.unit_name','inv_mac_item.accepted_quantity')
+                        ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
+                        ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
+                        ->leftJoin('inv_mac_item','inv_mac_item.miq_item_id','=','inv_miq_item.id')
+                        ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                        ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                        ->where('inv_purchase_req_item.Item_code','=', $material->rawmaterial_id)
+                        ->where('inv_lot_allocation.available_qty','!=',0)
+                        ->orderBy('inv_lot_allocation.id','asc')
+                        ->first();
             $data .= '<tr>
-                        <td>Item Code<input type="text" class="form-control"  value="'.$material['item_code'].'" readonly><input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
-                            <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['rawmaterial_id'].'">
-                        </td>
-                        <td width="50%">
+                        <td>Item Code<input type="text" class="form-control"  value="'.$material['item_code'].'" readonly>
+                            <input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
+                            <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['rawmaterial_id'].'">';
+            if($lotcard)
+            {
+                $data .='(Lot Number:'.$lotcard['lot_number'].', Quantity: '.$lotcard['accepted_quantity'].' &nbsp;'.$lotcard['unit_name'].')';
+            }
+                            
+            $data .=' </td>
+                        <td width="40%">
                             Description<textarea value="" class="form-control" name="description" placeholder="Description">'.$material['discription'].'</textarea>
                         </td>
                         <td>
                             Quantity
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" name="qty'.$i++.'" required aria-describedby="unit-div1">
+                                <input type="text" class="form-control material-qty qty'.$i.'" name="qty'.$i.'" value="'.$material['quantity'].'" required aria-describedby="unit-div1">
+                                <input type="hidden" class="materialqty'.$i.'" name="materialqty'.$i++.'" value="'.$material['quantity'].'">
                                 <div class="input-group-append">
                                     <span class="input-group-text unit-div" id="unit-div1">'.$material['unit_name'].'</span>
                                 </div>
@@ -285,6 +334,156 @@ class BatchCardController extends Controller
         return $data;
 
     }
-    
+    function batchcardNumberGeneration()
+    {
+        $i=1993;
+        for($x = 'A'; $x <='Z' & $x !== 'AAA'; $x++)
+        {
+            $timestamp = strtotime(date('Y'));
+            $current_year = idate('Y', $timestamp);
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            {
+                if($i==((int)$current_year-1))
+                {
+                    $year_char =$x;
+                    
+                }
+            }else
+            {
+                if($i==(int)$current_year)
+                {
+                    $year_char = $x;
+                } 
+            }
+            $i++;
+        }
+        $m=date('m');
+        switch ($m) {
+            case 1:        
+                $mnth_char = "A";
+                break;
+            case 2:        
+                $mnth_char = "B";
+                break;
+            case 3:        
+                $mnth_char = "C";
+                break;
+            case 4:        
+                $mnth_char = "D";
+                break;
+            case 5:        
+                $mnth_char = "E";
+                break;
+            case 6:        
+                $mnth_char = "F";
+                break;
+            case 7:        
+                $mnth_char = "G";
+                break;
+            case 8:        
+                $mnth_char = "H";
+                break;
+            case 9:        
+                $mnth_char = "I";
+                break;
+            case 10:        
+                $mnth_char = "J";
+                break;
+            case 11:        
+                $mnth_char = "K";
+                break;
+            case 12:        
+                $mnth_char = "L";
+                break;        
+        }
+        
+        $structure = $year_char.$mnth_char;
+        $count = DB::table('batchcard_batchcard')->where('batchcard_batchcard.batch_no', 'LIKE', $structure.'%')->count();
+        //echo $structure;
+        if ($count+1 <= 9999)
+        {
+            $numZero = 4 - strlen($count+1);
+            $serial_no=str_repeat('0', $numZero).$count+1;
+            $count++;
+        }
+       $batch_no = $structure.$serial_no;
+        return $batch_no;
+    }
 
+    public function requestList(Request $request)
+    {
+        $condition = [];
+        if ($request->batch_no) {
+            $condition[] = ['batchcard_batchcard.batch_no', 'like', '%' . $request->batch_no . '%'];
+        }
+        if ($request->sku_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->sku_code . '%'];
+        }
+        if($request->item_code) {
+            $condition[] = ['inventory_rawmaterial.item_code','like','%' . $request->item_code . '%'];
+        }
+        if($request->status)
+        {
+            if($request->status=='reject')
+            $condition[] = ['inv_batchcard_qty_updation_request.status','=',0];
+            else
+            $condition[] = ['inv_batchcard_qty_updation_request.status','=',$request->status];
+
+        }
+        if(!$request->status)
+        {
+            $condition[] = ['inv_batchcard_qty_updation_request.status','=',2];
+        }
+        $data['requests'] = inv_batchcard_qty_updation_request::select('inv_batchcard_qty_updation_request.id as request_id','batchcard_batchcard.batch_no','product_product.sku_code',
+                                'inventory_rawmaterial.item_code','inv_batchcard_qty_updation_request.sku_qty_to_be_update','inv_batchcard_qty_updation_request.material_qty_to_be_update',
+                                'batchcard_batchcard.quantity as sku_qty','batchcard_materials.quantity as material_qty','inv_unit.unit_name','inv_batchcard_qty_updation_request.status','inv_batchcard_qty_updation_request.created_at')
+                            ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','inv_batchcard_qty_updation_request.batchcard_id')
+                            ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_batchcard_qty_updation_request.item_id')
+                            ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                            ->leftJoin('batchcard_materials','batchcard_materials.id','=','inv_batchcard_qty_updation_request.batchcard_material_id')
+                            ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                            //->where('inv_batchcard_qty_updation_request.status','=',2)
+                            ->where($condition)
+                            ->orderBy('inv_batchcard_qty_updation_request.id','desc')
+                            ->paginate(15);
+        return view('pages/batchcard/request-list',compact('data'));
+    }
+
+    public function rejectRequest(Request $request)
+    {
+        $success = inv_batchcard_qty_updation_request::where('id','=',$request->id)->update(['status'=>0]);
+        if($success)
+        $request->session()->flash('success', "Request Rejected !");
+        else
+        $request->session()->flash('error', "Request Rejection Failed !");
+        return redirect("batchcard/request-list");
+    }
+
+    public function approveRequest(Request $request)
+    {
+        $updation_request = inv_batchcard_qty_updation_request::where('id','=',$request->id)->first();
+        $request_id = $request->id;
+        DB::transaction(function() use ($updation_request, $request_id)
+        {
+            inv_batchcard_qty_updation_request::where('id','=',$request_id)->update(['status'=>1]);
+            batchcard::where('batchcard_batchcard.id','=',$updation_request['batchcard_id'])->update(['quantity'=>$updation_request['sku_qty_to_be_update']]);
+            batchcard_material::where('id','=',$updation_request['batchcard_material_id'])->update(['quantity'=>$updation_request['material_qty_to_be_update']]);
+            $materials = batchcard_material::select('id','item_id','quantity','product_inputmaterial_id')
+                            ->where('batchcard_id','=',$updation_request['batchcard_id'])
+                            ->where('id','!=',$updation_request['batchcard_material_id'])
+                            ->where('quantity','!=',0)
+                            ->get();
+            foreach( $materials as $item)
+            {
+                $per_material_qty = product_input_material::where('id','=',$item['product_inputmaterial_id'])->pluck('quantity')->first();
+                $batch_material_qty = ($per_material_qty * $updation_request['sku_qty_to_be_update']);
+                $update = batchcard_material::where('id','=',$item['id'])->update(['quantity'=>$batch_material_qty]);
+            }
+
+        });
+        $request->session()->flash('success', "Request Approved !");
+        return redirect("batchcard/request-list");
+
+    }
+    
 }

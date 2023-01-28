@@ -5,8 +5,8 @@
         <div class="container" data-select2-id="9">
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
-                    <span><a href="{{ url('inventory/receipt-report') }}"> Receipt Report</a></span>
-                    <span>Service Inspection & Receipt Report Info</span>
+                    <span><a href="{{ url('inventory/receipt-report') }}"  style="color: #97a3b9;"> Receipt Report</a></span>
+                    <span style="color: #596881;">Service Inspection & Receipt Report Info</span>
                 </div>
                 <h4 class="az-content-title" style="font-size: 20px;">{{--@if(!empty($edit)) Edit @else Add @endif --}}Service Inspection & Receipt Report Info @if(!empty($edit)) ({{$edit['srr']->mac_number}}) @endif
 

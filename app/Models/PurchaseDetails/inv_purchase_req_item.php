@@ -72,7 +72,8 @@ class inv_purchase_req_item extends Model
                     ->where('inv_purchase_req_item_approve.status','=',1)
                     ->groupBy('inv_purchase_req_item.requisition_item_id')
                     ->orderby('inv_purchase_req_item.requisition_item_id','desc')
-                    ->paginate(10);
+                    //->paginate(10);
+                    ->get();
     }
     function getdataFixedItems($condition){
         return  $this->select(['inv_purchase_req_item.requisition_item_id','inv_purchase_req_item.actual_order_qty','inv_unit.unit_name', 

@@ -20,9 +20,6 @@
 				
 	  		</div>
 		</h4>
-		<div class="az-dashboard-nav">
-			<nav class="nav"> </nav>	
-		</div>
         @if (Session::get('success'))
 		<div class="alert alert-success " style="width: 100%;">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -35,17 +32,18 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
-        <div class="row row-sm mg-b-20 mg-lg-b-0">
-            <div class="table-responsive" style="margin-bottom: 13px;">
-                
-            </div>
-        </div>
+        <div class="card-header bg-gray-400 bd-b-0-f pd-b-0">
+            <nav class="nav nav-tabs">
+                <a class="nav-link active" href="">Stock Issue To Production -Direct</a>
+                <a class="nav-link"  href="{{url('inventory/Stock/ToProduction/Indirect')}}">Stock Issue To Production -Indirect</a>
+            </nav> 
+        </div><br/>
 		<form method="post" action="">
             {{ csrf_field() }}
             <div class="row">
                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <label for="exampleInputEmail1">Item Code*</label>
-                    <select class="form-control  item_code" name="item_code">
+                    <select class="form-control  item_code" name="item_code" id="item_code">
                     </select> 
                 </div>
                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
@@ -77,7 +75,65 @@
 </div>
 	<!-- az-content-body -->
 	<!-- Modal content-->
-
+    <div id="requestModal" class="modal">
+        <div class="modal-dialog modal-lg" role="document">
+            <form id="status-change-form" method="post" action="{{ url('inventory/stock/quantity-updation-request')}}">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#Quantity Update Request(<span class="batch_number"></span>)</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <div style='color:#3366ff;font: size 15px;'><i class='fas fa-address-card' style='font-size:21px;'></i>&nbsp;<strong>LotCard Info</strong></div>
+                                <table class="table table-bordered mg-b-0">
+                                    <tr>
+                                        <th>Item</th>
+                                        <td id="itemcode"></td>
+                                        <th >Item Description</th>
+                                        <td id="description"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Lot Number</th>
+                                        <td id="lotno"></td>
+                                        <th>Lot Quantity</th>
+                                        <td id="lotqty"></td>
+                                    </tr>
+                                </table>
+                                <div style='color:#3366ff;font: size 15px;'><i class='typcn typcn-tabs-outline' style='font-size:21px;'></i>&nbsp;<strong>BatchCard Info</strong></div>
+                                <table class="table table-bordered mg-b-0">
+                                    <tr>
+                                        <th>BatchCard Number</th>
+                                        <td id="batchno"></td>
+                                        <th >SKU Code</th>
+                                        <td id="skucode"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>SKU Quantity<br/>(Actual Sku Qty:<span id="skuqty"></span>)</th>
+                                        <td><input type="text" name="request_sku_qty" id="request_sku_qty" value="" style="width: 60px;" readonly></td>
+                                        <th>Upadate Quantity <br/>(Actual Qty:<span id="batchqty"></span>)</th>
+                                        <td>
+                                            <input type="hidden" name="item_id" id="item_id" value="">
+                                            <input type="hidden" name="batch_id" id="batchid" value="">
+                                            <input type="hidden" name="batchcard_material_id" id="batchcard_material_id" value="">
+                                            <input type="text" name="request_qty" id="request_qty" readonly><span id="unit"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        <button type="submit" class="btn btn-primary" id="save"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+								role="status" aria-hidden="true"></span> <i class="fas fa-save"></i> Send Request</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div><!-- modal-dialog -->
 	
       
 
@@ -123,12 +179,16 @@
                 //alert('kk');
                 $('.batchcards').html(data['batchcards']);
                 $('.lotcards').html(data['lotcards']);
+                if(data['batchcards'] && data['lotcards'])
+                {
                 $('.spinner-button').show();
                 $('.savebtn').show();
+                }
             });
         }
 
     });  
+   
 
     $('.submitbtn').on('click', function (e) {
         var batch_tot = 0;
@@ -138,15 +198,54 @@
             batch_tot= batch_tot+parseInt($(this).attr('batchqty'));
         });
         //alert(batch_tot);
-       if(batch_tot>lot_qty)
+       if(batch_tot!=lot_qty)
        {
             e.preventDefault();
-            alert('Total selected batch item quantity is greated than selected Lotcard')
+            alert('Selected batch item quantity is not match with selected Lotcard.You Need to send  batchcard item quantity update request. For this click on "Quality Upadte Request" button.');
+            $(".batchcard-checkbox:checked").each(function() {
+                $(this).closest('th[class="qty"]').find('button').show();
+            });
+            $('.request-btn').show();
        }
        else
        {
             form.submit();
        }
+    });
+    $(document).ready(function() {
+        $('body').on('click', '#request-btn', function (event) {
+            var batchid = $(this).attr('batchid');
+            var batchno = $(this).attr('batchno');
+            var batchqty = $(this).attr('batchqty');
+            var skucode = $(this).attr('skucode');
+            var skuqty = $(this).attr('skuqty');
+            var unit = $(this).attr('unit');
+            var item_code = $('#item_code').text();
+            var item_id = $('#item_code').val();
+            var item_description = $('#item_description').text();
+            var lot_qty = $('.lot-radio:checked').attr('lotqty');
+            var lot_no = $('.lot-radio:checked').attr('lotno');
+            var batchmaterialId = $(this).attr('batchmaterialId');
+            $('#batchno').html(batchno);
+            $('#skucode').html(skucode);
+            $('#skuqty').html(skuqty);
+            $('#batchid').val(batchid);
+            $('#batchqty').text(batchqty+' '+unit);
+            $('#unit').text(unit);
+            $('.batch_number').text(batchno);
+            //$('#request_sku_qty').val(skuqty);
+            $('#description').text(item_description);
+            $('#itemcode').text(item_code);
+            $('#lotqty').text(lot_qty+' '+unit);
+            $('#lotno').text(lot_no);
+            $('#item_id').val(item_id);
+            $('#batchcard_material_id').val(batchmaterialId);
+            var material_qty_per_sku = parseInt(batchqty)/parseInt(skuqty);
+            var request_sku_qty = parseInt(lot_qty)/material_qty_per_sku;
+            //alert(Math.floor(request_sku_qty));
+            $('#request_sku_qty').val(Math.floor(request_sku_qty));
+            $('#request_qty').val(lot_qty);
+        });
     });
      
           

@@ -7,7 +7,7 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Stock Issue To Production</a></span>
+			 <span><a href="" style="color: #596881;">Stock Issue To Production</a></span>
 		</div>
 		<h4 class="az-content-title" style="font-size: 20px;">Stock Issue To Production
 		  	<div class="right-button">
@@ -103,21 +103,30 @@
 				<thead>
 					<tr>
 						<th>SIP Number</th>
+                        <th>Item Code</th>
                         <th>Type</th>
 						<th>Lot Number</th>
                         <th>Quantity</th>
-                        <th>Action</th>
+                        <th>Created at</th>
+                        <th>BatchCards & Qty</th>
 					</tr>
 				</thead>
 				<tbody>
                     @foreach($data['sip'] as $sip)
                     <tr>
                         <td>{{$sip['sip_number']}}</td>
+                        <td>{{$sip['item_code']}}</td>
                         <td>@if($sip['type']==2) Direct  @else Indirect @endif</td>
                         <td>{{$sip['lot_number']}}</td>
-                        <td>{{$sip['qty_to_production']}}</td>
-                        <td><a class="badge badge-info sip-edit" id="sip-edit" style="font-size: 13px;" data-toggle="modal" sipId="{{$sip['id']}}" sip="{{$sip['sip_number']}}" item="{{$sip['item_code']}}" qty="{{$sip['quantity']}}" data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>
-                        <!-- <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/Stock/ToProduction/delete/'.$sip['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td> -->
+                        <td>{{$sip['qty_to_production']}} {{$sip['unit_name']}}</td>
+                        <td>{{date('d-m-Y', strtotime($sip['created_at']))}}</td>
+                        <td>@foreach($sip['items'] as $item)
+                            @if($item['batch_no'])
+                            {{$item['batch_no']}} - {{$item['qty_to_production']}}<br/>
+                            @endif
+                            @endforeach
+                        </td>
+                        
                     </tr>
                     @endforeach
 				</tbody>

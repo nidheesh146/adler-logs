@@ -5,8 +5,8 @@
         <div class="container" data-select2-id="9">
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
-                    <span><a href="{{ url('inventory/MRD') }}">Rejected Material Return Note(RMRN)</a></span>
-                    <span> Rejected Material Return Note @if(!empty($edit)) ({{$edit['rmrn']->mrd_number}}) @endif</span>
+                    <span><a href="{{ url('inventory/MRD') }}"  style="color: #97a3b9;">Rejected Material Return Note(RMRN)</a></span>
+                    <span style="color: #596881;"> Rejected Material Return Note @if(!empty($edit)) ({{$edit['rmrn']->mrd_number}}) @endif</span>
                 </div>
                 <h4 class="az-content-title" style="font-size: 20px;">Rejected Material Return Note @if(!empty($edit)) ({{$edit['rmrn']->mrd_number}}) @endif
 
