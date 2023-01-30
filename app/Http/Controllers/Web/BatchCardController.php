@@ -295,14 +295,14 @@ class BatchCardController extends Controller
         $i=1;
         foreach( $input_materials as $material)
         {
-            $lotcard = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_lot_allocation.available_qty','inv_unit.unit_name','inv_mac_item.accepted_quantity')
+            $lotcard = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_unit.unit_name','inv_mac_item.accepted_quantity')
                         ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
                         ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
                         ->leftJoin('inv_mac_item','inv_mac_item.miq_item_id','=','inv_miq_item.id')
                         ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                         ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                         ->where('inv_purchase_req_item.Item_code','=', $material->rawmaterial_id)
-                        ->where('inv_lot_allocation.available_qty','!=',0)
+                        //->where('inv_lot_allocation.available_qty','!=',0)
                         ->orderBy('inv_lot_allocation.id','asc')
                         ->first();
             $data .= '<tr>
