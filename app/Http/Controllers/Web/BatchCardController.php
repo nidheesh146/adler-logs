@@ -288,7 +288,7 @@ class BatchCardController extends Controller
         $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_lot_allocation.available_qty')
                                                     ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
                                                     ->where('inv_purchase_req_item.Item_code','=', $request->item_id)
-                                                    ->where('inv_lot_allocation.available_qty','!=',0)
+                                                    //->where('inv_lot_allocation.available_qty','!=',0)
                                                     ->get();
        // echo $input_materials; exit;
         $data = '<tbody>';

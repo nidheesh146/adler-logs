@@ -75,20 +75,25 @@ class StockController extends Controller
     public function fetchLotcard(Request $request)
     {
         $data =[];
-        $sip_item = inv_stock_to_production_item::select('*')
+        $sip_item = inv_stock_to_production_item::select('inv_stock_to_production_item.*','inv_unit.unit_name')
+                                        ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_to_production_item.material_id')
+                                        ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                                         ->where('batchcard_id','=',$request->batchcard_id)
                                         ->where('material_id','=',$request->item_id)
                                         ->first();
         $sip_master = DB::table('inv_stock_to_production_item_rel')->where('item', $sip_item['id'])->value('master');
-        $lot = inv_stock_to_production:: select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_lot_allocation.qty_received','inv_lot_allocation.available_qty')
+        $lot = inv_stock_to_production:: select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_mac_item.accepted_quantity','inv_mac_item.available_qty')
                                     ->leftjoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_stock_to_production.lot_id')
+                                    ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
+                                    ->leftJoin('inv_mac_item','inv_mac_item.miq_item_id','=','inv_miq_item.id')
                                     ->where('inv_stock_to_production.id','=',$sip_master)
                                     ->first();
-        $data['batch_qty']= $sip_item['qty'];
+        $data['batch_qty']= $sip_item['qty_to_production'];
         $data['lot_id'] = $lot['lot_id'];
         $data['lot_number'] =$lot['lot_number'];
-        $data['qty_received'] =$lot['qty_received'];
+        $data['accepted_quantity'] =$lot['accepted_quantity'];
         $data['available_qty'] =$lot['available_qty'];
+        $data['unit_name'] = $sip_item['unit_name'];
          return $data;
 
     }

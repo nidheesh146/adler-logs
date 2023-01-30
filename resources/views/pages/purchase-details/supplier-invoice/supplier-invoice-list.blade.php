@@ -165,7 +165,7 @@
                                 <label>
                                    Invoice Number
                                 </label>
-                                <input type="text" name="invoice_number" id="invoice_number"  placeholder="Invoice Number">
+                                <input type="text" name="invoice_number" id="invoice_number"  placeholder="Invoice Number" readonly>
                                 <input type="hidden" name="invoice_id" id="invoice_id" value="">
                             </div>
 							<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
