@@ -135,6 +135,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/supplier-invoice-item-edit/{master}/{id}', 'PurchaseController@supplierInvoiceItemEdit');
     Route::get('inventory/getPurchaseOrderItem','PurchaseController@getPurchaseOrderItem');
     Route::get('inventory/getInvoiceData','PurchaseController@getInvoiceData');
+    Route::post('inventory/partial-supplier-invoice','PurchaseController@PartialSupplierInvoice');
     //lot allocation
     Route::get('inventory/lot-allocation-list', 'LotAllocationController@lotAllocation');
     Route::get('inventory/lot-allocation-add', 'LotAllocationController@addLotAllocation');

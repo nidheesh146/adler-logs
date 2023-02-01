@@ -304,7 +304,8 @@ class StockController extends Controller
 
     public function StockToProductionDelete(Request $request,$id)
     {
-        $delete = $this->inv_stock_to_production->deleteData(['id' => $id]);
+        $delete = $this->inv_stock_to_production->update_data(['id' => $id],['status'=>0]);
+        //$delete = $this->inv_stock_to_production->deleteData(['id' => $id]);
         if($delete)
         $request->session()->flash('success', "You have successfully deleted Stock issue to production !");
         else
@@ -362,7 +363,8 @@ class StockController extends Controller
 
     public function StockFromProductionDelete(Request $request,$id)
     {
-        $delete = $this->inv_stock_from_production->deleteData(['id' => $id]);
+        //$delete = $this->inv_stock_from_production->deleteData(['id' => $id]);
+        $delete = $this->inv_stock_from_production->update_data(['id' => $id],['status'=>0]);
         if($delete)
         $request->session()->flash('success', "You have successfully deleted Stock return from production !");
         else
@@ -848,8 +850,22 @@ class StockController extends Controller
             $data['status']= 1;
             $data['created_at']= date('Y-m-d H:i:s');
             $data['updated_at']= date('Y-m-d H:i:s');
+           
+            
+            $mac_item = inv_lot_allocation::select('inv_mac_item.id as mac_item_id','inv_mac_item.available_qty','inv_lot_allocation.pr_item_id','inv_lot_allocation.lot_number')
+                                    ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
+                                    ->leftJoin('inv_mac_item','inv_mac_item.miq_item_id','=','inv_miq_item.id')
+                                    ->where('inv_lot_allocation.id','=',$request->lotcard_id)
+                                    ->first();
+
+            $data['pr_item_id'] =  $mac_item['pr_item_id'];
+            $data['mac_item_id'] = $mac_item['mac_item_id'];
             $add =$this->inv_stock_from_production->insert_data($data);
-            if($add)
+
+            $update_qty = $mac_item['available_qty']+$request->qty_return;
+            $qty_update =$this->inv_mac_item->update_data(['inv_mac_item.id'=>$mac_item['mac_item_id']],['inv_mac_item.available_qty'=>$update_qty]);
+
+            if($add && $qty_update)
             $request->session()->flash('success', "You have successfully added Stock return from production !");
             else
             $request->session()->flash('error', "You have failed to add Stock return from production !");

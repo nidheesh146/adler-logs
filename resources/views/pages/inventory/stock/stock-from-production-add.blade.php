@@ -61,7 +61,8 @@
                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <label for="exampleInputEmail1">Lot Card</label>
                     <div class="input-group mb-3">
-                      <input type="hidden" class="form-control lotcard_id" name="lotcard_id" readonly>
+                      <input type="hidden" class="form-control lotcard_id" name="lotcard_id" >
+                      <input type="hidden" class="form-control mac_item_id" name="mac_item_id" >
                       <input type="text" class="form-control lotcard" name="lotcard" readonly  aria-describedby="unit-div2" readonly>
                       <div class="input-group-append">
                           <span class="input-group-text unit-div" id="unit-div2">Unit</span>
@@ -79,7 +80,13 @@
                 </div>
                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <label for="exampleInputEmail1">Quantity to be Return*</label>
-                    <input type="text" class="form-control qty_return" name="qty_return" >
+                    <div class="input-group mb-3">
+                      <input type="text" class="form-control qty_return" name="qty_return"   aria-describedby="unit-div4" >
+                      <div class="input-group-append">
+                          <span class="input-group-text unit-div" id="unit-div4">Unit</span>
+                      </div>
+                    </div>
+                    
                 </div>
             </div>       
            <div class="form-devider"></div>
@@ -150,8 +157,9 @@
             $('.mac_qty').val(response['accepted_quantity']);
             $('.batchcard_item_qty').val(response['batch_qty']);
             $('#unit-div1').html(response['unit_name']);
-            $('#unit-div2').html(response['unit_name'])
-            $('#unit-div3').html(response['unit_name'])
+            $('#unit-div2').html(response['unit_name']);
+            $('#unit-div3').html(response['unit_name']);
+            $('#unit-div4').html(response['unit_name'])
             $('.save-btn').show();
           });
         }

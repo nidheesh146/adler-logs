@@ -129,6 +129,7 @@
                             <th>DISCOUNT</th>
 							<th>GST</th>
                             <th>Supplier</th>
+                            <th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -138,7 +139,14 @@
                             <td>{{$item['po_number']}}</td>
                             <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['short_description']}}" >{{$item['item_code']}}</td>
                             <td>{{$item['type']}}</td>
-                            <td>{{$item['order_qty']}}</td>
+                            <td>@if($item['current_invoice_qty']!=0)
+                                {{$item['current_invoice_qty']}} {{$item['unit_name']}}
+                                @elseif($item['order_qty']==$item['qty_to_invoice'])
+                                {{$item['order_qty']}} {{$item['unit_name']}}
+                                @else
+                                {{$item['qty_to_invoice']}} {{$item['unit_name']}}
+                                @endif
+                            </td>
                             <td>{{$item['rate']}}</td>
                             <td>{{$item['discount']}}</td>
                             <td>@if($item['igst']!=0)
@@ -152,6 +160,7 @@
                                  @endif
                             </td>
                             <td>{{$item['vendor']}}</td>
+                            <td><a href="" data-toggle="modal"  data-target="#invoicependingModal" class="invoice-pending-model badge badge-info"   id="invoice-add-model" poItem="{{$item['po_item']}}" itemCode="{{$item['item_code']}}" unit="{{$item['unit_name']}}" Orderqty="{{$item['order_qty']}}" description="{{$item['short_description']}}"   poId="{{$item['po_number']}}" style="font-size: 13px;"><i class="fas fa-plus"></i> Partial Invoice</a></td>
                         </tr>
                         @endforeach
 					</tbody>
@@ -176,7 +185,64 @@
 	</div>
 </div>
 	<!-- az-content-body -->
-
+    <div id="invoicependingModal" class="modal">
+        <div class="modal-dialog modal-xs" role="document">
+            <form id="excess-order-form" method="post" action="{{url('inventory/partial-supplier-invoice')}}" autocomplete="off">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#Partial Invoice</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <table class="table table-bordered mg-b-0">
+                                <thead>
+                                    <tr>
+                                        <th width="40%">Item Code</th>
+                                        <th id="itemCode"></th>
+                                    </tr>
+                                    <tr>
+                                        <th>Item Description</th>
+                                        <th id="description"></th>
+                                    </tr>
+                                    <tr>
+                                        <th>PO Number</th>
+                                        <th id="poId"></th>
+                                    </tr>
+                                    <tr>
+                                        <th>Order Quantity</th>
+                                        <th id="orderQuantity"></th>
+                                    </tr>
+                                    <tr>
+                                        <th>Partial Invoice Quantity</th>
+                                        <th>
+                                            <input type="hidden" name="po_item_id" class="po_item_id" value="">
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="partial_invoice_qty" name="partial_invoice_qty"  aria-describedby="unit" >
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text unit-div" id="unit">Unit</span>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="form-devider"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                            <button type="submit" class="btn btn-primary btn-rounded " style="float: right;width:88px;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
   
 </div>
 
@@ -207,19 +273,19 @@
   $(document).ready(function() {
         $('body').on('click', '#invoice-add-model', function (event) {
             event.preventDefault();
-            $('.binding').empty();
-            $('#invoice_number').val("");
-            var po_id = $(this).attr('poId');
-            $('#po_id').val(po_id);
-            $.ajax ({
-                    type: 'GET',
-                    url: "{{url('inventory/getPurchaseOrderItem')}}",
-                    data: { po_id: '' + po_id + '' },
-                    success : function(data) {
-                        $('.binding').append(data);
-                    }
-                });
-
+            var itemCode = $(this).attr('itemCode');
+            var description = $(this).attr('description');
+            var unit = $(this).attr('unit');
+            var Orderqty = $(this).attr('Orderqty');
+            var poId = $(this).attr('poId');
+            var poItem = $(this).attr('poItem');
+            //alert(poItem)
+            $('.po_item_id').val(poItem);
+            $('#itemCode').html(itemCode);
+            $('#description').html(description);
+            $('#unit').html(unit);
+            $('#poId').html(poId);
+            $('#orderQuantity').html(Orderqty+' '+unit);
         });
   });
   $("#form1").validate({

@@ -92,6 +92,21 @@ class inv_final_purchase_order_master extends Model
 
     }
 
+    function get_purchase_master_list_with_condition($condition1){
+        return $this->select(['inv_purchase_req_quotation.rq_no','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_final_purchase_order_master.po_date',
+                              'inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.status','inv_final_purchase_order_master.id as po_id','inv_final_purchase_order_master.created_at',
+                              'user.f_name','user.l_name','inv_final_purchase_order_master.id'])
+                    ->where($condition1)
+                    ->where('inv_final_purchase_order_master.status','=',1)
+                    //->join('inv_final_purchase_order_rel','inv_final_purchase_order_rel.master','=','inv_final_purchase_order_master.id')
+                    ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
+                    ->join('user','user.user_id','=','inv_final_purchase_order_master.created_by')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
+                    ->orderby('inv_final_purchase_order_master.id','desc')
+                    ->get();
+
+    }
+
     function get_master_data($condition){
         return $this->select(['*'])
         ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
