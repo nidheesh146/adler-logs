@@ -30,6 +30,7 @@ class inv_final_purchase_order_master extends Model
        foreach($item as $items){
             $datas['item_id'] = $items->item_id;
             $datas['order_qty'] = $items->quantity;
+            $datas['qty_to_invoice'] = $items->quantity;
             $datas['discount'] =  $items->discount; 
             $datas['Specification'] =  $items->specification;
             $datas['rate'] =  $items->rate;
