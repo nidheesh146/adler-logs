@@ -23,9 +23,10 @@ class inv_rmrn extends Model
         return $this->select('inv_rmrn.id as rmrn_id','inv_rmrn.rmrn_number','inv_rmrn.rmrn_date','inv_rmrn.created_by','inv_miq.created_by',
                             'inv_supplier.vendor_name','inv_supplier.vendor_id','user.f_name','user.l_name','inv_mrd.mrd_number')
                     ->leftjoin('inv_mrd','inv_mrd.id','=','inv_rmrn.mrd_id')
-                    ->leftjoin('inv_miq','inv_miq.id','=','inv_mrd.miq_id')
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mrd.invoice_id')
+                    ->leftjoin('inv_miq','inv_miq.invoice_master_id','=','inv_supplier_invoice_master.id')
                     ->leftjoin('user','user.user_id','=','inv_mrd.created_by')
-                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
+                    //->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
 
                     ->where($condition)
@@ -39,9 +40,10 @@ class inv_rmrn extends Model
         return $this->select(['inv_rmrn.rmrn_number','inv_rmrn.id','inv_rmrn.created_at','inv_rmrn.rmrn_date','inv_rmrn.created_by','inv_mrd.id as mrd_id','inv_mrd.mrd_number','user.f_name','user.l_name','inv_mrd.mrd_date',
         'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier.address','inv_supplier.contact_number','inv_supplier_invoice_master.type'])
                     ->leftjoin('inv_mrd','inv_mrd.id','=','inv_rmrn.mrd_id')
-                    ->leftjoin('inv_miq','inv_miq.id','=','inv_mrd.miq_id')
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mrd.invoice_id')
+                    ->leftjoin('inv_miq','inv_miq.invoice_master_id','=','inv_supplier_invoice_master.id')
                     ->join('user','user.user_id','=','inv_rmrn.created_by')
-                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
+                    //->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
                     ->where($condition)
                     ->first();

@@ -83,19 +83,31 @@ class MRRController extends Controller
             {
                 if(!$request->id)
                 {
-                    // $item_type = $this->get_item_type($request->mac_number);
-                    // if($item_type=="Direct Items"){
-                    //     $Data['mrr_number'] = "MRR2-".$this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR2%')->count(),1); 
-                    // }
-                    // if($item_type=="Indirect Items"){
-                    //     $Data['mrr_number'] = "MRR3-" . $this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR3%')->count(),1); 
-                    // }
-                    $miq_number = inv_mac::leftJoin('inv_miq','inv_miq.id','=','inv_mac.miq_id')
-                                        ->where('inv_mac.id','=',$request->mac_number)->pluck('inv_miq.miq_number')->first();
+                    $item_type = $this->get_item_type($request->mac_number);
                     if($request->order_type=='po')
-                    $Data['mrr_number'] = str_replace("MIQ", "MRR", $miq_number);  
+                    {
+                        if($item_type=="Direct Items"){
+                            $Data['mrr_number'] = "MRR2-".$this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR2%')->count(),1); 
+                        }
+                        if($item_type=="Indirect Items"){
+                            $Data['mrr_number'] = "MRR3-" . $this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR3%')->count(),1); 
+                        }
+                    }
                     else
-                    $Data['mrr_number'] = str_replace("MIQ", "SRR", $miq_number);
+                    {
+                        if($item_type=="Direct Items"){
+                            $Data['mrr_number'] = "SRR2-".$this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR2%')->count(),1); 
+                        }
+                        if($item_type=="Indirect Items"){
+                            $Data['mrr_number'] = "SRR3-" . $this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR3%')->count(),1); 
+                        }
+                    }
+                    // $miq_number = inv_mac::leftJoin('inv_miq','inv_miq.id','=','inv_mac.miq_id')
+                    //                     ->where('inv_mac.id','=',$request->mac_number)->pluck('inv_miq.miq_number')->first();
+                    // if($request->order_type=='po')
+                    // $Data['mrr_number'] = str_replace("MIQ", "MRR", $miq_number);  
+                    // else
+                    // $Data['mrr_number'] = str_replace("MIQ", "SRR", $miq_number);
 
                     $Data['mrr_date'] = date('Y-m-d', strtotime($request->mrr_date));
                     $Data['mac_id'] = $request->mac_number;
@@ -108,7 +120,7 @@ class MRRController extends Controller
                     foreach($inv_mac_items as $item){
                         $dat=[
                             'mac_item_id'=>$item->id,
-                            'item_id'=>$item->pr_item_id,
+                            'pr_item_id'=>$item->pr_item_id,
                             //'status'=>1,
                             'created_at'=>date('Y-m-d H:i:s'),
                             'updated_at'=>date('Y-m-d H:i:s')
@@ -161,8 +173,8 @@ class MRRController extends Controller
     public function get_item_type($mac_number)
     {
         $item_type = inv_mac_item_rel::leftJoin('inv_mac_item','inv_mac_item.id','=','inv_mac_item_rel.item')
-                            ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.item_id')
-                            ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.requisition_item_id')
+                            ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+                            ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
                             ->leftJoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
                             ->where('inv_mac_item_rel.master','=', $mac_number)->pluck('inv_item_type.type_name')->first();
         return $item_type;
@@ -317,7 +329,8 @@ class MRRController extends Controller
     }
     public function mrr_delete(Request $request, $id)
     {
-        $this->inv_mrr->deleteData(['id' => $id]);
+        //$this->inv_mrr->deleteData(['id' => $id]);
+        $this->inv_mrr->update_data(['id' => $id],['status'=>0]);
         $request->session()->flash('success', "You have successfully deleted a MRR !");
         if($request->order_type)
         return redirect('inventory/receipt-report?order_type='.$request->order_type);

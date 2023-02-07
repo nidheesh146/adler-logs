@@ -15,7 +15,7 @@
         color:red !important;
     }
     #example1_filter{
-        display:none; 
+        float:left; 
     }
     #example1_length{
         float:right;

@@ -6,10 +6,19 @@
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
                     <span><a href="{{ url('inventory/receipt-report') }}" style="color: #97a3b9;"> Receipt Report</a></span>
-                    <span style="color: #596881;">@if(request()->get('order_type')=='wo') Service Inspection & Receipt Report(MRR) @else Material Inspection & Receipt Report(MRR) @endif</span>
+                    <span style="color: #596881;">
+                    @if(isset($edit['mrr']))
+                    @if(str_starts_with($edit['mrr']['mrr_number'] , 'SRR')) Service Inspection & Receipt Report(MRR) @else Material Inspection & Receipt Report(MRR) @endif
+                    @else
+                    @if(request()->get('order_type')=='wo') Service Inspection & Receipt Report(MRR) @else Material Inspection & Receipt Report(MRR) @endif</span>
+                    @endif
                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;">{{--@if(!empty($edit)) Edit @else Add @endif--}} @if(request()->get('order_type')=='wo') Service @else Material @endif Inspection & Receipt Report Info @if(!empty($edit)) ({{$edit['mrr']->mrr_number}}) @endif
-
+                <h4 class="az-content-title" style="font-size: 20px;">
+                @if(isset($edit['mrr']))
+                @if(str_starts_with($edit['mrr']['mrr_number'] , 'SRR')) Service @else Material @endif Inspection & Receipt Report Info({{$edit['mrr']->mrr_number}})
+                @else
+                @if(request()->get('order_type')=='wo') Service @else Material @endif Inspection & Receipt Report Info @if(!empty($edit)) ({{$edit['mrr']->mrr_number}}) @endif
+                @endif
                 </h4>
                 @foreach ($errors->all() as $errorr)
                 <div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -35,7 +44,11 @@
                 <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                        @if(request()->get('order_type')=='wo') Service @else Material @endif Receipt :
+                            @if(isset($edit['mrr']))
+                            @if(str_starts_with($edit['mrr']['mrr_number'] , 'SRR')) Service Receipt : @else Material Receipt : @endif
+                            @else
+                            @if(request()->get('order_type')=='wo') Service Receipt : @else Material Receipt : @endif</span>
+                            @endif 
                         </label>
                         <div class="form-devider"></div>
                     </div>
@@ -45,10 +58,15 @@
                         {{ csrf_field() }}
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
-                            <label> @if(request()->get('order_type')=='wo') WOA @else MAC @endif number *<span class="spinner-border spinner-button spinner-border-sm"
-                                    style="display:none;" role="status" aria-hidden="true"></span></label>
-                            @if(request()->get('order_type')=='wo')
-                                <select class="form-control woa_number" name="mac_number" @if(!empty($edit['mrr'])) disabled @endif>
+                            <label>
+                                @if(isset($edit['mrr']))
+                                @if(str_starts_with($edit['mrr']['mrr_number'] , 'SRR')) WOA  @else MAC   @endif number *
+                                @else
+                                @if(request()->get('order_type')=='wo') WOA  @else MAC @endif number *
+                                @endif 
+                                <span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span></label>
+                                    @if(request()->get('order_type')=='wo')
+                                    <select class="form-control woa_number" name="mac_number" @if(!empty($edit['mrr'])) disabled @endif>
                                     @if(!empty($edit['mrr']))
                                         <option value="{{$edit['mrr']->mac_id}}" selected>{{$edit['mrr']->mac_number}}</option>
                                     @endif            
@@ -69,7 +87,13 @@
                         </div>
                         <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                            <label>@if(request()->get('order_type')=='wo') SRR @else MRR @endif date *</label>
+                            <label>
+                            @if(isset($edit['mrr']))
+                            @if(str_starts_with($edit['mrr']['mrr_number'] , 'SRR')) SRR Date @else MRR Date  @endif
+                            @else
+                            @if(request()->get('order_type')=='wo') SRR Date @else MRR Date @endif</span>
+                            @endif 
+                            </label>
                             <input type="text" class="form-control datepicker" value="{{ (!empty($edit['mrr'])) ? date('d-m-Y',strtotime($edit['mrr']->mrr_date)) : date("d-m-Y")}}" name="mrr_date" placeholder="MRR date">
                         </div>
 

@@ -159,9 +159,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/MAC-add/{id?}', 'MACController@MACAdd');
     Route::get('inventory/MAC/{id}/item', 'MACController@MACAddItemInfo');
     Route::post('inventory/MAC/{id}/item', 'MACController@MACAddItemInfo');
-    Route::get('inventory/find-miq-no', 'MACController@findMiqNumber');
-    Route::get('inventory/find-miq-info', 'MACController@find_miq_info');
+    //Route::get('inventory/find-miq-no', 'MACController@findMiqNumber');
+    //Route::get('inventory/find-miq-info', 'MACController@find_miq_info');
     Route::get('inventory/MAC-delete/{id}', 'MACController@mac_delete');
+    Route::get('inventory/MAC/find-invoice-number-for-mac','MACController@findInvoiceNumberForMAC');
+    Route::get('inventory/MAC/find-invoice-info', 'MACController@invoiceInfo');
+    Route::get('inventory/MAC/find-invoice-number-for-woa','MACController@findInvoiceNumberForWOA');
 
     Route::get('inventory/WOA-add/{id?}', 'MACController@WOAAdd');
     Route::post('inventory/WOA-add/{id?}', 'MACController@WOAAdd');
@@ -172,7 +175,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/MRD-add/{id?}', 'MRDController@MRDAdd');
     Route::get('inventory/MRD/{id}/item', 'MRDController@MRDAddItemInfo');
     Route::post('inventory/MRD/{id}/item', 'MRDController@MRDAddItemInfo');
-    Route::get('inventory/find-miq-for_mrd', 'MRDController@findMiqNumberForMRD');
+    //Route::get('inventory/find-miq-for_mrd', 'MRDController@findMiqNumberForMRD');
+    Route::get('inventory/MRD/find-invoice-number-for-mrd','MRDController@findInvoiceNumberForMRD');
+    Route::get('inventory/MRD/find-invoice-info', 'MRDController@invoiceInfo');
+    Route::get('inventory/MRD/find-invoice-number-for-wor','MRDController@findInvoiceNumberForWOR');
     Route::get('inventory/MRD-delete/{id}', 'MRDController@mrd_delete');
 
     Route::get('inventory/WOR-add/{id?}', 'MRDController@WORAdd');
@@ -220,6 +226,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/Stock/ToProduction/Indirect','StockController@addIndirectSIP');
     Route::get('inventory/stock/item-mac-info','StockController@itemMacDetails');
     Route::post('inventory/stock/quantity-updation-request','StockController@quantityUpdationRequest');
+    Route::get('inventory/indirect/itemcodesearch/{itemcode?}','StockController@Indirectitemcodesearch');
+    Route::get('inventory/direct/itemcodesearch/{itemcode?}','StockController@Directitemcodesearch');
 
     Route::get('inventory/stock/fetchBatchCards','StockController@fetchBatchCards');
      //Stock From Production

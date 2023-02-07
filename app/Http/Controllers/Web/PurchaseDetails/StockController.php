@@ -84,8 +84,9 @@ class StockController extends Controller
         $sip_master = DB::table('inv_stock_to_production_item_rel')->where('item', $sip_item['id'])->value('master');
         $lot = inv_stock_to_production:: select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_mac_item.accepted_quantity','inv_mac_item.available_qty')
                                     ->leftjoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_stock_to_production.lot_id')
+                                    ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
                                     ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
-                                    ->leftJoin('inv_mac_item','inv_mac_item.miq_item_id','=','inv_miq_item.id')
+                                    ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
                                     ->where('inv_stock_to_production.id','=',$sip_master)
                                     ->first();
         $data['batch_qty']= $sip_item['qty_to_production'];
@@ -560,8 +561,9 @@ class StockController extends Controller
         $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_mac_item.available_qty','inv_mac_item.accepted_quantity',
         'inv_unit.unit_name','inv_mac_item.id as mac_item_id')
                             ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
+                            ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
                             ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
-                            ->leftJoin('inv_mac_item','inv_mac_item.miq_item_id','=','inv_miq_item.id')
+                            ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
                             ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                             ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                             ->where('inventory_rawmaterial.id','=', $request->item_id)
@@ -656,14 +658,15 @@ class StockController extends Controller
             $data['created_at']= date('Y-m-d H:i:s');
             $data['updated_at']= date('Y-m-d H:i:s');
         
-            $mac_item = inv_mac_item::leftJoin('inv_miq_item','inv_miq_item.id','=','inv_mac_item.miq_item_id')
-                                 ->leftJoin('inv_lot_allocation','inv_lot_allocation.lot_number','=','inv_miq_item.lot_number')
+            $mac_item = inv_mac_item::leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_mac_item.invoice_item_id')
+                                 ->leftJoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                                 ->leftjoin('inv_miq_item','inv_miq_item.invoice_item_id','=','inv_supplier_invoice_item.id')
                                  ->where('inv_lot_allocation.id','=',$request->lot_id)
-                                 ->select('inv_mac_item.id','inv_mac_item.item_id','inv_mac_item.accepted_quantity')->first();
+                                 ->select('inv_mac_item.id','inv_mac_item.pr_item_id','inv_mac_item.accepted_quantity')->first();
             $inv_mac_item = inv_mac_item::where('id',$mac_item['id'])->first();
             $inv_mac_item->available_qty = 0;
             $inv_mac_item->save();
-            $data['pr_item_id'] = $inv_mac_item['item_id'];
+            $data['pr_item_id'] = $inv_mac_item['pr_item_id'];
             $data['qty_to_production'] = $inv_mac_item['accepted_quantity'];
             $sip_master = $this->inv_stock_to_production->insert_data($data);
             if($sip_master)
@@ -753,7 +756,7 @@ class StockController extends Controller
         $mac_details = inv_mac_item::select('inv_mac.mac_number','inv_mac_item.accepted_quantity','inv_mac_item.available_qty','inv_unit.unit_name','inv_mac_item.id as mac_item_id')
                         ->leftJoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
                         ->leftJoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
-                        ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.item_id')
+                        ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
                         ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                         ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                         ->where('inv_purchase_req_item.Item_code','=', $request->item_id)
@@ -853,8 +856,9 @@ class StockController extends Controller
            
             
             $mac_item = inv_lot_allocation::select('inv_mac_item.id as mac_item_id','inv_mac_item.available_qty','inv_lot_allocation.pr_item_id','inv_lot_allocation.lot_number')
+                                    ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
                                     ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
-                                    ->leftJoin('inv_mac_item','inv_mac_item.miq_item_id','=','inv_miq_item.id')
+                                    ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
                                     ->where('inv_lot_allocation.id','=',$request->lotcard_id)
                                     ->first();
 
@@ -905,6 +909,47 @@ class StockController extends Controller
             $request->session()->flash('success', "You have successfully send a quantity updation request !");
             return redirect()->back();
         }
+    }
+
+    function Indirectitemcodesearch(Request $request,$itemcode = null){
+        if(!$request->q){
+            return response()->json(['message'=>'item code is not valid'], 500); 
+        }
+        $condition[] = ['inventory_rawmaterial.item_code','like','%'.strtoupper($request->q).'%'];
+        $condition[] = ['inventory_rawmaterial.item_type_id','!=',2];
+        $data  = $this->inventory_rawmaterial->get_inv_raw_data($condition);
+        if(!empty( $data)){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'item code is not valid'], 500); 
+        }
+
+    }
+
+    function Directitemcodesearch(Request $request,$itemcode = null)
+    {
+        if(!$request->q){
+            return response()->json(['message'=>'item code is not valid'], 500); 
+        }
+        $condition[] = ['inventory_rawmaterial.item_code','like','%'.strtoupper($request->q).'%'];
+        $condition[] = ['inventory_rawmaterial.item_type_id','=',2];
+        $data  = $this->inventory_rawmaterial->get_inv_raw_data($condition);
+        if(!empty( $data)){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'item code is not valid'], 500); 
+        }
+    }
+
+    function getItem_SIPIndirect($sip_id)
+    {
+        $item = inv_stock_to_production_item::Join('inv_stock_to_production_item_rel','inv_stock_to_production_item_rel.item','=','inv_stock_to_production_item.id')
+                                            ->Join('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_to_production_item.material_id')
+                                            ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                            ->where('inv_stock_to_production_item_rel.master','=',$sip_id)
+                                            ->select('inventory_rawmaterial.item_code','inv_unit.unit_name')
+                                            ->first();
+        return $item ;
     }
 
    

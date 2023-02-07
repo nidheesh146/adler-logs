@@ -5,10 +5,10 @@
         <div class="container" data-select2-id="9">
             <div class="az-content-body" data-select2-id="8">
                 <div class="az-content-breadcrumb">
-                    <span><a href="{{ url('inventory/MAC') }}"> Work Order Acceptance</a></span>
+                    <span><a href="{{ url('inventory/supplier-invoice') }}">  Work Order Acceptance</a></span>
                     <span> Work Order Acceptance Info</span>
                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;"> Work Order Acceptance Info
+                <h4 class="az-content-title" style="font-size: 20px;"> Work Order Acceptance @if(!empty($edit)) ({{$edit['mac']->mac_number}}) @endif
 
                 </h4>
                 @foreach ($errors->all() as $errorr)
@@ -45,16 +45,17 @@
                         {{ csrf_field() }}
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
-                            <label>MIQ Number *<span class="spinner-border spinner-button spinner-border-sm"
+                            <label>Invoice number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
-                            <select class="form-control miq_number" name="miq_number" @if(!empty($edit['mac'])) disabled @endif>
                             @if(!empty($edit['mac']))
-                                <option value="{{$edit['mac']->miq_id}}" selected>{{$edit['mac']->miq_number}}</option>
-                            @endif            
-                            </select>
-                            @if(!empty($edit['mac']))
-                                <input type="hidden" name="miq_number" value="{{$edit['mac']->miq_id}}">
+                            <input type="hidden" name="invoice_number" value="{{$edit['mac']->invoice_id}}">
                             @endif
+                            <select class="form-control invoice_number" name="invoice_number" @if(!empty($edit['mac'])) disabled @endif>
+                                <!-- <option value="" ></option> -->
+                                @if(!empty($edit['mac']))
+                                    <option value="{{$edit['mac']->invoice_id}}" selected>{{$edit['mac']->invoice_number}}</option>
+                                @endif
+                            </select>
                         </div>
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -89,7 +90,7 @@
                  <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                            Material Acceptance ({{$edit['mac']['mac_number']}})
+                            Work Order Acceptance ({{$edit['mac']['mac_number']}})
                         </label>
                         <div class="form-devider"></div>
                     </div>
@@ -100,7 +101,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>MAC Date</th>
+                            <th>WOA Date</th>
                             <td>{{date('d-m-Y', strtotime($edit['mac']['mac_date']))}}</td>
                             
                         </tr>
@@ -204,7 +205,7 @@
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/find-miq-no') }}?type=wo",
+          url: "{{ url('inventory/find-miq-no') }}?type=po",
           processResults: function (data) {
 
             return { results: data };
@@ -233,6 +234,35 @@
     endDate: new Date()
     });
     $('.datepicker').mask('99-99-9999');
+
+
+    $('.invoice_number').select2({
+          placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 3,
+          allowClear: true,
+          ajax: {
+          url: "{{ url('inventory/MAC/find-invoice-number-for-woa') }}",
+          processResults: function (data) {
+            return { results: data };
+
+          }
+        }
+      }).on('change', function (e) {
+        $('.spinner-button').show();
+
+        let res = $(this).select2('data')[0];
+        if(res){
+          $.get("{{ url('inventory/MAC/find-invoice-info') }}?id="+res.id,function(data){
+            $('.data-bindings').html(data);
+            $('.spinner-button').hide();
+          });
+        }else{
+          $('.data-bindings').html('');
+          $('.spinner-button').hide();
+        }
+      });
+    
     </script>
 
 

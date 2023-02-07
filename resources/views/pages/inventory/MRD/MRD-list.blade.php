@@ -56,8 +56,8 @@
                                             
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>MIQ No:</label>
-                                                <input type="text" value="{{request()->get('miq_no')}}" name="miq_no" id="miq_no" class="form-control" placeholder="MIQ No"> 
+                                                <label>Invoice No:</label>
+                                                <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" id="invoice_no" class="form-control" placeholder="INVOICE NO"> 
                                                 
                                             </div><!-- form-group -->
                                             
@@ -104,7 +104,7 @@
 				<thead>
 					<tr>
 						<th>@if(request()->get('order_type')=='wo') WOR @else MRD @endif No</th>
-                        <th>MIQ No</th>
+                        <th>Invoice No</th>
 						<th>Supplier</th>
                         <th>Prepared By</th> 
                         <th>MRD Date</th>
@@ -115,12 +115,19 @@
                    @foreach($data as $mrd)
                     <tr>
                        <td>{{$mrd['mrd_number']}}</td>
-                       <td>{{$mrd['miq_number']}}</td>
+                       <td>{{$mrd['invoice_number']}}</td>
                        <td>{{$mrd['vendor_name']}}</td>
                        <td>{{$mrd['f_name']}} {{$mrd['l_name']}}</td>
                        <td>{{date('d-m-Y', strtotime($mrd['mrd_date']))}}</td>
-                        <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRD-add/'.$mrd['mrd_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
-                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRD-delete/'.$mrd['mrd_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
+                        <td>
+                        @if(request()->get('order_type')=='wo')
+                        <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/WOR-add/'.$mrd['mrd_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRD-delete/'.$mrd['mrd_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        @else
+                        <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRD-add/'.$mrd['mrd_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRD-delete/'.$mrd['mrd_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        @endif
+                        </td>
                     </tr>
                     @endforeach
 					

@@ -1,7 +1,6 @@
 @extends('layouts.default')
 @section('content')
 @inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\MRDController')
-
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -107,7 +106,7 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Reason for Rejection *</label>
-                                <textarea type="text"  class="form-control" name="remarks" placeholder="Reason for Rejection">@if($data) {{$data['remarks']}} @endif</textarea>
+                                <textarea type="text"  class="form-control" name="remarks" id="remarks" placeholder="Reason for Rejection">@if($data) {{$data['remarks']}} @endif</textarea>
                             </div><!-- form-group -->
                         </div> 
                       

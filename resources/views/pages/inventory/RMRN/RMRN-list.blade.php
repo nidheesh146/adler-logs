@@ -47,7 +47,12 @@
                                 <th scope="row">
                                     <div class="row filter_search" style="margin-left: 0px;">
                                        <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
-                                       <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                <label>RMRN No:</label>
+                                                <input type="text" value="{{request()->get('rmrn_no')}}" name="rmrn_no" id="rmrn_no" class="form-control" placeholder="RMRN NO">
+                                            
+                                            </div><!-- form-group -->
+                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label>MRD/WOR No:</label>
                                                 <input type="text" value="{{request()->get('mrd_no')}}" name="mrd_no" id="mrd_no" class="form-control" placeholder="MRD NO">
                                             
@@ -94,6 +99,7 @@
 			<table class="table table-bordered mg-b-0" id="example1">
 				<thead>
 					<tr>
+                        <th>RMRN No</th>
 						<th>MRD/WOR No</th>
 						<th>Supplier</th>
                         <th>Prepared By</th> 
@@ -104,6 +110,7 @@
 				<tbody>
 					@foreach($data as $rmrn)
                     <tr>
+                        <td>{{$rmrn['rmrn_number']}}</td>
                         <td>{{$rmrn['mrd_number']}}</td>
                         <td>{{$rmrn['vendor_name']}}</td>
                         <td>{{$rmrn['f_name']}} {{$rmrn['l_name']}}</td>

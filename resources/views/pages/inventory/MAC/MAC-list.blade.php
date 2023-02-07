@@ -58,8 +58,8 @@
                                             
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>MIQ No:</label>
-                                                <input type="text" value="{{request()->get('miq_no')}}" name="miq_no" id="miq_no" class="form-control" placeholder="MIQ No"> 
+                                                <label>Invoice No:</label>
+                                                <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" id="invoice_no" class="form-control" placeholder="INVOICE NO"> 
                                                 
                                             </div><!-- form-group -->
                                             
@@ -106,7 +106,7 @@
 				<thead>
 					<tr>
 						<th>@if(request()->get('order_type')=='wo') WOA @else MAC @endif No</th>
-                        <th>MIQ No</th>
+                        <th>Invoice No</th>
 						<th>Supplier</th>
                         <th>Prepared By</th> 
                         <th>MAC Date</th>
@@ -117,12 +117,19 @@
                    @foreach($data as $mac)
                     <tr>
                        <td>{{$mac['mac_number']}}</td>
-                       <td>{{$mac['miq_number']}}</td>
+                       <td>{{$mac['invoice_number']}}</td>
                        <td>{{$mac['vendor_name']}}</td>
                        <td>{{$mac['f_name']}} {{$mac['l_name']}}</td>
                        <td>{{date('d-m-Y', strtotime($mac['mac_date']))}}</td>
-                        <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MAC-add/'.$mac['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-                    	<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MAC-delete/'.$mac['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
+                       <td>
+                       @if(request()->get('order_type')=='wo')
+                        <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/WOA-add/'.$mac['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+                    	<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MAC-delete/'.$mac['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        @else
+                        <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MAC-add/'.$mac['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
+                    	<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MAC-delete/'.$mac['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        @endif
+                        </td>
                     </tr>
                     @endforeach
 					
@@ -158,11 +165,11 @@
         autoclose:true
     });
     $('.search-btn').on( "click", function(e)  {
-		var miq_no = $('#miq_no').val();
+		var invoice_no = $('#invoice_no').val();
 		var mac_no = $('#mac_no').val();
 		var from = $('#from').val();
         var supplier = $('#supplier').val();
-		if(!miq_no  & !mac_no & !from & !supplier )
+		if(!invoice_no  & !mac_no & !from & !supplier )
 		{
 			e.preventDefault();
 		}

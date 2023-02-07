@@ -123,7 +123,7 @@
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/itemcodesearch') }}",
+          url: "{{ url('inventory/indirect/itemcodesearch') }}",
           processResults: function (data) {
             return { results: data };
 

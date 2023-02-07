@@ -45,16 +45,17 @@
                         {{ csrf_field() }}
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
-                            <label>MIQ number *<span class="spinner-border spinner-button spinner-border-sm"
+                            <label>Invoice number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
-                            <select class="form-control miq_number" name="miq_number" @if(!empty($edit['mac'])) disabled @endif>
                             @if(!empty($edit['mac']))
-                                <option value="{{$edit['mac']->miq_id}}" selected>{{$edit['mac']->miq_number}}</option>
-                            @endif            
-                            </select>
-                            @if(!empty($edit['mac']))
-                                <input type="hidden" name="miq_number" value="{{$edit['mac']->miq_id}}">
+                            <input type="hidden" name="invoice_number" value="{{$edit['mac']->invoice_id}}">
                             @endif
+                            <select class="form-control invoice_number" name="invoice_number" @if(!empty($edit['mac'])) disabled @endif>
+                                <!-- <option value="" ></option> -->
+                                @if(!empty($edit['mac']))
+                                    <option value="{{$edit['mac']->invoice_id}}" selected>{{$edit['mac']->invoice_number}}</option>
+                                @endif
+                            </select>
                         </div>
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -198,15 +199,24 @@
       });
 
 
-        $('.miq_number').select2({
+      });
+
+    $(".datepicker").datepicker({
+    format: " dd-mm-yyyy",
+    autoclose:true,
+    endDate: new Date()
+    });
+    $('.datepicker').mask('99-99-9999');
+
+
+    $('.invoice_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/find-miq-no') }}?type=po",
+          url: "{{ url('inventory/MAC/find-invoice-number-for-mac') }}",
           processResults: function (data) {
-
             return { results: data };
 
           }
@@ -216,7 +226,7 @@
 
         let res = $(this).select2('data')[0];
         if(res){
-          $.get("{{ url('inventory/find-miq-info') }}?id="+res.id,function(data){
+          $.get("{{ url('inventory/MAC/find-invoice-info') }}?id="+res.id,function(data){
             $('.data-bindings').html(data);
             $('.spinner-button').hide();
           });
@@ -225,14 +235,7 @@
           $('.spinner-button').hide();
         }
       });
-      });
-
-    $(".datepicker").datepicker({
-    format: " dd-mm-yyyy",
-    autoclose:true,
-    endDate: new Date()
-    });
-    $('.datepicker').mask('99-99-9999');
+    
     </script>
 
 

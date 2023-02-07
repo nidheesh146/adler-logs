@@ -20,11 +20,10 @@ class inv_mrd extends Model
     }
 
     function get_all_data($condition){
-        return $this->select('inv_mrd.id as mrd_id','inv_mrd.mrd_number','inv_mrd.mrd_date','inv_miq.miq_number','inv_miq.created_by',
+        return $this->select('inv_mrd.id as mrd_id','inv_mrd.mrd_number','inv_mrd.mrd_date','inv_supplier_invoice_master.invoice_number','inv_mrd.created_by',
                             'inv_supplier.vendor_name','inv_supplier.vendor_id','user.f_name','user.l_name')
-                    ->leftjoin('inv_miq','inv_miq.id','=','inv_mrd.miq_id')
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mrd.invoice_id')
                     ->leftjoin('user','user.user_id','=','inv_mrd.created_by')
-                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
 
                     ->where($condition)
@@ -35,11 +34,11 @@ class inv_mrd extends Model
 
     function find_mrd_data($condition)
     {
-        return $this->select(['inv_mrd.mrd_number','inv_mrd.id','inv_mrd.created_at','inv_mrd.created_by','inv_miq.id as miq_id','inv_miq.miq_number','user.f_name','user.l_name','inv_mrd.mrd_date',
-        'inv_supplier.vendor_id','inv_supplier.vendor_name'])
-                    ->leftjoin('inv_miq','inv_miq.id','=','inv_mrd.miq_id')
-                    ->join('user','user.user_id','=','inv_miq.created_by')
-                    ->join('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
+        return $this->select(['inv_mrd.mrd_number','inv_mrd.id','inv_mrd.created_at','inv_mrd.created_by','user.f_name','user.l_name','inv_mrd.mrd_date',
+        'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.id as invoice_id'])
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mrd.invoice_id')
+                    ->leftjoin('inv_miq','inv_miq.invoice_master_id','=','inv_supplier_invoice_master.id')
+                    ->leftjoin('user','user.user_id','=','inv_miq.created_by')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
                     ->where($condition)
                     ->first();

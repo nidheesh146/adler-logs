@@ -171,8 +171,8 @@
                                         <input type="text" class="form-control lot-number" name="lot_number" id="lot_number" placeholder="Lot Number">
 									
 									</div> --}}
-                                    {{--<input type="hidden"  value="" class="form-control" name="lot_id" id="lot_id">
-                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                    <input type="hidden"  value="" class="form-control" name="lot_id" id="lot_id">
+                                    {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Document No *</label>
                                         <input type="text"  class="form-control document-no" value="" name="document_no" id="document_no" placeholder="Document No">
                                     </div><!-- form-group -->
@@ -311,7 +311,7 @@
                                         <label> Test Report Date </label>
                                         <input type="date" class="form-control" value="" id="test_report_date" name="test_report_date" placeholder="Test Report Date" readonly>
                                     </div>
-
+                                    <input type="hidden" name="si_id" value="">
     
                                     <!-- form-group -->
                                     <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
@@ -445,40 +445,40 @@
 
               $("#commentForm").validate({
                     rules: {
-                        document_no: {
-                            required: true,
-                        },
-                        rev_no: {
-                            required: true,
-                        },
-                        rev_date: {
-                            required: true,
-                        },
-                        qty_accepted: {
-                            required: true,
-                            number: true,
-                        },
-                        qty_rejected: {
-                            required: true,
-                            number: true,
-                            checkPrevValuePaxTo:true
-                        },
-                        qty_received: {
-                            required: true,
-                            number: true,
-                        },
-                        test_report_no: {
-                            required: true,
-                        },
-                        test_report_date: {
-                            required: true,
-                        },
-                        currency: {
-                            required: true,
-                        },
-                        conversion_rate: {
-                            required: true,
-                        },
+                        // document_no: {
+                        //     required: true,
+                        // },
+                        // rev_no: {
+                        //     required: true,
+                        // },
+                        // rev_date: {
+                        //     required: true,
+                        // },
+                        // qty_accepted: {
+                        //     required: true,
+                        //     number: true,
+                        // },
+                        // qty_rejected: {
+                        //     required: true,
+                        //     number: true,
+                        //     checkPrevValuePaxTo:true
+                        // },
+                        // qty_received: {
+                        //     required: true,
+                        //     number: true,
+                        // },
+                        // test_report_no: {
+                        //     required: true,
+                        // },
+                        // test_report_date: {
+                        //     required: true,
+                        // },
+                        // currency: {
+                        //     required: true,
+                        // },
+                        // conversion_rate: {
+                        //     required: true,
+                        // },
                                 
 
                             },
@@ -541,6 +541,7 @@
                 $('#unit_name').val(data.unit_name);
                 $('#unit').val(data.unit_id);
                 $('#invoice_id').val(data.invoice_item_id);
+                $('#si_id').val(data.invoice_item_id);
 				            $('#lot_number').text(data.lot_number);
                             $('#rev_no').val(data.rev_number);
                             $('#rev_date').val(data.rev_date);

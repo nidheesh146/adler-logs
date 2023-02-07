@@ -101,6 +101,7 @@ class LotAllocationController extends Controller
              
             if(!$request->lot_id){
                 $invoice_item = $this->inv_supplier_invoice_item->get_single_supplier_invoice_item_id(['inv_supplier_invoice_item.id'=>$request->si_id]);
+                //print_r($invoice_item);exit;
                 $invoice_master_supplier = inv_supplier_invoice_rel::leftJoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_supplier_invoice_rel.master')
                                        ->where('inv_supplier_invoice_rel.item','=', $invoice_item['invoice_item_id'])->pluck('inv_supplier_invoice_master.supplier_id')->first();
 

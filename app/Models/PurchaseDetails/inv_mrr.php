@@ -22,9 +22,9 @@ class inv_mrr extends Model
         return $this->select('inv_mrr.id','inv_mrr.mrr_number','inv_mrr.mrr_date','inv_mac.mac_number','inv_mrr.created_by',
                             'inv_supplier.vendor_name','inv_supplier.vendor_id','user.f_name','user.l_name')
                     ->leftjoin('inv_mac','inv_mac.id','=','inv_mrr.mac_id')
-                    ->leftjoin('inv_miq','inv_miq.id','=','inv_mac.miq_id')
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mac.invoice_id')
+                    ->leftjoin('inv_miq','inv_miq.invoice_master_id','=','inv_supplier_invoice_master.id')
                     ->leftjoin('user','user.user_id','=','inv_mac.created_by')
-                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
 
                     ->where($condition)
@@ -38,10 +38,11 @@ class inv_mrr extends Model
         'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier.address','inv_supplier.contact_number','inv_miq.miq_number','inv_miq.miq_date','inv_mrd.mrd_number','inv_mrd.mrd_date'])
                     ->leftjoin('inv_mac','inv_mac.id','=','inv_mrr.mac_id')
                     ->leftjoin('user','user.user_id','=','inv_mrr.created_by')
-                    ->leftjoin('inv_miq','inv_miq.id','=','inv_mac.miq_id')
-                    ->leftjoin('inv_mrd','inv_mrd.miq_id','=','inv_miq.id')
-                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mac.invoice_id')
+                    ->leftjoin('inv_miq','inv_miq.invoice_master_id','=','inv_supplier_invoice_master.id')
+                    ->leftjoin('inv_mrd','inv_mrd.invoice_id','=','inv_supplier_invoice_master.id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                    ->where('inv_mrr.status','=',1)
                     ->where($condition)
                     ->first();
     }

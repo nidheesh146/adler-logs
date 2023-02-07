@@ -115,10 +115,16 @@
                     @foreach($data['sip'] as $sip)
                     <tr>
                         <td>{{$sip['sip_number']}}</td>
-                        <td>{{$sip['item_code']}}</td>
+                        <td>@if($sip['type']==3) <?php $item=$fn->getItem_SIPIndirect($sip['id']); echo $item['item_code']; ?>  @else {{$sip['item_code']}} @endif</td>
                         <td>@if($sip['type']==2) Direct  @else Indirect @endif</td>
                         <td>{{$sip['lot_number']}}</td>
-                        <td>{{$sip['qty_to_production']}} {{$sip['unit_name']}}</td>
+                        <td> 
+                            @if($sip['type']==3) 
+                            {{$sip['qty_to_production']}} {{$item['unit_name']}}
+                            @else 
+                            {{$sip['qty_to_production']}} {{$sip['unit_name']}}
+                            @endif
+                        </td>
                         <td>{{date('d-m-Y', strtotime($sip['created_at']))}}</td>
                         <td>@foreach($sip['items'] as $item)
                             @if($item['batch_no'])
