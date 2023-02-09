@@ -562,14 +562,15 @@ class StockController extends Controller
         'inv_unit.unit_name','inv_mac_item.id as mac_item_id')
                             ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
                             ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
-                            ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
-                            ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
+                            //->leftJoin('inv_miq_item','inv_miq_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
+                            ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_supplier_invoice_item.id')
                             ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                             ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                             ->where('inventory_rawmaterial.id','=', $request->item_id)
-                            ->where('inv_mac_item.available_qty','!=',0)
+                            //->where('inv_mac_item.available_qty','!=',0)
                             ->orderBy('inv_lot_allocation.id','asc')
                             ->get();
+        //return $lotcards;
         $itemcode = inventory_rawmaterial::where('id','=',$request->item_id)->pluck('item_code')->first();
         if(count($batchcards)>0)
         {

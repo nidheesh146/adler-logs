@@ -36,6 +36,7 @@ class MACController extends Controller
 
     public function MAClist(Request $request)
     {
+        
         $condition = [];
         if($request)
         {

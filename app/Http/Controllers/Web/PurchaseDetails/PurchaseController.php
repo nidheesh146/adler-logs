@@ -989,7 +989,7 @@ class PurchaseController extends Controller
                                             ->leftjoin('inventory_gst','inventory_gst.id','=','inv_final_purchase_order_item.gst' )
                                             ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
                                             ->where('inv_final_purchase_order_rel.master','=',$po['id'])
-                                            //->where('inv_final_purchase_order_item.qty_to_invoice','!=',0)
+                                            ->where('inv_final_purchase_order_item.qty_to_invoice','!=',0)
                                             ->get();
                 }
                //print_r(json_encode($po_items));exit;

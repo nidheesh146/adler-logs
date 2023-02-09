@@ -45,7 +45,7 @@
     }
     .reference{
         float:right;
-        width:20%;
+        width:26%;
         font-size:12px;
         text-align:left;
     }
@@ -116,12 +116,20 @@
        <strong>REFEREANCE DETAILS</strong>
        <table style="border-top:solid;">
             <tr>
+                <td>@if($type=='po') Supplier Invoice No  @else Service Provider Invoice No @endif</td>
+                <td>:&nbsp; {{$mrr['invoice_number']}}</td>
+            </tr>
+            <tr>
+                <td>@if($type=='po') Supplier Invoice Date  @else Service Provider Invoice Date @endif</td>
+                <td>:&nbsp; {{date('d-m-Y', strtotime($mrr['invoice_date']))}} </td>
+            </tr>
+            <tr>
                 <td>MIQ No</td>
-                <td>: &nbsp; &nbsp; &nbsp; {{$mrr['miq_number']}}</td>
+                <td>:&nbsp; {{$mrr['miq_number']}}</td>
             </tr>
             <tr>
                 <td>MIQ Date</td>
-                <td>:  &nbsp; &nbsp; &nbsp; {{date('d-m-Y', strtotime($mrr['miq_date']))}}</td>
+                <td>: @if($mrr['miq_number']) &nbsp; {{date('d-m-Y', strtotime($mrr['miq_date']))}} @endif</td>
             </tr>
             <tr>
                 <td></td>
@@ -129,19 +137,19 @@
             </tr>
             <tr>
                 <td>@if($type=='po') MAC @else WOA @endif No</td>
-                <td>:  &nbsp; &nbsp; &nbsp; {{$mrr['mac_number']}}</td>
+                <td>:&nbsp; {{$mrr['mac_number']}}</td>
             </tr>
             <tr>
                 <td>@if($type=='po') MAC @else WOA @endif Date</td>
-                <td>:  &nbsp; &nbsp; &nbsp; {{date('d-m-Y', strtotime($mrr['mac_date']))}}</td>
+                <td>:&nbsp; {{date('d-m-Y', strtotime($mrr['mac_date']))}}</td>
             </tr>
             <tr>
                 <td>@if($type=='po') MRD @else WOR @endif No</td>
-                <td>:  &nbsp; &nbsp; &nbsp; @if($mrr['mrd_number']) {{$mrr['mrd_number']}} @endif</td>
+                <td>:&nbsp; @if($mrr['mrd_number']) {{$mrr['mrd_number']}} @endif</td>
             </tr>
             <tr>
                 <td>@if($type=='po') MRD @else WOR @endif Date</td>
-                <td>:  &nbsp; &nbsp; &nbsp; @if($mrr['mrd_date']) {{date('d-m-Y', strtotime($mrr['mrd_date']))}} @endif</td>
+                <td>:&nbsp; @if($mrr['mrd_date']) {{date('d-m-Y', strtotime($mrr['mrd_date']))}} @endif</td>
             </tr>
         </table>
     </div>
@@ -194,7 +202,12 @@
     <br>
     <div>
         <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="left"; style="float:left;">Signature of I/C QC</label>
-        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="right"; style="float:right;">Signature of I/C Finance</label>
+        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="right"; style="float:right;">Signature of I/C Finance</label><br/>
+        @if($type=='po')
+        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6"  style="float:left;margin-left:-150px;">(Only for Direct Material)</label>
+        @else
+        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6"  style="float:left;margin-left:-150px;">(Only for Direct Service)</label>
+        @endif
     </div>
 </body>
 </html>

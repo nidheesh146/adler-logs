@@ -93,8 +93,8 @@ class QuotationController extends Controller
                      'created_user'=>config('user')['user_id'],
                      'type'=> ($request->prsr == 'sr') ? 'SR' : 'PR'
                     ];
-            print_r($request->purchase_requisition_item);
-            exit;
+            // print_r($request->purchase_requisition_item);
+            // exit;
             $this->inv_purchase_req_quotation->insert_data($data,$request);
 
             $request->session()->flash('success', "You have successfully created a  Request For Quotation !");

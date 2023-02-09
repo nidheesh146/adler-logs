@@ -27,7 +27,7 @@ class inv_miq extends Model
 
                     ->where($condition)
                     ->where('inv_miq.status','=',1)
-                    ->orderBy('inv_supplier_invoice_master.id','DESC')
+                    ->orderBy('inv_miq.id','DESC')
                     ->paginate(15);
     }
     function get_data($condition)

@@ -148,7 +148,7 @@
             <span style="color:#1434A4;"><strong>ADLER HEALTHCARE PVT. LTD</strong></span>
             <p> Plot No-A1 MIDC, Sadavali(Devrukh),  Tal- Sangmeshwar, Dist -Ratnagiri ,  PIN-415804, Maharashtra, India<br/>
             CIN :U33125PN2020PTC195161 <br/>
-            Company GSTIN :27AAJCB3689C1J</p>
+            Company GSTIN :27AAJCB3689C1ZJ</p>
         </div>
         <div class="col4" style="float:right;">
             <img src="{{asset('/img/logo.png')}}"  style="width:80px;">

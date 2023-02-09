@@ -160,7 +160,13 @@
                                  @endif
                             </td>
                             <td>{{$item['vendor']}}</td>
-                            <td><a href="" data-toggle="modal"  data-target="#invoicependingModal" class="invoice-pending-model badge badge-info"   id="invoice-add-model" poItem="{{$item['po_item']}}" itemCode="{{$item['item_code']}}" unit="{{$item['unit_name']}}" Orderqty="{{$item['order_qty']}}" description="{{$item['short_description']}}"   poId="{{$item['po_number']}}" style="font-size: 13px;"><i class="fas fa-plus"></i> Partial Invoice</a></td>
+                            <td><a href="" data-toggle="modal"  data-target="#invoicependingModal" class="invoice-pending-model badge badge-info"   id="invoice-add-model" poItem="{{$item['po_item']}}" itemCode="{{$item['item_code']}}" unit="{{$item['unit_name']}}" Orderqty="{{$item['order_qty']}}" description="{{$item['short_description']}}"   poId="{{$item['po_number']}}" style="font-size: 13px;" balanceQty="@if($item['current_invoice_qty']!=0)
+                                {{$item['current_invoice_qty']}} 
+                                @elseif($item['order_qty']==$item['qty_to_invoice'])
+                                {{$item['order_qty']}}
+                                @else
+                                {{$item['qty_to_invoice']}} 
+                                @endif"><i class="fas fa-plus"></i> Partial Invoice</a></td>
                         </tr>
                         @endforeach
 					</tbody>
@@ -196,6 +202,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
+                        <label id="partial_invoice_qty-error" class="error" for="partial_invoice_qty" style="display:none;">  Entered value must be less than Balance Order Quantity .</label>
                             <table class="table table-bordered mg-b-0">
                                 <thead>
                                     <tr>
@@ -215,11 +222,17 @@
                                         <th id="orderQuantity"></th>
                                     </tr>
                                     <tr>
+                                        <th>Balance Order Quantity
+                                        <input type="hidden" id="balanceQuantityhidden" value="">
+                                        </th>
+                                        <th id="balanceQuantity"></th>
+                                    </tr>
+                                    <tr>
                                         <th>Partial Invoice Quantity</th>
                                         <th>
                                             <input type="hidden" name="po_item_id" class="po_item_id" value="">
                                             <div class="input-group mb-3">
-                                                <input type="text" class="partial_invoice_qty" name="partial_invoice_qty"  aria-describedby="unit" >
+                                                <input type="text" class="partial_invoice_qty" id="partial_invoice_qty" name="partial_invoice_qty"  aria-describedby="unit" >
                                                 <div class="input-group-append">
                                                     <span class="input-group-text unit-div" id="unit">Unit</span>
                                                 </div>
@@ -233,7 +246,7 @@
                     </div>
                     <div class="modal-footer">
                         <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                            <button type="submit" class="btn btn-primary btn-rounded " style="float: right;width:88px;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                            <button type="submit" class="btn btn-primary btn-rounded partial-save-btn" style="float: right;width:88px;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                 Save
                             </button>
                         </div>
@@ -279,6 +292,7 @@
             var Orderqty = $(this).attr('Orderqty');
             var poId = $(this).attr('poId');
             var poItem = $(this).attr('poItem');
+            var balanceQty = $(this).attr('balanceQty');
             //alert(poItem)
             $('.po_item_id').val(poItem);
             $('#itemCode').html(itemCode);
@@ -286,7 +300,23 @@
             $('#unit').html(unit);
             $('#poId').html(poId);
             $('#orderQuantity').html(Orderqty+' '+unit);
+            $('#balanceQuantity').html(balanceQty+' '+unit);
+            $('#balanceQuantityhidden').val(balanceQty);
         });
+  });
+  $(".partial-save-btn").on("click", function(){
+    var partial_invoice_qty_entered= $('.partial_invoice_qty').val();
+    var balanceQuantityhidden = $('#balanceQuantityhidden').val();
+    
+    if(parseFloat(partial_invoice_qty_entered)<parseFloat(balanceQuantityhidden))
+    {
+        form.submit();
+    }
+    else
+    {
+        event.preventDefault();
+        $('#partial_invoice_qty-error').show();
+    }
   });
   $("#form1").validate({
     rules: {
