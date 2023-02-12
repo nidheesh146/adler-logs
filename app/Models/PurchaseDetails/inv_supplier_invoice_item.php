@@ -36,6 +36,7 @@ class inv_supplier_invoice_item extends Model
                     ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.issue_unit_id')
                     ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id', '=', 'inv_supplier_invoice_item.id')
                     ->where($condition)
+                    ->where('inv_supplier_invoice_item.is_merged','=',0)
                     ->groupBy('inv_supplier_invoice_item.id')
                     ->orderBy('inv_supplier_invoice_item.id','desc')
                     ->get();
@@ -60,6 +61,7 @@ class inv_supplier_invoice_item extends Model
                     ->where($condition)
                     ->groupBy('inv_supplier_invoice_item.id')
                     ->orderBy('inv_supplier_invoice_item.id','desc')
+                    ->where('inv_supplier_invoice_item.is_merged','=',0)
                     ->get();
     }
 
@@ -78,6 +80,7 @@ class inv_supplier_invoice_item extends Model
                     ->whereNotIn('inv_supplier_invoice_item.id',$all_lot_invoice_number)
                     ->groupBy('inv_supplier_invoice_item.id')
                     ->orderBy('inv_supplier_invoice_item.id','desc')
+                    ->where('inv_supplier_invoice_item.is_merged','=',0)
                     ->get();
     }
 
@@ -130,6 +133,7 @@ class inv_supplier_invoice_item extends Model
                     ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_master.po_master_id') 
                     ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id') 
                     ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master') 
+                    ->where('inv_supplier_invoice_item.is_merged','=',0)
                     ->where($condition)
                     ->first();
     }
@@ -153,6 +157,7 @@ class inv_supplier_invoice_item extends Model
                     })
                     ->where($condition)
                     ->where('inv_item_type.type_name','=','Direct Items')
+                    ->where('inv_supplier_invoice_item.is_merged','=',0)
                     ->groupBy('inv_supplier_invoice_item.id')
                     ->orderBy('inv_supplier_invoice_item.id','desc')
                     ->paginate(15);

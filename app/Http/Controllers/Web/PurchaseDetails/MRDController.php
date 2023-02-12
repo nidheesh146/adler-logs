@@ -254,6 +254,7 @@ class MRDController extends Controller
                     $add_id = $this->inv_mrd->insert_data($Data);
                     $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item','inv_supplier_invoice_item.item_id')
                                 ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                                ->where('inv_supplier_invoice_item.is_merged','=',0)
                                 ->where('master','=',$request->invoice_number)->get();
                     foreach($invoice_items as $item){
                         $dat=[
@@ -358,6 +359,10 @@ class MRDController extends Controller
     {
         $invoice_item = inv_supplier_invoice_item::where('id','=',$invoice_item_id)->first();
         $po_master_id = inv_supplier_invoice_item::where('id','=',$invoice_item_id)->pluck('po_master_id')->first();
+        if(!$po_master_id)
+        {
+            $po_master_id = inv_supplier_invoice_item::where('merged_invoice_item','=',$invoice_item_id)->pluck('po_master_id')->first();
+        }
         $po_master = inv_final_purchase_order_master::where('id','=',$po_master_id)->first();
         $currency = inv_purchase_req_quotation_item_supp_rel::leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id', '=', 'inv_purchase_req_quotation_item_supp_rel.currency')
                             ->where('quotation_id','=',$po_master['rq_master_id'])
@@ -397,6 +402,7 @@ class MRDController extends Controller
                     $add_id = $this->inv_mrd->insert_data($Data);
                     $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item','inv_supplier_invoice_item.item_id')
                                 ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                                ->where('inv_supplier_invoice_item.is_merged','=',0)
                                 ->where('master','=',$request->invoice_number)->get();
                     foreach($invoice_items as $item){
                         $dat=[

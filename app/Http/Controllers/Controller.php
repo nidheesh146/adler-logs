@@ -115,14 +115,14 @@ class Controller extends BaseController
         $Number = (($Number + 1) / 999);
         list($whole, $decimal) = explode('.', $Number);
         if(!$decimal){
-            if(date('m')==01 || date('m')==02 || date('m')==03)
-            return "999".date('m').date('y', strtotime('-1 year'));
-            else
+            // if(date('m')==01 || date('m')==02 || date('m')==03)
+            // return "999".date('m').date('y', strtotime('-1 year'));
+            // else
             return "999".date('m').date('y');
         }
-        if(date('m')==01 || date('m')==02 || date('m')==03)
-        return substr($decimal, 0, 3).date('m').date('y', strtotime('-1 year'));
-        else
+        // if(date('m')==01 || date('m')==02 || date('m')==03)
+        // return substr($decimal, 0, 3).date('m').date('y', strtotime('-1 year'));
+        // else
         return substr($decimal, 0, 3).date('m').date('y');
     }
 

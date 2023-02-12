@@ -254,7 +254,7 @@ class RowMaterialController extends Controller
             $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
             $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
             $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
-            //print_r(json_encode($ExcelOBJ->excelworksheet));
+           // print_r(json_encode($ExcelOBJ->excelworksheet));exit;
             $ExcelOBJ->date_created = date('Y-m-d H:i:s');
             $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
             $res = $this->insert_rawmaterial($ExcelOBJ);
@@ -265,7 +265,7 @@ class RowMaterialController extends Controller
     {
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
         {
-            if($key > 1)
+            if($key > 1 &&  $excelsheet[1])
             { 
                 if(!DB::table('inventory_rawmaterial')->where('item_code',$excelsheet[1])->first())
                 {   
@@ -305,7 +305,7 @@ class RowMaterialController extends Controller
                     $data['is_active'] = 1;
                     $data['expiry_control'] = ($excelsheet[35] == 'N') ? 0 : 1;
                     $data['created'] = date('Y-m-d');
-                    $res = DB::table('inventory_rawmaterial')->insert($data);
+                    $res[] = DB::table('inventory_rawmaterial')->insert($data);
                 }
                 
             }

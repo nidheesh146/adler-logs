@@ -18,6 +18,7 @@ use App\Models\PurchaseDetails\inv_mrr_item;
 use App\Models\PurchaseDetails\inv_mrr_item_rel;
 use App\Models\User;
 use App\Models\currency_exchange_rate;
+use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 class MRRController extends Controller
 {
     public function __construct()
@@ -33,6 +34,7 @@ class MRRController extends Controller
         $this->inv_mrr_item_rel = new inv_mrr_item_rel;
         $this->User = new User;
         $this->currency_exchange_rate = new currency_exchange_rate;
+        $this->inv_supplier_invoice_item = new inv_supplier_invoice_item;
     }
     public function receiptReport(Request $request)
     {
@@ -343,10 +345,19 @@ class MRRController extends Controller
         $data['mrr'] = $this->inv_mrr->find_mrr_data(['inv_mrr.id' => $id]);
         //print_r($data['mrr']);exit;
         $data['items'] = $this->inv_mrr_item->get_items(['inv_mrr_item_rel.master' => $id]);
+        // print_r(json_encode($data['items']));exit;
         $pdf = PDF::loadView('pages.inventory.MRR.pdf-view', $data);
         $pdf->set_paper('A4', 'landscape');
         $file_name = "MRR" . $data['mrr']['vendor_name'] . "_" . $data['mrr']['mrr_date'];
         return $pdf->stream($file_name . '.pdf');
+    }
+
+    public function getPO_for_merged_si_item($supplier_invoice_item_id)
+    {
+        $po_nos = inv_supplier_invoice_item::leftJoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+                    ->where('inv_supplier_invoice_item.merged_invoice_item','=',$supplier_invoice_item_id)
+                    ->select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date')->get();
+        return $po_nos;
     }
     
 }

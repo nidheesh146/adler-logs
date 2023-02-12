@@ -50,6 +50,13 @@ class PurchaseController extends Controller
 
     public function getFinalPurchase(Request $request)
     {
+        // $po_item = inv_final_purchase_order_item::get();
+        // foreach($po_item as $item)
+        // {
+        //     $uu = inv_final_purchase_order_item::find($item['id']);
+        //     $uu->qty_to_invoice = $item->order_qty;
+        //     $uu->save();
+        // }
         if (!$request->pr_no && !$request->rq_no && !$request->supplier && !$request->po_from && !$request->processed_from && !$request->status) {
             $condition1[] = ['inv_final_purchase_order_master.status', '=', 4];
         }
@@ -1237,7 +1244,7 @@ class PurchaseController extends Controller
 
         $pdf = PDF::loadView('pages.purchase-details.final-purchase.final-purchase-pdf', $data);
         $pdf->set_paper('A4', 'landscape');
-        $file_name = "final-purchase-order_" . $data['final_purchase']['vendor_name'] . "_" . $data['final_purchase']['po_number'];
+        $file_name = "purchase-order_" . $data['final_purchase']['vendor_name'] . "_" . $data['final_purchase']['po_number'];
         return $pdf->stream($file_name . '.pdf');
         //return $pdf->download('final-purchase.pdf');
     }

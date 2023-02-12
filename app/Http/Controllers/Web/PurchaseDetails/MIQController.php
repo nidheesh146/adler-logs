@@ -88,7 +88,9 @@ class MIQController extends Controller
                     $add_id = $this->inv_miq->insert_data($Data);
                     $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item','inv_supplier_invoice_item.item_id')
                                            ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
-                                            ->where('inv_supplier_invoice_rel.master','=',$request->invoice_number)->get();
+                                            ->where('inv_supplier_invoice_rel.master','=',$request->invoice_number)
+                                            ->where('inv_supplier_invoice_item.is_merged','=',0)
+                                            ->get();
                     foreach($invoice_items as $item){
                         $dat=[
                             'invoice_item_id'=>$item->item,
@@ -215,6 +217,10 @@ class MIQController extends Controller
     public function getCurrency($invoice_item_id)
     {
         $po_master_id = inv_supplier_invoice_item::where('id','=',$invoice_item_id)->pluck('po_master_id')->first();
+        if(!$po_master_id)
+        {
+            $po_master_id = inv_supplier_invoice_item::where('merged_invoice_item','=',$invoice_item_id)->pluck('po_master_id')->first();
+        }
         $po_master = inv_final_purchase_order_master::where('id','=',$po_master_id)->first();
         //print_r($po_master_id);exit; 
         $currency = inv_purchase_req_quotation_item_supp_rel::where('quotation_id','=',$po_master['rq_master_id'])->where('supplier_id','=',$po_master['supplier_id'])

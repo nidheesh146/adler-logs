@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\MRRController')
 <html>
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
@@ -72,7 +73,7 @@
              Tal- Sangmeshwar, Dist -Ratnagiri ,<br/>
                PIN-415804, Maharashtra, India<br/>
                 CIN :U33125PN2020PTC195161 <br/>
-                Company GSTIN :27AAJCB3689C1J</p>
+                Company GSTIN :27AAJCB3689C1ZJ</p>
         </div>
         <div style="width:30%"></div>
         <div class="mrr_info">
@@ -174,7 +175,7 @@
             <th>MIQ Rate</th>
             <th>@if($type=='po') PO @else WO @endif Rate</th>
             <th style="width:7%">@if($type=='po') PO @else WO @endif No.</th>
-            <th style="width:5%">@if($type=='po') PO @else WO @endif Date</th>
+            <th style="width:7%">@if($type=='po') PO @else WO @endif Date</th>
             <th style="width:10%">Reason for rejection</th>
             <th style="width:6%">Lot Number</th>
         </tr>
@@ -190,15 +191,31 @@
             <td>{{$item['rejected_quantity']}} {{$item['unit_name']}}</td>
             <td>{{$item['conversion_rate']}}</td>
             <td>{{$item['rate']}}</td>
-            <td>{{$item['po_number']}}</td>
-            <td>{{date('d-m-Y', strtotime($item['po_date']))}}</td>
+            <td>@if(!$item['po_number'])
+                    <?php $pos=$fn->getPO_for_merged_si_item($item['supplier_invoice_item_id']); ?>
+                    @foreach($pos as $po)
+                        {{$po['po_number']}}<br/>
+                    @endforeach
+                @else
+                    {{$item['po_number']}}
+                @endif
+            </td>
+            <td>
+                @if(!$item['po_number'])
+                    @foreach($pos as $po)
+                    {{date('d-m-Y', strtotime($po['po_date']))}}<br/>
+                    @endforeach
+                @else
+                    {{date('d-m-Y', strtotime($item['po_date']))}}
+                @endif
+                
+            </td>
             <td>{{$item['rejection_reason']}}</td>
             <td>{{$item['lot_number']}}</td>
             
         </tr>
         @endforeach
     </table> 
-    <br>
     <br>
     <div>
         <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="left"; style="float:left;">Signature of I/C QC</label>

@@ -69,7 +69,7 @@
              Tal- Sangmeshwar, Dist -Ratnagiri ,<br/>
                PIN-415804, Maharashtra, India<br/>
                 CIN :U33125PN2020PTC195161 <br/>
-                Company GSTIN :27AAJCB3689C1J</p>
+                Company GSTIN :27AAJCB3689C1ZJ</p>
                 <br/>
         </div>
 

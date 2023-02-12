@@ -567,7 +567,7 @@ class StockController extends Controller
                             ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                             ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                             ->where('inventory_rawmaterial.id','=', $request->item_id)
-                            //->where('inv_mac_item.available_qty','!=',0)
+                            ->where('inv_mac_item.available_qty','!=',0)
                             ->orderBy('inv_lot_allocation.id','asc')
                             ->get();
         //return $lotcards;

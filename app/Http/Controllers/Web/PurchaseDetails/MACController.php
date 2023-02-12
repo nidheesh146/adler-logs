@@ -242,6 +242,7 @@ class MACController extends Controller
                     $add_id = $this->inv_mac->insert_data($Data);
                     $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item','inv_supplier_invoice_item.item_id')
                                 ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                                ->where('inv_supplier_invoice_item.is_merged','=',0)
                                 ->where('master','=',$request->invoice_number)->get();
                     foreach($invoice_items as $item){
                         $dat=[
@@ -355,6 +356,7 @@ class MACController extends Controller
                     $add_id = $this->inv_mac->insert_data($Data);
                     $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item','inv_supplier_invoice_item.item_id')
                                 ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                                ->where('inv_supplier_invoice_item.is_merged','=',0)
                                 ->where('master','=',$request->invoice_number)->get();
                     foreach($invoice_items as $item){
                         $dat=[

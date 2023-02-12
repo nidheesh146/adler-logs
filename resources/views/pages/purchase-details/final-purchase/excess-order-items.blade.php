@@ -207,7 +207,7 @@
                                 <td>
                                     <label>Excess Quantity</label> 
                                         <div class="input-group">
-                                        <input type="number" min="0" class="excess-qty" id="excess-qty" name="excess_qty" required aria-describedby="unit-div1">
+                                        <input type="text" min="0" class="excess-qty" id="excess-qty" name="excess_qty" required aria-describedby="unit-div1">
                                         <div class="input-group-append">
                                             <span class="input-group-text unit-div" id="unit-div1"></span>
                                         </div>
