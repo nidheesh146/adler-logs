@@ -82,7 +82,8 @@ class LotAllocationController extends Controller
             // $validator = Validator::make($request->all(), $validation);
             // if(!$validator->errors()->all()) 
             // { 
-                $data['lot_number'] = $this->lot_num_gen(DB::table('inv_lot_allocation')->count()); //$request->lot_number;
+                $mnthYearcombo= date('m').date('y');
+                $data['lot_number'] = $this->lot_num_gen(DB::table('inv_lot_allocation')->where('lot_number','LIKE', '%'.$mnthYearcombo)->count()); //$request->lot_number;
                 $data['doc_number'] = $request->document_no;
                 $data['rev_number'] = $request->rev_no;
                 $data['rev_date'] = $request->rev_date;
@@ -149,6 +150,23 @@ class LotAllocationController extends Controller
     public function getInvoiceItem($invoice_item_id)
     {
         $invoice_item = $this->inv_supplier_invoice_item->get_single_supplier_invoice_item(['inv_supplier_invoice_item.id'=>$invoice_item_id]);
+        if($invoice_item->po_number!=null)
+         {
+             $invoice_item->po_Number = $invoice_item->po_number;
+         }
+         else
+         {
+             $po_nos = inv_supplier_invoice_item::leftJoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+                     ->where('inv_supplier_invoice_item.merged_invoice_item','=',$invoice_item_id)
+                     ->select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date')->get();
+             $po = '';
+             foreach($po_nos as $no)
+             {
+                 $po = $no['po_number'].' , '.$po; 
+             }
+             $invoice_item->po_Number = $po;
+        
+         }
         $invoice_item->total_rate = (float) sprintf('%.2f',($invoice_item->rate - ($invoice_item->discount/100)*$invoice_item->rate));
         return $invoice_item;
     }
@@ -157,10 +175,27 @@ class LotAllocationController extends Controller
     {
         //echo $lot_allocation_id;
         //exit;
-        $lot_data= $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_allocation_id]);
-       
-        $lot_data->total_rate = (float) sprintf('%.2f',($lot_data->rate - ($lot_data->discount/100)*$lot_data->rate));
-        return $lot_data;
+         //exit;
+         $lot_data= $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_allocation_id]);
+         if($lot_data->po_number!=null)
+         {
+             $lot_data->po_Number = $lot_data->po_number;
+         }
+         else
+         {
+             $po_nos = inv_supplier_invoice_item::leftJoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+                     ->where('inv_supplier_invoice_item.merged_invoice_item','=',$lot_data->invoice_item_id)
+                     ->select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date')->get();
+             $po = '';
+             foreach($po_nos as $no)
+             {
+                 $po = $no['po_number'].' , '.$po; 
+             }
+             $lot_data->po_Number = $po;
+        
+         }
+         $lot_data->total_rate = (float) sprintf('%.2f',($lot_data->rate - ($lot_data->discount/100)*$lot_data->rate));
+         return $lot_data;
     }
 
     public function generatePdf($id){

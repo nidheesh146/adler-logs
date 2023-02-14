@@ -375,7 +375,7 @@
                             $('#invoice_no').val(data.invoice_number);
                             $('#invoice_date').val(data.invoice_date);
                             $('#invoice_qty').val(data.invoice_qty);
-                            $('#po_number').val(data.po_number);
+                            $('#po_number').val(data.po_Number);
                             $('#si_id').val(data.invoice_item_id);
                             $('#supplier').val(data.supplier_id);
                             $('#supplier_name').val(data.vendor_name);

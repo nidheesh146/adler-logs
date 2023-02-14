@@ -2,6 +2,7 @@
 @section('content')
 
 @inject('SupplierQuotation', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\MRRController')
 
 
 <div class="az-content az-content-dashboard">
@@ -533,7 +534,7 @@
                 $('#invoice_no').val(data.invoiceNumber);
                 $('#invoice_date').val(data.invoice_date);
                 $('#invoice_qty').val(data.invoice_qty);
-                $('#po_number').val(data.po_number);
+                $('#po_number').val(data.po_Number);
                 $('#po_id').val(data.po_id);
                 $('#supplier').val(data.supplier_id);
                 $('#supplier_name').val(data.vendor_id+"-"+data.vendor_name);
@@ -574,8 +575,14 @@
 							$('#approved_by').val(data.approved_by);
         });
     });
-
-
+    // $.ajax({ 
+    //                     url: "{{url('getPO_for_merged_si_item')}}",
+    //                     data: {"supplier_invoice_item_id":data.invoice_item_id},
+    //                     type: 'get',
+    //                     success: function(result){
+    //                         console.log(result)
+    //                     }
+    //                 });
 
 
          jQuery.validator.addMethod("checkPrevValuePaxTo", function (value, element) {

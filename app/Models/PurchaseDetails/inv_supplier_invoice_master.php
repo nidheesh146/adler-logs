@@ -214,6 +214,7 @@ class inv_supplier_invoice_master extends Model
             $query->select('inv_mac.invoice_id')->from('inv_mac')->where('inv_mac.status','=',1);
         
         })->where('inv_supplier_invoice_master.status','=',1)
+        ->where($condition)
         ->where('inv_supplier_invoice_master.type','=','PO')
         ->get();
     }
@@ -225,6 +226,7 @@ class inv_supplier_invoice_master extends Model
             $query->select('inv_mac.invoice_id')->from('inv_mac')->where('inv_mac.status','=',1);
         
         })->where('inv_supplier_invoice_master.status','=',1)
+        ->where($condition)
         ->where('inv_supplier_invoice_master.type','=','WO')
         ->get();
     }
@@ -236,6 +238,7 @@ class inv_supplier_invoice_master extends Model
             $query->select('inv_mrd.invoice_id')->from('inv_mrd')->where('inv_mrd.status','=',1);
         
         })->where('inv_supplier_invoice_master.status','=',1)
+        ->where($condition)
         ->where('inv_supplier_invoice_master.type','=','PO')
         ->get();
     }
@@ -247,6 +250,7 @@ class inv_supplier_invoice_master extends Model
             $query->select('inv_mrd.invoice_id')->from('inv_mrd')->where('inv_mrd.status','=',1);
         
         })->where('inv_supplier_invoice_master.status','=',1)
+        ->where($condition)
         ->where('inv_supplier_invoice_master.type','=','WO')
         ->get();
     }

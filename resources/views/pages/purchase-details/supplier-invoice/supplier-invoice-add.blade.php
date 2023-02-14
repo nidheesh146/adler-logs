@@ -135,7 +135,7 @@
 					<tbody>
     					@foreach($data as $item)
                         <tr>
-                            <td><input type="checkbox" name="po_item_id[]" id="po_item_id" value="{{$item['po_item']}}"></td>
+                            <td><input type="checkbox" name="po_item_id[]" id="po_item_id" supplier="{{$item['vendor']}}" value="{{$item['po_item']}}"></td>
                             <td>{{$item['po_number']}}</td>
                             <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['short_description']}}" >{{$item['item_code']}}</td>
                             <td>{{$item['type']}}</td>
@@ -178,7 +178,7 @@
                 @if(count($data)>0)
                     <div class="row">
                         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
+                            <button type="submit" class="btn btn-primary btn-rounded invoice-create-btn" style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
                                 Save 
                             </button>
                         </div>
@@ -304,7 +304,25 @@
             $('#balanceQuantityhidden').val(balanceQty);
         });
   });
-  $(".partial-save-btn").on("click", function(){
+  $(".invoice-create-btn").on("click",function(event)
+  {
+    var suppliers = $("#po_item_id:checked").map(function(){
+      return $(this).attr('supplier');
+    }).get();
+    
+    var unique_suppler_count = $.unique(suppliers).length;
+    console.log(unique_suppler_count);
+    if(unique_suppler_count>1)
+    {
+        event.preventDefault();
+        alert('Please select items of same supplier');
+    }
+    else
+    {
+        form.submit();
+    }
+  });
+  $(".partial-save-btn").on("click", function(event){
     var partial_invoice_qty_entered= $('.partial_invoice_qty').val();
     var balanceQuantityhidden = $('#balanceQuantityhidden').val();
     
@@ -318,6 +336,7 @@
         $('#partial_invoice_qty-error').show();
     }
   });
+
   $("#form1").validate({
     rules: {
         invoice_number: {
@@ -332,9 +351,6 @@
         }
     }
   });
-
-    
-  
 
   
 	$('.search-btn').on( "click", function(e)  {

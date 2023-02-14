@@ -205,6 +205,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/find-woa-info', 'MRRController@find_woa_info');
     Route::get('inventory/MRR-delete/{id}', 'MRRController@mrr_delete');
     Route::get('inventory/receipt-report/{id}/report', 'MRRController@receiptReportPDF');
+    Route::get('getPO_for_merged_si_item','MRRController@getPO_for_merged_si_item');
 
     //Stock To Production
    
