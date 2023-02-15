@@ -1170,6 +1170,7 @@ class PurchaseController extends Controller
                 
                 $data['invoice_number'] = $request->invoice_number;
                 $data['invoice_date'] = date('Y-m-d',strtotime($request->invoice_date));
+                $data['created_at'] = date('Y-m-d H:i:s',strtotime($request->transaction_date));
                 $data['updated_at'] = date('Y-m-d H:i:s');
 
                 $invoice_update= $this->inv_supplier_invoice_master->updatedata(['inv_supplier_invoice_master.id' => $request->invoice_id], $data);

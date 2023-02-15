@@ -178,7 +178,7 @@
                                 <label>
                                    Transaction Date
                                 </label>
-                                <input type="text" name="" id="transaction_date" value=""  disabled>
+                                <input type="text" name="transaction_date" id="transaction_date" value=""  class="datepicker1">
                             </div>
                             {{--<div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
                                   <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
