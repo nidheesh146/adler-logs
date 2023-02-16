@@ -41,15 +41,24 @@
 		<form method="post" action="">
             {{ csrf_field() }}
             <div class="row">
-                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                     <label for="exampleInputEmail1">Item Code*</label>
                     <select class="form-control  item_code" name="item_code" id="item_code">
                     </select> 
                 </div>
-                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                     <label>Item Description </label>
                     <textarea type="text" class="form-control" name="item_description" id="item_description" placeholder="Item Description" readonly></textarea>
                 </div><!-- form-group -->
+                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                    <label for="exampleInputEmail1">Work Centre*</label>
+                    <select class="form-control  work_centre" name="work_centre" id="work_centre" required>
+                        <option></option>
+                        @foreach($work_centre as $centre)
+                        <option value="{{ $centre['id'] }}">{{$centre['centre_code']}}</option>
+                        @endforeach
+                    </select> 
+                </div>
                 <br/>
             </div>
             <div class="form-devider"></div>
@@ -152,6 +161,12 @@
         minViewMode: "months",
         // startDate: date,
         autoclose:true
+    });
+    $('.work_centre').select2({
+        placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 3,
+          allowClear: true
     });
     $('.item_code').select2({
           placeholder: 'Choose one',

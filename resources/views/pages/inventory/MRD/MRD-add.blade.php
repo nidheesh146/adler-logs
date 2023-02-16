@@ -209,7 +209,7 @@
       $('.invoice_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 3,
+          minimumInputLength: 2,
           allowClear: true,
           ajax: {
           url: "{{ url('inventory/MRD/find-invoice-number-for-mrd') }}",

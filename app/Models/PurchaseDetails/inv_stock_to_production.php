@@ -33,6 +33,20 @@ class inv_stock_to_production extends Model
 
        
     }
+    function get_single_data($condition)
+    {
+        return $this->select(['inv_stock_to_production.*','inv_lot_allocation.lot_number','inventory_rawmaterial.item_code','inv_unit.unit_name',
+        'inventory_rawmaterial.discription','work_centre.centre_code','work_centre.EB_referance_name','work_centre.description as centre_description'])
+        ->leftjoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_stock_to_production.lot_id')
+        ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_to_production.pr_item_id')
+        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
+        ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+        ->leftjoin('work_centre','work_centre.id','=','inv_stock_to_production.work_centre')
+        ->where($condition)
+        ->where('inv_stock_to_production.status','=',1)
+        //->orderby('inv_stock_to_production.id','desc')
+        ->first();  
+    }
 
     function deleteData($condition)
     {

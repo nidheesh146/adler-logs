@@ -91,7 +91,8 @@ class MRRController extends Controller
                         if($item_type=="Direct Items"){
                             $Data['mrr_number'] = "MRR2-".$this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR2%')->count(),1); 
                         }
-                        if($item_type=="Indirect Items"){
+                        //if($item_type=="Indirect Items"){
+                        else{
                             $Data['mrr_number'] = "MRR3-" . $this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR3%')->count(),1); 
                         }
                     }

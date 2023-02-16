@@ -9,7 +9,9 @@
                     <span> Work Order Acceptance Info</span>
                 </div>
                 <h4 class="az-content-title" style="font-size: 20px;"> Work Order Acceptance @if(!empty($edit)) ({{$edit['mac']->mac_number}}) @endif
-
+                @if(!empty($edit))
+                <a style="float: right;font-size: 14px;" target="_blank" href='{{url('inventory/WOA/'.$edit['mac']->id.'/pdf')}}'" ><i class="fas fa-file-pdf" style="color:red;font-size:32px;"></i> </a> 
+                @endif
                 </h4>
                 @foreach ($errors->all() as $errorr)
                 <div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -123,7 +125,7 @@
                 <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                        MAC Items
+                        WOA Items
                         </label>
                         <div class="form-devider"></div>
                     </div>
@@ -239,7 +241,7 @@
     $('.invoice_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 3,
+          minimumInputLength: 2,
           allowClear: true,
           ajax: {
           url: "{{ url('inventory/MAC/find-invoice-number-for-woa') }}",

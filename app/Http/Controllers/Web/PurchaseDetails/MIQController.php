@@ -74,7 +74,8 @@ class MIQController extends Controller
                     if($item_type=="Direct Items"){
                         $Data['miq_number'] = "MIQ2-".$this->po_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ2%')->count(),1); 
                     }
-                    if($item_type=="Indirect Items"){
+                    //if($item_type=="Indirect Items"){
+                    else{
                         $Data['miq_number'] = "MIQ3-" . $this->po_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ3%')->count(),1); 
                     }
                         

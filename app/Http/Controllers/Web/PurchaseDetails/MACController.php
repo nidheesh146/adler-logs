@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
+use PDF;
 use App\Models\PurchaseDetails\inv_miq;
 use App\Models\PurchaseDetails\inv_miq_item;
 use App\Models\PurchaseDetails\inv_miq_item_rel;
@@ -230,7 +231,9 @@ class MACController extends Controller
                     if($item_type=="Direct Items"){
                         $Data['mac_number'] = "MAC2-".$this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2%')->count(),1); 
                     }
-                    if($item_type=="Indirect Items"){
+                    //if($item_type=="Indirect Items"){
+                    else
+                    {
                         $Data['mac_number'] = "MAC3-" . $this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC3%')->count(),1); 
                     }
                     $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
@@ -321,12 +324,19 @@ class MACController extends Controller
                     $request->session()->flash('success', "You have successfully updated a MAC Item Info!");
                 else
                     $request->session()->flash('error', "MAC Item info updation is failed. Try again... !");
+                $mac_number = inv_mac::where('id','=',$mac_id)->first()->pluck('mac_number');
+                if(str_starts_with($mac_number , 'MAC') )
                 return redirect('inventory/MAC-add/'.$mac_id);
+                else
+                return redirect('inventory/WOA-add/'.$mac_id);
+                //redirect()->back();
             }
         }
         $data = $this->inv_mac_item->get_item(['inv_mac_item.id'=>$id]);
+        $mac_number = inv_mac_item_rel::leftJoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
+                        ->where('item','=',$id)->pluck('inv_mac.mac_number')->first();
         $currency = $this->currency_exchange_rate->get_currency([]);
-        return view('pages.inventory.MAC.MAC-itemInfo', compact('data','currency'));
+        return view('pages.inventory.MAC.MAC-itemInfo', compact('data','currency','mac_number'));
     }
     public function WOAAdd(Request $request)
     {
@@ -344,7 +354,8 @@ class MACController extends Controller
                     if($item_type=="Direct Items"){
                         $Data['mac_number'] = "WOA2-".$this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA2%')->count(),1); 
                     }
-                    if($item_type=="Indirect Items"){
+                    //if($item_type=="Indirect Items"){
+                    else {
                         $Data['mac_number'] = "WOA3-" . $this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA3%')->count(),1); 
                     }
                     $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
@@ -723,87 +734,14 @@ class MACController extends Controller
     }
 
     
-    public function WOAAdd1(Request $request)
-    {
-        if($request->isMethod('post'))
-        {
-            $validation['mac_date'] = ['required','date'];
-            $validation['miq_number'] = ['required'];
-            $validation['created_by'] = ['required'];
-            $validator = Validator::make($request->all(), $validation);
-            if(!$validator->errors()->all())
-            {
-                if(!$request->id)
-                {
-                    $item_type = $this->get_item_type($request->miq_number);
-                    if($item_type=="Direct Items"){
-                        $Data['mac_number'] = "WOA2-".$this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA2%')->count(),1); 
-                    }
-                    if($item_type=="Indirect Items"){
-                        $Data['mac_number'] = "WOA3-" . $this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA3%')->count(),1); 
-                    }
-                    $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
-                    $Data['miq_id'] = $request->miq_number;
-                    $Data['created_by']= $request->created_by;
-                    $Data['status']=1;
-                    $Data['created_at'] =date('Y-m-d H:i:s');
-                    $Data['updated_at'] =date('Y-m-d H:i:s');
-                    $add_id = $this->inv_mac->insert_data($Data);
-                    $miq_items = inv_miq_item_rel::select('inv_miq_item_rel.item','inv_miq_item.item_id')
-                                ->leftJoin('inv_miq_item','inv_miq_item.id','=','inv_miq_item_rel.item')
-                                ->where('master','=',$request->miq_number)->get();
-                    foreach($miq_items as $item){
-                        $dat=[
-                            'miq_item_id'=>$item->item,
-                            'item_id'=>$item->item_id,
-                            'status'=>1,
-                            'created_at'=>date('Y-m-d H:i:s'),
-                            'updated_at'=>date('Y-m-d H:i:s')
+   public function WOApdf($id)
+   {
+    $data['mac'] = $this->inv_mac->find_mac_data(['inv_mac.id' => $id]);
 
-                        ];
-                        $item_id = $this->inv_mac_item->insert_data($dat);
-                        $dat2 =[
-                            'master'=>$add_id,
-                            'item'=>$item_id,
-                        ];
-                        $rel =DB::table('inv_mac_item_rel')->insert($dat2);
-                    }
-                    
-                    if($add_id && $item_id && $rel)
-                        $request->session()->flash('success', "You have successfully created a WOA !");
-                    else
-                        $request->session()->flash('error', "WOA creation is failed. Try again... !");
-                    return redirect('inventory/WOA-add/'.$add_id);
-                }
-                else
-                {
-                    $data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
-                    $data['created_by']= $request->created_by;
-                    $data['updated_at'] =date('Y-m-d H:i:s');
-                    $update = $this->inv_mac->update_data(['id'=>$request->id],$data);
-                    if($update)
-                        $request->session()->flash('success', "You have successfully updated a WOA !");
-                    else
-                        $request->session()->flash('error', "WOA updation is failed. Try again... !");
-                    return redirect('inventory/WOA-add/'.$request->id);
-                }
-            }
-            if($validator->errors()->all())
-            {
-                return redirect('inventory/WOA-add')->withErrors($validator)->withInput();
-            }
-        }
-       
-        $condition1[] = ['user.status', '=', 1];
-        $data['users'] = $this->User->get_all_users($condition1);
-
-        if($request->id){
-            $edit['mac'] = $this->inv_mac->find_mac_data(['inv_mac.id' => $request->id]);
-
-            $edit['items'] = $this->inv_mac_item->get_items(['inv_mac_item_rel.master' =>$request->id]);
-            return view('pages.inventory.MAC.MAC-add',compact('edit','data'));
-        }
-        
-        return view('pages.inventory.MAC.WOA-add',compact('data'));
-    }
+    $data['items'] = $this->inv_mac_item->get_items(['inv_mac_item_rel.master' =>$id]);
+    $pdf = PDF::loadView('pages.inventory.MAC.WOA-pdf', $data);
+    //$pdf->set_paper('A4', 'portiait');
+    $file_name = $data['mac']['mac_number'];
+    return $pdf->stream($file_name . '.pdf');
+   }
 }

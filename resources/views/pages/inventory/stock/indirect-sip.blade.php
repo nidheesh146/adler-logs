@@ -60,6 +60,10 @@
                             <input type="text"  class="form-control" name="mac_no" id="mac_no" readonly>
                         </div>
                         <div class="form-group col-sm-12col-md-6 col-lg-6 col-xl-6">
+                            <label>Transaction Slip No</label>
+                            <input type="text"  class="form-control" name="transaction_slip" id="transaction_slip" >
+                        </div>
+                        <div class="form-group col-sm-12col-md-6 col-lg-6 col-xl-6">
                             <label>Accepted Quantity(MAC Quantity)</label>
                             <div class="input-group mb-3">
                                 <input type="hidden" name="mac_item_id" id="mac_item_id">
@@ -78,6 +82,15 @@
                                 </div>
                             </div>
                             <label id="qty_to_production-error" class="error" for="qty_to_production" style="display:none;">This field is required.</label>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                            <label for="exampleInputEmail1">Work Centre*</label>
+                            <select class="form-control  work_centre" name="work_centre" id="work_centre">
+                                <option></option>
+                                @foreach($work_centre as $centre)
+                                <option value="{{ $centre['id'] }}">{{$centre['centre_code']}}</option>
+                                @endforeach
+                            </select> 
                         </div>
                     </div>
                     <div class="form-devider"></div>
@@ -110,6 +123,12 @@
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script>
+    $('.work_centre').select2({
+        placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 3,
+          allowClear: true
+    });
     $(".datepicker").datepicker({
         format: "mm-yyyy",
         viewMode: "months",
@@ -168,6 +187,12 @@
                     required: true,
                     number: true,
                 },
+                transaction_slip:{
+                    required: true, 
+                },
+                work_centre:{
+                    required: true, 
+                }
             },
             submitHandler: function(form) {
                 $('.spinner-button').show();

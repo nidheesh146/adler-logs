@@ -7,14 +7,14 @@
 		<div class="az-content-body">
 
             <div class="az-content-breadcrumb">  
-                <span><a href="" style="color: #596881;">Material Rejection</a></span>
+                <span><a href="" style="color: #596881;">@if(str_starts_with($mrd_number , 'MRD') ) Material @else Work Order @endif Rejection</a></span>
                 <span><a href="">
-                   MRD Item
+                @if(str_starts_with($mrd_number , 'MRD') ) MRD @else WOR @endif Item
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                    MRD Item
+                @if(str_starts_with($mrd_number , 'MRD') ) MRD @else WOR @endif Item 
             </h4>
             <div class="az-dashboard-nav">
                 

@@ -91,7 +91,7 @@
                  <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                            Material Rejection & Delivery ({{$edit['mrd']['mrd_number']}})
+                            Work Order Rejection & Delivery ({{$edit['mrd']['mrd_number']}})
                         </label>
                         <div class="form-devider"></div>
                     </div>
@@ -102,7 +102,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>MRD Date</th>
+                            <th>WOR Date</th>
                             <td>{{date('d-m-Y', strtotime($edit['mrd']['mrd_date']))}}</td>
                             
                         </tr>
@@ -124,7 +124,7 @@
                 <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                         <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                        MRD Items
+                        WOR Items
                         </label>
                         <div class="form-devider"></div>
                     </div>
@@ -209,7 +209,7 @@
       $('.invoice_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 3,
+          minimumInputLength: 2,
           allowClear: true,
           ajax: {
           url: "{{ url('inventory/MRD/find-invoice-number-for-wor') }}",

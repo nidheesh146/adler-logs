@@ -242,7 +242,9 @@ class MRDController extends Controller
                     if($item_type=="Direct Items"){
                         $Data['mrd_number'] = "MRD2-".$this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD2%')->count(),1); 
                     }
-                    if($item_type=="Indirect Items"){
+                    //if($item_type=="Indirect Items"){
+                    else
+                    {
                         $Data['mrd_number'] = "MRD3-" . $this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD3%')->count(),1); 
                     }
                     $Data['mrd_date'] = date('Y-m-d', strtotime($request->mrd_date));
@@ -343,7 +345,11 @@ class MRDController extends Controller
                     $request->session()->flash('success', "You have successfully updated a MRD Item Info!");
                 else
                     $request->session()->flash('error', "MRD Item info updation is failed. Try again... !");
-                return redirect('inventory/MRD-add/'.$mrd_id);
+                    $mrd_number = inv_mrd::where('id','=',$mrd_id)->first()->pluck('mac_number');
+                    if(str_starts_with($mrd_number , 'MRD') )
+                    return redirect('inventory/MRD-add/'.$mrd_id);
+                    else
+                    return redirect('inventory/WOR-add/'.$mrd_id);
             }
             if($validator->errors()->all())
             {
@@ -351,8 +357,10 @@ class MRDController extends Controller
             }
         }
         $data = $this->inv_mrd_item->get_item(['inv_mrd_item.id'=>$id]);
+        $mrd_number = inv_mrd_item_rel::leftJoin('inv_mrd','inv_mrd.id','=','inv_mrd_item_rel.master')
+                        ->where('item','=',$id)->pluck('inv_mrd.mrd_number')->first();
         $currency = $this->currency_exchange_rate->get_currency([]);
-        return view('pages.inventory.MRD.MRD-itemInfo', compact('data','currency'));
+        return view('pages.inventory.MRD.MRD-itemInfo', compact('data','currency','mrd_number'));
 
     }
     public function getCurrency($invoice_item_id)
@@ -390,7 +398,8 @@ class MRDController extends Controller
                     if($item_type=="Direct Items"){
                         $Data['mrd_number'] = "WOR2-".$this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR2%')->count(),1); 
                     }
-                    if($item_type=="Indirect Items"){
+                   // if($item_type=="Indirect Items"){
+                    else{
                         $Data['mrd_number'] = "WOR3-" . $this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR3%')->count(),1); 
                     }
                     $Data['mrd_date'] = date('Y-m-d', strtotime($request->mrd_date));

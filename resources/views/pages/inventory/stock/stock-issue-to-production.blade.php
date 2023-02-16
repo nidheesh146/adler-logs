@@ -109,6 +109,7 @@
                         <th>Quantity</th>
                         <th>Created at</th>
                         <th>BatchCards & Qty</th>
+                        <th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -132,7 +133,9 @@
                             @endif
                             @endforeach
                         </td>
-                        
+                        <td>
+                        <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/Stock/ToProduction/view/'.$sip["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> View</a>
+                        </td>
                     </tr>
                     @endforeach
 				</tbody>

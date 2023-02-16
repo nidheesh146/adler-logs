@@ -7,14 +7,14 @@
 		<div class="az-content-body">
 
             <div class="az-content-breadcrumb">  
-                <span><a href="" style="color: #596881;">Material Acceptance</a></span>
+                <span><a href="" style="color: #596881;"> @if(str_starts_with($mac_number , 'MAC') ) Material @else Work Order @endif   Acceptance</a></span>
                 <span><a href="">
-                   MAC Item
+                @if(str_starts_with($mac_number , 'MAC') ) MAC @else WOA @endif  Item
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                    MAC Item
+                @if(str_starts_with($mac_number , 'MAC') ) MAC @else WOA @endif  Item
             </h4>
             <div class="az-dashboard-nav">
                 
@@ -163,7 +163,7 @@
             rules: {
                 accepted_quantity: {
                     required: true,
-                    number: true,
+                    //number: true,
                 },
             },
             submitHandler: function(form) {

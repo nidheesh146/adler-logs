@@ -168,6 +168,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
 
     Route::get('inventory/WOA-add/{id?}', 'MACController@WOAAdd');
     Route::post('inventory/WOA-add/{id?}', 'MACController@WOAAdd');
+    Route::get('inventory/WOA/{id}/pdf', 'MACController@WOApdf');
    
     // MRD
     Route::get('inventory/MRD', 'MRDController@MRDlist');
@@ -238,6 +239,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/Stock/FromProduction/delete/{id}', 'StockController@StockFromProductionDelete');
     Route::post('inventory/stock-FromProduction-edit', 'StockController@StockFromProductionEdit');
     Route::get('getSingleSIR', 'StockController@getSingleSIR');
+    Route::get('inventory/Stock/ToProduction/view/{id}','StockController@SIPview');
     
 
       //Stock transfer

@@ -20,7 +20,7 @@ class inv_mac_item extends Model
         return $this->where($condition)->update($data);
     }
     function get_items($condition){
-        return $this->select('inv_mac_item.id as id','inventory_rawmaterial.item_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_mac_item.accepted_quantity','inv_miq_item.expiry_control','inv_miq_item.expiry_date')
+        return $this->select('inv_mac_item.id as id','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_mac_item.accepted_quantity','inv_miq_item.expiry_control','inv_miq_item.expiry_date')
                     ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_mac_item.invoice_item_id')
                     ->leftjoin('inv_miq_item','inv_miq_item.invoice_item_id','=','inv_supplier_invoice_item.id')

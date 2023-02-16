@@ -8,6 +8,7 @@ use Validator;
 use DB;
 use App\Models\User;
 use App\Models\batchcard;
+use App\Models\work_centre;
 use App\Models\assembly_batchcards;
 use App\Models\batchcard_material;
 use App\Models\PurchaseDetails\inv_lot_allocation;
@@ -200,7 +201,8 @@ class StockController extends Controller
                 {
                     $data['sip_number'] = "SIP2-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2%')->count(),1); 
                 }
-                if($item_type=="Indirect Items")
+                //if($item_type=="Indirect Items")
+                else
                 {
                     $data['sip_number'] = "SIP3-" . $this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP3%')->count(),1); 
                 }
@@ -462,7 +464,8 @@ class StockController extends Controller
                 {
                     $data['sto_number'] = "STO2-".$this->po_num_gen(DB::table('inv_stock_transfer_order')->where('inv_stock_transfer_order.sto_number', 'LIKE', 'STO2%')->count(),1); 
                 }
-                if($item_type=="Indirect Items")
+                //if($item_type=="Indirect Items")
+                else
                 {
                     $data['sto_number'] = "STO3-" . $this->po_num_gen(DB::table('inv_stock_transfer_order')->where('inv_stock_transfer_order.sto_number', 'LIKE', 'STO3%')->count(),1); 
                 }
@@ -540,7 +543,8 @@ class StockController extends Controller
 
     public function DirectSIP()
     {
-        return view('pages.inventory.stock.direct-sip');
+        $work_centre = work_centre::where('status','=',1)->get();
+        return view('pages.inventory.stock.direct-sip',compact('work_centre'));
     }
     public function fetchBatchCards(Request $request)
     {
@@ -647,6 +651,7 @@ class StockController extends Controller
     {
         $validation['lot_id'] = ['required'];
         $validation['batchcard'] = ['required'];
+        $validation['work_centre'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
@@ -656,6 +661,7 @@ class StockController extends Controller
             //$data['qty_to_production'] = $lot_data['available_qty'];
             $data['type'] = 2;
             $data['status'] = 1;
+            $data['work_centre'] = $request->work_centre;
             $data['created_at']= date('Y-m-d H:i:s');
             $data['updated_at']= date('Y-m-d H:i:s');
         
@@ -701,19 +707,22 @@ class StockController extends Controller
     }
     public function IndirectSIP()
     {
-        return view('pages.inventory.stock.indirect-sip'); 
+        $work_centre = work_centre::where('status','=',1)->get();
+        return view('pages.inventory.stock.indirect-sip',compact('work_centre')); 
     }
     public function addIndirectSIP(Request $request)
     {
-        
+        $validation['transaction_slip'] = ['required'];
         $validation['item_code'] = ['required'];
         $validation['qty_to_production'] = ['required'];
+        $validation['work_centre'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
             $data['sip_number'] = "SIP3-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP3%')->count(),1); 
             //$data['lot_id'] = $request->lot_id;
             //$data['qty_to_production'] = $lot_data['available_qty'];
+            $data['transaction_slip'] = $request->transaction_slip;
             $data['type'] = 3;
             $data['status'] = 1;
             $data['created_by']= config('user')['user_id'];
@@ -722,6 +731,7 @@ class StockController extends Controller
             $data['qty_to_production'] = $request->qty_to_production;
             $mac_item = inv_mac_item::where('id',$request->mac_item_id)->first();
             $data['pr_item_id'] = $mac_item['item_id'];
+            $data['work_centre'] = $request->work_centre;
             $sip_master = $this->inv_stock_to_production->insert_data($data);
             if($sip_master)
             {
@@ -843,7 +853,8 @@ class StockController extends Controller
             {
                 $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2%')->count(),1); 
             }
-            if($item_type=="Indirect Items")
+            //if($item_type=="Indirect Items")
+            else
             {
                 $data['sir_number'] = "SIR3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3%')->count(),1); 
             }
@@ -948,9 +959,28 @@ class StockController extends Controller
                                             ->Join('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_to_production_item.material_id')
                                             ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                                             ->where('inv_stock_to_production_item_rel.master','=',$sip_id)
-                                            ->select('inventory_rawmaterial.item_code','inv_unit.unit_name')
+                                            ->select('inventory_rawmaterial.item_code','inv_unit.unit_name','inventory_rawmaterial.discription')
                                             ->first();
         return $item ;
+    }
+
+    public function SIPview($id)
+    {
+        $sip = $this->inv_stock_to_production->get_single_data(['inv_stock_to_production.id'=>$id]);
+        $sip['items']=inv_stock_to_production_item::select('batchcard_batchcard.batch_no','inv_stock_to_production_item.qty_to_production')
+                    ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','inv_stock_to_production_item.batchcard_id')
+                    ->leftJoin('inv_stock_to_production_item_rel','inv_stock_to_production_item_rel.item','=','inv_stock_to_production_item.id')
+                    ->where('inv_stock_to_production_item_rel.master','=',$sip['id'])
+                    ->get();
+        //print_r($sip);exit;
+        if($sip['type']==2)//direct
+        {
+            return view('pages.inventory.stock.sip-direct-view',compact('sip'));
+        }
+        else
+        {
+            return view('pages.inventory.stock.sip-indirect-view',compact('sip'));
+        }
     }
 
    
