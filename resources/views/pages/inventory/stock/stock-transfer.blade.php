@@ -55,18 +55,14 @@
                                                 <label style="font-size: 12px;">STO NUMBER</label>
                                                 <input type="text" value="{{request()->get('sto_number')}}" name="sto_number" id="sto_number" class="form-control" placeholder="STO NUMBER">
                                             </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                <label style="font-size: 12px;">ITEM CODE</label>
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <label style="font-size: 12px;">Created</label>
                                                 <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
                                             </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                <label style="font-size: 12px;">LOT NUMBER</label>
-                                                <input type="text" value="{{request()->get('lot_number')}}" name="lot_number" id="lot_number" class="form-control" placeholder="LOT NUMBER"> 
-                                            </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label style="font-size: 12px;">SUPPLIER</label>
-                                                <input type="text" value="{{request()->get('supplier')}}" id="supplier" class="form-control" name="supplier" placeholder="SUPPLIER">
-                                            </div>
+                                                <label style="font-size: 12px;">STO date</label>
+                                                <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
+                                            </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
                                                 <label style="width: 100%;">&nbsp;</label>
                                                 <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
@@ -100,27 +96,21 @@
 				<thead>
 					<tr>
                         <th>STO Number</th>
-                        <th>Item Code</th>
-                        <th>Item Type</th>
-						<th>Lot Number</th>
-                        <th>Quantity</th>
-                        <th>Supplier</th>
+                        <th>Created By</th>
+                        <th>Created at</th>
                         <th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
-                @foreach($data['sto'] as $sto)
+                 @foreach($data['sto'] as $sto)
                     <tr>
                         <td>{{$sto['sto_number']}}</td>
-                        <td>{{$sto['item_code']}}</td>
-                        <td>{{$sto['type_name']}}</td>
-                        <td>{{$sto['lot_number']}}</td>
-                        <td>{{$sto['quantity']}} {{$sto['unit_name']}}</td>
-                        <td>{{$sto['vendor_name']}}</td>
-                        <td><a class="badge badge-info sto-edit" id="sto-edit" style="font-size: 13px;" data-toggle="modal" stoId="{{$sto['id']}}"   data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>
-                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/Stock/transfer/delete/'.$sto['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
+                        <td>{{$sto['f_name']}} {{$sto['l_name']}}</td>
+                        <td>{{date('d-m-Y', strtotime($sto['created_at']))}}</td>
+                        <td>{{--<a class="badge badge-info sto-edit" id="sto-edit" style="font-size: 13px;" data-toggle="modal" stoId="{{$sto['id']}}"   data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>--}}
+                        <a class="badge badge-success" style="font-size: 13px;" href="{{url('inventory/Stock/transfer/items/'.$sto['id'])}}" ><i class="fa fa-eye"></i> Items</a></td>
                     </tr>
-                    @endforeach  
+                    @endforeach   
 				</tbody>
 			</table>
 			<div class="box-footer clearfix">

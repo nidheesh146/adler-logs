@@ -32,6 +32,12 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
+        @foreach ($errors->all() as $errorr)
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                  {{ $errorr }}
+                </div>
+               @endforeach 
         <div class="card-header bg-gray-400 bd-b-0-f pd-b-0">
             <nav class="nav nav-tabs">
                 <a class="nav-link active" href="">Stock Issue To Production -Direct</a>
@@ -127,7 +133,7 @@
                                             <input type="hidden" name="item_id" id="item_id" value="">
                                             <input type="hidden" name="batch_id" id="batchid" value="">
                                             <input type="hidden" name="batchcard_material_id" id="batchcard_material_id" value="">
-                                            <input type="text" name="request_qty" id="request_qty" readonly><span id="unit"></span>
+                                            <input type="text" name="request_qty" id="request_qty"  materialQtyPerSku="0"><span id="unit"></span>
                                         </td>
                                     </tr>
                                 </table>
@@ -229,6 +235,8 @@
     });
     $(document).ready(function() {
         $('body').on('click', '#request-btn', function (event) {
+            $('#request_sku_qty').val('');
+            $("#request_qty").val('');
             var batchid = $(this).attr('batchid');
             var batchno = $(this).attr('batchno');
             var batchqty = $(this).attr('batchqty');
@@ -257,9 +265,18 @@
             $('#batchcard_material_id').val(batchmaterialId);
             var material_qty_per_sku = parseInt(batchqty)/parseInt(skuqty);
             var request_sku_qty = parseInt(lot_qty)/material_qty_per_sku;
-            //alert(Math.floor(request_sku_qty));
+            // $('#request_sku_qty').val(Math.floor(request_sku_qty));
+            // $('#request_qty').val(lot_qty);
+            $('#request_qty').attr('materialQtyPerSku',material_qty_per_sku);
+            //alert(material_qty_per_sku);
+
+        });
+        $("#request_qty").on("input", function() {
+            
+            var material_qty_per_sku = $(this).attr('materialQtyPerSku'); 
+            var requested_qty = $(this).val();
+            var request_sku_qty = parseInt(requested_qty)/parseInt(material_qty_per_sku);
             $('#request_sku_qty').val(Math.floor(request_sku_qty));
-            $('#request_qty').val(lot_qty);
         });
     });
      

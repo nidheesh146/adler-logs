@@ -65,9 +65,10 @@
             }
             }
             ?>
-    <div class="row1" style="height:16%;">
+    <div class="row1" style="height:18.5%;">
         
         <div class="adler-address">
+            IT/F-01-02<br/>
             <strong>ADLER HEALTHCARE PVT. LTD</strong>
             <p> Plot No-A1 MIDC, Sadavali(Devrukh), <br/>
              Tal- Sangmeshwar, Dist -Ratnagiri ,<br/>
@@ -218,13 +219,8 @@
     </table> 
     <br>
     <div>
-        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="left"; style="float:left;">Signature of I/C QC</label>
+        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="left"; style="float:left;">Signature of I/C QC  @if($type=='po') (Only for Direct Material) @else (Only for Direct Service) @endif</label>
         <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="right"; style="float:right;">Signature of I/C Finance</label><br/>
-        @if($type=='po')
-        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6"  style="float:left;margin-left:-150px;">(Only for Direct Material)</label>
-        @else
-        <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6"  style="float:left;margin-left:-150px;">(Only for Direct Service)</label>
-        @endif
     </div>
 </body>
 </html>

@@ -35,6 +35,12 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
+        @foreach ($errors->all() as $errorr)
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                  {{ $errorr }}
+                </div>
+               @endforeach 
         <div class="row row-sm mg-b-20 mg-lg-b-0">
             <div class="table-responsive" style="margin-bottom: 13px;">
                 <table class="table table-bordered mg-b-0">
@@ -105,8 +111,9 @@
                         <th>Item Code</th>
                         <th>Item Type</th>
 						<th>Lot Number</th>
-                        <th>Quantity</th>
-                        <th>Action</th>
+                        <th>SIP Number</th>
+                        <th>MAC Number</th>
+                        <th>Return Quantity</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -116,9 +123,11 @@
                         <td>{{$srp['item_code']}}</td>
                         <td>{{$srp['type_name']}}</td>
                         <td>{{$srp['lot_number']}}</td>
+                        
+                        {{--<td><a class="badge badge-info sip-edit" id="sip-edit" style="font-size: 13px;" data-toggle="modal" sirId="{{$srp['id']}}" sip="{{$srp['sir_number']}}" item="{{$srp['item_code']}}" qty="{{$srp['quantity']}}" data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>--}}
+                        <td>{{$srp['sip_number']}}</td>
+                        <td>{{$srp['mac_number']}}</td>
                         <td>{{$srp['qty_to_return']}} {{$srp['unit_name']}}</td>
-                        <td><a class="badge badge-info sip-edit" id="sip-edit" style="font-size: 13px;" data-toggle="modal" sirId="{{$srp['id']}}" sip="{{$srp['sir_number']}}" item="{{$srp['item_code']}}" qty="{{$srp['quantity']}}" data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>
-                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/Stock/FromProduction/delete/'.$srp['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
                     </tr>
                     @endforeach
 				</tbody>

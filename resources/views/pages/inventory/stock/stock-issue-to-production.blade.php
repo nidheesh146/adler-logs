@@ -36,6 +36,12 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
+        @foreach ($errors->all() as $errorr)
+        <div class="alert alert-danger "  role="alert" style="width: 100%;">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            {{ $errorr }}
+        </div>
+        @endforeach 
         <div class="row row-sm mg-b-20 mg-lg-b-0">
             <div class="table-responsive" style="margin-bottom: 13px;">
                 <table class="table table-bordered mg-b-0">

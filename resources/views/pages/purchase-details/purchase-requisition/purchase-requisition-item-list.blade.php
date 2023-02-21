@@ -29,6 +29,7 @@
 					<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?sr_id='.request()->sr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Service Requisition Details</button>
 					@endif
 				@endif
+				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/purchase-reqisition-item/excel-export?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button> 
             </div>
           </h4>
 
@@ -84,10 +85,10 @@
                                             Pending
                                     @elseif($status == 5)
                                             On hold
-                                    @elseif($status == 0)
-                                            Rejected
                                 	@elseif($status == 1)
                                             Approved
+									@else
+                                            Rejected
                                 	@endif
 										 <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i>
 								</button>

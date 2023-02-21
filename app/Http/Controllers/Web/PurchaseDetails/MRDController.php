@@ -345,7 +345,7 @@ class MRDController extends Controller
                     $request->session()->flash('success', "You have successfully updated a MRD Item Info!");
                 else
                     $request->session()->flash('error', "MRD Item info updation is failed. Try again... !");
-                    $mrd_number = inv_mrd::where('id','=',$mrd_id)->first()->pluck('mac_number');
+                    $mrd_number = inv_mrd::where('id','=',$mrd_id)->first()->pluck('mrd_number');
                     if(str_starts_with($mrd_number , 'MRD') )
                     return redirect('inventory/MRD-add/'.$mrd_id);
                     else

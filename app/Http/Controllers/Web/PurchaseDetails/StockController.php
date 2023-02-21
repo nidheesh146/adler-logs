@@ -17,6 +17,7 @@ use App\Models\PurchaseDetails\inv_mac_item;
 use App\Models\PurchaseDetails\inv_stock_to_production;
 use App\Models\PurchaseDetails\inv_stock_from_production;
 use App\Models\PurchaseDetails\inv_stock_transfer_order;
+use App\Models\PurchaseDetails\inv_stock_transfer_order_item;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_stock_to_production_item;
@@ -37,6 +38,7 @@ class StockController extends Controller
         $this->inv_stock_to_production = new inv_stock_to_production;
         $this->inv_stock_from_production = new inv_stock_from_production;
         $this->inv_stock_transfer_order = new inv_stock_transfer_order;
+        $this->inv_stock_transfer_order_item = new inv_stock_transfer_order_item;
         $this->inv_stock_to_production_item = new inv_stock_to_production_item;
         $this->batchcard_material = new batchcard_material;
         $this->inv_batchcard_qty_updation_request = new inv_batchcard_qty_updation_request;
@@ -238,8 +240,8 @@ class StockController extends Controller
         }
         if($validator->errors()->all())
         {
-            $request->session()->flash('error', "Stock issue to production updation failed!");
-            return redirect("inventory/Stock/ToProduction-add");
+            //$request->session()->flash('error', "Stock issue to production updation failed!");
+            return redirect("inventory/Stock/ToProduction-add")->withErrors($validator)->withInput();
         }
 
     }
@@ -300,8 +302,8 @@ class StockController extends Controller
         }
         if($validator->errors()->all())
         {
-            $request->session()->flash('error', "Stock issue to production updation failed!");
-            return redirect("inventory/Stock/ToProduction");
+           // $request->session()->flash('error', "Stock issue to production updation failed!");
+            return redirect("inventory/Stock/ToProduction")->withErrors($validator)->withInput();
         }
     }                  
 
@@ -400,101 +402,15 @@ class StockController extends Controller
         }
         if($validator->errors()->all())
         {
-            $request->session()->flash('error', "Stock return from production updation failed!");
-            return redirect("inventory/Stock/FromProduction");
+           // $request->session()->flash('error', "Stock return from production updation failed!");
+            return redirect("inventory/Stock/FromProduction")->withErrors($validator)->withInput();
         }
     }
 
-    public function StockTransfer(Request $request)
-    {
-        $condition = [];
-        if($request)
-        {
-            if ($request->sto_number) {
-                $condition[] = ['inv_stock_transfer_order.sto_number','like', '%' . $request->sto_number . '%'];
-            }
-            if ($request->lot_number) {
-                $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
-            }
-            if ($request->item_code) {
-                $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
-            }
-            if($request->supplier)
-            {
-                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
-            }
-           
-        }
-        $data['sto'] =$this->inv_stock_transfer_order->get_all_data($condition);
-        return view('pages.inventory.stock.stock-transfer',compact('data'));
-    }
-    public function StockTransferAdd(Request $request)
-    {
-        $condition = [];
-        if($request)
-        {
-            if ($request->lot_number) {
-                $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
-            }
-            if ($request->item_code) {
-                $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
-            }
-            if($request->supplier)
-            {
-                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
-            }
-           
-        }
-        $data['items'] =$this->inv_stock_from_production->getSIR_Not_In_StockTransferOrder($condition);
-        return view('pages.inventory.stock.stock-transfer-add',compact('data'));
-    }
-    public function transferOrder(Request $request)
-    {
-        $validation['sir_id'] = ['required'];
-        $validator = Validator::make($request->all(), $validation);
-        if(!$validator->errors()->all())
-        {
-            foreach($request->sir_id as $sir_id)
-            {
-                //$lot_data = $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_id]);
-                $sir_data = inv_stock_from_production::select('*')->where('id','=',$sir_id)->first();
-               // print_r(json_encode($lot_data));exit;
-                $item_type = $this->get_item_type($sir_data['pr_item_id']);
-                if($item_type=="Direct Items")
-                {
-                    $data['sto_number'] = "STO2-".$this->po_num_gen(DB::table('inv_stock_transfer_order')->where('inv_stock_transfer_order.sto_number', 'LIKE', 'STO2%')->count(),1); 
-                }
-                //if($item_type=="Indirect Items")
-                else
-                {
-                    $data['sto_number'] = "STO3-" . $this->po_num_gen(DB::table('inv_stock_transfer_order')->where('inv_stock_transfer_order.sto_number', 'LIKE', 'STO3%')->count(),1); 
-                }
-                // $mac_qty = $this->get_mac_qty($mac_item_data['invoice_item_id']);
-                // if($mac_qty)
-                // $data['quantity']=$mac_qty;
-                // else
-                $data['quantity']=$sir_data['quantity'];
-                $data['lot_id']= $sir_data['lot_id'];
-                $data['pr_item_id']= $sir_data['pr_item_id'];
-                $data['sir_id']=$sir_data['id'];
-                $data['status']= 1;
-                $data['created_at']= date('Y-m-d H:i:s');
-                $data['updated_at']= date('Y-m-d H:i:s');
-                $add[] = $this->inv_stock_transfer_order->insert_data($data);
+    
 
-            }
-            if(count($add)==count($request->sir_id))
-            $request->session()->flash('success', "You have successfully added Stock Transfer Order !");
-            else
-            $request->session()->flash('error', "You have failed to add  Stock Transfer Order !");
-            return redirect("inventory/Stock/transfer");
-        }
-        if($validator->errors()->all())
-        {
-            $request->session()->flash('error', "You have failed to add Stock Transfer Order !");
-            return redirect("inventory/Stock/transfer-add");
-        }
-    }
+    
+    
     public function getSingleSTO(Request $request)
     {
         $sto = inv_stock_transfer_order::select('inv_stock_transfer_order.*','inventory_rawmaterial.item_code','inv_unit.unit_name')
@@ -521,8 +437,8 @@ class StockController extends Controller
         }
         if($validator->errors()->all())
         {
-            $request->session()->flash('error', "Stock transfer order updation failed!");
-            return redirect("inventory/Stock/transfer");
+            //$request->session()->flash('error', "Stock transfer order updation failed!");
+            return redirect("inventory/Stock/transfer")->withErrors($validator)->withInput();
         }
     }
     public function StockTransferDelete(Request $request,$id)
@@ -675,6 +591,7 @@ class StockController extends Controller
             $inv_mac_item->save();
             $data['pr_item_id'] = $inv_mac_item['pr_item_id'];
             $data['qty_to_production'] = $inv_mac_item['accepted_quantity'];
+            $data['mac_item_id'] = $mac_item['id'];
             $sip_master = $this->inv_stock_to_production->insert_data($data);
             if($sip_master)
             { 
@@ -730,7 +647,9 @@ class StockController extends Controller
             $data['updated_at']= date('Y-m-d H:i:s');
             $data['qty_to_production'] = $request->qty_to_production;
             $mac_item = inv_mac_item::where('id',$request->mac_item_id)->first();
-            $data['pr_item_id'] = $mac_item['item_id'];
+           // echo $mac_item->mac_item_id;exit;
+            $data['pr_item_id'] = $mac_item['pr_item_id'];
+            $data['mac_item_id'] = $request->mac_item_id;
             $data['work_centre'] = $request->work_centre;
             $sip_master = $this->inv_stock_to_production->insert_data($data);
             if($sip_master)
@@ -757,8 +676,8 @@ class StockController extends Controller
         }
         if($validator->errors()->all())
         {
-            $request->session()->flash('error', "Stock transfer order updation failed!");
-            return redirect("inventory/ToProduction/Indirect");
+            //$request->session()->flash('error', "Stock transfer order updation failed!");
+            return redirect("inventory/ToProduction/Indirect")->withErrors($validator)->withInput();
         }
     }
 
@@ -810,90 +729,90 @@ class StockController extends Controller
         return view('pages.inventory.stock.stock-issue-to-production',compact('data'));
     }
 
-    public function returnFromProduction(Request $request)
-    {
-       // echo "kk";exit;
-        $validation['batch_card'] = ['required'];
-        $validation['item_id'] = ['required'];
-        $validation['qty_return'] = ['required'];
-        $validator = Validator::make($request->all(), $validation);
-        if(!$validator->errors()->all())
-        {
-            // foreach($request->sip_id as $sip_id)
-            // {
-            //     //$lot_data = $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_id]);
-            //     $sip_data = inv_stock_to_production::select('*')->where('id','=',$sip_id)->first();
-            //    // print_r(json_encode($lot_data));exit;
-            //     $item_type = $this->get_item_type($sip_data['pr_item_id']);
-            //     if($item_type=="Direct Items")
-            //     {
-            //         $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2%')->count(),1); 
-            //     }
-            //     if($item_type=="Indirect Items")
-            //     {
-            //         $data['sir_number'] = "SIR3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3%')->count(),1); 
-            //     }
-            //     // $mac_qty = $this->get_mac_qty($mac_item_data['invoice_item_id']);
-            //     // if($mac_qty)
-            //     // $data['quantity']=$mac_qty;
-            //     // else
-            //     $data['quantity']=$sip_data['quantity'];
-            //     $data['lot_id']= $sip_data['lot_id'];
-            //     $data['pr_item_id']= $sip_data['pr_item_id'];
-            //     $data['sip_id']=$sip_data['id'];
-            //     $data['status']= 1;
-            //     $data['created_at']= date('Y-m-d H:i:s');
-            //     $data['updated_at']= date('Y-m-d H:i:s');
-            //     $add[] = $this->inv_stock_from_production->insert_data($data);
+    // public function returnFromProduction(Request $request)
+    // {
+    //    // echo "kk";exit;
+    //     $validation['batch_card'] = ['required'];
+    //     $validation['item_id'] = ['required'];
+    //     $validation['qty_return'] = ['required'];
+    //     $validator = Validator::make($request->all(), $validation);
+    //     if(!$validator->errors()->all())
+    //     {
+    //         // foreach($request->sip_id as $sip_id)
+    //         // {
+    //         //     //$lot_data = $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$lot_id]);
+    //         //     $sip_data = inv_stock_to_production::select('*')->where('id','=',$sip_id)->first();
+    //         //    // print_r(json_encode($lot_data));exit;
+    //         //     $item_type = $this->get_item_type($sip_data['pr_item_id']);
+    //         //     if($item_type=="Direct Items")
+    //         //     {
+    //         //         $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2%')->count(),1); 
+    //         //     }
+    //         //     if($item_type=="Indirect Items")
+    //         //     {
+    //         //         $data['sir_number'] = "SIR3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3%')->count(),1); 
+    //         //     }
+    //         //     // $mac_qty = $this->get_mac_qty($mac_item_data['invoice_item_id']);
+    //         //     // if($mac_qty)
+    //         //     // $data['quantity']=$mac_qty;
+    //         //     // else
+    //         //     $data['quantity']=$sip_data['quantity'];
+    //         //     $data['lot_id']= $sip_data['lot_id'];
+    //         //     $data['pr_item_id']= $sip_data['pr_item_id'];
+    //         //     $data['sip_id']=$sip_data['id'];
+    //         //     $data['status']= 1;
+    //         //     $data['created_at']= date('Y-m-d H:i:s');
+    //         //     $data['updated_at']= date('Y-m-d H:i:s');
+    //         //     $add[] = $this->inv_stock_from_production->insert_data($data);
 
-            // }
-            // if(count($add)==count($request->sip_id))
-            $item_type=$this->get_item_type($request->item_id);
-            if($item_type=="Direct Items")
-            {
-                $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2%')->count(),1); 
-            }
-            //if($item_type=="Indirect Items")
-            else
-            {
-                $data['sir_number'] = "SIR3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3%')->count(),1); 
-            }
-            $data['lot_id']= $request->lotcard_id;
-            $data['item_id'] = $request->item_id;
-            $data['batch_id'] = $request->batch_card;
-            $data['qty_to_return']= $request->qty_return;
-            $data['status']= 1;
-            $data['created_at']= date('Y-m-d H:i:s');
-            $data['updated_at']= date('Y-m-d H:i:s');
+    //         // }
+    //         // if(count($add)==count($request->sip_id))
+    //         $item_type=$this->get_item_type($request->item_id);
+    //         if($item_type=="Direct Items")
+    //         {
+    //             $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2%')->count(),1); 
+    //         }
+    //         //if($item_type=="Indirect Items")
+    //         else
+    //         {
+    //             $data['sir_number'] = "SIR3-" . $this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3%')->count(),1); 
+    //         }
+    //         $data['lot_id']= $request->lotcard_id;
+    //         $data['item_id'] = $request->item_id;
+    //         $data['batch_id'] = $request->batch_card;
+    //         $data['qty_to_return']= $request->qty_return;
+    //         $data['status']= 1;
+    //         $data['created_at']= date('Y-m-d H:i:s');
+    //         $data['updated_at']= date('Y-m-d H:i:s');
            
             
-            $mac_item = inv_lot_allocation::select('inv_mac_item.id as mac_item_id','inv_mac_item.available_qty','inv_lot_allocation.pr_item_id','inv_lot_allocation.lot_number')
-                                    ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
-                                    ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
-                                    ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
-                                    ->where('inv_lot_allocation.id','=',$request->lotcard_id)
-                                    ->first();
+    //         $mac_item = inv_lot_allocation::select('inv_mac_item.id as mac_item_id','inv_mac_item.available_qty','inv_lot_allocation.pr_item_id','inv_lot_allocation.lot_number')
+    //                                 ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
+    //                                 ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
+    //                                 ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
+    //                                 ->where('inv_lot_allocation.id','=',$request->lotcard_id)
+    //                                 ->first();
 
-            $data['pr_item_id'] =  $mac_item['pr_item_id'];
-            $data['mac_item_id'] = $mac_item['mac_item_id'];
-            $add =$this->inv_stock_from_production->insert_data($data);
+    //         $data['pr_item_id'] =  $mac_item['pr_item_id'];
+    //         $data['mac_item_id'] = $mac_item['mac_item_id'];
+    //         $add =$this->inv_stock_from_production->insert_data($data);
 
-            $update_qty = $mac_item['available_qty']+$request->qty_return;
-            $qty_update =$this->inv_mac_item->update_data(['inv_mac_item.id'=>$mac_item['mac_item_id']],['inv_mac_item.available_qty'=>$update_qty]);
+    //         $update_qty = $mac_item['available_qty']+$request->qty_return;
+    //         $qty_update =$this->inv_mac_item->update_data(['inv_mac_item.id'=>$mac_item['mac_item_id']],['inv_mac_item.available_qty'=>$update_qty]);
 
-            if($add && $qty_update)
-            $request->session()->flash('success', "You have successfully added Stock return from production !");
-            else
-            $request->session()->flash('error', "You have failed to add Stock return from production !");
-            return redirect("inventory/Stock/FromProduction");
-        }
-        if($validator->errors()->all())
-        {
-            $request->session()->flash('error', "You have failed to add Stock return from production !");
-            return redirect("inventory/Stock/FromProduction-add");
-        }
+    //         if($add && $qty_update)
+    //         $request->session()->flash('success', "You have successfully added Stock return from production !");
+    //         else
+    //         $request->session()->flash('error', "You have failed to add Stock return from production !");
+    //         return redirect("inventory/Stock/FromProduction");
+    //     }
+    //     if($validator->errors()->all())
+    //     {
+    //         $request->session()->flash('error', "You have failed to add Stock return from production !");
+    //         return redirect("inventory/Stock/FromProduction-add");
+    //     }
 
-    }
+    // }
 
     public function quantityUpdationRequest(Request $request)
     {
@@ -983,6 +902,252 @@ class StockController extends Controller
         }
     }
 
+    public function fetchSIPinfoDirect(Request $request)
+    {
+        $data['sip'] = inv_stock_to_production::select('inv_stock_to_production.id as sip_id','inv_mac.mac_number','inv_stock_to_production.sip_number',
+        'inv_lot_allocation.lot_number','inv_lot_allocation.id as lotcard_id','inv_stock_to_production.mac_item_id')
+                    ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_to_production.pr_item_id')
+                    ->leftJoin('inv_mac_item','inv_mac_item.id','=','inv_stock_to_production.mac_item_id')
+                    ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_stock_to_production.mac_item_id')
+                    ->leftJoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
+                    //->leftJoin('inv_stock_to_production','inv_stock_to_production.mac_item_id','=','inv_mac_item.id')
+                    ->leftjoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_stock_to_production.lot_id')
+                    ->whereNotIn('inv_stock_to_production.id',function($query) {
+
+                        $query->select('inv_stock_from_production.sip_id')->from('inv_stock_from_production');
+                    
+                    })
+                    ->where('inv_purchase_req_item.Item_code','=', $request->row_material_id)
+                    ->first();
+        if($data['sip'])
+        {
+        $data['batchcards'] = inv_stock_to_production_item::select('batchcard_batchcard.id as batchcard_id','batchcard_batchcard.batch_no','inv_stock_to_production_item.qty_to_production')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','inv_stock_to_production_item.batchcard_id')
+                        ->leftJoin('inv_stock_to_production_item_rel','inv_stock_to_production_item_rel.item','=','inv_stock_to_production_item.id')
+                        ->where('inv_stock_to_production_item_rel.master','=', $data['sip']['sip_id'])
+                        ->where('inv_stock_to_production_item.material_id','=',$request->row_material_id)
+                        ->get();
+        }
+        return $data;
+       // echo $request->row_material_id;
+
+    }
+
+    public function fetchSIPinfoIndirect(Request $request)
+    {
+        $data = inv_stock_to_production::select('inv_stock_to_production.id as sip_id','inv_mac.mac_number','inv_stock_to_production.sip_number','inv_stock_to_production.mac_item_id',
+        'inv_stock_to_production.qty_to_production')
+                    ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_to_production.pr_item_id')
+                    ->leftJoin('inv_mac_item','inv_mac_item.id','=','inv_stock_to_production.mac_item_id')
+                    ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_stock_to_production.mac_item_id')
+                    ->leftJoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
+                    //->leftJoin('inv_stock_to_production','inv_stock_to_production.mac_item_id','=','inv_mac_item.id')
+                    ->whereNotIn('inv_stock_to_production.id',function($query) {
+
+                        $query->select('inv_stock_from_production.sip_id')->from('inv_stock_from_production');
+                    
+                    })
+                    ->where('inv_purchase_req_item.Item_code','=', $request->row_material_id)
+                    ->first();
+        return $data;
+    }
+    public function returnFromProductionAdd(Request $request)
+    {
+        if($request->item_type=="Direct Items")
+        {
+            $validation['item_code'] = ['required'];
+            $validation['lotcard_id'] = ['required'];
+            $validation['mac_item_id'] = ['required'];
+            $validation['sip_id'] = ['required'];
+            $validation['batchcard'] = ['required'];
+            $validation['return_qty'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2%')->count(),1);
+                $data['lot_id']= $request->lotcard_id;
+                $data['item_id'] = $request->item_code;
+                $data['batch_id'] = $request->batchcard;
+                $data['qty_to_return']= $request->return_qty;
+                $data['sip_id']= $request->sip_id;
+                $data['status']= 1;
+                $data['created_at']= date('Y-m-d H:i:s');
+                $data['updated_at']= date('Y-m-d H:i:s');
+                       
+                $mac_item = inv_mac_item::where('id',$request->mac_item_id)->first();
+                $data['pr_item_id'] =  $mac_item['pr_item_id'];
+                $data['mac_item_id'] = $request->mac_item_id;
+                $add =$this->inv_stock_from_production->insert_data($data);
+                $update_qty = $mac_item['available_qty']+$request->return_qty;
+                $qty_update =$this->inv_mac_item->update_data(['inv_mac_item.id'=>$mac_item['id']],['inv_mac_item.available_qty'=>$update_qty]);
+                if($add && $qty_update)
+                    $request->session()->flash('success', "You have successfully added Stock return from production !");
+                else
+                    $request->session()->flash('error', "You have failed to add Stock return from production !");
+                return redirect("inventory/Stock/FromProduction-add");
+            }
+            if($validator->errors()->all())
+            {
+                //$request->session()->flash('error', "You have failed to add Stock return from production !");
+                return redirect("inventory/Stock/FromProduction-add")->withErrors($validator)->withInput();
+            }
+        }
+        else
+        {
+            $validation['item_code'] = ['required'];
+            $validation['mac_item_id1'] = ['required'];
+            $validation['sip_id1'] = ['required'];
+            $validation['return_quantity'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                $data['sir_number'] = "SIR3-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3%')->count(),1);
+                $data['item_id'] = $request->item_code;
+                $data['qty_to_return']= $request->return_quantity;
+                $data['status']= 1;
+                $data['created_at']= date('Y-m-d H:i:s');
+                $data['updated_at']= date('Y-m-d H:i:s');
+                $data['sip_id']= $request->sip_id1;     
+                $mac_item = inv_mac_item::where('id',$request->mac_item_id1)->first();
+                $data['pr_item_id'] =  $mac_item['pr_item_id'];
+                $data['mac_item_id'] = $request->mac_item_id1;
+                $add =$this->inv_stock_from_production->insert_data($data);
+                $update_qty = $mac_item['available_qty']+$request->return_quantity;
+                $qty_update =$this->inv_mac_item->update_data(['inv_mac_item.id'=>$mac_item['id']],['inv_mac_item.available_qty'=>$update_qty]);
+                if($add && $qty_update)
+                    $request->session()->flash('success', "You have successfully added Stock return from production !");
+                else
+                    $request->session()->flash('error', "You have failed to add Stock return from production !");
+                return redirect("inventory/Stock/FromProduction-add");
+            }
+            if($validator->errors()->all())
+            {
+                //$request->session()->flash('error', "You have failed to add Stock return from production !");
+                return redirect("inventory/Stock/FromProduction-add")->withErrors($validator)->withInput();
+            }
+        }
+    }
+
+    public function StockTransfer(Request $request)
+    {
+        $condition = [];
+        // if($request)
+        // {
+        //     if ($request->sto_number) {
+        //         $condition[] = ['inv_stock_transfer_order.sto_number','like', '%' . $request->sto_number . '%'];
+        //     }
+        //     if ($request->lot_number) {
+        //         $condition[] = ['inv_lot_allocation.lot_number','like', '%' . $request->lot_number . '%'];
+        //     }
+        //     if ($request->item_code) {
+        //         $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+        //     }
+        //     if($request->supplier)
+        //     {
+        //         $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+        //     }
+           
+        // }
+        $data['sto'] =$this->inv_stock_transfer_order->get_all_data($condition);
+        return view('pages.inventory.stock.stock-transfer', compact('data'));
+    }
+    public function viewItems($sto_id)
+    {
+        $data['sto'] = inv_stock_transfer_order::where('id','=',$sto_id)->first();
+        $data['items'] = inv_stock_transfer_order_item::select('inventory_rawmaterial.item_code','inv_unit.unit_name','inv_stock_transfer_order_item.transfer_qty',
+        'inv_stock_transfer_order_item.transfer_reason','inv_stock_to_production.sip_number')
+                ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_transfer_order_item.pr_item_id')
+                ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                ->leftjoin('inv_stock_to_production', 'inv_stock_to_production.id','=', 'inv_stock_transfer_order_item.sip_id')
+                ->leftjoin('inv_stock_transfer_order_item_rel', 'inv_stock_transfer_order_item_rel.item','=', 'inv_stock_transfer_order_item.id')
+                ->where('inv_stock_transfer_order_item_rel.master','=',$sto_id)
+                ->orderBy('inv_stock_transfer_order_item.id','desc')
+                ->paginate(15);
+        return view('pages.inventory.stock.stock-transfer-items', compact('data'));
+    }
+
+    public function StockTransferAdd(Request $request)
+    {
+        return view('pages.inventory.stock.stock-transfer-add');
+    }
+
+    public function item_qty_in_mac_not_equal_zero()
+    {
+        $item = inv_stock_to_production::select('inventory_rawmaterial.id as id','inventory_rawmaterial.item_code as text','inventory_rawmaterial.discription','inv_unit.unit_name')
+                        ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_to_production.pr_item_id')
+                        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                        ->leftjoin('inv_mac_item','inv_mac_item.id','=','inv_stock_to_production.mac_item_id')
+                        ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.receipt_unit_id')
+                        ->where('inv_mac_item.available_qty','!=',0)
+                        ->distinct('')
+                        ->get()->toArray();
+        return $item;
+    }
+
+    public function fetchSIPlist_for_sto(Request $request)
+    {
+        $sip = inv_stock_to_production::select('inv_stock_to_production.sip_number','inv_stock_to_production.id as sip_id','inv_stock_to_production.mac_item_id','inv_mac_item.available_qty')
+                            ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_to_production.pr_item_id')
+                            ->leftjoin('inv_mac_item','inv_mac_item.id','=','inv_stock_to_production.mac_item_id')
+                            ->where('inv_purchase_req_item.Item_code','=',$request->row_material_id)
+                            ->orderBy('inv_stock_to_production.id','desc')
+                            ->get();
+        return $sip;
+
+    }
+    public function transferOrder(Request $request)
+    {
+        
+        $validation['moreItems.*.Itemcode'] = ['required'];
+        $validation['moreItems.*.sip_number'] = ['required'];
+        $validation['moreItems.*.transfer_qty'] = ['required'];
+       // $validation['moreItems.*.reason'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all())
+        {
+                $data['sto_number'] = "STO-" . $this->po_num_gen(DB::table('inv_stock_transfer_order')->where('inv_stock_transfer_order.sto_number', 'LIKE', 'STO%')->count(),1); 
+                $data['status']= 1;
+                $data['created_at']= date('Y-m-d H:i:s');
+                $data['updated_at']= date('Y-m-d H:i:s');
+                $data['created_user'] = config('user')['user_id'];
+                $sto_id = $this->inv_stock_transfer_order->insert_data($data);
+                //echo $sto_id;exit;
+                foreach($request->moreItems as $key => $value) {
+                    $sip = inv_stock_to_production::where('id','=',$value['sip_number'])->first();
+                    $Request = [
+                        //"item_code" => $value['Itemcode'],
+                        "sip_id"=> $value['sip_number'],
+                        "mac_item_id"=>$sip['mac_item_id'],
+                        'pr_item_id'=>$sip['pr_item_id'],
+                        "transfer_qty"=>$value['transfer_qty'],
+                        "transfer_reason"=>$value['reason'],
+                        //"created_user" =>  config('user')['user_id']   
+                    ];
+                    $sto_item_id = $this->inv_stock_transfer_order_item->insert_data($Request);
+                    $sto_item[]=$sto_item_id ;
+                    $inv_mac_item = inv_mac_item::where('id',$sip['mac_item_id'])->first();
+                    $inv_mac_item->available_qty = $inv_mac_item->available_qty - $value['transfer_qty']; 
+                    $inv_mac_item->save();
+                    $dat2 =[
+                        'master'=>$sto_id,
+                        'item'=>$sto_item_id,
+                    ];
+                    $rel =DB::table('inv_stock_transfer_order_item_rel')->insert($dat2);
+                }
+
+            if(count($sto_item)==count($request->moreItems))
+            $request->session()->flash('success', "You have successfully added Stock Transfer Order !");
+            else
+            $request->session()->flash('error', "You have failed to add  Stock Transfer Order !");
+            return redirect("inventory/Stock/transfer");
+        }
+        if($validator->errors()->all())
+        {
+           // $request->session()->flash('error', "You have failed to add Stock Transfer Order !");
+            return redirect("inventory/Stock/transfer-add")->withErrors($validator)->withInput();
+        }
+    }
    
 
 }

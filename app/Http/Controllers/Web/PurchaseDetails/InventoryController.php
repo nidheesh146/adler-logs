@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 
 use Validator;
 use DB;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RequisitionItems;
 use App\Models\Department;
 use App\Models\User;
 use App\Models\PurchaseDetails\inv_purchase_req_master;
@@ -476,5 +477,12 @@ class InventoryController extends Controller
                             ->pluck('inv_purchase_req_item_approve.status')
                             ->first();
         return $status;
+    }
+    public function requisitionItemExport(Request $request)
+    {
+        $pr_id = $request->pr_id;
+        $pr = inv_purchase_req_master::where('master_id','=',$pr_id)->first();
+       // $data['item'] = $this->inv_purchase_req_item->getItemdata(['inv_purchase_req_master_item_rel.master'=>$pr_id]);
+        return Excel::download(new RequisitionItems($pr_id), 'Requisition-Items-' . $pr['pr_number'] . '.xlsx');
     }
 }

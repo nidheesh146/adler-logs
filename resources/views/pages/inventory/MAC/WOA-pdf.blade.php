@@ -139,9 +139,11 @@
             <td>@if($item['accepted_quantity']!=NULL) {{$item['accepted_quantity']}} {{$item['unit_name']}} @endif</td>
         </tr>
         @endforeach
-        
+         
     </table> 
     <br>
+    <br>
+    <label style="font-size:12px;float:right;">Signature of Store</label>
     
 </body>
 </html>

@@ -34,6 +34,12 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
+        @foreach ($errors->all() as $errorr)
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                  {{ $errorr }}
+                </div>
+               @endforeach 
         <div class="card-header bg-gray-400 bd-b-0-f pd-b-0">
             <nav class="nav nav-tabs">
                 <a class="nav-link "  href="{{url('inventory/Stock/ToProduction/Direct')}}">Stock Issue To Production -Direct</a>

@@ -35,6 +35,12 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
+        @foreach ($errors->all() as $errorr)
+        <div class="alert alert-danger "  role="alert" style="width: 100%;">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            {{ $errorr }}
+        </div>
+        @endforeach 
         
 		<form method="post" action="{{url('inventory/stock/issueToProduction')}}">
             {{ csrf_field() }}

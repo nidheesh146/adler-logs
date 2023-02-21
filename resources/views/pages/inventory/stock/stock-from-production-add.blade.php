@@ -2,14 +2,20 @@
 @section('content')
 
 @inject('stock', 'App\Http\Controllers\Web\PurchaseDetails\StockController')
+<style>
+  .select2-container .select2-selection--single
+  {
+    width:475px;
+  }
+</style>
 <div class="az-content az-content-dashboard">
   <br>
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Add Stock Return From Production</a></span>
+			 <span><a href="">Stock Return From Production</a></span>
 		</div>
-		<h4 class="az-content-title" style="font-size: 20px;">Add Stock Return From Production
+		<h4 class="az-content-title" style="font-size: 20px;">Stock Return From Production
 		  	<div class="right-button">
 			  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
 				  <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -35,62 +41,124 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
-        <form method="post" action="{{url('inventory/stock/return-FromProduction')}}">
+    @foreach ($errors->all() as $errorr)
+    <div class="alert alert-danger "  role="alert" style="width: 100%;">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      {{ $errorr }}
+    </div>
+    @endforeach 
+        <!--div class="row">
+          <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+              <label for="exampleInputEmail1">Item Types*</label><br/>
+              <input name="rdio" type="radio" value="direct" style="height:18px;width:20px;"> Direct 
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <input name="rdio" type="radio" value="indirect" style="height:18px;width:20px;"> Indirect
+              
+          </div>
+        </div-->
+        <form method="post" action="{{url('inventory/stock/return-FromProductionAdd')}}" id="direct-form">
             {{ csrf_field() }}
-            <div class="row">
-                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="exampleInputEmail1">Batch Card*</label>
-                    <select class="form-control  batch_card" name="batch_card">
-                    </select> 
+                <div class="row">
+                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">Item Code*</label>
+                      <select class="form-control  item_code" name="item_code">
+                      </select> 
+                  </div>
+                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">Item Types*</label>
+                      <input type="text" class="form-control item_type" id="item_type"  readonly>
+                      <input type="hidden" class="form-control item_type" id="item_type" name="item_type" >
+                      <!-- <input name="rdio" type="radio" value="direct" style="height:18px;width:20px;"> Direct 
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <input name="rdio" type="radio" value="indirect" style="height:18px;width:20px;"> Indirect -->
+                  </div>
                 </div>
-                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="exampleInputEmail1">Item Code*</label>
-                    <select class="form-control  item_code" name="item_id">
-                        <option>Select</option>
-                    </select> 
-                </div>
-                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="exampleInputEmail1">Batchcard item quantity</label>
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control batchcard_item_qty" name="batchcard_item_qty" readonly  aria-describedby="unit-div1" readonly>
-                      <div class="input-group-append">
-                          <span class="input-group-text unit-div" id="unit-div1">Unit</span>
+                <div class="form-devider"></div>
+                <div class="visible-for-direct row" style="display:none;"> 
+                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">SIP Number*</label>
+                      <input type="text" class="form-control sip_number" name="sip_number" readonly>
+                      <!-- <input name="rdio" type="radio" value="direct" style="height:18px;width:20px;"> Direct 
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <input name="rdio" type="radio" value="indirect" style="height:18px;width:20px;"> Indirect -->
+                  </div>
+                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">Lot Card</label>
+                      <div class="input-group mb-3">
+                        <input type="hidden" class="form-control lotcard_id" name="lotcard_id" >
+                        <input type="hidden" class="form-control mac_item_id" name="mac_item_id" >
+                        <input type="hidden" class="form-control sip_id" name="sip_id" >
+                        <input type="text" class="form-control lotcard" name="lotcard"  readonly>
+                      </div>
+                  </div>
+                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">MAC Number*</label>
+                      <input type="text" class="form-control mac_number" name="mac_number" readonly>
+                      <!-- <input name="rdio" type="radio" value="direct" style="height:18px;width:20px;"> Direct 
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <input name="rdio" type="radio" value="indirect" style="height:18px;width:20px;"> Indirect -->
+                  </div>
+                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">Batch Card*</label><br/>
+                      <select class="form-control  batchcard" name="batchcard">
+                        <option>Select One</option>
+                      </select> 
+                  </div>
+                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">Item Quantity issued to Production*</label>
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control qty_to_production" name="qty_to_production"   aria-describedby="unit-div1" readonly>
+                        <div class="input-group-append">
+                            <span class="input-group-text unit-div" id="unit-div1">Unit</span>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">Item Quantity return from Production*</label>
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control return_qty" name="return_qty"   aria-describedby="unit-div2" >
+                        <div class="input-group-append">
+                            <span class="input-group-text unit-div" id="unit-div2">Unit</span>
+                        </div>
                       </div>
                     </div>
-                </div>
-                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="exampleInputEmail1">Lot Card</label>
-                    <div class="input-group mb-3">
-                      <input type="hidden" class="form-control lotcard_id" name="lotcard_id" >
-                      <input type="hidden" class="form-control mac_item_id" name="mac_item_id" >
-                      <input type="text" class="form-control lotcard" name="lotcard" readonly  aria-describedby="unit-div2" readonly>
-                      <div class="input-group-append">
-                          <span class="input-group-text unit-div" id="unit-div2">Unit</span>
+                </div>   
+                <div class="visible-for-indirect row" style="display:none;"> 
+                    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">SIP Number*</label><br/>
+                      <input type="text" class="form-control sip_number1" name="sip_number1" readonly> 
+                      <input type="hidden" class="sip_id1" name="sip_id1">
+                      <input type="hidden" class="mac_item_id1" name="mac_item_id1">
+                    </div>
+                    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">MAC Number*</label>
+                      <input type="text" class="form-control mac_number1" name="mac_number1" readonly>
+                      <!-- <input name="rdio" type="radio" value="direct" style="height:18px;width:20px;"> Direct 
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <input name="rdio" type="radio" value="indirect" style="height:18px;width:20px;"> Indirect -->
+                    </div>
+                    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">Item Quantity issued to Production*</label>
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control qty_to_production1" name="qty_to_production1"   aria-describedby="unit-div3" readonly>
+                        <div class="input-group-append">
+                            <span class="input-group-text unit-div" id="unit-div3">Unit</span>
+                        </div>
                       </div>
                     </div>
-                </div>
-                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="exampleInputEmail1">Lot Card quantity(Accepted Quantity)*</label>
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control mac_qty" name="lotcard_qty" readonly  aria-describedby="unit-div3" readonly>
-                      <div class="input-group-append">
-                          <span class="input-group-text unit-div" id="unit-div3">Unit</span>
+                    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">Item Quantity return from Production*</label>
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control return_quantity" name="return_quantity"   aria-describedby="unit-div4">
+                        <div class="input-group-append">
+                            <span class="input-group-text unit-div" id="unit-div4">Unit</span>
+                        </div>
                       </div>
                     </div>
-                </div>
-                <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="exampleInputEmail1">Quantity to be Return*</label>
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control qty_return" name="qty_return"   aria-describedby="unit-div4" >
-                      <div class="input-group-append">
-                          <span class="input-group-text unit-div" id="unit-div4">Unit</span>
-                      </div>
-                    </div>
-                    
-                </div>
-            </div>       
+
+                </div>    
            <div class="form-devider"></div>
-            <div class="row save-btn" style="display:none;">
+            <div class="row save-btn" style="">
                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
                         Save 
@@ -98,6 +166,7 @@
                 </div>
             </div>
         </form>
+        
 		</div>
 	</div>
 </div>
@@ -117,53 +186,110 @@
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script>
     //$('.item_code').select2();
-    $('.batch_card').select2({
+    $('.az-toggle').on('click', function(){
+          $(this).toggleClass('on');
+        });
+    $(".item_code").select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 3,
+          minimumInputLength: 6,
           allowClear: true,
           ajax: {
-          url: "{{url('label/batchcardSearch')}}",
-          processResults: function (data) {
-
-            return { results: data };
-
+              url: "{{ url('inventory/itemcodesearch') }}",
+              processResults: function (data) {
+                  return { results: data };
+              }
           }
-        }
-      }).on('change', function (e) {
-        $('.spinner-button').show();
+    }).on('change', function (e) 
+    {
+        var select_id = $(this).attr("id");
+        $("#Itemtype").val('');
+        $("#Itemdescription").val('');
         let res = $(this).select2('data')[0];
-        if(res){
-          $.get("{{ url('inventory/stock/fetchBatchCard-items') }}?batchcard_id="+res.id,function(response)
-          {
-            $.each(response,function(key, value)
+        if(typeof(res) != "undefined" )
+        {
+            if(res.type_name)
             {
-                $(".item_code").append('<option value=' + value.rawmaterial_id + '>' + value.item_code + '</option>');
-            });
-          });
-        }else{
-          $('.spinner-button').hide();
+              $(".item_type").val(res.type_name);
+              if(res.type_name=='Direct Items')
+              {
+                $.get("{{ url('inventory/stock/fetchSIPinfoDirect') }}?row_material_id="+res.id,function(response)
+                {
+                  if(response['sip'] && response['batchcards'])
+                  {
+                    $('.visible-for-direct').show();
+                    $('.visible-for-indirect').hide();
+                    $('.lotcard').val(response['sip']['lot_number']);
+                    $('.sip_number').val(response['sip']['sip_number']);
+                    $('.mac_number').val(response['sip']['mac_number']);
+                    $('.lotcard_id').val(response['sip']['lotcard_id']);
+                    $('.sip_id').val(response['sip']['sip_id']);
+                    $('.mac_item_id').val(response['sip']['mac_item_id']);
+                    //alert(response['batchcards']);
+                    $.each(response['batchcards'],function(key, value)
+                    {
+                      //alert('kkk');
+                        $(".batchcard").append('<option qty=' + value.qty_to_production +' value=' + value.batchcard_id + '>' + value.batch_no + '</option>');
+                    });
+                  }
+                  else
+                  {
+                    alert("This item didn't issued to Production");
+                  }
+                });
+              }
+              else
+              {
+                $.get("{{ url('inventory/stock/fetchSIPinfoIndirect') }}?row_material_id="+res.id,function(response){
+                  if(response)
+                  {
+                    $('.visible-for-direct').hide();
+                    $('.visible-for-indirect').show();
+                    $('.sip_number1').val(response['sip_number']);
+                    $('.mac_number1').val(response['mac_number']);
+                    $('.sip_id1').val(response['sip_id']);
+                    $('.mac_item_id1').val(response['mac_item_id']);
+                    $('.mac_item_id1').val(response['mac_item_id']);
+                    $('.qty_to_production1').val(response['qty_to_production']);
+                    
+                  }
+                  else
+                  {
+                    alert("This item didn't issued to Production");
+                  }
+                 
+                });
+
+              }
+            }
+            if(res.unit_name)
+            {
+              //$('#Unit').val(res.unit_name);
+              $("#unit-div1").text(res.unit_name);
+              $("#unit-div2").text(res.unit_name);
+              $("#unit-div3").text(res.unit_name);
+              $("#unit-div4").text(res.unit_name);
+            }   
         }
-      });
-      $(".item_code").on('change', function()
-      {
-        var item_id = $(this).val();
-        let res = $('.batch_card').select2('data')[0];
-        if(res){
-          $.get("{{ url('inventory/stock/fetchLotcard') }}?batchcard_id="+res.id+"&item_id="+item_id,function(response)
-          {
-            $('.lotcard').val(response['lot_number']);
-            $('.lotcard_id').val(response['lot_id']);
-            $('.mac_qty').val(response['accepted_quantity']);
-            $('.batchcard_item_qty').val(response['batch_qty']);
-            $('#unit-div1').html(response['unit_name']);
-            $('#unit-div2').html(response['unit_name']);
-            $('#unit-div3').html(response['unit_name']);
-            $('#unit-div4').html(response['unit_name'])
-            $('.save-btn').show();
-          });
-        }
-      });
+    });
+    $('.batchcard').on('change',function(e){
+        var qty = $(this).children(":selected").attr('qty');
+        alert(qty);
+        $('.qty_to_production').val(qty);
+        
+    });
+      // $('input[type="radio"]').click(function () {
+      //   if($(this).val()=='direct')
+      //   {
+      //   $('#direct-form').show();
+      //   $('#indirect-form').hide();
+      //   }
+      //   if($(this).val()=='indirect')
+      //   {
+      //   $('#indirect-form').show();
+      //   $('#direct-form').hide();
+      //   }
+      // });
 
 
 </script>

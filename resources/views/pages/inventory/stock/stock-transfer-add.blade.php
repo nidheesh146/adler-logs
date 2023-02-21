@@ -5,9 +5,9 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Add Stock Transfer Order</a></span>
+			 <span><a href="">Stock Transfer Order</a></span>
 		</div>
-		<h4 class="az-content-title" style="font-size: 20px;">Add Stock Transfer Order
+		<h4 class="az-content-title" style="font-size: 20px;">Stock Transfer Order
 		  	<div class="right-button">
 			  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
 				  <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -33,109 +33,67 @@
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
 		@endif
+        @foreach ($errors->all() as $errorr)
+        <div class="alert alert-danger "  role="alert" style="width: 100%;">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            {{ $errorr }}
+        </div>
+        @endforeach 
         <div class="row row-sm mg-b-20 mg-lg-b-0">
-            <div class="table-responsive" style="margin-bottom: 13px;">
-                <table class="table table-bordered mg-b-0">
-                    <tbody>
-                        <tr>
-                            <style>
-                                .select2-container .select2-selection--single {
-                                    height: 26px;
-                                    width: 122px;
-                                }
-                                .select2-selection__rendered {
-                                    font-size:12px;
-                                }
-                            </style>
-                            <form autocomplete="off">
-                                <th scope="row">
-                                    <div class="row filter_search" style="margin-left: 0px;">
-                                       <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
-                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label style="font-size: 12px;">ITEM CODE</label>
-                                                <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="ITEM CODE">
-                                            </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label style="font-size: 12px;">LOT NUMBER</label>
-                                                <input type="text" value="{{request()->get('lot_number')}}" name="lot_number" id="lot_number" class="form-control" placeholder="LOT NUMBER"> 
-                                            </div><!-- form-group -->
-                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label style="font-size: 12px;">SUPPLIER</label>
-                                                <input type="text" value="{{request()->get('supplier')}}" id="supplier" class="form-control" name="supplier" placeholder="SUPPLIER">
-                                            </div>
-                                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
-                                                <label style="width: 100%;">&nbsp;</label>
-                                                <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                @if(count(request()->all('')) > 1)
-                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-                                                    style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-                                            <!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-                                                <label style="width: 100%;">&nbsp;</label>
-                                                <button type="submit" class="badge badge-pill badge-primary" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                @if(count(request()->all('')) > 1)
-                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-                                                    style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-                                                @endif
-                                            </div> -->
-                                        </div>
-                                    </div>
-                                </th>
-                            </form>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
 		<form method="post" action="{{url('inventory/stock/transfer-order')}}">
             {{ csrf_field() }}
-		    <div class="table-responsive">
-                <table class="table table-bordered mg-b-0" id="example1">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>SIP Number</th>
-                            <th>Item Code</th>
-                            <th>Item Type</th>
-                            <th>Lot Number</th>
-                            <th>Quantity</th>
-                            <th>Supplier</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($data['items'] as $item)
-                        <tr>
-                        <td><input type="checkbox" class="sir_id" id="sir_id" name="sir_id[]" value="{{$item['id']}}"></td>
-                        <td>{{$item['sir_number']}}</td>
-                        <td>{{$item['item_code']}}</td>
-                        <td>{{$item['type_name']}}</td>
-                        <td>{{$item['lot_number']}}</td>
-                        <td>{{$item['quantity']}} {{$item['unit_name']}}</td>
-                        <td>{{$item['vendor_name']}}</td>
-                        </tr>
-                        @endforeach              
-                        
-                    </tbody>
-                </table>
-                <div class="box-footer clearfix">
-                {{ $data['items']->appends(request()->input())->links() }}
-                </diV>
-            </div> 
+		    <table class="table table-bordered">
+                <tbody id="dynamic_field"> 
+                    <tr id="row1" rel="1">
+                        <td>
+                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                <label for="exampleInputEmail1">Item code * </label>
+                                <select class="form-control Item-code item_code1" id="1" name="moreItems[0][Itemcode]" id="Itemcode">
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                                <label>Description * </label>
+                                <textarea type="text" readonly class="form-control" id="Itemdescription1"name="Description" placeholder="Description"></textarea>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                <label>SIP Number * </label>
+                                <select class="form-control sip_number" count="1" name="moreItems[0][sip_number]" id="sip_number1" style="width:140px;">
+                                    <option>Select One</option>
+                                </select>
+                                <input type="hidden" name="moreItems[0][mac_item_id]" id="mac_item_id1">
+                                <input type="hidden" name="moreItems[0][available_qty]" id="available_qty1">
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 qty" style="float:left;">
+                                <label>Transfer Qty*</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="moreItems[0][transfer_qty]" id="transfer_qty"
+                                        placeholder="" aria-describedby="unit-div1">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text unit-div" id="unit-div1">Unit</span>
+                                    </div>
+                                </div>
+                                Available:<span id="available1"></span>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                <label>Reason for transfer*</label>
+                                <textarea type="text"  class="form-control" id="reason" name="moreItems[0][reason]" placeholder=""></textarea>
+                            </div>
+                            <button type="button" name="add" id="add" class="btn btn-success" style="height:38px;margin-top:28px;">
+                                <i class="fas fa-plus"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <br/>
             <div class="form-devider"></div>
-            @if(count($data['items'])>0)
-                <div class="row">
-                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                        <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
+            <div class="row">
+                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
                             Save 
-                        </button>
-                    </div>
+                    </button>
                 </div>
-            @endif
-            
+            </div> 
         </form>
 		</div>
 	</div>
@@ -162,14 +120,101 @@
         // startDate: date,
         autoclose:true
     });
-    $('.search-btn').on( "click", function(e)  {
-		var lot_number = $('#lot_number').val();
-		var item_code = $('#item_code').val();
-        var supplier = $('#supplier').val();
-		if(!lot_number  & !item_code & !supplier)
-		{
-			e.preventDefault();
-		}
-	});
+    $(document).ready(function(){
+            initSelect2();
+            var i = 1;
+            $('#add').click(function(){
+                //alert('kk');
+                i++;
+                $('#dynamic_field').append(`
+                      <tr id="row${i}" rel="${i}">
+                            <td>
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;"><label for="exampleInputEmail1">Item code * </label>
+                                    <select class="form-control Item-code item_code${i}" id="${i}" name="moreItems[${i}][Itemcode]"  id="" required></select>
+                                </div>
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                                    <label>Description * </label>
+                                    <textarea type="text" readonly  class="form-control "  name="Description" id="Itemdescription${i}"  placeholder="Description"></textarea>
+                                </div>
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                    <label>SIP Number * </label>
+                                    <select class="form-control  sip_number"  count="${i}" name="moreItems[${i}][sip_number]" id="sip_number${i}"  style="width:140px;">
+                                    <option>Select One</option>
+                                    </select>
+                                    <input type="hidden" name="moreItems[${i}][mac_item_id]" id="mac_item_id${i}">
+                                    <input type="hidden" name="moreItems[${i}][available_qty]" id="available_qty${i}">
+                                </div>
+                                <div class="col-lg-2" style="float:left;">
+                                    <label>Transfer Qty*</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" value=""  name="moreItems[${i}][transfer_qty]"  id="transfer_qty" placeholder=""   aria-describedby="unit-div${i}" >
+                                        <div class="input-group-append"><span class="input-group-text unit-div" id="unit-div${i}">Unit</span></div>
+                                    </div>
+                                    Available:<span id="available${i}"></span>
+                                </div>
+                                
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                    <label>Reason for transfer*</label>
+                                    <textarea type="text"  class="form-control" id="reason" name="moreItems[${i}][reason]" placeholder=""></textarea>
+                                </div>
+                                <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
+                            </td>
+                        </tr>`);
+                initSelect2();
+            });
+            $(document).on('click','.btn_remove', function(){
+                var button_id = $(this).attr("id");
+                $("#row"+button_id+"").remove();
+            });
+        });
+        function initSelect2() {
+                $(".Item-code").select2({
+                    placeholder: 'Choose one',
+                    searchInputPlaceholder: 'Search',
+                    minimumInputLength: 6,
+                    allowClear: true,
+                    ajax: {
+                        url: "{{ url('inventory/stock/item_qty_in_mac_not_equal_zero') }}",
+                        processResults: function (data) {
+                                return { results: data };
+                        }
+                    }
+                }).on('change', function (e) {
+                    var select_id = $(this).attr("id");
+                    $('#Itemcode-error').remove();
+                    $("#Itemdescription"+select_id+"").text('');
+                    $("#Itemtype"+select_id+"").val('');
+                    $("#Itemdescription"+select_id+"").val('');
+                    let res = $(this).select2('data')[0];
+                        if(typeof(res) != "undefined" ){
+                            if(res.type_name){
+                                $("#Itemtype"+select_id+"").val(res.type_name);
+                            }
+                            if(res.unit_name){
+                                $('#Unit').val(res.unit_name);
+                                $("#unit-div"+select_id+"").text(res.unit_name);
+                            }
+                            if(res.discription){
+                                $("#Itemdescription"+select_id+"").val(res.discription);
+                            }
+                            $.get("{{ url('inventory/stock/fetchSIPlist_for_sto') }}?row_material_id="+res.id,function(response)
+                            {
+                                $.each(response,function(key, value)
+                                {
+                                    $("#sip_number"+select_id+"").append('<option qty=' + value.available_qty +' macItemId=' + value.mac_item_id +' value=' + value.sip_id + '>' + value.sip_number + '</option>');
+                                });
+                                //alert(response);
+                            });
+                       }
+                    });   
+            } 
+            $('.sip_number').on('change',function(e){
+                var count =$(this).attr('count');
+                var qty = $("#sip_number"+count+"").children(":selected").attr('qty');
+                //alert(count);
+                $("#available"+count+"").html(qty);
+                
+            });
+            
 </script>
 @stop
