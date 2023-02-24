@@ -15,6 +15,8 @@ use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
 use App\Models\currency_exchange_rate;
 use PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LotAllocationExport;
 
 use DB;
 class LotAllocationController extends Controller
@@ -204,5 +206,18 @@ class LotAllocationController extends Controller
         $pdf = PDF::loadView('pages.purchase-details.lot-allocation.lot-allocation-pdf', $data);
         $file_name = "lotallocation_".$data['lot']['lot_number'];
         return $pdf->stream($file_name . '.pdf');
+    }
+
+    public function lotAllocationExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new LotAllocationExport($request), 'lot_allocation' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new LotAllocationExport($request), 'lot_allocation' . date('d-m-Y') . '.xlsx');
+        }
     }
 }

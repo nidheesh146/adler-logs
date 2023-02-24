@@ -16,6 +16,8 @@ use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_final_purchase_order_master;
 use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
 use App\Models\currency_exchange_rate;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MIQExport;
 
 class MIQController extends Controller
 {
@@ -229,5 +231,18 @@ class MIQController extends Controller
         ->where('inv_purchase_req_quotation_item_supp_rel.selected_item','=',1)
                             ->pluck('currency_id')->first();
         return $currency;
+    }
+
+    public function MIQExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new MIQExport($request), 'MIQ' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new MIQExport($request), 'MIQ' . date('d-m-Y') . '.xlsx');
+        }
     }
 }

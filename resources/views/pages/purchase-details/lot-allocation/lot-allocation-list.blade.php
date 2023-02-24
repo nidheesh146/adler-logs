@@ -21,6 +21,7 @@
 
 			  </div> -->
 				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/lot-allocation-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> LOT Allocation</button> 
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/lot-allocation/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
 	  		</div>
 		</h4>
 		<div class="az-dashboard-nav">
@@ -436,9 +437,10 @@
             var supplier = $('#supplier1').val();
             var lot_no = $('#lot_no').val();
             var invoice_no = $('#invoice_no').val();
+            var item_code = $('#item_code').val();
             //var po_no = $('#po_no').val();
             var from = $('#from').val();
-            if(!supplier & !lot_no & !invoice_no  & !from)
+            if(!supplier & !lot_no & !invoice_no  & !item_code)
             {
                 e.preventDefault();
             }

@@ -73,7 +73,7 @@
                                 </th>
             
                                 <th>Processed at</th>
-                                <th>{{date('d-m-Y h:i:sa',strtotime($data['master']['processed_at']))}}</th>
+                                <th>@if($data['master']['processed_date']!=NULL) {{date('d-m-Y ',strtotime($data['master']['processed_date']))}} @endif</th>
                             </tr>
                             <tr>
                                 <th>Remarks</th>

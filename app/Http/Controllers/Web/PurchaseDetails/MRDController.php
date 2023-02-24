@@ -24,6 +24,8 @@ use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\User;
 use App\Models\currency_exchange_rate;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MRDExport;
 
 class MRDController extends Controller
 {
@@ -813,6 +815,19 @@ class MRDController extends Controller
         //$pdf->set_paper('A4', 'portait');
         $file_name = "RMRN_" . $data['rmrn']['vendor_name'] . "_" . $data['rmrn']['rmr_date'];
         return $pdf->stream($file_name . '.pdf');
+    }
+
+    public function MRDExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new MRDExport($request), 'MRD' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new MRDExport($request), 'MRD' . date('d-m-Y') . '.xlsx');
+        }
     }
     
    

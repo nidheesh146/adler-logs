@@ -44,7 +44,7 @@
 			<h4 class="az-content-title" style="font-size: 20px;">
                 @if(request()->get('prsr')=='sr') Service @else Purchase @endif Requisition Approval
               <div class="right-button">
-                
+              <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/all-requisition-item/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
                   <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                       <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
                   <div class="dropdown-menu">

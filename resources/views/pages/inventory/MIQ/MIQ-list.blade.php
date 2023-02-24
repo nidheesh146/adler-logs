@@ -11,13 +11,8 @@
 		</div>
 		<h4 class="az-content-title" style="font-size: 20px;">Material Inwards To Quarantine(MIQ)
 		  	<div class="right-button">
-			  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
-				  <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-			  <div class="dropdown-menu">
-			  <a href="#" class="dropdown-item">Excel</a>
-
-			  </div> -->
 				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MIQ-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> MIQ</button> 
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MIQ/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
 	  		</div>
 		</h4>
 		<div class="az-dashboard-nav">

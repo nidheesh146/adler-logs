@@ -22,6 +22,7 @@
                 @else
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MRD-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> MRD</button> 
                 @endif
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MRD/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
 	  		</div>
 		</h4>
 		

@@ -18,6 +18,8 @@ use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
 use App\Models\User;
 use App\Models\currency_exchange_rate;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MACExport;
 class MACController extends Controller
 {
     public function __construct()
@@ -744,4 +746,17 @@ class MACController extends Controller
     $file_name = $data['mac']['mac_number'];
     return $pdf->stream($file_name . '.pdf');
    }
+
+   public function MACExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new MACExport($request), 'MAC' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new MACExport($request), 'MAC' . date('d-m-Y') . '.xlsx');
+        }
+    }
 }

@@ -13,6 +13,8 @@ use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use DB;
 use Validator;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AllRequisitionItemsExport;
 class ApprovalController extends Controller
 {
     public function __construct()
@@ -157,5 +159,19 @@ class ApprovalController extends Controller
                             ->where('inv_purchase_req_item_approve.pr_item_id','=',$pr_item_id)
                             ->first();
         return $updated_by;
+    }
+
+    public function AllrequisitionItemExport(Request $request)
+    {
+        
+        if($request)
+        {
+            return Excel::download(new AllRequisitionItemsExport($request), 'requisition_list' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new AllRequisitionItemsExport($request), 'requisition_list' . date('d-m-Y') . '.xlsx');
+        }
     }
 }

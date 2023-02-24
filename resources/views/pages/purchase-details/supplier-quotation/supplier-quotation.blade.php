@@ -12,12 +12,7 @@
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation
               <div class="right-button">
-                  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
-                      <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
-                  <div class="dropdown-menu">
-                  <a href="#" class="dropdown-item">Excel</a>
-
-                  </div> -->
+			  <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/supplier-quotation/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
               <div>  
               </div>
 			<!-- <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-supplier-quotation')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Supplier Quotation   </button> -->

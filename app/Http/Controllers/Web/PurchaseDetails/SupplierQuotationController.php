@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SupplierQuotationExport;
 use App\Models\PurchaseDetails\inv_purchase_req_quotation;
 use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inv_purchase_req_quotation_supplier;
@@ -461,6 +463,18 @@ class SupplierQuotationController extends Controller
                                 ->pluck('currency_exchange_rate.currency_code')
                                 ->first();
           return $currency;
+    }
+    public function supplierQuotationExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new SupplierQuotationExport($request), 'supplier_quotation' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new SupplierQuotationExport($request), 'supplier_quotation' . date('d-m-Y') . '.xlsx');
+        }
     }
 }
 

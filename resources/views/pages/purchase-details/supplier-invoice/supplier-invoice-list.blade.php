@@ -16,7 +16,8 @@
 		  <div>  
 		  </div>
 		<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/supplier-invoice-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Supplier Invoice</button> 
-	  </div>
+        <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/supplier-invoice/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
+        </div>
 	</h4>
 		<!-- <div class="az-dashboard-nav">
 			<nav class="nav"> </nav>	

@@ -53,7 +53,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/get-single-item', 'InventoryController@getSingleItem');
     Route::get('getSGSTandCGST','InventoryController@getSGSTandCGST');
     Route::get('inventory/purchase-reqisition-item/excel-export', 'InventoryController@requisitionItemExport');
-    
+
     // service requisition master
     Route::get('inventory/edit-service-reqisition', 'InventoryController@edit_purchase_reqisition');
     Route::post('inventory/edit-service-reqisition', 'InventoryController@edit_purchase_reqisition');
@@ -85,12 +85,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/suppliersearch', 'InventoryController@suppliersearch');
     Route::get('inventory/purchase-reqisition/approval', 'ApprovalController@getList');
     Route::post('inventory/purchase-reqisition/approval', 'ApprovalController@Approve');
+    Route::get('inventory/all-requisition-item/excel-export', 'ApprovalController@AllrequisitionItemExport');
+    
 
     Route::get('inventory/supplier-quotation', 'SupplierQuotationController@getSupplierQuotation');
     Route::post('inventory/supplierQuotationUpdate/{rq_no}/{supp_id}', 'SupplierQuotationController@supplierQuotationUpdate');
     Route::get('inventory/view-supplier-quotation-items/{rq_no}/{supp_id}','SupplierQuotationController@viewSupplierQuotationItems');
     Route::get('inventory/edit-supplier-quotation-item/{rq_no}/{supp_id}/{item_id}', 'SupplierQuotationController@getSupplierQuotationEditItem');
     Route::post('inventory/edit-supplier-quotation-item/{rq_no}/{supp_id}/{item_id}', 'SupplierQuotationController@getSupplierQuotationEditItem');
+    Route::get('inventory/supplier-quotation/excel-export', 'SupplierQuotationController@supplierQuotationExport');
     // comparison of quotation   
     Route::get('inventory/comparison-quotation/{rq_no}', 'SupplierQuotationController@comparisonOfQuotation');
     Route::post('inventory/select-quotation', 'SupplierQuotationController@selectQuotation');
@@ -137,6 +140,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/getPurchaseOrderItem','PurchaseController@getPurchaseOrderItem');
     Route::get('inventory/getInvoiceData','PurchaseController@getInvoiceData');
     Route::post('inventory/partial-supplier-invoice','PurchaseController@PartialSupplierInvoice');
+    Route::get('inventory/supplier-invoice/excel-export', 'PurchaseController@supplierInvoiceExport');
     //lot allocation
     Route::get('inventory/lot-allocation-list', 'LotAllocationController@lotAllocation');
     Route::get('inventory/lot-allocation-add', 'LotAllocationController@addLotAllocation');
@@ -145,7 +149,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/get-single-invoice-item/{itemId}','LotAllocationController@getInvoiceItem');
     Route::get('inventory/get-single-lot-allocation/{lot_allocation_id}','LotAllocationController@getsingleLot');
     Route::get('inventory/lot-allocation/pdf/{id}', 'LotAllocationController@generatePdf');
-
+    Route::get('inventory/lot-allocation/excel-export','LotAllocationController@lotAllocationExport');
    // MIQ
     Route::get('inventory/MIQ', 'MIQController@MIQlist');
     Route::get('inventory/MIQ-add/{id?}', 'MIQController@MIQAdd');
@@ -154,6 +158,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/MIQ/{id}/item', 'MIQController@MIQAddItemInfo');
     Route::get('inventory/find-invoice-number','MIQController@findInvoiceNumber');
     Route::get('inventory/MIQ-delete/{id}', 'MIQController@miq_delete');
+    Route::get('inventory/MIQ/excel-export','MIQController@MIQExport');
     // MAC
     Route::get('inventory/MAC', 'MACController@MAClist');
     Route::get('inventory/MAC-add/{id?}', 'MACController@MACAdd');
@@ -170,6 +175,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/WOA-add/{id?}', 'MACController@WOAAdd');
     Route::post('inventory/WOA-add/{id?}', 'MACController@WOAAdd');
     Route::get('inventory/WOA/{id}/pdf', 'MACController@WOApdf');
+    Route::get('inventory/MAC/excel-export','MACController@MACExport');
    
     // MRD
     Route::get('inventory/MRD', 'MRDController@MRDlist');
@@ -182,6 +188,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/MRD/find-invoice-info', 'MRDController@invoiceInfo');
     Route::get('inventory/MRD/find-invoice-number-for-wor','MRDController@findInvoiceNumberForWOR');
     Route::get('inventory/MRD-delete/{id}', 'MRDController@mrd_delete');
+    Route::get('inventory/MRD/excel-export','MRDController@MRDExport');
 
     Route::get('inventory/WOR-add/{id?}', 'MRDController@WORAdd');
     Route::post('inventory/WOR-add/{id?}', 'MRDController@WORAdd');

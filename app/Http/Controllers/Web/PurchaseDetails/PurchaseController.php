@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\PurchaseDetails;
 use Illuminate\Validation\Rule;
 use App\Exports\FinalPurchaseOrderExport;
+use App\Exports\SupplierInvoiceExport;
 use App\Http\Controllers\Controller;
 use App\Models\PurchaseDetails\inv_final_purchase_order_item;
 use App\Models\PurchaseDetails\inv_final_purchase_order_rel;
@@ -1538,6 +1539,19 @@ class PurchaseController extends Controller
         $data .='</table></div>';
         return $data;
 
+    }
+
+    public function supplierInvoiceExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new SupplierInvoiceExport($request), 'supplier_invoice' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new SupplierInvoiceExport($request), 'supplier_invoice' . date('d-m-Y') . '.xlsx');
+        }
     }
 
 

@@ -119,7 +119,7 @@
                             <td>{{$item['delivery_within']}} Days</td>
 							<td>{{$item['currency_code']}}</td>
 							<td>
-                                <a href="" class="badge badge-success"><i class="fas fa-edit"></i> Edit</a> 
+                                <a href="{{url('row-material/fixed-rate/edit?id='.$item["id"])}}" class="badge badge-success"><i class="fas fa-edit"></i> Edit</a> 
 							</td>
                         </tr>
                         @endforeach
