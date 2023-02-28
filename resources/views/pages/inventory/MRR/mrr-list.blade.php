@@ -132,7 +132,7 @@
 				</tbody>
 			</table>
 			<div class="box-footer clearfix">
-            
+            {{ $data->appends(request()->input())->links() }}
 				
 		   </div> 
 		</div>

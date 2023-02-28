@@ -99,10 +99,10 @@ class MRRController extends Controller
                     else
                     {
                         if($item_type=="Direct Items"){
-                            $Data['mrr_number'] = "SRR2-".$this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR2%')->count(),1); 
+                            $Data['mrr_number'] = "SRR2-".$this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'SRR2%')->count(),1); 
                         }
-                        if($item_type=="Indirect Items"){
-                            $Data['mrr_number'] = "SRR3-" . $this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR3%')->count(),1); 
+                       else{
+                            $Data['mrr_number'] = "SRR3-" . $this->po_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'SRR3%')->count(),1); 
                         }
                     }
                     // $miq_number = inv_mac::leftJoin('inv_miq','inv_miq.id','=','inv_mac.miq_id')
@@ -319,9 +319,12 @@ class MRRController extends Controller
                 $data .= '<tr>
                        <td>'.$item->item_code.'</td>
                        <td>'.$item->type_name.'</td>
-                       <td>'.$item->accepted_quantity. $item->unit_name.'</td>
-                       <td>'.date('d-m-Y', strtotime($item['expiry_date'])).'</td>
-                   </tr>';
+                       <td>'.$item->accepted_quantity. $item->unit_name.'</td>';
+                if($item['expiry_date']!=NULL)          
+                $data .='<td>'.date('d-m-Y', strtotime($item['expiry_date'])).'</td></tr>';
+                else
+                $data .='<td> </td></tr>';
+                   
             }
             $data .= '</tbody>';
         

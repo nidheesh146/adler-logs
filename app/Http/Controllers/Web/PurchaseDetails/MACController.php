@@ -485,7 +485,8 @@ class MACController extends Controller
                     if($item_type=="Direct Items"){
                         $Data['mac_number'] = "MAC2-".$this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2%')->count(),1); 
                     }
-                    if($item_type=="Indirect Items"){
+                    //if($item_type=="Indirect Items")
+                    else{
                         $Data['mac_number'] = "MAC3-" . $this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC3%')->count(),1); 
                     }
                     $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));

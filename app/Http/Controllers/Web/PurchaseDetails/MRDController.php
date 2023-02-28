@@ -576,7 +576,7 @@ class MRDController extends Controller
                     if($item_type=="Direct Items"){
                         $Data['rmrn_number'] = "RMRN2-".$this->po_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN2%')->count(),1); 
                     }
-                    if($item_type=="Indirect Items"){
+                    else{
                         $Data['rmrn_number'] = "RMRN3-" . $this->po_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN3%')->count(),1); 
                     }
                     $Data['rmrn_date'] = date('Y-m-d', strtotime($request->rmrn_date));
