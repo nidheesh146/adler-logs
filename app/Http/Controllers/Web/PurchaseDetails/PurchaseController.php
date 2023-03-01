@@ -977,6 +977,9 @@ class PurchaseController extends Controller
                         $condition1[] = ['inv_final_purchase_order_master.type', '=', 'PO'];
                     }
                 }
+                else{
+                    $condition1[] = ['inv_final_purchase_order_master.type', '=', 'PO'];
+                }
                 //$po_data = $this->inv_final_purchase_order_master->get_purchase_master_list_not_in_invoice($condition1);
                 $po_data = $this->inv_final_purchase_order_master->get_purchase_master_list_with_condition($condition1);
                 
@@ -1451,6 +1454,7 @@ class PurchaseController extends Controller
         $POMaster =inv_final_purchase_order_master::insertGetId($data);
         $purchase_item = inv_final_purchase_order_item::insertGetId([
             'order_qty'=>$request->excess_qty,
+            'qty_to_invoice'=> $request->excess_qty,
             'rate'=>$item['rate'],
             'discount'=>$item['discount'],
             'gst'=>$item['gst'],

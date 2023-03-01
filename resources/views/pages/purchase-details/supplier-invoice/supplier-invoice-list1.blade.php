@@ -52,7 +52,6 @@
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>@if(request()->get('order_type')=='wo') WO @else PO @endif No:</label>
                                                 <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="@if(request()->get('order_type')=='wo') WO NO @else PO NO @endif"> 
-												<input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>Invoice No:</label>
