@@ -112,7 +112,6 @@
                         <th>Item Type</th>
 						<th>Lot Number</th>
                         <th>SIP Number</th>
-                        <th>MAC Number</th>
                         <th>Return Quantity</th>
 					</tr>
 				</thead>
@@ -126,7 +125,6 @@
                         
                         {{--<td><a class="badge badge-info sip-edit" id="sip-edit" style="font-size: 13px;" data-toggle="modal" sirId="{{$srp['id']}}" sip="{{$srp['sir_number']}}" item="{{$srp['item_code']}}" qty="{{$srp['quantity']}}" data-target="#myModal" ><i class="fas fa-edit"></i> Edit</a>--}}
                         <td>{{$srp['sip_number']}}</td>
-                        <td>{{$srp['mac_number']}}</td>
                         <td>{{$srp['qty_to_return']}} {{$srp['unit_name']}}</td>
                     </tr>
                     @endforeach

@@ -187,7 +187,7 @@
                                 <th>{{$item['item_code']}}</th>
                                 <th>{{$item['type_name']}}</th>
                                 <th>@if($item['accepted_quantity']!=NULL) {{$item['accepted_quantity']}} {{$item['unit_name']}} @endif</th>
-                                <th>{{date('d-m-Y', strtotime($item['expiry_date']))}}</th>
+                                <th>@if($item['expiry_date']!=NULL) {{date('d-m-Y', strtotime($item['expiry_date']))}} @endif</th>
                             </tr>
                             @endforeach
                         </tbody>

@@ -76,24 +76,15 @@
                 <div class="form-devider"></div>
                 <div class="visible-for-direct row" style="display:none;"> 
                   <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <label for="exampleInputEmail1">Lot Card</label>
+                      <select class="form-control  lotcard" name="lotcard">
+                        <option>Select One</option>
+                      </select> 
+                  </div>
+                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                       <label for="exampleInputEmail1">SIP Number*</label>
                       <input type="text" class="form-control sip_number" name="sip_number" readonly>
-                      <!-- <input name="rdio" type="radio" value="direct" style="height:18px;width:20px;"> Direct 
-                      &nbsp;&nbsp;&nbsp;&nbsp;
-                      <input name="rdio" type="radio" value="indirect" style="height:18px;width:20px;"> Indirect -->
-                  </div>
-                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                      <label for="exampleInputEmail1">Lot Card</label>
-                      <div class="input-group mb-3">
-                        <input type="hidden" class="form-control lotcard_id" name="lotcard_id" >
-                        <input type="hidden" class="form-control mac_item_id" name="mac_item_id" >
-                        <input type="hidden" class="form-control sip_id" name="sip_id" >
-                        <input type="text" class="form-control lotcard" name="lotcard"  readonly>
-                      </div>
-                  </div>
-                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                      <label for="exampleInputEmail1">MAC Number*</label>
-                      <input type="text" class="form-control mac_number" name="mac_number" readonly>
+                      <input type="hidden" class="form-control sip_id" name="sip_id" >
                       <!-- <input name="rdio" type="radio" value="direct" style="height:18px;width:20px;"> Direct 
                       &nbsp;&nbsp;&nbsp;&nbsp;
                       <input name="rdio" type="radio" value="indirect" style="height:18px;width:20px;"> Indirect -->
@@ -126,16 +117,9 @@
                 <div class="visible-for-indirect row" style="display:none;"> 
                     <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                       <label for="exampleInputEmail1">SIP Number*</label><br/>
-                      <input type="text" class="form-control sip_number1" name="sip_number1" readonly> 
-                      <input type="hidden" class="sip_id1" name="sip_id1">
-                      <input type="hidden" class="mac_item_id1" name="mac_item_id1">
-                    </div>
-                    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                      <label for="exampleInputEmail1">MAC Number*</label>
-                      <input type="text" class="form-control mac_number1" name="mac_number1" readonly>
-                      <!-- <input name="rdio" type="radio" value="direct" style="height:18px;width:20px;"> Direct 
-                      &nbsp;&nbsp;&nbsp;&nbsp;
-                      <input name="rdio" type="radio" value="indirect" style="height:18px;width:20px;"> Indirect -->
+                      <select class="form-control  sipnumber" name="sipnumber">
+                        <option>Select One</option>
+                      </select> 
                     </div>
                     <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                       <label for="exampleInputEmail1">Item Quantity issued to Production*</label>
@@ -160,7 +144,7 @@
            <div class="form-devider"></div>
             <div class="row save-btn" style="">
                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                    <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
+                    <button type="submit" class="btn btn-primary btn-rounded submit-btn" id="submit-btn" style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
                         Save 
                     </button>
                 </div>
@@ -205,6 +189,13 @@
         var select_id = $(this).attr("id");
         $("#Itemtype").val('');
         $("#Itemdescription").val('');
+        $('.batchcard option:gt(0)').remove();
+        $('.lotcard option:gt(0)').remove();
+        $('.sipnumber option:gt(0)').remove();
+        $('.sip_number').val('');
+        $('.sip_id').val('');
+        $('.qty_to_production').val('');
+        $('.qty_to_production1').val('');
         let res = $(this).select2('data')[0];
         if(typeof(res) != "undefined" )
         {
@@ -213,27 +204,20 @@
               $(".item_type").val(res.type_name);
               if(res.type_name=='Direct Items')
               {
-                $.get("{{ url('inventory/stock/fetchSIPinfoDirect') }}?row_material_id="+res.id,function(response)
+                $.get("{{ url('inventory/stock/fetchDirectItemLotCards') }}?row_material_id="+res.id,function(response)
                 {
-                  if(response['sip'] && response['batchcards'])
+                  if(response.length>0)
                   {
                     $('.visible-for-direct').show();
                     $('.visible-for-indirect').hide();
-                    $('.lotcard').val(response['sip']['lot_number']);
-                    $('.sip_number').val(response['sip']['sip_number']);
-                    $('.mac_number').val(response['sip']['mac_number']);
-                    $('.lotcard_id').val(response['sip']['lotcard_id']);
-                    $('.sip_id').val(response['sip']['sip_id']);
-                    $('.mac_item_id').val(response['sip']['mac_item_id']);
-                    //alert(response['batchcards']);
-                    $.each(response['batchcards'],function(key, value)
+                    $.each(response,function(key, value)
                     {
-                      //alert('kkk');
-                        $(".batchcard").append('<option qty=' + value.qty_to_production +' value=' + value.batchcard_id + '>' + value.batch_no + '</option>');
+                      $(".lotcard").append('<option  value=' + value.id + '>' + value.lot_number + '</option>');
                     });
                   }
                   else
                   {
+                    // $('.submit-btn').attr('disabled','disabled');
                     alert("This item didn't issued to Production");
                   }
                 });
@@ -241,20 +225,19 @@
               else
               {
                 $.get("{{ url('inventory/stock/fetchSIPinfoIndirect') }}?row_material_id="+res.id,function(response){
-                  if(response)
+                  if(response.length>0)
                   {
                     $('.visible-for-direct').hide();
                     $('.visible-for-indirect').show();
-                    $('.sip_number1').val(response['sip_number']);
-                    $('.mac_number1').val(response['mac_number']);
-                    $('.sip_id1').val(response['sip_id']);
-                    $('.mac_item_id1').val(response['mac_item_id']);
-                    $('.mac_item_id1').val(response['mac_item_id']);
-                    $('.qty_to_production1').val(response['qty_to_production']);
+                    $.each(response,function(key, value)
+                    {
+                      $(".sipnumber").append('<option  qty=' + value.qty_to_production +' value=' + value.sip_id + '>' + value.sip_number + '</option>');
+                    });
                     
                   }
                   else
                   {
+                    // $('.submit-btn').attr('disabled','disabled');
                     alert("This item didn't issued to Production");
                   }
                  
@@ -272,24 +255,66 @@
             }   
         }
     });
+    $('.lotcard').on('change',function(e){
+      var lot_id = $(this).val();
+      $('.batchcard option:gt(0)').remove();
+      $.get("{{ url('inventory/stock/lotcardInfo') }}?lot_id="+lot_id,function(response){
+        if(response)
+        {
+          $('.sip_number').val(response['sip']['sip_number']);
+          $('.sip_id').val(response['sip']['id']);
+          $.each(response['batchcards'],function(key, value)
+          {
+            //alert('kkk');
+            $(".batchcard").append('<option qty=' + value.qty_to_production +' value=' + value.batchcard_id + '>' + value.batch_no + '</option>');
+          });
+        }
+      });
+    });
     $('.batchcard').on('change',function(e){
         var qty = $(this).children(":selected").attr('qty');
-        alert(qty);
+        //alert(qty);
         $('.qty_to_production').val(qty);
         
     });
-      // $('input[type="radio"]').click(function () {
-      //   if($(this).val()=='direct')
-      //   {
-      //   $('#direct-form').show();
-      //   $('#indirect-form').hide();
-      //   }
-      //   if($(this).val()=='indirect')
-      //   {
-      //   $('#indirect-form').show();
-      //   $('#direct-form').hide();
-      //   }
-      // });
+    $('.sipnumber').on('change',function(e){
+        var qty = $(this).children(":selected").attr('qty');
+        //alert(qty);
+        $('.qty_to_production1').val(qty);
+        
+    });
+    /*$('#submit-btn').on('click', function(e){    
+        var qty_to_production = parseFloat($('.qty_to_production').val());
+        var qty_to_production1 = parseFloat($('.qty_to_production1').val());
+        var return_quantity  = parseFloat($('.return_quantity').val());
+        if(isNaN(qty_to_production1))
+        {
+          if(qty_to_production>return_quantity)
+          {
+            alert(qty_to_production1);
+            alert('Return quantity do not exceed Production  quantity...');
+            e.preventDefault();
+          }
+          else
+          {
+            e.preventDefault();
+          }
+        }
+        else
+        {
+          if(qty_to_production1>return_quantity)
+          {
+          alert('Return quantity do not exceed Production  quantity...');
+          e.preventDefault();
+          }
+          else
+          {
+            e.preventDefault();
+          }
+        }
+
+       
+    })*/
 
 
 </script>

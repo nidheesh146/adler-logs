@@ -2,7 +2,7 @@
 @section('content')
 
 @inject('SupplierQuotation', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
-@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\MRRController')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\LotAllocationController')
 
 
 <div class="az-content az-content-dashboard">
@@ -121,20 +121,25 @@
 				<tbody>
 					@foreach( $data['lot_data']  as $datas)
 					<tr>
+                        <?php if($datas['material_id']!=0) // open quantity lot number
+                        {
+                            $item = $fn->getItemcodeAndID($datas['material_id']);
+                        }
+                        ?>
 						<td>{{$datas['lot_number']}}</td>
-                        <td>{{$datas['item_code']}}</td>
-                        <td>{{$datas['type_name']}}</td>
+                        <td>@if($datas['material_id']!=0) {{$item['item_code']}}  @else {{$datas['item_code']}} @endif</td>
+                        <td>@if($datas['material_id']!=0) {{$item['type_name']}}  @else {{$datas['type_name']}} @endif</td>
 						<td>{{$datas['invoice_number']}}</td>
-						<td>{{$datas['inv_odr_qty']}}</td>
+						<td>{{$datas['inv_odr_qty']}} {{$datas['unit_name']}} </td>
 						<td>{{$datas['vendor_id']}}-{{$datas['vendor_name']}}</td>
-						<td>{{$datas['qty_received']}}</td>
+						<td>{{$datas['qty_received']}} @if($datas['material_id']!=0) {{$item['unit_name']}} @else {{$datas['unit_name']}} @endif</td>
 						{{--<td>{{$datas['qty_accepted']}}</td>
 						<td>{{$datas['qty_rejected']}}</td>--}}
 						{{-- <td>{{$data['transporter_name']}}</td>
 						<td>{{$data['vehicle_number']}}</td> --}}
 						<td>
 							<!-- <a class="badge badge-info" style="font-size: 13px;" href="http://localhost/adler/public/inventory/final-purchase-add/3"><i class="fas fa-edit"></i> Edit</a> -->
-							<a class="badge badge-info lot-edit" style="font-size: 13px;" href="#" data-lotid ="{{$datas['id']}}" data-invoiceitem="{{$datas['invoice_number']}}" data-toggle="modal" data-target="#myModal"><i class="fas fa-edit"></i> Edit</a>   
+							@if($datas['material_id']==0) <a class="badge badge-info lot-edit" style="font-size: 13px;" href="#" data-lotid ="{{$datas['id']}}" data-invoiceitem="{{$datas['invoice_number']}}" data-toggle="modal" data-target="#myModal"><i class="fas fa-edit"></i> Edit</a>   @endif
                             <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/lot-allocation/pdf/'.$datas['id'])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>                                 
 						</td>
 					</tr>

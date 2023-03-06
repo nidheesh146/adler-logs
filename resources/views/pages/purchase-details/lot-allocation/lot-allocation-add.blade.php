@@ -72,7 +72,7 @@
                                 <td>{{$item['item_code']}}</td>
                                 <td>{{$item['type_name']}}</td>
                                 <td>{{$item['hsn_code']}}</td>
-                                <td>{{$item['order_qty']}}</td>
+                                <td>{{$item['order_qty']}} {{$item['unit_name']}}</td>
                                 <td>{{$item['rate']}}</td>
                                 <td>{{$item['discount']}}</td>
                                 <td>

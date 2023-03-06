@@ -125,6 +125,7 @@
                 <td>@if($type=='po') Supplier Invoice Date  @else Service Provider Invoice Date @endif</td>
                 <td>:&nbsp; {{date('d-m-Y', strtotime($mrr['invoice_date']))}} </td>
             </tr>
+            @if($type=='po')
             <tr>
                 <td>MIQ No</td>
                 <td>:&nbsp; {{$mrr['miq_number']}}</td>
@@ -133,6 +134,7 @@
                 <td>MIQ Date</td>
                 <td>: @if($mrr['miq_number']) &nbsp; {{date('d-m-Y', strtotime($mrr['miq_date']))}} @endif</td>
             </tr>
+            @endif
             <tr>
                 <td></td>
                 <td></td>
@@ -173,12 +175,16 @@
             <th>Received Qty</th>
             <th>Accepted Qty</th>
             <th>Rejected Qty</th>
+            @if($type=='po')
             <th>MIQ Rate</th>
+            @endif
             <th>@if($type=='po') PO @else WO @endif Rate</th>
             <th style="width:7%">@if($type=='po') PO @else WO @endif No.</th>
             <th style="width:7%">@if($type=='po') PO @else WO @endif Date</th>
             <th style="width:10%">Reason for rejection</th>
+            @if($type=='po')
             <th style="width:6%">Lot Number</th>
+            @endif
         </tr>
         @php $i=1; @endphp
         @foreach($items as $item)
@@ -190,7 +196,9 @@
             <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
             <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
             <td>{{$item['rejected_quantity']}} {{$item['unit_name']}}</td>
+            @if($type=='po')
             <td>{{$item['conversion_rate']}}</td>
+            @endif
             <td>{{$item['rate']}}</td>
             <td>@if(!$item['po_number'])
                     <?php $pos=$fn->getPO_for_merged_si_item($item['supplier_invoice_item_id']); ?>
@@ -212,7 +220,9 @@
                 
             </td>
             <td>{{$item['rejection_reason']}}</td>
+            @if($type=='po')
             <td>{{$item['lot_number']}}</td>
+            @endif
             
         </tr>
         @endforeach

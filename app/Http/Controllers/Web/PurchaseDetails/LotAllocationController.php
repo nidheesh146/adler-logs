@@ -92,7 +92,7 @@ class LotAllocationController extends Controller
                 $data['qty_received'] = $request->qty_received;
                 $data['qty_accepted'] = $request->qty_received;
                 //$data['available_qty'] = $request->qty_received;
-                $data['qty_rejected'] = $request->qty_rejected;
+                //$data['qty_rejected'] = $request->qty_rejected;
                 $data['vehicle_number'] = $request->vehicle_no;
                 $data['transporter_name'] = $request->transporter_name;
                 $data['mrr_number'] = $request->mrr_no;
@@ -114,12 +114,10 @@ class LotAllocationController extends Controller
                 $data['po_id'] = $invoice_item->po_master_id;
               }
 
-              $data['qty_rej_reason'] = $request->qty_rej_reason;
-              $data['rejected_user'] = config('user')['user_id'];
+              //$data['qty_rej_reason'] = $request->qty_rej_reason;
+              //$data['rejected_user'] = config('user')['user_id'];
               $data['invoice_rate'] = $request->invoice_rate;
-            //   $data['currency'] = $request->currency;
-            //   $data['conversion_rate'] = $request->conversion_rate;
-            //   $data['value_inr'] = $request->value_inr;
+           
 
                 if($request->lot_id){
                     $lot =$this->inv_lot_allocation->updatedata(['inv_lot_allocation.id'=>$request->lot_id],$data);
@@ -219,5 +217,15 @@ class LotAllocationController extends Controller
             $request =null;
             return Excel::download(new LotAllocationExport($request), 'lot_allocation' . date('d-m-Y') . '.xlsx');
         }
+    }
+
+    function getItemcodeAndID($material_id)
+    {
+        $data = inventory_rawmaterial::select('inventory_rawmaterial.item_code','inv_item_type.type_name','inv_unit.unit_name')
+                ->leftJoin('inv_item_type', 'inv_item_type.id', '=','inventory_rawmaterial.item_type_id' )
+                ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                ->where('inventory_rawmaterial.id','=',$material_id)
+                ->first();
+        return $data;
     }
 }

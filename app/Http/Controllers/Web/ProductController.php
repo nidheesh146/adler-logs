@@ -100,6 +100,7 @@ class ProductController extends Controller
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
             $no_column = 59;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
+            echo $sheet1_column_count;exit;
             if($sheet1_column_count == $no_column)
             {
                 $res = $this->Excelsplitsheet($ExcelOBJ);

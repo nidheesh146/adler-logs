@@ -32,12 +32,18 @@ class inv_supplier_invoice_master extends Model
        
         foreach($po_item_id as $POitem_id)
         {
-            $item = DB::table('inv_final_purchase_order_item')->where('id','=',$POitem_id)->first();
+            $item = DB::table('inv_final_purchase_order_item')
+                            ->select('inv_final_purchase_order_item.*')
+                            //->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
+                            ->where('inv_final_purchase_order_item.id','=',$POitem_id)->first();
             $count=0;
             $qty_sum =0;
             foreach($po_item_id as $POitem_id)
             {
-                $fpo_item = DB::table('inv_final_purchase_order_item')->where('id','=',$POitem_id)->first();
+                $fpo_item = DB::table('inv_final_purchase_order_item')
+                                    ->select('inv_final_purchase_order_item.*')
+                                    //->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
+                                    ->where('inv_final_purchase_order_item.id','=',$POitem_id)->first();
                 if($item->item_id==$fpo_item->item_id && $item->gst==$fpo_item->gst && $item->rate==$fpo_item->rate && $item->discount==$fpo_item->discount)
                 {
                     $count++;
@@ -87,12 +93,20 @@ class inv_supplier_invoice_master extends Model
                         ->where('master','=',$SIMaster)->get();
         foreach($si_items as $sitem)
         {
-            $item = DB::table('inv_supplier_invoice_item')->where('id','=',$sitem->item)->first();
+            $item = DB::table('inv_supplier_invoice_item')
+                            ->select('inv_supplier_invoice_item.*','inv_purchase_req_item.Item_code as rawmaterial_id')
+                            ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
+                            ->where('inv_supplier_invoice_item.id','=',$sitem->item)
+                            ->first();
+                            //echo $rawmaterial_id;
             $count=0;
             $qty_sum =0;
             foreach($si_items as $si_item)
             {
-                $si_item = DB::table('inv_supplier_invoice_item')->where('id','=',$si_item->item)->first();
+                $si_item = DB::table('inv_supplier_invoice_item')
+                                ->select('inv_supplier_invoice_item.*','inv_purchase_req_item.Item_code as rawmaterial_id')
+                                ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
+                                ->where('inv_supplier_invoice_item.id','=',$si_item->item)->first();
                 if($item->item_id==$si_item->item_id && $item->gst==$si_item->gst && $item->rate==$si_item->rate && $item->discount==$si_item->discount)
                 {
                     $count++;

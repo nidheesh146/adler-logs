@@ -61,19 +61,15 @@
                             <label>Description</label>
                             <textarea type="text" readonly class="form-control" id="item_description" name="Description"                            placeholder="Description"></textarea>
                         </div>
-                        <div class="form-group col-sm-12col-md-6 col-lg-6 col-xl-6">
+                        {{--<div class="form-group col-sm-12col-md-6 col-lg-6 col-xl-6">
                             <label>MAC No</label>
                             <input type="text"  class="form-control" name="mac_no" id="mac_no" readonly>
-                        </div>
+                        </div>--}}
                         <div class="form-group col-sm-12col-md-6 col-lg-6 col-xl-6">
-                            <label>Transaction Slip No</label>
-                            <input type="text"  class="form-control" name="transaction_slip" id="transaction_slip" >
-                        </div>
-                        <div class="form-group col-sm-12col-md-6 col-lg-6 col-xl-6">
-                            <label>Accepted Quantity(MAC Quantity)</label>
+                            <label>Available Stock Quantity</label>
                             <div class="input-group mb-3">
-                                <input type="hidden" name="mac_item_id" id="mac_item_id">
-                                <input type="text" class="form-control" name="accepted_qty" id="accepted_qty"  aria-describedby="unit-div1" readonly>
+                                <input type="hidden" name="stock_id" id="stock_id">
+                                <input type="text" class="form-control" name="available_stock_qty" id="available_stock_qty"  aria-describedby="unit-div1" readonly>
                                 <div class="input-group-append">
                                     <span class="input-group-text unit-div" id="unit-div1">Unit</span>
                                 </div>
@@ -88,6 +84,10 @@
                                 </div>
                             </div>
                             <label id="qty_to_production-error" class="error" for="qty_to_production" style="display:none;">This field is required.</label>
+                        </div>
+                        <div class="form-group col-sm-12col-md-6 col-lg-6 col-xl-6">
+                            <label>Transaction Slip No</label>
+                            <input type="text"  class="form-control" name="transaction_slip" id="transaction_slip" >
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Work Centre*</label>
@@ -157,32 +157,46 @@
     }).on('change', function (e) 
     {
          $("#item_description").text('');
+         $('#available_stock_qty').val('');
         let res = $(this).select2('data')[0];
         if(typeof(res) != "undefined" )
         {
             if(res.discription){
                 $("#item_description").text(res.discription);
             }
-            $.get("{{ url('inventory/stock/item-mac-info') }}?item_id="+res.id,function(data)
+            $.get("{{ url('inventory/stock/item-stock-info') }}?item_id="+res.id,function(data)
             {
                 if(data)
                 {
                 $('#unit-div1').text(data['unit_name']);
                 $('#unit-div2').text(data['unit_name']);
-                $('#mac_no').val(data['mac_number']);
-                $('#mac_item_id').val(data['mac_item_id']);
-                $('#accepted_qty').val(data['available_qty']);
+                // $('#mac_no').val(data['mac_number']);
+                $('#stock_id').val(data['stock_id']);
+                $('#available_stock_qty').val(data['stock_qty']);
                 $('#submit-btn').removeAttr('disabled');
                 }
                 else
                 {
+                    $('#available_stock_qty').val('');
                     alert('Out of Stock');
                 }
                // alert data;
             });
         }
 
-    });  
+    }); 
+    $('#submit-btn').on('click', function(e){
+        
+        var available_qty = parseFloat($('#available_stock_qty').val());
+        var production_qty = parseFloat($('#qty_to_production').val());
+        if(production_qty>available_qty)
+        {
+        alert('Quantity To Production do not exceed available stock quantity...');
+        e.preventDefault();
+        }
+
+        //alert(available_qty);
+    }) ;
 
     $("#commentForm").validate({
             rules: {

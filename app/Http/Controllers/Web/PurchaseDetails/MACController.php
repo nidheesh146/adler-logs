@@ -16,6 +16,10 @@ use App\Models\PurchaseDetails\inv_mac_item_rel;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
+use App\Models\PurchaseDetails\inv_lot_allocation;
+use App\Models\PurchaseDetails\inv_stock_management;
+use App\Models\PurchaseDetails\inv_stock_transaction;
+use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\User;
 use App\Models\currency_exchange_rate;
 use Maatwebsite\Excel\Facades\Excel;
@@ -35,10 +39,17 @@ class MACController extends Controller
         $this->inv_supplier_invoice_rel =new inv_supplier_invoice_rel;
         $this->User = new User;
         $this->currency_exchange_rate = new currency_exchange_rate;
+        $this->inv_lot_allocation = new inv_lot_allocation;
+        $this->inv_stock_management = new inv_stock_management;
+        $this->inv_stock_transaction = new inv_stock_transaction;
+        $this->inv_purchase_req_item = new inv_purchase_req_item;
     }
 
     public function MAClist(Request $request)
     {
+        //$this->directmacstockImport();
+        // $this->indirectmacstockImport();
+        // $this->indirectwoastockImport();
         
         $condition = [];
         if($request)
@@ -76,9 +87,7 @@ class MACController extends Controller
         //$data = $this->inv_mac->get_all_data([]);
         return view('pages.inventory.MAC.MAC-list', compact('data'));
     }
-
     
-
     public function findInvoiceNumberForMAC(Request $request){
         if ($request->q) {
             $condition[] = ['inv_supplier_invoice_master.invoice_number', 'like', '%' . strtoupper($request->q) . '%'];
@@ -322,6 +331,7 @@ class MACController extends Controller
                 $data['available_qty'] = $request->accepted_quantity;
                 $update = $this->inv_mac_item->update_data(['inv_mac_item.id'=>$request->id],$data);
                 $mac_id = inv_mac_item_rel::where('item','=',$request->id)->pluck('master')->first();
+                $stock_update = $this->stock_management($request->id);
                 if($update)
                     $request->session()->flash('success', "You have successfully updated a MAC Item Info!");
                 else
@@ -429,9 +439,18 @@ class MACController extends Controller
     public function mac_delete(Request $request, $id)
     {
         $this->inv_mac->update_data(['id' => $id],['status'=>0]);
+        // $mac_item_ids = inv_mac_item_rel::where('master','=',$id)->select('item')->get();
+        // foreach($mac_item_ids as $mac_item)
+        // {
+        //     $stock = inv_stock_management::where('transaction_id','=',$mac_item['item'])->where('transaction_type',2)->first();
+        //     if($stock)
+        //     $stock_update = $this->inv_stock_management->update_data(['id'=>$stock['id']],['status'=>0]);
+        // }
         $request->session()->flash('success', "You have successfully deleted a MAC !");
         return redirect("inventory/MAC");
     }
+
+    
 
 
 
@@ -758,6 +777,208 @@ class MACController extends Controller
         {
             $request =null;
             return Excel::download(new MACExport($request), 'MAC' . date('d-m-Y') . '.xlsx');
+        }
+    }
+
+
+    public function stock_management($mac_item_id)
+    {
+        $mac_item = inv_mac_item::where('id','=',$mac_item_id)->first();
+        $lot_id = inv_lot_allocation::where('inv_lot_allocation.si_invoice_item_id','=',$mac_item['invoice_item_id'])->pluck('id')->first();
+        $row_material_id = inv_purchase_req_item::where('requisition_item_id','=',$mac_item['pr_item_id'])->pluck('inv_purchase_req_item.item_code')->first();
+       
+
+
+
+
+
+
+
+
+
+        
+        $mac_item_exist = inv_stock_transaction::where('transaction_id','=',$mac_item_id)->where('transaction_type',2)->first();
+        if( $mac_item_exist)
+        {
+            $stock_transaction_update = $this->inv_stock_transaction->update_data(['id'=>$mac_item_exist['id']],['transaction_qty'=>$mac_item['accepted_quantity']]);
+            if($lot_id)
+            {
+                $stock_update = $this->inv_stock_management->update_data(['lot_id'=>$lot_id],['stock_qty'=>$mac_item['accepted_quantity']]);
+            }
+            else
+            {
+                $current_material_stock = inv_stock_management::where('item_id','=',$row_material_id)->pluck('stock_qty')->first();
+                $new_stock = $current_material_stock - $mac_item_exist['transaction_qty'] + $mac_item['accepted_quantity'];
+                $stock_update = $this->inv_stock_management->update_data(['item_id'=>$row_material_id],['stock_qty'=>$new_stock]);
+            }
+            
+        }
+        else
+        {
+                $data['item_id'] = $row_material_id;
+                $data['lot_id'] = $lot_id;
+                $data['transaction_type'] = 2;
+                $data['transaction_id'] = $mac_item['id'];
+                $data['transaction_qty'] = $mac_item['accepted_quantity'];
+                //$data['current_stock_qty'] = $last_stock_info['current_stock_qty']+ $mac_item['accepted_quantity'];
+                $data['created_at'] = date('Y-m-d H:i:s');
+                //$data['updated_at'] = date('Y-m-d H:i:s');
+                $stock_transaction_add = $this->inv_stock_transaction->insert_data($data);
+
+                
+                if(!$lot_id)
+                {
+                    
+                    $material_exist = inv_stock_management::where('item_id','=',$row_material_id)->first();
+                    if($material_exist)
+                    {
+                        $new_stock_qty =$material_exist['stock_qty']+$mac_item['accepted_quantity'];
+                        $stock_update = $this->inv_stock_management->update_data(['item_id'=>$row_material_id],['stock_qty'=>$new_stock_qty]);
+                    }
+                    else
+                    {
+                        $inf['item_id'] = $row_material_id;
+                        $inf['stock_qty'] = $mac_item['accepted_quantity'];
+                        $stock_add = $this->inv_stock_management->insert_data($inf);
+                    }
+                }
+                else
+                {
+                    $info['item_id'] = $row_material_id;
+                    $info['lot_id'] = $lot_id;
+                    $info['stock_qty'] = $mac_item['accepted_quantity'];
+                    $stock_add = $this->inv_stock_management->insert_data($info);
+                }
+                
+        }
+        return 1;
+        
+    }
+
+    public function directmacstockImport()
+    {
+        $direct_mac = DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2%')->where('status','=',1)->get();
+        foreach($direct_mac as $mac)
+        {
+            $mac_items = inv_mac_item_rel::where('master','=',$mac->id)->select('item')->get();
+            foreach($mac_items as $macitem)
+            {
+                $mac_item = inv_mac_item::select('inv_mac_item.id as mac_item_id','inv_mac_item.accepted_quantity','inv_mac_item.created_at','inv_lot_allocation.id as lot_id','inv_purchase_req_item.Item_code')
+                                ->leftJoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_mac_item.invoice_item_id')
+                                ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+                                ->where('inv_mac_item.id','=',$macitem->item)->where('accepted_quantity','!=',0)
+                                ->first();
+                $stock['item_id'] = $mac_item->Item_code;
+                $stock['lot_id'] = $mac_item->lot_id;
+                $stock['stock_qty'] = $mac_item->accepted_quantity;              
+                DB::table('inv_stock_management')->insert($stock);
+
+                $data['item_id'] = $mac_item->Item_code;
+                $data['lot_id'] = $mac_item->lot_id;
+                $data['transaction_type'] = 2;
+                $data['transaction_id'] = $mac_item->mac_item_id;
+                $data['transaction_qty'] = $mac_item->accepted_quantity;
+                $data['created_at'] = $mac_item->created_at;
+                DB::table('inv_stock_transaction')->insert($data);
+                
+
+            }
+        }
+        
+    }
+    function indirectmacstockImport()
+    {
+        $direct_mac = DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC3%')->where('status','=',1)->get();
+        foreach($direct_mac as $mac)
+        {
+            $mac_items = inv_mac_item_rel::where('master','=',$mac->id)->select('item')->get();
+            foreach($mac_items as $macitem)
+            {
+                $mac_item = inv_mac_item::select('inv_mac_item.id as mac_item_id','inv_mac_item.accepted_quantity','inv_mac_item.created_at','inv_purchase_req_item.Item_code')
+                                //->leftJoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_mac_item.invoice_item_id')
+                                ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+                                ->where('inv_mac_item.id','=',$macitem->item)->where('accepted_quantity','!=',0)
+                                ->first();
+                if($mac_item){
+                $is_exist_stock = DB::table('inv_stock_management')->where('item_id','=',$mac_item['Item_code'])->first();
+                if($is_exist_stock)
+                {
+                    $stock = inv_stock_management::where('id','=',$is_exist_stock->id)->first();
+                    $stock_qty = $stock->stock_qty + $mac_item->accepted_quantity;
+                    $stock->stock_qty = $stock_qty;
+                    $stock->save();
+
+                    $data['item_id'] = $mac_item->Item_code;
+                    $data['transaction_type'] = 2;
+                    $data['transaction_id'] = $mac_item->mac_item_id;
+                    $data['transaction_qty'] = $mac_item->accepted_quantity;
+                    $data['created_at'] = $mac_item->created_at;
+                    DB::table('inv_stock_transaction')->insert($data);
+                }
+                else
+                {
+                    $stok['item_id'] = $mac_item->Item_code;
+                    $stok['stock_qty'] = $mac_item->accepted_quantity;
+                    DB::table('inv_stock_management')->insert($stok);
+                    $data['item_id'] = $mac_item->Item_code;
+                    $data['transaction_type'] = 2;
+                    $data['transaction_id'] = $mac_item->mac_item_id;
+                    $data['transaction_qty'] = $mac_item->accepted_quantity;
+                    $data['created_at'] = $mac_item->created_at;
+                    DB::table('inv_stock_transaction')->insert($data);
+                }
+            }
+            }
+        }
+    }
+    function indirectwoastockImport()
+    {
+        $direct_mac = DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA3%')->where('status','=',1)->get();
+        foreach($direct_mac as $mac)
+        {
+            $mac_items = inv_mac_item_rel::where('master','=',$mac->id)->select('item')->get();
+            foreach($mac_items as $macitem)
+            {
+                $mac_item = inv_mac_item::select('inv_mac_item.id as mac_item_id','inv_mac_item.accepted_quantity','inv_mac_item.created_at','inv_purchase_req_item.Item_code')
+                                //->leftJoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_mac_item.invoice_item_id')
+                                ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+                                ->where('inv_mac_item.id','=',$macitem->item)->where('accepted_quantity','!=',0)
+                                ->first();
+                if($mac_item)
+                {               
+                    $is_exist_stock = DB::table('inv_stock_management')->where('item_id','=',$mac_item['Item_code'])->first();
+                    if($is_exist_stock)
+                    {
+                        $stock = inv_stock_management::where('id','=',$is_exist_stock->id)->first();
+                        $stock_qty = $stock->stock_qty + $mac_item->accepted_quantity;
+                        $stock->stock_qty = $stock_qty;
+                        $stock->save();
+
+                        $data['item_id'] = $mac_item->Item_code;
+                        $data['transaction_type'] = 2;
+                        $data['transaction_id'] = $mac_item->mac_item_id;
+                        $data['transaction_qty'] = $mac_item->accepted_quantity;
+                        $data['created_at'] = $mac_item->created_at;
+                        DB::table('inv_stock_transaction')->insert($data);
+                    }
+                    else
+                    {
+                        $stock['item_id'] = $mac_item->Item_code;
+                        $stock['stock_qty'] = $mac_item->accepted_quantity;
+                        $stock = [
+                            'item_id'=>$mac_item->Item_code,
+                            'stock_qty'=> $mac_item->accepted_quantity
+                        ];
+                        DB::table('inv_stock_management')->insert($stock);
+                        $data['item_id'] = $mac_item->Item_code;
+                        $data['transaction_type'] = 2;
+                        $data['transaction_id'] = $mac_item->mac_item_id;
+                        $data['transaction_qty'] = $mac_item->accepted_quantity;
+                        $data['created_at'] = $mac_item->created_at;
+                        DB::table('inv_stock_transaction')->insert($data);
+                    }
+                }
+            }
         }
     }
 }

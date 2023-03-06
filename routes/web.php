@@ -234,7 +234,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/Stock/ToProduction/Direct','StockController@addDirectSIP');
     Route::get('inventory/Stock/ToProduction/Indirect','StockController@IndirectSIP');
     Route::post('inventory/Stock/ToProduction/Indirect','StockController@addIndirectSIP');
-    Route::get('inventory/stock/item-mac-info','StockController@itemMacDetails');
+    // Route::get('inventory/stock/item-mac-info','StockController@itemMacDetails');
+    Route::get('inventory/stock/item-stock-info','StockController@itemStockDetails');
     Route::post('inventory/stock/quantity-updation-request','StockController@quantityUpdationRequest');
     Route::get('inventory/indirect/itemcodesearch/{itemcode?}','StockController@Indirectitemcodesearch');
     Route::get('inventory/direct/itemcodesearch/{itemcode?}','StockController@Directitemcodesearch');
@@ -248,7 +249,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/stock-FromProduction-edit', 'StockController@StockFromProductionEdit');
     Route::get('getSingleSIR', 'StockController@getSingleSIR');
     Route::get('inventory/Stock/ToProduction/view/{id}','StockController@SIPview');
-    Route::get('inventory/stock/fetchSIPinfoDirect','StockController@fetchSIPinfoDirect');
+    //Route::get('inventory/stock/fetchSIPinfoDirect','StockController@fetchSIPinfoDirect');
+    Route::get('inventory/stock/fetchDirectItemLotCards','StockController@fetchDirectItemLotCards');
+    Route::get('inventory/stock/lotcardInfo','StockController@lotcardInfo');
+    
     Route::get('inventory/stock/fetchSIPinfoIndirect','StockController@fetchSIPinfoIndirect');
 
       //Stock transfer

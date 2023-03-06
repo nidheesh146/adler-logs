@@ -213,10 +213,10 @@
 
     $('.submitbtn').on('click', function (e) {
         var batch_tot = 0;
-        var lot_qty = parseInt($('.lot-radio:checked').attr('lotqty'));
+        var lot_qty = parseFloat($('.lot-radio:checked').attr('lotqty'));
         //alert(lot_qty);
         $(".batchcard-checkbox:checked").each(function() {
-            batch_tot= batch_tot+parseInt($(this).attr('batchqty'));
+            batch_tot= batch_tot+parseFloat($(this).attr('batchqty'));
         });
         //alert(batch_tot);
        if(batch_tot!=lot_qty)
@@ -275,7 +275,7 @@
             
             var material_qty_per_sku = $(this).attr('materialQtyPerSku'); 
             var requested_qty = $(this).val();
-            var request_sku_qty = parseInt(requested_qty)/parseInt(material_qty_per_sku);
+            var request_sku_qty = parseFloat(requested_qty)/parseFloat(material_qty_per_sku);
             $('#request_sku_qty').val(Math.floor(request_sku_qty));
         });
     });
