@@ -150,7 +150,7 @@
                                 <th>{{$item['lot_number']}}</th>
                                 <th>@if($item['expiry_date']!=NULL) {{date('d-m-Y', strtotime($item['expiry_date']))}} @endif</th>
                                 <th>@if($item['accepted_quantity']!=NULL) {{$item['accepted_quantity']}} {{$item['unit_name']}} @endif</th>
-                                <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MAC/'.$item['id'].'/item')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</th>
+                                <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MAC/'.$item['mac_item_id'].'/item')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</th>
                             </tr>
                             @endforeach
                         </tbody>

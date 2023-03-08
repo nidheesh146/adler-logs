@@ -40,6 +40,7 @@ class inv_mac extends Model
                     ->join('user','user.user_id','=','inv_supplier_invoice_master.created_by')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
                     ->where($condition)
+                    ->where('inv_mac.status','=',1)
                     ->first();
     }
 

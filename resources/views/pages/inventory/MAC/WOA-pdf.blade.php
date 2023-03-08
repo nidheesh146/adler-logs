@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\MRRController')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\MACController')
 <html>
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
@@ -123,19 +123,52 @@
             <th style="width:8%">Item Code</th>
             <th style="width:25%">Description</th>
             <th>Type</th>
-            <th>Lot Number</th>
-            <th>Expiry Date</th>
+            <!-- <th>Lot Number</th>
+            <th>Expiry Date</th> -->
+            <th>WO Number</th>
+            <th style="width:10%">WO Date</th>
+            <th>Order Quantity</th>
+            <th>WO Rate</th>
             <th>Accepted Quantity</th>
         </tr>
         @php $i=1; @endphp
         @foreach($items as $item)
         <tr>
+            <?php
+                if($item['po_number']==NULL)
+                {
+                    $po_info = $fn->getMergedPoinfo($item['invoice_item_id']);
+                }
+             ?>
             <td>{{$i++}}</td>
             <td>{{$item['item_code']}}</td>
             <td>{{$item['discription']}}</td>
             <td>{{$item['type_name']}}</td>
-            <td>{{$item['lot_number']}}</td>
-            <td>@if($item['expiry_date']!=NULL) {{date('d-m-Y', strtotime($item['expiry_date']))}} @endif</td>
+            <td>@if($item['po_number']!=NULL) {{$item['po_number']}} 
+                @else
+                @foreach($po_info as $info)
+                    {{$info['po_number']}}<br/>
+                @endforeach
+
+                 @endif
+            </td>
+            <td>@if($item['po_date']!=NULL) {{date('d-m-Y', strtotime($item['po_date']))}}
+                @else
+                @foreach($po_info as $info)
+                {{date('d-m-Y', strtotime($info['po_date']))}}<br/>
+                @endforeach
+                 @endif
+            </td>
+            <td>@if($item['order_qty']!=NULL) {{$item['order_qty']}} {{$item['unit_name']}}
+                @else
+                @foreach($po_info as $info)
+                {{$info['order_qty']}} {{$item['unit_name']}}<br/>
+                @endforeach
+                @endif
+            </td>
+            <td>{{$item['po_rate']}}</td>
+            {{--<td>{{$item['lot_number']}}</td>
+            <td>@if($item['expiry_date']!=NULL) {{date('d-m-Y', strtotime($item['expiry_date']))}} @endif</td>--}}
             <td>@if($item['accepted_quantity']!=NULL) {{$item['accepted_quantity']}} {{$item['unit_name']}} @endif</td>
         </tr>
         @endforeach
@@ -143,6 +176,7 @@
     </table> 
     <br>
     <br>
+    <label style="font-size:12px;float:left;">Signature of I/C Finance</label>
     <label style="font-size:12px;float:right;">Signature of Store</label>
     
 </body>

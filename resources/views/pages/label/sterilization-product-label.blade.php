@@ -76,8 +76,8 @@
                             
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sterilization Expiry date *</label>
-                                @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
-                                <input type="date" value="{{date('Y-m-d', strtotime($date .' -1 day'))}}" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" readonly>
+                                 @php $date= date('Y-m-d', strtotime('+5 years')) @endphp 
+                                <input type="text"  value="{{date('d-m-Y', strtotime($date .' -1 day'))}}" class="form-control" name="sterilization_expiry_date" id="sterilization_expiry_date" readonly>
                             </div><!-- form-group -->
 
                         </div>               
@@ -180,6 +180,16 @@
             if(res.quantity_per_pack) {
                 $('#per_pack_quantity').val(res.quantity_per_pack);
             }
+        });
+    });
+    $(document).ready(function(){
+        $('#manufacturing_date').on('change',function(e)
+        {
+            var manufacturing_date = new Date($(this).val());
+            var myDate  = new Date(manufacturing_date.setDate(manufacturing_date.getDate()-1));
+            var date = new Date(myDate.setFullYear(myDate.getFullYear() + 5));
+            var expiry_date = ( ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
+            $('#sterilization_expiry_date').val(expiry_date);
         });
     });
 

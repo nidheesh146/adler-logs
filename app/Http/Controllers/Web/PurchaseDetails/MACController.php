@@ -47,9 +47,11 @@ class MACController extends Controller
 
     public function MAClist(Request $request)
     {
-        //$this->directmacstockImport();
+        /*
+        // $this->directmacstockImport();
         // $this->indirectmacstockImport();
         // $this->indirectwoastockImport();
+        */
         
         $condition = [];
         if($request)
@@ -765,6 +767,16 @@ class MACController extends Controller
     //$pdf->set_paper('A4', 'portiait');
     $file_name = $data['mac']['mac_number'];
     return $pdf->stream($file_name . '.pdf');
+   }
+
+   function getMergedPoinfo($invoice_item_id)
+   {
+        $data =inv_supplier_invoice_item::select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_item.order_qty')
+                                            ->leftjoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_supplier_invoice_item.po_item_id')
+                                            ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+                                            ->where('inv_supplier_invoice_item.merged_invoice_item','=',$invoice_item_id)
+                                            ->get();
+        return $data;
    }
 
    public function MACExport(Request $request)

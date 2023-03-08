@@ -20,7 +20,8 @@ class inv_mac_item extends Model
         return $this->where($condition)->update($data);
     }
     function get_items($condition){
-        return $this->select('inv_mac_item.id as id','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_mac_item.accepted_quantity','inv_miq_item.expiry_control','inv_miq_item.expiry_date')
+        return $this->select('inv_mac_item.id as mac_item_id','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_mac_item.accepted_quantity',
+        'inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_final_purchase_order_item.order_qty','inv_supplier_invoice_item.rate as po_rate','inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_supplier_invoice_item.id as invoice_item_id')
                     ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_mac_item.invoice_item_id')
                     ->leftjoin('inv_miq_item','inv_miq_item.invoice_item_id','=','inv_supplier_invoice_item.id')
@@ -28,6 +29,8 @@ class inv_mac_item extends Model
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
                     ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
                     ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                    ->leftjoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_supplier_invoice_item.po_item_id')
+                    ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     //->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
                     ->where($condition)
