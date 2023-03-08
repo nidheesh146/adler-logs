@@ -97,8 +97,9 @@
 								</tr>
 							</thead>
 							<tbody >
+							@foreach($prices as $price)
 								<tr>
-									@foreach($prices as $price)
+									
 									<td>{{$price['sku_code']}}</td>
 									<td>{{$price['discription']}}</td>
 									<td>{{$price['group_name']}}</td>
@@ -114,8 +115,9 @@
 											<a href="{{url('fgs/price-master/delete?id='.$price["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
 										</div>
 									</td>
-									@endforeach
+									
 								</tr>
+								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">

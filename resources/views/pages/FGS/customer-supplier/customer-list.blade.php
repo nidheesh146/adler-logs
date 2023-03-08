@@ -96,8 +96,8 @@
 								</tr>
 							</thead>
 							<tbody >
+							@foreach($customers as $customer)
 								<tr>
-									@foreach($customers as $customer)
 									<td>{{$customer['firm_name']}}</td>
 									<td>{{$customer['contact_person']}}</td>
 									<td>{{$customer['contact_number']}}</td>
@@ -114,8 +114,9 @@
 										</div>
 									@endif
 									</td>
-									@endforeach
+									
 								</tr>
+								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
