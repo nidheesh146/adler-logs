@@ -93,7 +93,20 @@
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockTransfer','Stock.StockTransferAdd','Stock.viewItems'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  
             
           </ul>
-        </li> 
+        </li>
+        
+        <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active show'}} @endif ">
+          <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
+          <ul class="nav-sub">
+            <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
+              <a href="{{url('fgs/customer-supplier')}}"  class="nav-sub-link">Customer-Supplier</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
+              <a href="{{url('fgs/price-master/list')}}"  class="nav-sub-link">Price Master</a>
+            </li>
+            
+          </ul>
+        </li>
         
         <li class="nav-item @if(in_array($Action,['BatchCard.getBatchcardUpload', 'BatchCard.BatchcardAdd','BatchCard.BatchcardList','BatchCard.requestList'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i>Batch Card</a>
@@ -112,6 +125,7 @@
             </li>
           </ul>
         </li>
+        
 
         <li class="nav-item @if(in_array($Action,['Label.sterilizationProductLabel', 'Label.nonSterileProductLabel' ,'Label.instrumentLabel','Label.patientLabel', 'Label.mrpLabel', 'Label.generateInstrumentLabel', 'Label.generateMRPLabel','Label.generateNonSterileProductLabel','Label.generateSterilizationProductLabel','Label.generatePatientLabel','Label.printingReport'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Label Card</a>

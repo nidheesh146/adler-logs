@@ -35,6 +35,13 @@ class product extends Model
                     ->orderBy('product_product.id','desc')
                     ->paginate(15);
     }
+    function get_product_info($data){
+        return $this->select(['product_product.id','product_product.sku_code as text','product_product.discription','product_productgroup.group_name','product_product.hsn_code'])
+                    ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
+                    ->where('sku_code','like','%'.$data.'%')
+                    ->get()->toArray();
+        
+    }
 
 
 

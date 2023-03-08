@@ -276,7 +276,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/suppliers-add/{id?}','SupplierController@add_supplier');
     Route::get('inventory/suppliers-delete/{id}','SupplierController@delete_suppliers');
 
-
+   
 
 
 
@@ -358,6 +358,21 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::post('product/product-upload','ProductController@productFileUpload');
    
 
+});
+
+Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['RolePermission']], function() 
+{
+    //Customer -supplier master 
+    Route::get('fgs/customer-supplier','CustomerSupplierController@customerSupplierList');
+    Route::get('fgs/customer-supplier/add/{id?}','CustomerSupplierController@addCustomerSupplier');
+    Route::post('fgs/customer-supplier/add/{id?}','CustomerSupplierController@addCustomerSupplier');
+
+    //Price master
+    Route::get('fgs/price-master/list','PriceController@priceList');
+    Route::get('fgs/price-master/add/{id?}','PriceController@priceAdd');
+    Route::post('fgs/price-master/add/{id?}','PriceController@priceAdd');
+    Route::get('fgs/productsearch','PriceController@productsearch');
+    
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Settings','middleware'=>['RolePermission']], function() {
