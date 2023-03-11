@@ -35,7 +35,7 @@
                 <input type="hidden" name="no_of_labels" id="no_of_labels" value="{{$no_of_label}}">
                 <input type="hidden" name="manufacturing_date" id="manufacturing_date" value="{{$manufacture_date}}">
                 <input type="hidden" name="product_id" id="product_id" value="{{$batchcard_data->product_id}}">
-                <input type="hidden" name="expiry_date" id="expiry_date" value="{{$sterilization_expiry_date}}">
+                <input type="hidden" name="expiry_date" id="expiry_date" value="{{date('Y-m-d', strtotime($sterilization_expiry_date))}}">
                 <input type="hidden" name="label_name" id="label_name" value="Patient Label">
 
                 @for ($i = 0; $i< $page_count; $i++)
@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="" style="display:block;margin-bottom:3px;margin-top:7px;">
                                     <img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">
-                                    <span class="" style=" font-size:7.5px;">{{$sterilization_expiry_date}}</span>
+                                    <span class="" style=" font-size:7.5px;">{{date('Y-m-d', strtotime($sterilization_expiry_date))}}</span>
                                     <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:14px;height:9px;">
                                     <span class="s" style=" font-size:7.5px;">{{$manufacture_date}}</span>
                                 </div>
@@ -157,7 +157,7 @@
                                 </div>
                                 <div class="" style="display:block;margin-bottom:3px;margin-top:7px;">
                                     <img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">
-                                    <span class="" style=" font-size:7.5px;">{{$sterilization_expiry_date}}</span>
+                                    <span class="" style=" font-size:7.5px;">{{date('Y-m-d', strtotime($sterilization_expiry_date))}}</span>
                                     <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:14px;height:9px;">
                                     <span class="s" style=" font-size:7.5px;">{{$manufacture_date}}</span>
                                 </div>

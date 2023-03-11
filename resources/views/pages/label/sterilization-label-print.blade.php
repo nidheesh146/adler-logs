@@ -35,7 +35,7 @@
                 <input type="hidden" name="no_of_labels" id="no_of_labels" value="{{$no_of_label}}">
                 <input type="hidden" name="manufacturing_date" id="manufacturing_date" value="{{$manufacture_date}}">
                 <input type="hidden" name="product_id" id="product_id" value="{{$batchcard_data->product_id}}">
-                <input type="hidden" name="expiry_date" id="expiry_date" value="{{$sterilization_expiry_date}}">
+                <input type="hidden" name="expiry_date" id="expiry_date" value="{{date('Y-m-d', strtotime($sterilization_expiry_date))}}">
                 <input type="hidden" name="label_name" id="label_name" value="Sterilization Label">
 
                 <div class="label-div" id="label-div">
@@ -96,7 +96,7 @@
                                                 </span>
                                             </div>
                                             <div class="box" style="font-size:9px;padding:10px;border-bottom:0.7px solid black;border-left:0.7px solid black;border-right:0.7px solid black;">
-                                                Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{$sterilization_expiry_date}}
+                                                Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{date('Y-m-d', strtotime($sterilization_expiry_date))}}
                                             </div>
                                         </div>
                                     </div><br/>
@@ -238,7 +238,7 @@
                                                 </span>
                                             </div>
                                             <div class="box" style="font-size:9px;padding:10px;border-bottom:0.7px solid black;border-left:0.7px solid black;border-right:0.7px solid black;">
-                                                Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{$sterilization_expiry_date}}
+                                                Expiry&nbsp;<img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">&nbsp;:{{date('Y-m-d', strtotime($sterilization_expiry_date))}}
                                             </div>
                                         </div>
                                     </div><br/>

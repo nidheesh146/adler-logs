@@ -212,7 +212,7 @@ class MIQController extends Controller
     public function miq_delete(Request $request, $id)
     {
 
-        $this->inv_miq->deleteData(['id' => $id]);
+        $this->inv_miq->update_data(['id' => $id],['status'=>0]);
         $request->session()->flash('success', "You have successfully deleted a MIQ !");
         return redirect("inventory/MIQ");
     }

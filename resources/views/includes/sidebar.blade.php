@@ -95,14 +95,17 @@
           </ul>
         </li>
         
-        <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
               <a href="{{url('fgs/customer-supplier')}}"  class="nav-sub-link">Customer-Supplier</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
+            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/price-master/list')}}"  class="nav-sub-link">Price Master</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+              <a href="{{url('fgs/MRN/add')}}"  class="nav-sub-link">MRN</a>
             </li>
             
           </ul>
