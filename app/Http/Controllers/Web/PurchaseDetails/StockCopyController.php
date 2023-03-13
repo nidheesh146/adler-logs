@@ -523,7 +523,7 @@ class StockController extends Controller
                                                         <th>SKU Code</th>
                                                         <th>SKU Quantity</th>
                                                         <th>Item(".$itemcode.") Quantity Required</th>
-                                                        <th>Quantity to production</th>
+                                                        
                                                     </tr>
                                                     </thead>
                                                     <tbody>";
@@ -531,7 +531,7 @@ class StockController extends Controller
             foreach($batchcards as $card)
             {
                 $data['batchcards'] .="<tr>
-                                            <th><input type='checkbox' class='batchcard-checkbox' onclick='enableTextBox(this)'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
+                                            <th><input type='checkbox' class='batchcard-checkbox'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
                                             <th>".$card->batch_no."</th>
                                             <th>".$card->sku_code."</th>
                                             <th>".$card->sku_quantity."</th>
@@ -543,7 +543,6 @@ class StockController extends Controller
                                                     </a>
                                                 </span>
                                             </th>
-                                            <th><input type='text' class='qty_to_production' id='qty_to_production' name='qty_to_production[]' disabled>".$card->unit_name."</th>
                                         </tr> ";                                               
                 $i++;
             }
@@ -585,7 +584,6 @@ class StockController extends Controller
 
     public function addDirectSIP(Request $request)
     {
-        //print_r(array_sum($request->qty_to_production));exit;
         $validation['lot_id'] = ['required'];
         $validation['batchcard'] = ['required'];
         $validation['work_centre'] = ['required'];
@@ -595,7 +593,7 @@ class StockController extends Controller
             $lot_data= $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$request->lot_id]);
             $data['sip_number'] = "SIP2-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2%')->count(),1); 
             $data['lot_id'] = $request->lot_id;
-            $data['qty_to_production'] = array_sum($request->qty_to_production);
+            //$data['qty_to_production'] = $lot_data['available_qty'];
             $data['type'] = 2;
             $data['status'] = 1;
             $data['work_centre'] = $request->work_centre;
@@ -612,8 +610,8 @@ class StockController extends Controller
             // $inv_mac_item->save();
 
             $stock = inv_stock_management::where('lot_id','=',$request->lot_id)->first();
-            $stockQty = $stock->stock_qty - array_sum($request->qty_to_production);
-            $stock->stock_qty = $stockQty;
+            $stock_qty = $stock->stock_qty;
+            $stock->stock_qty = 0;
             $stock->save();
             if($mac_item)
             {
@@ -621,7 +619,8 @@ class StockController extends Controller
                 $data['pr_item_id'] = $inv_mac_item['pr_item_id'];
                 $data['mac_item_id'] = $mac_item['id'];
             }  
-           
+           // $data['qty_to_production'] = $inv_mac_item['accepted_quantity'];
+            $data['qty_to_production'] = $stock_qty;
             $data['stock_id']=$stock['id'];
             $sip_master = $this->inv_stock_to_production->insert_data($data);
             if($sip_master)
@@ -632,11 +631,9 @@ class StockController extends Controller
                 $info['item_id'] = $stock['item_id'];
                 $info['transaction_type'] = 3;
                 $info['transaction_id'] = $sip_master;
-                $info['transaction_qty'] = array_sum($request->qty_to_production);
+                $info['transaction_qty'] = $stock_qty;
                 $info['created_at'] = date('Y-m-d H:i:s');
                 $transaction = $this->inv_stock_transaction->insert_data($info);
-                $i = 0;
-                $qty_to_production_array = $request->qty_to_production;
                 foreach($request->batchcard as $batchcard)
                 {
                     $batchdata = batchcard_material::where('batchcard_id','=',$batchcard)
@@ -645,14 +642,12 @@ class StockController extends Controller
                     $batch['batchcard_id']=$batchcard;
                     $batch['batchcard_material_id']=$batchdata['id'];
                     $batch['material_id']=$request->item_code;
-                    //$batch['qty_to_production']=$batchdata['quantity'];
-                    $batch['qty_to_production'] = $qty_to_production_array[$i];
+                    $batch['qty_to_production']=$batchdata['quantity'];
                     $sip_item = $this->inv_stock_to_production_item->insert_data($batch);
 
                     $rel['master'] = $sip_master;
                     $rel['item'] = $sip_item;
                     DB::table('inv_stock_to_production_item_rel')->insert($rel);
-                    $i++;
                 }
                
                 $request->session()->flash('success', "You have successfully added Stock issue to production !");

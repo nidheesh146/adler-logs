@@ -113,12 +113,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                     @foreach($sip['items'] as $item)
                                     <tr>
-                                        @foreach($sip['items'] as $item)
                                         <th>{{$item['batch_no']}}</th>
                                         <th>{{$item['qty_to_production']}} Nos</th>
-                                        @endforeach
                                     </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                     </div>

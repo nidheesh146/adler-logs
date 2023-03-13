@@ -195,22 +195,16 @@
             if(res.discription){
                 $("#item_description").text(res.discription);
             }
-            $('.batchcards').empty();
-            $('.lotcards').empty();
-            $('.spinner-button').hide();
-            $('.savebtn').hide();
             $.get("{{ url('inventory/stock/fetchBatchCards') }}?item_id="+res.id,function(data)
             {
                 //alert('kk');
-               
+                $('.batchcards').html(data['batchcards']);
+                $('.lotcards').html(data['lotcards']);
                 if(data['batchcards'] && data['lotcards'])
                 {
-                    $('.batchcards').html(data['batchcards']);
-                    $('.lotcards').html(data['lotcards']);
-                    $('.spinner-button').show();
-                    $('.savebtn').show();
+                $('.spinner-button').show();
+                $('.savebtn').show();
                 }
-               
             });
         }
 
@@ -220,35 +214,71 @@
     $('.submitbtn').on('click', function (e) {
         var batch_tot = 0;
         var lot_qty = parseFloat($('.lot-radio:checked').attr('lotqty'));
-        if(lot_qty=='NaN')
-        alert('Please Check One of the lotcard...')
+        //alert(lot_qty);
         $(".batchcard-checkbox:checked").each(function() {
-            checkbox = $(this);
-            batch_tot= batch_tot+parseFloat(checkbox.closest('tr').find('.qty_to_production').val());
+            batch_tot= batch_tot+parseFloat($(this).attr('batchqty'));
         });
         //alert(batch_tot);
-       if(batch_tot>lot_qty)
+       if(batch_tot!=lot_qty)
        {
             e.preventDefault();
-            alert('Selected batch item quantity is not match with selected Lotcard.You Need change the batchcard quantity.');
+            alert('Selected batch item quantity is not match with selected Lotcard.You Need to send  batchcard item quantity update request. For this click on "Quality Upadte Request" button.');
+            $(".batchcard-checkbox:checked").each(function() {
+                $(this).closest('th[class="qty"]').find('button').show();
+            });
+            $('.request-btn').show();
        }
        else
        {
             form.submit();
        }
     });
-    function enableTextBox(cash) {
-        const checkbox = $(cash);
-        if(checkbox.is(':checked')){
-            checkbox.closest('tr').find('.qty_to_production').attr("disabled", false);
-            checkbox.closest('tr').find('.qty_to_production').attr("required", "true");
-        }else{
-            checkbox.closest('tr').find('.qty_to_production').val('');
-            checkbox.closest('tr').find('.qty_to_production').attr("required", "false");
-            checkbox.closest('tr').find('.qty_to_production').attr("disabled", true);
-        }
-    }
-        
+    $(document).ready(function() {
+        $('body').on('click', '#request-btn', function (event) {
+            $('#request_sku_qty').val('');
+            $("#request_qty").val('');
+            var batchid = $(this).attr('batchid');
+            var batchno = $(this).attr('batchno');
+            var batchqty = $(this).attr('batchqty');
+            var skucode = $(this).attr('skucode');
+            var skuqty = $(this).attr('skuqty');
+            var unit = $(this).attr('unit');
+            var item_code = $('#item_code').text();
+            var item_id = $('#item_code').val();
+            var item_description = $('#item_description').text();
+            var lot_qty = $('.lot-radio:checked').attr('lotqty');
+            var lot_no = $('.lot-radio:checked').attr('lotno');
+            var batchmaterialId = $(this).attr('batchmaterialId');
+            $('#batchno').html(batchno);
+            $('#skucode').html(skucode);
+            $('#skuqty').html(skuqty);
+            $('#batchid').val(batchid);
+            $('#batchqty').text(batchqty+' '+unit);
+            $('#unit').text(unit);
+            $('.batch_number').text(batchno);
+            //$('#request_sku_qty').val(skuqty);
+            $('#description').text(item_description);
+            $('#itemcode').text(item_code);
+            $('#lotqty').text(lot_qty+' '+unit);
+            $('#lotno').text(lot_no);
+            $('#item_id').val(item_id);
+            $('#batchcard_material_id').val(batchmaterialId);
+            var material_qty_per_sku = parseInt(batchqty)/parseInt(skuqty);
+            var request_sku_qty = parseInt(lot_qty)/material_qty_per_sku;
+            // $('#request_sku_qty').val(Math.floor(request_sku_qty));
+            // $('#request_qty').val(lot_qty);
+            $('#request_qty').attr('materialQtyPerSku',material_qty_per_sku);
+            //alert(material_qty_per_sku);
+
+        });
+        $("#request_qty").on("input", function() {
+            
+            var material_qty_per_sku = $(this).attr('materialQtyPerSku'); 
+            var requested_qty = $(this).val();
+            var request_sku_qty = parseFloat(requested_qty)/parseFloat(material_qty_per_sku);
+            $('#request_sku_qty').val(Math.floor(request_sku_qty));
+        });
+    });
      
           
 

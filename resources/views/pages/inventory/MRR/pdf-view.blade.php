@@ -192,7 +192,7 @@
             <td>{{$i++}}</td>
             <td>{{$item['item_code']}}</td>
             <td>{{$item['item_description']}}</td>
-            <td>{{$item['actual_order_qty']}} {{$item['unit_name']}}</td>
+            <td>@if($item['actual_order_qty']) {{$item['actual_order_qty']}} @else {{$item['actualqty']}} @endif {{$item['unit_name']}}</td>
             <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
             <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
             <td>{{$item['rejected_quantity']}} {{$item['unit_name']}}</td>
