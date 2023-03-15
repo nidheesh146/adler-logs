@@ -8,13 +8,13 @@
 
                 <div class="az-content-breadcrumb">
                     <span><a href="" style="color: #596881;">
-                    Material Receipt Note(MRN)</a></span>
+                    Material Transferred To Qurantine(MTQ)</a></span>
                     <span><a href="" style="color: #596881;">
-                            MRN Item</a></span>
+                            MTQ Item</a></span>
                 </div>
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                MRN Item
+                MTQ Item
                 </h4>
                 <div class="az-dashboard-nav">
                 </div>

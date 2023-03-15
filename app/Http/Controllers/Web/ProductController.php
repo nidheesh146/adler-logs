@@ -243,11 +243,11 @@ class ProductController extends Controller
                     {
                         $res[] = DB::table('product_product')->insert($data); 
                     }
-                    // else
-                    // {
-                    //     echo "yes";exit;
-                    //     $res[] = DB::table('product_product')->where('sku_code', $excelsheet[1])->update($data);
-                    // }
+                    else
+                    {
+                        //echo "yes";exit;
+                        $res[] = DB::table('product_product')->where('sku_code', $excelsheet[1])->update($data);
+                    }
             }
             
         }

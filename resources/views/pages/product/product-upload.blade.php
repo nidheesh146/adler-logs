@@ -37,7 +37,7 @@
                                 <label for="exampleInputEmail1">Select File </label>
                                 
                                 <input type="file"  accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" name="file" value="" >
-                                <a href="{{ asset('uploads/batchcard_sample.xlsx') }}"  target="_blank" style="
+                                <a href="{{ asset('uploads/product_sample.xlsx') }}"  target="_blank" style="
                                 float: right;
                                 font-size: 10px;
                             "> Download Template</a>

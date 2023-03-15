@@ -377,7 +377,19 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MRN/add','MRNController@MRNAdd');
     Route::get('fgs/MRN/item-list','MRNController@MRNitemlist');
     Route::get('fgs/MRN/add-item','MRNController@MRNitemAdd');
+    //MIN
+    Route::get('fgs/MIN/add','MINController@MINAdd');
+    Route::get('fgs/MIN/item-list','MINController@MINitemlist');
+    Route::get('fgs/MIN/add-item','MINController@MINitemAdd');
     //Route::get('fgs/MRN/add-item','MRNController@MRNitemAdd');
+     //MTQ
+     Route::get('fgs/MTQ/add','MTQController@MTQAdd');
+     Route::get('fgs/MTQ/item-list','MTQController@MTQitemlist');
+     Route::get('fgs/MTQ/add-item','MTQController@MTQitemAdd');
+    //GRS
+    Route::get('fgs/MTQ/add','MTQController@MTQAdd');
+    Route::get('fgs/MTQ/item-list','MTQController@MTQitemlist');
+    Route::get('fgs/MTQ/add-item','MTQController@MTQitemAdd');
     
 });
 

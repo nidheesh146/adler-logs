@@ -8,13 +8,13 @@
 
                 <div class="az-content-breadcrumb">
                     <span><a href="" style="color: #596881;">
-                    Material Receipt Note(MRN)</a></span>
+                    Material Issue Note(MIN)</a></span>
                     <span><a href="" style="color: #596881;">
-                            MRN Item</a></span>
+                            MIN Item</a></span>
                 </div>
 
                 <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-                MRN Item
+                MIN Item
                 </h4>
                 <div class="az-dashboard-nav">
                 </div>
@@ -112,6 +112,8 @@
                                     <label for="exampleInputEmail1">Remarks  *</label>
                                     <textarea type="text" class="form-control" name="f_name" value="" placeholder=""></textarea>
                                 </div>
+                               
+
                             </div>
 
                             <div class="row">

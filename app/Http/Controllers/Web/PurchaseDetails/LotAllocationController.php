@@ -85,7 +85,8 @@ class LotAllocationController extends Controller
             // if(!$validator->errors()->all()) 
             // { 
                 $mnthYearcombo= date('m').date('y');
-                $data['lot_number'] = $this->lot_num_gen(DB::table('inv_lot_allocation')->where('lot_number','LIKE', '%'.$mnthYearcombo)->count()); //$request->lot_number;
+                $data['lot_number'] = $request->lot_number;
+                //$data['lot_number'] = $this->lot_num_gen(DB::table('inv_lot_allocation')->where('lot_number','LIKE', '%'.$mnthYearcombo)->count()); //$request->lot_number;
                 $data['doc_number'] = $request->document_no;
                 $data['rev_number'] = $request->rev_no;
                 $data['rev_date'] = $request->rev_date;

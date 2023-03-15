@@ -7,7 +7,7 @@
 		<div class="az-content-body">
 
             <div class="az-content-breadcrumb"> 
-                <span><a href="" style="color: #596881;"> Material Receipt Note(MRN)</a></span> 
+                <span><a href="" style="color: #596881;">Material Transferred To Qurantine(MTQ)</a></span> 
                 <!-- <span><a href="" style="color: #596881;">MRN</a></span> -->
                 <span><a href="">
                    
@@ -15,7 +15,7 @@
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            Material Receipt Note(MRN)
+            Material Transferred To Qurantine(MTQ)
             </h4>
             <div class="az-dashboard-nav">
            
@@ -53,37 +53,14 @@
 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Supplier Doc No.  *</label>
+                                <label for="exampleInputEmail1">Ref No.  *</label>
                                 <input type="text" class="form-control" name="f_name" value="" placeholder="Supplier Doc No">
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Supplier Doc Date  *</label>
+                                <label for="exampleInputEmail1">Ref Date  *</label>
                                 <input type="text" class="form-control datepicker" name="f_name" value="" placeholder="">
                             </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Doc Entry Type  *</label>
-                                <select class="form-control">
-                                    <option>Select</option>
-                                    <option>Manual Entry</option>
-                                </select>
-                            </div>
-                            <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">MIQ Number *</label>
-                                <select class="form-control">
-                                    <option>MIQ5787</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">MIQ Number *</label>
-                                <select class="form-control">
-                                    <option>Select one...</option>
-                                    <option>MIQ5787</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">MIQ Date  *</label>
-                                <input type="text" class="form-control datepicker" name="f_name" value="" placeholder="">
-                            </div> -->
+                            
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Product Category  *</label>
                                 <select class="form-control">
@@ -102,13 +79,13 @@
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                                <label>MRN Date *</label>
+                                <label>MTQ Date *</label>
                                 <input type="text" value="" class="form-control datepicker" name="Date" placeholder="">
                             </div><!-- form-group -->
                         </div> 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <button type="submit" onclick="document.location.href='{{url('fgs/MRN/item-list')}}'" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                <button type="submit" onclick="document.location.href='{{url('fgs/MTQ/item-list')}}'" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                     Save & Next
                                 

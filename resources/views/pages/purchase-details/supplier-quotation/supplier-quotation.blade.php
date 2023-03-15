@@ -126,7 +126,7 @@
 										@endif
 									</td>
 									<td>
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['quotation_id'].'/'.$supp['supplier_id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> View</a>
+									<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['quotation_id'].'/'.$supp['supplier_id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> View</a>
 										<a class="badge badge-primary" style="font-size: 13px;" href="{{url('inventory/comparison-quotation/'.$item['quotation_id']) }}"  class="dropdown-item"><i class="fa fa-balance-scale"></i> Comparison</a>
 									</td>
 								</tr>

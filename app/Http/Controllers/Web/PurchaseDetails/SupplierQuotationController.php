@@ -68,14 +68,19 @@ class SupplierQuotationController extends Controller
         //print_r(json_encode($data['quotation']));exit;
         return view('pages/purchase-details/supplier-quotation/supplier-quotation', compact('data'));
     }
-    function get_supplier($id){
+    function get_supplier($quotation_id){
       $suppliers ="";
       $supplier_id ="";
 
-      $quotation_supplier =  $this->inv_purchase_req_quotation_supplier->getItem(['quotation_id'=>$id]);
+      $quotation_supplier =  $this->inv_purchase_req_quotation_supplier->getItem(['quotation_id'=>$quotation_id]);
+      //print_r(json_encode($quotation_supplier));exit;
       $count =  count($quotation_supplier);
-      foreach($quotation_supplier as $key => $quotation_supplier){
-         $supplier =  $this->inv_supplier->get_supplier(['id'=>$quotation_supplier->supplier_id]);
+      foreach($quotation_supplier as $key => $quotation_supplier)
+      {
+         //$supplier =  $this->inv_supplier->get_supplier(['inv_supplier.id'=>98]);
+         //$supplier = inv_supplier::find(98);
+         $supplier = DB::table('inv_supplier')->where('id','=',$quotation_supplier->supplier_id)->first();
+    
         if(!$supplier_id){
             $supplier_id = $supplier->id;
         }
@@ -242,6 +247,7 @@ class SupplierQuotationController extends Controller
         $fixed_item[] = $this->check_fixed_item($item['itemId'], $item['supplier_id']);
        }
         $fixedItem =array_values(array_filter($fixed_item));
+        //print_r($fixedItem);exit;
         if(count($fixedItem)>0)
         {
             $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_without_fixed_item(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no],$fixedItem);

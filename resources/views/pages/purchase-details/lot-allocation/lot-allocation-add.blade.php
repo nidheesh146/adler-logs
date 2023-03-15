@@ -111,10 +111,10 @@
                        
                                 <div class="row">
                              
-                                    {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                         <label for="exampleInputEmail1">Lot Number *</label>
                                         <input type="text" class="form-control lot-number" name="lot_number" id="lot_number" placeholder="Lot Number">
-                                    </div> --}}
+                                    </div> 
     
                                     {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Document No *</label>

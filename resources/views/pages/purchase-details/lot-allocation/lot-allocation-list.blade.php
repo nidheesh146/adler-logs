@@ -173,11 +173,11 @@
                        
                                 <div class="row">
                              
-                                    {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                         <label for="exampleInputEmail1">Lot Number *</label>
-                                        <input type="text" class="form-control lot-number" name="lot_number" id="lot_number" placeholder="Lot Number">
+                                        <input type="text" class="form-control lot-number" name="lot_number" id="lot_number_entry" placeholder="Lot Number">
 									
-									</div> --}}
+									</div> 
                                     <input type="hidden"  value="" class="form-control" name="lot_id" id="lot_id">
                                     {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label>Document No *</label>
@@ -551,6 +551,7 @@
                 $('#invoice_id').val(data.invoice_item_id);
                 $('#si_id').val(data.invoice_item_id);
 				            $('#lot_number').text(data.lot_number);
+                            $('#lot_number_entry').val(data.lot_number);
                             $('#rev_no').val(data.rev_number);
                             $('#rev_date').val(data.rev_date);
                             $('#qty_received').val(data.qty_received);

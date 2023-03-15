@@ -107,6 +107,18 @@
             <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/MRN/add')}}"  class="nav-sub-link">MRN</a>
             </li>
+            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+              <a href="{{url('fgs/MIN/add')}}"  class="nav-sub-link">MIN</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+              <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">GRS</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+              <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">MTQ</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+              <a href="{{url('fgs/MIS/add')}}"  class="nav-sub-link">MIS</a>
+            </li>
             
           </ul>
         </li>

@@ -202,11 +202,15 @@
             $.get("{{ url('inventory/stock/fetchBatchCards') }}?item_id="+res.id,function(data)
             {
                 //alert('kk');
-               
+               if(data['batchcards']){
+                $('.batchcards').html(data['batchcards']);
+               }
+               if(data['lotcards']){
+                $('.lotcards').html(data['lotcards']);
+               }
+
                 if(data['batchcards'] && data['lotcards'])
                 {
-                    $('.batchcards').html(data['batchcards']);
-                    $('.lotcards').html(data['lotcards']);
                     $('.spinner-button').show();
                     $('.savebtn').show();
                 }
