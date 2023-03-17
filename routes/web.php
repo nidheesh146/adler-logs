@@ -372,11 +372,17 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/price-master/add/{id?}','PriceController@priceAdd');
     Route::post('fgs/price-master/add/{id?}','PriceController@priceAdd');
     Route::get('fgs/productsearch','PriceController@productsearch');
+   
 
     //MRN
-    Route::get('fgs/MRN/add','MRNController@MRNAdd');
-    Route::get('fgs/MRN/item-list','MRNController@MRNitemlist');
-    Route::get('fgs/MRN/add-item','MRNController@MRNitemAdd');
+    Route::get('fgs/MRN-list','MRNController@MRNList');
+    Route::get('fgs/MRN-add','MRNController@MRNAdd');
+    Route::post('fgs/MRN-add','MRNController@MRNAdd');
+    Route::get('fgs/MRN/item-list/{mrn_id}','MRNController@MRNitemlist');
+    //Route::get('fgs/productsearch','MRNController@productsearch');
+    Route::get('fgs/fetchProductBatchCards','MRNController@fetchProductBatchCards');
+    Route::get('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
+    Route::post('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
     //MIN
     Route::get('fgs/MIN/add','MINController@MINAdd');
     Route::get('fgs/MIN/item-list','MINController@MINitemlist');

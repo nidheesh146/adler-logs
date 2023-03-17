@@ -54,61 +54,39 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Supplier Doc No.  *</label>
-                                <input type="text" class="form-control" name="f_name" value="" placeholder="Supplier Doc No">
+                                <input type="text" class="form-control" name="supplier_doc_number" value="" placeholder="Supplier Doc No">
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Supplier Doc Date  *</label>
-                                <input type="text" class="form-control datepicker" name="f_name" value="" placeholder="">
+                                <input type="text" class="form-control datepicker" name="supplier_doc_date" value="" placeholder="">
                             </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Doc Entry Type  *</label>
-                                <select class="form-control">
-                                    <option>Select</option>
-                                    <option>Manual Entry</option>
-                                </select>
-                            </div>
-                            <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">MIQ Number *</label>
-                                <select class="form-control">
-                                    <option>MIQ5787</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">MIQ Number *</label>
-                                <select class="form-control">
-                                    <option>Select one...</option>
-                                    <option>MIQ5787</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">MIQ Date  *</label>
-                                <input type="text" class="form-control datepicker" name="f_name" value="" placeholder="">
-                            </div> -->
+                            
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Product Category  *</label>
-                                <select class="form-control">
+                                <select class="form-control" name="product_category">
                                     <option>Select one...</option>
-                                    <option>ASD</option>
-                                    <option>AWM</option>
+                                    @foreach($category as $cate)
+                                    <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location  *</label>
-                                <select class="form-control">
+                                <select class="form-control" name="stock_location">
                                     <option>Select one...</option>
-                                    <option>Location-1</option>
-                                    <option>Location-2</option>
-                                    <option>Location-3</option>
+                                    @foreach($locations as $loc)
+                                    <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>MRN Date *</label>
-                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="">
+                                <input type="text" value="" class="form-control datepicker" name="mrn_date" placeholder="">
                             </div><!-- form-group -->
                         </div> 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <button type="submit" onclick="document.location.href='{{url('fgs/MRN/item-list')}}'" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                <button type="submit"  class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                     Save & Next
                                 
@@ -164,13 +142,19 @@
 
     $("#commentForm").validate({
             rules: {
-                Requestor: {
+                supplier_doc_number: {
                     required: true,
                 },
-                Department: {
+                supplier_doc_date: {
                     required: true,
                 },
-                Date: {
+                product_category: {
+                    required: true,
+                },
+                stock_location: {
+                    required: true,
+                },
+                mrn_date: {
                     required: true,
                 },
                 
@@ -184,10 +168,7 @@
 
     
   });
-  $('.requestor').select2({
-        placeholder: 'Choose one',
-        searchInputPlaceholder: 'Search',
-    });
+ 
 </script>
 
 

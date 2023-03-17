@@ -252,7 +252,7 @@ class SupplierQuotationController extends Controller
         {
             $items = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_without_fixed_item(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no],$fixedItem);
             $items_info = $this->inv_purchase_req_quotation_item_supp_rel->get_quotation_items_details_without_fixed_item(['inv_purchase_req_quotation_item_supp_rel.quotation_id'=> $rq_no], $fixedItem);
-            //print_r(json_encode($items_info));exit;
+            //
             $supplier_data = $this->arrage_items($items, $items_info);
         }
         else

@@ -230,6 +230,7 @@ class MACController extends Controller
 
     public function MACAdd(Request $request)
     {
+
         if($request->isMethod('post'))
         {
             $validation['mac_date'] = ['required','date'];
@@ -242,6 +243,11 @@ class MACController extends Controller
                 {
                     $item_type = $this->get_item_type($request->invoice_number);
                     if($item_type=="Direct Items"){
+                        $lot_alloted = $this->check_lot_alloted($request->invoice_number);
+                        if($lot_alloted==1){
+                            $request->session()->flash('error', "Please complete lot allocation for the particular invoice items...");  
+                            return redirect('inventory/MAC-add');
+                        }
                         $Data['mac_number'] = "MAC2-".$this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2%')->count(),1); 
                     }
                     //if($item_type=="Indirect Items"){
@@ -322,6 +328,27 @@ class MACController extends Controller
                             ->leftJoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
                             ->where('inv_supplier_invoice_rel.master','=', $invoice_number)->pluck('inv_item_type.type_name')->first();
         return $item_type;
+    }
+    public function check_lot_alloted($invoice_number)
+    {
+        $not_alloted_item = [];
+        $items = inv_supplier_invoice_rel::select('inv_supplier_invoice_item.*','inv_lot_allocation.lot_number')
+                                            ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                                            ->leftJoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                                            ->where('inv_supplier_invoice_rel.master','=', $invoice_number)
+                                            ->get();
+
+        //print_r($items);exit;
+        foreach($items as $item)
+        {
+            if($item['lot_number']=='')
+            $not_alloted_item[] = $item['id'];
+        }
+        if(count($not_alloted_item)==0)
+        return 0;
+        else 
+        return 1;
+
     }
     public function MACAddItemInfo(Request $request, $id)
     {
@@ -441,13 +468,6 @@ class MACController extends Controller
     public function mac_delete(Request $request, $id)
     {
         $this->inv_mac->update_data(['id' => $id],['status'=>0]);
-        // $mac_item_ids = inv_mac_item_rel::where('master','=',$id)->select('item')->get();
-        // foreach($mac_item_ids as $mac_item)
-        // {
-        //     $stock = inv_stock_management::where('transaction_id','=',$mac_item['item'])->where('transaction_type',2)->first();
-        //     if($stock)
-        //     $stock_update = $this->inv_stock_management->update_data(['id'=>$stock['id']],['status'=>0]);
-        // }
         $request->session()->flash('success', "You have successfully deleted a MAC !");
         return redirect("inventory/MAC");
     }
@@ -490,89 +510,7 @@ class MACController extends Controller
 
 
 
-    public function MACAdd1(Request $request)
-    {
-        if($request->isMethod('post'))
-        {
-            $validation['mac_date'] = ['required','date'];
-            $validation['miq_number'] = ['required'];
-            $validation['created_by'] = ['required'];
-            $validator = Validator::make($request->all(), $validation);
-            if(!$validator->errors()->all())
-            {
-                if(!$request->id)
-                {
-                    $item_type = $this->get_item_type($request->miq_number);
-                    if($item_type=="Direct Items"){
-                        $Data['mac_number'] = "MAC2-".$this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2%')->count(),1); 
-                    }
-                    //if($item_type=="Indirect Items")
-                    else{
-                        $Data['mac_number'] = "MAC3-" . $this->po_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC3%')->count(),1); 
-                    }
-                    $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
-                    $Data['miq_id'] = $request->miq_number;
-                    $Data['created_by']= $request->created_by;
-                    $Data['status']=1;
-                    $Data['created_at'] =date('Y-m-d H:i:s');
-                    $Data['updated_at'] =date('Y-m-d H:i:s');
-                    $add_id = $this->inv_mac->insert_data($Data);
-                    $miq_items = inv_miq_item_rel::select('inv_miq_item_rel.item','inv_miq_item.item_id')
-                                ->leftJoin('inv_miq_item','inv_miq_item.id','=','inv_miq_item_rel.item')
-                                ->where('master','=',$request->miq_number)->get();
-                    foreach($miq_items as $item){
-                        $dat=[
-                            'miq_item_id'=>$item->item,
-                            'item_id'=>$item->item_id,
-                            'status'=>1,
-                            'created_at'=>date('Y-m-d H:i:s'),
-                            'updated_at'=>date('Y-m-d H:i:s')
-
-                        ];
-                        $item_id = $this->inv_mac_item->insert_data($dat);
-                        $dat2 =[
-                            'master'=>$add_id,
-                            'item'=>$item_id,
-                        ];
-                        $rel =DB::table('inv_mac_item_rel')->insert($dat2);
-                    }
-                    
-                    if($add_id && $item_id && $rel)
-                        $request->session()->flash('success', "You have successfully created a MAC !");
-                    else
-                        $request->session()->flash('error', "MAC creation is failed. Try again... !");
-                    return redirect('inventory/MAC-add/'.$add_id);
-                }
-                else
-                {
-                    $data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
-                    $data['created_by']= $request->created_by;
-                    $data['updated_at'] =date('Y-m-d H:i:s');
-                    $update = $this->inv_mac->update_data(['id'=>$request->id],$data);
-                    if($update)
-                        $request->session()->flash('success', "You have successfully updated a MAC !");
-                    else
-                        $request->session()->flash('error', "MAC updation is failed. Try again... !");
-                    return redirect('inventory/MAC-add/'.$request->id);
-                }
-            }
-            if($validator->errors()->all())
-            {
-                return redirect('inventory/MAC-add')->withErrors($validator)->withInput();
-            }
-        }
-        $condition1[] = ['user.status', '=', 1];
-        $data['users'] = $this->User->get_all_users($condition1);
-
-        if($request->id){
-            $edit['mac'] = $this->inv_mac->find_mac_data(['inv_mac.id' => $request->id]);
-
-            $edit['items'] = $this->inv_mac_item->get_items(['inv_mac_item_rel.master' =>$request->id]);
-            return view('pages.inventory.MAC.MAC-add',compact('edit','data'));
-        }
-        else
-        return view('pages.inventory.MAC.MAC-add',compact('data'));
-    }
+   
 
     public function get_item_type1($invoice_number)
     {
@@ -798,17 +736,6 @@ class MACController extends Controller
         $mac_item = inv_mac_item::where('id','=',$mac_item_id)->first();
         $lot_id = inv_lot_allocation::where('inv_lot_allocation.si_invoice_item_id','=',$mac_item['invoice_item_id'])->pluck('id')->first();
         $row_material_id = inv_purchase_req_item::where('requisition_item_id','=',$mac_item['pr_item_id'])->pluck('inv_purchase_req_item.item_code')->first();
-       
-
-
-
-
-
-
-
-
-
-        
         $mac_item_exist = inv_stock_transaction::where('transaction_id','=',$mac_item_id)->where('transaction_type',2)->first();
         if( $mac_item_exist)
         {

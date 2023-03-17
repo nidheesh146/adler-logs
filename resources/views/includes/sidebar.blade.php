@@ -105,7 +105,7 @@
               <a href="{{url('fgs/price-master/list')}}"  class="nav-sub-link">Price Master</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
-              <a href="{{url('fgs/MRN/add')}}"  class="nav-sub-link">MRN</a>
+              <a href="{{url('fgs/MRN-list')}}"  class="nav-sub-link">MRN</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/MIN/add')}}"  class="nav-sub-link">MIN</a>

@@ -8,14 +8,14 @@
 			<div class="az-content-breadcrumb"> 
 				 <span>Material Receipt Note(MRN)</span>
 				 <span><a href="">
-				 	MRN Item List
+				 	MRN  List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-            MRN Item List 
+            MRN List 
               <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MRN/add-item/'.$mrn_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						MRN Item
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MRN-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+						MRN 
 				</button>
               <div>  
 				
@@ -108,27 +108,26 @@
 						<table class="table table-bordered mg-b-0" >
 							<thead>
 								<tr>
-									<th>Product</th>
-                                    <th>HSN Code</th>
-									<th>Description</th>
-									<th>Batch No.</th>
-									<th>Batch Qty</th>
-									<th>UOM</th>
-                                    <th>Date of Mfg.</th>
-                                    <th>Date of Expiry</th>
+									<th>MRN Number</th>
+                                    <th>Supplier doc number</th>
+									<th>Supplier doc date</th>
+									<th>Product Category</th>
+									<th>Stock Location</th>
+									<th>MRN date</th>
+                                    <th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
                                 <tr>
-									@foreach($items as $item)
-									<td>{{$item['sku_code']}}</td>
-                                    <td>{{$item['hsn_code']}}</td>
-									<td>{{$item['discription']}}</td>
-									<td>{{$item['batch_no']}}</td>
-									<td>{{$item['batchcard_qty']}}</td>
-									<td>Nos</td>
-                                    <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+									@foreach($mrn as $item)
+									<td>{{$item['mrn_number']}}</td>
+                                    <td>{{$item['supplier_doc_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['supplier_doc_date']))}}</td>
+									<td>{{$item['category_name']}}</td>
+									<td>{{$item['location_name']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['mrn_date']))}}</td>
                                     <td>{{date('d-m-Y', strtotime($item['expiry_date']))}}</td>
+                                    <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MRN/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	</td>
 									@endforeach
 								</tr>
 							</tbody>

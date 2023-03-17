@@ -80,7 +80,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_item_supp_rel.supplier_id')
                     ->leftjoin('currency_exchange_rate','inv_purchase_req_quotation_item_supp_rel.currency','=','currency_exchange_rate.currency_id')
                     ->where($condition)
-                    ->groupBy('inventory_rawmaterial.item_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')
+                    //->groupBy('inventory_rawmaterial.item_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')
                     ->orderBy('inventory_rawmaterial.id','DESC')
                     ->orderBy('inv_purchase_req_quotation_item_supp_rel.supplier_id','ASC')
                     ->get();
@@ -97,7 +97,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                     ->leftjoin('currency_exchange_rate','inv_purchase_req_quotation_item_supp_rel.currency','=','currency_exchange_rate.currency_id')
                     ->where($condition)
                     ->whereNotIn('inventory_rawmaterial.id', $fixed_items)
-                    ->groupBy('inventory_rawmaterial.item_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')
+                    //->groupBy('inventory_rawmaterial.item_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')
                     ->orderBy('inventory_rawmaterial.id','DESC')
                     ->orderBy('inv_purchase_req_quotation_item_supp_rel.supplier_id','ASC')
                     ->get();
@@ -113,7 +113,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->orderBy('inventory_rawmaterial.id','DESC')
                     ->where($condition)
-                    ->groupBy('inventory_rawmaterial.item_code')
+                    //->groupBy('inventory_rawmaterial.item_code')
                     ->get()->toArray();
         }
         function get_quotation_items_without_fixed_item($condition, $fixed_items)
@@ -127,7 +127,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                     ->orderBy('inventory_rawmaterial.id','DESC')
                     ->where($condition)
                     ->whereNotIn('inventory_rawmaterial.id', $fixed_items)
-                    ->groupBy('inventory_rawmaterial.item_code')
+                    //->groupBy('inventory_rawmaterial.item_code')
                     ->get()->toArray();
         }
         function inv_purchase_req_quotation_item_data($condition){
