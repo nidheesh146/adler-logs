@@ -119,8 +119,8 @@
 								</tr>
 							</thead>
 							<tbody id="prbody1">
+							@foreach($items as $item)
                                 <tr>
-									@foreach($items as $item)
 									<td>{{$item['sku_code']}}</td>
                                     <td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
@@ -129,8 +129,9 @@
 									<td>Nos</td>
                                     <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                                     <td>{{date('d-m-Y', strtotime($item['expiry_date']))}}</td>
-									@endforeach
+									
 								</tr>
+								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">

@@ -213,25 +213,29 @@ $(".datepicker").datepicker({
                         <div class="row"> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Batch Qty * </label>
-                                <input type="text"  class="form-control" name="qty" id="stock_qty${i}" placeholder="Stock Qty">
+                                <input type="text"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Stock Qty">
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>UOM </label>
-                                <input type="text"  class="form-control" readonly name="uom" id="uom${i}" placeholder="NOS">
+                                <input type="text"  class="form-control" readonly name="moreItems[${i}][uom]" id="uom${i}" placeholder="NOS">
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Date of Mfg. * </label>
-                                <input type="text"  class="form-control datepicker" name="manufacturing_date" id="manufacturing_date${i}" placeholder="Date of Mfg.">
+                                <input type="text"  class="form-control datepicker" name="moreItems[${i}][manufacturing_date]" id="manufacturing_date${i}" placeholder="Date of Mfg.">
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Date of Expiry * </label>
-                                <input type="text"  class="form-control datepicker" name="expiry_date" id="expiry_date${i}" placeholder="Date of Expiry">
+                                <input type="text"  class="form-control datepicker" name="moreItems[${i}][expiry_date]" id="expiry_date${i}" placeholder="Date of Expiry">
                             </div>
                             <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
                         </div>
                     </td>                        
                 </tr>`);
                 initSelect2();
+                $(".datepicker").datepicker({
+                format: " dd-mm-yyyy",
+                autoclose:true
+                });
             });
             $(document).on('click','.btn_remove', function(){
                 var button_id = $(this).attr("id");

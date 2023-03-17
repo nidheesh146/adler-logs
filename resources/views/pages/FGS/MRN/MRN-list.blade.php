@@ -118,18 +118,19 @@
 								</tr>
 							</thead>
 							<tbody id="prbody1">
+							@foreach($mrn as $item)
                                 <tr>
-									@foreach($mrn as $item)
+									
 									<td>{{$item['mrn_number']}}</td>
                                     <td>{{$item['supplier_doc_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['supplier_doc_date']))}}</td>
 									<td>{{$item['category_name']}}</td>
 									<td>{{$item['location_name']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['mrn_date']))}}</td>
-                                    <td>{{date('d-m-Y', strtotime($item['expiry_date']))}}</td>
                                     <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MRN/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	</td>
-									@endforeach
+									
 								</tr>
+								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
