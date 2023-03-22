@@ -96,7 +96,8 @@
           </ul>
         </li>
         
-        <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MRN.MRNitemAdd'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist',
+        'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
@@ -108,7 +109,7 @@
             <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/MRN-list')}}"  class="nav-sub-link">MRN</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+            <li class="nav-sub-item @if(in_array($Action,['MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/MIN-list')}}"  class="nav-sub-link">MIN</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
