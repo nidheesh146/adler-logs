@@ -128,6 +128,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/final-purchase/excess-quantity', 'PurchaseController@getExcessQty');
     Route::get('inventory/final-purchase-view/{id}/excess-quantity', 'PurchaseController@viewFinalPurchaseExcess');
     Route::post('inventory/final-purchase/excess-qty-order','PurchaseController@excessPurchaseOrder');
+    Route::get('inventory/pending-purchase-realisation','PurchaseController@pendingPurchaseRealisation');
+    Route::get('inventory/pending-purchase-realisation/excel-export','PurchaseController@pendingPurchaseRealisationExport');
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');
     Route::get('inventory/supplier-invoice-add', 'PurchaseController@supplierInvoiceAdd');
@@ -384,9 +386,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
     Route::post('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
     //MIN
-    Route::get('fgs/MIN/add','MINController@MINAdd');
-    Route::get('fgs/MIN/item-list','MINController@MINitemlist');
-    Route::get('fgs/MIN/add-item','MINController@MINitemAdd');
+    Route::get('fgs/MIN-list','MINController@MINList');
+    Route::get('fgs/MIN-add','MINController@MINAdd');
+    Route::post('fgs/MIN-add','MINController@MINAdd');
+    Route::get('fgs/MIN/item-list/{min_id}','MINController@MINitemlist');
+    Route::get('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
+    Route::post('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
     //Route::get('fgs/MRN/add-item','MRNController@MRNitemAdd');
      //MTQ
      Route::get('fgs/MTQ/add','MTQController@MTQAdd');

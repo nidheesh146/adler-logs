@@ -38,6 +38,7 @@ class inv_mrr_item extends Model
                     ->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
                     ->where($condition)
                     ->orderBy('inv_mrr_item.id','DESC')
+                    ->distinct('inv_mrr_item.id')
                     ->get();
     }
 }

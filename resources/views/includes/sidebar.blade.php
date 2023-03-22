@@ -33,7 +33,7 @@
         'Inventory.add_purchase_reqisition_item','Approval.getList','Quotation.getQuotation', 
         'SupplierQuotation.viewSupplierQuotationItems', 'SupplierQuotation.getSupplierQuotationEditItem',
         'SupplierQuotation.comparisonOfQuotation','SupplierQuotation.getSupplierQuotation','Purchase.getFinalPurchase',
-        'Purchase.addFinalPurchase','Purchase.Edit_PO_item','Quotation.getQuotation','Supplier.list_supplier','Purchase.purchaseOderCancellation',
+        'Purchase.addFinalPurchase','Purchase.Edit_PO_item','Quotation.getQuotation','Supplier.list_supplier','Purchase.purchaseOderCancellation','Purchase.pendingPurchaseRealisation',
         'Supplier.add_supplier','Purchase.viewFinalPurchase','Purchase.add1FinalPurchase','Purchase.editFinalPurchase','Purchase.purchaseOderApproval','Quotation.directPurchase','Purchase.viewFinalPurchaseExcess','Purchase.getExcessQty'])) {{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-shopping-cart" style="font-size: 17px;"></i>Purchase Details</a>
           <ul class="nav-sub">
@@ -70,6 +70,7 @@
             @if(in_array('supplier.list',config('permission')) || in_array('supplier.add',config('permission')) || in_array('supplier.edit',config('permission')) || in_array('supplier.delete',config('permission')))
             <li class="nav-sub-item  @if(in_array($Action,['Supplier.list_supplier','Supplier.add_supplier'])){{'active'}} @endif "><a href="{{url('inventory/suppliers-list')}}" class="nav-sub-link">Supplier Master</a></li>
             @endif
+            <li class="nav-sub-item  @if(in_array($Action,['Purchase.pendingPurchaseRealisation'])){{'active'}} @endif "><a href="{{url('inventory/pending-purchase-realisation')}}" class="nav-sub-link">R02-Pending Purchase Realisation</a></li>
           </ul>
         </li><!-- nav-item -->
         
@@ -95,7 +96,7 @@
           </ul>
         </li>
         
-        <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MRN.MRNitemAdd'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
@@ -104,11 +105,11 @@
             <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/price-master/list')}}"  class="nav-sub-link">Price Master</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+            <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/MRN-list')}}"  class="nav-sub-link">MRN</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
-              <a href="{{url('fgs/MIN/add')}}"  class="nav-sub-link">MIN</a>
+              <a href="{{url('fgs/MIN-list')}}"  class="nav-sub-link">MIN</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">GRS</a>

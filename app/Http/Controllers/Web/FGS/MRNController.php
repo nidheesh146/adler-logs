@@ -8,7 +8,8 @@ use Validator;
 use DB;
 use App\Models\product;
 use App\Models\FGS\product_stock_location;
-use App\Models\FGS\fgs_product_stock;
+use App\Models\FGS\fgs_product_stock_management;
+use App\Models\FGS\production_stock_management;
 use App\Models\FGS\fgs_product_category;
 use App\Models\FGS\fgs_mrn;
 use App\Models\FGS\fgs_mrn_item;
@@ -23,15 +24,32 @@ class MRNController extends Controller
         $this->fgs_mrn_item = new fgs_mrn_item;
         $this->fgs_mrn_item_rel = new fgs_mrn_item_rel;
         $this->product = new product;
-        $this->fgs_product_stock = new fgs_product_stock;
+        $this->fgs_product_stock_management = new fgs_product_stock_management;
+        $this->production_stock_management = new production_stock_management;
     }
 
-    public function MRNList()
+    public function MRNList(request $request)
     {
+        $condition =[];
+        if($request->mrn_no)
+        {
+            $condition[] = ['fgs_mrn.mrn_number','like', '%' . $request->mrn_no . '%'];
+        }
+        if($request->supplier_doc_number)
+        {
+            $condition[] = ['fgs_mrn.supplier_doc_number','like', '%' . $request->supplier_doc_number . '%'];
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_mrn.mrn_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_mrn.mrn_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        }
+
         $mrn = fgs_mrn::select('fgs_mrn.*','fgs_product_category.category_name','product_stock_location.location_name')
                         ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_mrn.product_category')
                         ->leftJoin('product_stock_location','product_stock_location.id','fgs_mrn.stock_location')
-                        ->get();
+                        ->where($condition)
+                        ->paginate(15);
         return view('pages/FGS/MRN/MRN-list', compact('mrn'));
     }
 
@@ -85,7 +103,21 @@ class MRNController extends Controller
     }
     public function MRNitemlist(Request $request,$mrn_id)
     {
-        $items = $this->fgs_mrn_item->getItems(['fgs_mrn_item_rel.master' =>$request->mrn_id]);
+        $condition = ['fgs_mrn_item_rel.master' =>$request->mrn_id];
+        if($request->product)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->product . '%'];
+        }
+        if($request->batchnumber)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batchnumber . '%'];
+        }
+        if($request->manufaturing_from)
+        {
+            $condition[] = ['fgs_mrn_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->manufaturing_from))];
+            $condition[] = ['fgs_mrn_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->manufaturing_from))];
+        }
+        $items = $this->fgs_mrn_item->getItems($condition);
         return view('pages/FGS/MRN/MRN-item-list', compact('mrn_id','items'));
     }
 
@@ -105,10 +137,10 @@ class MRNController extends Controller
     // }
     public function fetchProductBatchCards(Request $request)
     {
-        $batchcards = fgs_product_stock::select('batchcard_batchcard.batch_no','fgs_product_stock.stock_qty','batchcard_batchcard.id as batch_id')
-                                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock.batchcard_id')
-                                        ->where('fgs_product_stock.product_id','=',$request->product_id)
-                                        ->where('fgs_product_stock.stock_qty','!=',0)
+        $batchcards = production_stock_management::select('batchcard_batchcard.batch_no','production_stock_management.stock_qty','batchcard_batchcard.id as batch_id')
+                                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','production_stock_management.batchcard_id')
+                                        ->where('production_stock_management.product_id','=',$request->product_id)
+                                        ->where('production_stock_management.stock_qty','!=',0)
                                         ->get();
         return $batchcards;
     }
@@ -121,28 +153,53 @@ class MRNController extends Controller
             $validation['moreItems.*.batch_no'] = ['required'];
             $validation['moreItems.*.qty'] = ['required'];
             $validation['moreItems.*.manufacturing_date'] = ['required','date'];
-            $validation['moreItems.*.expiry_date'] = ['required','date'];
+            //$validation['moreItems.*.expiry_date'] = ['required','date'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                foreach ($request->moreItems as $key => $value) {
+                $mrn_info = fgs_mrn::find($request->mrn_id);
+                foreach ($request->moreItems as $key => $value) 
+                {
+                    if($value['expiry_date']!='N.A')
+                    $expiry_date = date('Y-m-d', strtotime($value['expiry_date']));
+                    else
+                    $expiry_date = '';
                     $data = [
                         "product_id" => $value['product'],
                         "batchcard_id"=> $value['batch_no'],
-                        "batchcard_qty" => $value['qty'],
+                        "quantity" => $value['qty'],
                         "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
-                        "expiry_date" =>  date('Y-m-d', strtotime($value['expiry_date'])),
+                        "expiry_date" => $expiry_date ,
                         "created_at" => date('Y-m-d H:i:s')
                     ];
+                    $mrn_data =[
+                        'remarks' => $request->remarks
+                    ];
+                    $stock = [
+                        "product_id" => $value['product'],
+                        "batchcard_id"=> $value['batch_no'],
+                        "quantity" => $value['qty'],
+                        "stock_location_id"=>$mrn_info['stock_location'],
+                    ];
                     $this->fgs_mrn_item->insert_data($data,$request->mrn_id);
+                    $this->fgs_mrn->update_data(['id'=>$request->mrn_id],$mrn_data);
+                    $this->fgs_product_stock_management->insert_data($stock);
+                    $production_stock = production_stock_management::where('product_id','=',$value['product'])
+                                                ->where('batchcard_id','=',$value['batch_no'])
+                                                ->first();
+                    $update_stock = $production_stock['stock_qty']-$value['qty'];
+                    $production_stock = $this->production_stock_management->update_data(['id'=>$production_stock['id']],['stock_qty'=>$update_stock]);              
                 }
                 $request->session()->flash('success',"You have successfully added a MRN item !");
                 return redirect('fgs/MRN/item-list/'.$request->mrn_id);
+            } 
+            else
+            {
+                return redirect('fgs/MRN/add-item/'.$request->mrn_id)->withErrors($validator)->withInput();
             }
         }
         else{
             return view('pages/FGS/MRN/MRN-item-add');
         }
-        
     }
 }

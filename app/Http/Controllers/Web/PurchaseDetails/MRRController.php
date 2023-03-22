@@ -359,8 +359,10 @@ class MRRController extends Controller
     public function getPO_for_merged_si_item($supplier_invoice_item_id)
     {
         $po_nos = inv_supplier_invoice_item::leftJoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+                    ->leftJoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_supplier_invoice_item.po_item_id')
                     ->where('inv_supplier_invoice_item.merged_invoice_item','=',$supplier_invoice_item_id)
-                    ->select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date')->get();
+                    ->select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_item.order_qty')
+                    ->get();
         return $po_nos;
     }
     

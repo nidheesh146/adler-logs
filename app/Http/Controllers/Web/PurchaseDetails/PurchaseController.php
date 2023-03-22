@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 use Illuminate\Validation\Rule;
 use App\Exports\FinalPurchaseOrderExport;
 use App\Exports\SupplierInvoiceExport;
+use App\Exports\PendingPurchaseRealisationExport;
 use App\Http\Controllers\Controller;
 use App\Models\PurchaseDetails\inv_final_purchase_order_item;
 use App\Models\PurchaseDetails\inv_final_purchase_order_rel;
@@ -1555,6 +1556,128 @@ class PurchaseController extends Controller
         {
             $request =null;
             return Excel::download(new SupplierInvoiceExport($request), 'supplier_invoice' . date('d-m-Y') . '.xlsx');
+        }
+    }
+
+    public function pendingPurchaseRealisation(Request $request)
+    {
+        $condition2=[];
+        if ($request->supplier) {
+    
+            $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+        }
+        if ($request->po_no) {
+            $condition1[] = ['inv_final_purchase_order_master.po_number', 'like', '%' . $request->po_no . '%'];
+            $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+            
+        }
+        if ($request->item_code) {
+            $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+            $condition2[] = ['inventory_rawmaterial.item_code','like','%'.$request->item_code];
+        }
+        if ($request->pr_no) {
+            $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+            $condition2[] = ['inv_purchase_req_master.pr_no','like','%'.$request->pr_no];
+        }
+        if ($request->po_from) {
+            $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+            $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime($request->po_from))];
+            //$condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-d', strtotime($this->request->po_from))];
+        }
+        if ($request->po_to) {
+            $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
+            $condition1[] = ['inv_final_purchase_order_master.po_date', '<=', date('Y-m-d', strtotime($request->po_to))];
+        }
+        if($request->order_type)
+        {
+            if($request->order_type=='wo')
+            {
+                $condition1[] = ['inv_final_purchase_order_master.type', '=', 'WO'];
+            }
+            else
+            {
+                $condition1[] = ['inv_final_purchase_order_master.type', '=', 'PO'];
+            }
+        }
+        else
+        {
+            $condition1[] = ['inv_final_purchase_order_master.type', '=', 'PO'];
+        }
+        $po_data = inv_final_purchase_order_master::select(['inv_purchase_req_quotation.rq_no','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_final_purchase_order_master.po_date',
+                        'inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.status','inv_final_purchase_order_master.id as po_id','inv_final_purchase_order_master.created_at',
+                        'user.f_name','user.l_name','inv_final_purchase_order_master.id'])
+                            ->where($condition1)
+                            ->where('inv_final_purchase_order_master.status','=',1)
+                            //->join('inv_final_purchase_order_rel','inv_final_purchase_order_rel.master','=','inv_final_purchase_order_master.id')
+                            ->join('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
+                            ->join('user','user.user_id','=','inv_final_purchase_order_master.created_by')
+                            ->leftjoin('inv_supplier','inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
+                            ->orderby('inv_final_purchase_order_master.id','asc')
+                            ->get();
+        $po_items=[];
+        foreach($po_data as $po)
+        {
+            $po_items[] = inv_final_purchase_order_rel::select('inv_final_purchase_order_rel.master','inv_final_purchase_order_rel.item','inv_final_purchase_order_item.order_qty','inv_final_purchase_order_item.qty_to_invoice','inv_final_purchase_order_item.current_invoice_qty',
+                    'inv_final_purchase_order_item.rate','inv_final_purchase_order_item.discount','inv_final_purchase_order_item.gst','inventory_rawmaterial.item_code','inventory_rawmaterial.short_description','inventory_rawmaterial.hsn_code','inv_purchase_req_quotation.rq_no',
+                    'inv_unit.unit_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst','inv_item_type.type_name','inv_final_purchase_order_master.po_number','inv_supplier.vendor_name','inv_final_purchase_order_master.po_date','inv_final_purchase_order_item.cancelled_qty',
+                    'inv_final_purchase_order_master.created_at','inv_final_purchase_order_master.updated_at','user.f_name','user.l_name','inv_supplier.id as supplier_id','inv_purchase_req_quotation.quotation_id','inv_final_purchase_order_item.item_id','inv_purchase_req_master.pr_no')
+                            ->leftJoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_final_purchase_order_rel.item')
+                            ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
+                            ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
+                            ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
+                            ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_final_purchase_order_rel.master')
+                            ->leftjoin('inv_purchase_req_quotation', 'inv_purchase_req_quotation.quotation_id','=','inv_final_purchase_order_master.rq_master_id')
+                            ->leftjoin('inv_supplier','inv_supplier.id','=','inv_final_purchase_order_master.supplier_id')
+                            ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                            ->leftjoin('user','user.user_id','=', 'inv_final_purchase_order_master.created_by')
+                            ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                            ->leftjoin('inventory_gst','inventory_gst.id','=','inv_final_purchase_order_item.gst' )
+                            ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                            ->where('inv_final_purchase_order_rel.master','=',$po['id'])
+                            ->where('inv_final_purchase_order_item.qty_to_invoice','!=',0)
+                            ->where($condition2)
+                            ->get();
+        }
+       //print_r(json_encode($po_items));exit;
+        $data = [];
+        foreach($po_items as $po_item)
+        {
+            foreach($po_item as $item)
+            {
+                $data[]=['master'=>$item['master'],
+                        'pr_number'=>$item['pr_no'],
+                        'po_number'=>$item['po_number'],
+                        'po_item'=>$item['item'],
+                        'type'=>$item['type_name'],
+                        'item_code'=>$item['item_code'],
+                        'short_description'=>$item['short_description'],
+                        'order_qty'=>$item['order_qty'],
+                        'qty_to_invoice'=>$item['qty_to_invoice'],
+                        'current_invoice_qty'=>$item['current_invoice_qty'],
+                        'unit_name'=>$item['unit_name'],
+                        'rate'=>$item['rate'],
+                        'discount'=>$item['discount'],
+                        'igst'=>$item['igst'],
+                        'sgst'=>$item['sgst'],
+                        'cgst'=>$item['cgst'],
+                        'vendor'=>$item['vendor_name']
+                    ];
+            }
+        }
+        return view('pages.purchase-details.final-purchase.pending-purchase-realisation',compact('data'));
+    }
+
+    public function pendingPurchaseRealisationExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new PendingPurchaseRealisationExport($request), 'R02-PendingPurchaseRealisation' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new PendingPurchaseRealisationExport($request), 'R02-PendingPurchaseRealisation' . date('d-m-Y') . '.xlsx');
         }
     }
 

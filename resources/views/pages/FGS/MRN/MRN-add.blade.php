@@ -24,18 +24,24 @@
 			<div class="row">
                     
                 <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
-                    @if (Session::get('success'))
-                    <div class="alert alert-success " style="width: 100%;">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <i class="icon fa fa-check"></i> {{ Session::get('success') }}
-                    </div>
-                    @endif
-                    @foreach ($errors->all() as $errorr)
-                    <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                      {{ $errorr }}
-                    </div>
-                   @endforeach               
+                @if(Session::get('error'))
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{Session::get('error')}}
+                </div>
+                @endif
+                @if (Session::get('success'))
+                <div class="alert alert-success " style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                </div>
+                @endif
+                @foreach ($errors->all() as $errorr)
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        {{ $errorr }}
+                </div>
+                 @endforeach           
                    
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
                     <form method="POST" id="commentForm" autocomplete="off" >

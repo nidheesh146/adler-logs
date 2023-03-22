@@ -57,13 +57,13 @@
 								
 													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
 														<label>Product :</label>
-														<input type="text" value="{{request()->get('pr_no')}}" name="pr_no" id="pr_no" class="form-control" placeholder="@if(request()->get('prsr')=='sr')SR @else PR @endif NO">
+														<input type="text" value="{{request()->get('product')}}" name="product" id="product" class="form-control" placeholder="PRODUCT">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label for="exampleInputEmail1" style="font-size: 12px;">Batch No</label>
-														<input type="text" value="{{request()->get('department')}}" name="department" id="department" class="form-control" placeholder="DEPARTMENT">
+														<input type="text" value="{{request()->get('batchnumber')}}" name="batchnumber" id="batchnumber" class="form-control" placeholder="BATCH NO">
 													</div>
 													<!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
 														<label for="exampleInputEmail1" style="font-size: 12px;">PR/SR</label>
@@ -76,11 +76,8 @@
 													</div> -->
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label  style="font-size: 12px;">Manufacturing Month</label>
-														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
+														<input type="text" value="{{request()->get('manufaturing_from')}}" id="manufaturing_from" class="form-control datepicker" name="manufaturing_from" placeholder="Month(MM-YYYY)">
 													</div>
-													
-														<input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
-																		
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -112,7 +109,7 @@
                                     <th>HSN Code</th>
 									<th>Description</th>
 									<th>Batch No.</th>
-									<th>Batch Qty</th>
+									<th>Quantity</th>
 									<th>UOM</th>
                                     <th>Date of Mfg.</th>
                                     <th>Date of Expiry</th>
@@ -125,11 +122,10 @@
                                     <td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
 									<td>{{$item['batch_no']}}</td>
-									<td>{{$item['batchcard_qty']}}</td>
+									<td>{{$item['quantity']}}</td>
 									<td>Nos</td>
                                     <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                                    <td>{{date('d-m-Y', strtotime($item['expiry_date']))}}</td>
-									
+                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
 								</tr>
 								@endforeach
 							</tbody>
@@ -180,9 +176,9 @@
 		$('#from').val(" ");
 	});
 	$('.search-btn').on( "click", function(e)  {
-		var pr_no = $('#pr_no').val();
-		var department = $('#department').val();
-		var from = $('#from').val();
+		var product = $('#pr_no').val();
+		var batchnumber = $('#batchnumber').val();
+		var manufaturing_from = $('#manufaturing_from').val();
 		if(!pr_no  & !department & !from)
 		{
 			e.preventDefault();

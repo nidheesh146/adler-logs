@@ -83,7 +83,7 @@ class inv_lot_allocation extends Model
     function get_single_lot1($condition)
     {
         return $this->select(['inv_lot_allocation.*','inv_supplier_invoice_item.id as invoice_item_id','inv_supplier_invoice_item.order_qty as invoice_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
-             'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_final_purchase_order_master.po_number','inv_supplier_invoice_master.invoice_number as invoiceNumber',
+             'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.short_description','inventory_rawmaterial.hsn_code','inv_final_purchase_order_master.po_number','inv_supplier_invoice_master.invoice_number as invoiceNumber',
         'inv_supplier_invoice_master.invoice_date','inv_supplier.vendor_id', 'inv_supplier.vendor_name', 'inv_supplier.id as supplier_id', 'inv_final_purchase_order_master.id as po_id', 'inv_unit.unit_name', 'inv_unit.id as unit_id' ,
         'inv_supplier_invoice_item.specification','inv_lot_allocation.pr_item_id','inv_supplier_invoice_master.created_at as invoice_created','inv_lot_allocation.si_invoice_item_id'])
                     ->leftjoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id','=','inv_lot_allocation.po_id')

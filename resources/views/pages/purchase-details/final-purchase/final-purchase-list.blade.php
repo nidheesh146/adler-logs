@@ -61,7 +61,7 @@
                                                         </div><!-- form-group -->
                                                         <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                             <label>@if(request()->get('order_type')=='wo') WO @else PO @endif No:</label>
-                                                            <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="@if(request()->get('order_type')=='work-order') WO NO @else PO NO @endif">
+                                                            <input type="text" value="{{request()->get('po_no')}}" name="po_no" id="po_no" class="form-control" placeholder="@if(request()->get('order_type')=='wo') WO NO @else PO NO @endif">
                                                             
                                                         </div><!-- form-group -->
                                                         

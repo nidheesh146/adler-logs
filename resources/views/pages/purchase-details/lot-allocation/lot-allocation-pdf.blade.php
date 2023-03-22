@@ -24,12 +24,59 @@
             </table>
         </div>
         <div class="" style="margin-top:20px;">
-            <table  border='1' style="width:24%;float:left;">
+            <div style="width:50%;float:left;">
+                <table  border='1' style="width:49%;float:left;">
+                    <tr>
+                        <th>LOT NUMBER</th>
+                    </tr>
+                    <tr style="height:200px;">
+                        <td><b>{{$lot['lot_number']}}</b><br/><br/></td>
+                    </tr>
+                </table>
+                <table  border='1' style="width:49%;float:right;margin-left:10px;">
+                    <tr>
+                        <th>ITEM CODE</th>
+                    </tr>
+                    <tr style="height:200px;">
+                        <td>{{$lot['item_code']}}<br/><br/></td>
+                    </tr>
+                </table>
+                <br/>
+                <div style="margin-top:50px; position: relative;">
+                    <table  border='1' style="width:49%;float:left;">
+                        <tr>
+                            <th>INVOICE QTY</th>
+                        </tr>
+                        <tr style="height:200px;">
+                            <td>{{$lot['invoice_qty']}}<br/><br/></td>
+                        </tr>
+                    </table>
+                    <table  border='1' style="width:49%;float:right;margin-left:10px;">
+                        <tr>
+                            <th>UNIT </th>
+                        </tr>
+                        <tr style="height:200px;">
+                            <td>{{$lot['unit_name']}}<br/><br/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div style="width:49%;float:right;">
+                <table  border='1' style="width:100%;margin-left:185px;">
+                    <tr>
+                        <th>ITEM DESCRIPTION</th>
+                    </tr>
+                    <tr style="font-size:10px;">
+                        <td>{{$lot['short_description']}}<br/></td>
+                    </tr>
+                </table>
+            </div>
+            <!-- <table  border='1' style="width:24%;float:left;">
               <tr>
                     <th>LOT NUMBER</th>
                 </tr>
                 <tr style="height:200px;">
-                    <td>{{$lot['lot_number']}}<br/><br/></td>
+                    <td><b>{{$lot['lot_number']}}</b><br/><br/></td>
                 </tr>
             </table>
             <table  border='1' style="width:24%;float:left;margin-left:10px;">
@@ -44,31 +91,14 @@
                 <tr>
                     <th>ITEM DESCRIPTION</th>
                 </tr>
-                <tr style="height:500px;">
-                    <td>{{$lot['discription']}}<br/></td>
+                <tr style="height:500px;font-size:13px;">
+                    <td>{{$lot['short_description']}}<br/></td>
                 </tr>
-            </table>
+            </table> -->
             
         </div>
         <div class="" style="margin-top:12%;">
-            <table  border='1' style="width:24%;float:left;">
-                 <tr>
-                    <th>INVOICE QTY</th>
-                </tr>
-                <tr style="height:200px;">
-                    <td>{{$lot['invoice_qty']}}<br/><br/></td>
-                </tr>
-            </table>
-                 
-            <table  border='1' style="width:24%;float:left;margin-left:10px;">
-                <tr>
-                    <th>UNIT </th>
-                </tr>
-                <tr style="height:200px;">
-                    <td>{{$lot['unit_name']}}<br/><br/></td>
-                </tr>
             
-            </table>
             
         </div>
         

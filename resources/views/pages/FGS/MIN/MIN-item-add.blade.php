@@ -26,10 +26,21 @@
                             {{ csrf_field() }}
                             <div class="row">
 
+                                @if(Session::get('error'))
+                                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{Session::get('error')}}
+                                </div>
+                                @endif
+                                @if (Session::get('success'))
+                                <div class="alert alert-success " style="width: 100%;">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                                </div>
+                                @endif
                                 @foreach ($errors->all() as $errorr)
-                                    <div class="alert alert-danger " role="alert" style="width: 100%;">
-                                        <button type="button" class="close" data-dismiss="alert"
-                                            aria-hidden="true">×</button>
+                                    <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                         {{ $errorr }}
                                     </div>
                                 @endforeach
@@ -42,8 +53,8 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Product code * </label>
-                                                    <select class="form-control Item-code item_code1" id="1"
-                                                        name="moreItems[0][Itemcode]" id="Itemcode">
+                                                    <select class="form-control product product_code1" id="1"
+                                                        name="moreItems[0][product]" id="product">
                                                     </select>
                                                     
                                                 </div>
@@ -65,8 +76,8 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
-                                                    <select class="form-control Item-code item_code1" id="1"
-                                                        name="moreItems[0][Itemcode]" id="Itemcode">
+                                                    <select class="form-control batch_number batch_no1" id="1"
+                                                        name="moreItems[0][batch_no]" id="batch_no1">
                                                     </select>
                                                     
                                                 </div>
@@ -74,28 +85,28 @@
                                             <div class="row"> 
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
-                                                    <label>Batch Qty * </label>
-                                                    <input type="text" readonly class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="Batch Qty">
+                                                    <label>Stock Qty * </label>
+                                                    <input type="text"  class="form-control" name="moreItems[0][qty]"
+                                                        id="stock_qty1" placeholder="Stock Qty">
                                                 </div>
                                             
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
                                                     style="float:left;">
                                                     <label>UOM </label>
-                                                    <input type="text"  class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="UOM">
+                                                    <input type="text"  class="form-control" readonly name="uom"
+                                                        id="uom1" placeholder="Nos">
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label>Date of Mfg. * </label>
-                                                    <input type="text"  class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="Date of Mfg.">
+                                                    <input type="text"  class="form-control datepicker" name="moreItems[0][manufacturing_date]"
+                                                        id="manufacturing_date1" placeholder="Date of Mfg.">
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label>Date of Expiry * </label>
-                                                    <input type="text"  class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="Date of Expiry">
+                                                    <input type="text"  class="form-control datepicker" name="moreItems[0][expiry_date]"
+                                                        id="expiry_date1" placeholder="Date of Expiry">
                                                 </div>
                                                 <button type="button" name="add" id="add" class="btn btn-success"
                                                     style="height:38px;margin-top:28px;"><i
@@ -112,8 +123,6 @@
                                     <label for="exampleInputEmail1">Remarks  *</label>
                                     <textarea type="text" class="form-control" name="f_name" value="" placeholder=""></textarea>
                                 </div>
-                               
-
                             </div>
 
                             <div class="row">
@@ -156,7 +165,10 @@
 function getsearch(){
  return   table.search();
 }
-
+$(".datepicker").datepicker({
+    format: " dd-mm-yyyy",
+    autoclose:true
+    });
 
     function selectItem(itemId,divId){
         $('#Itemtype'+divId).val('');
@@ -191,7 +203,7 @@ function getsearch(){
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label for="exampleInputEmail1">Product code * </label>
-                                <select class="form-control Item-code item_code${i}" id="${i}" name="moreItems[0][Itemcode]" id="Itemcode">
+                                <select class="form-control product item_code${i}" id="${i}" name="moreItems[${i}][product]" id="product">
                                 </select>                        
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
@@ -205,38 +217,48 @@ function getsearch(){
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label for="exampleInputEmail1">Batch No* </label>
-                                <select class="form-control Item-code item_code1" id="1" name="moreItems[0][Itemcode]" id="Itemcode${i}">
+                                <select class="form-control batch_number batch_no${i}" id="${i}" name="moreItems[${i}][batch_no]" id="batch_no${i}">
                                 </select>                
                             </div>
                         </div>
                         <div class="row"> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Batch Qty * </label>
-                                <input type="text" readonly class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="Batch Qty">
+                                <input type="text"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Stock Qty">
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>UOM </label>
-                                <input type="text"  class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="UOM">
+                                <input type="text"  class="form-control" readonly name="moreItems[${i}][uom]" id="uom${i}" placeholder="NOS">
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Date of Mfg. * </label>
-                                <input type="text"  class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="Date of Mfg.">
+                                <input type="text"  class="form-control datepicker" name="moreItems[${i}][manufacturing_date]" id="manufacturing_date${i}" placeholder="Date of Mfg.">
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Date of Expiry * </label>
-                                <input type="text"  class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="Date of Expiry">
+                                <input type="text"  class="form-control datepicker" name="moreItems[${i}][expiry_date]" id="expiry_date${i}" placeholder="Date of Expiry">
                             </div>
                             <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
                         </div>
                     </td>                        
                 </tr>`);
                 initSelect2();
+                $(".datepicker").datepicker({
+                format: " dd-mm-yyyy",
+                autoclose:true
+                });
             });
             $(document).on('click','.btn_remove', function(){
                 var button_id = $(this).attr("id");
                 $("#row"+button_id+"").remove();
             });
         });
+        $('.batch_number').on('change', function (){
+            var select_id = $(this).attr("id");
+            var stock_qty = $("#batch_no"+select_id+"").attr("qty");
+            $("#stock_qty"+select_id+"").val(stock_qty);
+            alert(stock_qty);
+        }); 
             $(function(){
                 $("#commentForm").validate({
                     rules: {
@@ -254,13 +276,13 @@ function getsearch(){
                 });
             });
             function initSelect2() {
-                $(".Item-code").select2({
+                $(".product").select2({
                     placeholder: 'Choose one',
                     searchInputPlaceholder: 'Search',
                     minimumInputLength: 6,
                     allowClear: true,
                     ajax: {
-                        url: "{{ url('inventory/itemcodesearch') }}",
+                        url: "{{ url('fgs/productsearch') }}",
                         processResults: function (data) {
                                 return { results: data };
                         }
@@ -285,6 +307,20 @@ function getsearch(){
                             if(res.discription){
                                 $("#Itemdescription"+select_id+"").val(res.discription);
                             }
+                            $.get("{{ url('fgs/fetchProductBatchCards') }}?product_id="+res.id,function(data)
+                            {
+                                if(data.length>0)
+                                {
+                                    $(".batch_no"+select_id+"").append('<option>..Select One..</option>')
+                                $.each(data, function(index, item) {   
+                                    $(".batch_no"+select_id+"").append($("<option value="+item.batch_id+" qty="+item.stock_qty+">"+item.batch_no+"</option>"));
+                                });
+                                }
+                                else
+                                {
+                                    alert('Out of stock...');
+                                }
+                            });
                        }
                     });   
             }   

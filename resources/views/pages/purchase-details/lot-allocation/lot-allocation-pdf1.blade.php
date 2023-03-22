@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\MRRController')
 <html>
 <head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
@@ -9,25 +10,26 @@
             <table border='1' style="width:100%;">
                 <tr>
                     <td rowspan="3" style="text-align:center;"><img src="{{asset('/img/logo.png')}}"  style="width:60px;"></td>
-                    <td rowspan="3" style="text-align:center;font-weight:bold;">LOT CARD FOR RECEIVED MATERIAL</td>
+                    <td rowspan="3" style="text-align:center;font-weight:bold;">
+                    Format for:<br/>
+                    LOT CARD FOR RECEIVED MATERIAL</td>
                     <td style="font-size:12px;">DOC NO: ST/F-02</td>  
                 </tr>
                 <tr>
-                    <td style="font-size:12px;">REV NO: 03</td>
+                    <td style="font-size:12px;">REV NO: 00</td>
                 </tr>
                 <tr>
-                    <td style="font-size:12px;">REV DATE: 16-MAY-2017</td>
+                    <td style="font-size:12px;">REV DATE: 14-DEC-2021</td>
                 </tr>
             </table>
         </div>
         <div class="" style="margin-top:20px;">
-        
             <table  border='1' style="width:24%;float:left;">
               <tr>
                     <th>LOT NUMBER</th>
                 </tr>
                 <tr style="height:200px;">
-                    <td>{{$lot['lot_number']}}<br/><br/></td>
+                    <td><b>{{$lot['lot_number']}}</b><br/><br/></td>
                 </tr>
             </table>
             <table  border='1' style="width:24%;float:left;margin-left:10px;">
@@ -42,8 +44,8 @@
                 <tr>
                     <th>ITEM DESCRIPTION</th>
                 </tr>
-                <tr style="">
-                    <td><br/>{{$lot['discription']}}<br/></td>
+                <tr style="height:500px;font-size:13px;">
+                    <td>{{$lot['short_description']}}<br/></td>
                 </tr>
             </table>
             
@@ -58,12 +60,12 @@
                 </tr>
             </table>
                  
-            <table  border='1' style="width:23.5%;float:left;margin-left:10px;">
+            <table  border='1' style="width:24%;float:left;margin-left:10px;">
                 <tr>
                     <th>UNIT </th>
                 </tr>
                 <tr style="height:200px;">
-                    <td><br/>{{$lot['unit_name']}}<br/></td>
+                    <td>{{$lot['unit_name']}}<br/><br/></td>
                 </tr>
             
             </table>
@@ -103,7 +105,7 @@
                     <th>RECEIVED DATE</th>
                 </tr>
                 <tr style="height:200px;">
-                    <td><br/>{{$lot['rev_date']}}<br/></td>
+                    <td>{{date('d-m-Y',strtotime($lot['invoice_created']))}}<br/><br/></td>
                 </tr>
             </table>
             <table  border='1' style="width:33.33%;float:left;margin-left:15px;">
@@ -137,7 +139,18 @@
                     <th>PURCHASE ORDER NO</th>
                 </tr>
                 <tr style="height:200px;">
-                    <td>{{$lot['po_number']}}<br/><br/></td>
+                    @if(!$lot['po_number'])
+                        <?php $pos=$fn->getPO_for_merged_si_item($lot['si_invoice_item_id']); ?>
+                        <td>
+                        @foreach($pos as $po)
+                            {{$po['po_number']}}, 
+                        @endforeach
+                        <br/><br/>
+                        </td>
+                    @else
+                        <td>{{$lot['po_number']}}<br/><br/></td>
+                    @endif
+                    
                 </tr>
             </table>
             

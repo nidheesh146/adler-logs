@@ -33,6 +33,7 @@ class fgs_mrn_item extends Model
                         ->where($condition)
                         //->where('inv_mac.status','=',1)
                         ->orderBy('fgs_mrn_item.id','DESC')
+                        ->distinct('fgs_mrn_item.id')
                         ->paginate(15);
     }
 }

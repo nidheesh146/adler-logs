@@ -65,7 +65,7 @@
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                 <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
-                                                
+                                                <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                                             </div>
                                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Month</label>

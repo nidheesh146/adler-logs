@@ -8,14 +8,14 @@
 			<div class="az-content-breadcrumb"> 
 				 <span>Material Issue Note(MIN)</span>
 				 <span><a href="">
-				 	MIN Item List
+				 	MRN  List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-            MIN Item List 
+            MIN List 
               <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MIN/add-item/'.$min_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						MIN Item
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MIN-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+						MIN 
 				</button>
               <div>  
 				
@@ -34,12 +34,7 @@
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		   @endif
-		   @foreach ($errors->all() as $errorr)
-              <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                {{ $errorr }}
-              </div>
-             @endforeach
+		   
 			<div class="tab-content"> 
 				<div class="row row-sm mg-b-20 mg-lg-b-0">
 						<div class="table-responsive" style="margin-bottom: 13px;">
@@ -60,32 +55,22 @@
 											<div class="row filter_search" style="margin-left: 0px;">
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
-													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>Product :</label>
-														<input type="text" value="{{request()->get('pr_no')}}" name="pr_no" id="pr_no" class="form-control" placeholder="@if(request()->get('prsr')=='sr')SR @else PR @endif NO">
+												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
+														<label>MIN No :</label>
+														<input type="text" value="{{request()->get('min_no')}}" name="min_no" id="min_no" class="form-control" placeholder="MIN NO">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Batch No</label>
-														<input type="text" value="{{request()->get('department')}}" name="department" id="department" class="form-control" placeholder="DEPARTMENT">
-													</div>
-													<!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-														<label for="exampleInputEmail1" style="font-size: 12px;">PR/SR</label>
-														
-														<select name="pr_sr" id="pr_sr" class="form-control">
-															<option value="">PR/SR</option>
-															<option value="PR" {{(request()->get('pr_sr') == 'PR') ? 'selected' : ''}}>PR</option>
-															<option value="SR" {{(request()->get('pr_sr') == 'SR') ? 'selected' : ''}}>SR</option>
-														</select>
-													</div> -->
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">Manufacturing Month</label>
-														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Referance No</label>
+														<input type="text" value="{{request()->get('ref_number')}}" name="ref_number" id="ref_number" class="form-control" placeholder="REFERANCE NUMBER">
 													</div>
 													
-														<input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
-																		
+													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+														<label  style="font-size: 12px;">MIN Month</label>
+														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
+													</div>
+			
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -113,31 +98,32 @@
 						<table class="table table-bordered mg-b-0" >
 							<thead>
 								<tr>
-									<th>Product</th>
-                                    <th>HSN Code</th>
-									<th>Description</th>
-									<th>Batch No.</th>
-									<th>Batch Qty</th>
-									<th>UOM</th>
-                                    <th>Date of Mfg.</th>
-                                    <th>Date of Expiry</th>
+									<th>MIN Number</th>
+                                    <th>Ref. number</th>
+									<th>Ref. date</th>
+									<th>Product Category</th>
+									<th>Stock Location</th>
+									<th>MIN date</th>
+                                    <th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
+							@foreach($min as $item)
                                 <tr>
-									<td>Product</td>
-                                    <td>HSN Code</td>
-									<td>Description</td>
-									<td>Batch No.</td>
-									<td>Batch Qty</td>
-									<td>UOM</td>
-                                    <td>Date of Mfg.</td>
-                                    <td>Date of Expiry</td>
+									
+									<td>{{$item['min_number']}}</td>
+                                    <td>{{$item['ref_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['ref_date']))}}</td>
+									<td>{{$item['category_name']}}</td>
+									<td>{{$item['location_name']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['min_date']))}}</td>
+                                    <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MIN/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	</td>
 								</tr>
+								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							
+                        {{ $min->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>
@@ -171,21 +157,11 @@
 	$('#prbody1').show();
 	$('#prbody2').show();
   });
-  	$('#purchase_tab').on('click',function(){
-		$('#pr_no').val(" ");
-		$('#department').val("");
-		$('#from').val(" ");
-	});
-	$('#service_tab').on('click',function(){
-		$('#pr_no').val(" ");
-		$('#department').val("");
-		$('#from').val(" ");
-	});
 	$('.search-btn').on( "click", function(e)  {
-		var pr_no = $('#pr_no').val();
-		var department = $('#department').val();
+		var ref_number = $('#ref_number').val();
+		var min_no = $('#min_no').val();
 		var from = $('#from').val();
-		if(!pr_no  & !department & !from)
+		if(!min_no   & !ref_number & !from)
 		{
 			e.preventDefault();
 		}

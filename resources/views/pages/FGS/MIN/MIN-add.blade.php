@@ -24,18 +24,24 @@
 			<div class="row">
                     
                 <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
-                    @if (Session::get('success'))
-                    <div class="alert alert-success " style="width: 100%;">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <i class="icon fa fa-check"></i> {{ Session::get('success') }}
-                    </div>
-                    @endif
-                    @foreach ($errors->all() as $errorr)
-                    <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                      {{ $errorr }}
-                    </div>
-                   @endforeach               
+                @if(Session::get('error'))
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{Session::get('error')}}
+                </div>
+                @endif
+                @if (Session::get('success'))
+                <div class="alert alert-success " style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                </div>
+                @endif
+                @foreach ($errors->all() as $errorr)
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        {{ $errorr }}
+                </div>
+             @endforeach            
                    
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
                     <form method="POST" id="commentForm" autocomplete="off" >
@@ -54,33 +60,34 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Ref. No.  *</label>
-                                <input type="text" class="form-control" name="f_name" value="" placeholder="Supplier Doc No">
+                                <input type="text" class="form-control" name="ref_number" value="" placeholder="Ref. No.">
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Ref Date  *</label>
-                                <input type="text" class="form-control datepicker" name="f_name" value="" placeholder="">
+                                <input type="text" class="form-control datepicker" name="ref_date" value="" placeholder="">
                             </div>
                         
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Product Category  *</label>
-                                <select class="form-control">
+                                <select class="form-control" name="product_category">
                                     <option>Select one...</option>
-                                    <option>ASD</option>
-                                    <option>AWM</option>
+                                    @foreach($category as $cate)
+                                    <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location  *</label>
-                                <select class="form-control">
+                                <select class="form-control" name="stock_location">
                                     <option>Select one...</option>
-                                    <option>Location-1</option>
-                                    <option>Location-2</option>
-                                    <option>Location-3</option>
+                                    @foreach($locations as $loc)
+                                    <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>MIN Date *</label>
-                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="">
+                                <input type="text" value="" class="form-control datepicker" name="min_date" placeholder="">
                             </div><!-- form-group -->
                             
 

@@ -35,6 +35,7 @@ class inv_mac_item extends Model
                     //->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
                     ->where($condition)
                     ->orderBy('inv_mac_item.id','DESC')
+                    ->distinct('inv_mac_item.id')
                     ->get();
     }
     function get_items_for_mrr($condition){
@@ -50,6 +51,7 @@ class inv_mac_item extends Model
                     ->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
                     ->where($condition)
                     ->where('inv_mac_item.accepted_quantity','!=',NULL)
+                    ->distinct('inv_mac_item.id')
                     ->orderBy('inv_mac_item.id','DESC')
                     ->get();
     }

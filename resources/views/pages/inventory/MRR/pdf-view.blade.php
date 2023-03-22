@@ -189,11 +189,18 @@
         @php $i=1; @endphp
         @foreach($items as $item)
         <tr>
+            <?php $pos=$fn->getPO_for_merged_si_item($item['supplier_invoice_item_id']); ?>
             <td>{{$i++}}</td>
             <td>{{$item['item_code']}}</td>
             <td>{{$item['item_description']}}</td>
-            <td>@if($item['actual_order_qty']) {{$item['actual_order_qty']}} @else {{$item['actualqty']}} @endif {{$item['unit_name']}}</td>
-            <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
+            <td>@if(!$item['po_number']) 
+                    @foreach($pos as $po)
+                        {{$po['order_qty']}} {{$item['unit_name']}}<br/>
+                     @endforeach
+                @else
+                    {{$item['actual_order_qty']}} {{$item['unit_name']}}
+                @endif </td>
+            <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
             <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
             <td>{{$item['rejected_quantity']}} {{$item['unit_name']}}</td>
             @if($type=='po')
@@ -201,7 +208,6 @@
             @endif
             <td>{{$item['rate']}}</td>
             <td>@if(!$item['po_number'])
-                    <?php $pos=$fn->getPO_for_merged_si_item($item['supplier_invoice_item_id']); ?>
                     @foreach($pos as $po)
                         {{$po['po_number']}}<br/>
                     @endforeach

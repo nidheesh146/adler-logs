@@ -56,14 +56,14 @@
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
 													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>Product :</label>
-														<input type="text" value="{{request()->get('pr_no')}}" name="pr_no" id="pr_no" class="form-control" placeholder="@if(request()->get('prsr')=='sr')SR @else PR @endif NO">
+														<label>MRN No :</label>
+														<input type="text" value="{{request()->get('mrn_no')}}" name="mrn_no" id="mrn_no" class="form-control" placeholder="MRN NO">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Batch No</label>
-														<input type="text" value="{{request()->get('department')}}" name="department" id="department" class="form-control" placeholder="DEPARTMENT">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Supplier Document No</label>
+														<input type="text" value="{{request()->get('supplier_doc_number')}}" name="supplier_doc_number" id="supplier_doc_number" class="form-control" placeholder="SUPPLIER DOC NUMBER">
 													</div>
 													<!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
 														<label for="exampleInputEmail1" style="font-size: 12px;">PR/SR</label>
@@ -75,12 +75,9 @@
 														</select>
 													</div> -->
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">Manufacturing Month</label>
+														<label  style="font-size: 12px;">MRN Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
-													
-														<input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
-																		
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -134,7 +131,7 @@
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							
+							{{ $mrn->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>
@@ -168,21 +165,12 @@
 	$('#prbody1').show();
 	$('#prbody2').show();
   });
-  	$('#purchase_tab').on('click',function(){
-		$('#pr_no').val(" ");
-		$('#department').val("");
-		$('#from').val(" ");
-	});
-	$('#service_tab').on('click',function(){
-		$('#pr_no').val(" ");
-		$('#department').val("");
-		$('#from').val(" ");
-	});
+  	
 	$('.search-btn').on( "click", function(e)  {
-		var pr_no = $('#pr_no').val();
-		var department = $('#department').val();
+		var supplier_doc_number = $('#supplier_doc_number').val();
+		var mrn_no = $('#mrn_no').val();
 		var from = $('#from').val();
-		if(!pr_no  & !department & !from)
+		if(!mrn_no  & !supplier_doc_number & !from)
 		{
 			e.preventDefault();
 		}
