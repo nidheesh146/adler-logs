@@ -147,17 +147,17 @@ class MINController extends Controller
             $condition[] = ['fgs_min_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->manufaturing_from))];
             $condition[] = ['fgs_min_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->manufaturing_from))];
         }
-        $items = fgs_min_item::select('fgs_min_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_min.min_number')
-                        ->leftjoin('fgs_min_item_rel','fgs_min_item_rel.item','=','fgs_min_item.id')
-                        ->leftjoin('fgs_min','fgs_min.id','=','fgs_min_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_min_item.product_id')
-                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_min_item.batchcard_id')
-                        ->where($condition)
-                        //->where('inv_mac.status','=',1)
-                        ->orderBy('fgs_min_item.id','DESC')
-                        ->distinct('fgs_min_item.id')
-                        ->paginate(15);
-        //$items = $this->fgs_min_item->getItems(['fgs_min_item_rel.master' =>$request->min_id]);
+        // $items = fgs_min_item::select('fgs_min_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_min.min_number')
+        //                 ->leftjoin('fgs_min_item_rel','fgs_min_item_rel.item','=','fgs_min_item.id')
+        //                 ->leftjoin('fgs_min','fgs_min.id','=','fgs_min_item_rel.master')
+        //                 ->leftjoin('product_product','product_product.id','=','fgs_min_item.product_id')
+        //                 ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_min_item.batchcard_id')
+        //                 ->where($condition)
+        //                 //->where('inv_mac.status','=',1)
+        //                 ->orderBy('fgs_min_item.id','DESC')
+        //                 ->distinct('fgs_min_item.id')
+        //                 ->paginate(15);
+        $items = $this->fgs_min_item->get_items($condition);
         //print_r($items);exit; 
        // echo $min_id;exit;
         return view('pages/FGS/MIN/MIN-item-list', compact('min_id','items'));
@@ -186,7 +186,7 @@ class MINController extends Controller
                         "batchcard_id"=> $value['batch_no'],
                         "quantity" => $value['qty'],
                         "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
-                        "expiry_date" =>  date('Y-m-d', strtotime($value['expiry_date'])),
+                        "expiry_date" =>  $expiry_date,
                         "created_at" => date('Y-m-d H:i:s')
                     ];
                     $min_data =[

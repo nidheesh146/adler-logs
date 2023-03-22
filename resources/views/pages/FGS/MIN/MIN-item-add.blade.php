@@ -122,7 +122,7 @@
                                 </table>
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                     <label for="exampleInputEmail1">Remarks  *</label>
-                                    <textarea type="text" class="form-control" name="f_name" value="" placeholder=""></textarea>
+                                    <textarea type="text" class="form-control" name="remarks" value="" placeholder=""></textarea>
                                 </div>
                             </div>
 

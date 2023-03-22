@@ -12,10 +12,10 @@ class fgs_min_item extends Model
     protected $guarded = [];
     public $timestamps = false;
 
-    function insert_data($data,$mrn_id){
+    function insert_data($data,$min_id){
         $item_id =  $this->insertGetId($data);
         if($item_id){
-            DB::table('fgs_min_item_rel')->insert(['master'=>$mrn_id,'item'=>$item_id]);
+            DB::table('fgs_min_item_rel')->insert(['master'=>$min_id,'item'=>$item_id]);
         }
         return true;
     }
@@ -23,7 +23,7 @@ class fgs_min_item extends Model
         return $this->where($condition)->update($data);
     }
 
-    function getItems($condition)
+    function get_items($condition)
     {
         return $this->select('fgs_min_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_min.min_number')
                         ->leftjoin('fgs_min_item_rel','fgs_min_item_rel.item','=','fgs_min_item.id')
