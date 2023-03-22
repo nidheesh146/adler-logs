@@ -392,7 +392,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MIN/item-list/{min_id}','MINController@MINitemlist');
     Route::get('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
     Route::post('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
-    //Route::get('fgs/MRN/add-item','MRNController@MRNitemAdd');
+    Route::get('fgs-stock/fetchproduct','MINController@fetchFGSStockProduct');
+    Route::get('fgs/fetchProductBatchCardsFromFGSStock','MINController@fetchBatchCardsFromFGSStock');
      //MTQ
      Route::get('fgs/MTQ/add','MTQController@MTQAdd');
      Route::get('fgs/MTQ/item-list','MTQController@MTQitemlist');

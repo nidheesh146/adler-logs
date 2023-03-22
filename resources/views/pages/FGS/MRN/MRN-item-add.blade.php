@@ -261,12 +261,11 @@ function getsearch(){
             });
         });
         $('.batch_number').on('change', function (){
-            alert('jj');
             var select_id = $(this).attr("id");
             var element = $("option:selected", this); 
             var stock_qty = element.attr("qty"); 
             $("#stock_qty"+select_id+"").val(stock_qty);
-            alert(stock_qty);
+           // alert(stock_qty);
         }); 
             $(function(){
                 $("#commentForm").validate({

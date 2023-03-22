@@ -65,15 +65,7 @@
 														<label for="exampleInputEmail1" style="font-size: 12px;">Supplier Document No</label>
 														<input type="text" value="{{request()->get('supplier_doc_number')}}" name="supplier_doc_number" id="supplier_doc_number" class="form-control" placeholder="SUPPLIER DOC NUMBER">
 													</div>
-													<!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-														<label for="exampleInputEmail1" style="font-size: 12px;">PR/SR</label>
-														
-														<select name="pr_sr" id="pr_sr" class="form-control">
-															<option value="">PR/SR</option>
-															<option value="PR" {{(request()->get('pr_sr') == 'PR') ? 'selected' : ''}}>PR</option>
-															<option value="SR" {{(request()->get('pr_sr') == 'SR') ? 'selected' : ''}}>SR</option>
-														</select>
-													</div> -->
+													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label  style="font-size: 12px;">MRN Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">

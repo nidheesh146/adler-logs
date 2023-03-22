@@ -65,15 +65,7 @@
 														<label for="exampleInputEmail1" style="font-size: 12px;">Batch No</label>
 														<input type="text" value="{{request()->get('batchnumber')}}" name="batchnumber" id="batchnumber" class="form-control" placeholder="BATCH NO">
 													</div>
-													<!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-														<label for="exampleInputEmail1" style="font-size: 12px;">PR/SR</label>
-														
-														<select name="pr_sr" id="pr_sr" class="form-control">
-															<option value="">PR/SR</option>
-															<option value="PR" {{(request()->get('pr_sr') == 'PR') ? 'selected' : ''}}>PR</option>
-															<option value="SR" {{(request()->get('pr_sr') == 'SR') ? 'selected' : ''}}>SR</option>
-														</select>
-													</div> -->
+													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label  style="font-size: 12px;">Manufacturing Month</label>
 														<input type="text" value="{{request()->get('manufaturing_from')}}" id="manufaturing_from" class="form-control datepicker" name="manufaturing_from" placeholder="Month(MM-YYYY)">
@@ -116,7 +108,7 @@
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-							@foreach($items as $item)
+								@foreach($items as $item)
                                 <tr>
 									<td>{{$item['sku_code']}}</td>
                                     <td>{{$item['hsn_code']}}</td>
@@ -162,19 +154,9 @@
         // startDate: date,
         autoclose:true
     });
-	$('#prbody1').show();
-	$('#prbody2').show();
+	
   });
-  	$('#purchase_tab').on('click',function(){
-		$('#pr_no').val(" ");
-		$('#department').val("");
-		$('#from').val(" ");
-	});
-	$('#service_tab').on('click',function(){
-		$('#pr_no').val(" ");
-		$('#department').val("");
-		$('#from').val(" ");
-	});
+  
 	$('.search-btn').on( "click", function(e)  {
 		var product = $('#pr_no').val();
 		var batchnumber = $('#batchnumber').val();

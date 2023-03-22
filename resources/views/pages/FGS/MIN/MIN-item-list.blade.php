@@ -60,32 +60,21 @@
 											<div class="row filter_search" style="margin-left: 0px;">
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
-													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
+												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
 														<label>Product :</label>
-														<input type="text" value="{{request()->get('pr_no')}}" name="pr_no" id="pr_no" class="form-control" placeholder="@if(request()->get('prsr')=='sr')SR @else PR @endif NO">
+														<input type="text" value="{{request()->get('product')}}" name="product" id="product" class="form-control" placeholder="PRODUCT">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label for="exampleInputEmail1" style="font-size: 12px;">Batch No</label>
-														<input type="text" value="{{request()->get('department')}}" name="department" id="department" class="form-control" placeholder="DEPARTMENT">
-													</div>
-													<!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-														<label for="exampleInputEmail1" style="font-size: 12px;">PR/SR</label>
-														
-														<select name="pr_sr" id="pr_sr" class="form-control">
-															<option value="">PR/SR</option>
-															<option value="PR" {{(request()->get('pr_sr') == 'PR') ? 'selected' : ''}}>PR</option>
-															<option value="SR" {{(request()->get('pr_sr') == 'SR') ? 'selected' : ''}}>SR</option>
-														</select>
-													</div> -->
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">Manufacturing Month</label>
-														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
+														<input type="text" value="{{request()->get('batchnumber')}}" name="batchnumber" id="batchnumber" class="form-control" placeholder="BATCH NO">
 													</div>
 													
-														<input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
-																		
+													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+														<label  style="font-size: 12px;">Manufacturing Month</label>
+														<input type="text" value="{{request()->get('manufaturing_from')}}" id="manufaturing_from" class="form-control datepicker" name="manufaturing_from" placeholder="Month(MM-YYYY)">
+													</div>					
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -111,29 +100,31 @@
 					
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" >
-							<thead>
+						<thead>
 								<tr>
 									<th>Product</th>
                                     <th>HSN Code</th>
 									<th>Description</th>
 									<th>Batch No.</th>
-									<th>Batch Qty</th>
+									<th>Quantity</th>
 									<th>UOM</th>
                                     <th>Date of Mfg.</th>
                                     <th>Date of Expiry</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
+								@foreach($items as $item)
                                 <tr>
-									<td>Product</td>
-                                    <td>HSN Code</td>
-									<td>Description</td>
-									<td>Batch No.</td>
-									<td>Batch Qty</td>
-									<td>UOM</td>
-                                    <td>Date of Mfg.</td>
-                                    <td>Date of Expiry</td>
+									<td>{{$item['sku_code']}}</td>
+                                    <td>{{$item['hsn_code']}}</td>
+									<td>{{$item['discription']}}</td>
+									<td>{{$item['batch_no']}}</td>
+									<td>{{$item['quantity']}}</td>
+									<td>Nos</td>
+                                    <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
 								</tr>
+								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
@@ -168,23 +159,13 @@
         // startDate: date,
         autoclose:true
     });
-	$('#prbody1').show();
-	$('#prbody2').show();
+	
   });
-  	$('#purchase_tab').on('click',function(){
-		$('#pr_no').val(" ");
-		$('#department').val("");
-		$('#from').val(" ");
-	});
-	$('#service_tab').on('click',function(){
-		$('#pr_no').val(" ");
-		$('#department').val("");
-		$('#from').val(" ");
-	});
-	$('.search-btn').on( "click", function(e)  {
-		var pr_no = $('#pr_no').val();
-		var department = $('#department').val();
-		var from = $('#from').val();
+  	
+  $('.search-btn').on( "click", function(e)  {
+		var product = $('#pr_no').val();
+		var batchnumber = $('#batchnumber').val();
+		var manufaturing_from = $('#manufaturing_from').val();
 		if(!pr_no  & !department & !from)
 		{
 			e.preventDefault();
