@@ -87,7 +87,7 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>MIN Date *</label>
-                                <input type="text" value="" class="form-control datepicker" name="min_date" placeholder="">
+                                <input type="text" value="" class="form-control datepicker min_date" name="min_date" placeholder="">
                             </div><!-- form-group -->
                             
 
@@ -145,6 +145,7 @@
     format: " dd-mm-yyyy",
     autoclose:true
     });
+    $(".min_date").datepicker("setDate", new Date());
   //  .datepicker('update', new Date());
 
     $('.datepicker').mask('99-99-9999');

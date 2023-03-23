@@ -87,7 +87,7 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>MRN Date *</label>
-                                <input type="text" value="" class="form-control datepicker" name="mrn_date" placeholder="">
+                                <input type="text" value="" class="form-control datepicker mrn_date" name="mrn_date" value="{{date('Y-m-d')}}"placeholder="">
                             </div><!-- form-group -->
                         </div> 
                         <div class="row">
@@ -139,8 +139,9 @@
 
     $(".datepicker").datepicker({
     format: " dd-mm-yyyy",
-    autoclose:true
+    autoclose:true,
     });
+    $(".mrn_date").datepicker("setDate", new Date());
   //  .datepicker('update', new Date());
 
     $('.datepicker').mask('99-99-9999');
