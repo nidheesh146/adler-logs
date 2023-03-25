@@ -368,7 +368,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/customer-supplier','CustomerSupplierController@customerSupplierList');
     Route::get('fgs/customer-supplier/add/{id?}','CustomerSupplierController@addCustomerSupplier');
     Route::post('fgs/customer-supplier/add/{id?}','CustomerSupplierController@addCustomerSupplier');
-
+    Route::get('fgs/customersearch','CustomerSupplierController@customersearch');
     //Price master
     Route::get('fgs/price-master/list','PriceController@priceList');
     Route::get('fgs/price-master/add/{id?}','PriceController@priceAdd');
@@ -398,10 +398,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/MTQ/add','MTQController@MTQAdd');
      Route::get('fgs/MTQ/item-list','MTQController@MTQitemlist');
      Route::get('fgs/MTQ/add-item','MTQController@MTQitemAdd');
-    //GRS
-    Route::get('fgs/MTQ/add','MTQController@MTQAdd');
-    Route::get('fgs/MTQ/item-list','MTQController@MTQitemlist');
-    Route::get('fgs/MTQ/add-item','MTQController@MTQitemAdd');
+    //OEF
+    Route::get('fgs/OEF-list','OEFController@OEFList');
+    Route::get('fgs/OEF-add','OEFController@OEFAdd');
+    Route::post('fgs/OEF-add','OEFController@OEFAdd');
+    Route::get('fgs/OEF/item-list/{oef_id}','OEFController@OEFitemlist');
+    Route::get('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
+    Route::post('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
+    Route::get('fgs/OEFproductsearch','OEFController@OEFproductsearch');
     
 });
 

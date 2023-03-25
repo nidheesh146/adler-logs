@@ -27,4 +27,10 @@ class customer_supplier extends Model
                     ->paginate(15);
 
     }
+    function get_customer_data($condition)
+    {
+        return $this->select(['id','firm_name as text','billing_address','shipping_address'])
+                    ->where('firm_name','like','%'.$condition.'%')
+                    ->get()->toArray();
+    }
 }

@@ -113,7 +113,7 @@
                                     <label> Discount (%) *</label>
                                     <input type="text" class="form-control" value="{{$data['get_item_single']['supplier_discount']}}" name="discount" id="discount" placeholder="Discount">
                                 </div>
-                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" style="float:left;">
+                                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" style="float:left;">
 											<label> IGST ( % ) </label>
 											<input type="hidden" name="gst" id="gst-id" value="@if(!empty($data['get_item_single']['gst'])) {{$data['get_item_single']['gst']}}  @endif">
 											<select class="form-control IGST" id="IGST" name="IGST">

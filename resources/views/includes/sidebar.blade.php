@@ -106,22 +106,44 @@
             <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/price-master/list')}}"  class="nav-sub-link">Price Master</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd'])){{'active'}} @endif ">
-              <a href="{{url('fgs/MRN-list')}}"  class="nav-sub-link">MRN</a>
+            <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist',
+              'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd'])){{'active show'}} @endif">
+              <a href="#" class="nav-link with-sub">Inventory</a>
+              <ul class="nav-sub">
+                <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/MRN-list')}}"  class="nav-sub-link">MRN</a>
+                </li>
+                <li class="nav-sub-item @if(in_array($Action,['MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/MIN-list')}}"  class="nav-sub-link">MIN</a>
+                </li>
+                <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">GRS</a>
+                </li>
+                <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">MTQ</a>
+                </li>
+                <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/MIS/add')}}"  class="nav-sub-link">MIS</a>
+                </li>
+              </ul>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd'])){{'active'}} @endif ">
-              <a href="{{url('fgs/MIN-list')}}"  class="nav-sub-link">MIN</a>
+            <li class="nav-item @if(in_array($Action,[])){{'active show'}} @endif">
+              <a href="#" class="nav-link with-sub">Sales</a>
+              <ul class="nav-sub">
+                <li class="nav-sub-item @if(in_array($Action,[])){{'active'}} @endif ">
+                  <a href="{{url('fgs/OEF-list')}}"  class="nav-sub-link">OEF</a>
+                </li>
+                <li class="nav-sub-item @if(in_array($Action,[])){{'active'}} @endif ">
+                  <a href="{{url('fgs/MIN-list')}}"  class="nav-sub-link">PI</a>
+                </li>
+                <li class="nav-sub-item @if(in_array($Action,[])){{'active'}} @endif ">
+                  <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">DNI</a>
+                </li>
+                <li class="nav-sub-item @if(in_array($Action,[])){{'active'}} @endif ">
+                  <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">EXI</a>
+                </li>
+              </ul>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
-              <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">GRS</a>
-            </li>
-            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
-              <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">MTQ</a>
-            </li>
-            <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
-              <a href="{{url('fgs/MIS/add')}}"  class="nav-sub-link">MIS</a>
-            </li>
-            
           </ul>
         </li>
         
