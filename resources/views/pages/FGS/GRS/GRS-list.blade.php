@@ -6,16 +6,16 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Goods Reservation Slip(OEF)</span>
+				 <span>Goods Reservation Slip(GRS)</span>
 				 <span><a href="">
-				 	OEF  List
+                 GRS List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-            OEF List 
+            GRS List 
               <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/OEF-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						OEF 
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/GRS-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+                GRS 
 				</button>
               <div>  
 				
@@ -55,22 +55,21 @@
 											<div class="row filter_search" style="margin-left: 0px;">
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
-												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>OEF No :</label>
-														<input type="text" value="{{request()->get('oef_number')}}" name="oef_number" id="oef_number" class="form-control" placeholder="OEF NO">
+													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
+														<label>GRS No :</label>
+														<input type="text" value="{{request()->get('grs_no')}}" name="grs_no" id="grs_no" class="form-control" placeholder="GRS NO">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Order No</label>
-														<input type="text" value="{{request()->get('order_number')}}" name="order_number" id="order_number" class="form-control" placeholder="ORDER NUMBER">
+														<label for="exampleInputEmail1" style="font-size: 12px;">OEF No</label>
+														<input type="text" value="{{request()->get('oef_no')}}" name="oef_no" id="oef_no" class="form-control" placeholder="OEF NO">
 													</div>
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">OEF Month</label>
+														<label  style="font-size: 12px;">GRS Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
-			
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -98,39 +97,33 @@
 						<table class="table table-bordered mg-b-0" >
 							<thead>
 								<tr>
-									<th>OEF Number</th>
-                                    <th>Order number</th>
-									<th>Order date</th>
-									<th>Order Fulfil</th>
-									<th>Transaction Type</th>
-                                    <th>Due Date</th>
-									<th>OEF date</th>
-                                    <th>Customer info</th>
+									<th>GRS Number</th>
+                                    <th>OEF Number</th>
+									<th>Product Category</th>
+									<th>Stock Location1(Decrease)</th>
+									<th>Stock Location2(Increase)</th>
+                                    <th>Customer</th>
+                                    <th>GRS date</th>
                                     <th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-							@foreach($oef as $item)
-                                <tr>
-									
-									<td>{{$item['oef_number']}}</td>
-                                    <td>{{$item['order_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
-									<td>{{$item['order_fulfil_type']}}</td>
-									<td>{{$item['transaction_name']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['due_date']))}}</td>
-                                    <td>{{date('d-m-Y', strtotime($item['oef_date']))}}</td>
-									<td>{{$item['firm_name']}}<br/>
-										Contact Person:{{$item['contact_person']}}<br/>
-										Contact Number:{{$item['contact_number']}}<br/>
-									</td>
-                                    <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/OEF/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	</td>
-								</tr>
-								@endforeach
+							@foreach($grs as $master)
+                            <tr>
+                                <td>{{$master['grs_number']}}</td>
+                                <td>{{$master['oef_number']}}</td>
+                                <td>{{$master['category_name']}}</td>
+                                <td>{{$master['location_name1']}}</td>
+                                <td>{{$master['location_name2']}}</td>
+                                <td>{{$master['firm_name']}}</td>
+                                <td>{{date('d-m-Y', strtotime($master['grs_date']))}}</td>
+                                <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/item-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a></td>
+                            </tr>
+                            @endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-                        {{ $oef->appends(request()->input())->links() }}
+							{{ $grs->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>
@@ -164,11 +157,12 @@
 	$('#prbody1').show();
 	$('#prbody2').show();
   });
+  	
 	$('.search-btn').on( "click", function(e)  {
-		var ref_number = $('#ref_number').val();
-		var min_no = $('#min_no').val();
+		var grs_no = $('#grs_no').val();
+		var oef_no = $('#oef_no').val();
 		var from = $('#from').val();
-		if(!min_no   & !ref_number & !from)
+		if(!grs_no  & !oef_no & !from)
 		{
 			e.preventDefault();
 		}

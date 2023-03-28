@@ -142,9 +142,7 @@ class MACController extends Controller
         $invoice = $this->inv_supplier_invoice_master->get_master_data(['inv_supplier_invoice_master.id' => $id]);
         //return $invoice;
         $invoice_item = $this->inv_supplier_invoice_item->get_supplier_invoice_item(['inv_supplier_invoice_rel.master' => $id]);
-        // if ($active) {
-        //     $inv_mac_item = $this->inv_mac_item->get_mac_items(['inv_mac_rel.master' => $active]);
-        // }
+        
 
         $data = '<div class="row">
            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">

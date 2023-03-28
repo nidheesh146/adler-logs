@@ -18,4 +18,29 @@ class fgs_oef extends Model
     function update_data($condition,$data){
         return $this->where($condition)->update($data);
     }
+
+    function find_oef_num_for_grs($condition)
+    {
+        return $this->select(['fgs_oef.oef_number as text','fgs_oef.id'])
+                ->leftJoin('fgs_oef_item_rel','fgs_oef_item_rel.master','=', 'fgs_oef.id')
+                ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_oef_item_rel.item')
+                ->where('fgs_oef_item.quantity_to_allocate','!=',0)
+                ->where('fgs_oef.status','=',1)
+                ->where($condition)
+                ->distinct('fgs_oef.id')
+                ->get();
+    }
+    function get_single_oef($condition)
+    {
+        return $this->select('fgs_oef.*','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name',
+        'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person',
+        'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code')
+                    ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
+                    ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
+                    ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
+                    ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
+                    ->where($condition)
+                    ->distinct('fgs_oef.id')
+                    ->first();
+    }
 }

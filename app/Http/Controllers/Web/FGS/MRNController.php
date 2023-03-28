@@ -65,7 +65,7 @@ class MRNController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                $data['mrn_number'] = "MRN-".$this->po_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN')->count(),1); 
+                $data['mrn_number'] = "MRN-".$this->po_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN%')->count(),1); 
                 $data['mrn_date'] = date('Y-m-d', strtotime($request->mrn_date));
                 $data['supplier_doc_number'] = $request->supplier_doc_number;
                 $data['supplier_doc_date'] = date('Y-m-d', strtotime($request->supplier_doc_date));

@@ -63,7 +63,7 @@ class OEFController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                $data['oef_number'] = "OEF-".$this->po_num_gen(DB::table('fgs_oef')->where('fgs_oef.oef_number', 'LIKE', 'OEF')->count(),1); 
+                $data['oef_number'] = "OEF-".$this->po_num_gen(DB::table('fgs_oef')->where('fgs_oef.oef_number', 'LIKE', 'OEF%')->count(),1); 
                 $data['customer_id'] = $request->customer;
                 $data['oef_date'] = date('Y-m-d', strtotime($request->oef_date));
                 $data['order_number'] = $request->order_number;
@@ -143,6 +143,7 @@ class OEFController extends Controller
                     $data = [
                         "product_id" => $value['product'],
                         "quantity" => $value['quantity'],
+                        "quantity_to_allocate"=>$value['quantity'],
                         "rate"=>$value['rate'],
                         "gst" => 8,
                         "discount"=>$value['discount'],

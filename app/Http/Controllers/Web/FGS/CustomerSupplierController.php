@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\currency_exchange_rate;
 use App\Models\state;
+use App\Models\zone;
 use App\Models\PurchaseDetails\customer_supplier;
 use Validator;
 class CustomerSupplierController extends Controller
@@ -14,6 +15,7 @@ class CustomerSupplierController extends Controller
     {
         $this->currency_exchange_rate = new currency_exchange_rate;
         $this->state = new state;
+        $this->zone = new zone;
         $this->customer_supplier = new customer_supplier;
     }
     public function customerSupplierList()
@@ -82,7 +84,8 @@ class CustomerSupplierController extends Controller
         }
         $currency =  $this->currency_exchange_rate->get_currency([]);
         $states = $this->state->get_states([]);
-        return view('pages/FGS/customer-supplier/customer-add',compact('datas','id','currency','states'));
+        $zones = $this->zone->get_zones([]);
+        return view('pages/FGS/customer-supplier/customer-add',compact('datas','id','currency','states','zones'));
     }
 
     public function customersearch(Request $request)

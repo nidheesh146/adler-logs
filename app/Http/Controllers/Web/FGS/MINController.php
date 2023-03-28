@@ -62,7 +62,7 @@ class MINController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                $data['min_number'] = "MIN-".$this->po_num_gen(DB::table('fgs_min')->where('fgs_min.min_number', 'LIKE', 'MIN')->count(),1); 
+                $data['min_number'] = "MIN-".$this->po_num_gen(DB::table('fgs_min')->where('fgs_min.min_number', 'LIKE', 'MIN%')->count(),1); 
                 $data['min_date'] = date('Y-m-d', strtotime($request->min_date));
                 $data['ref_number'] = $request->ref_number;
                 $data['ref_date'] = date('Y-m-d', strtotime($request->ref_date));

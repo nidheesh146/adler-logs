@@ -77,7 +77,7 @@
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Order Date  *</label>
-                                <input type="text" class="form-control datepicker" name="order_date" value="" placeholder="">
+                                <input type="date" class="form-control datepicker" name="order_date" value="" placeholder="">
                             </div>
                         
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -91,7 +91,7 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Transaction Type  *</label>
-                                <select class="form-control" name="stock_location">
+                                <select class="form-control" name="transaction_type">
                                     <option>Select one...</option>
                                     @foreach($transaction_type as $type)
                                     <option value="{{$type['id']}}">{{$type['transaction_name']}}</option>
@@ -100,11 +100,12 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>OEF Date *</label>
-                                <input type="text" value="" class="form-control  oef_date" name="oef_date"  placeholder="">
+                                <input type="date" value="{{date('Y-m-d')}}" class="form-control oef_date" id="oef_date" name="oef_date"  placeholder="">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>Due Date *</label>
-                                <input type="text" value="" class="form-control  due_date" name="due_date" placeholder="">
+                                @php $date= date('Y-m-d', strtotime('+30 days')) @endphp 
+                                <input type="text" value="{{date('d-m-Y', strtotime($date))}}" class="form-control due_date" id="due_date" name="due_date" placeholder="">
                             </div>
                         </div>                       
             
@@ -152,34 +153,44 @@
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
 
 <script>
-  $(function(){
-    'use strict'
+  
 
-    $(".datepicker").datepicker({
-        format: " dd-mm-yyyy",
-        endDate: new Date(),
-        autoclose:true
-    });
-    $(".due_date").datepicker({
-        format: " dd-mm-yyyy",
-        autoclose:true
-    });
-    $(".oef_date").datepicker({
-        format: " dd-mm-yyyy",
-        autoclose:true
-    });
-    $(".oef_date").datepicker("setDate", new Date());
-    var date = new Date();
-    date.setDate(date.getDate() + 30);
-    $(".due_date").datepicker("setDate", date);
-    $(".oef_date").change(function(){
-       var date= new Date($(this).val());
-
-       date.setDate(date.getDate() + 30);
-         alert(day);
-    //    var aftr_30_days = ((day.getDate() < 10) ? "0" : "") + String(day.getDate()) + "-" +((day.getMonth() < 9) ? "0" : "") + String(day.getMonth() + 1)+ "-" +day.getFullYear();
-       $(".due_date").datepicker("setDate", date.setDate(date.getDate() + 30));
-    });
+    // $(".datepicker").datepicker({
+    //     format: " dd-mm-yyyy",
+    //     endDate: new Date(),
+    //     autoclose:true
+    // });
+    // $(".due_date").datepicker({
+    //     format: " dd-mm-yyyy",
+    //     autoclose:true
+    // });
+    // $(".oef_date").datepicker({
+    //     format: " dd-mm-yyyy",
+    //     autoclose:true
+    // });
+    // $(".oef_date").datepicker("setDate", new Date());
+    // var date = new Date();
+    // date.setDate(date.getDate() + 30);
+    // $(".due_date").datepicker("setDate", date);
+    
+        $('.oef_date').on('change',function()
+        {
+            var oef_date = new Date($(this).val());
+            var date  = new Date(oef_date.setDate(oef_date.getDate()+30));
+            var aftr_30_days = ( ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
+            $('#due_date').val(aftr_30_days);
+        });
+    
+    // $(".oef_date").change(function(){
+    //    var oef_date= new Date($(this).val());
+    //    var day = new Date( oef_date.setDate(oef_date.getDate() + 30));
+    //    var date = ((day.getDate() < 10) ? "0" : "") + String(day.getDate()) + "-" +((day.getMonth() < 9) ? "0" : "") + String(day.getMonth() + 1)+ "-" +day.getFullYear();
+    //    alert(day);
+    // //    date.setDate(date.getDate() + 30);
+    // //      alert(day);
+    // //    var aftr_30_days = ((day.getDate() < 10) ? "0" : "") + String(day.getDate()) + "-" +((day.getMonth() < 9) ? "0" : "") + String(day.getMonth() + 1)+ "-" +day.getFullYear();
+    //    $(".due_date").val(date);
+    // });
               
 
     $("#commentForm").validate({
@@ -201,9 +212,6 @@
                 form.submit();
             }
         });
-
-    
-  });
   $(".customer").select2({
         placeholder: 'Choose one',
         searchInputPlaceholder: 'Search',

@@ -406,7 +406,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::post('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::get('fgs/OEFproductsearch','OEFController@OEFproductsearch');
-    
+    //GRS
+    Route::get('fgs/GRS-list','GRSController@GRSList');
+    Route::get('fgs/GRS-add','GRSController@GRSAdd');
+    Route::post('fgs/GRS-add','GRSController@GRSAdd');
+    Route::get('fgs/GRS/item-list/{grs_id}','GRSController@GRSitemlist');
+    Route::get('fgs/GRS/add-item/{grs_id}','GRSController@GRSitemAdd');
+    Route::post('fgs/GRS/add-item/{grs_id}','GRSController@GRSitemAdd');
+    Route::get('fgs/GRS/find-oef-number-for-grs','GRSController@findOEFforGRS');
+    Route::get('fgs/GRS/find-oef-info','GRSController@findOEFInfo');
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Settings','middleware'=>['RolePermission']], function() {

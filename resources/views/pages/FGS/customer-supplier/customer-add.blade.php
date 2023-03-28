@@ -98,7 +98,12 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Zone *</label>
-                                <input type="text" name="zone" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->zone: ""}}" placeholder="Zone"> 
+                                <select name="zone"  class="form-control">
+                                    <option value="">-- Select one ---</option>
+                                    @foreach($zones as $zone)
+                                    <option value="{{$zone['id']}}">{{$zone['zone_name']}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>PAN Number *</label>
