@@ -219,10 +219,11 @@ class inv_supplier_invoice_master extends Model
 
     function find_invoice_num($condition)
     {
-        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id'])->where($condition)
+        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id'])
+        ->where($condition)
         ->whereNotIn('inv_supplier_invoice_master.id',function($query) {
 
-            $query->select('inv_miq.invoice_master_id')->from('inv_miq')>where('inv_miq.status','=',1);
+            $query->select('inv_miq.invoice_master_id')->from('inv_miq')->where('inv_miq.status','=',1);
         
         })->where('inv_supplier_invoice_master.status','=',1)
         ->where('inv_supplier_invoice_master.type','=','PO')
