@@ -79,10 +79,10 @@
                                                 <label>Target Date *</label>
                                             <input type="text" class="form-control datepicker" name="target_date" placeholder="Target Date">
                                         </div><!-- form-group -->
-                                        <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                        {{--<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>Description *</label>
                                             <textarea value="" class="form-control" name="description" placeholder="Description"></textarea>
-                                        </div>
+                                        </div>--}}
                                         <table class="table table-bordered mg-b-0 data-bindings">
                                 
                                         </table>
@@ -216,9 +216,6 @@
                     required: true,
                 },
                 target_date: {
-                    required: true,
-                },
-                description: {
                     required: true,
                 },
                 batchcard: {
