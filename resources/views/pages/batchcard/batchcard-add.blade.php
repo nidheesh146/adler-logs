@@ -73,16 +73,17 @@
                                         </div> --}}
                                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>Start Date *</label>
-                                            <input type="text" class="form-control datepicker" name="start_date" placeholder="Start Date">
+                                            <input type="date" class="form-control start_date"  value="{{date('Y-m-d')}}" name="start_date" placeholder="Start Date">
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>Target Date *</label>
-                                            <input type="text" class="form-control datepicker" name="target_date" placeholder="Target Date">
+                                            <label>Target Date *</label>
+                                            @php $date= date('Y-m-d', strtotime('+60 days')) @endphp
+                                            <input type="text" class="form-control target_date" name="target_date" value="{{date('d-m-Y', strtotime($date))}}" placeholder="Target Date">
                                         </div><!-- form-group -->
-                                        {{--<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                            <label>Description *</label>
-                                            <textarea value="" class="form-control" name="description" placeholder="Description"></textarea>
-                                        </div>--}}
+                                        <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                            <label>Product Description *</label>
+                                            <textarea value="" class="form-control description" name="description" placeholder="Description" readonly></textarea>
+                                        </div>
                                         <table class="table table-bordered mg-b-0 data-bindings">
                                 
                                         </table>
@@ -147,7 +148,7 @@
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                                 <label>Target Date *</label>
-                                            <input type="text" class="form-control datepicker target" id="target" name="target_date" placeholder="Target Date">
+                                            <input type="text" class="form-control  target" id="target" name="target_date" placeholder="Target Date">
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>Description *</label>
@@ -279,6 +280,7 @@
 
         let res = $(this).select2('data')[0];
         if(res){
+            $('.description').text(res.discription);
           $.get("{{ url('batchcard/product/find-input-materials') }}?product_id="+res.id,function(data){
             $('.data-bindings').html(data);
             $('.spinner-button').hide();
@@ -288,7 +290,14 @@
           $('.spinner-button').hide();
         }
       });
-      
+    
+    $('.start_date').on('change',function(e)
+    {
+        var start_date = new Date($(this).val());
+        var date  = new Date(start_date.setDate(start_date.getDate()+60));
+        var target_date = ( ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
+        $('.target_date').val(target_date);
+    });
 
 
     $('.primary_sku_batchards').select2({

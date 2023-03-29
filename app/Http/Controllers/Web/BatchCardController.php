@@ -317,7 +317,7 @@ class BatchCardController extends Controller
                             
             $data .=' </td>
                         <td width="40%">
-                            Description<textarea value="" class="form-control" name="description" placeholder="Description">'.$material['discription'].'</textarea>
+                            Item Description<textarea value="" class="form-control" name="description" placeholder="Description" readonly>'.$material['discription'].'</textarea>
                         </td>
                         <td>
                             Quantity

@@ -14,7 +14,7 @@ class product extends Model
     public $timestamps = false;
      
     function get_product_data($data){
-        return $this->select(['id','sku_code as text'])
+        return $this->select(['id','sku_code as text','discription'])
                     ->where('sku_code','like','%'.$data.'%')
                     ->get()->toArray();
         
