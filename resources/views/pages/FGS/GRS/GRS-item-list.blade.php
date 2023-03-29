@@ -18,9 +18,6 @@
                 GRS Item
 				</button>
               <div>  
-				
-              </div>
-          </div>
         </h4>	
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -51,38 +48,7 @@
 										}
 									</style>
 									<form autocomplete="off">
-										<th scope="row">
-											<div class="row filter_search" style="margin-left: 0px;">
-												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
-								
-													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>GRS No :</label>
-														<input type="text" value="{{request()->get('grs_no')}}" name="grs_no" id="grs_no" class="form-control" placeholder="GRS NO">
-													</div><!-- form-group -->
-													
-													
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">OEF No</label>
-														<input type="text" value="{{request()->get('oef_no')}}" name="oef_no" id="oef_no" class="form-control" placeholder="OEF NO">
-													</div>
-													
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">GRS Month</label>
-														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
-													</div>
-												</div>
-												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-														<label style="width: 100%;">&nbsp;</label>
-														<button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-														@if(count(request()->all('')) > 2)
-															<a href="{{url()->current()}}" class="badge badge-pill badge-warning"
-															style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-														@endif
-													</div> 
-												</div>
-											</div>
-										</th>
+										
 									</form>
 								</tr>
 								</tbody>
@@ -93,27 +59,93 @@
 			
 					<div class="tab-pane  active  show " id="purchase"> 
 					
-					<div class="table-responsive">
-						<table class="table table-bordered mg-b-0" >
-							<thead>
-								<tr>
-									<th>MRN Number</th>
-                                    <th>Supplier doc number</th>
-									<th>Supplier doc date</th>
-									<th>Product Category</th>
-									<th>Stock Location</th>
-									<th>MRN date</th>
-                                    <th>Action</th>
-								</tr>
-							</thead>
-							<tbody id="prbody1">
-							
-							</tbody>
-						</table>
-						<div class="box-footer clearfix">
-							{{-- $mrn->appends(request()->input())->links() --}}
-						</div>
-					</div>
+						<div class="table-responsive">
+							<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+							<i class='fas fa-hand-point-right'></i> GRS Items
+							</label>
+							<table class="table table-bordered mg-b-0" >
+                            	<thead>
+                                	<tr>
+											<th>Product</th>
+                                            <th>Description</th>
+                                            <th>HSN Code</th>
+                                            <th>Batchcard</th>
+                                            <th>Batch Quantity </th>
+                                            <th>Manufacturing Date</th>
+                                            <th>Expiry Date</th>
+                                        </tr>                                                
+                                </thead>
+                                <tbody id="prbody1">
+									@if(count($grs_items)>0)
+                                    @foreach($grs_items as $item)
+                                        <tr>
+                                            <input type="hidden" id="grs_id" value="{{$grs_id}}" name="grs_id">
+                                                    <!-- <td><input type="checkbox" name="oef_item_id[]" value="{{$item['id']}}"></td> -->
+                                            <td>{{$item['sku_code']}}</td>
+                                            <td>{{$item['discription']}}</td>
+                                            <td>{{$item['quantity']}} Nos</td>
+                                            <td>{{$item['quantity_to_allocate']}} Nos</td>
+                                            <td>{{$item['rate']}}</td>
+                                            <td>{{$item['discount']}}%</td>
+                                            <td>IGST:{{$item['igst']}}%<br/>
+                                                        CGST:{{$item['cgst']}}%<br/>
+                                                        SGST:{{$item['sgst']}}%
+                                            </td>
+                                        </tr>
+                                    @endforeach
+									@else
+									<tr>
+										<td colspan="7" ><center>No data Found...</center></td></tr>
+									@endif
+                                </tbody>
+                            </table>
+                            <div class="box-footer clearfix">
+                                {{ $oef_items->appends(request()->input())->links() }}
+                            </div>
+                        </div>
+						<br/>
+						<div class="form-devider"></div>
+						<div class="table-responsive">
+							<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+							<i class='fas fa-hand-point-right'></i> Unreserved OEF Items
+							</label>
+							<table class="table table-bordered mg-b-0" >
+                            	<thead>
+                                	<tr>
+                                            <th>Product</th>
+                                            <th>Description</th>
+                                            <th>Actual Quantity</th>
+                                            <th>Unreserved Quantity</th>
+                                            <th>Rate</th>
+                                            <th>Discount</th>
+                                            <th>GST</th>
+											<th>Action</th>
+                                        </tr>                                                
+                                </thead>
+                                <tbody id="prbody1">
+									
+                                    @foreach($oef_items as $item)
+                                        <tr>
+                                            <td>{{$item['sku_code']}}</td>
+                                            <td>{{$item['discription']}}</td>
+                                            <td>{{$item['quantity']}} Nos</td>
+                                            <td>{{$item['quantity_to_allocate']}} Nos</td>
+                                            <td>{{$item['rate']}}</td>
+                                            <td>{{$item['discount']}}%</td>
+                                            <td>IGST:{{$item['igst']}}%<br/>
+                                                        CGST:{{$item['cgst']}}%<br/>
+                                                        SGST:{{$item['sgst']}}%
+                                            </td>
+											<td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/'.$grs_id.'/add-item/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-plus"></i>  GRS Item</a></td>
+                                        </tr>
+                                    @endforeach
+									
+                                </tbody>
+                            </table>
+                            <div class="box-footer clearfix">
+                                {{ $oef_items->appends(request()->input())->links() }}
+                            </div>
+                        </div>
 				</div>
 			</div>
 		</div>

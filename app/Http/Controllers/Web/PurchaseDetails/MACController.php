@@ -334,6 +334,7 @@ class MACController extends Controller
                                             ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
                                             ->leftJoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
                                             ->where('inv_supplier_invoice_rel.master','=', $invoice_number)
+                                            ->where('inv_supplier_invoice_item.is_merged','=',0)
                                             ->get();
 
         //print_r($items);exit;

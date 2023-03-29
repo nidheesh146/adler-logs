@@ -13,6 +13,9 @@ use App\Models\FGS\fgs_product_category;
 use App\Models\FGS\fgs_oef;
 use App\Models\FGS\fgs_oef_item;
 use App\Models\FGS\fgs_grs;
+use App\Models\FGS\fgs_grs_item;
+use App\Models\FGS\fgs_grs_item_rel;
+use App\Models\FGS\fgs_mrn_item;
 class GRSController extends Controller
 {
     public function __construct()
@@ -22,7 +25,10 @@ class GRSController extends Controller
         $this->product = new product;
         $this->fgs_oef = new fgs_oef;
         $this->fgs_oef_item = new fgs_oef_item;
+        $this->fgs_mrn_item = new fgs_mrn_item;
         $this->fgs_grs = new fgs_grs;
+        $this->fgs_grs_item = new fgs_grs_item;
+        $this->fgs_grs_item_rel = new fgs_grs_item_rel;
         $this->fgs_product_stock_management = new fgs_product_stock_management;
         $this->production_stock_management = new production_stock_management;
     }
@@ -266,37 +272,146 @@ class GRSController extends Controller
 
     public function GRSitemlist(Request $request, $grs_id)
     {
-        // $condition = ['fgs_grs_item_rel.master' =>$request->grs_id];
-        // if($request->product)
-        // {
-        //     $condition[] = ['product_product.sku_code','like', '%' . $request->product . '%'];
-        // }
-        // $items = $this->fgs_grs_item->getItems($condition);
-        return view('pages/FGS/GRS/GRS-item-list', compact('grs_id'));
+        $grs_master = fgs_grs::find($grs_id);
+        $condition[] = ['fgs_oef_item_rel.master','=', $grs_master['oef_id']];
+        $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];            
+        $oef_items = $this->fgs_oef_item->getItems($condition);
+        foreach($oef_items as $item)
+        {
+            $product_batchcards = fgs_product_stock_management::select('fgs_product_stock_management.batchcard_id','batchcard_batchcard.batch_no','fgs_product_stock_management.quantity as batchcard_available_qty')
+                                    ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'fgs_product_stock_management.batchcard_id')
+                                    ->where('fgs_product_stock_management.stock_location_id','=',$grs_master['stock_location1'])
+                                    ->where('fgs_product_stock_management.product_id','=',$item['product_id'])
+                                    ->where('fgs_product_stock_management.quantity','!=',0)
+                                    ->get();
+            if(count($product_batchcards)>0)
+            {
+                $item['batchcards'] = $product_batchcards;
+            }
+        }
+        $condition1[] = ['fgs_grs_item_rel.master','=', $grs_id];
+        $grs_items = $this->fgs_grs_item->getItems($condition1);
+        return view('pages/FGS/GRS/GRS-item-list', compact('grs_id','oef_items','grs_items'));
     }
-    public function GRSitemAdd(Request $request, $grs_id)
+    public function GRSitemAdd(Request $request, $grs_id, $oef_item_id)
     {
         if($request->isMethod('post'))
         {
-            $validation['moreItems.*.product'] = ['required'];
-            $validation['moreItems.*.quantity'] = ['required'];
-            $validation['moreItems.*.discount'] = ['required'];
-            $validation['moreItems.*.rate'] = ['required'];
-            //$validation['moreItems.*.expiry_date'] = ['required','date'];
+            $validation['grs_id'] = ['required'];
+            $validation['batchcard'] = ['required'];
+            $validation['oef_item_id'] = ['required'];
+            $validation['batch_qty'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
+                $oef_item = fgs_oef_item::find($request->oef_item_id);
+                $data['product_id'] = $oef_item['product_id'];
+                $data['oef_item_id']=$request->oef_item_id;
+                $data['mrn_item_id']=$request->mrn_item_id;
+                $data['batchcard_id'] = $request->batchcard;
+                $data['batch_quantity'] = $request->batch_qty;
+                $data['created_at'] =date('Y-m-d H:i:s');
+                $add = $this->fgs_grs_item->insert_data($data,$request->grs_id);
+                $grs_master = fgs_grs::find($request->grs_id);
+                $mrn_item = fgs_mrn_item::find($request->mrn_item_id);
+                $fgs_stock = fgs_product_stock_management::select('id as fgs_stock_id','quantity')
+                                                        ->where('product_id','=',$oef_item['product_id'])
+                                                        ->where('stock_location_id','=',$grs_master['stock_location1'])
+                                                        ->where('batchcard_id','=',$request->batchcard)
+                                                        ->first();
+                $oef_qty_updation = $oef_item['quantity']- $request->batch_qty;
+                $oef_item['quantity_to_allocate'] = $oef_qty_updation;
+                $oef_item->save();
+                $stock_updation = $fgs_stock['quantity']-$request->batch_qty;
+                $stock_mngment= fgs_product_stock_management::find($fgs_stock['fgs_stock_id']);
+                $stock_mngment->quantity = $stock_updation;
+                $stock_mngment->save();
 
+                if($add)
+                {
+                    $request->session()->flash('success', "You have successfully added a GRS Item!");
+                    return redirect('fgs/GRS/item-list/'.$request->grs_id);
+                }
+                else
+                {
+                    $request->session()->flash('error', "GRS Item insertion is failed. Try again... !");
+                    return redirect('fgs/GRS/'.$request->grs_id.'/add-item/'.$request->oef_item_id);
+                }
             }
             else
             {
-                return redirect('fgs/GRS/add-item/'.$request->grs_id)->withErrors($validator)->withInput();
+                return redirect('fgs/GRS/'.$request->grs_id.'/add-item/'.$request->oef_item_id)->withErrors($validator)->withInput();
             }
         }
         else
         {
-            return view('pages/FGS/GRS/GRS-item-add', compact('grs_id'));
+            $grs_master = fgs_grs::find($grs_id);
+            $oef_item = $this->fgs_oef_item->getSingleItem(['fgs_oef_item.id'=>$oef_item_id]);
+            if($oef_item)
+            {
+                $product_batchcards = fgs_product_stock_management::select('fgs_product_stock_management.batchcard_id','batchcard_batchcard.batch_no','fgs_mrn_item.id as mrn_item_id',
+                                            'fgs_product_stock_management.quantity as batchcard_available_qty','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date')
+                                            ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'fgs_product_stock_management.batchcard_id')
+                                            ->leftJoin('fgs_mrn_item','fgs_mrn_item.batchcard_id','=','batchcard_batchcard.id')
+                                            ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
+                                            ->leftJoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
+                                            ->where('fgs_product_stock_management.stock_location_id','=',$grs_master['stock_location1'])
+                                            ->where('fgs_product_stock_management.product_id','=',$oef_item['product_id'])
+                                            ->where('fgs_mrn_item.product_id','=',$oef_item['product_id'])
+                                            ->where('fgs_mrn.stock_location','=', $grs_master['stock_location1'])
+                                            ->where('fgs_mrn.product_category','=',$grs_master['product_category'])
+                                            ->where('fgs_product_stock_management.quantity','!=',0)
+                                            ->orderBy('batchcard_batchcard.id','ASC')
+                                            ->get();
+                if(count($product_batchcards)>0)
+                {
+                    $oef_item['batchcards'] = $product_batchcards;
+                }
+                //print_r(json_encode($oef_item));exit;
+                
+            }
+            return view('pages/FGS/GRS/GRS-item-add', compact('grs_id','oef_item'));
         }
+        
+        // if($request->isMethod('post'))
+        // {
+        //     $validation['grs_id'] = ['required'];
+        //     $validation['oef_item_id'] = ['required'];
+        //     $validator = Validator::make($request->all(), $validation);
+        //     if(!$validator->errors()->all())
+        //     {
+        //         foreach($request->oef_item_id as $oef_item_id)
+        //         {
+
+        //         }
+        //     }
+        //     else
+        //     {
+        //         return redirect('fgs/GRS/add-item/'.$request->grs_id)->withErrors($validator)->withInput();
+        //     }
+        // }
+        // else
+        // {
+        //     $grs_master = fgs_grs::find($grs_id);
+        //     $condition[] = ['fgs_oef_item_rel.master','=', $grs_master['oef_id']];
+        //     $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];            
+        //     $oef_items = $this->fgs_oef_item->getItems($condition);
+        //     foreach($oef_items as $item)
+        //     {
+        //         $product_batchcards = fgs_product_stock_management::select('fgs_product_stock_management.batchcard_id','batchcard_batchcard.batch_no','fgs_product_stock_management.quantity as batchcard_available_qty')
+        //                             ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'fgs_product_stock_management.batchcard_id')
+        //                             ->where('fgs_product_stock_management.stock_location_id','=',$grs_master['stock_location1'])
+        //                             ->where('fgs_product_stock_management.product_id','=',$item['product_id'])
+        //                             ->where('fgs_product_stock_management.quantity','!=',0)
+        //                             ->get();
+        //         if(count($product_batchcards)>0)
+        //         {
+        //             $item['batchcards'] = $product_batchcards;
+        //         }
+        //     }
+        //     //print_r(json_encode($oef_items));exit;
+        //     return view('pages/FGS/GRS/GRS-item-add', compact('grs_id','oef_items'));
+        // }
     }
 
 }
