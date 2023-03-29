@@ -65,11 +65,13 @@
                             <label for="exampleInputEmail1">Batchcard</label>
                             <select class="form-control" name="batchcard" class="batchcard" id="batchcard" required>
                                 <option value="">..Select One..</option>
+                                @if($oef_item['batchcards'])
                                 @foreach($oef_item['batchcards'] as $batchcard)
                                 <option value="{{$batchcard['batchcard_id']}}" manufacturingDate="{{$batchcard['manufacturing_date']}}" expiryDate="{{$batchcard['expiry_date']}}" qty="{{$batchcard['batchcard_available_qty']}}" mrnItemId="{{$batchcard['mrn_item_id']}}">
                                     {{$batchcard['batch_no']}}
                                 </option>
                                 @endforeach
+                                @endif
                             </select>
                         </div> 
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">

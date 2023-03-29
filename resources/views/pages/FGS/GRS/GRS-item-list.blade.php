@@ -14,11 +14,11 @@
 			<h4 class="az-content-title" style="font-size: 20px;">
             GRS Item List 
               <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/GRS/add-item/'.$grs_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+                <!-- <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/GRS/add-item/'.$grs_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
                 GRS Item
-				</button>
+				</button> -->
               <div>  
-        </h4>	
+        </h4>	<div class="form-devider"></div>
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -83,14 +83,11 @@
                                                     <!-- <td><input type="checkbox" name="oef_item_id[]" value="{{$item['id']}}"></td> -->
                                             <td>{{$item['sku_code']}}</td>
                                             <td>{{$item['discription']}}</td>
-                                            <td>{{$item['quantity']}} Nos</td>
-                                            <td>{{$item['quantity_to_allocate']}} Nos</td>
-                                            <td>{{$item['rate']}}</td>
-                                            <td>{{$item['discount']}}%</td>
-                                            <td>IGST:{{$item['igst']}}%<br/>
-                                                        CGST:{{$item['cgst']}}%<br/>
-                                                        SGST:{{$item['sgst']}}%
-                                            </td>
+                                            <td>{{$item['hsn_code']}} </td>
+                                            <td>{{$item['batch_no']}} </td>
+                                            <td>{{$item['batch_quantity']}} Nos</td>
+                                            <td>{{$item['manufacturing_date']}}</td>
+                                            <td>{{$item['expiry_date']}}</td>
                                         </tr>
                                     @endforeach
 									@else

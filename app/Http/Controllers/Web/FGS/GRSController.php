@@ -288,6 +288,7 @@ class GRSController extends Controller
             {
                 $item['batchcards'] = $product_batchcards;
             }
+           
         }
         $condition1[] = ['fgs_grs_item_rel.master','=', $grs_id];
         $grs_items = $this->fgs_grs_item->getItems($condition1);
