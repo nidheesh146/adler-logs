@@ -75,7 +75,7 @@ class BatchCardController extends Controller
 
             if(!$validator->errors()->all())
             {
-
+                //print_r($request->all());exit;
                 $datas['product_id'] = $request->product;
                 $datas['process_sheet_id'] = $request->process_sheet;
                 // $datas['input_material'] = $request->input_material;
@@ -91,11 +91,11 @@ class BatchCardController extends Controller
                 $batchcard =  $this->batchcard->insertdata($datas);
                 if($batchcard)
                 {
-                    $product_inputmaterial_count = product_input_material::where('product_id','=',$request->product)->count();
+                    $product_inputmaterial_count = product_input_material::where('product_id','=',$request->product)->where('status','=',1)->count();
                     for($i=1;$i<=$product_inputmaterial_count;$i++)
                     {
                         $data['batchcard_id'] = $batchcard;
-                        $data['product_inputmaterial_id'] = $_POST['product_inputmaterial_id'.$i];
+                        $data['product_inputmaterial_id'] = $_POST['material'.$i];
                         $data['item_id'] = $_POST['rawmaterial_id'.$i];
                         $data['quantity'] = $_POST['qty'.$i];
                         $batchcard_material[] =  $this->batchcard_material->insert_data($data);
@@ -279,61 +279,131 @@ class BatchCardController extends Controller
 
     public function findInputMaterials(Request $request)
     {
-        $input_materials = product_input_material::select('product_input_material.id','inventory_rawmaterial.id as rawmaterial_id','inventory_rawmaterial.item_code',
-        'inventory_rawmaterial.discription','inv_unit.unit_name','product_input_material.quantity')
-                                                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id')
+        $input_materials = product_input_material::select('product_input_material.id','inventory_rawmaterial.id as material_id1','material2.id as material_id2','material3.id as material_id3','inventory_rawmaterial.item_code as item_code1',
+        'inventory_rawmaterial.discription as description1','material2.discription as description2','material3.discription as description3','product_input_material.quantity1','material2.item_code as item_code2','product_input_material.quantity2',
+        'material3.item_code as item_code3','product_input_material.quantity3','inv_unit.unit_name as unit1','inv_unit2.unit_name as unit2','inv_unit3.unit_name as unit3')
+                                                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id1')
+                                                    ->leftJoin('inventory_rawmaterial as material2','material2.id','=','product_input_material.item_id2')
+                                                    ->leftJoin('inventory_rawmaterial as material3','material3.id','=','product_input_material.item_id3')
                                                     ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                                    ->leftJoin('inv_unit as inv_unit2', 'inv_unit2.id','=', 'material2.issue_unit_id')
+                                                    ->leftJoin('inv_unit as inv_unit3', 'inv_unit3.id','=', 'material3.issue_unit_id')
                                                     ->where('product_input_material.product_id','=',$request->product_id)
+                                                    ->where('product_input_material.status','=',1)
+                                                    ->orderBy('product_input_material.id','asc')
                                                     ->get();
         $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number')
                                                     ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
                                                     ->where('inv_purchase_req_item.Item_code','=', $request->item_id)
                                                     //->where('inv_lot_allocation.available_qty','!=',0)
                                                     ->get();
-       // echo $input_materials; exit;
+        //echo $input_materials; exit;
         $data = '<tbody>';
         $i=1;
         foreach( $input_materials as $material)
         {
-            $lotcard = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_unit.unit_name','inv_mac_item.accepted_quantity')
-                        ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
-                        ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
-                        ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
-                        ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
-                        ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
-                        ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
-                        ->where('inv_purchase_req_item.Item_code','=', $material->rawmaterial_id)
-                        //->where('inv_lot_allocation.available_qty','!=',0)
-                        ->orderBy('inv_lot_allocation.id','asc')
-                        ->first();
+
             $data .= '<tr>
-                        <td>Item Code<input type="text" class="form-control"  value="'.$material['item_code'].'" readonly>
+                        <th>Input Material Option1</th>
+                        <th>Input Material Option2</th>
+                        <th>Input Material Option3</th>
+                    </tr>
+                    <tr>
+                        <input type="hidden" class="input_material_qty input_material_qty'.$i.'" name="input_material_qty'.$i.'" value="">
+                        <td>
+                        <input type="radio" class="item-select-radio" name="material'.$i.'" value="'.$material['id'].'"><br/>
+                        Item Code<input type="text" class="form-control"  value="'.$material['item_code1'].'" readonly>
                             <input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
-                            <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['rawmaterial_id'].'">';
+                            <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['material_id1'].'">
+                            Item Description<textarea value="" class="form-control" name="description" placeholder="Description" readonly>'.$material['description1'].'</textarea>
+                            Quantity
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control material-qty qty'.$i.'" name="qty'.$i.'" value="'.$material['quantity1'].'" required aria-describedby="unit-div1">
+                                <input type="hidden" class="materialqty materialqty'.$i.'" name="materialqty'.$i.'" value="'.$material['quantity1'].'">
+                                <div class="input-group-append">
+                                    <span class="input-group-text unit-div" id="unit-div1">'.$material['unit1'].'</span>
+                                </div>
+                            </div>';
+            $lotcard = $this->lotcard_item_availability($material['material_id1']);
             if($lotcard)
             {
                 $data .='(Lot Number:'.$lotcard['lot_number'].', Quantity: '.$lotcard['accepted_quantity'].' &nbsp;'.$lotcard['unit_name'].')';
             }
-                            
-            $data .=' </td>
-                        <td width="40%">
-                            Item Description<textarea value="" class="form-control" name="description" placeholder="Description" readonly>'.$material['discription'].'</textarea>
-                        </td>
-                        <td>
+            if($material['item_code2']) 
+            {             
+                $data .=' </td>
+                            <td>
+                            <input type="radio" class="item-select-radio" name="material'.$i.'" value="'.$material['id'].'"><br/>
+                            Item Code<input type="text" class="form-control"  value="'.$material['item_code2'].'" readonly>
+                            <input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
+                            <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['material_id2'].'">
+                            Item Description<textarea value="" class="form-control" name="description" placeholder="Description" readonly>'.$material['description2'].'</textarea>
                             Quantity
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control material-qty qty'.$i.'" name="qty'.$i.'" value="'.$material['quantity'].'" required aria-describedby="unit-div1">
-                                <input type="hidden" class="materialqty'.$i.'" name="materialqty'.$i++.'" value="'.$material['quantity'].'">
+                                <input type="text" class="form-control material-qty qty'.$i.'" name="qty'.$i.'" value="'.$material['quantity2'].'" required aria-describedby="unit-div1" >
+                                <input type="hidden" class="materialqty materialqty'.$i.'" name="materialqty'.$i.'" value="'.$material['quantity2'].'">
                                 <div class="input-group-append">
-                                    <span class="input-group-text unit-div" id="unit-div1">'.$material['unit_name'].'</span>
+                                    <span class="input-group-text unit-div" id="unit-div1">'.$material['unit2'].'</span>
                                 </div>
-                            </div>
-                        </td>
-                        </tr>';
+                            </div>';
+                $lotcard2 = $this->lotcard_item_availability($material['material_id2']);
+                if($lotcard2)
+                {
+                    $data .='(Lot Number:'.$lotcard2['lot_number'].', Quantity: '.$lotcard2['accepted_quantity'].' &nbsp;'.$lotcard2['unit_name'].')';
+                }
+            }
+            else
+            {
+                $data .='</td><td> <div style="margin-top: 35%;"><div class="alert alert-success success" style="width: 100%;"> No alternative raw material exist..</div>';
+            }
+            if($material['item_code3']) 
+            {
+                $data .=' </td>
+                            <td>
+                            <input type="radio" class="item-select-radio"  name="material'.$i.'" value="'.$material['id'].'"><br/>
+                            Item Code<input type="text" class="form-control"  value="'.$material['item_code3'].'" readonly>
+                            <input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
+                            <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['material_id3'].'">
+                            Item Description<textarea value="" class="form-control" name="description" placeholder="Description" readonly>'.$material['description3'].'</textarea>
+                            Quantity
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control material-qty qty'.$i.'" name="qty'.$i.'" value="'.$material['quantity3'].'" required aria-describedby="unit-div1" >
+                                <input type="hidden" class="materialqty materialqty'.$i.'" name="materialqty'.$i.'" value="'.$material['quantity3'].'">
+                                <div class="input-group-append">
+                                    <span class="input-group-text unit-div" id="unit-div1">'.$material['unit3'].'</span>
+                                </div>
+                            </div>';
+                $lotcard3 = $this->lotcard_item_availability($material['material_id3']);
+                if($lotcard3)
+                {
+                    $data .='(Lot Number:'.$lotcard3['lot_number'].', Quantity: '.$lotcard3['accepted_quantity'].' &nbsp;'.$lotcard3['unit_name'].')';
+                }
+            }
+            else
+            {
+                $data .='</td><td><div style="margin-top: 35%;"><div class="alert alert-success success" style="width: 100%;"> No alternative raw material exist..</div></div>';
+            }
+            $data .='</td><tr/><tr><td></td><td></td><td></td></tr>';
+            $i++;
         }
         $data .='</tbody>';
         return $data;
 
+    }
+    function lotcard_item_availability($material_id)
+    {
+        $lotcard = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_unit.unit_name','inv_mac_item.accepted_quantity')
+                    ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
+                    ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
+                    ->leftJoin('inv_miq_item','inv_miq_item.lot_number','=','inv_lot_allocation.lot_number')
+                    ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
+                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+                    ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                    ->where('inv_purchase_req_item.Item_code','=', $material_id)
+                    //->where('inv_lot_allocation.available_qty','!=',0)
+                    ->orderBy('inv_lot_allocation.id','asc')
+                    ->first();
+        return $lotcard;
     }
     function batchcardNumberGeneration()
     {

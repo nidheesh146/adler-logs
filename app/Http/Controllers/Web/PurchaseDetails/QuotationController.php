@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Validator;
+use DB;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_quotation;
 use App\Models\PurchaseDetails\inv_supplier;
@@ -86,9 +87,19 @@ class QuotationController extends Controller
         $validator = Validator::make($request->all(), $validation);
        
         if(!$validator->errors()->all()){
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            {
+                $yearMonth = date('y',strtotime("-1 year")).date('m');
+            }
+            else
+            {
+                $yearMonth = date('y').date('m');
+            }
+            $rq_number = "PR-".$this->num_gen(DB::table('inv_purchase_req_quotation')->where('rq_no','LIKE', '%RQ-'.$yearMonth.'%')->count());
             $data = ['date'=>date('Y-m-d',strtotime($request->date)),
                      'delivery_schedule'=>date('Y-m-d',strtotime($request->delivery)),
-                     'rq_no'=>'RQ-'.$this->num_gen( $this->inv_purchase_req_quotation->get_count()),
+                     //'rq_no'=>'RQ-'.$this->num_gen( $this->inv_purchase_req_quotation->get_count()),
+                     'rq_no'=>$rq_number,
                      'created_at'=>date('Y-m-d H:i:s'),
                      'created_user'=>config('user')['user_id'],
                      'type'=> ($request->prsr == 'sr') ? 'SR' : 'PR'

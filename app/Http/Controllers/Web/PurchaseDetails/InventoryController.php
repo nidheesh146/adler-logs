@@ -108,11 +108,19 @@ class InventoryController extends Controller
 
             if(!$validator->errors()->all()){
                 $datas['requestor_id'] = $request->Requestor;
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                {
+                    $yearMonth = date('y',strtotime("-1 year")).date('m');
+                }
+                else
+                {
+                    $yearMonth = date('y').date('m');
+                }
                 if($request->prsr=="pr"){
-                $datas['pr_no'] = "PR-".$this->num_gen(DB::table('inv_purchase_req_master')->count());
+                $datas['pr_no'] = "PR-".$this->num_gen(DB::table('inv_purchase_req_master')->where('pr_no','LIKE', '%PR-'.$yearMonth.'%')->count());
                 }
                 if($request->prsr=="sr"){
-                    $datas['pr_no'] = "SR-".$this->num_gen(DB::table('inv_purchase_req_master')->count());
+                    $datas['pr_no'] = "SR-".$this->num_gen(DB::table('inv_purchase_req_master')->where('pr_no','LIKE', '%SR-'.$yearMonth.'%')->count());
                 }
                 $datas['department'] =  $request->Department;
                 $datas['date'] =  date('Y-m-d',strtotime($request->Date));

@@ -144,7 +144,11 @@
                                 <th>{{$item['order_qty']}}</th>
                                 <th>{{$item['unit_name']}}</th>
                                 <th>{{$item['rate']}}</th>
-                                <th>{{$item['expiry_control']}}</th>
+                                <th>@if($item['expiry_control']=='1') Yes 
+                                    @elseif($item['expiry_control']=='0') No 
+                                    @else {{$item['expiry_control']}}
+                                    @endif
+                                </th>
                                 <th>{{$item['expiry_date']}}</th>
                                 <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MIQ/'.$item['item_id'].'/item')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</th>
                             </tr>

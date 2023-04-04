@@ -71,14 +71,21 @@ class MIQController extends Controller
             if(!$validator->errors()->all()){
                 if(!$request->id)
                 {
+                    if(date('m')==01 || date('m')==02 || date('m')==03)
+                    {
+                        $years_combo = date('y', strtotime('-1 year')).date('y');
+                    }
+                    else
+                    {
+                        $years_combo = date('y').date('y', strtotime('+1 year'));
+                    }
                     $item_type = $this->item_type($request->invoice_number);
-                    //echo $item_type;exit;
                     if($item_type=="Direct Items"){
-                        $Data['miq_number'] = "MIQ2-".$this->po_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ2%')->count(),1); 
+                        $Data['miq_number'] = "MIQ2-".$this->year_combo_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ2-'.$years_combo.'%')->count()); 
                     }
                     //if($item_type=="Indirect Items"){
                     else{
-                        $Data['miq_number'] = "MIQ3-" . $this->po_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ3%')->count(),1); 
+                        $Data['miq_number'] = "MIQ3-" . $this->year_combo_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ3-'.$years_combo.'%')->count()); 
                     }
                         
                         $Data['miq_date'] = date('Y-m-d', strtotime($request->miq_date));

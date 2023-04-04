@@ -116,9 +116,13 @@
                                     @foreach($materials as $material)
                                     <tr>
                                         <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$material->short_description}}" >{{$material->item_code}}</a></td>
-                                        <td style>{{$material->quantity}} {{$material->unit_name}}</td>
+                                        <td style>{{$material->quantity1}} {{$material->unit_name}}</td>
                                         <!-- <td width="10%">{{$material->short_description}}</td> -->
-                                        <td><a href="{{url('product/delete-input-material?id='.$material->id)}}" onclick="return confirm('Are you sure you want to delete this ?');" class="badge badge-danger"><i class="fas fa-trash-alt"></i>  Delete</a> </td>
+                                        <td>
+                                        <a href="" data-toggle="modal"  data-target="#alternative-input-material" class=" badge badge-primary"   id="alternativeItems" materialid="{{$material->id}}"><i class="fas fa-plus"></i> Alternative</a>
+                                        <!-- <a href="{{url('product/alternative-input-material?id='.$material->id)}}"  class="badge badge-primary"> <i class="fas fa-plus"></i> Alternative</a> -->
+                                            <a href="{{url('product/delete-input-material?id='.$material->id)}}" onclick="return confirm('Are you sure you want to delete this ?');" class="badge badge-danger"><i class="fas fa-trash-alt"></i>  Delete</a> 
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -131,6 +135,70 @@
         </div>
 	</div>
 	<!-- az-content-body -->
+    <div id="alternative-input-material" class="modal">
+        <div class="modal-dialog modal-lg" role="document">
+            <form id="excess-order-form" method="post" action="{{url('product/alternative-input-material/add')}}" autocomplete="off">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">
+                            <!-- Product:<div id="product_sku"></div><br/> -->
+                            #Alternative Input materials
+                        </h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                        <label id="partial_invoice_qty-error" class="error" for="partial_invoice_qty" style="display:none;">  Entered value must be less than Balance Order Quantity .</label>
+                            <table class="table table-bordered mg-b-0">
+                                <thead>
+                                    <input type="hidden" id="materialid" name="materialid" value="">                                    <tr>
+                                        <th width="25%">Item Code</th>
+                                        <th  width="60%">Item Description</th>
+                                        <th width="15%">Quantity</th>
+                                    </tr>
+                                    <tr>
+                                        <th id="itemcode1"></th>
+                                        <th id="description1"></th>
+                                        <th id="quantity1"></th>
+                                    </tr>
+                                    <tr>
+                                        <th >
+                                            <span id="itemcode2"></span>
+                                            <select class="alternateitemcode  form-control" id="alternateitemcode2" index="2"  name="itemcode2" style="width:140px;display:none;"></select> 
+                                        </th>
+                                        <th id="description2" class="description"></th>
+                                        <th id="">
+                                            <input type="text"  class="form-control " id="alternateqty2 quantity2"  name="quantity2" value=""><span id="unit2"></span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <span id="itemcode3"></span>
+                                            <select class="alternateitemcode  form-control " id="alternateitemcode3"  index="3" name="itemcode3" style="width:140px;display:none;"></select>
+                                        </th>
+                                        <th id="description3" class="description"></th>
+                                        <th >
+                                            <!-- <span id="quantity3" style="display:none;"></span> -->
+                                            <input type="text"  class="form-control "  id="alternateqty3"  name="quantity3" style=""><span id="unit3"></span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="form-devider"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                            <button type="submit" class="btn btn-primary btn-rounded partial-save-btn" style="float: right;width:88px;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 
@@ -207,6 +275,31 @@ function initSelect2() {
             }
         });   
     } 
+    $('.alternateitemcode').select2({
+        placeholder: 'Choose one',
+        searchInputPlaceholder: 'Search',
+        minimumInputLength: 6,
+        allowClear: true,
+        ajax: {
+            url: "{{ url('inventory/itemcodesearch') }}",
+            processResults: function (data) {
+                return { results: data };
+            }
+        }
+    }).on('change', function (e) {
+            var index = $(this).attr("index");
+            $("#description"+index+"").text('');
+            //alert(select_id);
+            $('#Itemcode-error').remove();
+            let res = $(this).select2('data')[0];
+            if(typeof(res) != "undefined" ){
+                if(res.discription){
+                    $("#description"+index+"").text(res.discription);
+                   
+                }
+                $("#unit"+index+"").html(res.unit_name);
+            }
+        });   
     function selectItem(itemId,divId){
         $('#Itemtype'+divId).val('');
         $.get("<?=url('inventory/get-single-item');?>?id="+itemId,function(response){
@@ -228,14 +321,88 @@ function initSelect2() {
                 Itemcode: {
                     required: true,
                 },
-                quantity: {
-                    required: true,
-                },
+                // quantity: {
+                //     required: true,
+                // },
             },
             submitHandler: function(form) {
                 form.submit();
             }
         });
+    });
+    $('body').on('click', '#alternativeItems', function (event) {
+        var materialid = $(this).attr('materialid');
+        $('#itemcode2').hide();
+        $('#quantity2').hide();
+        $('#alternateitemcode2').hide();
+        $('#itemcode3').hide();
+        $('#quantity3').hide();
+        $('#alternateitemcode3').hide();
+        $('#description2').html('');
+        $('#description3').html('');
+        $('#unit2').html('');
+        $('#unit3').html('');
+        //$('#quantity2').hide()
+        $.get("{{ url('product/alternative-input-material') }}?materialid="+materialid,function(data)
+        {
+                $('#materialid').val(materialid);
+                $('#product_sku').html(data['sku_code']);
+                $('#itemcode1').html(data['item_code1']);
+                $('#description1').html(data['discription1']);
+                $('#quantity1').html(data['quantity1']+' '+data['unit1']);
+                
+                // $("#unit2").html(data['unit_name']);
+                // $("#unit3").html(data['unit_name']);
+                // $('#itemcode2').text(data['item_code2']);
+                // $('#description2').html(data['discription2']);
+                 $('#quantity2').val(data['quantity2']);
+                if(data['item_code2']!=null)
+                {
+                    $('#itemcode2').show();
+                    $('#quantity2').show();
+                    $('#alternateitemcode2').next(".select2-container").hide();
+                    $('#itemcode2').html(data['item_code2']);
+                    $('#description2').html(data['discription2']);
+                    $('#quantity2').val(data['quantity2']);
+                    $('#unit2').text(data['unit2']);
+                }
+                else
+                {
+                    $('#itemcode2').hide();
+                    $('#quantity2').show();
+                    $('#alternateitemcode2').next(".select2-container").show();
+                    $('#alternateqty2').show();
+                }
+                if(data['item_code3']!=null)
+                {
+                    $('#itemcode3').show();
+                    $('#quantity3').show();
+                    $('#alternateitemcode3').next(".select2-container").hide();
+                    $('#itemcode3').html(data['item_code3']);
+                    $('#description3').html(data['discription3']);
+                    $('#quantity3').val(data['quantity3']);
+                    $('#unit3').text(data['unit3']);
+                }
+                else
+                {
+                    $('#itemcode3').hide();
+                    $('#quantity3').show();
+                    $('#alternateitemcode3').next(".select2-container").show();
+                    $('#alternateqty3').show();
+                }
+                // if(data['item_code2']==NULL)
+                // {
+                //    $('#alternateitemcode2').show();
+                //    $('#alternateqty2').show();
+                // }
+                // if(data['item_code3']==NULL)
+                // {
+                //     $('#alternateitemcode3').show();
+                //     $('#alternateqty3').show();
+                // }
+            
+        });
+    
     });
 </script>
 

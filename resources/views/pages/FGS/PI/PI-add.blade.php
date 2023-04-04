@@ -7,7 +7,7 @@
 		<div class="az-content-body">
 
             <div class="az-content-breadcrumb"> 
-                <span><a href="" style="color: #596881;"> Order Execution Form(OEF)</a></span> 
+                <span><a href="" style="color: #596881;">  Proforma Invoice(PI)</a></span> 
                 <!-- <span><a href="" style="color: #596881;">MRN</a></span> -->
                 <span><a href="">
                    
@@ -15,7 +15,7 @@
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            Order Execution Form(OEF)
+            Proforma Invoice(PI)
             </h4>
             <div class="az-dashboard-nav">
            
@@ -44,7 +44,7 @@
              @endforeach            
                    
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" id="commentForm" autocomplete="off" >
+                    <form  method="post" autocomplete="off" >
                
 
                         {{ csrf_field() }}  
@@ -58,60 +58,59 @@
                          </div>
 
                         <div class="row">
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label for="exampleInputEmail1">Customer  *</label>
                                 <select  class="form-control customer" name="customer">
                                 </select>
                             </div> 
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label for="exampleInputEmail1">Customer Biiling Address</label>
                                 <textarea name="billing_address" class="form-control" id="billing_address" readonly></textarea>
                             </div> 
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label for="exampleInputEmail1">Customer Shipping Address</label>
                                 <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly></textarea>
                             </div> 
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Order Number  *</label>
-                                <input type="text" class="form-control" name="order_number" value="" placeholder="Order Number">
-                            </div> 
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Order Date  *</label>
-                                <input type="date" class="form-control datepicker" name="order_date" value="" placeholder="">
+                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                <label>PI Date *</label>
+                                <input type="date" value="{{date('Y-m-d')}}" class="form-control pi_date" id="pi_date" name="pi_date"  placeholder="">
                             </div>
-                        
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Order Fulfil  *</label>
-                                <select class="form-control" name="order_fulfil">
-                                    <option>Select one...</option>
-                                    @foreach($order_fulfil as $type)
-                                    <option value="{{$type['id']}}">{{$type['order_fulfil_type']}}</option>
-                                    @endforeach
-                                </select>
+                        </div> 
+                        <div class="form-devider"></div>
+                        <div class="row">
+                            <div class="invoice-heading" style="display:none;">
+                            <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;margin-left:12px;">
+                                <i class="fas fa-address-card"></i> Add Proforma Invoice  
+                            </label>
                             </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Transaction Type  *</label>
-                                <select class="form-control" name="transaction_type">
-                                    <option>Select one...</option>
-                                    @foreach($transaction_type as $type)
-                                    <option value="{{$type['id']}}">{{$type['transaction_name']}}</option>
-                                    @endforeach
-                                </select>
+                            <div class="form-devider"></div>
+                            
+                            <div class="table-responsive" id="grstable">
+                                <!-- <table class="table table-bordered mg-b-0" id="example1">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th style="width:120px;">GRS Number</th>
+                                            <th>OEF Number</th>
+                                            <th>Product category</th>
+                                            <th>STOCK LOCATION1(DECREASE)</th>
+                                            <th>STOCK LOCATION2(INCREASE)</th>
+                                            <th>GRS Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-body">
+
+                                        
+                                    </tbody>
+                                </table> -->
+                               
                             </div>
-                            <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                                <label>OEF Date *</label>
-                                <input type="date" value="{{date('Y-m-d')}}" class="form-control oef_date" id="oef_date" name="oef_date"  placeholder="">
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                                <label>Due Date *</label>
-                                @php $date= date('Y-m-d', strtotime('+30 days')) @endphp 
-                                <input type="text" value="{{date('d-m-Y', strtotime($date))}}" class="form-control due_date" id="due_date" name="due_date" placeholder="">
-                            </div>
-                        </div>                       
-            
+                            <div class="form-devider"></div>
+                        </div>                      
+                        <br/>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <button type="submit"  class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                <button type="submit" class="btn btn-primary btn-rounded sbmit-btn" style="float: right;display:none;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                     Save & Next
                                 
@@ -227,6 +226,8 @@
         $('#Itemcode-error').remove();
         $("#billing_address").text('');
         $("#shipping_address").text('');
+        $('#grstable').empty();
+        $('.invoice-heading').hide();
         let res = $(this).select2('data')[0];
         if(typeof(res) != "undefined" )
         {
@@ -236,6 +237,15 @@
             if(res.shipping_address){
                 $("#shipping_address").val(res.shipping_address);
             }
+            $.get("{{ url('fgs/PI/fetchGRS') }}?customer_id="+res.id,function(data)
+            {
+                if(data!=0)
+                {
+                $('.invoice-heading').show();
+                $('#grstable').append(data);
+                $('.sbmit-btn').show();
+                }
+            });
         }
     });
 </script>

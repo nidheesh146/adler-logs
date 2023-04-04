@@ -1,6 +1,36 @@
 @extends('layouts.default')
 @section('content')
+<style>
+    input[type="radio"]{
+        appearance: none;
+        border: 1px solid #d3d3d3;
+        width: 30px;
+        height: 30px;
+        content: none;
+        outline: none;
+        margin: 0;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        background-color: #fff;
+    }
 
+                input[type="radio"]:checked {
+                appearance: none;
+                outline: none;
+                padding: 0;
+                content: none;
+                border: none;
+                }
+
+                input[type="radio"]:checked::before{
+                position: relative;
+                color: green !important;
+                content: "\00A0\2713\00A0" !important;
+                border: 1px solid #d3d3d3;
+                font-weight: bolder;
+                font-size: 21px;
+                }
+
+</style>
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -343,6 +373,20 @@
                 return { results: data };
             }
         }
+    });
+    $(document).on('change','.item-select-radio', function(event){
+        event.preventDefault();
+        if (this.checked)
+        {
+            var ele=$(this).siblings('.input-group').find('.materialqty');
+            var qty=$(this).siblings('.input-group').find('.materialqty').val();
+            $(this).siblings('.input-group').find('.materialqty').removeAttr('disabled');
+            // console.log( $(this).siblings('.input-group').find('.materialqty').attr('value'));
+            // $(this).parent().parent().find('.input_material_qty').val(qty);
+        }else{
+            alert('Option 1 is unchecked!');
+        }
+     
     });
 </script>
 

@@ -202,17 +202,24 @@
             $.get("{{ url('inventory/stock/fetchBatchCards') }}?item_id="+res.id,function(data)
             {
                 //alert('kk');
-               if(data['batchcards']){
-                $('.batchcards').html(data['batchcards']);
-               }
-               if(data['lotcards']){
-                $('.lotcards').html(data['lotcards']);
-               }
-
-                if(data['batchcards'] && data['lotcards'])
+                if(data!=0)
                 {
-                    $('.spinner-button').show();
-                    $('.savebtn').show();
+                    if(data['batchcards']){
+                        $('.batchcards').html(data['batchcards']);
+                    }
+                    if(data['lotcards']){
+                        $('.lotcards').html(data['lotcards']);
+                    }
+
+                        if(data['batchcards'] && data['lotcards'])
+                        {
+                            $('.spinner-button').show();
+                            $('.savebtn').show();
+                        }
+                }
+                else
+                {
+                    alert('There is no batchcard and lotcard exist for particular rawmaterial..')
                 }
                
             });

@@ -8,6 +8,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use App\Models\product;
 use App\Models\product_input_material;
+use App\Models\PurchaseDetails\inventory_rawmaterial;
 use Validator;
 use Redirect;
 use DB;
@@ -15,13 +16,16 @@ class ProductController extends Controller
 {
     public function __construct()
     {
-       
         $this->product = new product;
+        $this->inventory_rawmaterial = new inventory_rawmaterial;
         $this->product_input_material = new product_input_material;
     }
 
     public function productList()
     {
+    
+        //$this->prd_InputmaterialUpload();
+
         $data['products'] = $this->product->get_products([]);
         return view('pages/product/product-list',compact('data'));
     }
@@ -31,7 +35,7 @@ class ProductController extends Controller
         {
             $validation['product_id'] = ['required'];
             $validation['moreItems.*.Itemcode'] = ['required'];
-            $validation['moreItems.*.quantity'] = ['required'];
+            //$validation['moreItems.*.quantity'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
@@ -39,8 +43,8 @@ class ProductController extends Controller
                 {
                     $Request = [
                                     "product_id"=>$request['product_id'],
-                                    "item_id" => $value['Itemcode'],
-                                    "quantity"=> $value['quantity'],
+                                    "item_id1" => $value['Itemcode'],
+                                    "quantity1"=> $value['quantity'],
                                     "created_at" => date('Y-m-d H:i:s'),
 
                                 ];
@@ -66,9 +70,54 @@ class ProductController extends Controller
         }
     }
 
+    public function alternativeInputMaterialAdd(Request $request)
+    {
+        $validation['materialid'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all())
+        {
+            $update = product_input_material::find($request['materialid']);
+            if($request['itemcode2']!=null)
+            $update->item_id2 =$request['itemcode2'];
+            if($request['itemcode3']!=null)
+            $update->item_id3 =$request['itemcode3'];
+            if($request['itemcode2']!=null)
+            $update->quantity2 =$request['quantity2'];
+            if($request['itemcode2']!=null)
+            $update->quantity3 =$request['quantity3'];
+            $update->save();
+            //('id','=',$request['materialid'])->update([$data]);
+            $request->session()->flash('success', "Alternative Input material adding success..");
+            return redirect()->back();
+
+        }
+        else
+        {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        
+        
+    }
+    public function alternativeInputMaterial(Request $request)
+    {
+        $product_input_material=product_input_material::select('product_product.sku_code','product_input_material.quantity1','product_input_material.quantity2',
+        'product_input_material.quantity3','inventory_rawmaterial.item_code as item_code1','inventory_rawmaterial.discription as discription1','alternative2.discription as discription2',
+        'alternative3.discription as discription3','alternative2.item_code as item_code2','alternative3.item_code as item_code3','inv_unit.unit_name as unit1','inv_unit2.unit_name as unit2','inv_unit3.unit_name as unit3')
+                                    ->leftJoin('product_product','product_product.id','=','product_input_material.product_id')
+                                    ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id1')
+                                    ->leftJoin('inventory_rawmaterial as alternative2','alternative2.id','=','product_input_material.item_id2')
+                                    ->leftJoin('inventory_rawmaterial as alternative3','alternative3.id','=','product_input_material.item_id3')
+                                    ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.receipt_unit_id')
+                                    ->leftjoin('inv_unit as inv_unit2','inv_unit2.id','=','alternative2.receipt_unit_id')
+                                    ->leftjoin('inv_unit as inv_unit3','inv_unit3.id','=','alternative3.receipt_unit_id')
+                                    ->where('product_input_material.id','=',$request->materialid)
+                                    ->first();
+        return $product_input_material;
+    }
+
     public function deleteInputMaterial(Request $request)
     {
-        $delete = product_input_material::where('id','=',$request->id)->delete();
+        $delete = product_input_material::where('id','=',$request->id)->update(['status'=>0]);
         if($delete)
         $request->session()->flash('succ', "Input material deleted successfully..");
         else
@@ -248,6 +297,171 @@ class ProductController extends Controller
                         //echo "yes";exit;
                         $res[] = DB::table('product_product')->where('sku_code', $excelsheet[1])->update($data);
                     }
+            }
+            
+        }
+        if($res)
+        return 1;
+        else 
+        return 0;
+       
+    }
+
+    public function prd_InputmaterialUpload()
+    {
+        // $file = $request->file('file');
+        // if ($file) {
+
+        //     $ExcelOBJ = new \stdClass();
+
+        //     // CONF
+        //     $path = storage_path().'/app/'.$request->file('file')->store('temp');
+
+            $ExcelOBJ = new \stdClass();
+            $ExcelOBJ->inputFileType = 'Xlsx';
+           // $ExcelOBJ->filename = 'SL-1-01.xlsx';
+            $ExcelOBJ->inputFileName ='C:\xampp\htdocs\PRD_29.xlsx';
+            // $ExcelOBJ->filename = 'Book1.xlsx';
+            // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
+            $ExcelOBJ->spreadsheet = new Spreadsheet();
+            $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
+            $ExcelOBJ->reader->setReadDataOnly(true);
+            $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
+            $no_column = 11;
+            $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
+            //echo $sheet1_column_count;exit;
+            if($sheet1_column_count == $no_column)
+            {
+                $res = $this->ExcelsplitsheetPrdFile($ExcelOBJ);
+                 //print_r($res);exit;
+                 if($res)
+                 {
+                    $request->session()->flash('success',  "Successfully uploaded.");
+                    return redirect('product/file/upload');
+                 }
+                 else{
+                    $request->session()->flash('error',  "The data already uploaded.");
+                    return redirect('product/file/upload');
+                 }
+            }
+            else 
+            {
+                $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
+                return redirect('product/file/upload');
+            }
+            
+            //dd($ExcelOBJ->worksheetData);
+            //exit;
+        //}
+    }
+    public function ExcelsplitsheetPrdFile($ExcelOBJ)
+    {
+        ini_set('max_execution_time', 500);
+        $ExcelOBJ->SQLdata = [];
+        $ExcelOBJ->arrayinc = 0;
+        //print_r($ExcelOBJ->worksheetData); exit;
+        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) 
+        {
+            $ExcelOBJ->sectionName = '';
+            $ExcelOBJ->sheetName = $worksheet['worksheetName'];
+            //echo $ExcelOBJ->sheetName;exit;
+            $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
+            $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
+            $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
+        
+            $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
+            //print_r(json_encode($ExcelOBJ->excelworksheet));exit;
+            // $ExcelOBJ->date_created = date('Y-m-d H:i:s');
+            // $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
+           // echo $ExcelOBJ->sheetname;exit;
+            $res = $this->insert_product_inputmaterials($ExcelOBJ);
+            //return $res;
+            //print_r($ExcelOBJ);exit;
+        }
+       // print_r($ExcelOBJ);exit;
+       
+    }
+    public function insert_product_inputmaterials($ExcelOBJ)
+    {
+        //print_r(json_encode($ExcelOBJ->excelworksheet));exit;
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
+        {
+            if ($key > 4 && $excelsheet[0]) 
+            {   
+               // print_r(json_encode($excelsheet));exit;
+                $product = product::where('sku_code',$excelsheet[0])->first();
+                if($product)
+                {
+                    $input_material =product_input_material::Join('product_product','product_product.id','=','product_input_material.product_id')
+                                        ->where('product_product.id','=', $excelsheet[0])->first();
+                    // //$input_material=DB::table('product_input_material')->where('id','=',1)->first(); 
+                    // print_r($input_material);exit;
+                    if($excelsheet[2]!='N/A' || $excelsheet[2]!='NA' || $excelsheet[2]!='Assembly')
+                    {
+                        $item1 = inventory_rawmaterial::where('item_code',$excelsheet[2])->first();
+                        if($item1)
+                        $item_id1 = $item1['id'];
+                        else
+                        $item_id1 = NULL;
+                    }
+                    else
+                    {
+                        $item_id1 = NULL;
+                    }
+                    if($excelsheet[3]!='N/A' || $excelsheet[3]!='NA')
+                    {
+                        $item2 = inventory_rawmaterial::where('item_code',$excelsheet[3])->first();
+                        if($item2)
+                        $item_id2 = $item2['id'];
+                        else
+                        $item_id2 = NULL;
+                    }
+                    else 
+                    {
+                        $item_id2 = NULL;
+                    }
+                    if($excelsheet[4]!='N/A' || $excelsheet[4]!='NA')
+                    {
+                        $item3 = inventory_rawmaterial::where('item_code',$excelsheet[4])->first();
+                        if($item3)
+                        $item_id3 = $item3['id'];
+                        else
+                        $item_id3 = NULL;
+                    }
+                    else 
+                    {
+                        $item_id3 = NULL;
+                    }
+                    if(!$input_material)
+                    {
+                        $data =[
+                            'product_id'=>$product['id'],
+                            'item_id1'=>$item_id1,
+                            'item_id2'=>$item_id2,
+                            'item_id2'=>$item_id3,
+                            'status'=>1,
+                            'created_at'=>date('Y-m-d H:i:s'),
+                        ];
+                        // $data['status'] = 1;
+                        // $data['created_at'] = date('Y-m-d H:i:s');
+                       
+                        $res[] = DB::table('product_input_material')->insert($data); 
+                    }
+                    else
+                    {
+                        //echo "yes";exit;
+                        $data =[
+                            'product_id'=>$product['id'],
+                            'item_id1'=>$item_id1,
+                            'item_id2'=>$item_id2,
+                            'item_id2'=>$item_id3,
+                            'status'=>1,
+                            'created_at'=>date('Y-m-d H:i:s'),
+                        ];
+                        $res[] = DB::table('product_input_material')->where('id', $input_material['id'])->update($data);
+                    }
+                }
+                    
             }
             
         }

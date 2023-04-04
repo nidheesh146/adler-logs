@@ -63,7 +63,15 @@ class OEFController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                $data['oef_number'] = "OEF-".$this->po_num_gen(DB::table('fgs_oef')->where('fgs_oef.oef_number', 'LIKE', 'OEF%')->count(),1); 
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                {
+                    $years_combo = date('y', strtotime('-1 year')).date('y');
+                }
+                else
+                {
+                    $years_combo = date('y').date('y', strtotime('+1 year'));
+                }
+                $data['oef_number'] = "OEF-".$this->year_combo_num_gen(DB::table('fgs_oef')->where('fgs_oef.oef_number', 'LIKE', 'OEF-'.$years_combo.'%')->count()); 
                 $data['customer_id'] = $request->customer;
                 $data['oef_date'] = date('Y-m-d', strtotime($request->oef_date));
                 $data['order_number'] = $request->order_number;

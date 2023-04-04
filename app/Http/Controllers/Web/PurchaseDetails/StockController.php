@@ -474,7 +474,7 @@ class StockController extends Controller
         $batchmaterials_in_sip_item = inv_stock_to_production_item::pluck('batchcard_material_id')->toArray();
         $arr=array_filter($batchmaterials_in_sip_item);
        // ->whereNotIn('batchcard_materials.id',$batchmaterials_in_sip_item)
-       
+       $data ="";
         $batchcards = batchcard_material::select('batchcard_materials.id as batchcard_material_id','batchcard_batchcard.id as batchcard_id','batchcard_batchcard.batch_no','batchcard_materials.item_id','batchcard_materials.quantity as material_qty',
         'batchcard_batchcard.quantity as sku_quantity','product_product.sku_code','inv_unit.unit_name')
                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'batchcard_materials.batchcard_id')
@@ -577,8 +577,10 @@ class StockController extends Controller
             }
             $data['lotcards'] .="<tbody></table></div></div>";
         }
-                                            
+        if($data)                               
         return $data;
+        else
+        return 0;
 
 
     }
@@ -592,8 +594,16 @@ class StockController extends Controller
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            {
+                $years_combo = date('y', strtotime('-1 year')).date('y');
+            }
+            else
+            {
+                $years_combo = date('y').date('y', strtotime('+1 year'));
+            }
             $lot_data= $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$request->lot_id]);
-            $data['sip_number'] = "SIP2-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2%')->count(),1); 
+            $data['sip_number'] = "SIP2-".$this->year_combo_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2-'.$years_combo.'%')->count()); 
             $data['lot_id'] = $request->lot_id;
             $data['qty_to_production'] = array_sum($request->qty_to_production);
             $data['type'] = 2;
@@ -680,7 +690,15 @@ class StockController extends Controller
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
-            $data['sip_number'] = "SIP3-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP3%')->count(),1); 
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            {
+                $years_combo = date('y', strtotime('-1 year')).date('y');
+            }
+            else
+            {
+                $years_combo = date('y').date('y', strtotime('+1 year'));
+            }
+            $data['sip_number'] = "SIP3-".$this->year_combo_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP3-'.$years_combo.'%')->count()); 
 
             $data['transaction_slip'] = $request->transaction_slip;
             $data['type'] = 3;
@@ -1059,7 +1077,15 @@ class StockController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2%')->count(),1);
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                {
+                    $years_combo = date('y', strtotime('-1 year')).date('y');
+                }
+                else
+                {
+                    $years_combo = date('y').date('y', strtotime('+1 year'));
+                }
+                $data['sir_number'] = "SIR2-".$this->year_combo_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2-'.$years_combo.'%')->count());
                 $data['lot_id']= $request->lotcard;
                 $data['item_id'] = $request->item_code;
                 $data['batch_id'] = $request->batchcard;
@@ -1110,7 +1136,15 @@ class StockController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                $data['sir_number'] = "SIR3-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3%')->count(),1);
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                {
+                    $years_combo = date('y', strtotime('-1 year')).date('y');
+                }
+                else
+                {
+                    $years_combo = date('y').date('y', strtotime('+1 year'));
+                }
+                $data['sir_number'] = "SIR3-".$this->year_combo_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3-'.$years_combo.'%')->count());
                 $data['item_id'] = $request->item_code;
                 $data['qty_to_return']= $request->return_quantity;
                 $data['status']= 1;

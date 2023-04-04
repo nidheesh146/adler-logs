@@ -109,26 +109,40 @@ class PurchaseController extends Controller
                     $groupByItemSupplier = $this->inv_purchase_req_quotation_item_supp_rel->groupByItemSupplier(['inv_purchase_req_quotation_item_supp_rel.selected_item' => 1,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$request->rq_master_id]);
                     
                     foreach ($groupByItemSupplier as $ByItemSupplier) {
+                        if(date('m')==01 || date('m')==02 || date('m')==03)
+                        {
+                            $years_combo = date('y', strtotime('-1 year')).date('y');
+                        }
+                        else
+                        {
+                            $years_combo = date('y').date('y', strtotime('+1 year'));
+                        }
                         $type = $this->check_reqisition_type($request->rq_master_id,$ByItemSupplier->supplier_id);
-                        if ($type == "PR") {
+                        if ($type == "PR") 
+                        {
                             $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
                             //$supplier_type =  $this->inv_supplier->get_supplier(['id'=>$ByItemSupplier->supplier_id])->supplier_type;
                             $item_type = $this->check_item_type($request->rq_master_id,$ByItemSupplier->supplier_id);
-                           
                             if ($item_type == "Direct Items") {
-                                $data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
+                                $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
+                                                                                            ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
                             } else {
-                                $data['po_number'] = "POI3" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
+                                $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
+                                                                    ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count(),2);
                             }
                             $data['type'] ="PO";
-                        } else {
+                        } 
+                        else 
+                        {
                             $item_type = $this->check_item_type($request->rq_master_id,$ByItemSupplier->supplier_id);
                             if ($item_type == "Direct Items") {
-                            $data['po_number'] = "WOI2-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                            $data['po_number'] = "WOI2-".$this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%WOI2-'.$years_combo.'%')
+                                                            ->Orwhere('po_number','like','%WOC2-'.$years_combo.'%')->where('type', '=', 'WO')->count());
                             $data['type'] ="WO";
                             }
                             else{
-                                $data['po_number'] = "WOI3-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                                $data['po_number'] = "WOI3-".$this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%WOI3-'.$years_combo.'%')
+                                                            ->Orwhere('po_number','like','%WOC3-'.$years_combo.'%')->where('type', '=', 'WO')->count());
                             }
                         }
                         $data['created_at'] = date('Y-m-d H:i:s');
@@ -206,24 +220,40 @@ class PurchaseController extends Controller
                 $groupByItemSupplier = $this->inv_purchase_req_quotation_item_supp_rel->groupByItemSupplier(['inv_purchase_req_quotation_item_supp_rel.selected_item' => 1,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$quotation_id]);
                     
                     foreach ($groupByItemSupplier as $ByItemSupplier) {
+                        if(date('m')==01 || date('m')==02 || date('m')==03)
+                        {
+                            $years_combo = date('y', strtotime('-1 year')).date('y');
+                        }
+                        else
+                        {
+                            $years_combo = date('y').date('y', strtotime('+1 year'));
+                        }
                         $type = $this->check_reqisition_type($quotation_id,$ByItemSupplier->supplier_id);
                         if ($type == "PR") {
                             $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
                             $item_type = $this->check_item_type($quotation_id,$ByItemSupplier->supplier_id);
                            
                             if ($item_type == "Direct Items") {
-                                $data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
+                                $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
+                                                            ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
+                                //$data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
                             } else {
-                                $data['po_number'] = "POI3-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
+                                $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
+                                                                    ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count(),2);
+                                //$data['po_number'] = "POI3-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
                             }
                             $data['type'] ="PO";
                         } else {
                             $item_type = $this->check_item_type($quotation_id,$ByItemSupplier->supplier_id);
                             if ($item_type == "Direct Items") {
-                            $data['po_number'] = "WOI2-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                                //$data['po_number'] = "WOI2-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                                $data['po_number'] = "WOI2-".$this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%WOI2-'.$years_combo.'%')
+                                            ->Orwhere('po_number','like','%WOC2-'.$years_combo.'%')->where('type', '=', 'WO')->count());
                             }
                             else{
-                                $data['po_number'] = "WOI3-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                                $data['po_number'] = "WOI3-".$this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%WOI3-'.$years_combo.'%')
+                                                            ->Orwhere('po_number','like','%WOC3-'.$years_combo.'%')->where('type', '=', 'WO')->count());
+                                //$data['po_number'] = "WOI3-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
                             }
                             $data['type'] ="WO";
                         }
@@ -1416,7 +1446,15 @@ class PurchaseController extends Controller
 
     public function excessPurchaseOrder(Request $request)
     {
-        
+        if(date('m')==01 || date('m')==02 || date('m')==03)
+        {
+            $years_combo = date('y', strtotime('-1 year')).date('y');
+        }
+        else
+        {
+            $years_combo = date('y').date('y', strtotime('+1 year'));
+        }
+
         $item_id =$request->purchase_item_id;
         $po_id = $request->po_id;
         $master = $this->inv_final_purchase_order_master->get_master_details(['inv_final_purchase_order_master.id' => $po_id]);
@@ -1424,21 +1462,29 @@ class PurchaseController extends Controller
         $item_type = $this->check_item_type($master['rq_master_id'],$master['supplier_id']);
         if($master['type']=='PO')
         {
-            if ($item_type == "Direct Items") {
-                $data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
+            if ($item_type == "Direct Items") 
+            {
+                // $count = DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
+                // ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count();
+                // echo $count;exit;
+                $data['po_number'] = "POI2-" .$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
+                                         ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
             } else {
-                $data['po_number'] = "POI3-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
+                $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
+                                                    ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count(),2);
             }
             $data['type'] ="PO";
         }
         else
         {
-            if ($item_type == "Direct Items")
+            if ($item_type == "Direct Items") 
             {
-              $data['po_number'] = "WOI2-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                $data['po_number'] = "WOI2-".$this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%WOI2-'.$years_combo.'%')
+                                                ->Orwhere('po_number','like','%WOC2-'.$years_combo.'%')->where('type', '=', 'WO')->count());
             }
             else{
-                $data['po_number'] = "WOI3-" . $this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'WO')->count());
+                $data['po_number'] = "WOI3-".$this->wo_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%WOI3-'.$years_combo.'%')
+                                                ->Orwhere('po_number','like','%WOC3-'.$years_combo.'%')->where('type', '=', 'WO')->count());
             }
             $data['type'] ="WO";
         }

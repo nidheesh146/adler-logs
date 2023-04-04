@@ -70,7 +70,15 @@ class GRSController extends Controller
                     $request->session()->flash('error', "OEF items not exist on current location. Try again with another location... !");
                     return redirect('fgs/GRS-add');
                 }
-                $data['grs_number'] = "GRS-".$this->po_num_gen(DB::table('fgs_grs')->where('fgs_grs.grs_number', 'LIKE', 'GRS%')->count(),1); 
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                {
+                    $years_combo = date('y', strtotime('-1 year')).date('y');
+                }
+                else
+                {
+                    $years_combo = date('y').date('y', strtotime('+1 year'));
+                }
+                $data['grs_number'] = "GRS-".$this->year_combo_num_gen(DB::table('fgs_grs')->where('fgs_grs.grs_number', 'LIKE', 'GRS-'. $years_combo.'%')->count()); 
                 $data['grs_date'] = date('Y-m-d', strtotime($request->grs_date));
                 $data['oef_id']=$request->oef_number;
                 $data['product_category'] = $request->product_category;

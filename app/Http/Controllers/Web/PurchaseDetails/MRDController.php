@@ -244,14 +244,22 @@ class MRDController extends Controller
             {
                 if(!$request->id)
                 {
+                    if(date('m')==01 || date('m')==02 || date('m')==03)
+                    {
+                        $years_combo = date('y', strtotime('-1 year')).date('y');
+                    }
+                    else
+                    {
+                        $years_combo = date('y').date('y', strtotime('+1 year'));
+                    }
                     $item_type = $this->get_item_type($request->invoice_number);
                     if($item_type=="Direct Items"){
-                        $Data['mrd_number'] = "MRD2-".$this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD2%')->count(),1); 
+                        $Data['mrd_number'] = "MRD2-".$this->year_combo_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD2-'.$years_combo.'%')->count()); 
                     }
                     //if($item_type=="Indirect Items"){
                     else
                     {
-                        $Data['mrd_number'] = "MRD3-" . $this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD3%')->count(),1); 
+                        $Data['mrd_number'] = "MRD3-" . $this->year_combo_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD3-'.$years_combo.'%')->count()); 
                     }
                     $Data['mrd_date'] = date('Y-m-d', strtotime($request->mrd_date));
                     $Data['invoice_id'] = $request->invoice_number;
@@ -400,14 +408,21 @@ class MRDController extends Controller
             {
                 if(!$request->id)
                 {
-                    
+                    if(date('m')==01 || date('m')==02 || date('m')==03)
+                    {
+                        $years_combo = date('y', strtotime('-1 year')).date('y');
+                    }
+                    else
+                    {
+                        $years_combo = date('y').date('y', strtotime('+1 year'));
+                    }
                     $item_type = $this->get_item_type($request->invoice_number);
                     if($item_type=="Direct Items"){
-                        $Data['mrd_number'] = "WOR2-".$this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR2%')->count(),1); 
+                        $Data['mrd_number'] = "WOR2-".$this->year_combo_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR2-'.$years_combo.'%')->count()); 
                     }
                    // if($item_type=="Indirect Items"){
                     else{
-                        $Data['mrd_number'] = "WOR3-" . $this->po_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR3%')->count(),1); 
+                        $Data['mrd_number'] = "WOR3-" . $this->year_combo_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR3-'.$years_combo.'%')->count()); 
                     }
                     $Data['mrd_date'] = date('Y-m-d', strtotime($request->mrd_date));
                     $Data['invoice_id'] = $request->invoice_number;
@@ -577,12 +592,20 @@ class MRDController extends Controller
             {
                 if(!$request->id)
                 {
+                    if(date('m')==01 || date('m')==02 || date('m')==03)
+                    {
+                        $years_combo = date('y', strtotime('-1 year')).date('y');
+                    }
+                    else
+                    {
+                        $years_combo = date('y').date('y', strtotime('+1 year'));
+                    }
                     $item_type = $this->get_item_type($request->mrd_number);
                     if($item_type=="Direct Items"){
-                        $Data['rmrn_number'] = "RMRN2-".$this->po_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN2%')->count(),1); 
+                        $Data['rmrn_number'] = "RMRN2-".$this->year_combo_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN2-'.$years_combo.'%')->count()); 
                     }
                     else{
-                        $Data['rmrn_number'] = "RMRN3-" . $this->po_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN3%')->count(),1); 
+                        $Data['rmrn_number'] = "RMRN3-" . $this->year_combo_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN3-'.$years_combo.'%')->count()); 
                     }
                     $Data['rmrn_date'] = date('Y-m-d', strtotime($request->rmrn_date));
                     $Data['mrd_id'] = $request->mrd_number;

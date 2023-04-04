@@ -358,6 +358,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('product/delete-input-material','ProductController@deleteInputMaterial');
     Route::get('product/file/upload','ProductController@getProductUpload');
     Route::post('product/product-upload','ProductController@productFileUpload');
+    Route::get('product/alternative-input-material','ProductController@alternativeInputMaterial');
+    Route::post('product/alternative-input-material/add','ProductController@alternativeInputMaterialAdd');
    
 
 });
@@ -417,6 +419,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     // Route::post('fgs/GRS/add-item/{grs_id}','GRSController@GRSitemAdd');
     Route::get('fgs/GRS/find-oef-number-for-grs','GRSController@findOEFforGRS');
     Route::get('fgs/GRS/find-oef-info','GRSController@findOEFInfo');
+    
+    //PI
+    Route::get('fgs/PI-list','PIController@PIList');
+    Route::get('fgs/PI-add','PIController@PIAdd');
+    Route::post('fgs/PI-add','PIController@PIAdd');
+    Route::get('fgs/PI/item-list/{pi_id}','PIController@PIitemlist');
+    Route::get('fgs/PI/fetchGRS','PIController@fetchGRS');
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Settings','middleware'=>['RolePermission']], function() {
