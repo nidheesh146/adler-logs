@@ -153,7 +153,7 @@ class PIController extends Controller
             foreach($grs_masters as $grs)
             {
                 $data.= '<tr>
-                        <td><input type="checkbox" name="grs_id[]" value='.$grs->id.' required></td>
+                        <td><input type="checkbox" name="grs_id[]" value='.$grs->id.' ></td>
                         <td>'.$grs->grs_number.'</td>
                         <td>'.$grs->oef_number.'</td>
                         <td>'.$grs->category_name.'</td>
