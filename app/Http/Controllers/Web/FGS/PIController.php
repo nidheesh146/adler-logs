@@ -121,13 +121,21 @@ class PIController extends Controller
 
     public function PIitemlist($pi_id)
     {
-        $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','product_product.sku_code','product_product.hsn_code','product_product.discription','batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity')
+        $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','product_product.sku_code','product_product.hsn_code','product_product.discription',
+        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
+                        ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
+                        ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
+                        ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
                         ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
                         ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
+                        ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
                         ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
                         ->where('fgs_pi_item_rel.master','=', $pi_id)
+                        ->where('fgs_grs.status','=',1)
+                        ->orderBy('fgs_grs_item.id','DESC')
+                        ->distinct('fgs_grs_item.id')
                         ->paginate(15);
         return view('pages/FGS/PI/PI-item-list',compact('pi_item'));
     }
