@@ -158,7 +158,7 @@
 		var exi_number = $('#exi_number').val();
 		var customer = $('#customer').val();
 		var from = $('#from').val();
-		if(!min_no   & !ref_number & !from)
+		if(!exi_number   & !customer & !from)
 		{
 			e.preventDefault();
 		}

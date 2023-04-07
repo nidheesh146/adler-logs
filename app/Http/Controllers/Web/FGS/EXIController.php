@@ -160,6 +160,7 @@ class EXIController extends Controller
         $grs_numbers = fgs_pi_item_rel::leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
                                         ->leftJoin('fgs_grs','fgs_grs.id','=', 'fgs_pi_item.grs_id')
                                         ->select('fgs_grs.grs_number')
+                                        ->where('fgs_pi_item_rel.master','=',$pi_id)
                                         ->get();
         return $grs_numbers;                                
     }
