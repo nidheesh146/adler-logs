@@ -315,7 +315,7 @@ class BatchCardController extends Controller
                         Item Code<input type="text" class="form-control"  value="'.$material['item_code1'].'" readonly>
                             <input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
                             <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['material_id1'].'">
-                            Item Description<textarea value="" class="form-control" name="description" placeholder="Description" readonly>'.$material['description1'].'</textarea>
+                            
                             Quantity
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control material-qty qty'.$i.'" name="qty'.$i.'" value="'.$material['quantity1'].'" required aria-describedby="unit-div1">

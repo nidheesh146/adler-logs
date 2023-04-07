@@ -471,10 +471,121 @@ class StockController extends Controller
     }
     public function fetchBatchCards(Request $request)
     {
-        $batchmaterials_in_sip_item = inv_stock_to_production_item::pluck('batchcard_material_id')->toArray();
+    //     $batchmaterials_in_sip_item = inv_stock_to_production_item::pluck('batchcard_material_id')->toArray();
+    //     $arr=array_filter($batchmaterials_in_sip_item);
+    //    // ->whereNotIn('batchcard_materials.id',$batchmaterials_in_sip_item)
+    //    $data ="";
+    //     $batchcards = batchcard_material::select('batchcard_materials.id as batchcard_material_id','batchcard_batchcard.id as batchcard_id','batchcard_batchcard.batch_no','batchcard_materials.item_id','batchcard_materials.quantity as material_qty',
+    //     'batchcard_batchcard.quantity as sku_quantity','product_product.sku_code','inv_unit.unit_name')
+    //             ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'batchcard_materials.batchcard_id')
+    //             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+    //             ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','batchcard_materials.item_id')
+    //             ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+    //             ->whereNotIn('batchcard_materials.id',$arr)
+    //             ->where('batchcard_materials.item_id','=',$request->item_id)
+    //             ->get();
+        
+    //    /* $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_mac_item.available_qty','inv_mac_item.accepted_quantity',
+    //     'inv_unit.unit_name','inv_mac_item.id as mac_item_id')
+    //                         ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
+    //                         ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
+    //                         //->leftJoin('inv_miq_item','inv_miq_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
+    //                         ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_supplier_invoice_item.id')
+    //                         ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+    //                         ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+    //                         ->where('inventory_rawmaterial.id','=', $request->item_id)
+    //                         ->where('inv_mac_item.available_qty','!=',0)
+    //                         ->orderBy('inv_lot_allocation.id','asc')
+    //                         ->get();*/
+    //     $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_unit.unit_name','inventory_rawmaterial.item_code',
+    //     'inv_stock_management.stock_qty','inv_stock_management.id as stock_id')
+    //                                     ->leftJoin('inv_stock_management','inv_stock_management.lot_id','=','inv_lot_allocation.id')
+    //                                     ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
+    //                                     ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+    //                                     ->where('inventory_rawmaterial.id','=', $request->item_id)
+    //                                     ->where('inv_stock_management.stock_qty','!=',0)
+    //                                     ->where('inv_stock_management.status','=',1)
+    //                                     ->orderBy('inv_lot_allocation.id','asc')
+    //                                     ->get();
+
+    //     //return $lotcards;
+    //     $itemcode = inventory_rawmaterial::where('id','=',$request->item_id)->pluck('item_code')->first();
+    //     if(count($batchcards)>0)
+    //     {
+    //         $data['batchcards'] = "<div style='color:#3366ff;font: size 15px;'><i class='typcn typcn-tabs-outline' style='font-size:21px;'></i>&nbsp;<strong>BatchCards</strong></div>
+    //                                 <div class='row'>
+    //                                         <div class='table-responsive'>
+    //                                             <table class='table table-bordered mg-b-0' id='example1'>
+    //                                                 <thead>
+    //                                                 <tr>
+    //                                                     <th></th>
+    //                                                     <th>BatchCard</th>
+    //                                                     <th>SKU Code</th>
+    //                                                     <th>SKU Quantity</th>
+    //                                                     <th>Item(".$itemcode.") Quantity Required</th>
+    //                                                     <th>Quantity to production</th>
+    //                                                 </tr>
+    //                                                 </thead>
+    //                                                 <tbody>";
+    //         $i=1;
+    //         foreach($batchcards as $card)
+    //         {
+    //             $data['batchcards'] .="<tr>
+    //                                         <th><input type='checkbox' class='batchcard-checkbox' onclick='enableTextBox(this)'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
+    //                                         <th>".$card->batch_no."</th>
+    //                                         <th>".$card->sku_code."</th>
+    //                                         <th>".$card->sku_quantity."</th>
+    //                                         <th class='qty'>
+    //                                             <span>".$card->material_qty." ".$card->unit_name."</span>
+    //                                             <span class='' style='float:right;'>
+    //                                                 <a href='#' data-toggle='modal' data-target='#requestModal'  class='badge badge-pill badge-primary request-btn' id='request-btn' style='border:none;display:none;'batchid='".$card->batchcard_id."'  batchno='".$card->batch_no."' skucode='".$card->sku_code."' skuqty='".$card->sku_quantity."' unit='".$card->unit_name."' batchqty='".$card->material_qty."' batchmaterialId='".$card->batchcard_material_id."'>
+    //                                                 Quantity Update Request
+    //                                                 </a>
+    //                                             </span>
+    //                                         </th>
+    //                                         <th><input type='text' class='qty_to_production' id='qty_to_production' name='qty_to_production[]' disabled>".$card->unit_name."</th>
+    //                                     </tr> ";                                               
+    //             $i++;
+    //         }
+    //         $data['batchcards'] .="<tbody></table></div></div><br/>";
+    //     }
+    //     if(count($lotcards)>0)
+    //     {
+    //         $data['lotcards'] = "<div style='color:#3366ff;font: size 15px;'><i class='fas fa-address-card' style='font-size:21px;'></i>&nbsp;<strong>LotCards</strong></div>
+    //                                 <div class='row'>
+    //                                         <div class='table-responsive'>
+    //                                             <table class='table table-bordered mg-b-0' id='example1' >
+    //                                                 <thead>
+    //                                                 <tr>
+    //                                                     <th></th>
+    //                                                     <th>LotCard</th>
+    //                                                     <th>Item Code</th>
+    //                                                     <th>Quantity</th>
+    //                                                 </tr>
+    //                                                 </thead>
+    //                                                 <tbody>";
+    //         $i=1;                                       
+    //         foreach($lotcards as $card)
+    //         {
+    //             $data['lotcards'] .="<tr>
+    //                                         <td><input type='radio' required class='lot-radio' name='lot_id' value='".$card->lot_id."' lotqty='".$card->stock_qty."' lotno='".$card->lot_number."' macItemid=".$card->stock_id."></td>
+    //                                         <th>".$card->lot_number."</th>
+    //                                         <th>".$itemcode."</th>
+    //                                         <th>".$card->stock_qty." ".$card->unit_name."</th>
+    //                                     </tr> ";                                               
+    //             $i++;
+    //         }
+    //         $data['lotcards'] .="<tbody></table></div></div>";
+    //     }
+    //     if($data)                               
+    //     return $data;
+    //     else
+    //     return 0;
+
+    $batchmaterials_in_sip_item = inv_stock_to_production_item::pluck('batchcard_material_id')->toArray();
         $arr=array_filter($batchmaterials_in_sip_item);
        // ->whereNotIn('batchcard_materials.id',$batchmaterials_in_sip_item)
-       $data ="";
+       
         $batchcards = batchcard_material::select('batchcard_materials.id as batchcard_material_id','batchcard_batchcard.id as batchcard_id','batchcard_batchcard.batch_no','batchcard_materials.item_id','batchcard_materials.quantity as material_qty',
         'batchcard_batchcard.quantity as sku_quantity','product_product.sku_code','inv_unit.unit_name')
                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'batchcard_materials.batchcard_id')
@@ -523,7 +634,7 @@ class StockController extends Controller
                                                         <th>SKU Code</th>
                                                         <th>SKU Quantity</th>
                                                         <th>Item(".$itemcode.") Quantity Required</th>
-                                                        <th>Quantity to production</th>
+                                                        
                                                     </tr>
                                                     </thead>
                                                     <tbody>";
@@ -531,7 +642,7 @@ class StockController extends Controller
             foreach($batchcards as $card)
             {
                 $data['batchcards'] .="<tr>
-                                            <th><input type='checkbox' class='batchcard-checkbox' onclick='enableTextBox(this)'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
+                                            <th><input type='checkbox' class='batchcard-checkbox'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
                                             <th>".$card->batch_no."</th>
                                             <th>".$card->sku_code."</th>
                                             <th>".$card->sku_quantity."</th>
@@ -543,7 +654,6 @@ class StockController extends Controller
                                                     </a>
                                                 </span>
                                             </th>
-                                            <th><input type='text' class='qty_to_production' id='qty_to_production' name='qty_to_production[]' disabled>".$card->unit_name."</th>
                                         </tr> ";                                               
                 $i++;
             }
@@ -577,6 +687,7 @@ class StockController extends Controller
             }
             $data['lotcards'] .="<tbody></table></div></div>";
         }
+                                            
         if($data)                               
         return $data;
         else

@@ -100,4 +100,29 @@ class CustomerSupplierController extends Controller
             return response()->json(['message'=>'Customer is not valid'], 500); 
         }
     }
+    public function domesticCustomer(Request $request)
+    {
+        if(!$request->q){
+            return response()->json(['message'=>'Customer is not valid'], 500); 
+        }
+        $data =  $this->customer_supplier->get_domestic_customer_data(strtoupper($request->q));
+        if(!empty( $data)){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'Customer is not valid'], 500); 
+        }
+    }
+    public function exportCustomer(Request $request)
+    {
+        if(!$request->q){
+            return response()->json(['message'=>'Customer is not valid'], 500); 
+        }
+        $data =  $this->customer_supplier->get_export_customer_data(strtoupper($request->q));
+        if(!empty( $data)){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'Customer is not valid'], 500); 
+        }
+    }
+    
 }

@@ -22,9 +22,12 @@ class product_input_material extends Model
     function getAllData($condition)
     {
         return $this->select(['product_input_material.id','product_input_material.quantity1','inventory_rawmaterial.item_code',
-        'inventory_rawmaterial.short_description','inv_unit.unit_name'])
+        'inventory_rawmaterial.short_description','inv_unit.unit_name','product_input_material.item_id2','product_input_material.item_id3'])
         ->leftjoin('product_product','product_product.id','=','product_input_material.product_id')
-        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id1')
+        //->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id1')
+        ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id1')
+        ->leftJoin('inventory_rawmaterial as alternative2','alternative2.id','=','product_input_material.item_id2')
+        ->leftJoin('inventory_rawmaterial as alternative3','alternative3.id','=','product_input_material.item_id3')
         ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.receipt_unit_id')
         ->where($condition)
         ->where('product_input_material.status','=',1)

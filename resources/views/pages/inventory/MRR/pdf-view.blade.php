@@ -200,7 +200,8 @@
                 @else
                     {{$item['actual_order_qty']}} {{$item['unit_name']}}
                 @endif </td>
-            <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
+            <!-- <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td> -->
+            <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
             <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
             <td>{{$item['rejected_quantity']}} {{$item['unit_name']}}</td>
             @if($type=='po')

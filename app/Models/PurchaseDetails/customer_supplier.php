@@ -29,7 +29,27 @@ class customer_supplier extends Model
     }
     function get_customer_data($condition)
     {
-        return $this->select(['id','firm_name as text','billing_address','shipping_address'])
+        return $this->select(['customer_supplier.id','customer_supplier.firm_name as text','customer_supplier.billing_address',
+        'customer_supplier.shipping_address','zone.zone_name'])
+                    ->leftjoin('zone','zone.id','=','customer_supplier.zone')
+                    ->where('firm_name','like','%'.$condition.'%')
+                    ->get()->toArray();
+    }
+    function get_domestic_customer_data($condition)
+    {
+        return $this->select(['customer_supplier.id','customer_supplier.firm_name as text','customer_supplier.billing_address',
+        'customer_supplier.shipping_address','zone.zone_name'])
+                    ->leftjoin('zone','zone.id','=','customer_supplier.zone')
+                    ->where('zone.zone_name','!=','Export')
+                    ->where('firm_name','like','%'.$condition.'%')
+                    ->get()->toArray();
+    }
+    function get_export_customer_data($condition)
+    {
+        return $this->select(['customer_supplier.id','customer_supplier.firm_name as text','customer_supplier.billing_address',
+        'customer_supplier.shipping_address','zone.zone_name'])
+                    ->leftjoin('zone','zone.id','=','customer_supplier.zone')
+                    ->where('zone.zone_name','=','Export')
                     ->where('firm_name','like','%'.$condition.'%')
                     ->get()->toArray();
     }

@@ -5,9 +5,9 @@ namespace App\Models\FGS;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class fgs_maa_stock_management extends Model
+class fgs_dni_item extends Model
 {
-    protected $table = 'fgs_maa_stock_management';
+    protected $table = 'fgs_dni_item';
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = false;

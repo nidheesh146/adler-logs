@@ -371,6 +371,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/customer-supplier/add/{id?}','CustomerSupplierController@addCustomerSupplier');
     Route::post('fgs/customer-supplier/add/{id?}','CustomerSupplierController@addCustomerSupplier');
     Route::get('fgs/customersearch','CustomerSupplierController@customersearch');
+    Route::get('fgs/domestic_customersearch','CustomerSupplierController@domesticCustomer');
+    Route::get('fgs/export_customersearch','CustomerSupplierController@exportCustomer');
     //Price master
     Route::get('fgs/price-master/list','PriceController@priceList');
     Route::get('fgs/price-master/add/{id?}','PriceController@priceAdd');
@@ -426,6 +428,20 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::post('fgs/PI-add','PIController@PIAdd');
     Route::get('fgs/PI/item-list/{pi_id}','PIController@PIitemlist');
     Route::get('fgs/PI/fetchGRS','PIController@fetchGRS');
+
+    //DNI
+    Route::get('fgs/DNI-list','DNIController@DNIList');
+    Route::get('fgs/DNI-add','DNIController@DNIAdd');
+    Route::post('fgs/DNI-add','DNIController@DNIAdd');
+    Route::get('fgs/DNI/item-list/{dni_id}','DNIController@DNIitemlist');
+    Route::get('fgs/DNI/fetchPI','DNIController@fetchPI');
+
+     //EXI
+     Route::get('fgs/EXI-list','EXIController@EXIList');
+     Route::get('fgs/EXI-add','EXIController@EXIAdd');
+     Route::post('fgs/EXI-add','EXIController@EXIAdd');
+     Route::get('fgs/EXI/item-list/{exi_id}','EXIController@EXIitemlist');
+     Route::get('fgs/EXI/fetchPI','EXIController@fetchPI');
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Settings','middleware'=>['RolePermission']], function() {

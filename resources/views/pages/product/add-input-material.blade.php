@@ -114,12 +114,21 @@
                                 </thead>
                                 <tbody>
                                     @foreach($materials as $material)
+                                    <?php $count=0; ?>
                                     <tr>
                                         <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$material->short_description}}" >{{$material->item_code}}</a></td>
-                                        <td style>{{$material->quantity1}} {{$material->unit_name}}</td>
+                                        <td style>@if($material->quantity1) {{$material->quantity1}} {{$material->unit_name}} @endif</td>
                                         <!-- <td width="10%">{{$material->short_description}}</td> -->
                                         <td>
-                                        <a href="" data-toggle="modal"  data-target="#alternative-input-material" class=" badge badge-primary"   id="alternativeItems" materialid="{{$material->id}}"><i class="fas fa-plus"></i> Alternative</a>
+                                           
+                                         <?php if($material->item_id2 && $material->item_id3)   
+                                                $count = 2;
+                                                elseif($material->item_id2 || $material->item_id3)
+                                                $count = 1;
+                                                else
+                                                $count =0;
+                                        ?>
+                                        <a href="" data-toggle="modal"  data-target="#alternative-input-material" class=" badge badge-primary"   id="alternativeItems" materialid="{{$material->id}}"><i class="fas fa-plus"></i> Alternative @if($count!=0) ({{$count}}) @endif</a>
                                         <!-- <a href="{{url('product/alternative-input-material?id='.$material->id)}}"  class="badge badge-primary"> <i class="fas fa-plus"></i> Alternative</a> -->
                                             <a href="{{url('product/delete-input-material?id='.$material->id)}}" onclick="return confirm('Are you sure you want to delete this ?');" class="badge badge-danger"><i class="fas fa-trash-alt"></i>  Delete</a> 
                                         </td>
