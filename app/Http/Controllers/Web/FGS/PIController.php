@@ -45,7 +45,7 @@ class PIController extends Controller
         }
         $pi = fgs_pi::select('fgs_pi.*','customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.contact_person','customer_supplier.contact_number')
                 ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
-                //->where($condition)
+                ->where($condition)
                 ->distinct('fgs_pi.id')
                 ->paginate(15);
         return view('pages/FGS/PI/PI-list', compact('pi'));

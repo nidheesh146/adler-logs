@@ -159,10 +159,10 @@
 	$('#prbody2').show();
   });
 	$('.search-btn').on( "click", function(e)  {
-		var ref_number = $('#ref_number').val();
-		var min_no = $('#min_no').val();
+		var pi_number = $('#pi_number').val();
+		var customer = $('#customer').val();
 		var from = $('#from').val();
-		if(!min_no   & !ref_number & !from)
+		if(!pi_number   & !customer & !from)
 		{
 			e.preventDefault();
 		}

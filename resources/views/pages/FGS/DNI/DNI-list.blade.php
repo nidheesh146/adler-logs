@@ -155,10 +155,10 @@
 	$('#prbody2').show();
   });
 	$('.search-btn').on( "click", function(e)  {
-		var ref_number = $('#ref_number').val();
-		var min_no = $('#min_no').val();
+		var dni_number = $('#dni_number').val();
+		var customer = $('#customer').val();
 		var from = $('#from').val();
-		if(!min_no   & !ref_number & !from)
+		if(!exi_number   & !customer & !from)
 		{
 			e.preventDefault();
 		}
