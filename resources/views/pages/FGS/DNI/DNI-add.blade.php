@@ -73,7 +73,7 @@
                             </div> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label>DNI Date *</label>
-                                <input type="date" value="{{date('Y-m-d')}}" class="form-control dni_date" id="dni_date name="pi_date"  placeholder="">
+                                <input type="date" value="{{date('Y-m-d')}}" class="form-control dni_date" id="dni_date"  name="dni_date"  placeholder="">
                             </div>
                         </div> 
                         <div class="form-devider"></div>

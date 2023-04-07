@@ -55,7 +55,7 @@ class EXIController extends Controller
         if($request->isMethod('post'))
         {
             $validation['customer'] = ['required'];
-            $validation['exi_date'] = ['required'];
+            //$validation['exi_date'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
@@ -106,6 +106,10 @@ class EXIController extends Controller
                     $request->session()->flash('error', "EXI insertion is failed. Try again... !");
                     return redirect('fgs/EXI-add');
                 }
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('fgs/EXI-add')->withErrors($validator)->withInput();
             }
         }
         else

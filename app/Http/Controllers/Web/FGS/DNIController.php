@@ -55,7 +55,7 @@ class DNIController extends Controller
         if($request->isMethod('post'))
         {
             $validation['customer'] = ['required'];
-            $validation['dni_date'] = ['required'];
+            //$validation['dni_date'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
@@ -106,6 +106,10 @@ class DNIController extends Controller
                     $request->session()->flash('error', "DMI insertion is failed. Try again... !");
                     return redirect('fgs/DNI-add');
                 }
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('fgs/DNI-add')->withErrors($validator)->withInput();
             }
         }
         else

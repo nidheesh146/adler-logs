@@ -639,10 +639,11 @@ class StockController extends Controller
                                                     </thead>
                                                     <tbody>";
             $i=1;
+            
             foreach($batchcards as $card)
-            {
+             {
                 $data['batchcards'] .="<tr>
-                                            <th><input type='checkbox' class='batchcard-checkbox'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
+                                            <th><input type='checkbox' class='batchcard-checkbox' onclick='enableTextBox(this)'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
                                             <th>".$card->batch_no."</th>
                                             <th>".$card->sku_code."</th>
                                             <th>".$card->sku_quantity."</th>
@@ -654,6 +655,7 @@ class StockController extends Controller
                                                     </a>
                                                 </span>
                                             </th>
+                                            <th><input type='text' class='qty_to_production' id='qty_to_production' name='qty_to_production[]' disabled>".$card->unit_name."</th>
                                         </tr> ";                                               
                 $i++;
             }
