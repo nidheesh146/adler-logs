@@ -182,7 +182,7 @@ class OEFController extends Controller
     public function OEFpdf($oef_id)
     {
         $data['oef'] = $this->fgs_oef->get_single_oef(['fgs_oef.id' => $oef_id]);
-        $data['items'] = $this->fgs_oef_item->getItems(['fgs_oef_item_rel.master' => $oef_id]);
+        $data['items'] = $this->fgs_oef_item->getAllItems(['fgs_oef_item_rel.master' => $oef_id]);
         $pdf = PDF::loadView('pages.FGS.OEF.pdf-view', $data);
         $pdf->set_paper('A4', 'landscape');
         $file_name = "OEF" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];

@@ -117,7 +117,8 @@
                                 <td>{{$master['location_name2']}}</td>
                                 <td>{{$master['firm_name']}}</td>
                                 <td>{{date('d-m-Y', strtotime($master['grs_date']))}}</td>
-                                <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/item-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a></td>
+                                <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/item-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
+								<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/GRS/pdf/'.$master["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a></td>
                             </tr>
                             @endforeach
 							</tbody>

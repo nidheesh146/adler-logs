@@ -100,54 +100,66 @@
         }
     </style>
    
-    <div class="row1" style="height:150px;border-bottom:solid 2px black;">
+    <!-- <div class="row1" style="height:150px;border-bottom:solid 2px black;"> -->
+    <div class="row1" style="height:170px;">
         <div class="col1">
             To<br/>
             <strong>{{$oef['firm_name']}}</strong>
-            <p>{{$oef['shipping_address']}}<br/>
+            <p>{{$oef['billing_address']}}<br/>
+            {{$oef['city']}}, {{$oef['state_name']}}<br/>
             Cell No : {{ $oef['contact_number'] }}<br/>
             <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$oef['email']}}<br/><span>
-            GSTIN :{{$oef['gst_number']}}<br/>
-            PAN No:{{$oef['pan_number']}}</p>
+           </p>
+           Shipping Address :
+           <p>{{$oef['shipping_address']}}<br/>
+           {{$oef['city']}},  {{$oef['state_name']}}
+           </p>
 
         </div>
         <div class="col2" style="text-align:center;">
             <!-- <div class="attn">Kind Attn: {{$oef['contact_person']}}</div> -->
             <br/>
-            <div class="main-head">
+            <!-- <div class="main-head">
             Order Execution Form(OEF)
-            </div>
+            </div> -->
         </div>
         <div class="col3">
             <span style="color:#1434A4;"><strong>ADLER HEALTHCARE PVT. LTD</strong></span>
             <p> Plot No-A1 MIDC, Sadavali(Devrukh), <br/>
              Tal- Sangmeshwar, Dist -Ratnagiri , <br/> PIN-415804, Maharashtra, India<br/>
+             Contact No: 8055136000, 8055146000<br/>
+             E-Mail:adler-customer.care@adler-healthcare.com<br>
             CIN :U33125PN2020PTC195161 <br/>
-            Company GSTIN :27AAJCB3689C1ZJ<br/>
-            PAN No:- AAJCB3689C<br/>
            </p>
         </div>
         <div class="col4" style="float:right;">
             <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
         </div>
     </div><br/>
+            
+    <div style="display:block;height: 8px;width:90%; border-bottom: solid black;margin-bottom:40px;">
+        <span style="float:right;font-weight:bold;font-size: 24px; background-color: #f4f5f8; padding: 0 4px;margin-top:-12px;position: absolute;margin-right:-80px">
+        Order Execution Form(OEF)<!--Padding is optional-->
+        </span>
+    </div>
+    <br/>
     <div class="row2">
         <div class="col21">
             <table>
                 <tr>
                     <td>Zone</td>
-                    <td>:{{$oef['zone_name']}} </td>
+                    <td>: {{$oef['zone_name']}} </td>
                    
                 </tr>
                 <tr>
                     
-                    <td >GST</td>
+                    <td >GST Details</td>
                     <td>: {{$oef['gst_number']}}</td>
                    
                 </tr>
                 <tr>
-                    <td >PAN No</td>
-                    <td>:{{$oef['pan_number']}} </td>
+                    <td >D.L. Details</td>
+                    <td>: {{$oef['dl_number1']}}, {{$oef['dl_number2']}}, {{$oef['dl_number3']}} </td>
                 </tr>
             </table>
         </div>
@@ -155,15 +167,15 @@
             <table style="float:left;">
                 <tr>
                     <td>Order No.</td>
-                    <td>:{{$oef['order_number']}} </td>
+                    <td>: {{$oef['order_number']}} </td>
                 </tr>
                 <tr>
                     <td> Order Date</td>
-                    <td>:{{$oef['order_date']}}</td>
+                    <td>: {{date('d-m-Y', strtotime($oef['order_date']))}}</td>
                 </tr>
                 <tr>
                     <td>Order Fulfil</td>
-                    <td>:{{$oef['order_fulfil_type']}} </td>
+                    <td>: {{$oef['order_fulfil_type']}} </td>
                 </tr>
             </table>
         </div>
@@ -191,16 +203,17 @@
                 </tr>
                 <tr>
                     <td> Doc  Date</td>
-                    <td>:{{$oef['oef_date']}}</td>
+                    <td>: {{date('d-m-Y', strtotime($oef['oef_date']))}}</td>
                 </tr>
                 <tr>
                     <td>Due Date</td>
-                    <td>:{{$oef['due_date']}} </td>
+                    <td>: {{date('d-m-Y', strtotime($oef['due_date']))}} </td>
                 </tr>
             </table>
         </div>
-        
+    <br/>    
     </div>
+    
     <style>
         th{
             text-align:center;
@@ -220,10 +233,11 @@
                 <th rowspan="2">RATE</th>
                 <th rowspan="2">VALUE</th>
                 <th colspan="2">DISC</th>
-                <th rowspan="2">NET VALUE</th>
+                <th rowspan="2">TAXABLE VALUE</th>
                 <th colspan="2">CGST</th>
                 <th colspan="2">SGST/UTGST</th>
                 <th colspan="2">IGST</th>
+                <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
             <tr>
                 <th>%</th>
@@ -262,6 +276,8 @@
                 <td>{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
                 <td>{{$item['igst']}}</td>
                 <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
+                <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
+                <td>{{number_format((float)($total_amount), 2, '.', '')}}</td>
                 <?php 
                 $total =$total+ $item['rate']* $item['quantity'];
                 $total_discount = $total_discount+($item['rate']* $item['quantity']*$item['discount'])/100;
@@ -274,8 +290,13 @@
         
         </table>
     </div>
+    <br/>
     <div class="row4" style="border-bottom:solid 1px black;height:170px;">
         <div class="col41">
+            <div class="valuewords">
+                <strong>Value in Words</strong><br/>
+                <span class="value_in_words"></span>
+            </div>
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>
                 @if($oef['remarks'])
@@ -326,7 +347,7 @@
                 <tr>
                     <th style="width:130px">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
-                    <th style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}}</th>
+                    <th class="grand_total_value" style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}} {{$oef['currency_code']}}</th>
                 </tr> 
             </table>
         </div>

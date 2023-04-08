@@ -422,7 +422,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     // Route::post('fgs/GRS/add-item/{grs_id}','GRSController@GRSitemAdd');
     Route::get('fgs/GRS/find-oef-number-for-grs','GRSController@findOEFforGRS');
     Route::get('fgs/GRS/find-oef-info','GRSController@findOEFInfo');
-    
+    Route::get('fgs/GRS/pdf/{grs_id}','GRSController@GRSpdf');
     //PI
     Route::get('fgs/PI-list','PIController@PIList');
     Route::get('fgs/PI-add','PIController@PIAdd');

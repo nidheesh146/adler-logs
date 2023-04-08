@@ -33,12 +33,13 @@ class fgs_oef extends Model
     function get_single_oef($condition)
     {
         return $this->select('fgs_oef.*','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
-        'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person',
-        'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name')
+        'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person','customer_supplier.sales_type','customer_supplier.city',
+        'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3')
                     ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
                     ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
                     ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
                     ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+                    ->leftJoin('state','state.state_id','=','customer_supplier.state')
                     ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
                     ->where($condition)
                     ->distinct('fgs_oef.id')

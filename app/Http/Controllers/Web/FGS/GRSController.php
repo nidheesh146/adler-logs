@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\fgs;
 use Validator;
 use DB;
+use PDF;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\product;
@@ -423,4 +424,13 @@ class GRSController extends Controller
         // }
     }
 
+    public function GRSpdf($grs_id)
+    {
+        $data['grs'] = $this->fgs_grs->get_single_grs(['fgs_grs.id' => $grs_id]);
+        $data['items'] = $this->fgs_grs_item->getAllItems(['fgs_grs_item_rel.master' => $grs_id]);
+        $pdf = PDF::loadView('pages.FGS.GRS.pdf-view', $data);
+        //$pdf->set_paper('A4', 'landscape');
+        $file_name = "GRS" . $data['grs']['grs_number'] . "_" . $data['grs']['grs_date'];
+        return $pdf->stream($file_name . '.pdf');
+    }
 }
