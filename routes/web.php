@@ -410,6 +410,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::post('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::get('fgs/OEFproductsearch','OEFController@OEFproductsearch');
+    Route::get('fgs/OEF/pdf/{oef_id}','OEFController@OEFpdf');
     //GRS
     Route::get('fgs/GRS-list','GRSController@GRSList');
     Route::get('fgs/GRS-add','GRSController@GRSAdd');

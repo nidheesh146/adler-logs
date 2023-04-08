@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\fgs;
 use Validator;
 use DB;
+use PDF;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\FGS\fgs_oef;
@@ -176,5 +177,15 @@ class OEFController extends Controller
             $data['gst'] = $this->inventory_gst->get_gst();
             return view('pages/FGS/OEF/OEF-item-add',compact('data'));
         }
+    }
+
+    public function OEFpdf($oef_id)
+    {
+        $data['oef'] = $this->fgs_oef->get_single_oef(['fgs_oef.id' => $oef_id]);
+        $data['items'] = $this->fgs_oef_item->getItems(['fgs_oef_item_rel.master' => $oef_id]);
+        $pdf = PDF::loadView('pages.FGS.OEF.pdf-view', $data);
+        $pdf->set_paper('A4', 'landscape');
+        $file_name = "OEF" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
+        return $pdf->stream($file_name . '.pdf');
     }
 }

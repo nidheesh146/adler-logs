@@ -124,7 +124,10 @@
 										Contact Person:{{$item['contact_person']}}<br/>
 										Contact Number:{{$item['contact_number']}}<br/>
 									</td>
-                                    <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/OEF/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 	</td>
+                                    <td>
+										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/OEF/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a><br/>
+										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/OEF/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
+								 	</td>
 								</tr>
 								@endforeach
 							</tbody>
