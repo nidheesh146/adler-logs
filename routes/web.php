@@ -429,13 +429,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::post('fgs/PI-add','PIController@PIAdd');
     Route::get('fgs/PI/item-list/{pi_id}','PIController@PIitemlist');
     Route::get('fgs/PI/fetchGRS','PIController@fetchGRS');
-
+    Route::get('fgs/PI/pdf/{pi_id}','PIController@PIpdf');
     //DNI
     Route::get('fgs/DNI-list','DNIController@DNIList');
     Route::get('fgs/DNI-add','DNIController@DNIAdd');
     Route::post('fgs/DNI-add','DNIController@DNIAdd');
     Route::get('fgs/DNI/item-list/{dni_id}','DNIController@DNIitemlist');
     Route::get('fgs/DNI/fetchPI','DNIController@fetchPI');
+    Route::get('fgs/DNI/pdf/{grs_id}','DNIController@DNIpdf');
 
      //EXI
      Route::get('fgs/EXI-list','EXIController@EXIList');
@@ -443,6 +444,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::post('fgs/EXI-add','EXIController@EXIAdd');
      Route::get('fgs/EXI/item-list/{exi_id}','EXIController@EXIitemlist');
      Route::get('fgs/EXI/fetchPI','EXIController@fetchPI');
+     Route::get('fgs/EXI/pdf/{grs_id}','EXIController@EXIpdf');
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Settings','middleware'=>['RolePermission']], function() {

@@ -59,14 +59,28 @@
 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Customer  *</label>
+                                <select  class="form-control customer" name="customer">
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Customer Biiling Address</label>
+                                <textarea name="billing_address" class="form-control" id="billing_address" readonly></textarea>
+                            </div> 
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Customer Shipping Address</label>
+                                <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly></textarea>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">OEF Number *</label>
                                 <select class="form-control oef_number" name="oef_number">
+                                <option value="">Select One</option>
                                 </select>
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Product Category  *</label>
                                 <select class="form-control" name="product_category">
-                                    <option>Select one...</option>
+                                    <option value="">Select one...</option>
                                     @foreach($data['category'] as $cate)
                                     <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
                                     @endforeach
@@ -75,7 +89,7 @@
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location(Decrease) *</label>
                                 <select class="form-control" name="stock_location1" id="stock_location1" >
-                                    <option>Select one...</option>
+                                    <option value="">Select one...</option>
                                     @foreach($data['locations'] as $loc)
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
                                     @endforeach
@@ -84,7 +98,7 @@
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location(Increase) *</label>
                                 <select class="form-control" name="stock_location2" id="stock_location2">
-                                    <option>Select one...</option>
+                                    <option value="">Select one...</option>
                                     @foreach($data['locations'] as $loc)
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
                                     @endforeach
@@ -144,6 +158,9 @@
 
     $("#commentForm").validate({
             rules: {
+                customer: {
+                    required: true,
+                },
                 oef_number: {
                     required: true,
                 },
@@ -170,33 +187,79 @@
                 form.submit();
             }
         });
-        $('.oef_number').select2({
-          placeholder: 'Choose one',
-          searchInputPlaceholder: 'Search',
-          minimumInputLength: 2,
-          allowClear: true,
-          ajax: {
-          url: "{{ url('fgs/GRS/find-oef-number-for-grs') }}",
-          processResults: function (data) {
-            return { results: data };
+    //     $('.oef_number').select2({
+    //       placeholder: 'Choose one',
+    //       searchInputPlaceholder: 'Search',
+    //       minimumInputLength: 2,
+    //       allowClear: true,
+    //       ajax: {
+    //       url: "{{ url('fgs/GRS/find-oef-number-for-grs') }}",
+    //       processResults: function (data) {
+    //         return { results: data };
 
-          }
+    //       }
+    //     }
+    //   }).on('change', function (e) {
+    //     $('.spinner-button').show();
+
+    //     let res = $(this).select2('data')[0];
+    //     if(res){
+    //       $.get("{{ url('fgs/GRS/find-oef-info') }}?id="+res.id,function(data){
+    //         $('.oef-info-binding').html(data);
+    //         $('.spinner-button').hide();
+    //       });
+    //     }else{
+    //       $('.oef-info-binding').html('');
+    //       $('.spinner-button').hide();
+    //     }
+    //   });
+    $('.oef_number').on('change',function(e){
+        let oef_id = $(this).val();
+        if(oef_id!=0)
+        {
+            $.get("{{ url('fgs/GRS/find-oef-info') }}?id="+oef_id,function(data){
+                $('.oef-info-binding').html(data);
+                $('.spinner-button').hide();
+            });
         }
-      }).on('change', function (e) {
-        $('.spinner-button').show();
+    });
 
+      $(".customer").select2({
+        placeholder: 'Choose one',
+        searchInputPlaceholder: 'Search',
+        minimumInputLength: 4,
+        allowClear: true,
+        ajax: {
+            url: "{{ url('fgs/customersearch') }}",
+            processResults: function (data) {
+                return { results: data };
+            }
+        }
+    }).on('change', function (e) {
+        $('#Itemcode-error').remove();
+        $("#billing_address").text('');
+        $("#shipping_address").text('');
+        $('.oef_number option:gt(0)').remove();
         let res = $(this).select2('data')[0];
-        if(res){
-          $.get("{{ url('fgs/GRS/find-oef-info') }}?id="+res.id,function(data){
-            $('.oef-info-binding').html(data);
-            $('.spinner-button').hide();
-          });
-        }else{
-          $('.oef-info-binding').html('');
-          $('.spinner-button').hide();
+        if(typeof(res) != "undefined" )
+        {
+            if(res.billing_address){
+                $("#billing_address").val(res.billing_address);
+            }
+            if(res.shipping_address){
+                $("#shipping_address").val(res.shipping_address);
+            }
+            $.get("{{ url('fgs/GRS/find-oef-number-for-grs') }}?customer_id="+res.id,function(data){
+                if(data!=0)
+                {
+                    $.each(data,function(key, value)
+                    {
+                      $(".oef_number").append('<option  value=' + value.id + '>' + value.text + '</option>');
+                    });
+                }
+            });
         }
-      });
-    
+    });
 
   });
  

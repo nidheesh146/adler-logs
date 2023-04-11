@@ -58,6 +58,7 @@ class GRSController extends Controller
         if($request->isMethod('post'))
         {
             $validation['oef_number'] = ['required'];
+            $validation['customer'] = ['required'];
             $validation['grs_date'] = ['required','date'];
             $validation['product_category'] = ['required'];
             $validation['stock_location1'] = ['required'];
@@ -82,6 +83,7 @@ class GRSController extends Controller
                 $data['grs_number'] = "GRS-".$this->year_combo_num_gen(DB::table('fgs_grs')->where('fgs_grs.grs_number', 'LIKE', 'GRS-'. $years_combo.'%')->count()); 
                 $data['grs_date'] = date('Y-m-d', strtotime($request->grs_date));
                 $data['oef_id']=$request->oef_number;
+                $data['customer_id'] = $request->customer;
                 $data['product_category'] = $request->product_category;
                 $data['stock_location1'] = $request->stock_location1;
                 $data['stock_location2'] = $request->stock_location2;
@@ -136,18 +138,27 @@ class GRSController extends Controller
     }
     public function findOEFforGRS(Request $request)
     {
-        if ($request->q) {
-            $condition[] = ['fgs_oef.oef_number', 'like', '%' . strtoupper($request->q) . '%'];
+        // if ($request->q) {
+        //     $condition[] = ['fgs_oef.oef_number', 'like', '%' . strtoupper($request->q) . '%'];
            
+        //     $data = $this->fgs_oef->find_oef_num_for_grs($condition);
+        //     if (!empty($data[0])) {
+        //         return response()->json($data, 200);
+        //     } else {
+        //         return response()->json(['message' => 'item code is not valid'], 500);
+        //     }
+        // } else {
+        //     echo $this->OEF_details($request->id);
+        //     exit;
+        // }
+        if($request->customer_id)
+        {
+            $condition[] = ['fgs_oef.customer_id','=', $request->customer_id];
             $data = $this->fgs_oef->find_oef_num_for_grs($condition);
-            if (!empty($data[0])) {
-                return response()->json($data, 200);
-            } else {
-                return response()->json(['message' => 'item code is not valid'], 500);
-            }
-        } else {
-            echo $this->OEF_details($request->id);
-            exit;
+            if($data)
+            return $data;
+            else
+            return 0;
         }
     }
 
