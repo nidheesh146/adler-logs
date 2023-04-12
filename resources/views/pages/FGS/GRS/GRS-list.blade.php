@@ -98,12 +98,15 @@
 							<thead>
 								<tr>
 									<th>GRS Number</th>
+									<th>GRS date</th>
+									<th>Order Date</th>
+									<th>Order Number</th>
                                     <th>OEF Number</th>
 									<th>Product Category</th>
 									<th>Stock Location1(Decrease)</th>
 									<th>Stock Location2(Increase)</th>
                                     <th>Customer</th>
-                                    <th>GRS date</th>
+                                   
                                     <th>Action</th>
 								</tr>
 							</thead>
@@ -111,12 +114,14 @@
 							@foreach($grs as $master)
                             <tr>
                                 <td>{{$master['grs_number']}}</td>
+								<td>{{date('d-m-Y', strtotime($master['grs_date']))}}</td>
+								<td>{{date('d-m-Y', strtotime($master['order_date']))}}</td>
+								<td>{{$master['order_number']}}</td>
                                 <td>{{$master['oef_number']}}</td>
                                 <td>{{$master['category_name']}}</td>
                                 <td>{{$master['location_name1']}}</td>
                                 <td>{{$master['location_name2']}}</td>
                                 <td>{{$master['firm_name']}}</td>
-                                <td>{{date('d-m-Y', strtotime($master['grs_date']))}}</td>
                                 <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/item-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
 								<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/GRS/pdf/'.$master["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a></td>
                             </tr>

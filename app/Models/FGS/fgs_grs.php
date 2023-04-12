@@ -22,7 +22,7 @@ class fgs_grs extends Model
     function get_all_grs($condition)
     {
         return $this->select('fgs_grs.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1',
-        'stock_location.location_name as location_name2','fgs_oef.oef_number','customer_supplier.firm_name')
+        'stock_location.location_name as location_name2','fgs_oef.oef_number','customer_supplier.firm_name', 'fgs_oef.order_number','fgs_oef.order_date')
             ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
             ->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
             ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
