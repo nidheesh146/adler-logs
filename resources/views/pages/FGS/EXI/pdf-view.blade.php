@@ -381,11 +381,14 @@
         <table border="1">
             <tr>
                 <th rowspan="2">S.NO</th>
-                <th rowspan="2" style="width:10%;">
+                <th rowspan="2">
                     HSN CODE  
                 </th>
                 <th rowspan="2">SKU CODE</th>
-                <th rowspan="2" width='40%'>ITEM DESCRIPTION</th>
+                <th rowspan="2" width='35%'>ITEM DESCRIPTION</th>
+                <th rowspan="2" style="width:10%;">DATE Of MFG.</th>
+                <th rowspan="2" style="width:10%;">DATE Of EXPIRY</th>
+                <th rowspan="2">BATCHCARD</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
                 <th rowspan="2">RATE</th>
@@ -421,6 +424,9 @@
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
                 <td>{{$item['discription']}}</td>
+                <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
+                <td>{{$item['batch_no']}}</td>
                 <td>{{$item['quantity']}}</td>
                 <td>Nos</td>
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>

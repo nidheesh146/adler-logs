@@ -29,7 +29,7 @@ class StockManagementController extends Controller
     }
     public function MAAStock(Request $request)
     {
-        $title ="MAA - Stock";
+        $title ="Material Allocation Area(MAA) - Stock";
         $location = 'MAA';
         $stock=fgs_maa_stock_management::select('fgs_maa_stock_management.*','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no')
                             ->leftJoin('product_product','product_product.id','=','fgs_maa_stock_management.product_id')
@@ -42,7 +42,7 @@ class StockManagementController extends Controller
     }
     public function quarantineStock(Request $request)
     {
-        $title ="Qurantine - Stock";
+        $title ="Quarantine - Stock";
         // $stock ='' ;
         return view('pages/FGS/stock-management/quarantine_stock', compact('title'));
     }
