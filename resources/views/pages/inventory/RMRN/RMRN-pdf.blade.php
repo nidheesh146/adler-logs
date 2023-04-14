@@ -93,7 +93,7 @@
             <th>QTY</th>
             <th>LOT NO.</th>
             <th>COURIER /TRANSPORT NAME</th>
-            <th>RECEIPT /LR NUMBER	</th>
+            <th>RECEIPT /LR NUMBER</th>
             <th >REASON</th>
         </tr>
         @php $i=1; @endphp
@@ -114,17 +114,10 @@
     <br>
 
 
-        <div  style="font-size:12px;width:100%;">
+        <div  style="font-size:12px;">
 
-                <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="left";>Signature of I/C QC</label>
-
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="right";>Signature of I/C Finance</label>
-
+                <label class="form-label form-label-left form-label-auto" id="label_6" for="input_6" align="left";>Sign of store incharge</label>
+</div>
 
 </body>
 </html>

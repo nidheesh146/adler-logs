@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
+use PDF;
 use App\Models\product;
 use App\Models\FGS\product_stock_location;
 use App\Models\FGS\fgs_product_stock_management;
@@ -14,6 +15,9 @@ use App\Models\FGS\fgs_product_category;
 use App\Models\FGS\fgs_mrn;
 use App\Models\FGS\fgs_mrn_item;
 use App\Models\FGS\fgs_mrn_item_rel;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MRDExport;
+
 class MRNController extends Controller
 {
     public function __construct()
@@ -209,5 +213,16 @@ class MRNController extends Controller
         else{
             return view('pages/FGS/MRN/MRN-item-add');
         }
+    }
+
+      public function MRNpdf($mrn_id)
+    { 
+        $data['mrn'] = $this->fgs_mrn->get_single_mrn(['fgs_mrn.id' => $mrn_id]);
+        $data['items'] = $this->fgs_mrn_item->getItems(['fgs_mrn_item_rel.master' => $mrn_id]);
+    
+        $pdf = PDF::loadView('pages.FGS.MRN.pdf-view', $data);
+        // $pdf->set_paper('A4', 'landscape');
+        $file_name = "MRN" . $data['mrn']['firm_name'] . "_" . $data['mrn']['mrn_date'];
+        return $pdf->stream($file_name . '.pdf');
     }
 }
