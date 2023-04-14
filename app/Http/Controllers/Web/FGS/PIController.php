@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
+use PDF;
 use App\Models\FGS\fgs_pi;
 use App\Models\FGS\fgs_grs;
 use App\Models\FGS\fgs_grs_item_rel;
@@ -77,10 +78,13 @@ class PIController extends Controller
                 foreach($request->grs_id as $grs_id)
                 {
                     $grs = fgs_grs_item_rel::where('master','=',$grs_id)->get();
+                    
                     foreach($grs as $grs_data)
                     {
+                        $grs_item = fgs_grs_item::where('id','=',$grs_data['item'])->first();
                         $item['grs_id'] = $grs_data['master'];
                         $item['grs_item_id'] = $grs_data['item'];
+                        $item['mrn_item_id'] = $grs_item['mrn_item_id'];
                         $item['created_at'] =  date('Y-m-d H:i:s');
                         $pi_item=$this->fgs_pi_item->insert_data($item);
                         if($pi_item && $pi_master ){
@@ -123,15 +127,16 @@ class PIController extends Controller
     {
         $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','product_product.sku_code','product_product.hsn_code','product_product.discription',
         'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code')
-                        ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
+                        ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date')
                         ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
                         ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
                         ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
                         ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
                         ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
+                        ->leftJoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_pi_item.mrn_item_id')
                         ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
-                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
+                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                         ->where('fgs_pi_item_rel.master','=', $pi_id)
                         ->where('fgs_grs.status','=',1)
                         ->orderBy('fgs_grs_item.id','DESC')
@@ -176,5 +181,15 @@ class PIController extends Controller
         }
         else 
         return 0;
+    }
+
+    public function PIpdf($pi_id)
+    {
+        $data['pi'] = $this->fgs_pi->get_single_pi(['fgs_pi.id' => $pi_id]);
+        $data['items'] = $this->fgs_pi_item_rel->getAllItems(['fgs_pi_item_rel.master' => $pi_id]);
+        $pdf = PDF::loadView('pages.FGS.PI.pdf-view', $data);
+        $pdf->set_paper('A4', 'landscape');
+        $file_name = "PI" . $data['pi']['pi_number'] . "_" . $data['pi']['pi_date'];
+        return $pdf->stream($file_name . '.pdf');
     }
 }

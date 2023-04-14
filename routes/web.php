@@ -440,6 +440,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::post('fgs/DNI-add','DNIController@DNIAdd');
     Route::get('fgs/DNI/item-list/{dni_id}','DNIController@DNIitemlist');
     Route::get('fgs/DNI/fetchPI','DNIController@fetchPI');
+    Route::get('fgs/DNI/pdf/{grs_id}','DNIController@DNIpdf');
 
      //EXI
      Route::get('fgs/EXI-list','EXIController@EXIList');
@@ -447,6 +448,17 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::post('fgs/EXI-add','EXIController@EXIAdd');
      Route::get('fgs/EXI/item-list/{exi_id}','EXIController@EXIitemlist');
      Route::get('fgs/EXI/fetchPI','EXIController@fetchPI');
+     Route::get('fgs/EXI/pdf/{grs_id}','EXIController@EXIpdf');
+
+     //stock-management
+     Route::get('fgs/stock-management/location1','StockManagementController@location1Stock');
+     Route::get('fgs/stock-management/location2','StockManagementController@location2Stock');
+     Route::get('fgs/stock-management/MAA','StockManagementController@MAAStock');
+     Route::get('fgs/stock-management/quarantine','StockManagementController@quarantineStock');
+     Route::get('fgs/stock-report/location1','StockManagementController@location1Export');
+     Route::get('fgs/stock-report/location2','StockManagementController@location2Export');
+     Route::get('fgs/stock-report/MAA','StockManagementController@MAAExport');
+
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Settings','middleware'=>['RolePermission']], function() {

@@ -17,4 +17,5 @@ class fgs_pi_item extends Model
     function update_data($condition,$data){
         return $this->where($condition)->update($data);
     }
+    
 }

@@ -37,4 +37,26 @@ class fgs_pi extends Model
             ->distinct('fgs_pi.id')
             ->get();
     }
+
+    function get_single_pi($condition)
+    {
+        return $this->select('fgs_pi.*','fgs_oef.oef_number','fgs_oef.oef_date','order_fulfil.order_fulfil_type','fgs_oef.order_number','fgs_oef.order_date','fgs_grs.grs_number','fgs_grs.grs_date',
+        'transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
+        'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person',
+        'customer_supplier.sales_type','customer_supplier.city','customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email',
+        'currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3')
+            ->leftJoin('fgs_pi_item_rel','fgs_pi_item_rel.master','=','fgs_pi.id')
+            ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
+            ->leftJoin('fgs_grs','fgs_grs.id','fgs_pi_item.grs_id')
+            ->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
+            ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
+            ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
+            ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
+            ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+            ->leftJoin('state','state.state_id','=','customer_supplier.state')
+            ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
+            ->where($condition)
+            ->where('fgs_grs.status','=',1)
+            ->first();
+    }
 }

@@ -232,7 +232,7 @@
                 <td>{{$item['batch_quantity']}}</td> 
                 <td>Nos</td> 
                 <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td>@if($grs['expiry_date']=='0000-00-00')  N.A @else {{date('d-m-Y', strtotime($item['expiry_date']))}} @endif</td>
+                <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else N.A @endif</td>
             </tr>
             @endforeach
         
