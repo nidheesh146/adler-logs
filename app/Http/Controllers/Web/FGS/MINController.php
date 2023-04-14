@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
+use PDF;
+use App\Models\User;
 use App\Models\product;
 use App\Models\FGS\product_stock_location;
 use App\Models\FGS\fgs_product_stock_management;
@@ -26,6 +28,7 @@ class MINController extends Controller
         $this->product = new product;
         $this->fgs_product_stock_management = new fgs_product_stock_management;
         $this->production_stock_management = new production_stock_management;
+        $this->User = new User;
     }
     public function MINList(Request $request)
     {
@@ -216,5 +219,114 @@ class MINController extends Controller
             $min_id = $request->min_id;
             return view('pages/FGS/MIN/MIN-item-add',compact('min_id'));
         }
+    }
+
+      public function MINpdf($min_id)
+    { 
+        $data['min'] = $this->fgs_min->get_single_min(['fgs_min.id' => $min_id]);
+        $data['items'] = $this->fgs_min_item->getItems(['fgs_min_item_rel.master' => $min_id]);
+        $pdf = PDF::loadView('pages.FGS.MIN.pdf-view', $data);
+        // $pdf->set_paper('A4', 'landscape');
+        $file_name = "MIN" . $data['min']['firm_name'] . "_" . $data['min']['min_date'];
+        return $pdf->stream($file_name . '.pdf');
+    }
+
+     public function CMINAdd(Request $request)
+    {
+       if($request->isMethod('post'))
+        {
+            $validation['mac_date'] = ['required','date'];
+            $validation['invoice_number'] = ['required'];
+            $validation['created_by'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                if(!$request->id)
+                {
+                    if(date('m')==01 || date('m')==02 || date('m')==03)
+                    {
+                        $years_combo = date('y', strtotime('-1 year')).date('y');
+                    }
+                    else
+                    {
+                        $years_combo = date('y').date('y', strtotime('+1 year'));
+                    }
+                    $item_type = $this->get_item_type($request->invoice_number);
+                    if($item_type=="Direct Items"){
+                        $lot_alloted = $this->check_lot_alloted($request->invoice_number);
+                        if($lot_alloted==1){
+                            $request->session()->flash('error', "Please complete lot allocation for the particular invoice items...");  
+                            return redirect('inventory/MAC-add');
+                        }
+                        $Data['mac_number'] = "MAC2-".$this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2-'.$years_combo.'%')->count()); 
+                    }
+                    //if($item_type=="Indirect Items"){
+                    else
+                    {
+                        $Data['mac_number'] = "MAC3-" . $this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC3-'.$years_combo.'%')->count()); 
+                    }
+                    $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
+                    $Data['invoice_id'] = $request->invoice_number;
+                    $Data['created_by']= $request->created_by;
+                    $Data['status']=1;
+                    $Data['created_at'] =date('Y-m-d H:i:s');
+                    $Data['updated_at'] =date('Y-m-d H:i:s');
+                    $add_id = $this->inv_mac->insert_data($Data);
+                    $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item','inv_supplier_invoice_item.item_id')
+                                ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                                ->where('inv_supplier_invoice_item.is_merged','=',0)
+                                ->where('master','=',$request->invoice_number)->get();
+                    foreach($invoice_items as $item){
+                        $dat=[
+                            'invoice_item_id'=>$item->item,
+                            'pr_item_id'=>$item->item_id,
+                            'status'=>1,
+                            'created_at'=>date('Y-m-d H:i:s'),
+                            'updated_at'=>date('Y-m-d H:i:s')
+
+                        ];
+                        $item_id = $this->inv_mac_item->insert_data($dat);
+                        $dat2 =[
+                            'master'=>$add_id,
+                            'item'=>$item_id,
+                        ];
+                        $rel =DB::table('inv_mac_item_rel')->insert($dat2);
+                    }
+                    
+                    if($add_id && $item_id && $rel)
+                        $request->session()->flash('success', "You have successfully created a MAC !");
+                    else
+                        $request->session()->flash('error', "MAC creation is failed. Try again... !");
+                    return redirect('inventory/MAC-add/'.$add_id);
+                }
+                else
+                {
+                    $data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
+                    $data['created_by']= $request->created_by;
+                    $data['updated_at'] =date('Y-m-d H:i:s');
+                    $update = $this->inv_mac->update_data(['id'=>$request->id],$data);
+                    if($update)
+                        $request->session()->flash('success', "You have successfully updated a MAC !");
+                    else
+                        $request->session()->flash('error', "MAC updation is failed. Try again... !");
+                    return redirect('inventory/MAC-add/'.$request->id);
+                }
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('inventory/MAC-add')->withErrors($validator)->withInput();
+            }
+        }
+        $condition1[] = ['user.status', '=', 1];
+        $data['users'] = $this->User->get_all_users($condition1);
+
+        if($request->id){
+            $edit['mac'] = $this->inv_mac->find_mac_data(['inv_mac.id' => $request->id]);
+
+            $edit['items'] = $this->inv_mac_item->get_items(['inv_mac_item_rel.master' =>$request->id]);
+            return view('pages.inventory.MAC.MAC-add',compact('edit','data'));
+        }
+        else
+        return view('pages.inventory.MAC.MAC-add',compact('data'));
     }
 }

@@ -839,8 +839,9 @@ class MRDController extends Controller
     {
         $data['rmrn'] = $this->inv_rmrn->find_rmrn_data(['inv_rmrn.id' => $id]);
         $data['items'] = $this->inv_rmrn_item->get_items(['inv_rmrn_item_rel.master' => $id]);
+        
         $pdf = PDF::loadView('pages.inventory.RMRN.RMRN-pdf', $data);
-        //$pdf->set_paper('A4', 'portait');
+        $pdf->set_paper('A3', 'landscape');
         $file_name = "RMRN_" . $data['rmrn']['vendor_name'] . "_" . $data['rmrn']['rmr_date'];
         return $pdf->stream($file_name . '.pdf');
     }

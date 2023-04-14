@@ -30,10 +30,8 @@ class fgs_mrn_item extends Model
                         ->leftjoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
                         ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
-                        ->where($condition)
-                        //->where('inv_mac.status','=',1)
-                        ->orderBy('fgs_mrn_item.id','DESC')
-                        ->distinct('fgs_mrn_item.id')
-                        ->paginate(15);
+                       ->where($condition)
+                    ->orderBy('fgs_mrn_item.id','DESC')
+                    ->get();
     }
 }
