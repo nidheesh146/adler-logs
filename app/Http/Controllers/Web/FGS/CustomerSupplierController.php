@@ -57,6 +57,10 @@ class CustomerSupplierController extends Controller
                 $data['currency'] = $request->currency;
                 $data['payment_terms'] = $request->payment_terms;
                 $data['sales_type'] = $request->sales_type;
+                $data['sales_person_name'] = $request->sales_person_name;
+                $data['sales_person_email'] = $request->sales_person_email;
+                $data['whatsapp_number'] = $request->whatsapp_number;
+                $data['dl_expiry_date'] =date('Y-m-d',strtotime($request->dl_expiry_date));
                 if($id){
                     $data['updated_at'] = date('Y-m-d H:i:s');
                     $this->customer_supplier->update_data(['id'=>$id],$data);

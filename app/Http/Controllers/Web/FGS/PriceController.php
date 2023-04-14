@@ -75,4 +75,9 @@ class PriceController extends Controller
             return response()->json(['message'=>'Product is not exist'], 500); 
         }
     }
+
+    public function priceMasterUpload()
+    {
+        
+    }
 }
