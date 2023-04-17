@@ -57,15 +57,16 @@ class PriceController extends Controller
                        $request->session()->flash('error',"Data already exist!"); 
                         return redirect("fgs/price-master/add");
                     }
-
-
-                    $data['product_id'] = $request->product;
-                    $data['created_by'] = config('user')['user_id'];
-                    $data['created_at'] = date('Y-m-d H:i:s');
-                    $data['updated_at'] = date('Y-m-d H:i:s');
-                    $this->product_price_master->insert_data($data);
-                    $request->session()->flash('success',"You have successfully added a price master !");
-                    return redirect("fgs/price-master/list");
+                    else
+                    {
+                        $data['product_id'] = $request->product;
+                        $data['created_by'] = config('user')['user_id'];
+                        $data['created_at'] = date('Y-m-d H:i:s');
+                        $data['updated_at'] = date('Y-m-d H:i:s');
+                        $this->product_price_master->insert_data($data);
+                        $request->session()->flash('success',"You have successfully added a price master !");
+                        return redirect("fgs/price-master/list");
+                    }
                 }
             }
             if($validator->errors()->all()) 
