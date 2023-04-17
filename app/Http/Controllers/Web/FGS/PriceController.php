@@ -64,7 +64,8 @@ class PriceController extends Controller
                          $data['purchase'] = $request->purchase_price;
                          $data['sales'] = $request->sales_price;
                          $data['transfer'] = $request->transfer_price;
-                         $data['mrp'] = $request->mrp;
+                         $data['mrp'] = $request->mrp;  
+                         
                         $data['product_id'] = $request->product;
                         $data['created_by'] = config('user')['user_id'];
                         $data['created_at'] = date('Y-m-d H:i:s');
