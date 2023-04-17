@@ -125,7 +125,22 @@
                                 <label>DL Number (Others if any)</label>
                                 <input type="text" name="dl_number3" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->dl_number3: ""}}" placeholder="GST Number"> 
                             </div>
-
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>DL Expiry Date</label>
+                                <input type="date" name="dl_expiry_date" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->dl_expiry_date: ""}}" placeholder="DL Expiry Date"> 
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Sales Person Name</label>
+                                <input type="text" name="sales_person_name" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->sales_person_name: ""}}" placeholder="Sales Person Name"> 
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Sales Person Email Id</label>
+                                <input type="text" name="sales_person_email" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->sales_person_email: ""}}" placeholder="Sales Person Email Id"> 
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Whatsapp Number</label>
+                                <input type="text" name="whatsapp_number" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->sales_person_email: ""}}" placeholder="Whatsapp Number"> 
+                            </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Currency</label>
                                 <select name="currency"  class="form-control">
