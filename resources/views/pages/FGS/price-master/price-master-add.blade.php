@@ -29,9 +29,9 @@
              </div>
              @endif
              @if (Session::get('error'))
-             <div class="alert alert-success " style="width: 100%;">
+             <div class="alert alert-danger " style="width: 100%;">
                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                 <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                 <i class="icon fa fa-check"></i> {{ Session::get('error') }}
              </div>
              @endif
               <div class="row">  
@@ -45,37 +45,45 @@
                           <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                   <label>Product SKU Code *</label>
-                                  <select class="form-control Product" name="product" id="product">
+
+                                  @if(!empty($data['sku_code']))
+                            <input type="hidden" name="product" value="{{$data['sku_code']}}">
+                            @endif
+                                    <select class="form-control Product" name="product" id="product" @if(!empty($data['sku_code'])) disabled @endif>
+                                         @if(!empty($data['sku_code']))
+                                    <option value="{{$data['sku_code']}}" selected>{{$data['sku_code']}}</option>
+                                @endif
                                   </select>
+
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Description</label>
-                                <textarea type="text" name="description" id="description"  class="form-control"  placeholder="Description" readonly><?php echo (!empty($datas['customer'])) ? $datas['customer']->billing_address: ""; ?> 
+                                <textarea type="text" name="description" id="description"  class="form-control"  placeholder="Description" readonly><?php echo (!empty($data)) ? $data['discription']: ""; ?> 
                                 </textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Product Group *</label>
-                                <input type="text" name="hsn_code" id="product_group" class="form-control"  value="{{(!empty($datas['price'])) ? $datas['price']->product_group: ""}}" placeholder="Product Group" readonly> 
+                                <input type="text" name="hsn_code" id="product_group" class="form-control"  value="{{(!empty($data)) ? $data['group_name']: ""}}" placeholder="Product Group" readonly> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>HSN Code *</label>
-                                <input type="text" name="hsn_code" id="hsn_code" class="form-control"  value="{{(!empty($datas['price'])) ? $datas['price']->designation: ""}}" placeholder="HSN Code" readonly> 
+                                <input type="text" name="hsn_code" id="hsn_code" class="form-control"  value="{{(!empty($data)) ? $data['hsn_code']: ""}}" placeholder="HSN Code" readonly> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Purchase Price</label>
-                                <input type="text" name="purchase_price" class="form-control"  value="" placeholder="Purchase Price"> 
+                                <input type="text" name="purchase_price" class="form-control"  value="{{(!empty($data)) ? $data['purchase']: ""}}" placeholder="Purchase Price"> 
                             </div> 
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sales Price</label>
-                                <input type="text" name="sales_price" class="form-control"  value="" placeholder="Sales Price"> 
+                                <input type="text" name="sales_price" class="form-control"  value="{{(!empty($data)) ? $data['sales']: ""}}" placeholder="Sales Price"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Transfer Price</label>
-                                <input type="text" name="transfer_price" class="form-control"  value="" placeholder="Transfer Price"> 
+                                <input type="text" name="transfer_price" class="form-control"  value="{{(!empty($data)) ? $data['transfer']: ""}}" placeholder="Transfer Price"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>MRP </label>
-                                <input type="text" name="mrp" class="form-control"  value="" placeholder="MRP"> 
+                                <input type="text" name="mrp" class="form-control"  value="{{(!empty($data)) ? $data['mrp']: ""}}" placeholder="MRP"> 
                             </div>   
                           </div> 
               

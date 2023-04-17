@@ -30,6 +30,7 @@ class PriceController extends Controller
     {
         if ($request->isMethod('post'))
         {
+            
             $validation['product'] = ['required'];
             $validation['purchase_price'] = ['required'];
             $validation['sales_price'] = ['required'];
@@ -38,18 +39,27 @@ class PriceController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) 
             { 
-                $data['product_id'] = $request->product;
+                
                 $data['purchase'] = $request->purchase_price;
                 $data['sales'] = $request->sales_price;
                 $data['transfer'] = $request->transfer_price;
                 $data['mrp'] = $request->mrp;
-                if($id){
+                if($request->id){
                     $data['updated_at'] = date('Y-m-d H:i:s');
                     $data['updated_by'] = config('user')['user_id'];
-                    $this->product_price_master->update_data(['id'=>$id],$data);
+                    $this->product_price_master->update_data(['id'=>$request->id],$data);
                     $request->session()->flash('success',"You have successfully updated a price master !");
                     return redirect("fgs/price-master/add/".$id);
                 }else{
+                    $data =  $this->product_price_master->get_single_product_price(['product_price_master.product_id'=>$request->product]); 
+                    if($data)
+                    {
+                       $request->session()->flash('error',"Data already exist!"); 
+                        return redirect("fgs/price-master/add");
+                    }
+
+
+                    $data['product_id'] = $request->product;
                     $data['created_by'] = config('user')['user_id'];
                     $data['created_at'] = date('Y-m-d H:i:s');
                     $data['updated_at'] = date('Y-m-d H:i:s');
@@ -60,15 +70,26 @@ class PriceController extends Controller
             }
             if($validator->errors()->all()) 
             { 
-            if($id)
+            if($request->id)
                 return redirect("fgs/price-master/add/".$id)->withErrors($validator)->withInput();
             else
                 return redirect("fgs/price-master/add")->withErrors($validator)->withInput();
             }
         }
-        
-        return view('pages/FGS/price-master/price-master-add');
+        else
+        {
+          if($request->id)
+            {
+           
+             $data =  $this->product_price_master->get_single_product_price(['product_price_master.id'=>$request->id]); 
+
+             return view('pages/FGS/price-master/price-master-add',compact('data'));
+            }
+           else
+           return view('pages/FGS/price-master/price-master-add'); 
+        }   
     }
+   
     public function productsearch(Request $request)
     {
         if(!$request->q){
