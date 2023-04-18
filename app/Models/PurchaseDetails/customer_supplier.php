@@ -53,4 +53,15 @@ class customer_supplier extends Model
                     ->where('firm_name','like','%'.$condition.'%')
                     ->get()->toArray();
     }
+    function get_single_customer_supplier($condition)
+    {
+        
+     return $this->select('customer_supplier.*')
+                    ->where($condition)
+                    ->where('customer_supplier.is_active','=',1)
+                    ->orderby('customer_supplier.id','desc')
+                    ->first();
+
+    }
+
 }

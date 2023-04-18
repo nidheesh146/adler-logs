@@ -45,54 +45,55 @@
                           <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                   <label>Entity / Firm Name *</label>
-                              <input type="text" name="firm_name" class="form-control"  value="{{(!empty($datas['supplier'])) ? $datas['customer']->enitity_name: ""}}" placeholder="Entity/Firm Name"> 
+                              <input type="text" name="firm_name" class="form-control"  value="{{(!empty($datas)) ? $datas['firm_name']: ""}}" placeholder="Entity/Firm Name"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Contact person name *</label>
-                                <input type="text" name="contact_person" class="form-control"  value="{{(!empty($datas['supplier'])) ? $datas['supplier']->contact_person: ""}}" placeholder="Contact person name/Owner"> 
+                                <input type="text" name="contact_person" class="form-control"  value="{{(!empty($datas)) ? $datas['contact_person']: ""}}" placeholder="Contact person name/Owner"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Designation *</label>
-                                <input type="text" name="designation" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->designation: ""}}" placeholder="Designation"> 
+                                <input type="text" name="designation" class="form-control"  value="{{(!empty($datas)) ? $datas['designation']: ""}}" placeholder="Designation"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Contact number
                                  <span style="font-size: 11px;">(Include STD code,telephone/mobile number) </span>  </label>
-                                <input type="text" name="contact_number" class="form-control"  value="{{(!empty($datas['customer']) && (!empty(json_decode($datas['customer']->contact_number)[0]))) ? implode(", ",json_decode($datas['supplier']->contact_number)) : ""}}" placeholder="Contact number"> 
+                                  <input type="text" name="contact_number" class="form-control"  value="{{(!empty($datas)) ? $datas['contact_number']: ""}}" placeholder="contact_number">
                             </div>   
                             
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Email
                                  <span style="font-size: 11px;"></span>  </label>
-                                <input type="text" name="email" class="form-control"  value="{{(!empty($datas['customer']) && (!empty(json_decode($datas['customer']->email)[0]))) ? implode(", ",json_decode($datas['supplier']->email)) : ""}}" placeholder="Email"> 
+                                 <input type="text" name="email" class="form-control"  value="{{(!empty($datas)) ? $datas['email']: ""}}" placeholder="contact_number">
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sales Type</label>
                                 <select name="sales_type"  class="form-control">
                                 <option value="">-- Select one ---</option>
-                                    <option value="Dealer" @if(!empty($datas['supplier']) && $datas['supplier']->sales_type == 'Dealer' ) selected   @endif>Dealer</option>
-                                    <option value="Institutional" @if(!empty($datas['supplier']) && $datas['supplier']->sales_type == 'Institutional' ) selected   @endif>Institutional</option>
-                                    <option value="Doctor" @if(!empty($datas['supplier']) && $datas['supplier']->sales_type == 'Doctor' ) selected   @endif>Doctor</option>
+                                    <option value="Dealer" @if(!empty($datas) && $datas['sales_type'] == 'Dealer' ) selected   @endif>Dealer</option>
+                                    <option value="Institutional" @if(!empty($datas) && $datas['sales_type'] == 'Institutional' ) selected   @endif>Institutional</option>
+                                    <option value="Doctor" @if(!empty($datas) && $datas['sales_type'] == 'Doctor' ) selected   @endif>Doctor</option>
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Billing Address  *</label>
-                                <textarea value="" class="form-control " name="billing_address"  id="billing_address" rows="4" placeholder="Billing Address"><?php echo (!empty($datas['customer'])) ? $datas['customer']->billing_address: ""; ?></textarea>
+                                <textarea value="" class="form-control " name="billing_address"  id="billing_address" rows="4" placeholder="Billing Address"><?php echo (!empty($datas)) ? $datas['billing_address'] : ""; ?></textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Shipping Address  *  <span align="right"> <input type="checkbox" id="address_same_check"> Billing address same as shipping address </span></label>
-                                <textarea value="" class="form-control " name="shipping_address" id="shipping_address" rows="4"  placeholder="Shipping Address"><?php echo (!empty($datas['customer'])) ? $datas['customer']->shipping_address: ""; ?></textarea>
+                                <textarea value="" class="form-control " name="shipping_address" id="shipping_address" rows="4"  placeholder="Shipping Address"><?php echo (!empty($datas)) ? $datas['shipping_address'] : ""; ?></textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>City *</label>
-                                <input type="text" name="city" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->city: ""}}" placeholder="CIty"> 
+                                <input type="text" name="city" class="form-control"  value="{{(!empty($datas)) ? $datas['city'] : ""}}" placeholder="CIty"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>State *</label>
+
                                 <select name="state"  class="form-control">
                                     <option value="">-- Select one ---</option>
-                                    @foreach($states as $c)
-                                    <option value="{{$c['state_id']}}">{{$c['state_name']}}</option>
+                                 @foreach ($states as $item)
+                                        <option value=" {{$item->state_id}}" @if($datas != null) @if(  $item->state_id == $datas->state) selected @endif @endif>{{$item->state_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -100,8 +101,8 @@
                                 <label>Zone *</label>
                                 <select name="zone"  class="form-control">
                                     <option value="">-- Select one ---</option>
-                                    @foreach($zones as $zone)
-                                    <option value="{{$zone['id']}}">{{$zone['zone_name']}}</option>
+                                    @foreach($zones as $item)
+                                    <option value="{{$item->id}}" @if($datas != null) @if($item->id == $datas->zone) selected @endif @endif>{{$item->zone_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -111,49 +112,50 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>GST Number *</label>
-                                <input type="text" name="gst_number" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->gst_number: ""}}" placeholder="GST Number"> 
+                                <input type="text" name="gst_number" class="form-control"  value="{{(!empty($datas)) ? $datas['gst_number'] : ""}}" placeholder="GST Number"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>DL Number(Form 20B) </label>
-                                <input type="text" name="dl_number1" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->dl_number1: ""}}" placeholder="GST Number"> 
+                                <input type="text" name="dl_number1" class="form-control"  value="{{(!empty($datas)) ? $datas['dl_number1'] : ""}}" placeholder="GST Number"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>DL Number (Form 21B)</label>
-                                <input type="text" name="dl_number2" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->dl_number2: ""}}" placeholder="GST Number"> 
+                                <input type="text" name="dl_number2" class="form-control"  value="{{(!empty($datas)) ? $datas['dl_number2'] : ""}}" placeholder="GST Number"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>DL Number (Others if any)</label>
-                                <input type="text" name="dl_number3" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->dl_number3: ""}}" placeholder="GST Number"> 
+                                <input type="text" name="dl_number3" class="form-control"  value="{{(!empty($datas)) ? $datas['dl_number3'] : ""}}" placeholder="GST Number"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>DL Expiry Date</label>
-                                <input type="date" name="dl_expiry_date" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->dl_expiry_date: ""}}" placeholder="DL Expiry Date"> 
+                                <input type="date" name="dl_expiry_date" class="form-control"  value="{{(!empty($datas)) ? $datas['dl_expiry_date'] : ""}}" placeholder="DL Expiry Date"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sales Person Name</label>
-                                <input type="text" name="sales_person_name" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->sales_person_name: ""}}" placeholder="Sales Person Name"> 
+                                <input type="text" name="sales_person_name" class="form-control"  value="{{(!empty($datas)) ? $datas['sales_person_name']: ""}}" placeholder="Sales Person Name"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sales Person Email Id</label>
-                                <input type="text" name="sales_person_email" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->sales_person_email: ""}}" placeholder="Sales Person Email Id"> 
+                                <input type="text" name="sales_person_email" class="form-control"  value="{{(!empty($datas)) ? $datas['sales_person_email']: ""}}" placeholder="Sales Person Email Id"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Whatsapp Number</label>
-                                <input type="text" name="whatsapp_number" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->sales_person_email: ""}}" placeholder="Whatsapp Number"> 
+                                <input type="text" name="whatsapp_number" class="form-control"  value="{{(!empty($datas)) ? $datas['sales_person_email'] : ""}}" placeholder="Whatsapp Number"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Currency</label>
-                                <select name="currency"  class="form-control">
-                                    <option value="">-- Select one ---</option>
-                                    @foreach($currency as $c)
-                                    <option value="{{$c['currency_id']}}">{{$c['currency_code']}}</option>
+
+                                    <select class="form-control" name="currency" id="currency">
+                                <option value="">--- select one ---</option> 
+                                    @foreach($currency as $item)
+                                    <option value="{{$item->currency_id}}" @if($datas != null)  @if($item->currency_id == $datas->currency) selected @endif @endif>{{$item->currency_code}}</option>
                                     @endforeach
-                                  </select>
+                                </select>
                             </div>
                             
                               <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                   <label>Payment Terms *</label>
-                                  <textarea value="" class="form-control autosize" name="payment_terms" placeholder="Terms and Conditions"><?php echo (!empty($datas['supplier'])) ? $datas['supplier']->terms_and_conditions: ""; ?></textarea>
+                                  <textarea value="" class="form-control autosize" name="payment_terms" placeholder="Terms and Conditions"><?php echo (!empty($datas)) ? $datas['terms_and_conditions'] : ""; ?></textarea>
                               </div>
                           </div> 
               
