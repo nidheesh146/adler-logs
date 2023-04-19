@@ -123,7 +123,7 @@
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							
+						{{ $items->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>

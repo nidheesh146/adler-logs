@@ -23,6 +23,8 @@
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/location2')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @elseif($location=='MAA')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/MAA')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                            @elseif($location=='SNN_Mktd')
+                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/SNN')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @endif
                         <div>  
                             
@@ -41,9 +43,18 @@
                                     <thead>
                                         <tr>
                                             <th>SKU Code</th>
-                                            <th>Description</th>
+                                            <!-- <th>Description</th> -->
                                             <th>Batch Number</th>
                                             <th>Quantity</th>
+                                            <th>Mfg. Date</th>
+                                            <th>Expiry Date</th>
+                                            <th>Product Type</th>
+                                            <th>HSN Code</th>
+                                            <th>Product Condition</th>
+                                            <th>Product Category</th>
+                                            <th>Product Group</th>
+                                            <th>OEM</th>
+                                            <th>Std. Pack Size</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -51,9 +62,18 @@
                                         @foreach($stock as $stck)
                                         <tr>
                                             <td>{{$stck['sku_code']}}</td>
-                                            <td>{{$stck['discription']}}</td>
+                                            <!-- <td>{{$stck['discription']}}</td> -->
                                             <td>{{$stck['batch_no']}}</td>
                                             <td>{{$stck['quantity']}} Nos</td>
+                                            <td>{{date('d-m-Y', strtotime($stck['manufacturing_date']))}}</td>
+                                            <td>@if($stck['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($stck['expiry_date']))}} @else NA  @endif</td>
+                                            <td>{{$stck['product_type_name']}}</td>
+                                            <td>{{$stck['hsn_code']}}</td>
+                                            <td>@if($stck['is_sterile']==1) Sterile @else Non-Sterile @endif</td>
+                                            <td>{{$stck['category_name']}}</td>
+                                            <td>{{$stck['group_name']}}</td>
+                                            <td>{{$stck['oem_name']}}</td>
+                                            <td>{{$stck['quantity_per_pack']}}</td>
                                         </tr>
                                         @endforeach
                                         @else

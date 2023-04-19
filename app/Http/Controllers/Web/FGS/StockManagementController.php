@@ -18,6 +18,7 @@ class StockManagementController extends Controller
         $title ="Location1 - Stock";
         $location = 'location1';
         $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'Location-1']);
+        //print_r(json_encode($stock));exit;
         return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
     }
     public function location2Stock(Request $request)
@@ -25,6 +26,13 @@ class StockManagementController extends Controller
         $title ="Location2 - Stock";
         $location = 'location2';
         $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'Location-2']);
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+    }
+    public function locationSNN(Request $request)
+    {
+        $title ="SNN Mktd - Stock";
+        $location = 'SNN_Mktd';
+        $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'SNN Mktd']);
         return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
     }
     public function MAAStock(Request $request)
@@ -58,6 +66,12 @@ class StockManagementController extends Controller
         
             $location ='location2';
             return Excel::download(new StockLocationExport($location), 'location2-stock' . date('d-m-Y') . '.xlsx');
+    }
+    public function SNNExport(Request $request)
+    {
+        
+            $location ='SNN';
+            return Excel::download(new StockLocationExport($location), 'SNN-stock' . date('d-m-Y') . '.xlsx');
     }
     public function MAAExport(Request $request)
     {

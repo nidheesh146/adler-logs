@@ -15,9 +15,11 @@ use App\Models\FGS\fgs_product_category;
 use App\Models\FGS\fgs_mrn;
 use App\Models\FGS\fgs_mrn_item;
 use App\Models\FGS\fgs_mrn_item_rel;
+use App\Models\batchcard;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MRDExport;
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 class MRNController extends Controller
 {
     public function __construct()
@@ -34,6 +36,7 @@ class MRNController extends Controller
 
     public function MRNList(request $request)
     {
+        $this->fgsMRNStockUpload();
         $condition =[];
         if($request->mrn_no)
         {
@@ -129,7 +132,7 @@ class MRNController extends Controller
             $condition[] = ['fgs_mrn_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->manufaturing_from))];
             $condition[] = ['fgs_mrn_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->manufaturing_from))];
         }
-        $items = $this->fgs_mrn_item->getItems($condition);
+        $items = $this->fgs_mrn_item->getMRNItems($condition);
         return view('pages/FGS/MRN/MRN-item-list', compact('mrn_id','items'));
     }
 
@@ -192,6 +195,9 @@ class MRNController extends Controller
                         "batchcard_id"=> $value['batch_no'],
                         "quantity" => $value['qty'],
                         "stock_location_id"=>$mrn_info['stock_location'],
+                        "quantity" => $value['qty'],
+                        "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
+                        "expiry_date" => $expiry_date ,
                     ];
                     $this->fgs_mrn_item->insert_data($data,$request->mrn_id);
                     $this->fgs_mrn->update_data(['id'=>$request->mrn_id],$mrn_data);
@@ -224,5 +230,239 @@ class MRNController extends Controller
         // $pdf->set_paper('A4', 'landscape');
         $file_name = "MRN" . $data['mrn']['firm_name'] . "_" . $data['mrn']['mrn_date'];
         return $pdf->stream($file_name . '.pdf');
+    }
+    public function fgsMRNStockUpload()
+    {
+        $ExcelOBJ = new \stdClass();
+        $ExcelOBJ->inputFileType = 'Xlsx';
+        $ExcelOBJ->filename = 'SL-1-01.xlsx';
+        //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\fgs_stock.xlsx';
+        $ExcelOBJ->aircraft = 'B737-MAX';
+        $ExcelOBJ->spreadsheet = new Spreadsheet();
+        $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
+        $ExcelOBJ->reader->setReadDataOnly(true);
+        $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
+        $this->fgsMRNStockExcelsplitsheet($ExcelOBJ);
+        exit;
+    }
+    public function fgsMRNStockExcelsplitsheet($ExcelOBJ)
+    {
+        $ExcelOBJ->SQLdata = [];
+        $ExcelOBJ->arrayinc = 0;
+
+        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) {
+            $ExcelOBJ->sectionName = '';
+            $ExcelOBJ->sheetName = $worksheet['worksheetName'];
+            $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
+            $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
+            $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
+            $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
+            $ExcelOBJ->date_created = date('Y-m-d H:i:s');
+            $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
+            //$this->insert_MRN_stock_location1($ExcelOBJ);  
+            //$this->insert_MRN_stock_location2($ExcelOBJ);
+            //$this->insert_MRN_stock_SNN_Mktd($ExcelOBJ); 
+            //die("done");
+        }
+        exit('done');
+    }
+    function insert_MRN_stock_SNN_Mktd($ExcelOBJ)
+    {
+        if(date('m')==01 || date('m')==02 || date('m')==03)
+        {
+            $years_combo = date('y', strtotime('-1 year')).date('y');
+        }
+        else
+        {
+            $years_combo = date('y').date('y', strtotime('+1 year'));
+        }
+        $data['mrn_number'] = "MRN-".$this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-'.$years_combo.'%')->count()); 
+        $data['mrn_date'] = date('Y-m-d');
+        $data['supplier_doc_number'] = 'Open Stock SNN Mktd';
+        $data['supplier_doc_date'] = date('Y-m-d');
+        $data['product_category'] = 1;//ASD
+        $data['stock_location'] = 6; // SNN_Mktd
+        $data['created_by']= config('user')['user_id'];
+        $data['status']=1;
+        $data['created_at'] =date('Y-m-d H:i:s');
+        $data['updated_at'] =date('Y-m-d H:i:s');
+        $mrn_master = $this->fgs_mrn->insert_data($data);
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
+    
+            if ($key > 1 &&  $excelsheet[1]) 
+             {
+                if($excelsheet[4]=='SNN Mktd.' && $excelsheet[10]=='ASD')
+                {
+                    $product_id = product::where('sku_code','=',$excelsheet[0])->pluck('id')->first();
+                    $batchcard=batchcard::where('batch_no','=',$excelsheet[2])->first();
+                    if($product_id && $batchcard )
+                    {
+                        $item['product_id'] = $product_id;
+                        $item['batchcard_id'] = $batchcard['id'];
+                        $item['quantity'] = $excelsheet[3];
+                        $item['manufacturing_date']=($excelsheet[5]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL;
+                        $item['expiry_date']=($excelsheet[6]!="NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' ';
+                        $item['created_at'] = date('Y-m-d H:i:s');
+                        $this->fgs_mrn_item->insert_data($item,$mrn_master);
+                        $stock = [
+                            "product_id" => $product_id,
+                            "batchcard_id"=> $batchcard['id'],
+                            "quantity" => $excelsheet[3],
+                            "stock_location_id"=>6,
+                            'manufacturing_date'=>($excelsheet[5]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL,
+                            'expiry_date'=>($excelsheet[6]!="NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' '
+                        ];
+                        $this->fgs_product_stock_management->insert_data($stock);
+                       // $res[]=DB::table('production_stock_management')->insert($data);
+                    }
+                    else
+                    {
+                        $not_exist[] = $excelsheet[0];
+                        $res[] = 1;
+                    }
+                }
+            }
+        }
+        if($res)
+        {
+        print_r($not_exist);
+        return 1;
+       
+        }
+        else
+        return 0;
+    }
+    function insert_MRN_stock_location2($ExcelOBJ)
+    {
+        if(date('m')==01 || date('m')==02 || date('m')==03)
+        {
+            $years_combo = date('y', strtotime('-1 year')).date('y');
+        }
+        else
+        {
+            $years_combo = date('y').date('y', strtotime('+1 year'));
+        }
+        $data['mrn_number'] = "MRN-".$this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-'.$years_combo.'%')->count()); 
+        $data['mrn_date'] = date('Y-m-d');
+        $data['supplier_doc_number'] = 'Open Stock location2';
+        $data['supplier_doc_date'] = date('Y-m-d');
+        $data['product_category'] = 1;//ASD
+        $data['stock_location'] = 2;//location2
+        $data['created_by']= config('user')['user_id'];
+        $data['status']=1;
+        $data['created_at'] =date('Y-m-d H:i:s');
+        $data['updated_at'] =date('Y-m-d H:i:s');
+        $mrn_master = $this->fgs_mrn->insert_data($data);
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
+    
+            if ($key > 1 &&  $excelsheet[1]) 
+             {
+                if($excelsheet[4]=='Location-2 (Non-Std.)' && $excelsheet[10]=='ASD')
+                {
+                    $product_id = product::where('sku_code','=',$excelsheet[0])->pluck('id')->first();
+                    $batchcard=batchcard::where('batch_no','=',$excelsheet[2])->first();
+                    if($product_id && $batchcard )
+                    {
+                        $item['product_id'] = $product_id;
+                        $item['batchcard_id'] = $batchcard['id'];
+                        $item['quantity'] = $excelsheet[3];
+                        $item['manufacturing_date']=($excelsheet[5]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL;
+                        $item['expiry_date']=($excelsheet[6]!="NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' ';
+                        $item['created_at'] = date('Y-m-d H:i:s');
+                        $this->fgs_mrn_item->insert_data($item,$mrn_master);
+                        $stock = [
+                            "product_id" => $product_id,
+                            "batchcard_id"=> $batchcard['id'],
+                            "quantity" => $excelsheet[3],
+                            "stock_location_id"=>2,
+                            'manufacturing_date'=>($excelsheet[5]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL,
+                            'expiry_date'=>($excelsheet[6]!="NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' '
+                        ];
+                        $this->fgs_product_stock_management->insert_data($stock);
+                       // $res[]=DB::table('production_stock_management')->insert($data);
+                    }
+                    else
+                    {
+                        $not_exist[] = $excelsheet[0];
+                        $res[] = 1;
+                    }
+                }
+            }
+        }
+        if($res)
+        {
+        print_r($not_exist);
+        return 1;
+       
+        }
+        else
+        return 0;
+    }
+    function insert_MRN_stock_location1($ExcelOBJ)
+    {
+        if(date('m')==01 || date('m')==02 || date('m')==03)
+        {
+            $years_combo = date('y', strtotime('-1 year')).date('y');
+        }
+        else
+        {
+            $years_combo = date('y').date('y', strtotime('+1 year'));
+        }
+        $data['mrn_number'] = "MRN-".$this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-'.$years_combo.'%')->count()); 
+        $data['mrn_date'] = date('Y-m-d');
+        $data['supplier_doc_number'] = 'Open Stock';
+        $data['supplier_doc_date'] = date('Y-m-d');
+        $data['product_category'] = 1;//ASD
+        $data['stock_location'] = 1;//location1
+        $data['created_by']= config('user')['user_id'];
+        $data['status']=1;
+        $data['created_at'] =date('Y-m-d H:i:s');
+        $data['updated_at'] =date('Y-m-d H:i:s');
+        $mrn_master = $this->fgs_mrn->insert_data($data);
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
+    
+            if ($key > 1 &&  $excelsheet[1]) 
+             {
+                if($excelsheet[4]=='Location-1 (Std.)' && $excelsheet[10]=='ASD')
+                {
+                    $product_id = product::where('sku_code','=',$excelsheet[0])->pluck('id')->first();
+                    $batchcard=batchcard::where('batch_no','=',$excelsheet[2])->first();
+                    if($product_id && $batchcard )
+                    {
+                        $item['product_id'] = $product_id;
+                        $item['batchcard_id'] = $batchcard['id'];
+                        $item['quantity'] = $excelsheet[3];
+                        $item['manufacturing_date']=($excelsheet[5]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL;
+                        $item['expiry_date']=($excelsheet[6]!="NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' ';
+                        $item['created_at'] = date('Y-m-d H:i:s');
+                        $this->fgs_mrn_item->insert_data($item,$mrn_master);
+                        $stock = [
+                            "product_id" => $product_id,
+                            "batchcard_id"=> $batchcard['id'],
+                            "quantity" => $excelsheet[3],
+                            "stock_location_id"=>1,
+                            'manufacturing_date'=>($excelsheet[5]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL,
+                            'expiry_date'=>($excelsheet[6]!="NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' '
+                        ];
+                        $this->fgs_product_stock_management->insert_data($stock);
+                       // $res[]=DB::table('production_stock_management')->insert($data);
+                    }
+                    else
+                    {
+                        $not_exist[] = $excelsheet[0];
+                        $res[] = 1;
+                    }
+                }
+            }
+        }
+        if($res)
+        {
+        print_r($not_exist);
+        return 1;
+       
+        }
+        else
+        return 0;
     }
 }
