@@ -205,7 +205,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/RMRN/pdf/{id}', 'MRDController@RMRNpdf');
     Route::get('inventory/find-mrd', 'MRDController@find_mrd');
     Route::get('inventory/find-mrd-info', 'MRDController@find_mrd_info');
-
+    Route::get('fgs/MRN/pdf/{mrn_id}','MRNController@MRNpdf');
     //MRR/SRR
     Route::get('inventory/receipt-report', 'MRRController@receiptReport');
     Route::get('inventory/MRR-add/{id?}', 'MRRController@addMRR');
@@ -403,6 +403,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MIN/item-list/{min_id}','MINController@MINitemlist');
     Route::get('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
     Route::post('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
+    Route::get('fgs/MIN/pdf/{min_id}','MINController@MINpdf');
     Route::get('fgs-stock/fetchproduct','MINController@fetchFGSStockProduct');
     Route::get('fgs/fetchProductBatchCardsFromFGSStock','MINController@fetchBatchCardsFromFGSStock');
      //MTQ
