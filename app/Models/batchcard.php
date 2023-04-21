@@ -83,8 +83,8 @@ class batchcard extends Model
     }
       function get_batch_card($condition)
     {
-        return $this->select(['batchcard_batchcard.*','batchcard_batchcard.batch_no','batchcard_batchcard.quantity','batchcard_batchcard.input_material','batchcard_batchcard.input_material_qty',
-        'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_unit.unit_name','product_product.sku_code','inventory_rawmaterial.id as rawmaterial_id','batchcard_batchcard.is_assemble'])
+        return $this->select(['batchcard_batchcard.*','batchcard_batchcard.batch_no','batchcard_batchcard.quantity',
+        'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_unit.unit_name','product_product.sku_code','inventory_rawmaterial.id as rawmaterial_id'])
           ->leftjoin('batchcard_materials','batchcard_materials.batchcard_id','=','batchcard_batchcard.id')
         ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','batchcard_materials.item_id')
         //->leftjoin('product_product', 'product_product.id','=','batchcard_batchcard.product_id')
