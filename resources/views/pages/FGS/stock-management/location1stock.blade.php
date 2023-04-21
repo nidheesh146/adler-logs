@@ -17,14 +17,20 @@
                     <h4 class="az-content-title" style="font-size: 20px;">
                         {{$title}}
                         <div class="right-button">
-                            @if($location=='location1')
+                            @if($location=='all')
+                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/all')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                            @elseif($location=='location1')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/location1')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @elseif($location=='location2')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/location2')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                            @elseif($location=='location3')
+                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/location3')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @elseif($location=='MAA')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/MAA')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @elseif($location=='SNN_Mktd')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/SNN')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                            @elseif($location=='AHPL_Mktd')
+                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/AHPL')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @endif
                         <div>  
                             
@@ -45,7 +51,8 @@
                                             <th>SKU Code</th>
                                             <!-- <th>Description</th> -->
                                             <th>Batch Number</th>
-                                            <th>Quantity</th>
+                                            <th>Qty.</th>
+                                            <th>Location</th>
                                             <th>Mfg. Date</th>
                                             <th>Expiry Date</th>
                                             <th>Product Type</th>
@@ -64,7 +71,8 @@
                                             <td>{{$stck['sku_code']}}</td>
                                             <!-- <td>{{$stck['discription']}}</td> -->
                                             <td>{{$stck['batch_no']}}</td>
-                                            <td>{{$stck['quantity']}} Nos</td>
+                                            <td>{{$stck['quantity']}} </td>
+                                            <td>{{$stck['location_name']}} </td>
                                             <td>{{date('d-m-Y', strtotime($stck['manufacturing_date']))}}</td>
                                             <td>@if($stck['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($stck['expiry_date']))}} @else NA  @endif</td>
                                             <td>{{$stck['product_type_name']}}</td>
@@ -78,7 +86,7 @@
                                         @endforeach
                                         @else
                                         <tr>
-                                            <td colspan="4">
+                                            <td colspan="12">
                                             <center>No data found...</center>
                                             </td>
                                         </tr>

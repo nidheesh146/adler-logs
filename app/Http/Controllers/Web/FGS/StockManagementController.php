@@ -13,6 +13,14 @@ class StockManagementController extends Controller
     {
         $this->fgs_product_stock_management = new fgs_product_stock_management;
     }
+    public function allLocations(Request $request)
+    {
+        $title ="All Location - Stock";
+        $location = 'all';
+        $stock  = $this->fgs_product_stock_management->get_stock([]);
+        //print_r(json_encode($stock));exit;
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+    }
     public function location1Stock(Request $request)
     {
         $title ="Location1 - Stock";
@@ -28,11 +36,25 @@ class StockManagementController extends Controller
         $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'Location-2']);
         return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
     }
+    public function location3Stock(Request $request)
+    {
+        $title ="Location3 - Stock";
+        $location = 'location3';
+        $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'Location-3']);
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+    }
     public function locationSNN(Request $request)
     {
         $title ="SNN Mktd - Stock";
         $location = 'SNN_Mktd';
         $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'SNN Mktd']);
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+    }
+    public function locationAHPL(Request $request)
+    {
+        $title ="AHPL Mktd - Stock";
+        $location = 'AHPL_Mktd';
+        $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'AHPL Mktd']);
         return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
     }
     public function MAAStock(Request $request)
@@ -54,7 +76,13 @@ class StockManagementController extends Controller
         // $stock ='' ;
         return view('pages/FGS/stock-management/quarantine_stock', compact('title'));
     }
-
+    
+    public function AlllocationExport(Request $request)
+    {
+            $location ='all';
+            return Excel::download(new StockLocationExport($location), 'all-location-stock' . date('d-m-Y') . '.xlsx');
+    
+    }
     public function location1Export(Request $request)
     {
             $location ='location1';
@@ -67,11 +95,23 @@ class StockManagementController extends Controller
             $location ='location2';
             return Excel::download(new StockLocationExport($location), 'location2-stock' . date('d-m-Y') . '.xlsx');
     }
+    public function location3Export(Request $request)
+    {
+        
+            $location ='location3';
+            return Excel::download(new StockLocationExport($location), 'location3-stock' . date('d-m-Y') . '.xlsx');
+    }
     public function SNNExport(Request $request)
     {
         
             $location ='SNN';
             return Excel::download(new StockLocationExport($location), 'SNN-stock' . date('d-m-Y') . '.xlsx');
+    }
+    public function AHPLExport(Request $request)
+    {
+        
+            $location ='AHPL';
+            return Excel::download(new StockLocationExport($location), 'AHPL-stock' . date('d-m-Y') . '.xlsx');
     }
     public function MAAExport(Request $request)
     {
