@@ -13,7 +13,7 @@
 		<h4 class="az-content-title" style="font-size: 20px;">Supplier Invoice list
 		  <div class="right-button">
 			  
-		  <div>  
+		  <div>   
 		  </div>
 		<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/supplier-invoice-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Supplier Invoice</button> 
         <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/supplier-invoice/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>

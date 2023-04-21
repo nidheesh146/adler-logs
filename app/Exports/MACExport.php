@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 
 class MACExport implements FromCollection, WithHeadings, WithStyles,WithEvents
-{
+{    
     private $request;
 
     public function __construct($request) 

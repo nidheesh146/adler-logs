@@ -9,7 +9,7 @@
 			<div class="az-content-breadcrumb"> 
 				<span><a href="" style="color: #596881;">BATCHCARD</a></span> 
                 <span><a href="" style="color: #596881;">
-                BATCHCARD LIST
+                BATCHCARD LIST 
                 </a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Batchcard List

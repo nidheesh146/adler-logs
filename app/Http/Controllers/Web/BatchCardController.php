@@ -20,7 +20,7 @@ use App\Models\PurchaseDetails\inv_batchcard_qty_updation_request;
 class BatchCardController extends Controller
 {
     public function __construct()
-    {
+    { 
         $this->batchcard = new batchcard;
         $this->product = new product;
         $this->product_input_material = new product_input_material;

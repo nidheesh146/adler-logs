@@ -164,7 +164,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     // MAC
     Route::get('inventory/MAC', 'MACController@MAClist');
     Route::get('inventory/MAC-add/{id?}', 'MACController@MACAdd');
-    Route::post('inventory/MAC-add/{id?}', 'MACController@MACAdd');
+    Route::post('inventory/MAC-add/{id?}', 'MACController@MACAdd'); 
     Route::get('inventory/MAC/{id}/item', 'MACController@MACAddItemInfo');
     Route::post('inventory/MAC/{id}/item', 'MACController@MACAddItemInfo');
     //Route::get('inventory/find-miq-no', 'MACController@findMiqNumber');

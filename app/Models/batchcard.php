@@ -13,7 +13,7 @@ class batchcard extends Model
     public $timestamps = false;
 
     protected static function booted()
-    {
+    { 
         static::addGlobalScope('batchcard_batchcard', function (Builder $builder) {
             $builder->leftjoin('product_product', function ($join) {
                 $join->on('batchcard_batchcard.product_id', '=', 'product_product.id');
