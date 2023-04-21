@@ -454,15 +454,21 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/EXI/pdf/{grs_id}','EXIController@EXIpdf');
 
      //stock-management
+     Route::get('fgs/stock-management/all-locations','StockManagementController@allLocations');
      Route::get('fgs/stock-management/location1','StockManagementController@location1Stock');
      Route::get('fgs/stock-management/location2','StockManagementController@location2Stock');
+     Route::get('fgs/stock-management/location3','StockManagementController@location3Stock');
      Route::get('fgs/stock-management/locationSNN','StockManagementController@locationSNN');
+     Route::get('fgs/stock-management/locationAHPL','StockManagementController@locationAHPL');
      Route::get('fgs/stock-management/MAA','StockManagementController@MAAStock');
      Route::get('fgs/stock-management/quarantine','StockManagementController@quarantineStock');
+     Route::get('fgs/stock-report/all','StockManagementController@AlllocationExport');
      Route::get('fgs/stock-report/location1','StockManagementController@location1Export');
      Route::get('fgs/stock-report/location2','StockManagementController@location2Export');
+     Route::get('fgs/stock-report/location3','StockManagementController@location3Export');
      Route::get('fgs/stock-report/MAA','StockManagementController@MAAExport');
      Route::get('fgs/stock-report/SNN','StockManagementController@SNNExport');
+     Route::get('fgs/stock-report/AHPL','StockManagementController@AHPLExport');
 
 
 });

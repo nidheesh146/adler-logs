@@ -81,7 +81,9 @@
                                 <select class="form-control" name="stock_location">
                                     <option>Select one...</option>
                                     @foreach($locations as $loc)
+                                    @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
+                                    @endif 
                                     @endforeach
                                 </select>
                             </div>
