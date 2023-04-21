@@ -95,7 +95,7 @@ class QuotationController extends Controller
             {
                 $yearMonth = date('y').date('m');
             }
-            $rq_number = "PR-".$this->num_gen(DB::table('inv_purchase_req_quotation')->where('rq_no','LIKE', '%RQ-'.$yearMonth.'%')->count());
+            $rq_number = "RQ-".$this->num_gen(DB::table('inv_purchase_req_quotation')->where('rq_no','LIKE', '%RQ-'.$yearMonth.'%')->count());
             $data = ['date'=>date('Y-m-d',strtotime($request->date)),
                      'delivery_schedule'=>date('Y-m-d',strtotime($request->delivery)),
                      //'rq_no'=>'RQ-'.$this->num_gen( $this->inv_purchase_req_quotation->get_count()),

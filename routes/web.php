@@ -218,6 +218,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/receipt-report/{id}/report', 'MRRController@receiptReportPDF');
     Route::get('getPO_for_merged_si_item','MRRController@getPO_for_merged_si_item');
 
+    Route::get('inventory/find-invoice-for-mrr','MRRController@find_invoice_for_mrr');
+    Route::get('inventory/find-invoice-for-srr','MRRController@find_invoice_for_srr');
+    Route::get('inventory/MRR/find-invoice-info','MRRController@find_invoice_info');
     //Stock To Production
    
     Route::post('inventory/stock/issueToProduction', 'StockController@issueToProduction');

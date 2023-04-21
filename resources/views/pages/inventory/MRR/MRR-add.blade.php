@@ -58,22 +58,23 @@
                         {{ csrf_field() }}
 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
-                            <label>
-                                @if(isset($edit['mrr']))
+                            <label>Invoice Number
+                                {{--@if(isset($edit['mrr']))
                                 @if(str_starts_with($edit['mrr']['mrr_number'] , 'SRR')) WOA  @else MAC   @endif number *
                                 @else
                                 @if(request()->get('order_type')=='wo') WOA  @else MAC @endif number *
-                                @endif 
+                                @endif --}}
+                                
                                 <span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span></label>
-                                    @if(request()->get('order_type')=='wo')
+                           {{-- @if(request()->get('order_type')=='wo')
                                     <select class="form-control woa_number" name="mac_number" @if(!empty($edit['mrr'])) disabled @endif>
                                     @if(!empty($edit['mrr']))
                                         <option value="{{$edit['mrr']->mac_id}}" selected>{{$edit['mrr']->mac_number}}</option>
                                     @endif            
-                                </select>
-                                @if(!empty($edit['mrr']))
-                                    <input type="hidden" name="mac_number" value="{{$edit['mrr']->mac_id}}">
-                                @endif
+                                    </select>
+                                    @if(!empty($edit['mrr']))
+                                        <input type="hidden" name="mac_number" value="{{$edit['mrr']->mac_id}}">
+                                    @endif
                             @else
                                 <select class="form-control mac_number" name="mac_number" @if(!empty($edit['mrr'])) disabled @endif>
                                     @if(!empty($edit['mrr']))
@@ -83,7 +84,26 @@
                                 @if(!empty($edit['mrr']))
                                     <input type="hidden" name="mac_number" value="{{$edit['mrr']->mac_id}}">
                                 @endif
+                            @endif--}}
+                            @if(request()->get('order_type')=='wo')
+                            <select class="form-control invoice_number_wo" name="invoice_number" @if(!empty($edit['mrr'])) disabled @endif>
+                                @if(!empty($edit['mrr']))
+                                    <option value="{{$edit['mrr']->invoiceId}}" selected>{{$edit['mrr']->invoice_number}}</option>
+                                @endif  
+                           </select>
+                           @if(!empty($edit['mrr']))
+                                    <input type="hidden" name="invoice_number" value="{{$edit['mrr']->invoiceId}}">
                             @endif
+                           @else
+                           <select class="form-control invoice_number_po" name="invoice_number" @if(!empty($edit['mrr'])) disabled @endif>
+                                @if(!empty($edit['mrr']))
+                                    <option value="{{$edit['mrr']->invoiceId}}" selected>{{$edit['mrr']->invoice_number}}</option>
+                                @endif  
+                            </select>
+                            @if(!empty($edit['mrr']))
+                                    <input type="hidden" name="invoice_number" value="{{$edit['mrr']->invoiceId}}">
+                            @endif
+                           @endif
                         </div>
                         <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -236,6 +256,60 @@
 
         });
 
+        $('.invoice_number_po').select2({
+          placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 3,
+          allowClear: true,
+          ajax: {
+          url: "{{ url('inventory/find-invoice-for-mrr') }}",
+          processResults: function (data) {
+
+            return { results: data };
+
+          }
+        }
+      }).on('change', function (e) {
+        $('.spinner-button').show();
+
+        let res = $(this).select2('data')[0];
+        if(res){
+          $.get("{{ url('inventory/MRR/find-invoice-info') }}?id="+res.id,function(data){
+            $('.data-bindings').html(data);
+            $('.spinner-button').hide();
+          });
+        }else{
+          $('.data-bindings').html('');
+          $('.spinner-button').hide();
+        }
+      });
+      $('.invoice_number_wo').select2({
+          placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 3,
+          allowClear: true,
+          ajax: {
+          url: "{{ url('inventory/find-invoice-for-srr') }}",
+          processResults: function (data) {
+
+            return { results: data };
+
+          }
+        }
+      }).on('change', function (e) {
+        $('.spinner-button').show();
+
+        let res = $(this).select2('data')[0];
+        if(res){
+          $.get("{{ url('inventory/MRR/find-invoice-info') }}?id="+res.id,function(data){
+            $('.data-bindings').html(data);
+            $('.spinner-button').hide();
+          });
+        }else{
+          $('.data-bindings').html('');
+          $('.spinner-button').hide();
+        }
+      });
 
     $('.mac_number').select2({
           placeholder: 'Choose one',

@@ -103,7 +103,7 @@
 				<thead>
 					<tr>
 						<th>@if(request()->get('order_type')=='wo') SRR  @else MRR @endif  No</th>
-                        <th>@if(request()->get('order_type')!='wo') WOA No @else MAC No @endif
+                        <th>@if(request()->get('order_type')!='wo') MAC No @else WOA No @endif
 						<th>Supplier</th>
                         <th>Prepared By</th> 
                         <th>@if(request()->get('order_type')=='wo') SRR  @else MRR @endif Date</th>

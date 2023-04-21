@@ -23,7 +23,8 @@ class inv_supplier_invoice_item extends Model
     function get_supplier_invoice_item($condition){
         return $this->select(['inv_supplier_invoice_item.id','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_lot_allocation.lot_number',
         'inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_final_purchase_order_master.po_number','inv_supplier_invoice_master.invoice_number'
-        ,'inv_supplier_invoice_master.invoice_date','inv_supplier.vendor_id', 'inv_supplier.vendor_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst','inv_unit.unit_name'])
+        ,'inv_supplier_invoice_master.invoice_date','inv_supplier.vendor_id', 'inv_supplier.vendor_name','inventory_gst.igst','inventory_gst.sgst','inventory_gst.cgst','inv_unit.unit_name',
+        'inv_mac_item.accepted_quantity','inv_mrd_item.rejected_quantity','inv_supplier_invoice_item.item_id as pr_item_id'])
                     ->join('inv_supplier_invoice_rel','inv_supplier_invoice_rel.item','=','inv_supplier_invoice_item.id')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
                     ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_supplier_invoice_item.item_id')
@@ -35,6 +36,8 @@ class inv_supplier_invoice_item extends Model
                     ->leftjoin('inventory_gst','inventory_gst.id','=','inv_supplier_invoice_item.gst')
                     ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.issue_unit_id')
                     ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id', '=', 'inv_supplier_invoice_item.id')
+                    ->leftjoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_supplier_invoice_item.id')
+                    ->leftjoin('inv_mrd_item','inv_mrd_item.invoice_item_id','=','inv_supplier_invoice_item.id')
                     ->where($condition)
                     ->where('inv_supplier_invoice_item.is_merged','=',0)
                     ->groupBy('inv_supplier_invoice_item.id')
