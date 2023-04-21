@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use DB;
 use Validator;
-
+use PDF;
 use App\Models\batchcard;
 use App\Models\product;
 use App\Models\product_input_material;
@@ -556,5 +556,15 @@ class BatchCardController extends Controller
         return redirect("batchcard/request-list");
 
     }
+    public function BatchCardpdf($batch_id)
+    { 
+        $data['batch'] = $this->batchcard->get_batch_card(['batchcard_batchcard.id' => $batch_id]);
+      
+      $pdf = PDF::loadView('pages/batchcard/batchcard-list-pdf', $data);
+        // $pdf->set_paper('A4', 'landscape');
+        $file_name = "batchcard" . $data['batch']['firm_name'] . "_" . $data['batch']['batch_date'];
+        return $pdf->stream($file_name . '.pdf');
+    }
+  
     
 }

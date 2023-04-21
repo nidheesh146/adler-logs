@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 
-@inject('SupplierQuotation', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
+@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\PurchaseController')
 <div class="az-content az-content-dashboard">
   <br>
   <div class="container">
@@ -72,7 +72,6 @@
                                                 <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" id="invoice_no" class="form-control" placeholder="INVOICE NO">
                                                 <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                                             </div><!-- form-group -->
-                                            
                                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                 <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
                                                 <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
@@ -108,6 +107,7 @@
 
 		<div class="tab-pane active show " id="purchase">
 			<div class="table-responsive">
+
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
@@ -115,6 +115,7 @@
 							<!-- <th style="width:120px;">@if(request()->get('order_type')=="wo") WO @else PO @endif number :</th> -->
 							<th>Invoice number:</th>
 							<th>Invoice date</th>
+                            <th>PO Number</th>
 							<th>Supplier</th>
 							<th>Transaction Date</th>
 							<th>Created By</th>
@@ -128,6 +129,11 @@
 							<!-- <td>{{$item->po_number}}</td> -->
 							<td>{{$item->invoice_number}}</td>
 							<td>{{date('d-m-Y',strtotime($item->invoice_date)) }}</td>
+                            <td><?php $po_numbers = $fn->getPoNumber($item->id) ?>
+                                @foreach($po_numbers as $po)
+                                {{ $po->po_number}},
+                                @endforeach
+                            </td>
 							<td>{{$item->vendor_id}} - {{$item->vendor_name}}</td>
 							<td>{{date('d-m-Y',strtotime($item->created_at)) }}</td>
 							<td>{{$item->f_name}} {{$item->l_name}}</td>

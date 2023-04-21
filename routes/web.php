@@ -217,6 +217,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/MRR-delete/{id}', 'MRRController@mrr_delete');
     Route::get('inventory/receipt-report/{id}/report', 'MRRController@receiptReportPDF');
     Route::get('getPO_for_merged_si_item','MRRController@getPO_for_merged_si_item');
+     Route::get('inventory/MRR/excel-export','MRRController@MRRExport');
 
     Route::get('inventory/find-invoice-for-mrr','MRRController@find_invoice_for_mrr');
     Route::get('inventory/find-invoice-for-srr','MRRController@find_invoice_for_srr');
@@ -239,6 +240,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/Stock/ToProduction/Direct','StockController@addDirectSIP');
     Route::get('inventory/Stock/ToProduction/Indirect','StockController@IndirectSIP');
     Route::post('inventory/Stock/ToProduction/Indirect','StockController@addIndirectSIP');
+    Route::get('inventory/Stock/ToProduction/excel-export','StockController@StockToProductionExport');
+
+
     // Route::get('inventory/stock/item-mac-info','StockController@itemMacDetails');
     Route::get('inventory/stock/item-stock-info','StockController@itemStockDetails');
     Route::post('inventory/stock/quantity-updation-request','StockController@quantityUpdationRequest');
@@ -314,7 +318,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('batchcard/request-list','BatchCardController@requestList');
     Route::get('batchcard/quantity-update/approve','BatchCardController@approveRequest');
     Route::get('batchcard/quantity-update/reject','BatchCardController@rejectRequest');
-
+    Route::get('batchcard/batchcard-list/{batch_id}/report','BatchCardController@BatchCardpdf');
     //Label card
     Route::get('label/mrp-label','LabelController@mrpLabel');
     Route::post('label/mrp-label','LabelController@generateMRPLabel');
@@ -392,7 +396,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/fetchProductBatchCards','MRNController@fetchProductBatchCards');
     Route::get('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
     Route::post('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
-    Route::get('fgs/MRN/pdf/{mrn_id}','MRNController@MRNpdf');
     //MIN
     Route::get('fgs/MIN-list','MINController@MINList');
     Route::get('fgs/MIN-add','MINController@MINAdd');
@@ -400,11 +403,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MIN/item-list/{min_id}','MINController@MINitemlist');
     Route::get('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
     Route::post('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
-    Route::get('fgs/MIN/pdf/{min_id}','MINController@MINpdf');
-    Route::get('fgs/CMIN-add', 'MINController@CMINAdd');
     Route::get('fgs-stock/fetchproduct','MINController@fetchFGSStockProduct');
     Route::get('fgs/fetchProductBatchCardsFromFGSStock','MINController@fetchBatchCardsFromFGSStock');
-    Route::get('fgs/OEF/pdf/{oef_id}','OEFController@OEFpdf');
      //MTQ
      Route::get('fgs/MTQ/add','MTQController@MTQAdd');
      Route::get('fgs/MTQ/item-list','MTQController@MTQitemlist');

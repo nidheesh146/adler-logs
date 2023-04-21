@@ -26,7 +26,7 @@ class MACExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             $items= inv_mac_item::select('inv_mac_item.id as id','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name',
                 'inv_unit.unit_name','inv_lot_allocation.lot_number','inv_mac_item.accepted_quantity','inv_miq_item.expiry_control','inv_miq_item.expiry_date',
                 'inv_mac.mac_number','inv_mac.mac_date','inv_mac.created_at','user.f_name','user.l_name','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate',
-                'inv_supplier_invoice_item.discount','inv_supplier_invoice_master.invoice_number','inv_supplier.vendor_id','inv_supplier.vendor_name')
+                'inv_supplier_invoice_item.discount','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_final_purchase_order_master.po_number')
                                     ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
                                     ->leftjoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
                                     ->leftjoin('user','user.user_id','=','inv_mac.created_by')
@@ -39,6 +39,7 @@ class MACExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                                     ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_mac.invoice_id')
                                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                                     ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
                                     //->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
                                     //->where($condition)
                                     ->where('inv_mac.status','=',1)
@@ -75,7 +76,7 @@ class MACExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             $items= inv_mac_item::select('inv_mac_item.id as id','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name',
             'inv_unit.unit_name','inv_lot_allocation.lot_number','inv_mac_item.accepted_quantity','inv_miq_item.expiry_control','inv_miq_item.expiry_date',
             'inv_mac.mac_number','inv_mac.mac_date','inv_mac.created_at','user.f_name','user.l_name','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate',
-            'inv_supplier_invoice_item.discount','inv_supplier_invoice_master.invoice_number','inv_supplier.vendor_id','inv_supplier.vendor_name')
+            'inv_supplier_invoice_item.discount','inv_supplier_invoice_master.invoice_date','inv_supplier_invoice_master.invoice_number','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_final_purchase_order_master.po_number')
                                 ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
                                 ->leftjoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
                                 ->leftjoin('user','user.user_id','=','inv_mac.created_by')
@@ -88,6 +89,7 @@ class MACExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                                 ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                                 ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_mac.invoice_id')
                                 ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                                ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
                                 //->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
                                 ->where($condition)
                                 ->where('inv_mac.status','=',1)
@@ -108,12 +110,15 @@ class MACExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                     '#'=>$i++,
                     'mac_number'=>$item['mac_number'],
                     'invoice_number'=>$item['invoice_number'],
+                    'invoice_date'=>$item['invoice_date'],
+                    'po_number'=>$item['po_number'],
                     'item_code'=>$item['item_code'],
                     'hsn_code'=>$item['hsn_code'],
                     'item_type'=>$item['type_name'],
                     'description'=>$item['discription'],
                     'lot_number'=>$item['lot_number'],
-                    'supplier'=>$item['vendor_id'].'-'.$item['vendor_name'],
+                    'supplier_code'=>$item['vendor_id'],
+                    'supplier_name'=>$item['vendor_name'],
                     'quantity'=>$item['order_qty'],
                     'accepted_quantity'=>$item['accepted_quantity'],
                     'unit'=>$item['unit_name'],
@@ -135,12 +140,15 @@ class MACExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             '#',
             'MAC/WOA Number',
             'Invoice Number',
+            'Invoice Date',
+            'PO Number',
             'Item Code',
             'HSN/SAC Code',
             'Item Type',
             'Item Description',
             'Lot Number',
-            'Supplier',
+            'Supplier Code',
+            'Supplier Name',
             'Invoice Quantity',
             'Accepted Quantity',
             'Unit',

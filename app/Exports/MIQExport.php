@@ -24,7 +24,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
         {
             $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
-                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name')
+                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date')
                     ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
                     ->leftjoin('inv_miq','inv_miq.id','=','inv_miq_item_rel.master')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
@@ -62,7 +62,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             }
             $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
-                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name')
+                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date')
                     ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
                     ->leftjoin('inv_miq','inv_miq.id','=','inv_miq_item_rel.master')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
@@ -85,6 +85,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
         $data = [];
         foreach($items as $item)
         {
+
             $rate_aftr_discount = $item['rate']-($item['rate']*$item['discount'])/100;
             $value = $item['order_qty']*$rate_aftr_discount;
             if($item['expiry_control']==1)
@@ -95,6 +96,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                     '#'=>$i++,
                     'miq_number'=>$item['miq_number'],
                     'invoice_number'=>$item['invoice_number'],
+                    'invoice_date'=>$item['invoice_date'],
                     'item_code'=>$item['item_code'],
                     'hsn_code'=>$item['hsn_code'],
                     'item_type'=>$item['type_name'],
@@ -126,6 +128,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             '#',
             'MIQ Number',
             'Invoice Number',
+            'Invoice Date',
             'Item Code',
             'HSN/SAC Code',
             'Item Type',

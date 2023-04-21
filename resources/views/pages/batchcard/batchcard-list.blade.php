@@ -114,6 +114,7 @@
 									<a href="{{url('batchcard/delete?id='.$card["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
 								</div>
 								@endif
+								<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('batchcard/batchcard-list/'.$card['id'].'/report')}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
 							</td>
                         </tr>
                         @endforeach

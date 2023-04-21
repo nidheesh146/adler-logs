@@ -18,6 +18,7 @@ use App\Models\PurchaseDetails\inv_purchase_req_quotation_supplier;
 use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
+use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\User;
 use App\Models\inventory_gst;
@@ -1131,6 +1132,7 @@ class PurchaseController extends Controller
         return view('pages.purchase-details.supplier-invoice.supplier-invoice-list', compact('data'));
     }
 
+
     // public function supplierInvoiceAdd1(Request $request)
     // {
     //     if ($request->isMethod('post')) {
@@ -1725,6 +1727,15 @@ class PurchaseController extends Controller
             $request =null;
             return Excel::download(new PendingPurchaseRealisationExport($request), 'R02-PendingPurchaseRealisation' . date('d-m-Y') . '.xlsx');
         }
+    }
+    public function getPoNumber($invoice_id)
+    {
+        $po_number = inv_supplier_invoice_rel::select('inv_final_purchase_order_master.po_number') 
+            ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+            ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+            ->where('inv_supplier_invoice_rel.master','=',$invoice_id)
+            ->get();
+            return $po_number;
     }
 
 
