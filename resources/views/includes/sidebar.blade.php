@@ -213,7 +213,7 @@
           </ul>
         </li>
 
-        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial','Product.productLocationUpload'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fab fa-product-hunt" style="font-size: 19px"></i>Product</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['Product.productList','Product.addInputMaterial'])){{'active'}} @endif ">
@@ -221,6 +221,9 @@
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Product.productFileUpload'])){{'active'}} @endif ">
             <a href="{{url('product/file/upload')}}"  class="nav-sub-link">Product Upload</a>
+            </li> 
+            <li class="nav-sub-item @if(in_array($Action,['Product.productLocationUpload'])){{'active'}} @endif ">
+            <a href="{{url('product/location')}}"  class="nav-sub-link">Product Location</a>
             </li> 
           </ul>
         </li>

@@ -19,7 +19,7 @@
 			  </div> -->
              
               <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MRR-add')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i>  @if(request()->get('order_type')=='wo') SRR @else MRR @endif </button> 
-               
+               <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MRR/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
 				
 	  		</div>
 		</h4>

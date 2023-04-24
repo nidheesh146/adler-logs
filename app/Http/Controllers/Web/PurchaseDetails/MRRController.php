@@ -21,6 +21,8 @@ use App\Models\User;
 use App\Models\currency_exchange_rate;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MRRExport;
 class MRRController extends Controller
 {
     public function __construct()
@@ -570,5 +572,17 @@ class MRRController extends Controller
         $data .= '</table>
        </div>';
         return $data;
+    }
+    public function MRRExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new MRRExport($request), 'MRR' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new MRRExport($request), 'MRR' . date('d-m-Y') . '.xlsx');
+        }
     }
 }
