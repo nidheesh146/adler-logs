@@ -20,7 +20,7 @@ class product_stock_location extends Model
     public function get_locations(){
         return $this->select(['id','location_name'])
                     ->get();
-    }
+    } 
 
     function insert_location($data){
         return $this->insert($data);   

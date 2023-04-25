@@ -14,7 +14,7 @@ use App\Exports\PriceMasterExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PriceController extends Controller
-{
+{ 
     public function __construct()
     {
          $this->product = new product;

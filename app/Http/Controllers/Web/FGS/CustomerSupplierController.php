@@ -13,7 +13,7 @@ use App\Exports\CustomerSupplierExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerSupplierController extends Controller
-{
+{ 
     public function __construct()
     {
         $this->currency_exchange_rate = new currency_exchange_rate;

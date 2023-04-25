@@ -24,7 +24,7 @@ use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MRRExport;
 class MRRController extends Controller
-{
+{ 
     public function __construct()
     {
         $this->inv_miq = new inv_miq;

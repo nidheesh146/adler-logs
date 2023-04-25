@@ -3,7 +3,7 @@
 
 <div class="az-content az-content-dashboard">
   <br>
-  <div class="container">
+  <div class="container"> 
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
             <span><a href="{{ url('inventory/MRD') }}"  style="color: #97a3b9;"> Receipt Report</a></span>

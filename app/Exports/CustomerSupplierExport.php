@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
 class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles,WithEvents
-{
+{ 
     private $request;
 
     public function __construct($request) 

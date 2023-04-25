@@ -14,7 +14,7 @@ use Validator;
 use Redirect;
 use DB;
 class ProductController extends Controller
-{
+{ 
     public function __construct()
     {
         $this->product = new product;

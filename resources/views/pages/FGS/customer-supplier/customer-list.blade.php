@@ -9,7 +9,7 @@
                 <span><a href="" style="color: #596881;">
                 Customer-Supplier List
                 </a></span>
-			</div>
+			</div> 
 			<h4 class="az-content-title" style="font-size: 20px;">Customer-Supplier List
 			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/customer-supplier/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Customer-Supplier</button>
 			 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/customer-supplier/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>

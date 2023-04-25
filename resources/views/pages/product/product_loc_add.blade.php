@@ -9,7 +9,7 @@
              <span><a href="">Product Location</a></span>
         </div>
         <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">Product Locations</h4>
-        <div class="row ">
+        <div class="row "> 
             <div class="col-lg-7 col-xl-7 mg-t-20 mg-lg-t-0">
                 <div class="card card-table-one" style="min-height: 500px;">
                     @if (Session::get('succs'))
