@@ -9,8 +9,11 @@ use App\Models\state;
 use App\Models\zone;
 use App\Models\PurchaseDetails\customer_supplier;
 use Validator;
+use App\Exports\CustomerSupplierExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class CustomerSupplierController extends Controller
-{
+{ 
     public function __construct()
     {
         $this->currency_exchange_rate = new currency_exchange_rate;
@@ -64,7 +67,7 @@ class CustomerSupplierController extends Controller
                     $data['dl_expiry_date'] =date('Y-m-d',strtotime($request->dl_expiry_date));
 
                     if($request->id)
-                    {
+                    { 
                          
                     $data['updated_at'] = date('Y-m-d H:i:s');
                         $this->customer_supplier->update_data(['id'=>$request->id],$data);
@@ -179,6 +182,18 @@ class CustomerSupplierController extends Controller
             return response()->json( $data, 200); 
         }else{
             return response()->json(['message'=>'Customer is not valid'], 500); 
+        }
+    }
+     public function CustomerSupplierExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new CustomerSupplierExport($request), 'CustomerSupplier' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new CustomerSupplierExport($request), 'CustomerSupplier' . date('d-m-Y') . '.xlsx');
         }
     }
 

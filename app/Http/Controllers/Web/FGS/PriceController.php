@@ -10,8 +10,11 @@ use App\Models\PurchaseDetails\product_price_master;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Validator;
 use DB;
+use App\Exports\PriceMasterExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class PriceController extends Controller
-{
+{ 
     public function __construct()
     {
          $this->product = new product;
@@ -88,7 +91,7 @@ class PriceController extends Controller
         {
           if($request->id)
             {
-           
+           dd($request->id);
              $data =  $this->product_price_master->get_single_product_price(['product_price_master.id'=>$request->id]); 
 
              return view('pages/FGS/price-master/price-master-add',compact('data'));
@@ -340,5 +343,18 @@ class PriceController extends Controller
         }
         else
         return 0;
+    }
+
+     public function PriceMasterExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new PriceMasterExport($request), 'PriceMaster' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new PriceMasterExport($request), 'PriceMaster' . date('d-m-Y') . '.xlsx');
+        }
     }
 }

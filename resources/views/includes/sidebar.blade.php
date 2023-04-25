@@ -5,7 +5,7 @@
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
      //echo $Action;
 @endphp
-  <div class="az-sidebar">
+  <div class="az-sidebar"> 
     <div class="az-sidebar-header">
       <a href="{{url('')}}" class="az-logo" style="
       text-transform: uppercase;color: #1d263d;"><img class="wd-45 ht-40 mg-l-10 bd bd-gray-500 rounded-10"
@@ -120,6 +120,9 @@
                 <li class="nav-sub-item @if(in_array($Action,['MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd'])){{'active'}} @endif ">
                   <a href="{{url('fgs/MIN-list')}}"  class="nav-sub-link">MIN</a>
                 </li>
+                <li class="nav-sub-item @if(in_array($Action,['CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINitemlist','CMIN.CMINitemAdd'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/CMIN-add')}}"  class="nav-sub-link">CMIN</a>
+                </li>
                 <li class="nav-sub-item @if(in_array($Action,['GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/GRS-list')}}"  class="nav-sub-link">GRS</a>
                 </li>
@@ -213,7 +216,7 @@
           </ul>
         </li>
 
-        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial','Product.productLocationUpload'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fab fa-product-hunt" style="font-size: 19px"></i>Product</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['Product.productList','Product.addInputMaterial'])){{'active'}} @endif ">
@@ -221,6 +224,9 @@
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Product.productFileUpload'])){{'active'}} @endif ">
             <a href="{{url('product/file/upload')}}"  class="nav-sub-link">Product Upload</a>
+            </li> 
+            <li class="nav-sub-item @if(in_array($Action,['Product.productLocationUpload'])){{'active'}} @endif ">
+            <a href="{{url('product/location')}}"  class="nav-sub-link">Product Location</a>
             </li> 
           </ul>
         </li>

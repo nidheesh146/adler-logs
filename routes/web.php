@@ -203,6 +203,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/RMRN/{id}/item', 'MRDController@RMRNAddItemInfo');
     Route::get('inventory/RMRN-delete/{id}', 'MRDController@RMRNDelete');
     Route::get('inventory/RMRN/pdf/{id}', 'MRDController@RMRNpdf');
+    Route::get('inventory/RMRN/excel-export','MRDController@RMRNExport');
     Route::get('inventory/find-mrd', 'MRDController@find_mrd');
     Route::get('inventory/find-mrd-info', 'MRDController@find_mrd_info');
     Route::get('fgs/MRN/pdf/{mrn_id}','MRNController@MRNpdf');
@@ -367,7 +368,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::post('product/product-upload','ProductController@productFileUpload');
     Route::get('product/alternative-input-material','ProductController@alternativeInputMaterial');
     Route::post('product/alternative-input-material/add','ProductController@alternativeInputMaterialAdd');
-   
+    Route::get('product/location/{id?}', 'ProductController@locationList');
+    Route::post('product/location/{id?}', 'ProductController@locationList');
 
 });
 
@@ -380,12 +382,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/customersearch','CustomerSupplierController@customersearch');
     Route::get('fgs/domestic_customersearch','CustomerSupplierController@domesticCustomer');
     Route::get('fgs/export_customersearch','CustomerSupplierController@exportCustomer');
+    Route::get('fgs/customer-supplier/excel-export','CustomerSupplierController@CustomerSupplierExport');
     //Price master
     Route::get('fgs/price-master/list','PriceController@priceList');
     Route::get('fgs/price-master/add/{id?}','PriceController@priceAdd');
     Route::post('fgs/price-master/add/{id?}','PriceController@priceAdd');
     Route::get('fgs/productsearch','PriceController@productsearch');
-   
+    Route::get('fgs/price-master/excel-export','PriceController@PriceMasterExport');
 
     //MRN
     Route::get('fgs/MRN-list','MRNController@MRNList');
@@ -404,11 +407,19 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
     Route::post('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
     Route::get('fgs/MIN/pdf/{min_id}','MINController@MINpdf');
+    //CMIN
+    Route::get('fgs/CMIN-add','MINController@CMINAdd');
+    Route::post('fgs/CMIN-add','MINController@CMINAdd');
+    Route::get('fgs/CMIN/find-min-number-for-cmin','MINController@findMinNumberForCMIN');
+    Route::get('fgs/CMIN/find-min-info', 'MINController@minInfo');
+ 
     Route::get('fgs-stock/fetchproduct','MINController@fetchFGSStockProduct');
     Route::get('fgs/fetchProductBatchCardsFromFGSStock','MINController@fetchBatchCardsFromFGSStock');
      //MTQ
+     Route::get('fgs/MTQ-list','MTQController@MTQList');
      Route::get('fgs/MTQ/add','MTQController@MTQAdd');
-     Route::get('fgs/MTQ/item-list','MTQController@MTQitemlist');
+     Route::post('fgs/MTQ/add','MTQController@MTQAdd');
+     Route::get('fgs/MTQ/item-list/{min_id}','MTQController@MTQitemlist');
      Route::get('fgs/MTQ/add-item','MTQController@MTQitemAdd');
     //OEF
     Route::get('fgs/OEF-list','OEFController@OEFList');
