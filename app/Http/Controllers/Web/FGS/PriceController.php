@@ -23,7 +23,7 @@ class PriceController extends Controller
 
     public function priceList(Request $request)
     {
-        //$this->priceMasterUpload();
+       // $this->priceMasterUpload();
        // $this->productFgsUpload();
        //$this->fgsStockUpload();
         $prices = $this->product_price_master->get_all([]);
@@ -217,7 +217,7 @@ class PriceController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\priceMaster.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\Price_Master1.xlsx';
         $ExcelOBJ->aircraft = 'B737-MAX';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
@@ -257,14 +257,18 @@ class PriceController extends Controller
                 if($price_master)
                 {
                     $data['product_id'] = $product_id;
-                    $data['mrp'] = $excelsheet[17];
+                    $data['purchase'] =$excelsheet[16];
+                    $data['sales'] =$excelsheet[17];
+                    $data['mrp'] = $excelsheet[18];
                     $data['updated_at'] = date('Y-m-d H:i:s');
                     $res[]=DB::table('product_price_master')->where('id','=',$price_master['id'])->update($data);
                 }
                 else
                 {
                     $data['product_id'] = $product_id;
-                    $data['mrp'] = $excelsheet[17];
+                    $data['purchase'] =$excelsheet[16];
+                    $data['sales'] =$excelsheet[17];
+                    $data['mrp'] = $excelsheet[18];
                     $data['created_at'] = date('Y-m-d H:i:s');
                     $data['updated_at'] = date('Y-m-d H:i:s');
                     $res[]=DB::table('product_price_master')->insert($data);

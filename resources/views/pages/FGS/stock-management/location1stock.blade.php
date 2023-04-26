@@ -52,6 +52,7 @@
                                             <!-- <th>Description</th> -->
                                             <th>Batch Number</th>
                                             <th>Qty.</th>
+                                            <th>UOM</th>
                                             <th>Location</th>
                                             <th>Mfg. Date</th>
                                             <th>Expiry Date</th>
@@ -72,6 +73,7 @@
                                             <!-- <td>{{$stck['discription']}}</td> -->
                                             <td>{{$stck['batch_no']}}</td>
                                             <td>{{$stck['quantity']}} </td>
+                                            <td>Nos </td>
                                             <td>{{$stck['location_name']}} </td>
                                             <td>{{date('d-m-Y', strtotime($stck['manufacturing_date']))}}</td>
                                             <td>@if($stck['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($stck['expiry_date']))}} @else NA  @endif</td>
@@ -86,7 +88,7 @@
                                         @endforeach
                                         @else
                                         <tr>
-                                            <td colspan="12">
+                                            <td colspan="13">
                                             <center>No data found...</center>
                                             </td>
                                         </tr>

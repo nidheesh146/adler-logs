@@ -206,7 +206,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/RMRN/excel-export','MRDController@RMRNExport');
     Route::get('inventory/find-mrd', 'MRDController@find_mrd');
     Route::get('inventory/find-mrd-info', 'MRDController@find_mrd_info');
-    Route::get('fgs/MRN/pdf/{mrn_id}','MRNController@MRNpdf');
+    
     //MRR/SRR
     Route::get('inventory/receipt-report', 'MRRController@receiptReport');
     Route::get('inventory/MRR-add/{id?}', 'MRRController@addMRR');
@@ -399,6 +399,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/fetchProductBatchCards','MRNController@fetchProductBatchCards');
     Route::get('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
     Route::post('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
+    Route::get('fgs/MRN/pdf/{mrn_id}','MRNController@MRNpdf');
     //MIN
     Route::get('fgs/MIN-list','MINController@MINList');
     Route::get('fgs/MIN-add','MINController@MINAdd');
