@@ -121,7 +121,7 @@
                   <a href="{{url('fgs/MIN-list')}}"  class="nav-sub-link">MIN</a>
                 </li>
                 <li class="nav-sub-item @if(in_array($Action,['CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINitemlist','CMIN.CMINitemAdd'])){{'active'}} @endif ">
-                  <a href="{{url('fgs/CMIN-add')}}"  class="nav-sub-link">CMIN</a>
+                  <a href="{{url('fgs/CMIN/CMIN-list')}}"  class="nav-sub-link">CMIN</a>
                 </li>
                 <li class="nav-sub-item @if(in_array($Action,['GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/GRS-list')}}"  class="nav-sub-link">GRS</a>
