@@ -38,7 +38,7 @@ class inv_mrr extends Model
         'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier.address','inv_supplier.contact_number','inv_miq.miq_number','inv_miq.miq_date','inv_mrd.mrd_number','inv_mrd.mrd_date','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date'])
                     
                     ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mrr.invoice_id')
-                    ->leftjoin('inv_mac','inv_mac.id','=','inv_mrr.invoice_id')
+                    ->leftjoin('inv_mac','inv_mac.id','=','inv_mrr.mac_id')
                     ->leftjoin('user','user.user_id','=','inv_mrr.created_by')
                     ->leftjoin('inv_miq','inv_miq.invoice_master_id','=','inv_supplier_invoice_master.id')
                     ->leftjoin('inv_mrd','inv_mrd.invoice_id','=','inv_supplier_invoice_master.id')

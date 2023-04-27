@@ -9,140 +9,142 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithPreCalculateFormulas;
 
-class StockLocationExport implements FromCollection, WithHeadings, WithStyles,WithEvents
+class StockLocationExport implements FromCollection, WithHeadings, WithStyles,WithEvents,WithPreCalculateFormulas
 {
-    private $location;
+    private $stock;
 
-    public function __construct($location) 
+    public function __construct($stock) 
     {
-        $this->location = $location;
+        $this->stock = $stock;
     }
     public function collection()
     {
-        if($this->location=='all')
-        {
-            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
-            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
-                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
-                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
-                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
-                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
-                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
-                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
-                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
-                        //->where('product_stock_location.location_name','=','Location-1')
-                        ->where('fgs_product_stock_management.quantity','!=',0)
-                        ->distinct('fgs_product_stock_management.id')
-                        ->orderBy('fgs_product_stock_management.id','DESC')
-                        ->get();
+        // if($this->location=='all')
+        // {
+        //     $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+        //     'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+        //                 ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+        //                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+        //                 ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+        //                 ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+        //                 ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+        //                 ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+        //                 ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+        //                 //->where('product_stock_location.location_name','=','Location-1')
+        //                 ->where('fgs_product_stock_management.quantity','!=',0)
+        //                 ->distinct('fgs_product_stock_management.id')
+        //                 ->orderBy('fgs_product_stock_management.id','DESC')
+        //                 ->get();
             
-        }
-        elseif($this->location=='location1')
-        {
-            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
-            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
-                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
-                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
-                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
-                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
-                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
-                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
-                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
-                        ->where('product_stock_location.location_name','=','Location-1')
-                        ->where('fgs_product_stock_management.quantity','!=',0)
-                        ->distinct('fgs_product_stock_management.id')
-                        ->orderBy('fgs_product_stock_management.id','DESC')
-                        ->get();
+        // }
+        // elseif($this->location=='location1')
+        // {
+        //     $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+        //     'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+        //                 ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+        //                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+        //                 ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+        //                 ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+        //                 ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+        //                 ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+        //                 ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+        //                 ->where('product_stock_location.location_name','=','Location-1')
+        //                 ->where('fgs_product_stock_management.quantity','!=',0)
+        //                 ->distinct('fgs_product_stock_management.id')
+        //                 ->orderBy('fgs_product_stock_management.id','DESC')
+        //                 ->get();
             
-        }
+        // }
         
-        elseif($this->location=='location2')
-        {
+        // elseif($this->location=='location2')
+        // {
 
-            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
-            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
-                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
-                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
-                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
-                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
-                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
-                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
-                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
-                        ->where('product_stock_location.location_name','=','Location-2')
-                        ->where('fgs_product_stock_management.quantity','!=',0)
-                        ->distinct('fgs_product_stock_management.id')
-                        ->orderBy('fgs_product_stock_management.id','DESC')
-                        ->get();
-        }
-        elseif($this->location=='location3')
-        {
+        //     $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+        //     'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+        //                 ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+        //                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+        //                 ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+        //                 ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+        //                 ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+        //                 ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+        //                 ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+        //                 ->where('product_stock_location.location_name','=','Location-2')
+        //                 ->where('fgs_product_stock_management.quantity','!=',0)
+        //                 ->distinct('fgs_product_stock_management.id')
+        //                 ->orderBy('fgs_product_stock_management.id','DESC')
+        //                 ->get();
+        // }
+        // elseif($this->location=='location3')
+        // {
 
-            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
-            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
-                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
-                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
-                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
-                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
-                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
-                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
-                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
-                        ->where('product_stock_location.location_name','=','Location-3')
-                        ->where('fgs_product_stock_management.quantity','!=',0)
-                        ->distinct('fgs_product_stock_management.id')
-                        ->orderBy('fgs_product_stock_management.id','DESC')
-                        ->get();
-        }
-        elseif($this->location=='SNN')
-        {
+        //     $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+        //     'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+        //                 ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+        //                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+        //                 ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+        //                 ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+        //                 ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+        //                 ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+        //                 ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+        //                 ->where('product_stock_location.location_name','=','Location-3')
+        //                 ->where('fgs_product_stock_management.quantity','!=',0)
+        //                 ->distinct('fgs_product_stock_management.id')
+        //                 ->orderBy('fgs_product_stock_management.id','DESC')
+        //                 ->get();
+        // }
+        // elseif($this->location=='SNN')
+        // {
 
-            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
-            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
-                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
-                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
-                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
-                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
-                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
-                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
-                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
-                        ->where('product_stock_location.location_name','=','SNN Mktd')
-                        ->where('fgs_product_stock_management.quantity','!=',0)
-                        ->distinct('fgs_product_stock_management.id')
-                        ->orderBy('fgs_product_stock_management.id','DESC')
-                        ->get();
-        }
-        elseif($this->location=='AHPL')
-        {
+        //     $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+        //     'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+        //                 ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+        //                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+        //                 ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+        //                 ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+        //                 ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+        //                 ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+        //                 ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+        //                 ->where('product_stock_location.location_name','=','SNN Mktd')
+        //                 ->where('fgs_product_stock_management.quantity','!=',0)
+        //                 ->distinct('fgs_product_stock_management.id')
+        //                 ->orderBy('fgs_product_stock_management.id','DESC')
+        //                 ->get();
+        // }
+        // elseif($this->location=='AHPL')
+        // {
 
-            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
-            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
-                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
-                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
-                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
-                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
-                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
-                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
-                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
-                        ->where('product_stock_location.location_name','=','AHPL Mktd')
-                        ->where('fgs_product_stock_management.quantity','!=',0)
-                        ->distinct('fgs_product_stock_management.id')
-                        ->orderBy('fgs_product_stock_management.id','DESC')
-                        ->get();
-        }
-        elseif($this->location=='MAA')
-        {
-            $stock = fgs_maa_stock_management::select('fgs_maa_stock_management.*','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no')
-                            ->leftJoin('product_product','product_product.id','=','fgs_maa_stock_management.product_id')
-                            ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_maa_stock_management.batchcard_id' )
-                            ->where('fgs_maa_stock_management.quantity','!=',0)
-                            ->distinct('fgs_maa_stock_management.id')
-                            ->orderBy('fgs_maa_stock_management.id','DESC')
-                            ->get();
+        //     $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+        //     'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+        //                 ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+        //                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+        //                 ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+        //                 ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+        //                 ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+        //                 ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+        //                 ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+        //                 ->where('product_stock_location.location_name','=','AHPL Mktd')
+        //                 ->where('fgs_product_stock_management.quantity','!=',0)
+        //                 ->distinct('fgs_product_stock_management.id')
+        //                 ->orderBy('fgs_product_stock_management.id','DESC')
+        //                 ->get();
+        // }
+        // elseif($this->location=='MAA')
+        // {
+        //     $stock = fgs_maa_stock_management::select('fgs_maa_stock_management.*','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no')
+        //                     ->leftJoin('product_product','product_product.id','=','fgs_maa_stock_management.product_id')
+        //                     ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_maa_stock_management.batchcard_id' )
+        //                     ->where('fgs_maa_stock_management.quantity','!=',0)
+        //                     ->distinct('fgs_maa_stock_management.id')
+        //                     ->orderBy('fgs_maa_stock_management.id','DESC')
+        //                     ->get();
 
-        }
+        // }
         $i=1;
         $data = [];
-        foreach($stock as $stk)
+        $total = 0;
+        foreach($this->stock as $stk)
         {
             if($stk['expiry_date']!='0000-00-00') 
             $expiry = date('d-m-Y', strtotime($stk['expiry_date']));
@@ -152,6 +154,7 @@ class StockLocationExport implements FromCollection, WithHeadings, WithStyles,Wi
             $condition = 'Sterile'; 
             else 
             $condition = 'Non-Sterile'; 
+            $total= $total+$stk['quantity'];
             $data[]= array(
                 '#'=>$i++,
                 'sku_code'=>$stk['sku_code'],
@@ -197,7 +200,14 @@ class StockLocationExport implements FromCollection, WithHeadings, WithStyles,Wi
         ];
     }
     public function styles(Worksheet $sheet)
-    {   
+    {           
+        $numOfRows = count($this->stock);
+        $totalRow = $numOfRows + 2;
+
+
+        // Add cell with SUM formula to last row
+        $sheet->setCellValue("E{$totalRow}", "=SUM(E2:E{$numOfRows})");
+        $sheet->setCellValue("D{$totalRow}","Total :");
         
         return [
         // Style the first row as bold text.
@@ -208,7 +218,6 @@ class StockLocationExport implements FromCollection, WithHeadings, WithStyles,Wi
     {
         return [
             AfterSheet::class    => function(AfterSheet $event) {
-                
                 $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(5);
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(50);

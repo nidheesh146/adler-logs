@@ -145,7 +145,7 @@
             </tr>
             <tr>
                 <td>@if($type=='po') MAC @else WOA @endif Date</td>
-                <td>:&nbsp; {{date('d-m-Y', strtotime($mrr['mac_date']))}}</td>
+                <td>:&nbsp;@if($mrr['mac_number']) {{date('d-m-Y', strtotime($mrr['mac_date']))}} @endif</td>
             </tr>
             <tr>
                 <td>@if($type=='po') MRD @else WOR @endif No</td>
@@ -153,7 +153,7 @@
             </tr>
             <tr>
                 <td>@if($type=='po') MRD @else WOR @endif Date</td>
-                <td>:&nbsp; @if($mrr['mrd_date']) {{date('d-m-Y', strtotime($mrr['mrd_date']))}} @endif</td>
+                <td>:&nbsp; @if($mrr['mrd_number']) {{date('d-m-Y', strtotime($mrr['mrd_date']))}} @endif</td>
             </tr>
         </table>
     </div>
