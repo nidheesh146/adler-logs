@@ -9,18 +9,16 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use App\Models\product;
 use App\Models\product_input_material;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
-use App\Models\FGS\product_stock_location;
 use Validator;
 use Redirect;
 use DB;
 class ProductController extends Controller
-{ 
+{
     public function __construct()
     {
         $this->product = new product;
         $this->inventory_rawmaterial = new inventory_rawmaterial;
         $this->product_input_material = new product_input_material;
-        $this->product_stock_location = new product_stock_location;
     }
 
     public function productList()
@@ -237,29 +235,29 @@ class ProductController extends Controller
                     $data['snn_description']= $excelsheet[29];
 
                     $data['label_format_number'] = $excelsheet[30];
-                    $data['is_sterile'] = ($excelsheet[31] == 'Yes') ? 1 : 0;
-                    $data['is_non_sterile_logo'] =  ($excelsheet[32] == 'Yes') ? 1 : (($excelsheet[32] == 'No') ? 0 : NULL) ;
+                    $data['is_sterile'] = (strtolower($excelsheet[31]) == 'yes') ? 1 : 0;
+                    $data['is_non_sterile_logo'] =  (strtolower($excelsheet[32]) == 'yes') ? 1 : ((strtolower($excelsheet[32]) == 'no') ? 0 : NULL) ;
                     $data['sterilization_type'] = $excelsheet[33];
-                    $data['is_sterile_expiry_date'] = ($excelsheet[34] == 'Yes') ? 1 : (($excelsheet[34] == 'No') ? 0 : NULL) ;
+                    $data['is_sterile_expiry_date'] = (strtolower($excelsheet[34]) == 'yes') ? 1 : ((strtolower($excelsheet[34]) == 'no') ? 0 : NULL) ;
                     // $label_image = preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[35]));
                     // if ($excelsheet[35] && $label_image != 'NA' && $label_image != 'N. A.') {
                     //     $data['label_image'] = 'label_image/'.$excelsheet[35];
                     // } else {
                     //     $data['label_image'] = null;
                     // }
-                    $data['is_ce_marked'] = ($excelsheet[36] == 'Yes') ? 1 : (($excelsheet[36] == 'No') ? 0 : NULL) ;
+                    $data['is_ce_marked'] = (strtolower($excelsheet[36]) == 'yes') ? 1 : ((strtolower($excelsheet[36]) == 'no') ? 0 : NULL) ;
                     $data['notified_body_number'] = $excelsheet[37];
-                    $data['is_ear_log_address'] = ($excelsheet[38] == 'Yes') ? 1 : (($excelsheet[38] == 'No') ? 0 : NULL) ;
+                    $data['is_ear_log_address'] = (strtolower($excelsheet[38]) == 'yes') ? 1 : ((strtolower($excelsheet[38]) == 'no') ? 0 : NULL) ;
                     
-                    $data['is_read_instruction_logo'] = ($excelsheet[39] == 'Yes') ? 1 : (($excelsheet[39] == 'No') ? 0 : NULL) ;
+                    $data['is_read_instruction_logo'] = (strtolower($excelsheet[39]) == 'yes') ? 1 : ((strtolower($excelsheet[39]) == 'no') ? 0 : NULL) ;
                     
-                    $data['is_instruction'] = ($excelsheet[39] == 'Yes') ? 1 : 0;
+                    $data['is_instruction'] = (strtolower($excelsheet[39]) == 'yes') ? 1 : 0;
                     
-                    $data['is_temperature_logo'] = ($excelsheet[40] == 'Yes') ? 1 : (($excelsheet[40] == 'No') ? 0 : NULL) ;
+                    $data['is_temperature_logo'] = (strtolower($excelsheet[40]) == 'yes') ? 1 : ((strtolower($excelsheet[40]) == 'no') ? 0 : NULL) ;
                     
-                    $data['is_donot_reuse_logo'] = ($excelsheet[41] == 'Yes') ? 1 : (($excelsheet[41] == 'No') ? 0 : NULL) ;
+                    $data['is_donot_reuse_logo'] = (strtolower($excelsheet[41]) == 'yes') ? 1 : ((strtolower($excelsheet[41]) == 'no') ? 0 : NULL) ;
                     
-                    $data['is_reusable'] = ($excelsheet[41] == 'Yes') ? 1 : 0;
+                    $data['is_reusable'] = (strtolower($excelsheet[41]) == 'yes') ? 1 : 0;
                     
                     $data['drug_license_number'] = $excelsheet[42];
                     $data['hsn_code'] = $excelsheet[43];
@@ -275,10 +273,10 @@ class ProductController extends Controller
                         $data['unit_weight_kg'] = NULL;
                     }
                     $data['revision_record'] = $excelsheet[47];
-                    $data['is_inactive'] = ($excelsheet[48] == 'Y') ? 1 : (($excelsheet[48] == 'N') ? 0 : NULL);
+                    $data['is_inactive'] = (strtolower($excelsheet[48]) == 'y') ? 1 : ((strtolower($excelsheet[48]) == 'n') ? 0 : NULL);
                     $data['gs1_code'] = $excelsheet[50];
-                    $data['is_control_sample_applicable'] = ($excelsheet[51] == 'Yes') ? 1 : (($excelsheet[51] == 'No') ? 0 : NULL);
-                    $data['is_doc_applicability'] =($excelsheet[52] == 'Yes') ? 1 : (($excelsheet[52] == 'No') ? 0 : NULL);
+                    $data['is_control_sample_applicable'] = (strtolower($excelsheet[51]) == 'yes') ? 1 : ((strtolower($excelsheet[51]) == 'no') ? 0 : NULL);
+                    $data['is_doc_applicability'] =(strtolower($excelsheet[52]) == 'yes') ? 1 : ((strtolower($excelsheet[52]) == 'no') ? 0 : NULL);
                     $data['is_instruction_for_reuse_symbol'] = $excelsheet[53] ? $excelsheet[53]  : NULL;
                     $data['is_donot_reuse_symbol'] = $excelsheet[54] ? $excelsheet[54] : NULL ; 
                     $data['ce_logo'] = $excelsheet[56]  ? $excelsheet[56]  : NULL; 
@@ -473,48 +471,4 @@ class ProductController extends Controller
         return 0;
        
     }
-    public function locationList(Request $request, $loc_id=null)
-    {
-        if ($request->isMethod('post'))
-        {
-
-        $validator = Validator::make($request->all(), [
-            'location' => ['required', 'min:1', 'max:115'],
-           ]);
-        if (!$validator->errors()->all()) {
-            $datas['location_name'] = $request->location;
-            if (!$request->loc_id) {
-                $this->product_stock_location->insert_location($datas);
-                $request->session()->flash('success', 'Location  has been successfully inserted');
-                return redirect("product/location");
-            }
-            else{
-            $this->product_stock_location->update_location($datas, $request->loc_id);
-            $request->session()->flash('success', 'Location  has been successfully updated');
-            return redirect("product/location");
-            }
-        }
-        if($validator->errors()->all()) 
-                { 
-                   
-                    return redirect("product/location")->withErrors($validator)->withInput();
-                }
-       }
-       else{
-        if ($request->loc_id) {
-            dd($request->loc_id);
-             $data['location'] = $this->product_stock_location->get_locations();
-            $edit = $this->product_stock_location->get_location($request->loc_id);
-            dd($edit);
-            //print_r($edit);exit;
-            return view('pages.product.product_loc_add',compact('data','edit'));
-        }
-        else
-        {
-             $data['location'] = $this->product_stock_location->get_locations();
-        return view('pages.product.product_loc_add',compact('data'));
-    }
-    }
-    
-}
 }

@@ -346,7 +346,7 @@ class MRNController extends Controller
         }
         $data['mrn_number'] = "MRN-".$this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-'.$years_combo.'%')->count()); 
         $data['mrn_date'] = date('Y-m-d');
-        $data['supplier_doc_number'] = 'Open Stock SNN Mktd April 15-18';
+        $data['supplier_doc_number'] = 'Open Stock AHPL Mktd ';
         $data['supplier_doc_date'] = date('Y-m-d');
         $data['product_category'] = 1;//ASD
         $data['stock_location'] = 7; // AHPL_Mktd
