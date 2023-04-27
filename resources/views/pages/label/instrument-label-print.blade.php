@@ -82,7 +82,7 @@
                                 </div>
                                 <div style="margin-left:2px;float:left;width:68%;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">VL No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">{{$batchcard_data->drug_license_number}}</span>
                                     <span class=" cls" style="padding-left:2px;font-size:7.5px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
                                     <div class="" style="display:block;margin-left: 35px;">
                                         <span style="font-weight:550;font-size:6.1px;display:block;padding-left:2px">
@@ -180,7 +180,7 @@
                                 </div>
                                 <div style="margin-left:2px;float:left;width:68%;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
-                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">VL No:{{$batchcard_data->drug_license_number}}</span> 
+                                    <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">{{$batchcard_data->drug_license_number}}</span> 
                                     <span class=" cls" style="padding-left:2px;font-size:7.5px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
                                     <div class="" style="display:block;margin-left: 35px;">
                                         <span style="font-weight:550;font-size:6.1px;display:block;padding-left:2px">

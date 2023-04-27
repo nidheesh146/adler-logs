@@ -80,43 +80,135 @@ class StockManagementController extends Controller
     public function AlllocationExport(Request $request)
     {
             $location ='all';
-            return Excel::download(new StockLocationExport($location), 'all-location-stock' . date('d-m-Y') . '.xlsx');
+            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+                        //->where('product_stock_location.location_name','=','Location-1')
+                        ->where('fgs_product_stock_management.quantity','!=',0)
+                        ->distinct('fgs_product_stock_management.id')
+                        ->orderBy('fgs_product_stock_management.id','DESC')
+                        ->get();
+            return Excel::download(new StockLocationExport($stock), 'all-location-stock' . date('d-m-Y') . '.xlsx');
     
     }
     public function location1Export(Request $request)
     {
             $location ='location1';
-            return Excel::download(new StockLocationExport($location), 'location1-stock' . date('d-m-Y') . '.xlsx');
+            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+                        ->where('product_stock_location.location_name','=','Location-1')
+                        ->where('fgs_product_stock_management.quantity','!=',0)
+                        ->distinct('fgs_product_stock_management.id')
+                        ->orderBy('fgs_product_stock_management.id','DESC')
+                        ->get();
+            
+            return Excel::download(new StockLocationExport($stock), 'location1-stock' . date('d-m-Y') . '.xlsx');
     
     }
     public function location2Export(Request $request)
     {
         
             $location ='location2';
-            return Excel::download(new StockLocationExport($location), 'location2-stock' . date('d-m-Y') . '.xlsx');
+            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+                        ->where('product_stock_location.location_name','=','Location-2')
+                        ->where('fgs_product_stock_management.quantity','!=',0)
+                        ->distinct('fgs_product_stock_management.id')
+                        ->orderBy('fgs_product_stock_management.id','DESC')
+                        ->get();
+            return Excel::download(new StockLocationExport($stock), 'location2-stock' . date('d-m-Y') . '.xlsx');
     }
     public function location3Export(Request $request)
     {
         
             $location ='location3';
-            return Excel::download(new StockLocationExport($location), 'location3-stock' . date('d-m-Y') . '.xlsx');
+            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+                        ->where('product_stock_location.location_name','=','Location-3')
+                        ->where('fgs_product_stock_management.quantity','!=',0)
+                        ->distinct('fgs_product_stock_management.id')
+                        ->orderBy('fgs_product_stock_management.id','DESC')
+                        ->get();
+            return Excel::download(new StockLocationExport($stock), 'location3-stock' . date('d-m-Y') . '.xlsx');
     }
     public function SNNExport(Request $request)
     {
         
             $location ='SNN';
-            return Excel::download(new StockLocationExport($location), 'SNN-stock' . date('d-m-Y') . '.xlsx');
+            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+                        ->where('product_stock_location.location_name','=','SNN Mktd')
+                        ->where('fgs_product_stock_management.quantity','!=',0)
+                        ->distinct('fgs_product_stock_management.id')
+                        ->orderBy('fgs_product_stock_management.id','DESC')
+                        ->get();
+            return Excel::download(new StockLocationExport($stock), 'SNN-stock' . date('d-m-Y') . '.xlsx');
     }
     public function AHPLExport(Request $request)
     {
         
             $location ='AHPL';
-            return Excel::download(new StockLocationExport($location), 'AHPL-stock' . date('d-m-Y') . '.xlsx');
+            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+                        ->where('product_stock_location.location_name','=','AHPL Mktd')
+                        ->where('fgs_product_stock_management.quantity','!=',0)
+                        ->distinct('fgs_product_stock_management.id')
+                        ->orderBy('fgs_product_stock_management.id','DESC')
+                        ->get();
+            return Excel::download(new StockLocationExport($stock), 'AHPL-stock' . date('d-m-Y') . '.xlsx');
     }
     public function MAAExport(Request $request)
     {
         
             $location ='MAA';
-            return Excel::download(new StockLocationExport($location), 'MAA-stock' . date('d-m-Y') . '.xlsx');
+            $stock = fgs_maa_stock_management::select('fgs_maa_stock_management.*','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no')
+                            ->leftJoin('product_product','product_product.id','=','fgs_maa_stock_management.product_id')
+                            ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_maa_stock_management.batchcard_id' )
+                            ->where('fgs_maa_stock_management.quantity','!=',0)
+                            ->distinct('fgs_maa_stock_management.id')
+                            ->orderBy('fgs_maa_stock_management.id','DESC')
+                            ->get();
+            return Excel::download(new StockLocationExport($stock), 'MAA-stock' . date('d-m-Y') . '.xlsx');
     }
 }

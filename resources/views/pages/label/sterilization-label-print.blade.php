@@ -116,7 +116,7 @@
                                             <br/>
                                             <!-- <span style="font-size:7px;margin-left:40px;">ML No:{{$batchcard_data->drug_license_number}}</span> -->
                                             <div style="font-size:7px;margin-left:40px;margin-top:5px; padding-bottom:4.5px;">
-                                                ML No:{{$batchcard_data->drug_license_number}}
+                                                {{$batchcard_data->drug_license_number}}
                                             </div>
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;font-size:11px;">
@@ -258,7 +258,7 @@
                                             <br/>
                                             <!-- <span style="font-size:7px;margin-left:40px;">ML No:{{$batchcard_data->drug_license_number}}</span> -->
                                             <div style="font-size:7px;margin-left:40px;margin-top:5px; padding-bottom:4.5px;">
-                                                ML No:{{$batchcard_data->drug_license_number}}
+                                                {{$batchcard_data->drug_license_number}}
                                             </div>
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;font-size:11px;">

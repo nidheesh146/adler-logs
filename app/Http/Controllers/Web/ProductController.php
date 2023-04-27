@@ -295,7 +295,9 @@ class ProductController extends Controller
                     else
                     {
                         //echo "yes";exit;
-                        $res[] = DB::table('product_product')->where('sku_code', $excelsheet[1])->update($data);
+                        $da['drug_license_number'] = $excelsheet[42];
+                        $da['is_sterile'] = (strtolower($excelsheet[31]) == 'yes') ? 1 : 0;
+                        $res[] = DB::table('product_product')->where('sku_code', $excelsheet[1])->update($da);
                     }
             }
             
