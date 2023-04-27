@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 class fgs_cmin_item extends Model
-{
+{ 
     protected $table = 'fgs_cmin_item';
     protected $primary_key = 'id';
     protected $guarded = [];

@@ -22,7 +22,7 @@ use App\Models\FGS\fgs_cmin_item_rel;
 class CMINController extends Controller
 {
     public function __construct()
-    {
+    { 
         $this->product_stock_location = new product_stock_location;
         $this->fgs_product_category = new fgs_product_category;
         $this->fgs_min = new fgs_min;

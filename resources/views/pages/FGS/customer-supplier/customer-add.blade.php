@@ -6,7 +6,7 @@
   overflow: hidden;
   min-height: 220px;
 }
-</style>
+</style> 
 <div class="az-content az-content-dashboard">
     <br>
       <div class="container">

@@ -11,4 +11,4 @@ class fgs_cmin_item_rel extends Model
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = false;
-}
+} 

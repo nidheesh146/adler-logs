@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('content')
+@section('content') 
     <div class="az-content az-content-dashboard">
         <br>
         <div class="container" data-select2-id="9">
