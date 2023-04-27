@@ -13,7 +13,7 @@ use App\Exports\CustomerSupplierExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerSupplierController extends Controller
-{ 
+{  
     public function __construct()
     {
         $this->currency_exchange_rate = new currency_exchange_rate;
@@ -40,6 +40,7 @@ class CustomerSupplierController extends Controller
                 $validation['billing_address'] = ['required'];
                 $validation['shipping_address'] = ['required'];
                 $validation['sales_type'] = ['required'];
+                $validation['pan_number'] = ['required'];
                 $validator = Validator::make($request->all(), $validation);
                 if(!$validator->errors()->all()) 
                 { 
@@ -73,7 +74,8 @@ class CustomerSupplierController extends Controller
                         $this->customer_supplier->update_data(['id'=>$request->id],$data);
 
                         $request->session()->flash('success',"You have successfully updated a customer !");
-                        return redirect("fgs/customer-supplier/add/".$id);
+                        return redirect("fgs/customer-supplier");
+                    
                     }
                     else
                     {

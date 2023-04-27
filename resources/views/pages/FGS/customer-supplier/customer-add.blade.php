@@ -6,7 +6,7 @@
   overflow: hidden;
   min-height: 220px;
 }
-</style>
+</style> 
 <div class="az-content az-content-dashboard">
     <br>
       <div class="container">
@@ -108,11 +108,11 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>PAN Number *</label>
-                                <input type="text" name="pan_number" class="form-control"  value="{{(!empty($datas['customer'])) ? $datas['customer']->gst_number: ""}}" placeholder="GST Number"> 
+                                <input type="text" name="pan_number" class="form-control"  value="{{(!empty($datas)) ? $datas->pan_number: ""}}" placeholder="PAN Number" required> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>GST Number *</label>
-                                <input type="text" name="gst_number" class="form-control"  value="{{(!empty($datas)) ? $datas['gst_number'] : ""}}" placeholder="GST Number"> 
+                                <input type="text" name="gst_number" class="form-control"  value="{{(!empty($datas)) ? $datas['gst_number'] : ""}}" placeholder="GST Number" > 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>DL Number(Form 20B) </label>

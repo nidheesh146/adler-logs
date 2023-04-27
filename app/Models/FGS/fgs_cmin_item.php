@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Models\FGS;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use DB;
+class fgs_cmin_item extends Model
+{ 
+    protected $table = 'fgs_cmin_item';
+    protected $primary_key = 'id';
+    protected $guarded = [];
+    public $timestamps = false;
+
+    function insert_data($data,$cmin_id){
+        $item_id =  $this->insertGetId($data);
+        if($item_id){
+            DB::table('fgs_cmin_item_rel')->insert(['master'=>$cmin_id,'item'=>$item_id]);
+        }
+        return true;
+    }
+    function update_data($condition,$data){
+        return $this->where($condition)->update($data);
+    }
+
+    function get_items($condition)
+    {
+        return $this->select('fgs_cmin_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no')
+                        ->leftjoin('fgs_cmin_item_rel','fgs_cmin_item_rel.item','=','fgs_cmin_item.id')
+                        ->leftjoin('fgs_cmin','fgs_cmin.id','=','fgs_cmin_item_rel.master')
+                        ->leftjoin('product_product','product_product.id','=','fgs_cmin_item.product_id')
+                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmin_item.batchcard_id')
+                        ->where($condition)
+                        //->where('inv_mac.status','=',1)
+                        ->orderBy('fgs_cmin_item.id','DESC')
+                        ->distinct('fgs_cmin_item.id')
+                        ->paginate(15);
+    }
+    function getItems($condition)
+    {
+         return $this->select('fgs_cmin_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_cmin.min_number')
+                        ->leftjoin('fgs_cmin_item_rel','fgs_cmin_item_rel.item','=','fgs_cmin_item.id')
+                        ->leftjoin('fgs_cmin','fgs_cmin.id','=','fgs_cmin_item_rel.master')
+                        ->leftjoin('product_product','product_product.id','=','fgs_cmin_item.product_id')
+                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmin_item.batchcard_id')
+                       ->where($condition)
+                    ->orderBy('fgs_cmin_item.id','DESC')
+                    ->get();
+    }
+
+    function get_min_item($condition){
+        return $this->select(['fgs_cmin_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no'])
+                   ->join('fgs_cmin_item_rel','fgs_cmin_item_rel.item','=','fgs_cmin_item.id')
+                    ->leftjoin('product_product','product_product.id','=','fgs_cmin_item.product_id')
+                     ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmin_item.batchcard_id')
+                    ->where($condition)
+                   ->get();
+    }
+}

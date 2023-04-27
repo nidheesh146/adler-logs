@@ -97,7 +97,7 @@
         </li>
         
         <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist',
-        'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','PI.PIAdd','PI.PIList','PI.PIitemlist',
+        'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINitemlist','CMIN.CMINitemAdd','OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','PI.PIAdd','PI.PIList','PI.PIitemlist',
         'DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
           <ul class="nav-sub">
@@ -121,7 +121,7 @@
                   <a href="{{url('fgs/MIN-list')}}"  class="nav-sub-link">MIN</a>
                 </li>
                 <li class="nav-sub-item @if(in_array($Action,['CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINitemlist','CMIN.CMINitemAdd'])){{'active'}} @endif ">
-                  <a href="{{url('fgs/CMIN-add')}}"  class="nav-sub-link">CMIN</a>
+                  <a href="{{url('fgs/CMIN/CMIN-list')}}"  class="nav-sub-link">CMIN</a>
                 </li>
                 <li class="nav-sub-item @if(in_array($Action,['GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/GRS-list')}}"  class="nav-sub-link">GRS</a>
@@ -141,6 +141,10 @@
                 <li class="nav-sub-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd'])){{'active'}} @endif ">
                   <a href="{{url('fgs/OEF-list')}}"  class="nav-sub-link">OEF</a>
                 </li>
+
+               <!--   <li class="nav-sub-item @if(in_array($Action,['COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/COEF/COEF-list')}}"  class="nav-sub-link">COEF</a>
+                </li> -->
                 <li class="nav-sub-item @if(in_array($Action,['PI.PIList','PI.PIAdd','PI.PIitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/PI-list')}}"  class="nav-sub-link">PI</a>
                 </li>
