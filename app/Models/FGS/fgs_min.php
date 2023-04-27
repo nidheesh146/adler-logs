@@ -29,4 +29,33 @@ class fgs_min extends Model
                     ->distinct('fgs_min.id')
                     ->first();
     }
+
+     function find_min_data($condition)
+    {
+        return $this->select('fgs_min.*','fgs_product_category.category_name','product_stock_location.location_name')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_min.product_category')
+                        ->leftJoin('product_stock_location','product_stock_location.id','fgs_min.stock_location')
+                        ->where($condition)
+                          ->first();
+    }
+      function find_min_datas($condition)
+    {
+        return $this->select(['fgs_min.*'])
+                    ->where($condition)
+                    ->where('fgs_min.status','=',1)
+                    ->first();
+    }
+      function find_min_num_for_cmin($condition)
+    {
+        return $this->select(['fgs_min.min_number as text','fgs_min.id'])->where($condition)
+        ->where('fgs_min.status','=',1)
+        ->where($condition)
+        ->get();
+    }
+     function get_master_data($condition){
+        return $this->select(['fgs_min.*','product_stock_location.location_name'])
+              ->leftJoin('product_stock_location','product_stock_location.id','fgs_min.stock_location')
+                    ->where($condition)
+                    ->first();
+    }
 }

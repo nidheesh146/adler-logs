@@ -47,4 +47,13 @@ class fgs_min_item extends Model
                     ->orderBy('fgs_min_item.id','DESC')
                     ->get();
     }
+
+    function get_min_item($condition){
+        return $this->select(['fgs_min_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no'])
+                   ->join('fgs_min_item_rel','fgs_min_item_rel.item','=','fgs_min_item.id')
+                    ->leftjoin('product_product','product_product.id','=','fgs_min_item.product_id')
+                     ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_min_item.batchcard_id')
+                    ->where($condition)
+                   ->get();
+    }
 }
