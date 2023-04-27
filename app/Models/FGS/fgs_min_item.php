@@ -5,7 +5,7 @@ namespace App\Models\FGS;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DB;
-class fgs_min_item extends Model
+class fgs_min_item extends Model 
 {
     protected $table = 'fgs_min_item';
     protected $primary_key = 'id';
