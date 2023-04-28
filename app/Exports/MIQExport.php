@@ -24,7 +24,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
         {
             $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
-                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date')
+                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number')
                     ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
                     ->leftjoin('inv_miq','inv_miq.id','=','inv_miq_item_rel.master')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
@@ -37,6 +37,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                     ->leftjoin('user','user.user_id','inv_miq.created_by')
                     ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                    ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
                     //->where($condition)
                     ->where('inv_miq.status','=',1)
                     ->orderBy('inv_miq_item.id','DESC')
@@ -62,7 +63,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             }
             $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
-                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date')
+                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number')
                     ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
                     ->leftjoin('inv_miq','inv_miq.id','=','inv_miq_item_rel.master')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
@@ -75,7 +76,8 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                     ->leftjoin('user','user.user_id','inv_miq.created_by')
                     ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
-                    ->where($condition)
+                    ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+                    //->where($condition)
                     ->where('inv_miq.status','=',1)
                     ->orderBy('inv_miq_item.id','DESC')
                     ->get();
@@ -96,6 +98,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                     '#'=>$i++,
                     'miq_number'=>$item['miq_number'],
                     'invoice_number'=>$item['invoice_number'],
+                    'po_number'=>$item['po_number'],
                     'invoice_date'=>$item['invoice_date'],
                     'item_code'=>$item['item_code'],
                     'hsn_code'=>$item['hsn_code'],
@@ -128,6 +131,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             '#',
             'MIQ Number',
             'Invoice Number',
+            'PO Number',
             'Invoice Date',
             'Item Code',
             'HSN/SAC Code',
