@@ -134,7 +134,7 @@
                 </li>
               </ul>
             </li>
-            <li class="nav-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','PI.PIAdd','PI.PIList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist',
+            <li class="nav-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','PI.PIAdd','PI.PIList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist',
             'EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','PI.PIList','PI.PIAdd','PI.PIitemlist'])){{'active show'}} @endif">
               <a href="#" class="nav-link with-sub">Sales</a>
               <ul class="nav-sub">
@@ -142,9 +142,9 @@
                   <a href="{{url('fgs/OEF-list')}}"  class="nav-sub-link">OEF</a>
                 </li>
 
-               <!--   <li class="nav-sub-item @if(in_array($Action,['COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd'])){{'active'}} @endif ">
+                 <li class="nav-sub-item @if(in_array($Action,['COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd'])){{'active'}} @endif ">
                   <a href="{{url('fgs/COEF/COEF-list')}}"  class="nav-sub-link">COEF</a>
-                </li> -->
+                </li> 
                 <li class="nav-sub-item @if(in_array($Action,['PI.PIList','PI.PIAdd','PI.PIitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/PI-list')}}"  class="nav-sub-link">PI</a>
                 </li>

@@ -433,6 +433,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::post('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::get('fgs/OEFproductsearch','OEFController@OEFproductsearch');
     Route::get('fgs/OEF/pdf/{oef_id}','OEFController@OEFpdf');
+
+     //COEF
+    Route::get('fgs/COEF/COEF-list','COEFController@COEFList');
+    Route::get('fgs/COEF-add','COEFController@COEFAdd');
+    Route::post('fgs/COEF-add','COEFController@COEFAdd');
+    Route::get('fgs/COEF/find-oef-number-for-coef','COEFController@findOefNumberForCOEF');
+    Route::get('fgs/COEF/find-oef-info', 'COEFController@oefInfo');
+    Route::get('fgs/COEF/items-list/{cmin_id}','COEFController@COEFItemList');
     //GRS
     Route::get('fgs/GRS-list','GRSController@GRSList');
     Route::get('fgs/GRS-add','GRSController@GRSAdd');

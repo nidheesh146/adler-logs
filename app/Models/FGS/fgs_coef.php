@@ -5,9 +5,9 @@ namespace App\Models\FGS;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class fgs_oef extends Model
+class fgs_coef extends Model
 {
-    protected $table = 'fgs_oef';
+    protected $table = 'fgs_coef';
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = false;
@@ -49,34 +49,5 @@ class fgs_oef extends Model
                     ->where($condition)
                     ->distinct('fgs_oef.id')
                     ->first();
-    }
-
-     function find_oef_datas($condition)
-    {
-        return $this->select(['fgs_oef.*','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.contact_person','customer_supplier.contact_number'])
-                        ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
-                        ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
-                        ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
-                    ->where($condition)
-                    ->where('fgs_oef.status','=',1)
-                    ->first();
-    }
-
-    function find_oef_num_for_coef($condition)
-    {
-        return $this->select(['fgs_oef.oef_number as text','fgs_oef.id'])->where($condition)
-        ->where('fgs_oef.status','=',1)
-        ->where($condition)
-        ->get();
-    }
-    function get_master_data($condition){
-        return $this->select(['fgs_oef.*','order_fulfil.*','transaction_type.*','customer_supplier.*'])
-                        ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
-                        ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
-                        ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
-                    ->where($condition)
-                    ->first();
-
-            
     }
 }
