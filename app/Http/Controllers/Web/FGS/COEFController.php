@@ -280,7 +280,7 @@ class COEFController extends Controller
                         <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px;padding:0px; margin-left : 15px;">
                             <label>Remarks :</label>
                         </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <textarea type="text"  name="remarks" id="remarks" class="form-control" placeholder="Enter Remarks" rows= "4">     </textarea>                       
                         </div>
                        
