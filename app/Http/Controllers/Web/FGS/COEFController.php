@@ -20,7 +20,7 @@ use App\Models\FGS\fgs_coef_item;
 use App\Models\FGS\fgs_coef_item_rel;
 
 class COEFController extends Controller
-{
+{ 
     public function __construct()
     { 
         $this->fgs_oef = new fgs_oef;

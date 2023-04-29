@@ -84,7 +84,7 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
         return collect($data);
     }
     public function headings(): array
-    {
+    { 
         return [
             '#',
             'Firm Name',

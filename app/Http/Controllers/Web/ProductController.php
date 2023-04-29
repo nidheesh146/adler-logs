@@ -11,7 +11,7 @@ use App\Models\product_input_material;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use Validator;
 use Redirect;
-use DB;
+use DB; 
 use App\Models\FGS\product_stock_location;
 class ProductController extends Controller
 {

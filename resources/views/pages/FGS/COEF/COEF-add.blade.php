@@ -2,7 +2,7 @@
 @section('content')
 
 <div class="az-content az-content-dashboard">
-  <br>
+  <br> 
 	<div class="container">
 		<div class="az-content-body">
 
