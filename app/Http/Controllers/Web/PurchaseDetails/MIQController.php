@@ -18,6 +18,7 @@ use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
 use App\Models\currency_exchange_rate;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MIQExport;
+use App\Exports\MIQQuarantineExport;
 
 class MIQController extends Controller
 {
@@ -252,4 +253,44 @@ class MIQController extends Controller
             return Excel::download(new MIQExport($request), 'MIQ' . date('d-m-Y') . '.xlsx');
         }
     }
+    public function MIQQuarantineExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new MIQQuarantineExport($request), 'QuarantineReport' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new MIQQuarantineExport($request), 'QuarantineReport' . date('d-m-Y') . '.xlsx');
+        }
+    }
+
+    public function LiveQuarantineReport(Request $request)
+    {   
+        $condition = [];
+        if($request)
+        {
+            if ($request->miq_no) {
+                $condition[] = ['inv_miq.miq_number','like', '%' . $request->miq_no . '%'];
+            }
+            if ($request->invoice_no) {
+                $condition[] = ['inv_supplier_invoice_master.invoice_number','like', '%' . $request->invoice_no . '%'];
+            }
+            if($request->supplier)
+            {
+                $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+            }
+            
+            if ($request->from) {
+                $condition[] = ['inv_miq.miq_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+                $condition[] = ['inv_miq.miq_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            }
+            $data['miq']= $this->inv_miq->get_all_datas($condition);
+         }
+        else
+        $data['miq']= $this->inv_miq->get_all_datas($condition=null);
+        return view('pages.inventory.LiveQuarantineReport',compact('data'));
+    }
+
 }
