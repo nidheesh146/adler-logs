@@ -206,7 +206,7 @@ class StockLocationExport implements FromCollection, WithHeadings, WithStyles,Wi
 
 
         // Add cell with SUM formula to last row
-        $sheet->setCellValue("E{$totalRow}", "=SUM(E2:E{$numOfRows})");
+        $sheet->setCellValue("E{$totalRow}", "=SUM(E1:E{$numOfRows})");
         $sheet->setCellValue("D{$totalRow}","Total :");
         
         return [
