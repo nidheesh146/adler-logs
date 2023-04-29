@@ -24,7 +24,7 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
         {
             $items=   customer_supplier::select('customer_supplier.id as id','customer_supplier.firm_name','customer_supplier.contact_person','customer_supplier.designation','customer_supplier.contact_number',
                 'customer_supplier.billing_address','customer_supplier.city','state.state_name','zone.zone_name','currency_exchange_rate.currency_code','customer_supplier.pan_number','customer_supplier.gst_number',
-                'customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3','customer_supplier.email','customer_supplier.whatsapp_number','customer_supplier.dl_expiry_date','customer_supplier.sales_person_name','customer_supplier.sales_person_email',
+                'customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.email','customer_supplier.whatsapp_number','customer_supplier.dl_expiry_date','customer_supplier.sales_person_name','customer_supplier.sales_person_email',
                 'customer_supplier.sales_type')
                    ->leftjoin('state','state.state_id','=','customer_supplier.state')                
                    ->leftjoin('zone','zone.id','=','customer_supplier.zone')
@@ -37,7 +37,7 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
         {
             $items=   customer_supplier::select('customer_supplier.*','customer_supplier.id as id','customer_supplier.firm_name','customer_supplier.contact_person','customer_supplier.designation','customer_supplier.contact_number',
                 'customer_supplier.billing_address','customer_supplier.city','state.state_name','zone.zone_name','currency_exchange_rate.currency_code','customer_supplier.pan_number','customer_supplier.gst_number',
-                'customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3','customer_supplier.email','customer_supplier.whatsapp_number','customer_supplier.dl_expiry_date','customer_supplier.sales_person_name','customer_supplier.sales_person_email',
+                'customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.email','customer_supplier.whatsapp_number','customer_supplier.dl_expiry_date','customer_supplier.sales_person_name','customer_supplier.sales_person_email',
                 'customer_supplier.sales_type')
                    ->leftjoin('state','state.state_id','=','customer_supplier.state')                
                    ->leftjoin('zone','zone.id','=','customer_supplier.zone')
@@ -70,7 +70,6 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
                     'GST Number'=>$item['gst_number'],
                     'DL Number1'=>$item['dl_number1'],
                     'DL Number2'=>$item['dl_number2'],
-                    'DL Number3'=>$item['dl_number3'],
                     'E Mail'=>$item['email'],
                     'Currency'=>$item['currency_code'],
                     'Whatsapp Number'=>$item['whatsapp_number'],
@@ -99,9 +98,8 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
             'Shipping Address',
             'Pan Number',
             'GST Number',
-            'DL Number1',
-            'DL Number2',
-            'DL Number3',
+            'DL number ( Form 20B)',
+            'DL number ( Form 21B)',
             'E Mail',
             'Currency',
             'Whatsapp Number',
@@ -109,7 +107,7 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
             'Sales Person Name',
             'Sales Person Email',
             'Sales Type',
-            'Created At',
+            'W.e.f',
         ];
     }
     public function styles(Worksheet $sheet)
@@ -131,16 +129,16 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
                 $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(50);
+                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(40);
-                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(10);
-                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);
-                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(25);
                 $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(25);
-                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('S')->setWidth(15);

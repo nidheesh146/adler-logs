@@ -41,7 +41,7 @@ class COEFController extends Controller
         $condition =[];
         if($request->coef_number)
         {
-            $condition[] = ['fgs_coef.oef_number','like', '%' . $request->coef_number . '%'];
+            $condition[] = ['fgs_coef.coef_number','like', '%' . $request->coef_number . '%'];
         }
         if($request->order_number)
         {

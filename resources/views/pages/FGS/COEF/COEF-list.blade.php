@@ -56,8 +56,8 @@
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
 												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>OEF No :</label>
-														<input type="text" value="{{request()->get('oef_number')}}" name="oef_number" id="oef_number" class="form-control" placeholder="OEF NO">
+														<label>COEF No :</label>
+														<input type="text" value="{{request()->get('coef_number')}}" name="coef_number" id="coef_number" class="form-control" placeholder="COEF NO">
 													</div><!-- form-group -->
 													
 													
@@ -166,10 +166,10 @@
 	$('#prbody2').show();
   });
 	$('.search-btn').on( "click", function(e)  {
-		var ref_number = $('#ref_number').val();
-		var min_no = $('#min_no').val();
+		var coef_number = $('#coef_number').val();
+		var order_number = $('#order_number').val();
 		var from = $('#from').val();
-		if(!min_no   & !ref_number & !from)
+		if(!coef_number   & !order_no & !from)
 		{
 			e.preventDefault();
 		}

@@ -12,6 +12,7 @@ use App\Models\PurchaseDetails\inventory_rawmaterial;
 use Validator;
 use Redirect;
 use DB;
+use App\Models\FGS\product_stock_location;
 class ProductController extends Controller
 {
     public function __construct()
@@ -19,6 +20,7 @@ class ProductController extends Controller
         $this->product = new product;
         $this->inventory_rawmaterial = new inventory_rawmaterial;
         $this->product_input_material = new product_input_material;
+        $this->product_stock_location = new product_stock_location;
     }
 
     public function productList()
@@ -473,4 +475,48 @@ class ProductController extends Controller
         return 0;
        
     }
+       public function locationList(Request $request, $loc_id=null)
+    {
+        if ($request->isMethod('post'))
+        {
+
+        $validator = Validator::make($request->all(), [
+            'location' => ['required', 'min:1', 'max:115'],
+           ]);
+        if (!$validator->errors()->all()) {
+            $datas['location_name'] = $request->location;
+            if (!$request->loc_id) {
+                $this->product_stock_location->insert_location($datas);
+                $request->session()->flash('success', 'Location  has been successfully inserted');
+                return redirect("product/location");
+            }
+            else{
+            $this->product_stock_location->update_location($datas, $request->loc_id);
+            $request->session()->flash('success', 'Location  has been successfully updated');
+            return redirect("product/location");
+            }
+        }
+        if($validator->errors()->all()) 
+                { 
+                   
+                    return redirect("product/location")->withErrors($validator)->withInput();
+                }
+       }
+       else{
+        if ($request->loc_id) {
+            dd($request->loc_id);
+             $data['location'] = $this->product_stock_location->get_locations();
+            $edit = $this->product_stock_location->get_location($request->loc_id);
+            dd($edit);
+            //print_r($edit);exit;
+            return view('pages.product.product_loc_add',compact('data','edit'));
+        }
+        else
+        {
+             $data['location'] = $this->product_stock_location->get_locations();
+        return view('pages.product.product_loc_add',compact('data'));
+    }
+    }
+    
+}
 }

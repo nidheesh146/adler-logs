@@ -91,8 +91,7 @@ class PriceController extends Controller
         {
           if($request->id)
             {
-           dd($request->id);
-             $data =  $this->product_price_master->get_single_product_price(['product_price_master.id'=>$request->id]); 
+              $data =  $this->product_price_master->get_single_product_price(['product_price_master.id'=>$request->id]); 
 
              return view('pages/FGS/price-master/price-master-add',compact('data'));
             }

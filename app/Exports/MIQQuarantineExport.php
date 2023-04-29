@@ -184,13 +184,13 @@ class MIQQuarantineExport implements FromCollection, WithHeadings, WithStyles,Wi
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(18);
                 $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(50);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(50);
-                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(40);
+                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(60);
                 $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(10);
-                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(20);
                 $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(22);
