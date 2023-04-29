@@ -290,7 +290,7 @@ class MIQController extends Controller
          }
         else
         $data['miq']= $this->inv_miq->get_all_datas($condition=null);
-        return view('pages.inventory.LiveQuarantineReport',compact('data'));
+        return view('pages.inventory.MIQ.LiveQuarantineReport',compact('data'));
     }
 
 }

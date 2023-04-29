@@ -91,7 +91,7 @@ class MINController extends Controller
                 }
                 else
                 {
-                    $request->session()->flash('error', "MRN insertion is failed. Try again... !");
+                    $request->session()->flash('error', "MIN insertion is failed. Try again... !");
                     return redirect('fgs/MIN-add');
                 }
 

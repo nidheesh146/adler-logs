@@ -223,6 +223,7 @@ class MRNController extends Controller
 
       public function MRNpdf($mrn_id)
     { 
+        set_time_limit(300);
         $data['mrn'] = $this->fgs_mrn->get_single_mrn(['fgs_mrn.id' => $mrn_id]);
         $data['items'] = $this->fgs_mrn_item->getItems(['fgs_mrn_item_rel.master' => $mrn_id]);
     
