@@ -99,7 +99,7 @@
         
         <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist',
         'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINitemlist','CMIN.CMINitemAdd','OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','PI.PIAdd','PI.PIList','PI.PIitemlist',
-        'DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock'])){{'active show'}} @endif ">
+        'DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','MTQ.MTQAdd'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
@@ -112,7 +112,7 @@
               <a href="{{url('fgs/stock-management/location1')}}"  class="nav-sub-link">Stock Management</a>
             </li>
             <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist',
-              'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist'])){{'active show'}} @endif">
+              'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINitemlist','CMIN.CMINitemAdd','MTQ.MTQAdd'])){{'active show'}} @endif">
               <a href="#" class="nav-link with-sub">Inventory</a>
               <ul class="nav-sub">
                 <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd'])){{'active'}} @endif ">
@@ -221,16 +221,16 @@
           </ul>
         </li>
 
-        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial','Product.productLocationUpload'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial','Product.getProductUpload','Product.locationList'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fab fa-product-hunt" style="font-size: 19px"></i>Product</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['Product.productList','Product.addInputMaterial'])){{'active'}} @endif ">
             <a href="{{url('product/list')}}"  class="nav-sub-link">Products</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['Product.productFileUpload'])){{'active'}} @endif ">
+            <li class="nav-sub-item @if(in_array($Action,['Product.getProductUpload'])){{'active'}} @endif ">
             <a href="{{url('product/file/upload')}}"  class="nav-sub-link">Product Upload</a>
             </li> 
-            <li class="nav-sub-item @if(in_array($Action,['Product.productLocationUpload'])){{'active'}} @endif ">
+            <li class="nav-sub-item @if(in_array($Action,['Product.locationList'])){{'active'}} @endif ">
             <a href="{{url('product/location')}}"  class="nav-sub-link">Product Location</a>
             </li> 
           </ul>
