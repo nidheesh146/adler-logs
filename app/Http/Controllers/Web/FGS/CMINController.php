@@ -82,7 +82,6 @@ class CMINController extends Controller
                          $loc = $this->fgs_min->get_master_data(['fgs_min.id' => $Data['min_id']]);
                         
                         $Data['stock_location']= $loc->stock_location;
-                        $Data['stock_location']= $loc->id;
                         $Data['remarks']= $request->remarks;
                         $cmin_id = $this->fgs_cmin->insert_data($Data);
 
@@ -105,7 +104,7 @@ class CMINController extends Controller
                                                 ->where('batchcard_id','=',$min_item['batchcard_id'])
                                                 ->where('stock_location_id','=',$loc->id)
                                                 ->first();
-                    $update_stock = $fgs_product_stock['quantity']+$min_item['quantity'];
+                   $update_stock = $fgs_product_stock['quantity']+$min_item['quantity'];
                     $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
                 }
                         if($cmin_id )
@@ -284,9 +283,9 @@ class CMINController extends Controller
         {
             $condition[] = ['fgs_cmin.cmin_number','like', '%' . $request->cmin_no . '%'];
         }
-        if($request->min_number)
+        if($request->stock_location)
         {
-            $condition[] = ['fgs_min.min_number','like', '%' . $request->min_number . '%'];
+            $condition[] = ['fgs_cmin.stock_location','like', '%' . $request->stock_location . '%'];
         }
         
         if($request->from)

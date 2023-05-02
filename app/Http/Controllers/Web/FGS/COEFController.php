@@ -42,16 +42,17 @@ class COEFController extends Controller
         {
             $condition[] = ['fgs_coef.coef_number','like', '%' . $request->coef_number . '%'];
         }
-        
+         if($request->remarks)
+        {
+            $condition[] = ['fgs_coef.remarks','like', '%' . $request->remarks . '%'];
+        }
         if($request->from)
         {
             $condition[] = ['fgs_coef.coef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
             $condition[] = ['fgs_coef.coef_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
-        $coef = fgs_coef::select('fgs_coef.*','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.contact_person','customer_supplier.contact_number')
+        $coef = fgs_coef::select('fgs_coef.*')
                  ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_coef.oef_id')
-                        ->leftJoin('transaction_type','transaction_type.id','=','fgs_coef.transaction_type')
-                        ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_coef.customer_id')
                         ->where($condition)
                         ->distinct('fgs_coef.id')
                         ->paginate(15);
@@ -62,9 +63,6 @@ class COEFController extends Controller
         if($request->isMethod('post'))
         {
             $validation['remarks'] = ['required'];
-            $validation['oef_item.*.order_number'] = ['required'];
-            $validation['oef_item.*.customer_id'] = ['required'];
-            $validation['oef_item.*.transaction_type'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
@@ -77,10 +75,8 @@ class COEFController extends Controller
                     $years_combo = date('y').date('y', strtotime('+1 year'));
                 }
                 $data['coef_number'] = "COEF-".$this->year_combo_num_gen(DB::table('fgs_coef')->where('fgs_coef.coef_number', 'LIKE', 'COEF-'.$years_combo.'%')->count()); 
-                $data['customer_id'] = $request->customer_id;
                 $data['coef_date'] = date('Y-m-d', strtotime($request->coef_date));
                 $data['oef_id'] = $request->oef_number;
-                $data['transaction_type'] = $request->transaction_type;
                 $data['created_by']= config('user')['user_id'];
                 $data['status']=1;
                 $data['created_at'] =date('Y-m-d H:i:s');
@@ -96,10 +92,6 @@ class COEFController extends Controller
                             "coef_item_id" => $oef_item_id,
                             "product_id" => $oef_item['product_id'],
                             "quantity" => $oef_item['quantity'],
-                            "quantity_to_allocate" => $oef_item['quantity_to_allocate'],
-                            "rate" => $oef_item['rate'],
-                            "discount" => $oef_item['discount'],
-                            "gst" => $oef_item['gst'],
                             "created_at" => date('Y-m-d H:i:s')
                         ];
 

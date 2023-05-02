@@ -3,7 +3,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
-    // echo $Action;
+  //   echo $Action;
 @endphp
   <div class="az-sidebar"> 
     <div class="az-sidebar-header">
@@ -98,8 +98,7 @@
         </li>
         
         <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist',
-        'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','PI.PIAdd','PI.PIList','PI.PIitemlist',
-        'DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','MTQ.MTQAdd'])){{'active show'}} @endif ">
+        'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','PI.PIAdd','PI.PIList','PI.PIitemlist','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','MTQ.MTQAdd'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
@@ -112,7 +111,7 @@
               <a href="{{url('fgs/stock-management/location1')}}"  class="nav-sub-link">Stock Management</a>
             </li>
             <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist',
-              'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','MTQ.MTQAdd'])){{'active show'}} @endif">
+              'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','MTQ.MTQAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList'])){{'active show'}} @endif">
               <a href="#" class="nav-link with-sub">Inventory</a>
               <ul class="nav-sub">
                 <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd'])){{'active'}} @endif ">
@@ -126,6 +125,9 @@
                 </li>
                 <li class="nav-sub-item @if(in_array($Action,['GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/GRS-list')}}"  class="nav-sub-link">GRS</a>
+                </li>
+                 <li class="nav-sub-item @if(in_array($Action,['CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/CGRS/CGRS-list')}}"  class="nav-sub-link">CGRS</a>
                 </li>
                 <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
                   <a href="{{url('fgs/MTQ/add')}}"  class="nav-sub-link">MTQ</a>
