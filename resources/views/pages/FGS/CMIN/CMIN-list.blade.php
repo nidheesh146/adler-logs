@@ -61,10 +61,10 @@
 													</div><!-- form-group -->
 													
 													
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">MIN Number</label>
-														<input type="text" value="{{request()->get('min_number')}}" name="min_number" id="min_number" class="form-control" placeholder="MIN NUMBER">
-													</div>
+													 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Stock Location</label>
+														<input type="text" value="{{request()->get('stock_location')}}" name="stock_location" id="stock_location" class="form-control" placeholder="Stock Location">
+													</div> 
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label  style="font-size: 12px;">CMIN Month</label>
@@ -99,8 +99,7 @@
 							<thead>
 								<tr>
 									<th>CMIN Number</th>
-                                    <th>Min number</th>
-									<th>Product Category</th>
+                  <th>Product Category</th>
 									<th>Stock Location</th>
 									<th>CMIN date</th>
                   <th>Action</th>
@@ -111,9 +110,7 @@
                                 <tr>
 									
 									<td>{{$item['cmin_number']}}</td>
-                                    <td>{{$item['min_number']}}</td>
-								
-									<td>{{$item['category_name']}}</td>
+                  <td>{{$item['category_name']}}</td>
 									<td>{{$item['location_name']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['cmin_date']))}}</td>
                                     <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/CMIN/items-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
@@ -159,10 +156,10 @@
 	$('#prbody2').show();
   });
 	$('.search-btn').on( "click", function(e)  {
-		var min_number = $('#min_number').val();
+		var stock_location = $('#stock_location').val();
 		var cmin_no = $('#cmin_no').val();
 		var from = $('#from').val();
-		if(!cmin_no   & !min_number & !from)
+		if(!cmin_no   & !stock_location & !from)
 		{
 			e.preventDefault();
 		}

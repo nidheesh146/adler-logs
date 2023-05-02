@@ -13,14 +13,7 @@
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
             CMIN Item List 
-              <!-- <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/CMIN/add-item/'.$cmin_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						MIN Item
-				</button>
-              <div>  
-				
-              </div>
-          </div> -->
+             
         </h4>	
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -66,7 +59,7 @@
 													</div><!-- form-group -->
 													
 													
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+													<!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label for="exampleInputEmail1" style="font-size: 12px;">Batch No</label>
 														<input type="text" value="{{request()->get('batchnumber')}}" name="batchnumber" id="batchnumber" class="form-control" placeholder="BATCH NO">
 													</div>
@@ -74,7 +67,7 @@
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label  style="font-size: 12px;">Manufacturing Month</label>
 														<input type="text" value="{{request()->get('manufaturing_from')}}" id="manufaturing_from" class="form-control datepicker" name="manufaturing_from" placeholder="Month(MM-YYYY)">
-													</div>					
+													</div>					 -->
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -105,10 +98,8 @@
 									<th>Product</th>
                   <th>HSN Code</th>
 									<th>Description</th>
-									<th>Batch No.</th>
-									<th>Quantity</th>
-									<th>UOM</th>
-                </tr>
+									
+								</tr>
 							</thead>
 							<tbody id="prbody1">
 								@foreach($items as $item)
@@ -116,10 +107,7 @@
 									<td>{{$item['sku_code']}}</td>
                   <td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
-									<td>{{$item['batch_no']}}</td>
-									<td>{{$item['quantity']}}</td>
-									<td>Nos</td>
-								</tr>
+								 </tr>
 								@endforeach
 							</tbody>
 						</table>

@@ -5,9 +5,9 @@ namespace App\Models\FGS;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class fgs_grs extends Model
+class fgs_cgrs extends Model
 {
-    protected $table = 'fgs_grs';
+    protected $table = 'fgs_cgrs';
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = false;
@@ -73,27 +73,5 @@ class fgs_grs extends Model
             ->where($condition)
             ->where('fgs_grs.status','=',1)
             ->first();
-    }
-    function find_grs_datas($condition)
-    {
-        return $this->select(['fgs_grs.*'])
-                    ->where($condition)
-                    ->where('fgs_grs.status','=',1)
-                    ->first();
-    }
-    function find_grs_num_for_cgrs($condition)
-    {
-        return $this->select(['fgs_grs.grs_number as text','fgs_grs.id'])->where($condition)
-        ->where('fgs_grs.status','=',1)
-        ->where($condition)
-        ->get();
-    }
-    function get_master_data($condition){
-        return $this->select(['fgs_grs.*','product_stock_location.location_name as location_name1',
-        'stock_location.location_name as location_name2'])
-              ->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
-             ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
-                  ->where($condition)
-                    ->first();
     }
 }

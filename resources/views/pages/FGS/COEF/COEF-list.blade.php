@@ -62,8 +62,8 @@
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Order No</label>
-														<input type="text" value="{{request()->get('order_number')}}" name="order_number" id="order_number" class="form-control" placeholder="ORDER NUMBER">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Remarks</label>
+														<input type="text" value="{{request()->get('remarks')}}" name="remarks" id="remarks" class="form-control" placeholder="Remarks">
 													</div>
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -100,11 +100,10 @@
 								<tr>
 									<th>COEF Number</th>
 									<th>COEF date</th>
-                                    <th>Order number</th>
-									<th>Order date</th>
-									<th>Order Fulfil</th>
-									<th>Transaction Type</th>
-                                    <th>Due Date</th>
+                   <th>Remarks</th>              
+								
+									
+                                  
 									
                                     <th>Action</th>
 								</tr>
@@ -115,15 +114,11 @@
 									
 									<td>{{$item['coef_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['coef_date']))}}</td>
-                                    <td>{{$item['order_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
-									<td>{{$item['order_fulfil_type']}}</td>
-									<td>{{$item['transaction_name']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['due_date']))}}</td>
+                  <td>{{$item['remarks']}}</td>
                                     
 									
-                                    <td>
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/OEF/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a><br/>
+                  <td>
+										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/COEF/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a><br/>
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/OEF/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
 								 	</td>
 								</tr>
@@ -167,9 +162,9 @@
   });
 	$('.search-btn').on( "click", function(e)  {
 		var coef_number = $('#coef_number').val();
-		var order_number = $('#order_number').val();
+		var remarks = $('#remarks').val();
 		var from = $('#from').val();
-		if(!coef_number   & !order_no & !from)
+		if(!coef_number   & !remarks & !from)
 		{
 			e.preventDefault();
 		}
