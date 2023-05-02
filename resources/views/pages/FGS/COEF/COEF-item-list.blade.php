@@ -6,21 +6,14 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Goods Reservation Slip(OEF)</span>
+				 <span>Cancellation Goods Reservation Slip(COEF)</span>
 				 <span><a href="">
-				 	OEF  List
+				 	COEF  List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-            OEF List 
-              <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/OEF-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						OEF 
-				</button>
-              <div>  
-				
-              </div>
-          </div>
+            COEF List 
+             
         </h4>	
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -56,18 +49,12 @@
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
 												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>OEF No :</label>
-														<input type="text" value="{{request()->get('oef_number')}}" name="oef_number" id="oef_number" class="form-control" placeholder="OEF NO">
+														<label>COEF No :</label>
+														<input type="text" value="{{request()->get('coef_number')}}" name="coef_number" id="coef_number" class="form-control" placeholder="COEF NO">
 													</div><!-- form-group -->
 													
-													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Order No</label>
-														<input type="text" value="{{request()->get('order_number')}}" name="order_number" id="order_number" class="form-control" placeholder="ORDER NUMBER">
-													</div>
-													
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">OEF Month</label>
+														<label  style="font-size: 12px;">COEF Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
 			
@@ -96,46 +83,29 @@
 					
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" >
-							<thead>
+								<thead>
 								<tr>
-									<th>OEF Number</th>
-									<th>OEF date</th>
-                                    <th>Order number</th>
-									<th>Order date</th>
-									<th>Order Fulfil</th>
-									<th>Transaction Type</th>
-                                    <th>Due Date</th>
-									
-                                    <th>Customer info</th>
-                                    <th>Action</th>
-								</tr>
+									<th>Product</th>
+                  <th>HSN Code</th>
+									<th>Description</th>
+									<th>Quantity</th>
+									<th>UOM</th>
+                </tr>
 							</thead>
 							<tbody id="prbody1">
-							@foreach($oef as $item)
-                                <tr>
-									
-									<td>{{$item['oef_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['oef_date']))}}</td>
-                                    <td>{{$item['order_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
-									<td>{{$item['order_fulfil_type']}}</td>
-									<td>{{$item['transaction_name']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['due_date']))}}</td>
-                                    
-									<td>{{$item['firm_name']}}<br/>
-										Contact Person:{{$item['contact_person']}}<br/>
-										Contact Number:{{$item['contact_number']}}<br/>
-									</td>
-                                    <td>
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/OEF/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a><br/>
-										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/OEF/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
-								 	</td>
+								@foreach($items as $item)
+                 <tr>
+									<td>{{$item['sku_code']}}</td>
+                  <td>{{$item['hsn_code']}}</td>
+									<td>{{$item['discription']}}</td>
+									<td>{{$item['quantity']}}</td>
+									<td>Nos</td>
 								</tr>
 								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-                        {{ $oef->appends(request()->input())->links() }}
+                      
 						</div>
 					</div>
 				</div>
@@ -170,10 +140,9 @@
 	$('#prbody2').show();
   });
 	$('.search-btn').on( "click", function(e)  {
-		var ref_number = $('#ref_number').val();
-		var min_no = $('#min_no').val();
+		var coef_number = $('#coef_number').val();
 		var from = $('#from').val();
-		if(!min_no   & !ref_number & !from)
+		if(!coef_number & !from)
 		{
 			e.preventDefault();
 		}

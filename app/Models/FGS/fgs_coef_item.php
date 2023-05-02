@@ -12,10 +12,10 @@ class fgs_coef_item extends Model
     protected $guarded = [];
     public $timestamps = false;
 
-    function insert_data($data,$min_id){
+    function insert_data($data,$coef_id){
         $item_id =  $this->insertGetId($data);
         if($item_id){
-            DB::table('fgs_oef_item_rel')->insert(['master'=>$min_id,'item'=>$item_id]);
+            DB::table('fgs_coef_item_rel')->insert(['master'=>$coef_id,'item'=>$item_id]);
         }
         return true;
     }
@@ -23,46 +23,31 @@ class fgs_coef_item extends Model
         return $this->where($condition)->update($data);
     }
 
-    function getItems($condition)
-    {
-        return $this->select('fgs_oef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_oef.oef_number',
-        'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id')
-                        ->leftjoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
-                        ->leftjoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_oef_item.product_id')
-                        ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
-                        ->where($condition)
-                        ->where('fgs_oef.status','=',1)
-                        ->orderBy('fgs_oef_item.id','DESC')
-                        ->distinct('fgs_oef_item.id')
-                        ->paginate(15);
-    }
+   
     function getAllItems($condition)
     {
-        return $this->select('fgs_oef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_oef.oef_number',
+        return $this->select('fgs_coef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_coef.coef_number',
         'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id')
-                        ->leftjoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
-                        ->leftjoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_oef_item.product_id')
-                        ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+                        ->leftjoin('fgs_coef_item_rel','fgs_coef_item_rel.item','=','fgs_coef_item.id')
+                        ->leftjoin('fgs_coef','fgs_coef.id','=','fgs_coef_item_rel.master')
+                        ->leftjoin('product_product','product_product.id','=','fgs_coef_item.product_id')
+                        ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_coef_item.gst')
                         ->where($condition)
-                        ->where('fgs_oef.status','=',1)
-                        ->orderBy('fgs_oef_item.id','DESC')
-                        ->distinct('fgs_oef_item.id')
+                        ->where('fgs_coef.status','=',1)
+                        ->orderBy('fgs_coef_item.id','DESC')
+                        ->distinct('fgs_coef_item.id')
                         ->get();
     }
-    function getSingleItem($condition)
+    
+    function get_items($condition)
     {
-        return $this->select('fgs_oef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_oef.oef_number',
-        'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id')
-                        ->leftjoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
-                        ->leftjoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_oef_item.product_id')
-                        ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
-                        ->where($condition)
-                        ->where('fgs_oef.status','=',1)
-                        ->orderBy('fgs_oef_item.id','DESC')
-                        ->distinct('fgs_oef_item.id')
-                        ->first();
+        return $this->select('fgs_coef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code')
+                        ->leftjoin('fgs_coef_item_rel','fgs_coef_item_rel.item','=','fgs_coef_item.id')
+                        ->leftjoin('fgs_coef','fgs_coef.id','=','fgs_coef_item_rel.master')
+                        ->leftjoin('product_product','product_product.id','=','fgs_coef_item.product_id')
+                         ->where($condition)
+                        ->orderBy('fgs_coef_item.id','DESC')
+                        ->distinct('fgs_coef_item.id')
+                        ->paginate(15);
     }
 }

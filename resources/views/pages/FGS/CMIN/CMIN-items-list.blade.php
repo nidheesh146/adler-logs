@@ -103,26 +103,22 @@
 						<thead>
 								<tr>
 									<th>Product</th>
-                                    <th>HSN Code</th>
+                  <th>HSN Code</th>
 									<th>Description</th>
 									<th>Batch No.</th>
 									<th>Quantity</th>
 									<th>UOM</th>
-                                    <th>Date of Mfg.</th>
-                                    <th>Date of Expiry</th>
-								</tr>
+                </tr>
 							</thead>
 							<tbody id="prbody1">
 								@foreach($items as $item)
-                                <tr>
+                 <tr>
 									<td>{{$item['sku_code']}}</td>
-                                    <td>{{$item['hsn_code']}}</td>
+                  <td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
 									<td>{{$item['batch_no']}}</td>
 									<td>{{$item['quantity']}}</td>
 									<td>Nos</td>
-                                    <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
 								</tr>
 								@endforeach
 							</tbody>

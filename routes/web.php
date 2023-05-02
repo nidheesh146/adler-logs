@@ -442,7 +442,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::post('fgs/COEF-add','COEFController@COEFAdd');
     Route::get('fgs/COEF/find-oef-number-for-coef','COEFController@findOefNumberForCOEF');
     Route::get('fgs/COEF/find-oef-info', 'COEFController@oefInfo');
-    Route::get('fgs/COEF/items-list/{cmin_id}','COEFController@COEFItemList');
+    Route::get('fgs/COEF/item-list/{coef_id}','COEFController@COEFItemList');
     //GRS
     Route::get('fgs/GRS-list','GRSController@GRSList');
     Route::get('fgs/GRS-add','GRSController@GRSAdd');
@@ -455,6 +455,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/GRS/find-oef-number-for-grs','GRSController@findOEFforGRS');
     Route::get('fgs/GRS/find-oef-info','GRSController@findOEFInfo');
     Route::get('fgs/GRS/pdf/{grs_id}','GRSController@GRSpdf');
+    //CGRS
+    Route::get('fgs/CGRS/CGRS-list','CGRSController@CGRSList');
+    Route::get('fgs/CGRS-add','CGRSController@CGRSAdd');
+    Route::post('fgs/CGRS-add','CGRSController@CGRSAdd');
+    Route::get('fgs/CGRS/find-grs-number-for-cgrs','CGRSController@findGrsNumberForCGRS');
+    Route::get('fgs/CGRS/find-grs-info', 'CGRSController@grsInfo');
+    Route::get('fgs/CGRS/items-list/{cgrs_id}','CGRSController@CGRSItemList');
     //PI
     Route::get('fgs/PI-list','PIController@PIList');
     Route::get('fgs/PI-add','PIController@PIAdd');

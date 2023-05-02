@@ -12,7 +12,6 @@ use App\Models\FGS\fgs_oef;
 use App\Models\FGS\fgs_oef_item;
 use App\Models\FGS\fgs_oef_item_rel;
 use App\Models\FGS\transaction_type;
-use App\Models\FGS\order_fulfil;
 use App\Models\inventory_gst;
 use App\Models\product;
 use App\Models\FGS\fgs_coef;
@@ -30,7 +29,7 @@ class COEFController extends Controller
         $this->fgs_coef_item = new fgs_coef_item;
         $this->fgs_coef_item_rel = new fgs_coef_item_rel;
         $this->transaction_type = new transaction_type;
-        $this->order_fulfil = new order_fulfil;
+       
         $this->inventory_gst = new inventory_gst;
         $this->product = new product;
         $this->User = new User;
@@ -43,32 +42,27 @@ class COEFController extends Controller
         {
             $condition[] = ['fgs_coef.coef_number','like', '%' . $request->coef_number . '%'];
         }
-        if($request->order_number)
-        {
-            $condition[] = ['fgs_coef.order_number','like', '%' . $request->order_number . '%'];
-        }
+        
         if($request->from)
         {
             $condition[] = ['fgs_coef.coef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
             $condition[] = ['fgs_coef.coef_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
-        $coef = fgs_coef::select('fgs_coef.*','order_fulfil.*','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.contact_person','customer_supplier.contact_number','fgs_oef.*')
+        $coef = fgs_coef::select('fgs_coef.*','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.contact_person','customer_supplier.contact_number')
                  ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_coef.oef_id')
-                        ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_coef.order_fulfil')
                         ->leftJoin('transaction_type','transaction_type.id','=','fgs_coef.transaction_type')
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_coef.customer_id')
                         ->where($condition)
                         ->distinct('fgs_coef.id')
                         ->paginate(15);
-        return view('pages/FGS/COEF/COEF-list', compact('coef'));
+          return view('pages/FGS/COEF/COEF-list', compact('coef'));
     }
     public function COEFAdd(Request $request)
     {
         if($request->isMethod('post'))
         {
+            $validation['remarks'] = ['required'];
             $validation['oef_item.*.order_number'] = ['required'];
-            $validation['oef_item.*.order_date'] = ['required','date'];
-            $validation['oef_item.*.order_fulfil'] = ['required'];
             $validation['oef_item.*.customer_id'] = ['required'];
             $validation['oef_item.*.transaction_type'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
@@ -86,10 +80,6 @@ class COEFController extends Controller
                 $data['customer_id'] = $request->customer_id;
                 $data['coef_date'] = date('Y-m-d', strtotime($request->coef_date));
                 $data['oef_id'] = $request->oef_number;
-                $data['order_number'] = $request->order_number;
-                $data['order_date'] = date('Y-m-d', strtotime($request->order_date));
-                $data['due_date'] = date('Y-m-d', strtotime($request->due_date));
-                $data['order_fulfil'] = $request->order_fulfil;
                 $data['transaction_type'] = $request->transaction_type;
                 $data['created_by']= config('user')['user_id'];
                 $data['status']=1;
@@ -143,16 +133,15 @@ class COEFController extends Controller
                 $edit['oef'] = $this->fgs_oef->find_oef_datas(['fgs_oef.id' => $request->id]);
                 $edit['items'] = $this->fgs_oef_item->get_items(['fgs_oef_item_rel.master' =>$request->id]);
                 $transaction_type = transaction_type::get();
-            $order_fulfil = order_fulfil::get();
-               return view('pages.FGS.COEF.COEF-add',compact('edit','data','transaction_type','order_fulfil'));
+              return view('pages.FGS.COEF.COEF-add',compact('edit','data','transaction_type'));
             }
 
             else
             {
                   $transaction_type = transaction_type::get();
             
-            $order_fulfil = order_fulfil::get();
-            return view('pages.FGS.COEF.COEF-add',compact('data','transaction_type','order_fulfil'));
+            
+            return view('pages.FGS.COEF.COEF-add',compact('data','transaction_type'));
        
     }
 }
@@ -217,21 +206,8 @@ class COEFController extends Controller
                             <td>' . date('d-m-Y', strtotime($oef->created_at)) . '</td>
                             
                     </tr>
-                     <tr style=" width:100%;">
-                            <th>Order Number</th>
-                            <td>' .$oef->order_number. '</td>
-                            
-                    </tr>
-                      <tr style=" width:100%;">
-                            <th>Order Date</th>
-                            <td>' . date('d-m-Y', strtotime($oef->order_date)) . '</td>
-                            
-                    </tr>
-                    <tr style=" width:100%;">
-                            <th>Order Fulfil</th>
-                            <td>' .$oef->order_fulfil_type. '</td>
-                            
-                    </tr>
+                    
+                     
                   
              </tbody>
            </table>
@@ -287,9 +263,6 @@ class COEFController extends Controller
                         
                         <input type="hidden" name="created_at" value=" '. date('d-m-Y', strtotime($oef->created_at)). ' ">
                         <input type="hidden" name="order_number" value="' .$oef->order_number. '">
-                        <input type="hidden" name="order_date" value="' .date('d-m-Y', strtotime($oef->order_date)). '">
-                        <input type="hidden" name="due_date" value="' .date('d-m-Y', strtotime($oef->due_date)). '">
-                        <input type="hidden" name="order_fulfil" value="' .$oef->order_fulfil. '">
                         <input type="hidden" name="customer_id" value="' .$oef->customer_id. '">
                         <input type="hidden" name="transaction_type" value="' .$oef->transaction_type. '">
                         </div>
@@ -315,29 +288,10 @@ class COEFController extends Controller
         {
             $condition[] = ['product_product.sku_code','like', '%' . $request->product . '%'];
         }
-        if($request->batchnumber)
-        {
-            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batchnumber . '%'];
-        }
-        if($request->manufaturing_from)
-        {
-            $condition[] = ['fgs_cmin_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->manufaturing_from))];
-            $condition[] = ['fgs_cmin_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->manufaturing_from))];
-        }
-        // $items = fgs_min_item::select('fgs_min_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_min.min_number')
-        //                 ->leftjoin('fgs_min_item_rel','fgs_min_item_rel.item','=','fgs_min_item.id')
-        //                 ->leftjoin('fgs_min','fgs_min.id','=','fgs_min_item_rel.master')
-        //                 ->leftjoin('product_product','product_product.id','=','fgs_min_item.product_id')
-        //                 ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_min_item.batchcard_id')
-        //                 ->where($condition)
-        //                 //->where('inv_mac.status','=',1)
-        //                 ->orderBy('fgs_min_item.id','DESC')
-        //                 ->distinct('fgs_min_item.id')
-        //                 ->paginate(15);
-        $items = $this->fgs_cmin_item->get_items($condition);
+        $items = $this->fgs_coef_item->get_items($condition);
         //print_r($items);exit; 
        // echo $min_id;exit;
-        return view('pages/FGS/CMIN/CMIN-items-list', compact('cmin_id','items'));
+        return view('pages/FGS/COEF/COEF-item-list', compact('coef_id','items'));
     }
     public function OEFpdf($oef_id)
     {
