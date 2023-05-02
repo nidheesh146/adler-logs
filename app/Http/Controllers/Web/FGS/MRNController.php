@@ -36,7 +36,7 @@ class MRNController extends Controller
 
     public function MRNList(request $request)
     {
-        //$this->fgsMRNStockUpload();
+       // $this->fgsMRNStockUpload();
         $condition =[];
         if($request->mrn_no)
         {
@@ -238,7 +238,7 @@ class MRNController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\fgs_stock.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\new_stock.xlsx';
         $ExcelOBJ->aircraft = 'B737-MAX';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
@@ -263,14 +263,16 @@ class MRNController extends Controller
             $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
             //$this->insert_MRN_stock_location1($ExcelOBJ);  
             //$this->insert_MRN_stock_location2($ExcelOBJ);
-            //$this->insert_MRN_stock_SNN_Mktd($ExcelOBJ); 
-            $this->insert_MRN_stock_AHPL_Mktd($ExcelOBJ); 
-            //die("done");
+           //$this->insert_MRN_stock_SNN_Mktd($ExcelOBJ); 
+           //$this->insert_MRN_stock_AHPL_Mktd($ExcelOBJ); 
+            die("done");
         }
         exit('done');
     }
     function insert_MRN_stock_SNN_Mktd($ExcelOBJ)
     {
+        $prdct = [];
+        $batch_card = [];
         if(date('m')==01 || date('m')==02 || date('m')==03)
         {
             $years_combo = date('y', strtotime('-1 year')).date('y');
@@ -281,7 +283,7 @@ class MRNController extends Controller
         }
         $data['mrn_number'] = "MRN-".$this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-'.$years_combo.'%')->count()); 
         $data['mrn_date'] = date('Y-m-d');
-        $data['supplier_doc_number'] = 'Open Stock SNN Mktd April 15-18';
+        $data['supplier_doc_number'] = 'Open Stock1 SNN Mktd April 15-18';
         $data['supplier_doc_date'] = date('Y-m-d');
         $data['product_category'] = 1;//ASD
         $data['stock_location'] = 6; // SNN_Mktd
@@ -292,12 +294,17 @@ class MRNController extends Controller
         $mrn_master = $this->fgs_mrn->insert_data($data);
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
     
-            if ($key > 1 &&  $excelsheet[1]) 
+            if ($key > 0 &&  $excelsheet[1]) 
              {
                 if($excelsheet[4]=='SNN Mktd.')
                 {
                     $product_id = product::where('sku_code','=',$excelsheet[0])->pluck('id')->first();
                     $batchcard=batchcard::where('batch_no','=',$excelsheet[2])->first();
+                    // if(!$product_id)
+                    // $prdct[]=$excelsheet[0];
+                    // if(!$batchcard)
+                    // $batch_card[] = $excelsheet[2];
+
                     if($product_id && $batchcard )
                     {
                         $item['product_id'] = $product_id;
@@ -320,15 +327,19 @@ class MRNController extends Controller
                     }
                     else
                     {
-                        $not_exist[] = $excelsheet[0];
+                        $prdct[] = $excelsheet[0];
+                        $batch_card[] = $excelsheet[2];
                         $res[] = 1;
                     }
                 }
             }
         }
+        // print_r($prdct);
+        // print_r($batch_card);
+        // exit;
         if($res)
         {
-        print_r($not_exist);
+        //print_r($not_exist);
         return 1;
        
         }
@@ -347,7 +358,7 @@ class MRNController extends Controller
         }
         $data['mrn_number'] = "MRN-".$this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-'.$years_combo.'%')->count()); 
         $data['mrn_date'] = date('Y-m-d');
-        $data['supplier_doc_number'] = 'Open Stock AHPL Mktd ';
+        $data['supplier_doc_number'] = 'Open Stock1 AHPL Mktd April 19-28';
         $data['supplier_doc_date'] = date('Y-m-d');
         $data['product_category'] = 1;//ASD
         $data['stock_location'] = 7; // AHPL_Mktd
@@ -358,9 +369,9 @@ class MRNController extends Controller
         $mrn_master = $this->fgs_mrn->insert_data($data);
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
     
-            if ($key > 1 &&  $excelsheet[1]) 
+            if ($key > 0 &&  $excelsheet[1]) 
              {
-                if($excelsheet[4]=='SNN Mktd.')
+                if($excelsheet[4]=='AHPL Mktd.')
                 {
                     $product_id = product::where('sku_code','=',$excelsheet[0])->pluck('id')->first();
                     $batchcard=batchcard::where('batch_no','=',$excelsheet[2])->first();
@@ -413,7 +424,7 @@ class MRNController extends Controller
         }
         $data['mrn_number'] = "MRN-".$this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-'.$years_combo.'%')->count()); 
         $data['mrn_date'] = date('Y-m-d');
-        $data['supplier_doc_number'] = 'Open Stock Location2 April 15-18';
+        $data['supplier_doc_number'] = 'Open Stock1 Location2 April 15-18';
         $data['supplier_doc_date'] = date('Y-m-d');
         $data['product_category'] = 1;//ASD
         $data['stock_location'] = 2;//location2
@@ -424,7 +435,7 @@ class MRNController extends Controller
         $mrn_master = $this->fgs_mrn->insert_data($data);
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
     
-            if ($key > 1 &&  $excelsheet[1]) 
+            if ($key > 0 &&  $excelsheet[1]) 
              {
                 if($excelsheet[4]=='Location-2 (Non-Std.)')
                 {
@@ -469,6 +480,7 @@ class MRNController extends Controller
     }
     function insert_MRN_stock_location1($ExcelOBJ)
     {
+        $not_exist=[];
         if(date('m')==01 || date('m')==02 || date('m')==03)
         {
             $years_combo = date('y', strtotime('-1 year')).date('y');
@@ -479,7 +491,7 @@ class MRNController extends Controller
         }
         $data['mrn_number'] = "MRN-".$this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-'.$years_combo.'%')->count()); 
         $data['mrn_date'] = date('Y-m-d');
-        $data['supplier_doc_number'] = 'Open Stock Location1 April 15-18';
+        $data['supplier_doc_number'] = 'Open Stock1 Location1 April 15-18';
         $data['supplier_doc_date'] = date('Y-m-d');
         $data['product_category'] = 1;//ASD
         $data['stock_location'] = 1;//location1
@@ -490,13 +502,13 @@ class MRNController extends Controller
         $mrn_master = $this->fgs_mrn->insert_data($data);
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
     
-            if ($key > 1 &&  $excelsheet[1]) 
+            if ($key > 0 &&  $excelsheet[1]) 
              {
                 if($excelsheet[4]=='Location-1 (Std.)')
                 {
                     $product_id = product::where('sku_code','=',$excelsheet[0])->pluck('id')->first();
                     $batchcard=batchcard::where('batch_no','=',$excelsheet[2])->first();
-                    if($product_id && $batchcard )
+                    if($batchcard )
                     {
                         $item['product_id'] = $product_id;
                         $item['batchcard_id'] = $batchcard['id'];
@@ -514,11 +526,11 @@ class MRNController extends Controller
                             'expiry_date'=>($excelsheet[6]!="NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' '
                         ];
                         $this->fgs_product_stock_management->insert_data($stock);
-                       // $res[]=DB::table('production_stock_management')->insert($data);
+                       //$res[] = 1;
                     }
                     else
                     {
-                        $not_exist[] = $excelsheet[0];
+                        $not_exist[] = $excelsheet[2];
                         $res[] = 1;
                     }
                 }
@@ -527,8 +539,8 @@ class MRNController extends Controller
         if($res)
         {
         print_r($not_exist);
+        exit;
         return 1;
-       
         }
         else
         return 0;

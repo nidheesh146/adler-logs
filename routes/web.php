@@ -391,7 +391,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::post('fgs/price-master/add/{id?}','PriceController@priceAdd');
     Route::get('fgs/productsearch','PriceController@productsearch');
     Route::get('fgs/price-master/excel-export','PriceController@PriceMasterExport');
-
+    //Production stock
+    Route::get('fgs/production-stock/list','StockManagementController@productionStockList');
+    Route::get('fgs/production-stock/Add','StockManagementController@productionStockAdd');
+    Route::post('fgs/production-stock/Add','StockManagementController@productionStockAdd');
+    
     //MRN
     Route::get('fgs/MRN-list','MRNController@MRNList');
     Route::get('fgs/MRN-add','MRNController@MRNAdd');

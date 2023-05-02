@@ -104,13 +104,13 @@ class inv_miq extends Model
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
                     ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
-                    ->leftjoin('inv_mac','inv_mac.invoice_id','=','inv_supplier_invoice_master.id')
-                    ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.master','=','inv_mac.id')
-                    ->leftjoin('inv_mac_item','inv_mac_item.id','=','inv_mac_item_rel.item')
+                    //->leftjoin('inv_mac','inv_mac.invoice_id','=','inv_supplier_invoice_master.id')
+                   // ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.master','=','inv_mac.id')
+                    //->leftjoin('inv_mac_item','inv_mac_item.id','=','inv_mac_item_rel.item')
                     ->leftjoin('user','user.user_id','inv_miq.created_by')
                     ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
-                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                    ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
                 
                      ->whereNotIn('inv_miq_item.invoice_item_id',function($query) {

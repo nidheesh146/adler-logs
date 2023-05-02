@@ -14,4 +14,7 @@ class production_stock_management extends Model
     function update_data($condition,$data){
         return $this->where($condition)->update($data);
     }
+    function insert_data($data){
+        return $this->insertGetId($data);
+    }
 }
