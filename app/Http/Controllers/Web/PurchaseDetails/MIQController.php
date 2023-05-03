@@ -265,8 +265,7 @@ class MIQController extends Controller
             return Excel::download(new MIQQuarantineExport($request), 'QuarantineReport' . date('d-m-Y') . '.xlsx');
         }
     }
-
-    public function LiveQuarantineReport(Request $request)
+      public function LiveQuarantineReport(Request $request)
     {   
         $condition = [];
         if($request)
@@ -274,8 +273,8 @@ class MIQController extends Controller
             if ($request->miq_no) {
                 $condition[] = ['inv_miq.miq_number','like', '%' . $request->miq_no . '%'];
             }
-            if ($request->invoice_no) {
-                $condition[] = ['inv_supplier_invoice_master.invoice_number','like', '%' . $request->invoice_no . '%'];
+            if ($request->item_code) {
+                $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
             }
             if($request->supplier)
             {
@@ -293,4 +292,6 @@ class MIQController extends Controller
         return view('pages.inventory.MIQ.LiveQuarantineReport',compact('data'));
     }
 
+
+    
 }

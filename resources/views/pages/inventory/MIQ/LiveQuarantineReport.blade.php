@@ -47,8 +47,8 @@
                                             
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                <label>Invoice No:</label>
-                                                <input type="text" value="{{request()->get('invoice_no')}}" name="invoice_no" id="invoice_no" class="form-control" placeholder="INVOICE NO"> 
+                                                <label>Item Code:</label>
+                                                <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="Item Code"> 
                                                 
                                             </div><!-- form-group -->
                                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
@@ -149,11 +149,11 @@
     });
     $('.search-btn').on( "click", function(e)  {
 		var miq_no = $('#miq_no').val();
-		var invoice_no = $('#invoice_no').val();
+		var item_code = $('#item_code').val();
 		var from = $('#from').val();
         var supplier = $('#supplier').val();
         var prepared = $('#prepared').val();
-		if(!miq_no  & !invoice_no & !from & !supplier & !prepared)
+		if(!miq_no  & !item_code & !from & !supplier & !prepared)
 		{
 			e.preventDefault();
 		}
