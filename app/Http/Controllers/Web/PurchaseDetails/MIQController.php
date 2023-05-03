@@ -285,10 +285,12 @@ class MIQController extends Controller
                 $condition[] = ['inv_miq.miq_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition[] = ['inv_miq.miq_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
             }
-            $data['miq']= $this->inv_miq->get_all_datas($condition);
+           $data['miq']= $this->inv_miq->get_all_datas($condition);
+           //$data['miq']= $this->inv_miq_item->get_items_not_in_mac($condition);
          }
         else
         $data['miq']= $this->inv_miq->get_all_datas($condition=null);
+        //$data['miq']= $this->inv_miq_item->get_items_not_in_mac($condition=null);
         return view('pages.inventory.MIQ.LiveQuarantineReport',compact('data'));
     }
 

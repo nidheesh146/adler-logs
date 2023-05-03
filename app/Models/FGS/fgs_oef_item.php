@@ -33,6 +33,7 @@ class fgs_oef_item extends Model
                         ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                         ->where($condition)
                         ->where('fgs_oef.status','=',1)
+                        ->where('fgs_oef_item.coef_status','=',0)
                         ->orderBy('fgs_oef_item.id','DESC')
                         ->distinct('fgs_oef_item.id')
                         ->paginate(15);
@@ -86,13 +87,14 @@ class fgs_oef_item extends Model
                    ->join('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
                     ->join('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
                     ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
-                        ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
-                        ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
-                         ->leftjoin('product_product','product_product.id','=','fgs_oef_item.product_id')
-                        ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
-                         ->where('fgs_oef.status','=',1)
-                          ->where('fgs_oef_item.coef_status','=',0)
+                    ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
+                    ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
+                    ->leftjoin('product_product','product_product.id','=','fgs_oef_item.product_id')
+                    ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+                    ->where('fgs_oef.status','=',1)
+                    ->where('fgs_oef_item.coef_status','=',0)
                     ->where($condition)
+                    ->distinct('fgs_oef_item.id')
                    ->get();
 }
 }

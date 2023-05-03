@@ -258,6 +258,7 @@ class BatchCardController extends Controller
                         'quantity'=>$excelsheet[10],
                         'description'=>$excelsheet[2],
                         'product_id'=>$product->id,
+                        'process_sheet_id' => $excelsheet[11],
                         'is_active'=>1,
                         'created'=>date('Y-m-d H:i:s'),
                         'updated'=>date('Y-m-d H:i:s'),

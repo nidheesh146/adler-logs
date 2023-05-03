@@ -340,13 +340,30 @@ class GRSController extends Controller
                                                         ->where('stock_location_id','=',$grs_master['stock_location1'])
                                                         ->where('batchcard_id','=',$request->batchcard)
                                                         ->first();
-                $oef_qty_updation = $oef_item['quantity']- $request->batch_qty;
+                $oef_qty_updation = $oef_item['quantity_to_allocate']- $request->batch_qty;
                 $oef_item['quantity_to_allocate'] = $oef_qty_updation;
                 $oef_item->save();
                 $stock_updation = $fgs_stock['quantity']-$request->batch_qty;
                 $stock_mngment= fgs_product_stock_management::find($fgs_stock['fgs_stock_id']);
                 $stock_mngment->quantity = $stock_updation;
                 $stock_mngment->save();
+                $maa_stock = fgs_maa_stock_management::select('id as maa_stock_id','quantity')
+                                        ->where('product_id','=',$oef_item['product_id'])
+                                        ->where('batchcard_id','=',$request->batchcard)
+                                        ->first();
+                if($maa_stock)
+                {
+                    $maa_stock_updation = $maa_stock['quantity']+$request->batch_qty;
+                    $update = $this->fgs_maa_stock_management->update_data(['id'=>$maa_stock['id']],['quantity'=>$maa_stock_updation]);
+                }
+                else
+                {
+                    $stock['product_id']= $oef_item['product_id'];
+                    $stock['batchcard_id']= $request->batchcard;
+                    $stock['quantity']= $request->batch_qty;
+                    $data['created_at'] =date('Y-m-d H:i:s');
+                    $stock_add = $this->fgs_maa_stock_management->insert_data($stock);
+                }
 
                 if($add)
                 {

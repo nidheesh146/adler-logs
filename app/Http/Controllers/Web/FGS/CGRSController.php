@@ -81,44 +81,45 @@ class CGRSController extends Controller
                         $data['cgrs_number'] = "CGRS-".$this->year_combo_num_gen(DB::table('fgs_cgrs')->where('fgs_cgrs.cgrs_number', 'LIKE', 'Cgrs-'.$years_combo.'%')->count()); 
                        $data['cgrs_date'] = date('Y-m-d', strtotime($request->cgrs_date));
                        $data['grs_id']= $request->grs_number;
-                       $loc = $this->fgs_grs->get_master_data(['fgs_grs.id' => $data['grs_id']]);
-                       $data['stock_location1'] = $loc->stock_location1;
-                       $data['stock_location2'] = $loc->stock_location2;
+                       $fgs_grs_data = $this->fgs_grs->get_master_data(['fgs_grs.id' => $data['grs_id']]);
+                       $data['stock_location1'] = $fgs_grs_data->stock_location1;
+                       $data['stock_location2'] = $fgs_grs_data->stock_location2;
                        $data['remarks']= $request->remarks;
                        $data['created_by']= config('user')['user_id'];
                        $data['status']=1;
                        $data['created_at'] =date('Y-m-d H:i:s');
                        $cgrs_id = $this->fgs_cgrs->insert_data($data);
-                    foreach ($request->grs_item_id as $grs_item_id) {
-                        $grs_item =fgs_grs_item::find($grs_item_id);
-                        $datas = [
-                            "grs_item_id" => $grs_item_id,
-                            "product_id" => $grs_item['product_id'],
-                            "batch_quantity" => $grs_item['batch_quantity'],
-                            "created_at" => date('Y-m-d H:i:s')
-                        ];
-                     $this->fgs_cgrs_item->insert_data($datas,$cgrs_id);
-                     $fgs_grs_item = fgs_grs_item::
-                                          where('batchcard_id','=',$grs_item['batchcard_id'])
-                                        ->where('product_id','=',$grs_item['product_id'])
-                                        ->update(['cgrs_status' => 1]);
+                        foreach ($request->grs_item_id as $grs_item_id) 
+                        {
+                            $grs_item =fgs_grs_item::find($grs_item_id);
+                            $datas = [
+                                "grs_item_id" => $grs_item_id,
+                                "product_id" => $grs_item['product_id'],
+                                "batch_quantity" => $grs_item['batch_quantity'],
+                                "created_at" => date('Y-m-d H:i:s')
+                            ];
+                            $this->fgs_cgrs_item->insert_data($datas,$cgrs_id);
+                            $fgs_grs_item = fgs_grs_item::where('fgs_grs_item.id','=',$grs_item_id)
+                                            // ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                                            // ->where('product_id','=',$grs_item['product_id'])
+                                            ->update(['cgrs_status' => 1]);
                    
-                   $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
-                                 ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                                ->where('stock_location_id','=',$loc->id)
+                            $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
+                                        ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                                        ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
+                                        ->first();
+
+                            $update_stock = $fgs_product_stock['quantity']+$grs_item['batch_quantity'];
+                            $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+
+                            $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$grs_item['product_id'])
+                                                ->where('batchcard_id','=',$grs_item['batchcard_id'])
                                                 ->first();
 
-                    $update_stock = $fgs_product_stock['quantity']+$grs_item['batch_quantity'];
-                    $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
-
-                    $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$grs_item['product_id'])
-                                 ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                           ->first();
-
-                    $update_stocks = $fgs_maa_stock['quantity']-$grs_item['batch_quantity'];
-                    $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_stocks]);
+                            $update_maa_stocks = $fgs_maa_stock['quantity']-$grs_item['batch_quantity'];
+                            $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
                 
-                }
+                        }
                         if($cgrs_id )
                         {
                             $request->session()->flash('success', "You have successfully created a Cgrs !");

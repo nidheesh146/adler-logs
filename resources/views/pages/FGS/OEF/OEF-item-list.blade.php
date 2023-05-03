@@ -94,6 +94,7 @@
                                     <th>Rate</th>
                                     <th>Discount</th>
                                     <th>GST</th>
+									<th>Status</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
@@ -108,6 +109,13 @@
 									<td>IGST:{{$item['igst']}}%<br/>
 										CGST:{{$item['cgst']}}%<br/>
 										SGST:{{$item['sgst']}}%
+									</td>
+									<td>
+										@if($item['coef_status']==0)
+										<span class="badge badge-primary" style="width:60px;">Active</span>
+										@else
+										<span class="badge badge-danger" style="width:60px;">Cancelled</span>
+										@endif
 									</td>
 								</tr>
 								@endforeach
