@@ -201,12 +201,12 @@ class StockLocationExport implements FromCollection, WithHeadings, WithStyles,Wi
     }
     public function styles(Worksheet $sheet)
     {           
-        $numOfRows = count($this->stock);
+        $numOfRows = count($this->stock)+1;
         $totalRow = $numOfRows + 2;
 
 
         // Add cell with SUM formula to last row
-        $sheet->setCellValue("E{$totalRow}", "=SUM(E1:E{$numOfRows})");
+        $sheet->setCellValue("E{$totalRow}", "=SUM(E2:E{$numOfRows})");
         $sheet->setCellValue("D{$totalRow}","Total :");
         
         return [
