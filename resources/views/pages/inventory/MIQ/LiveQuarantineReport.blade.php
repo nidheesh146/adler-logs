@@ -7,11 +7,10 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Material Inwards To Quarantine(MIQ)</a></span>
+			 <span><a href="">Qurantine Report</a></span>
 		</div>
-		<h4 class="az-content-title" style="font-size: 20px;">Material Inwards To Quarantine(MIQ)
+		<h4 class="az-content-title" style="font-size: 20px;">Qurantine Report
 		  	<div class="right-button">
-				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MIQ-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> MIQ</button> 
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MIQ/quarantine-excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
 	  		</div>
 		</h4>
