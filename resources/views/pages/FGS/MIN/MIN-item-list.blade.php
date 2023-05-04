@@ -108,23 +108,31 @@
 									<th>Batch No.</th>
 									<th>Quantity</th>
 									<th>UOM</th>
-                                    <th>Date of Mfg.</th>
-                                    <th>Date of Expiry</th>
+                  <th>Date of Mfg.</th>
+                  <th>Date of Expiry</th>
+                  <th>Status</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-								@foreach($items as $item)
-                                <tr>
+							@foreach($items as $item)
+                <tr>
 									<td>{{$item['sku_code']}}</td>
                                     <td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
 									<td>{{$item['batch_no']}}</td>
-									<td>{{$item['quantity']}}</td>
+									<td>{{$item['quantity']}}</td> 
 									<td>Nos</td>
-                                    <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
-								</tr>
-								@endforeach
+                  <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                  <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
+                  <td>
+										@if($item['cmin_status']==0) 
+										<span class="badge badge-primary" style="width:60px;">Active</span>
+										@else
+										<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
+										@endif
+									</td>
+               </tr>
+							@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">

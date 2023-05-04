@@ -1,35 +1,50 @@
 @extends('layouts.default')
-@section('content') 
-    <div class="az-content az-content-dashboard">
-        <br>
-        <div class="container" data-select2-id="9">
-            <div class="az-content-body" data-select2-id="8">
-                <div class="az-content-breadcrumb">
-                    <span><a href="{{ url('inventory/supplier-invoice') }}">  Cancellation Goods Reservation Slip(CGRS)  </a></span>
-                 </div>
-                <h4 class="az-content-title" style="font-size: 20px;"> Cancellation Goods Reservation Slip(CGRS) @if(!empty($edit)) ({{$edit['mac']->mac_number}}) @endif
+@section('content')
 
-                </h4>
+<div class="az-content az-content-dashboard">
+  <br> 
+    <div class="container">
+        <div class="az-content-body">
+
+            <div class="az-content-breadcrumb"> 
+                <span><a href="" style="color: #596881;">Cancellation Goods Reservation Slip(CGRS) </a></span> 
+                <!-- <span><a href="" style="color: #596881;">MRN</a></span> -->
+                <span><a href="">
+                   
+                </a></span>
+            </div>
+    
+            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
+           Cancellation Goods Reservation Slip(CGRS) 
+            </h4>
+            <div class="az-dashboard-nav">
+           
+            </div>
+
+            <div class="row">
+                    
+                <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
+                @if(Session::get('error'))
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{Session::get('error')}}
+                </div>
+                @endif
+                @if (Session::get('success'))
+                <div class="alert alert-success " style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                </div>
+                @endif
                 @foreach ($errors->all() as $errorr)
                 <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                  {{ $errorr }}
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        {{ $errorr }}
                 </div>
-               @endforeach 
-               @if (Session::get('error'))
-               <div class="alert alert-danger " style="width: 100%;">
-                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                   <i class="icon fa fa-check"></i> {{ Session::get('error') }}
-               </div>
-               @endif              
-               @if (Session::get('success'))
-               <div class="alert alert-success " style="width: 100%;">
-                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
-               </div>
-               @endif
+             @endforeach 
                
             <form method="POST" id="commentForm" autocomplete="off" >
+                {{ csrf_field() }}  
                      <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                                 <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
@@ -39,9 +54,7 @@
                             </div>
                          </div>
                     <div class="row">
-                        {{ csrf_field() }}
-
-                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
+                       <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
                             <label>GRS number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
                             @if(!empty($edit['grs']))
@@ -84,11 +97,12 @@
                        }
                       @endif
                             
-                       
-
-            </form>
-            <div class="data-bindings" style="width:100%;">
-            </div>
+             </div>
+ <div class="data-bindings" style="width:100%;">
+                </div>
+               </form>
+  
+  </div>
                
         </div>
         

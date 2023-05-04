@@ -105,11 +105,12 @@
                        }
 @endif
                             
-                       
-
-                </form>
-                <div class="data-bindings" style="width:100%;">
+            </div>
+ <div class="data-bindings" style="width:100%;">
                 </div>
+               </form>
+  
+  </div>
                
         </div>
         

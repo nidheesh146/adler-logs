@@ -73,6 +73,7 @@
                                             <th>Batch Quantity </th>
                                             <th>Manufacturing Date</th>
                                             <th>Expiry Date</th>
+                                            <th>Status</th>
                                         </tr>                                                
                                 </thead>
                                 <tbody id="prbody1">
@@ -88,6 +89,13 @@
                                             <td>{{$item['batch_quantity']}} Nos</td>
                                             <td>{{$item['manufacturing_date']}}</td>
                                             <td>{{$item['expiry_date']}}</td>
+                                            <td>
+										@if($item['cgrs_status']==0)
+										<span class="badge badge-primary" style="width:60px;">Active</span>
+										@else
+										<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
+										@endif
+									</td> 
                                         </tr>
                                     @endforeach
 									@else

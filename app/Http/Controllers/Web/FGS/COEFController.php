@@ -176,24 +176,24 @@ class COEFController extends Controller
         $oef_item = $this->fgs_oef_item->get_oef_item(['fgs_oef_item_rel.master' => $id]);
         $data = '
 
-          <div class="row" style=" width:100%; ">
+        <div class="row" >
          
             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-               MIN number (' . $oef->oef_number . ')
+               OEF number (' . $oef->oef_number . ')
                    </label>
-              <div class="form-devider"></div>
+                <div class="form-devider"></div>
             </div>
-           </div>
-           <table class="table table-bordered mg-b-0">
+          
+            <table class="table table-bordered mg-b-0" style="padding-right: 15px;padding-left: 15px;">
                 <thead>
                 </thead>
-                <tbody style=" width:100%;">
-                    <tr style=" width:100%;">
+                <tbody>
+                    <tr>
                         <th>OEF Date</th>
                         <td>' . date('d-m-Y', strtotime($oef->oef_date)) . '</td>
                     </tr>
-                    <tr style=" width:100%;">
+                    <tr >
                             <th>Created Date</th>
                             <td>' . date('d-m-Y', strtotime($oef->created_at)) . '</td>
                             
@@ -201,20 +201,21 @@ class COEFController extends Controller
                     
                      
                   
-             </tbody>
+                </tbody>
            </table>
-           <br>
-            <div class="row" style=" width:100%; ">
+        </div>
+        <br>
+        <div class="row" >
              <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">';
        
                 $data .= 'OEF Items ';
                 $data .= '</label>
-                 <div class="form-devider"></div>
+                <div class="form-devider"></div>
              </div>
-            </div>
-            <div class="table-responsive">
-            <table class="table table-bordered mg-b-0" id="example1">';
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered mg-b-0" id="example1" style="padding-right: 15px;padding-left: 15px;">';
             
             $data .= '<thead>
                 <tr>
@@ -226,7 +227,7 @@ class COEFController extends Controller
                 </tr>
                </thead>
                <tbody >';
-            foreach ($oef_item as $item) {
+               foreach ($oef_item as $item) {
                 $data .= '<tr>
                     <td ><input type="checkbox" name="oef_item_id[]" id="oef_item_id" value="'.$item->id.'"></td>
                        <td>'.$item->sku_code.'</td>
@@ -236,39 +237,35 @@ class COEFController extends Controller
                       
                       
                       </tr>';
-            }
-            $data .= '</tbody>';
-        $data .= '</table>
-       </div>
-       <div class="row" style=" width:100%; ">
-                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                   
-                    <div class="form-devider"></div>
-                    <div class="row" style=" width:100%; ">
-                        <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px;padding:0px; margin-left : 15px;">
-                            <label>Remarks :</label>
-                        </div>
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <textarea type="text"  name="remarks" id="remarks" class="form-control" placeholder="Enter Remarks" rows= "4">     </textarea>                       
-                        </div>
+                }
+                $data .= '</tbody>';
+                $data .= '</table>
+        </div>
+        <div class="row">
+                <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px; ">
+                   <label>Remarks:</label>
+                </div>
+        </div>
+        <div class="row">
+                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <textarea type="text"  name="remarks" id="remarks" class="form-control" placeholder="Enter Remarks" rows= "4">     </textarea>     
                        
                         
                         <input type="hidden" name="created_at" value=" '. date('d-m-Y', strtotime($oef->created_at)). ' ">
                         <input type="hidden" name="order_number" value="' .$oef->order_number. '">
                         <input type="hidden" name="customer_id" value="' .$oef->customer_id. '">
                         <input type="hidden" name="transaction_type" value="' .$oef->transaction_type. '">
-                        </div>
                 </div>
-                <div class="form-devider"></div>
+        </div>
                 <br>
-                <div class="row" style="">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="row">
+                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <button type="submit" class="btn btn-primary btn-rounded invoice-create-btn" style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
                                 Save 
                             </button>
-                        </div>
-                    </div>
-              </div>
+                </div>
+        </div>
+             
              ';
         return $data;
     }

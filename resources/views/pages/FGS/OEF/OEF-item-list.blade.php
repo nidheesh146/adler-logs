@@ -114,10 +114,10 @@
 										@if($item['coef_status']==0)
 										<span class="badge badge-primary" style="width:60px;">Active</span>
 										@else
-										<span class="badge badge-danger" style="width:60px;">Cancelled</span>
+										<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
 										@endif
 									</td>
-								</tr>
+								</tr> 
 								@endforeach
 							</tbody>
 						</table>
