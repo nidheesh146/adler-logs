@@ -81,7 +81,7 @@ class CMINController extends Controller
                         $Data['min_id']= $request->min_number;
                         $fgs_min_data = $this->fgs_min->get_master_data(['fgs_min.id' => $Data['min_id']]);
                         
-                        $Data['stock_location']= $loc->stock_location;
+                        $Data['stock_location']= $fgs_min_data->stock_location;
                         $Data['remarks']= $request->remarks;
                         $cmin_id = $this->fgs_cmin->insert_data($Data);
 
@@ -181,7 +181,7 @@ class CMINController extends Controller
 
         $data = '
 
-          <div class="row" style=" width:100%; ">
+          <div class="row" style="padding-right: 15px;padding-left: 15px; ">
          
             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
@@ -189,29 +189,30 @@ class CMINController extends Controller
                    </label>
               <div class="form-devider"></div>
             </div>
-           </div>
+           
            <table class="table table-bordered mg-b-0">
                 <thead>
                 </thead>
-                <tbody style=" width:100%;">
-                    <tr style=" width:100%;">
+                <tbody >
+                    <tr >
                         <th>Min Date</th>
                         <td>' . date('d-m-Y', strtotime($invoice->min_date)) . '</td>
                     </tr>
-                    <tr style=" width:100%;">
+                    <tr>
                             <th>Created Date</th>
                             <td>' . date('d-m-Y', strtotime($invoice->created_at)) . '</td>
                             
                     </tr>
-                    <tr style=" width:100%;">
+                    <tr >
                             <th>Stock Location</th>
                             <td>' . $invoice->location_name . '</td>
                             
                     </tr>
                 </tbody>
            </table>
+           </div>
            <br>
-            <div class="row" style=" width:100%; ">
+            <div class="row" style="padding-right: 15px;padding-left: 15px;" >
              <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">';
        
@@ -247,32 +248,29 @@ class CMINController extends Controller
             $data .= '</tbody>';
         $data .= '</table>
        </div>
-       <div class="row" style=" width:100%; ">
-                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                   
-                    <div class="form-devider"></div>
-                    <div class="row" style=" width:100%; ">
-                        <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px;padding:0px; margin-left : 15px;">
-                            <label>Remarks :</label>
-                        </div>
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <textarea type="text"  name="remarks" id="remarks" class="form-control" placeholder="Enter Remarks" rows= "4">     </textarea>                       
-                        </div>
-                       
-                        <input type="hidden"  name="stock_location" id="stock_location" value="{{ $invoice->location_name }}" class="form-control" placeholder="Invoice Date"> 
-                          
-                        </div>
+       <div class="row" style="padding-right: 15px;padding-left: 15px;" >
+                <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px; ">
+                            <label>Remarks:</label>
                 </div>
-                <div class="form-devider"></div>
-                <br>
-                <div class="row" style=" width:60%; ">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <button type="submit" class="btn btn-primary btn-rounded invoice-create-btn" style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
+        </div>
+        <div class="row" style="padding-right: 15px;padding-left: 15px;"  >
+                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <textarea type="text"  name="remarks" id="remarks" class="form-control" placeholder="Enter Remarks" rows= "4">     </textarea>                       
+                        
+                       
+                    <input type="hidden"  name="stock_location" id="stock_location" value="{{ $invoice->location_name }}" class="form-control" placeholder="Invoice Date"> 
+                </div>  
+        </div>
+           
+        <br>
+        <div class="row" style="padding-right: 15px;padding-left: 15px;" >
+                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <button type="submit" class="btn btn-primary btn-rounded" style="float: right !important;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
                                 Save 
                             </button>
-                        </div>
-                    </div>
-              </div>
+                </div>
+         </div>
+           
              ';
         return $data;
     }
