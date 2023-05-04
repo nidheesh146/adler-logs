@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Exports;
-use App\Models\PurchaseDetails\inv_miq;
+use App\Models\PurchaseDetails\inv_miq_item;
 use DB;    
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -22,31 +22,25 @@ class MIQQuarantineExport implements FromCollection, WithHeadings, WithStyles,Wi
     {
         if($this->request=='null')
         {
-             $items =inv_miq::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
+             $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
                     'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number')
-                    ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.master','=','inv_miq.id')
-                    ->leftjoin('inv_miq_item','inv_miq_item.id','=','inv_miq_item_rel.item')
-                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
-                    ->leftjoin('inv_supplier_invoice_rel','inv_supplier_invoice_rel.master','inv_supplier_invoice_master.id')
-                    ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','inv_supplier_invoice_rel.item')
-                    ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                    ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
+                    ->leftjoin('inv_miq','inv_miq.id','=','inv_miq_item_rel.master')
+                    ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
                     ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
-                    ->leftjoin('inv_mac','inv_mac.invoice_id','=','inv_supplier_invoice_master.id')
-                    ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.master','=','inv_mac.id')
-                    ->leftjoin('inv_mac_item','inv_mac_item.id','=','inv_mac_item_rel.item')
-                    ->leftjoin('user','user.user_id','inv_miq.created_by')
-                    ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
-                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
-                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                    ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                    ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
-                     ->whereNotIn('inv_miq_item.invoice_item_id',function($query) {
-                      $query->select('inv_mac_item.invoice_item_id')->from('inv_mac_item');
-                
-                    })
-                    ->where($condition)
+                    ->leftjoin('user','user.user_id','inv_miq.created_by')
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                    ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+                    ->whereNotIn('inv_miq_item.invoice_item_id',function($query) {
+                        $query->select('inv_mac_item.invoice_item_id')->from('inv_mac_item');
+                     })
                     ->where('inv_miq.status','=',1)
                     ->orderBy('inv_miq_item.id','DESC')
                     ->get();
@@ -69,33 +63,27 @@ class MIQQuarantineExport implements FromCollection, WithHeadings, WithStyles,Wi
                 $condition[] = ['inv_miq.miq_date', '>=', date('Y-m-d', strtotime('01-' . $this->request->from))];
                 $condition[] = ['inv_miq.miq_date', '<=', date('Y-m-t', strtotime('01-' . $this->request->from))];
             }
-             $items =inv_miq::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
+             $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
                     'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number')
-                    ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.master','=','inv_miq.id')
-                    ->leftjoin('inv_miq_item','inv_miq_item.id','=','inv_miq_item_rel.item')
-                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
-                    ->leftjoin('inv_supplier_invoice_rel','inv_supplier_invoice_rel.master','inv_supplier_invoice_master.id')
-                    ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','inv_supplier_invoice_rel.item')
-                     ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                    ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
+                    ->leftjoin('inv_miq','inv_miq.id','=','inv_miq_item_rel.master')
+                    ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
                     ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
-                    ->leftjoin('inv_mac','inv_mac.invoice_id','=','inv_supplier_invoice_master.id')
-                    ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.master','=','inv_mac.id')
-                    ->leftjoin('inv_mac_item','inv_mac_item.id','=','inv_mac_item_rel.item')
-                    ->leftjoin('user','user.user_id','inv_miq.created_by')
-                    ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
-                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                    ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
-                    ->where($condition)
+                    ->leftjoin('user','user.user_id','inv_miq.created_by')
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
+                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                    ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
                     ->whereNotIn('inv_miq_item.invoice_item_id',function($query) {
-                      $query->select('inv_mac_item.invoice_item_id')->from('inv_mac_item');
-                
+                        $query->select('inv_mac_item.invoice_item_id')->from('inv_mac_item');
+                        
                     })
                     ->where('inv_miq.status','=',1)
-                    ->distict('inv_miq_item.id')
                     ->orderBy('inv_miq_item.id','DESC')
                     ->get();
             

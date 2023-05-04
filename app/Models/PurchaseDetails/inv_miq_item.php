@@ -49,7 +49,7 @@ class inv_miq_item extends Model
                     ->first();
                     
     }
-    function get_items_not_in_mac($condition)
+    function get_all_data_not_in_mac($condition)
     {
         return $this->select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
@@ -62,18 +62,21 @@ class inv_miq_item extends Model
                     ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
                     ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
-                    ->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
-                    ->leftjoin('user','user.user_id','inv_miq.created_by')
-                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
-                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                      ->leftjoin('user','user.user_id','inv_miq.created_by')
                     ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+                     ->leftjoin('inv_supplier_invoice_rel','inv_supplier_invoice_rel.item','inv_supplier_invoice_item.id')
+                      ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_supplier_invoice_rel.master')
+                      ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                    ->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
                     ->where($condition)
                     ->whereNotIn('inv_miq_item.invoice_item_id',function($query) {
                         $query->select('inv_mac_item.invoice_item_id')->from('inv_mac_item');
                   
                     })
-                    ->where('inv_miq.status','=',1)
+                     ->where('inv_miq.status','=',1)
                     ->orderBy('inv_miq_item.id','DESC')
                     ->paginate(15);
     }
+
+      
 }
