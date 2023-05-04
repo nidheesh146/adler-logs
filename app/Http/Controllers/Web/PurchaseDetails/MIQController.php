@@ -267,6 +267,7 @@ class MIQController extends Controller
     }
       public function LiveQuarantineReport(Request $request)
     {   
+       
         $condition = [];
         if($request)
         {
@@ -285,12 +286,10 @@ class MIQController extends Controller
                 $condition[] = ['inv_miq.miq_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
                 $condition[] = ['inv_miq.miq_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
             }
-           $data['miq']= $this->inv_miq_item->get_all_data_not_in_mac($condition);
+           //$data['miq']= $this->inv_miq_item->get_all_data_not_in_mac($condition);
            //$data['miq']= $this->inv_miq_item->get_items_not_in_mac($condition);
         }
-        else
-        $data['miq']= $this->inv_miq_item->get_all_data_not_in_mac($condition=null);
-        //$data['miq']= $this->inv_miq_item->get_items_not_in_mac($condition=null);
+        $data['miq']= $this->inv_miq_item->get_all_data_not_in_mac($condition);
 
         return view('pages.inventory.MIQ.LiveQuarantineReport',compact('data'));
     }
