@@ -86,7 +86,7 @@
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>Process Sheet No *</label>
-                                            <input type="text" class="form-control"  value="" name="process_sheet" placeholder="Process Sheet No">
+                                            <input type="text" class="form-control"  value="" name="process_sheet"  id="process_sheet" placeholder="Process Sheet No" readonly>
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>SKU Quantity *</label>
@@ -240,9 +240,9 @@
                     required: true,
                     number: true,
                 },
-                process_sheet:{
-                    required: true,
-                },
+                // process_sheet:{
+                //     required: true,
+                // },
                 start_date: {
                     required: true,
                 },
@@ -267,9 +267,9 @@
                     required: true,
                     number: true,
                 },
-                process_sheet:{
-                    required: true,
-                },
+                // process_sheet:{
+                //     required: true,
+                // },
                 start_date: {
                     required: true,
                 },
@@ -309,6 +309,7 @@
         $('.spinner-button').show();
 
         let res = $(this).select2('data')[0];
+        $('#process_sheet').val(res['process_sheet_no']);
         if(res){
             $('.description').text(res.discription);
           $.get("{{ url('batchcard/product/find-input-materials') }}?product_id="+res.id,function(data){

@@ -293,12 +293,14 @@ class ProductController extends Controller
                     if(!$product_product)
                     {
                         $res[] = DB::table('product_product')->insert($data); 
+                        //$res[] = 1;
                     }
                     else
                     {
                         //echo "yes";exit;
                         $da['drug_license_number'] = $excelsheet[42];
                         $da['is_sterile'] = (strtolower($excelsheet[31]) == 'yes') ? 1 : 0;
+                        $da['process_sheet_no'] = $excelsheet[16];
                         $res[] = DB::table('product_product')->where('sku_code', $excelsheet[1])->update($da);
                     }
             }
