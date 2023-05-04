@@ -95,5 +95,5 @@ class fgs_oef_item extends Model
                     ->where($condition)
                     ->distinct('fgs_oef_item.id')
                    ->get();
-}
+} 
 }

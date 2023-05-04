@@ -117,7 +117,7 @@
 										<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
 										@endif
 									</td>
-								</tr>
+								</tr> 
 								@endforeach
 							</tbody>
 						</table>

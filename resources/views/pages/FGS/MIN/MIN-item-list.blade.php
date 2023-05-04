@@ -125,7 +125,7 @@
                   <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                   <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
                   <td>
-										@if($item['cmin_status']==0)
+										@if($item['cmin_status']==0) 
 										<span class="badge badge-primary" style="width:60px;">Active</span>
 										@else
 										<span class="badge badge-danger" style="width:60px;">Cancelled</span> 

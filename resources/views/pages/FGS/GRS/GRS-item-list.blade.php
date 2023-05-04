@@ -95,7 +95,7 @@
 										@else
 										<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
 										@endif
-									</td>
+									</td> 
                                         </tr>
                                     @endforeach
 									@else
