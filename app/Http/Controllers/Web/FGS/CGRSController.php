@@ -194,7 +194,7 @@ class CGRSController extends Controller
 
         $data = '
 
-          <div class="row" style=" width:100%; ">
+          <div class="row">
          
             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
@@ -202,36 +202,37 @@ class CGRSController extends Controller
                    </label>
               <div class="form-devider"></div>
             </div>
-           </div>
-           <table class="table table-bordered mg-b-0">
+           
+           <table class="table table-bordered mg-b-0" style="padding-right: 15px;padding-left: 15px;">
                 <thead>
                 </thead>
-                <tbody style=" width:100%;">
-                    <tr style=" width:100%;">
+                <tbody >
+                    <tr>
                         <th>grs Date</th>
                         <td>' . date('d-m-Y', strtotime($grs
                 ->grs_date)) . '</td>
                     </tr>
-                    <tr style=" width:100%;">
+                    <tr >
                             <th>Created Date</th>
                             <td>' . date('d-m-Y', strtotime($grs
                     ->created_at)) . '</td>
                             
                     </tr>
-                    <tr style=" width:100%;">
+                    <tr >
                             <th>Stock Location1</th>
                             <td>' . $grs->location_name1 . '</td>
                             
                     </tr>
-                    <tr style=" width:100%;">
+                    <tr>
                             <th>Stock Location2</th>
                             <td>' . $grs->location_name2 . '</td>
                             
                     </tr>
                 </tbody>
            </table>
+           </div>
            <br>
-            <div class="row" style=" width:100%; ">
+            <div class="row" >
              <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">';
        
@@ -241,7 +242,7 @@ class CGRSController extends Controller
              </div>
             </div>
             <div class="table-responsive">
-            <table class="table table-bordered mg-b-0" id="example1">';
+            <table class="table table-bordered mg-b-0" id="example1"  style="padding-right: 15px;padding-left: 15px;">';
             
             $data .= '<thead>
                 <tr>
@@ -267,17 +268,15 @@ class CGRSController extends Controller
             $data .= '</tbody>';
         $data .= '</table>
        </div>
-       <div class="row" style=" width:100%; ">
-                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                   
-                    <div class="form-devider"></div>
-                    <div class="row" style=" width:100%; ">
-                        <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px;padding:0px; margin-left : 15px;">
-                            <label>Remarks :</label>
-                        </div>
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <textarea type="text"  name="remarks" id="remarks" class="form-control" placeholder="Enter Remarks" rows= "4">     </textarea>                       
-                        </div>
+        <div class="row">
+                <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px; ">
+                   <label>Remarks:</label>
+                </div>
+        </div>
+        <div class="row">
+                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <textarea type="text"  name="remarks" id="remarks" class="form-control" placeholder="Enter Remarks" rows= "4">     </textarea>     
+                       
                        
                         <input type="hidden" name="created_at" value=" '. date('d-m-Y', strtotime($grs->created_at)). ' ">
                         <input type="hidden" name="stock_location1" value="' .$grs->location_name1. '">
@@ -285,17 +284,15 @@ class CGRSController extends Controller
                          
                         </div>
                 </div>
-                <div class="form-devider"></div>
                 <br>
-                <div class="row" style=" width:60%; ">
+                <div class="row" >
                         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <button type="submit" class="btn btn-primary btn-rounded grs-create-btn" style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
                                 Save 
                             </button>
                         </div>
                     </div>
-              </div>
-             ';
+              ';
         return $data;
     }
     public function CGRSList(Request $request)
