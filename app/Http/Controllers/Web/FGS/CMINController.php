@@ -79,34 +79,34 @@ class CMINController extends Controller
                         $Data['created_at'] =date('Y-m-d H:i:s');
                         $Data['updated_at'] =date('Y-m-d H:i:s');
                         $Data['min_id']= $request->min_number;
-                         $loc = $this->fgs_min->get_master_data(['fgs_min.id' => $Data['min_id']]);
+                        $fgs_min_data = $this->fgs_min->get_master_data(['fgs_min.id' => $Data['min_id']]);
                         
                         $Data['stock_location']= $loc->stock_location;
                         $Data['remarks']= $request->remarks;
                         $cmin_id = $this->fgs_cmin->insert_data($Data);
 
-                 foreach ($request->min_item_id as $min_item_id) {
-                        $min_item =fgs_min_item::find($min_item_id);
-                        $datas = [
-                            "cmin_item_id" => $min_item_id,
-                            "product_id" => $min_item['product_id'],
-                            "batchcard_id" => $min_item['batchcard_id'],
-                            "quantity" => $min_item['quantity'],
-                             "created_at" => date('Y-m-d H:i:s')
-                        ];
-                     $this->fgs_cmin_item->insert_data($datas,$cmin_id);
-                     $fgs_min_item = fgs_min_item::
-                                          where('batchcard_id','=',$min_item['batchcard_id'])
+                        foreach ($request->min_item_id as $min_item_id) 
+                        {
+                            $min_item =fgs_min_item::find($min_item_id);
+                            $datas = [
+                                "cmin_item_id" => $min_item_id,
+                                "product_id" => $min_item['product_id'],
+                                "batchcard_id" => $min_item['batchcard_id'],
+                                "quantity" => $min_item['quantity'],
+                                "created_at" => date('Y-m-d H:i:s')
+                            ];
+                            $this->fgs_cmin_item->insert_data($datas,$cmin_id);
+                            $fgs_min_item = fgs_min_item::where('batchcard_id','=',$min_item['batchcard_id'])
                                         ->where('product_id','=',$min_item['product_id'])
                                         ->update(['cmin_status' => 1]);
                    
-                $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$min_item['product_id'])
+                            $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$min_item['product_id'])
                                                 ->where('batchcard_id','=',$min_item['batchcard_id'])
-                                                ->where('stock_location_id','=',$loc->id)
+                                                ->where('stock_location_id','=',$fgs_min_data->stock_location)
                                                 ->first();
-                   $update_stock = $fgs_product_stock['quantity']+$min_item['quantity'];
-                    $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
-                }
+                            $update_stock = $fgs_product_stock['quantity']+$min_item['quantity'];
+                            $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+                        }
                         if($cmin_id )
                         {
                             $request->session()->flash('success', "You have successfully created a CMIN !");

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\product;
 use App\Models\FGS\product_stock_location;
 use App\Models\FGS\fgs_product_stock_management;
+use App\Models\FGS\fgs_maa_stock_management;
 use App\Models\FGS\production_stock_management;
 use App\Models\FGS\fgs_product_category;
 use App\Models\FGS\fgs_oef;
@@ -31,6 +32,7 @@ class GRSController extends Controller
         $this->fgs_grs_item = new fgs_grs_item;
         $this->fgs_grs_item_rel = new fgs_grs_item_rel;
         $this->fgs_product_stock_management = new fgs_product_stock_management;
+        $this->fgs_maa_stock_management = new fgs_maa_stock_management;
         $this->production_stock_management = new production_stock_management;
     }
 
