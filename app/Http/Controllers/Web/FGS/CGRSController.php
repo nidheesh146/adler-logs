@@ -104,20 +104,20 @@ class CGRSController extends Controller
                                             // ->where('product_id','=',$grs_item['product_id'])
                                             ->update(['cgrs_status' => 1]);
                    
-                            $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
-                                        ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                        ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
-                                        ->first();
+                            // $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
+                            //             ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                            //             ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
+                            //             ->first();
 
-                            $update_stock = $fgs_product_stock['quantity']+$grs_item['batch_quantity'];
-                            $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+                            // $update_stock = $fgs_product_stock['quantity']+$grs_item['batch_quantity'];
+                            // $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
 
-                            $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$grs_item['product_id'])
-                                                ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                                ->first();
+                            // $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$grs_item['product_id'])
+                            //                     ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                            //                     ->first();
 
-                            $update_maa_stocks = $fgs_maa_stock['quantity']-$grs_item['batch_quantity'];
-                            $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
+                            // $update_maa_stocks = $fgs_maa_stock['quantity']-$grs_item['batch_quantity'];
+                            // $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
                 
                         }
                         if($cgrs_id )

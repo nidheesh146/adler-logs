@@ -473,6 +473,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/PI/item-list/{pi_id}','PIController@PIitemlist');
     Route::get('fgs/PI/fetchGRS','PIController@fetchGRS');
     Route::get('fgs/PI/pdf/{pi_id}','PIController@PIpdf');
+    //CPI
+     Route::get('fgs/CPI/CPI-list','CPIController@CPIList');
+    Route::get('fgs/CPI/CPI-add','CPIController@CPIAdd');
+    Route::post('fgs/CPI/CPI-add','CPIController@CPIAdd');
+    Route::get('fgs/CPI/find-pi-number-for-cpi','CPIController@findPiNumberForCPI');
+    Route::get('fgs/CPI/find-pi-info', 'CPIController@piInfo');
+    Route::get('fgs/CPI/item-list/{cpi_id}','CPIController@CPIItemList');
     //DNI
     Route::get('fgs/DNI-list','DNIController@DNIList');
     Route::get('fgs/DNI-add','DNIController@DNIAdd');

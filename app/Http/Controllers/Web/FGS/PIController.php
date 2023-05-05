@@ -14,6 +14,7 @@ use App\Models\FGS\fgs_grs_item;
 use App\Models\FGS\fgs_pi_item;
 use App\Models\FGS\fgs_pi_item_rel;
 use App\Models\FGS\fgs_maa_stock_management;
+use App\Models\FGS\fgs_product_stock_management;
 use App\Models\product;
 class PIController extends Controller
 {
@@ -26,6 +27,7 @@ class PIController extends Controller
         $this->fgs_pi_item = new fgs_pi_item;
         $this->fgs_pi_item_rel = new fgs_pi_item_rel;
         $this->fgs_maa_stock_management = new fgs_maa_stock_management;
+        $this->fgs_product_stock_management = new fgs_product_stock_management;
         $this->product = new product;
     }
     public function PIList(Request $request)
@@ -97,6 +99,16 @@ class PIController extends Controller
                         $stock['quantity'] =$grs_item['batch_quantity'];
                         $stock['created_at'] =  date('Y-m-d H:i:s');
                         $maa_stock=$this->fgs_maa_stock_management->insert_data($stock);
+                        
+                         $fgs_grs_data = fgs_grs::where('id','=',$grs_data['master'])->first();
+                        $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
+                                        ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                                        ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
+                                        ->first();
+
+                            $update_stock = $fgs_product_stock['quantity']-$grs_item['batch_quantity'];
+                            $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+
 
                     }
                 }
