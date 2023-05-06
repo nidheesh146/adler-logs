@@ -107,15 +107,14 @@
 							</thead>
 							<tbody id="prbody1">
 							@foreach($cmin as $item)
-                                <tr>
-									
+                  <tr>
 									<td>{{$item['cmin_number']}}</td>
                   <td>{{$item['category_name']}}</td>
 									<td>{{$item['location_name']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['cmin_date']))}}</td>
                                     <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/CMIN/items-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
-                                    	<!-- <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/MIN/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> -->
-                                    	 	</td>
+                                    	<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/CMIN/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
+                                    </td>
 								</tr>
 								@endforeach
 							</tbody>

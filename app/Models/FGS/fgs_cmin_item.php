@@ -38,7 +38,8 @@ class fgs_cmin_item extends Model
     }
     function getItems($condition)
     {
-         return $this->select('fgs_cmin_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_cmin.min_number')
+         return $this->select('fgs_cmin_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_min_item.manufacturing_date','fgs_min_item.expiry_date')
+          ->leftjoin('fgs_min_item','fgs_min_item.id','=','fgs_cmin_item.cmin_item_id')
                         ->leftjoin('fgs_cmin_item_rel','fgs_cmin_item_rel.item','=','fgs_cmin_item.id')
                         ->leftjoin('fgs_cmin','fgs_cmin.id','=','fgs_cmin_item_rel.master')
                         ->leftjoin('product_product','product_product.id','=','fgs_cmin_item.product_id')
