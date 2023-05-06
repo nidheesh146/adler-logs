@@ -244,6 +244,7 @@ class BatchCardController extends Controller
 
     function insert_batchcard_batchcard($ExcelOBJ)
     {
+        ini_set('max_execution_time', 500);
         $data = [];
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
         {
@@ -252,7 +253,8 @@ class BatchCardController extends Controller
                 $product = DB::table('product_product')->select(['is_sterile','id'])->where('sku_code', $excelsheet[1])->first();
                 $batchcard =  DB::table('batchcard_batchcard')->select(['*'])->where('batch_no', $excelsheet[0])->first();
                 if(!($batchcard) && $product)
-                {
+                {   
+                
                     $data = [
                         'batch_no' =>$excelsheet[0],
                         'quantity'=>$excelsheet[10],
@@ -260,13 +262,108 @@ class BatchCardController extends Controller
                         'product_id'=>$product->id,
                         'process_sheet_id' => $excelsheet[11],
                         'is_active'=>1,
+                        'is_assemble'=>(strtolower($excelsheet[5]) == 'assembly') ? 1 : 0,
                         'created'=>date('Y-m-d H:i:s'),
                         'updated'=>date('Y-m-d H:i:s'),
                         'start_date' => ($excelsheet[3]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
                         'target_date' => ($excelsheet[9]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[9]))->format('Y-m-d')) : NULL,
 
                     ];
-                    $res = DB::table('batchcard_batchcard')->insert($data);
+                    $res = DB::table('batchcard_batchcard')->insertGetId($data);
+                    $input_material =product_input_material::Join('product_product','product_product.id','=','product_input_material.product_id')
+                                        ->where('product_product.sku_code','=', $excelsheet[1])->first();
+                    // //$input_material=DB::table('product_input_material')->where('id','=',1)->first(); 
+                    // print_r($input_material);exit;
+                    if($excelsheet[5]!='N/A' || $excelsheet[5]!='NA' || $excelsheet[5]!='Assembly')
+                    {
+                        $item1 = inventory_rawmaterial::where('item_code',$excelsheet[5])->first();
+                        if($item1)
+                        $item_id1 = $item1['id'];
+                        else
+                        $item_id1 = NULL;
+                    }
+                    else
+                    {
+                        $item_id1 = NULL;
+                    }
+                    if($excelsheet[6]!='N/A' || $excelsheet[6]!='NA')
+                    {
+                        $item2 = inventory_rawmaterial::where('item_code',$excelsheet[6])->first();
+                        if($item2)
+                        $item_id2 = $item2['id'];
+                        else
+                        $item_id2 = NULL;
+                    }
+                    else 
+                    {
+                        $item_id2 = NULL;
+                    }
+                    $item_id3 = NULL;
+                    /*if($excelsheet[4]!='N/A' || $excelsheet[4]!='NA')
+                    {
+                        $item3 = inventory_rawmaterial::where('item_code',$excelsheet[4])->first();
+                        if($item3)
+                        $item_id3 = $item3['id'];
+                        else
+                        $item_id3 = NULL;
+                    }
+                    else 
+                    {
+                        $item_id3 = NULL;
+                    }*/
+                    if(!$input_material)
+                    {
+                        $data =[
+                            'product_id'=>$product['id'],
+                            'item_id1'=>$item_id1,
+                            'item_id2'=>$item_id2,
+                            'item_id2'=>$item_id3,
+                            'status'=>1,
+                            'created_at'=>date('Y-m-d H:i:s'),
+                        ];
+                        // $data['status'] = 1;
+                        // $data['created_at'] = date('Y-m-d H:i:s');
+                       
+                        $input_material = DB::table('product_input_material')->insert($data); 
+                    }
+                    if(strtolower($excelsheet[5]) != 'assembly')
+                    {
+                        $item_id = inventory_rawmaterial::where('item_code',$excelsheet[5])->pluck('id')->first();
+                        
+                        $prdct_input_material_id = product_input_material::where('product_id','=',$product->id)
+                                                                        ->where('item_id1','=', $item_id)
+                                                                        ->pluck('id')
+                                                                        ->where('status','=',1)
+                                                                        ->first();
+                        $material['item_id'] = $item_id;
+                        $material['batchcard_id'] =$res;
+                        $material['prdct_input_material_id'] = $prdct_input_material_id;
+
+                    }
+                }
+                if(($batchcard) && $product)
+                {
+                   
+                    $data = [
+                        'is_assemble'=>(strtolower($excelsheet[5]) == 'assembly') ? 1 : 0,
+                        //'updated'=>date('Y-m-d H:i:s'),
+                    ];
+                    $res = DB::table('batchcard_batchcard')->where('id',$batchcard->id)->update($data);
+                    if(strtolower($excelsheet[5]) != 'assembly')
+                    {
+                        $item_id = inventory_rawmaterial::where('item_code',$excelsheet[5])->pluck('id')->first();
+                        
+                        $prdct_input_material_id = product_input_material::where('product_id','=',$product->id)
+                                                                        ->where('item_id1','=', $item_id)
+                                                                        ->pluck('id')
+                                                                        ->where('status','=',1)
+                                                                        ->first();
+                        $material['item_id'] = $item_id;
+                        $material['batchcard_id'] = $batchcard->id;
+                        $material['product_inputmaterial_id'] = $prdct_input_material_id;
+                        $batchcard_material = DB::table('batchcard_materials')->insert($material); 
+
+                    }
                 }
                     
             }
