@@ -449,6 +449,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/COEF/find-oef-number-for-coef','COEFController@findOefNumberForCOEF');
     Route::get('fgs/COEF/find-oef-info', 'COEFController@oefInfo');
     Route::get('fgs/COEF/item-list/{coef_id}','COEFController@COEFItemList');
+    Route::get('fgs/COEF/pdf/{coef_id}','COEFController@COEFpdf');
     //GRS
     Route::get('fgs/GRS-list','GRSController@GRSList');
     Route::get('fgs/GRS-add','GRSController@GRSAdd');
