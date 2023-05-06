@@ -469,6 +469,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/CGRS/find-grs-number-for-cgrs','CGRSController@findGrsNumberForCGRS');
     Route::get('fgs/CGRS/find-grs-info', 'CGRSController@grsInfo');
     Route::get('fgs/CGRS/items-list/{cgrs_id}','CGRSController@CGRSItemList');
+    Route::get('fgs/CGRS/pdf/{cgrs_id}','CGRSController@CGRSpdf');
     //PI
     Route::get('fgs/PI-list','PIController@PIList');
     Route::get('fgs/PI-add','PIController@PIAdd');

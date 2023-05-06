@@ -59,7 +59,8 @@ class fgs_cgrs extends Model
         'transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
         'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person',
         'customer_supplier.sales_type','customer_supplier.city','customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email',
-        'currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3')
+        'currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3','fgs_cgrs.cgrs_number','fgs_cgrs.cgrs_date')
+            ->leftJoin('fgs_grs','fgs_grs.id','fgs_cgrs.grs_id')
             ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
             ->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
             ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
@@ -71,7 +72,7 @@ class fgs_cgrs extends Model
             ->leftJoin('state','state.state_id','=','customer_supplier.state')
             ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
             ->where($condition)
-            ->where('fgs_grs.status','=',1)
+            ->where('fgs_cgrs.status','=',1)
             ->first();
     }
 }
