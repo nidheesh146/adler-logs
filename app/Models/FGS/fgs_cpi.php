@@ -5,9 +5,9 @@ namespace App\Models\FGS;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class fgs_pi extends Model
+class fgs_cpi extends Model
 {
-    protected $table = 'fgs_pi';
+    protected $table = 'fgs_cpi';
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = false;
@@ -19,25 +19,7 @@ class fgs_pi extends Model
         return $this->where($condition)->update($data);
     }
 
-    function get_all_pi_for_dni($condition)
-    {
-        return $this->select('fgs_pi.*','customer_supplier.firm_name')
-            // ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
-            // ->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
-            // ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
-            //->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
-            ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
-            ->whereNotIn('fgs_pi.id',function($query) {
-
-                $query->select('fgs_dni_item.pi_id')->from('fgs_dni_item');
-            
-            })
-            ->where($condition)
-            ->orderBy('fgs_pi.id','DESC')
-            ->distinct('fgs_pi.id')
-            ->get();
-    }
-
+  
     function get_single_pi($condition)
     {
         return $this->select('fgs_pi.*','fgs_oef.oef_number','fgs_oef.oef_date','order_fulfil.order_fulfil_type','fgs_oef.order_number','fgs_oef.order_date','fgs_grs.grs_number','fgs_grs.grs_date',
@@ -59,30 +41,30 @@ class fgs_pi extends Model
             ->where('fgs_grs.status','=',1)
             ->first();
     }
-    function find_pi_data($condition)
+     function find_pi_data($condition)
     {
-        return $this->select('fgs_pi.*','fgs_product_category.category_name','product_stock_location.location_name')
-                        ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_pi.product_category')
-                        ->leftJoin('product_stock_location','product_stock_location.id','fgs_pi.stock_location')
+        return $this->select('fgs_cpi.*','fgs_product_category.category_name','product_stock_location.location_name')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_cpi.product_category')
+                        ->leftJoin('product_stock_location','product_stock_location.id','fgs_cpi.stock_location')
                         ->where($condition)
                           ->first();
     }
       function find_pi_datas($condition)
     {
-        return $this->select(['fgs_pi.*'])
+        return $this->select(['fgs_cpi.*'])
                     ->where($condition)
-                    ->where('fgs_pi.status','=',1)
+                    ->where('fgs_cpi.status','=',1)
                     ->first();
     }
       function find_pi_num_for_cpi($condition)
     {
-        return $this->select(['fgs_pi.pi_number as text','fgs_pi.id'])->where($condition)
-        ->where('fgs_pi.status','=',1)
+        return $this->select(['fgs_cpi.pi_number as text','fgs_cpi.id'])->where($condition)
+        ->where('fgs_cpi.status','=',1)
         ->where($condition)
         ->get();
     }
      function get_master_data($condition){
-        return $this->select(['fgs_pi.*'])
+        return $this->select(['fgs_cpi.*'])
                     ->where($condition)
                     ->first();
     }
