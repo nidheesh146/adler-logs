@@ -46,13 +46,13 @@ class CGRSController extends Controller
     }
    
 
-      public function CGRSpdf($grs_id)
+      public function CGRSpdf($cgrs_id)
     { 
-        $data['grs'] = $this->fgs_grs->get_single_grs(['fgs_grs.id' => $grs_id]);
-        $data['items'] = $this->fgs_grs_item->getItems(['fgs_grs_item_rel.master' => $grs_id]);
-        $pdf = PDF::loadView('pages.FGS.grs.pdf-view', $data);
+        $data['cgrs'] = $this->fgs_cgrs->get_single_grs(['fgs_cgrs.id' => $cgrs_id]);
+        $data['items'] = $this->fgs_cgrs_item->getItems(['fgs_cgrs_item_rel.master' => $cgrs_id]);
+        $pdf = PDF::loadView('pages.FGS.CGRS.pdf-view', $data);
         // $pdf->set_paper('A4', 'landscape');
-        $file_name = "grs" . $data['grs']['firm_name'] . "_" . $data['grs']['grs_date'];
+        $file_name = "CGRS" . $data['cgrs']['firm_name'] . "_" . $data['cgrs']['cgrs_date'];
         return $pdf->stream($file_name . '.pdf');
     }
 

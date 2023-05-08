@@ -282,13 +282,13 @@ class COEFController extends Controller
        // echo $min_id;exit;
         return view('pages/FGS/COEF/COEF-item-list', compact('coef_id','items'));
     }
-    public function OEFpdf($oef_id)
+    public function COEFpdf($oef_id)
     {
-        $data['oef'] = $this->fgs_oef->get_single_oef(['fgs_oef.id' => $oef_id]);
-        $data['items'] = $this->fgs_oef_item->getAllItems(['fgs_oef_item_rel.master' => $oef_id]);
-        $pdf = PDF::loadView('pages.FGS.OEF.pdf-view', $data);
+        $data['coef'] = $this->fgs_coef->get_single_oef(['fgs_coef.id' => $oef_id]);
+        $data['items'] = $this->fgs_coef_item->getAllItems(['fgs_coef_item_rel.master' => $oef_id]);
+        $pdf = PDF::loadView('pages.FGS.COEF.pdf-view', $data);
         $pdf->set_paper('A4', 'landscape');
-        $file_name = "OEF" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
+        $file_name = "COEF" . $data['coef']['firm_name'] . "_" . $data['coef']['coef_date'];
         return $pdf->stream($file_name . '.pdf');
     }
 

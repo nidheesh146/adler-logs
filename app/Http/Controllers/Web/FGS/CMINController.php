@@ -38,13 +38,13 @@ class CMINController extends Controller
     }
    
 
-      public function MINpdf($min_id)
+      public function CMINpdf($cmin_id)
     { 
-        $data['min'] = $this->fgs_min->get_single_min(['fgs_min.id' => $min_id]);
-        $data['items'] = $this->fgs_min_item->getItems(['fgs_min_item_rel.master' => $min_id]);
-        $pdf = PDF::loadView('pages.FGS.MIN.pdf-view', $data);
+        $data['cmin'] = $this->fgs_cmin->get_single_min(['fgs_cmin.id' => $cmin_id]);
+        $data['items'] = $this->fgs_cmin_item->getItems(['fgs_cmin_item_rel.master' => $cmin_id]);
+        $pdf = PDF::loadView('pages.FGS.CMIN.pdf-view', $data);
         // $pdf->set_paper('A4', 'landscape');
-        $file_name = "MIN" . $data['min']['firm_name'] . "_" . $data['min']['min_date'];
+        $file_name = "CMIN" . $data['cmin']['firm_name'] . "_" . $data['cmin']['cmin_date'];
         return $pdf->stream($file_name . '.pdf');
     }
 

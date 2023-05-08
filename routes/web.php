@@ -416,6 +416,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
     Route::post('fgs/MIN/add-item/{min_id}','MINController@MINitemAdd');
     Route::get('fgs/MIN/pdf/{min_id}','MINController@MINpdf');
+    Route::get('fgs-stock/fetchproduct','MINController@fetchFGSStockProduct');
+    Route::get('fgs/fetchProductBatchCardsFromFGSStock','MINController@fetchBatchCardsFromFGSStock');
     //CMIN
     Route::get('fgs/CMIN/CMIN-list','CMINController@CMINList');
     Route::get('fgs/CMIN-add','CMINController@CMINAdd');
@@ -423,9 +425,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/CMIN/find-min-number-for-cmin','CMINController@findMinNumberForCMIN');
     Route::get('fgs/CMIN/find-min-info', 'CMINController@minInfo');
     Route::get('fgs/CMIN/items-list/{cmin_id}','CMINController@CMINItemList');
+    Route::get('fgs/CMIN/pdf/{cmin_id}','CMINController@CMINpdf');
 
-    Route::get('fgs-stock/fetchproduct','MINController@fetchFGSStockProduct');
-    Route::get('fgs/fetchProductBatchCardsFromFGSStock','MINController@fetchBatchCardsFromFGSStock');
+   
      //MTQ
      Route::get('fgs/MTQ-list','MTQController@MTQList');
      Route::get('fgs/MTQ/add','MTQController@MTQAdd');
@@ -449,6 +451,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/COEF/find-oef-number-for-coef','COEFController@findOefNumberForCOEF');
     Route::get('fgs/COEF/find-oef-info', 'COEFController@oefInfo');
     Route::get('fgs/COEF/item-list/{coef_id}','COEFController@COEFItemList');
+    Route::get('fgs/COEF/pdf/{coef_id}','COEFController@COEFpdf');
     //GRS
     Route::get('fgs/GRS-list','GRSController@GRSList');
     Route::get('fgs/GRS-add','GRSController@GRSAdd');
@@ -468,6 +471,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/CGRS/find-grs-number-for-cgrs','CGRSController@findGrsNumberForCGRS');
     Route::get('fgs/CGRS/find-grs-info', 'CGRSController@grsInfo');
     Route::get('fgs/CGRS/items-list/{cgrs_id}','CGRSController@CGRSItemList');
+    Route::get('fgs/CGRS/pdf/{cgrs_id}','CGRSController@CGRSpdf');
     //PI
     Route::get('fgs/PI-list','PIController@PIList');
     Route::get('fgs/PI-add','PIController@PIAdd');

@@ -21,8 +21,9 @@ class fgs_cmin extends Model
 
     function get_single_min($condition)
     {
-        return $this->select('fgs_cmin.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1')
-        ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_cmin.product_category')
+        return $this->select('fgs_cmin.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1','fgs_min.ref_number','ref_date')
+        ->leftJoin('fgs_min','fgs_min.id','fgs_cmin.min_id')
+        ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_min.product_category')
             ->leftJoin('product_stock_location','product_stock_location.id','fgs_cmin.stock_location')
                   
                     ->where($condition)
@@ -47,7 +48,7 @@ class fgs_cmin extends Model
     }
       function find_min_num_for_cmin($condition)
     {
-        return $this->select(['fgs_cmin.min_number as text','fgs_cmin.id'])->where($condition)
+        return $this->select(['fgs_cmin.cmin_number as text','fgs_cmin.id'])->where($condition)
         ->where('fgs_cmin.status','=',1)
         ->where($condition)
         ->get();

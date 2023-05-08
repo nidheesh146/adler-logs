@@ -48,6 +48,7 @@ class fgs_grs_item extends Model
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
                         ->leftjoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_grs_item.mrn_item_id')
                         ->where($condition)
+                        ->where('fgs_grs_item.cgrs_status','=',0)
                         ->where('fgs_grs.status','=',1)
                         ->orderBy('fgs_grs_item.id','DESC')
                         ->distinct('fgs_grs_item.id')

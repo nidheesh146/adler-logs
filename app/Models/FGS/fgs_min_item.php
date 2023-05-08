@@ -31,7 +31,6 @@ class fgs_min_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_min_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_min_item.batchcard_id')
                         ->where($condition)
-                        //->where('inv_mac.status','=',1)
                         ->orderBy('fgs_min_item.id','DESC')
                         ->distinct('fgs_min_item.id')
                         ->paginate(15);
@@ -43,7 +42,8 @@ class fgs_min_item extends Model
                         ->leftjoin('fgs_min','fgs_min.id','=','fgs_min_item_rel.master')
                         ->leftjoin('product_product','product_product.id','=','fgs_min_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_min_item.batchcard_id')
-                       ->where($condition)
+                        ->where('fgs_min_item.cmin_status','=',0)
+                        ->where($condition)
                     ->orderBy('fgs_min_item.id','DESC')
                     ->get();
     }
