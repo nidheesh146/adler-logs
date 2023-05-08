@@ -57,7 +57,7 @@ class fgs_cpi extends Model
                     ->where('fgs_cpi.status','=',1)
                     ->first();
     }
-      function find_pi_num_for_cpi($condition)
+      function find_pi_num_for_cpi($condition) 
     {
         return $this->select(['fgs_cpi.pi_number as text','fgs_cpi.id'])->where($condition)
         ->where('fgs_cpi.status','=',1)

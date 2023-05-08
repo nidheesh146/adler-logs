@@ -56,7 +56,7 @@ class CPIController extends Controller
                 ->paginate(15);
         return view('pages/FGS/CPI/CPI-list', compact('cpi'));
     }
-    public function CPIAdd(Request $request)
+    public function CPIAdd(Request $request) 
     {
         if($request->isMethod('post'))
         {

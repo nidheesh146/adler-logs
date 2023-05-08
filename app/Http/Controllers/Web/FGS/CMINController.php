@@ -49,7 +49,7 @@ class CMINController extends Controller
     }
 
     public function CMINAdd(Request $request)
-        {
+        { 
 
            if($request->isMethod('post'))
             {

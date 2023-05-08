@@ -55,7 +55,7 @@ class fgs_cpi_item extends Model
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                        ->where($condition)
                     ->orderBy('fgs_cpi_item.id','DESC')
-                    ->get();
+                    ->get(); 
     }
 
     function get_pi_item($condition){

@@ -61,7 +61,7 @@ class COEFController extends Controller
     public function COEFAdd(Request $request)
     {
         if($request->isMethod('post'))
-        {
+        { 
            $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
