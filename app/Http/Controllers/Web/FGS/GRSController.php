@@ -122,7 +122,6 @@ class GRSController extends Controller
         $condition[] = ['fgs_oef_item_rel.master','=', $oef_id];
         $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];
         $condition[] = ['fgs_oef_item.coef_status','=',0]; 
-
         $oef_items = $this->fgs_oef_item->getItems($condition);
         $i=0;
         foreach($oef_items as $item)

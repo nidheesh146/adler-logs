@@ -168,7 +168,7 @@
                                         <a href="{{url('inventory/final-purchase-view/'.$po_data->id)}}" class="dropdown-item" style="padding:2px 15px;"><i class="fas fa-eye"></i> View</a>
                                         @endif
                                         @if($po_data->status!=0)
-                                            @if($po_data->status!=1 && $po_data->status!=0)
+                                            @if($po_data->status!=0)
                                                 @if(in_array('order.edit',config('permission')))
                                                 <a href="{{url('inventory/final-purchase-edit/'.$po_data->id)}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
                                                 @endif
