@@ -45,11 +45,14 @@ class fgs_cpi_item extends Model
     }
     function getItems($condition)
     {
-         return $this->select('fgs_cpi_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_cpi.pi_number')
+         return $this->select('fgs_pi_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_cpi.cpi_number')
+                        ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_cpi_item.pi_item_id')
                         ->leftjoin('fgs_cpi_item_rel','fgs_cpi_item_rel.item','=','fgs_cpi_item.id')
                         ->leftjoin('fgs_cpi','fgs_cpi.id','=','fgs_cpi_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_cpi_item.product_id')
-                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cpi_item.batchcard_id')
+                        ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_cpi_item.grs_item_id')
+                         ->leftJoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_cpi_item.mrn_item_id')
+                        ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                        ->where($condition)
                     ->orderBy('fgs_cpi_item.id','DESC')
                     ->get();

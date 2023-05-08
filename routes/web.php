@@ -486,6 +486,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/CPI/find-pi-number-for-cpi','CPIController@findPiNumberForCPI');
     Route::get('fgs/CPI/find-pi-info', 'CPIController@piInfo');
     Route::get('fgs/CPI/item-list/{cpi_id}','CPIController@CPIItemList');
+    Route::get('fgs/CPI/pdf/{cpi_id}','CPIController@CPIpdf');
+    
     //DNI
     Route::get('fgs/DNI-list','DNIController@DNIList');
     Route::get('fgs/DNI-add','DNIController@DNIAdd');

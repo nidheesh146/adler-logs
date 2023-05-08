@@ -56,7 +56,6 @@ class CMINController extends Controller
                 $validation['cmin_date'] = ['required','date'];
                 $validation['min_number'] = ['required'];
                 $validation['created_by'] = ['required'];
-                $validation['remarks'] = ['required'];
                 $validation['invoice_item.*.sku_code'] = ['required'];
                 $validation['invoice_item.*.batch_no'] = ['required'];
                 $validation['invoice_item.*.qty'] = ['required'];
