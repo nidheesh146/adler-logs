@@ -137,7 +137,7 @@
        </div>  
     <div class="col4">
         <span style="float:right;font-weight:bold;font-size: 24px; background-color: #f4f5f8; margin-top:-20px; position: absolute;">
-        cancellation Order Execution Form(COEF)<!--Padding is optional-->
+        Cancellation Order Execution Form(COEF)<!--Padding is optional-->
         </span>
     </div>
 </div>

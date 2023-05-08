@@ -6,7 +6,7 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Cancellation Goods Reservation Slip(COEF)</span>
+				 <span>Cancellation Order Execution Form(COEF)</span>
 				 <span><a href="">
 				 	COEF  List
 				</a></span>
@@ -52,7 +52,7 @@
 														<label>COEF No :</label>
 														<input type="text" value="{{request()->get('coef_number')}}" name="coef_number" id="coef_number" class="form-control" placeholder="COEF NO">
 													</div><!-- form-group -->
-													
+												
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label  style="font-size: 12px;">COEF Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">

@@ -6,13 +6,13 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Goods Reservation Slip(OEF)</span>
+				 <span>Cancellation Order Execution Form(COEF)</span>
 				 <span><a href="">
-				 	OEF  List
+				 	COEF  List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-            OEF List 
+            COEF List 
               <div class="right-button">
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/COEF-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
 						COEF 

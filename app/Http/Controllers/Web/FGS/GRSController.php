@@ -120,7 +120,9 @@ class GRSController extends Controller
     function product_exist_current_location($oef_id, $stock_location)
     {
         $condition[] = ['fgs_oef_item_rel.master','=', $oef_id];
-        $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];            
+        $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];
+        $condition[] = ['fgs_oef_item.coef_status','=',0]; 
+
         $oef_items = $this->fgs_oef_item->getItems($condition);
         $i=0;
         foreach($oef_items as $item)
@@ -296,7 +298,8 @@ class GRSController extends Controller
     {
         $grs_master = fgs_grs::find($grs_id);
         $condition[] = ['fgs_oef_item_rel.master','=', $grs_master['oef_id']];
-        $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];            
+        $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];
+        $condition[] = ['fgs_oef_item.coef_status','=',0];             
         $oef_items = $this->fgs_oef_item->getItems($condition);
         foreach($oef_items as $item)
         {
@@ -460,7 +463,7 @@ class GRSController extends Controller
         $data['items'] = $this->fgs_grs_item->getAllItems(['fgs_grs_item_rel.master' => $grs_id]);
         $pdf = PDF::loadView('pages.FGS.GRS.pdf-view', $data);
         //$pdf->set_paper('A4', 'landscape');
-        $file_name = "GRS" . $data['grs']['grs_number'] . "_" . $data['grs']['grs_date'];
+        $file_name = "GRS" . $data['grs']['firm_name'] . "_" . $data['grs']['grs_date'];
         return $pdf->stream($file_name . '.pdf');
     }
 }
