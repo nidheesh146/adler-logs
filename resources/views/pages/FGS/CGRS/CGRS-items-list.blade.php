@@ -6,13 +6,13 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Cancellation Material Issue Note(MIN)</span>
+				 <span>Cancellation Goods Reservation Slip(CGRS)</span>
 				 <span><a href="">
-				 	MIN Item List
+				 	CGRS Item List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-            CMIN Item List 
+            CGRS Item List 
              
         </h4>	
 		   @if(Session::get('error'))
@@ -97,6 +97,7 @@
 								<tr>
 									<th>Product</th>
                   <th>HSN Code</th>
+                  <th>Quantity</th>
 									<th>Description</th>
 									
 								</tr>
@@ -106,6 +107,7 @@
                  <tr>
 									<td>{{$item['sku_code']}}</td>
                   <td>{{$item['hsn_code']}}</td>
+                  <td>{{$item['batch_quantity']}}</td>
 									<td>{{$item['discription']}}</td>
 								 </tr>
 								@endforeach

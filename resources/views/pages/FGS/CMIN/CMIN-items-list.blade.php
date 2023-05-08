@@ -6,9 +6,9 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Cancellation Material Issue Note(MIN)</span>
+				 <span>Cancellation Material Issue Note(CMIN)</span>
 				 <span><a href="">
-				 	MIN Item List
+				 	CMIN Item List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">

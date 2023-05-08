@@ -260,7 +260,7 @@ class CGRSController extends Controller
                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->discription.'</td>
                        <td>'.$item->batch_no.'</td>
-                       <td>'.$item->quantity.'</td>
+                       <td>'.$item->batch_quantity.'</td>
                       
                       
                       </tr>';
