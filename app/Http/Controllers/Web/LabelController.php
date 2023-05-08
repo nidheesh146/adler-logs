@@ -68,6 +68,10 @@ class LabelController extends Controller
     {
         return view('pages/label/mrp-label');
     }
+    public function adhlMRPLabel()
+    {
+        return view('pages/label/adhl-mrp-label');
+    }
 
     public function sterilizationProductLabel()
     {
@@ -133,6 +137,27 @@ class LabelController extends Controller
         if($product)
         {
             return view('pages/label/mrp-label-print', compact('product','no_of_label'));
+        
+        } 
+        else
+        {
+            return Redirect::back()->with('error', 'Batch Code & Sku code not matching..');
+        }
+    }
+    public function generateADHLMRPLabel(Request $request)
+    {
+        $batcard_no = $request->batchcard_no;
+        $no_of_label = $request->no_of_label;
+        $sku_code = $request->sku_code;
+        $product = DB::table('batchcard_batchcard')
+                            ->select('batchcard_batchcard.batch_no','batchcard_batchcard.product_id', 'product_product.sku_code','product_product.mrp', 'product_product.label_format_number', 'product_product.drug_license_number', 'batchcard_batchcard.start_date')                        
+                            ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+                            ->where('product_product.sku_code' ,'=', $sku_code)
+                            ->where('batchcard_batchcard.batch_no','=',$batcard_no)
+                            ->first();
+        if($product)
+        {
+            return view('pages/label/adhl-mrp-print', compact('product','no_of_label'));
         
         } 
         else

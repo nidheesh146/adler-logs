@@ -35,7 +35,7 @@ class inv_mrr extends Model
     function find_mrr_data($condition)
     {
         return $this->select(['inv_mrr.mrr_number','inv_mrr.id','inv_mrr.created_at','inv_mrr.mrr_date','inv_mrr.created_by','inv_mac.id as mac_id','inv_mac.mac_number','user.f_name','user.l_name','inv_mac.mac_date','inv_supplier_invoice_master.id as invoiceId',
-        'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier.address','inv_supplier.contact_number','inv_miq.miq_number','inv_miq.miq_date','inv_mrd.mrd_number','inv_mrd.mrd_date','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date'])
+        'inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier.address','inv_supplier.contact_number','inv_miq.miq_number','inv_miq.miq_date','inv_mrd.mrd_number','inv_mrd.mrd_date','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_mrd.status as mrd_status','inv_mac.status as mac_status'])
                     
                     ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mrr.invoice_id')
                     ->leftjoin('inv_mac','inv_mac.id','=','inv_mrr.mac_id')
@@ -43,6 +43,8 @@ class inv_mrr extends Model
                     ->leftjoin('inv_miq','inv_miq.invoice_master_id','=','inv_supplier_invoice_master.id')
                     ->leftjoin('inv_mrd','inv_mrd.invoice_id','=','inv_supplier_invoice_master.id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                    //->where('inv_mrd.status','=',1)
+                    // ->where('inv_mac.status','=',1)
                     ->where('inv_mrr.status','=',1)
                     ->where($condition)
                     ->first();

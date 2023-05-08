@@ -149,11 +149,11 @@
             </tr>
             <tr>
                 <td>@if($type=='po') MRD @else WOR @endif No</td>
-                <td>:&nbsp; @if($mrr['mrd_number']) {{$mrr['mrd_number']}} @endif</td>
+                <td>:&nbsp;@if($mrr['mrd_status']==1)  @if($mrr['mrd_number']) {{$mrr['mrd_number']}} @endif @endif</td>
             </tr>
             <tr>
                 <td>@if($type=='po') MRD @else WOR @endif Date</td>
-                <td>:&nbsp; @if($mrr['mrd_number']) {{date('d-m-Y', strtotime($mrr['mrd_date']))}} @endif</td>
+                <td>:&nbsp;@if($mrr['mrd_status']==1)  @if($mrr['mrd_number']) {{date('d-m-Y', strtotime($mrr['mrd_date']))}} @endif @endif</td>
             </tr>
         </table>
     </div>

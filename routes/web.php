@@ -323,6 +323,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('batchcard/quantity-update/reject','BatchCardController@rejectRequest');
     Route::get('batchcard/batchcard-list/{batch_id}/report','BatchCardController@BatchCardpdf');
     //Label card
+    Route::get('label/adhl-mrp-label','LabelController@adhlMRPLabel');
+    Route::post('label/adhl-mrp-label','LabelController@generateADHLMRPLabel');
     Route::get('label/mrp-label','LabelController@mrpLabel');
     Route::post('label/mrp-label','LabelController@generateMRPLabel');
     Route::get('label/getBatchcard/{sku_code}', 'LabelController@getBatchcard');

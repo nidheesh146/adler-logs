@@ -81,20 +81,21 @@
                 <div class="label-content{{$j}}" style="">
                     <div class="subcolumn" style="float:left;width:95%;">
                         <div class="address" style="font-weight:bold;">
-                            Mktd and Distributed by : Smith & Nephew<br/>
-                            Healthcare Pvt. Ltd. B-501-509 Dynasty<br/>
-                            Business Park, Andheri East, Mumbai-400059 
+                            Mktd and Distributed by : Adler Healthcare Pvt. Ltd.<br/>
+                            A-1, MIDC Sadavali, Tal. Sangameshwar<br/>
+                            Dist. Ratnagiri<br/>
+                            PIN 415804, Maharashtra, India 
                         </div>
                         <strong>For Product Feedback, Contact on:</strong>
-                        <div><strong>Email :</strong>Complaint.india@smith-nephew.com<br/>
-                         Tel: +91-22-40055090 &nbsp; {{$product->drug_license_number}}<br/>
+                        <div><strong>Email :</strong>adler-customer.care@adler-healthcare.com<br/>
+                         Tel: +91 8055136000&nbsp; {{$product->drug_license_number}}<br/>
                          <strong>Code No: {{$product->sku_code}}</strong><br/>
                          <strong>MRP (Incl. of all taxes/pc) : Rs.{{$product->mrp}} /-</strong><br/>
                         </div>  
                     </div> 
                     <div class="subcolumn" style="float:left;width:5%;">
                         <span class="smalltext" style="font-size:8px;margin-top:22px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
-                        LBL/F-08_rev00_{{date( 'd M y' , strtotime('29-01-2022') )}}
+                        LBL/F-18_REV00_{{date( 'd M y' , strtotime('01-01-2023') )}}
                         </span>
 
                     </div>  

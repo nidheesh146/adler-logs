@@ -3,7 +3,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
-    // echo $Action;
+     //echo $Action;
 @endphp
   <div class="az-sidebar"> 
     <div class="az-sidebar-header">
@@ -188,7 +188,9 @@
         </li>
         
 
-        <li class="nav-item @if(in_array($Action,['Label.sterilizationProductLabel', 'Label.nonSterileProductLabel' ,'Label.instrumentLabel','Label.patientLabel', 'Label.mrpLabel', 'Label.generateInstrumentLabel', 'Label.generateMRPLabel','Label.generateNonSterileProductLabel','Label.generateSterilizationProductLabel','Label.generatePatientLabel','Label.printingReport'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['Label.sterilizationProductLabel', 'Label.nonSterileProductLabel' ,'Label.instrumentLabel','Label.patientLabel', 'Label.mrpLabel', 
+        'Label.generateInstrumentLabel', 'Label.generateMRPLabel','Label.generateNonSterileProductLabel','Label.generateSterilizationProductLabel','Label.generatePatientLabel',
+        'Label.printingReport','Label.adhlMRPLabel','Label.generateADHLMRPLabel'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Label Card</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['Label.instrumentLabel', 'Label.generateInstrumentLabel'])){{'active'}} @endif ">
@@ -196,6 +198,9 @@
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Label.mrpLabel', 'Label.generateMRPLabel'])){{'active'}} @endif ">
               <a href="{{url('label/mrp-label')}}"  class="nav-sub-link">MRP Label</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Label.adhlMRPLabel', 'Label.generateADHLMRPLabel'])){{'active'}} @endif ">
+              <a href="{{url('label/adhl-mrp-label')}}"  class="nav-sub-link">ADHL MRP Label</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Label.nonSterileProductLabel', 'Label.generateNonSterileProductLabel'])){{'active'}} @endif ">
               <a href="{{url('label/non-sterile-product-label')}}"  class="nav-sub-link">Non-Sterile Label</a>
