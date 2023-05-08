@@ -310,6 +310,9 @@ class PurchaseController extends Controller
                 $data['discount'] = $request->discount;
                 $data['Specification'] = $request->specification;
                 $POitem = $this->inv_final_purchase_order_item->updatedata(['id' => $id], $data);
+                $po_master =inv_final_purchase_order_rel::where('item','=', $id)->pluck('master')->first();
+                $master_data['status'] = 4;
+                $po_update = $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$po_master],$master_data);
                 $request->session()->flash('success', "You have successfully edited a  purchase order item!");
                 return redirect("inventory/final-purchase-item-edit/" . $id);
             }
