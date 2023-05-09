@@ -61,9 +61,8 @@ class COEFController extends Controller
     public function COEFAdd(Request $request)
     {
         if($request->isMethod('post'))
-        {
-            $validation['remarks'] = ['required'];
-            $validator = Validator::make($request->all(), $validation);
+        { 
+           $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
                 if(date('m')==01 || date('m')==02 || date('m')==03)

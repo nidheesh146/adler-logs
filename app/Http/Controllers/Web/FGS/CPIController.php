@@ -56,7 +56,7 @@ class CPIController extends Controller
                 ->paginate(15);
         return view('pages/FGS/CPI/CPI-list', compact('cpi'));
     }
-    public function CPIAdd(Request $request)
+    public function CPIAdd(Request $request) 
     {
         if($request->isMethod('post'))
         {
@@ -211,13 +211,13 @@ class CPIController extends Controller
         return 0;
     }
 
-    public function PIpdf($pi_id)
+    public function CPIpdf($cpi_id)
     {
-        $data['pi'] = $this->fgs_pi->get_single_pi(['fgs_pi.id' => $pi_id]);
-        $data['items'] = $this->fgs_pi_item_rel->getAllItems(['fgs_pi_item_rel.master' => $pi_id]);
-        $pdf = PDF::loadView('pages.FGS.PI.pdf-view', $data);
+        $data['cpi'] = $this->fgs_cpi->get_single_cpi(['fgs_cpi.id' => $cpi_id]);
+        $data['items'] = $this->fgs_cpi_item->getItems(['fgs_cpi_item.id' => $cpi_id]);
+        $pdf = PDF::loadView('pages.FGS.CPI.pdf-view', $data);
         $pdf->set_paper('A4', 'landscape');
-        $file_name = "PI" . $data['pi']['pi_number'] . "_" . $data['pi']['pi_date'];
+        $file_name = "CPI" . $data['cpi']['cpi_number'] . "_" . $data['cpi']['cpi_date'];
         return $pdf->stream($file_name . '.pdf');
     }
      public function findPiNumberForCPI(Request $request){
