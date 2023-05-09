@@ -108,6 +108,9 @@
             <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
               <a href="{{url('fgs/price-master/list')}}"  class="nav-sub-link">Price Master</a>
             </li>
+            <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
+              <a href="{{url('fgs/product-master/list')}}"  class="nav-sub-link">Product Master</a>
+            </li>
             <li class="nav-sub-item @if(in_array($Action,['StockManagement.productionStockAdd','StockManagement.productionStockList'])){{'active'}} @endif ">
               <a href="{{url('fgs/production-stock/list')}}"  class="nav-sub-link">Production Stock</a>
             </li>
