@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\FGS\production_stock_management;
 use App\Models\FGS\fgs_product_stock_management;
 use App\Models\FGS\fgs_maa_stock_management;
+use App\Models\FGS\product_product;
 use App\Exports\StockLocationExport;
 use Validator;
 class StockManagementController extends Controller
@@ -15,69 +16,252 @@ class StockManagementController extends Controller
     {
         $this->fgs_product_stock_management = new fgs_product_stock_management;
         $this->production_stock_management = new production_stock_management;
+        $this->product_product = new product_product;
     }
     public function allLocations(Request $request)
     {
+        $condition =[];
+         if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->category_name)
+        {
+            $condition[] = ['fgs_product_category.category_name','like', '%' . $request->category_name . '%'];
+        }
+        if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
         $title ="All Location - Stock";
         $location = 'all';
-        $stock  = $this->fgs_product_stock_management->get_stock([]);
+        $stock  = $this->fgs_product_stock_management->get_stock($condition);
+        $pcondition = $this->product_product->get()->unique('is_sterile');
         //print_r(json_encode($stock));exit;
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
     }
     public function location1Stock(Request $request)
     {
+        $condition =[];
+          if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->category_name)
+        {
+            $condition[] = ['fgs_product_category.category_name','like', '%' . $request->category_name . '%'];
+        }
+        if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
         $title ="Location1 - Stock";
         $location = 'location1';
-        $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'Location-1']);
+         $condition[] = ['product_stock_location.location_name','like', '%' . 'Location-1' . '%'];
+        $stock  = $this->fgs_product_stock_management->get_stock($condition);
+        $pcondition = $this->product_product->get()->unique('is_sterile');
         //print_r(json_encode($stock));exit;
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
     }
     public function location2Stock(Request $request)
     {
+        $condition =[];
+          if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->category_name)
+        {
+            $condition[] = ['fgs_product_category.category_name','like', '%' . $request->category_name . '%'];
+        }
+         if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
         $title ="Location2 - Stock";
         $location = 'location2';
-        $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'Location-2']);
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+        $condition[] = ['product_stock_location.location_name','like', '%' . 'Location-2' . '%'];
+        $stock  = $this->fgs_product_stock_management->get_stock($condition);
+        $pcondition = $this->product_product->get()->unique('is_sterile');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
     }
     public function location3Stock(Request $request)
     {
+        $condition =[];
+         if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->category_name)
+        {
+            $condition[] = ['fgs_product_category.category_name','like', '%' . $request->category_name . '%'];
+        }
+        if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
         $title ="Location3 - Stock";
         $location = 'location3';
-        $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'Location-3']);
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+        $condition[] = ['product_stock_location.location_name','like', '%' . 'Location-3' . '%'];
+        $stock  = $this->fgs_product_stock_management->get_stock($condition);
+        $pcondition = $this->product_product->get()->unique('is_sterile');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
     }
     public function locationSNN(Request $request)
     {
+        $condition =[];
+         if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->category_name)
+        {
+            $condition[] = ['fgs_product_category.category_name','like', '%' . $request->category_name . '%'];
+        }
+         if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
         $title ="SNN Mktd - Stock";
         $location = 'SNN_Mktd';
-        $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'SNN Mktd']);
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+        $condition[] = ['product_stock_location.location_name','like', '%' . 'SNN Mktd' . '%'];
+        $stock  = $this->fgs_product_stock_management->get_stock($condition);
+        $pcondition = $this->product_product->get()->unique('is_sterile');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
     }
     public function locationAHPL(Request $request)
     {
+        $condition =[];
+         if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->category_name)
+        {
+            $condition[] = ['fgs_product_category.category_name','like', '%' . $request->category_name . '%'];
+        }
+        if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
         $title ="AHPL Mktd - Stock";
         $location = 'AHPL_Mktd';
-        $stock  = $this->fgs_product_stock_management->get_stock(['product_stock_location.location_name'=>'AHPL Mktd']);
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+        $condition[] = ['product_stock_location.location_name','like', '%' . 'AHPL Mktd' . '%'];
+        $stock  = $this->fgs_product_stock_management->get_stock($condition);
+        $pcondition = $this->product_product->get()->unique('is_sterile');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
     }
     public function MAAStock(Request $request)
     {
+        $condition =[];
+         if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->category_name)
+        {
+            $condition[] = ['fgs_product_category.category_name','like', '%' . $request->category_name . '%'];
+        }
+        if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
         $title ="Material Allocation Area(MAA) - Stock";
         $location = 'MAA';
         $stock=fgs_maa_stock_management::select('fgs_maa_stock_management.*','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no')
                             ->leftJoin('product_product','product_product.id','=','fgs_maa_stock_management.product_id')
                             ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_maa_stock_management.batchcard_id' )
                             ->where('fgs_maa_stock_management.quantity','!=',0)
+                            ->where($condition)
                             ->distinct('fgs_maa_stock_management.id')
                             ->orderBy('fgs_maa_stock_management.id','DESC')
                             ->paginate(15);
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location'));
+        $pcondition = $this->product_product->get()->unique('is_sterile');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
     }
     public function quarantineStock(Request $request)
     {
+        $condition =[];
+         if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->category_name)
+        {
+            $condition[] = ['fgs_product_category.category_name','like', '%' . $request->category_name . '%'];
+        }
+        if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
         $title ="Quarantine - Stock";
         // $stock ='' ;
-        return view('pages/FGS/stock-management/quarantine_stock', compact('title'));
+        $pcondition = $this->product_product->get()->unique('is_sterile');
+        return view('pages/FGS/stock-management/quarantine_stock', compact('title','pcondition'));
     }
     
     public function AlllocationExport(Request $request)
@@ -231,7 +415,7 @@ class StockManagementController extends Controller
                 $requests = 1;
             }
             else{
-                
+
                 $requests = 0;
             }
             $condition[] = ['product_product.is_sterile','like', '%' . $requests . '%'];
