@@ -213,8 +213,33 @@ class StockManagementController extends Controller
                             ->get();
             return Excel::download(new StockLocationExport($stock), 'MAA-stock' . date('d-m-Y') . '.xlsx');
     }
-    public function productionStockList()
+    public function productionStockList(Request $request)
     {
+         $condition =[];
+        if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->is_sterile)
+        {
+            if($request->is_sterile == 'Sterile')
+            {
+                $requests = 1;
+            }
+            else{
+                
+                $requests = 0;
+            }
+            $condition[] = ['product_product.is_sterile','like', '%' . $requests . '%'];
+        }
+        if($request->group_name)
+        {
+            $condition[] = ['product_group1.group_name','like', '%' . $request->group_name . '%'];
+        }
         $stock = production_stock_management::select('product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
         'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','production_stock_management.stock_qty')
                     ->leftJoin('product_product','product_product.id','=','production_stock_management.product_id')
@@ -225,6 +250,7 @@ class StockManagementController extends Controller
                     ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
                     ->distinct('production_stock_management.id')
                     ->where('production_stock_management.stock_qty','!=',0)
+                    ->where($condition)
                     ->orderBy('production_stock_management.id','DESC')
                     ->paginate(11);
         return view('pages/FGS/stock-management/production-stock-list',compact('stock'));

@@ -28,6 +28,69 @@
                         <i class="icon fa fa-check"></i> {{ Session::get('succs') }}
                     </div>
                     @endif
+                    <div class="row row-sm mg-b-20 mg-lg-b-0">
+                        <div class="table-responsive" style="margin-bottom: 13px;">
+                            <table class="table table-bordered mg-b-0">
+                            <tbody>
+                            <tr>
+                            <style>
+                             .select2-container .select2-selection--single {
+                                  height: 26px;
+                               /* width: 122px; */
+                                 }
+                            .select2-selection__rendered {
+                              font-size:12px;
+                                 }
+                            </style>
+                            <form autocomplete="off" >
+                            <th scope="row">
+                              <div class="row filter_search" style="margin-left: 0px;">
+                              <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
+                              <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                <label>SKU Code:</label>
+                                <input type="text" value="{{request()->get('sku_code')}}" name="sku_code"  id="sku_code" class="form-control" placeholder="SKU Code:">
+                              </div><!-- form-group -->
+                                    
+                              <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                <label  style="font-size: 12px;">Batch Number</label>
+                              <input type="text" value="{{request()->get('batch_no')}}" id="batch_no" class="form-control" name="batch_no" placeholder="Batch Number">
+                               </div> 
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                 <label  style="font-size: 12px;">Product Condition</label>
+                                 <input type="text" value="{{request()->get('is_sterile')}}"  class="form-control " name="is_sterile" id="is_sterile" placeholder="Product Condition" >
+                                 </div> 
+                                  <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                 <label  style="font-size: 12px;">Product Group</label>
+                                 <input type="text" value="{{request()->get('group_name')}}"  class="form-control " name="group_name" id="group_name" placeholder="Product Group" >
+                                 </div>
+                                 <!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                   <label  style="font-size: 12px;">STATE</label>
+                                  <select name="state" id="state" class="form-control">
+                                <option value="">-- Select one ---</option>
+                               
+                                </select>
+                                </div>  -->
+                                                        
+                                                                            
+                             </div>
+                              <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                              <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                 <label style="width: 100%;">&nbsp;</label>
+                                     <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                   @if(count(request()->all('')) > 2)
+                                 <a href="{{url()->current()}}" class="badge badge-pill badge-warning"
+                                                            style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+                                 @endif
+                                       </div> 
+                                </div>
+                                </div>
+                                </th>
+                             </form>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                             <p class="az-content-text mg-b-20"></p>
                             <div class="table-responsive">
                                 <table class="table table-bordered mg-b-0">
@@ -46,7 +109,7 @@
                                             <th>Std. Pack Size</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="prbody1">
                                         @if(count($stock)>0)
                                         @foreach($stock as $stck)
                                         <tr>
@@ -115,4 +178,34 @@
      
           });
 </script>
+<script>
+  $(function(){
+    'use strict'
+    var date = new Date();
+    date.setDate(date.getDate());
+    $(".datepicker").datepicker({
+        format: "mm-yyyy",
+        viewMode: "months",
+        minViewMode: "months",
+        // startDate: date,
+        autoclose:true
+    });
+
+    $('#prbody').show();
+  });
+  
+    $('.search-btn').on( "click", function(e)  {
+        var sku_code = $('#sku_code').val();
+        var batch_no = $('#batch_no').val();
+        var is_sterile = $('#is_sterile').val();
+        var group_name = $('#group_name').val();
+        if(!sku_code & !batch_no & !is_sterile & !group_name)
+        {
+            e.preventDefault();
+        }
+    });
+
+</script>
+
+
 @stop
