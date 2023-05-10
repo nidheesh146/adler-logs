@@ -8,6 +8,7 @@ use App\Models\FGS\production_stock_management;
 use App\Models\FGS\fgs_product_stock_management;
 use App\Models\FGS\fgs_maa_stock_management;
 use App\Models\FGS\product_product;
+use App\Models\FGS\fgs_product_category;
 use App\Exports\StockLocationExport;
 use Validator;
 class StockManagementController extends Controller
@@ -17,6 +18,7 @@ class StockManagementController extends Controller
         $this->fgs_product_stock_management = new fgs_product_stock_management;
         $this->production_stock_management = new production_stock_management;
         $this->product_product = new product_product;
+        $this->fgs_product_category = new fgs_product_category;
     }
     public function allLocations(Request $request)
     {
@@ -45,8 +47,9 @@ class StockManagementController extends Controller
         $location = 'all';
         $stock  = $this->fgs_product_stock_management->get_stock($condition);
         $pcondition = $this->product_product->get()->unique('is_sterile');
+        $pcategory = $this->fgs_product_category->get()->unique('category_name');
         //print_r(json_encode($stock));exit;
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
     }
     public function location1Stock(Request $request)
     {
@@ -76,8 +79,9 @@ class StockManagementController extends Controller
          $condition[] = ['product_stock_location.location_name','like', '%' . 'Location-1' . '%'];
         $stock  = $this->fgs_product_stock_management->get_stock($condition);
         $pcondition = $this->product_product->get()->unique('is_sterile');
+        $pcategory = $this->fgs_product_category->get()->unique('category_name');
         //print_r(json_encode($stock));exit;
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
     }
     public function location2Stock(Request $request)
     {
@@ -107,7 +111,8 @@ class StockManagementController extends Controller
         $condition[] = ['product_stock_location.location_name','like', '%' . 'Location-2' . '%'];
         $stock  = $this->fgs_product_stock_management->get_stock($condition);
         $pcondition = $this->product_product->get()->unique('is_sterile');
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
+        $pcategory = $this->fgs_product_category->get()->unique('category_name');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
     }
     public function location3Stock(Request $request)
     {
@@ -137,7 +142,8 @@ class StockManagementController extends Controller
         $condition[] = ['product_stock_location.location_name','like', '%' . 'Location-3' . '%'];
         $stock  = $this->fgs_product_stock_management->get_stock($condition);
         $pcondition = $this->product_product->get()->unique('is_sterile');
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
+        $pcategory = $this->fgs_product_category->get()->unique('category_name');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
     }
     public function locationSNN(Request $request)
     {
@@ -167,7 +173,8 @@ class StockManagementController extends Controller
         $condition[] = ['product_stock_location.location_name','like', '%' . 'SNN Mktd' . '%'];
         $stock  = $this->fgs_product_stock_management->get_stock($condition);
         $pcondition = $this->product_product->get()->unique('is_sterile');
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
+        $pcategory = $this->fgs_product_category->get()->unique('category_name');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
     }
     public function locationAHPL(Request $request)
     {
@@ -197,7 +204,8 @@ class StockManagementController extends Controller
         $condition[] = ['product_stock_location.location_name','like', '%' . 'AHPL Mktd' . '%'];
         $stock  = $this->fgs_product_stock_management->get_stock($condition);
         $pcondition = $this->product_product->get()->unique('is_sterile');
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
+        $pcategory = $this->fgs_product_category->get()->unique('category_name');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
     }
     public function MAAStock(Request $request)
     {
@@ -233,7 +241,8 @@ class StockManagementController extends Controller
                             ->orderBy('fgs_maa_stock_management.id','DESC')
                             ->paginate(15);
         $pcondition = $this->product_product->get()->unique('is_sterile');
-        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition'));
+        $pcategory = $this->fgs_product_category->get()->unique('category_name');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
     }
     public function quarantineStock(Request $request)
     {
@@ -408,17 +417,13 @@ class StockManagementController extends Controller
         {
             $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
         }
-        if($request->is_sterile)
+       if($request->is_sterile == 1)
         {
-            if($request->is_sterile == 'Sterile')
-            {
-                $requests = 1;
-            }
-            else{
-
-                $requests = 0;
-            }
-            $condition[] = ['product_product.is_sterile','like', '%' . $requests . '%'];
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
         }
         if($request->group_name)
         {
@@ -437,7 +442,9 @@ class StockManagementController extends Controller
                     ->where($condition)
                     ->orderBy('production_stock_management.id','DESC')
                     ->paginate(11);
-        return view('pages/FGS/stock-management/production-stock-list',compact('stock'));
+        $pcondition = $this->product_product->get()->unique('is_sterile');
+        
+        return view('pages/FGS/stock-management/production-stock-list',compact('stock','pcondition'));
     }
     public function productionStockAdd(Request $request)
     {

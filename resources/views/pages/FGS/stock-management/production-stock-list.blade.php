@@ -57,7 +57,16 @@
                                </div> 
                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                  <label  style="font-size: 12px;">Product Condition</label>
-                                 <input type="text" value="{{request()->get('is_sterile')}}"  class="form-control " name="is_sterile" id="is_sterile" placeholder="Product Condition" >
+                                 <select name="is_sterile" id="is_sterile" class="form-control">
+                                    <option value="">-- Select one ---</option>
+                                 @foreach ($pcondition as $item)
+                                 @if($item['is_sterile']==1)
+                                        <option value="{{$item->is_sterile}}">Sterile  </option>
+                                        @elseif($item['is_sterile']==0)
+                                        <option value="{{$item->is_sterile}}">Non-Sterile  </option>
+                                 @endif     
+                                    @endforeach
+                                </select>
                                  </div> 
                                   <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                  <label  style="font-size: 12px;">Product Group</label>

@@ -72,7 +72,12 @@
                                 </div> 
                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label  style="font-size: 12px;">Product Category</label>
-                                <input type="text" value="{{request()->get('category_name')}}"  class="form-control " name="category_name" id="category_name" placeholder="Product Category" >
+                                    <select name="category_name" id="category_name" class="form-control">
+                                    <option value="">-- Select one ---</option>
+                                 @foreach ($pcategory as $item)
+                                        <option value="{{$item->category_name}}">{{$item->category_name}}</option>
+                                    @endforeach
+                                </select>
                                </div> 
                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                  <label  style="font-size: 12px;">Product Condition</label>
