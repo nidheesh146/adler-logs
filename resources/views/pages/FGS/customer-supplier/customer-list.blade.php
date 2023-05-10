@@ -36,42 +36,49 @@
 												font-size:12px;
 											}
 										</style>
-										<form autocomplete="off" id="formfilter">
+										<form autocomplete="off" >
 											<th scope="row">
 												<div class="row filter_search" style="margin-left: 0px;">
 													<div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
 														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label>Item Code:</label>
-															<input type="text" value="{{request()->get('item_code')}}" name="item_code"  id="item_code" class="form-control" placeholder="ITEM CODE">
+															<label>ENTITY NAME:</label>
+															<input type="text" value="{{request()->get('firm_name')}}" name="firm_name"  id="firm_name" class="form-control" placeholder="ENTITY NAME">
 														</div><!-- form-group -->
 									
 														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Type1</label>
-															<input type="text" value="{{request()->get('type1')}}" id="type1" class="form-control" name="type1" placeholder="TYPE1">
+															<label  style="font-size: 12px;">CONTACT PERSON</label>
+															<input type="text" value="{{request()->get('contact_person')}}" id="contact_person" class="form-control" name="contact_person" placeholder="CONTACT PERSON">
 														</div> 
 														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Type2</label>
-															<input type="text" value="{{request()->get('type2')}}"  class="form-control " name="type2" placeholder="TYPE2" >
+															<label  style="font-size: 12px;">SALES TYPE</label>
+															<input type="text" value="{{request()->get('sales_type')}}"  class="form-control " name="sales_type" id="sales_type" placeholder="SALES TYPE" >
 														</div> 
 														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Origin</label>
-															<input type="text" value="{{request()->get('origin')}}"  class="form-control " name="origin" placeholder="ORIGIN" >
+															<label  style="font-size: 12px;">STATE</label>
+															 <select name="state" id="state" class="form-control">
+                                    <option value="">-- Select one ---</option>
+                                 @foreach ($states as $item)
+                                        <option value="{{$item->state_id}}">{{$item->state_name}}</option>
+                                    @endforeach
+                                </select>
+															
+
+
+															<!-- <input type="text" value="{{request()->get('state')}}"  class="form-control " name="state" placeholder="STATE" > -->
 														</div> 
 														
 																			
 													</div>
-													<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
-														<!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;"> -->
-															<label style="width: 100%;">&nbsp;</label>
-															<button type="submit" class="badge badge-pill badge-primary search-btn" 
-															onclick="document.getElementById('formfilter').submit();"
-															style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-															@if(count(request()->all('')) > 1)
-																<a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-																style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-															@endif
-														<!-- </div>  -->
-													</div>
+													<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+														<label style="width: 100%;">&nbsp;</label>
+														<button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+														@if(count(request()->all('')) > 2)
+															<a href="{{url()->current()}}" class="badge badge-pill badge-warning"
+															style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+														@endif
+													</div> 
+												</div>
 												</div>
 											</th>
 										</form>
@@ -83,7 +90,7 @@
 				<div class="tab-pane tab-pane active  show" id="purchase">
 					
 					<div class="table-responsive">
-						<table class="table table-bordered mg-b-0" id="example1">
+						<table class="table table-bordered mg-b-0" >
 							<thead>
 								<tr>
 									<th>Firm/Entity Name</th>
@@ -96,7 +103,7 @@
 									<th>Action</th>
 								</tr>
 							</thead>
-							<tbody >
+							<tbody  id="prbody1">
 							@foreach($customers as $customer)
 								<tr>
 									<td>{{$customer['firm_name']}}</td>
@@ -153,15 +160,15 @@
         autoclose:true
     });
 
-    //$('#prbody').show();
+    $('#prbody').show();
   });
   
 	$('.search-btn').on( "click", function(e)  {
-		//var supplier = $('#supplier').val();
-		var rq_no = $('#rq_no').val();
-		var po_no = $('#po_no').val();
-		var from = $('#from').val();
-		if(!rq_no & !po_no & !from)
+		var firm_name = $('#firm_name').val();
+		var contact_person = $('#contact_person').val();
+		var sales_type = $('#sales_type').val();
+		var state = $('#state').val();
+		if(!firm_name & !contact_person & !sales_type & !state)
 		{
 			e.preventDefault();
 		}

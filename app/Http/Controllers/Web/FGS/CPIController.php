@@ -209,7 +209,7 @@ class CPIController extends Controller
         }
         else 
         return 0;
-    }
+    } 
 
     public function CPIpdf($cpi_id)
     {
@@ -217,7 +217,7 @@ class CPIController extends Controller
         $data['items'] = $this->fgs_cpi_item->getItems(['fgs_cpi_item.id' => $cpi_id]);
         $pdf = PDF::loadView('pages.FGS.CPI.pdf-view', $data);
         $pdf->set_paper('A4', 'landscape');
-        $file_name = "CPI" . $data['cpi']['cpi_number'] . "_" . $data['cpi']['cpi_date'];
+        $file_name = "CPI" . $data['cpi']['firm_name'] . "_" . $data['cpi']['cpi_date'];
         return $pdf->stream($file_name . '.pdf');
     }
      public function findPiNumberForCPI(Request $request){

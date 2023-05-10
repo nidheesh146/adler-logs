@@ -21,10 +21,28 @@ class CustomerSupplierController extends Controller
         $this->zone = new zone;
         $this->customer_supplier = new customer_supplier;
     }
-    public function customerSupplierList()
+    public function customerSupplierList(Request $request)
     {
-        $customers = $this->customer_supplier->get_all([]);
-        return view('pages/FGS/customer-supplier/customer-list',compact('customers'));
+        $condition =[];
+        if($request->firm_name)
+        {
+            $condition[] = ['customer_supplier.firm_name','like', '%' . $request->firm_name . '%'];
+        }
+        if($request->contact_person)
+        {
+            $condition[] = ['customer_supplier.contact_person','like', '%' . $request->contact_person . '%'];
+        }
+        if($request->sales_type)
+        {
+            $condition[] = ['customer_supplier.sales_type','like', '%' . $request->sales_type . '%'];
+        }
+        if($request->state)
+        {
+            $condition[] = ['customer_supplier.state','like', '%' . $request->state . '%'];
+        }
+        $states = $this->state->get_states([]);
+        $customers = $this->customer_supplier->get_all($condition);
+        return view('pages/FGS/customer-supplier/customer-list',compact('customers','states'));
     }
 
         public function addCustomerSupplier(Request $request,$id=null)

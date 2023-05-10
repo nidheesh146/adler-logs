@@ -59,9 +59,10 @@ class COEFController extends Controller
           return view('pages/FGS/COEF/COEF-list', compact('coef'));
     }
     public function COEFAdd(Request $request)
-    {
+    { 
         if($request->isMethod('post'))
         { 
+           $validation['coef_date'] = ['required'];
            $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
