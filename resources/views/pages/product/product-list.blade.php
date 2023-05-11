@@ -39,42 +39,56 @@
 										</style>
 										<form autocomplete="off" id="formfilter">
 											<th scope="row">
-												<div class="row filter_search" style="margin-left: 0px;">
-													<div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
-														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label>Item Code:</label>
-															<input type="text" value="{{request()->get('item_code')}}" name="item_code"  id="item_code" class="form-control" placeholder="ITEM CODE">
-														</div><!-- form-group -->
-									
-														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Type1</label>
-															<input type="text" value="{{request()->get('type1')}}" id="type1" class="form-control" name="type1" placeholder="TYPE1">
-														</div> 
-														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Type2</label>
-															<input type="text" value="{{request()->get('type2')}}"  class="form-control " name="type2" placeholder="TYPE2" >
-														</div> 
-														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Origin</label>
-															<input type="text" value="{{request()->get('origin')}}"  class="form-control " name="origin" placeholder="ORIGIN" >
-														</div> 
-														
-																			
-													</div>
-													<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
-														<!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;"> -->
-															<label style="width: 100%;">&nbsp;</label>
-															<button type="submit" class="badge badge-pill badge-primary search-btn" 
-															onclick="document.getElementById('formfilter').submit();"
-															style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-															@if(count(request()->all('')) > 1)
-																<a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-																style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-															@endif
-														<!-- </div>  -->
-													</div>
-												</div>
-											</th>
+                              <div class="row filter_search" style="margin-left: 0px;">
+                              <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
+                              <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                <label>SKU Code:</label>
+                                <input type="text" value="{{request()->get('sku_code')}}" name="sku_code"  id="sku_code" class="form-control" placeholder="SKU Code:">
+                              </div><!-- form-group -->
+                                    
+                              <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                <label  style="font-size: 12px;">Brand</label>
+                              <input type="text" value="{{request()->get('brand_name')}}" id="brand_name" class="form-control" name="brand_name" placeholder="Brand">
+                               </div> 
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                 <label  style="font-size: 12px;">Product Condition</label>
+                                 <select name="is_sterile" id="is_sterile" class="form-control">
+                                    <option value="">-- Select one ---</option>
+                                 @foreach ($pcondition as $item)
+                                 @if($item['is_sterile']==1)
+                                        <option value="{{$item->is_sterile}}">Sterile  </option>
+                                        @elseif($item['is_sterile']==0)
+                                        <option value="{{$item->is_sterile}}">Non-Sterile  </option>
+                                 @endif     
+                                    @endforeach
+                                </select>
+                                 </div> 
+                                  <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                 <label  style="font-size: 12px;">Product Group</label>
+                                 <input type="text" value="{{request()->get('group_name')}}"  class="form-control " name="group_name" id="group_name" placeholder="Product Group" >
+                                 </div>
+                                 <!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                   <label  style="font-size: 12px;">STATE</label>
+                                  <select name="state" id="state" class="form-control">
+                                <option value="">-- Select one ---</option>
+                               
+                                </select>
+                                </div>  -->
+                                                        
+                                                                            
+                             </div>
+                              <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                              <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                 <label style="width: 100%;">&nbsp;</label>
+                                     <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                   @if(count(request()->all('')) > 2)
+                                 <a href="{{url()->current()}}" class="badge badge-pill badge-warning"
+                                                            style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+                                 @endif
+                                       </div> 
+                                </div>
+                                </div>
+                                </th>
 										</form>
 									</tr>
 								</tbody>
@@ -98,7 +112,7 @@
 									<th>Action</th>
 								</tr>
 							</thead>
-							<tbody >
+							<tbody id="prbody1">
 							@foreach($data['products'] as $item)
                         <tr>
                             <td>{{$item['sku_code']}}</td>
@@ -147,9 +161,9 @@
 <script>
   $(function(){
     'use strict'
-	var date = new Date();
+    var date = new Date();
     date.setDate(date.getDate());
-	$(".datepicker").datepicker({
+    $(".datepicker").datepicker({
         format: "mm-yyyy",
         viewMode: "months",
         minViewMode: "months",
@@ -157,21 +171,20 @@
         autoclose:true
     });
 
-    //$('#prbody').show();
+    $('#prbody').show();
   });
   
-	$('.search-btn').on( "click", function(e)  {
-		//var supplier = $('#supplier').val();
-		var rq_no = $('#rq_no').val();
-		var po_no = $('#po_no').val();
-		var from = $('#from').val();
-		if(!rq_no & !po_no & !from)
-		{
-			e.preventDefault();
-		}
-	});
+    $('.search-btn').on( "click", function(e)  {
+        var sku_code = $('#sku_code').val();
+        var brand_name = $('#brand_name').val();
+        var is_sterile = $('#is_sterile').val();
+        var group_name = $('#group_name').val();
+        if(!sku_code & !brand_name & !is_sterile & !group_name)
+        {
+            e.preventDefault();
+        }
+    });
 
 </script>
-
 
 @stop

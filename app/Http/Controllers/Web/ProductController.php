@@ -9,6 +9,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use App\Models\product;
 use App\Models\product_input_material;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
+use App\Models\FGS\product_product;
 use Validator;
 use Redirect;
 use DB; 
@@ -21,15 +22,35 @@ class ProductController extends Controller
         $this->inventory_rawmaterial = new inventory_rawmaterial;
         $this->product_input_material = new product_input_material;
         $this->product_stock_location = new product_stock_location;
+        $this->product_product = new product_product;
     }
 
-    public function productList()
+    public function productList(Request $request)
     {
-    
-        //$this->prd_InputmaterialUpload();
-
-        $data['products'] = $this->product->get_products([]);
-        return view('pages/product/product-list',compact('data'));
+         $condition =[];
+          if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->brand_name)
+        {
+            $condition[] = ['product_productbrand.brand_name','like', '%' . $request->brand_name . '%'];
+        }
+        if($request->group_name)
+        {
+            $condition[] = ['product_productgroup.group_name','like', '%' . $request->group_name . '%'];
+        }
+        if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        $pcondition = $this->product_product->get()->unique('is_sterile');
+        $data['products'] = $this->product->get_products($condition);
+        return view('pages/product/product-list',compact('data','pcondition'));
     }
     public function addInputMaterial(Request $request,$product_id=null)
     {
