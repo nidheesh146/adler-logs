@@ -100,7 +100,6 @@
         }
     </style>
    
-    <!-- <div class="row1" style="height:150px;border-bottom:solid 2px black;"> -->
     <div class="row1" style="height:240px;">
         <div class="col1">
             To<br/>
@@ -133,7 +132,7 @@
         </div>
     </div>
        <div class="row1" >  
-       <div class="col4" style="display:block;height: 8px;width:50%; border-bottom: solid black;margin-bottom:0px;"> 
+       <div class="col4" style="display:block;height: 8px;width:55%; border-bottom: solid black;margin-bottom:0px;"> 
        </div>  
     <div class="col4">
         <span style="float:right;font-weight:bold;font-size: 24px; background-color: #f4f5f8; margin-top:-20px; position: absolute;">
@@ -141,8 +140,8 @@
         </span>
     </div>
 </div>
-    <br/> 
-    <div class="row2" >
+    <br/> <br/>
+    <div class="row2" style="height:70px;">
         <div class="col21">
             <table>
                 <tr>
@@ -210,8 +209,8 @@
                 </tr>
             </table>
         </div>
-    <br/>    
-    </div>
+       
+    </div>   
     
     <style>
         th{
@@ -219,7 +218,7 @@
         }
     </style>
     <div class="row3">
-        <table border="1">
+        <table  border ="1">
             <tr>
                 <th rowspan="2">S.NO</th>
                 <th rowspan="2" style="width:10%;">

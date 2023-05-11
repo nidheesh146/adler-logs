@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\product;
 use App\Models\batchcard;
 use App\Models\PurchaseDetails\product_price_master;
+use App\Models\PurchaseDetails\product_productgroup;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Validator;
 use DB;
@@ -19,6 +20,7 @@ class PriceController extends Controller
     {
          $this->product = new product;
          $this->product_price_master = new product_price_master;
+         $this->product_productgroup = new product_productgroup;
     }
 
     public function priceList(Request $request)
@@ -26,8 +28,22 @@ class PriceController extends Controller
        // $this->priceMasterUpload();
        // $this->productFgsUpload();
        //$this->fgsStockUpload();
-        $prices = $this->product_price_master->get_all([]);
-        return view('pages/FGS/price-master/price-master-list',compact('prices'));
+        $condition =[];
+        if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->hsn_code)
+        {
+            $condition[] = ['product_product.hsn_code','like', '%' . $request->hsn_code . '%'];
+        }
+        if($request->group_name)
+        {
+            $condition[] = ['product_productgroup.group_name','like', '%' . $request->group_name . '%'];
+        }
+        $price = $this->product_productgroup->distinct('product_productgroup.group_name')->get();
+        $prices = $this->product_price_master->get_all($condition);
+        return view('pages/FGS/price-master/price-master-list',compact('prices','price'));
     }
     public function priceAdd(Request $request,$id=null)
     {
