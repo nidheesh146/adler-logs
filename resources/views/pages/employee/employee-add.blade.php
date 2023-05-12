@@ -101,11 +101,11 @@
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label>Password *</label>
-                                <input type="password" class="form-control" name="password"  id="password" placeholder="Password">
+                                <input type="password" class="form-control" name="password"  id="password" placeholder="Password" value="{{ !empty($pass) ? $pass : ''}}">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label>Confirm Password *</label>
-                                <input type="password" class="form-control" name="confirm_password"  id="confirm_password" placeholder="Password">
+                                <input type="password" class="form-control" name="confirm_password"  id="confirm_password" placeholder="Password" value="{{ !empty($pass) ? $pass : '' }}">
                             </div><!-- form-group -->
                         </div> 
             
