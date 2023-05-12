@@ -374,6 +374,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::post('product/alternative-input-material/add','ProductController@alternativeInputMaterialAdd');
     Route::get('product/location/{id?}', 'ProductController@locationList');
     Route::post('product/location/{id?}', 'ProductController@locationList');
+    Route::get('product/Product-add','ProductController@productAdd');
+    Route::post('product/Product-add','ProductController@productAdd');
 
 });
 
