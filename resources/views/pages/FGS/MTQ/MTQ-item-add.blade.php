@@ -20,6 +20,7 @@
                 </div>
 
                 <div class="row">
+                    <input type="hidden" class="mtq_id" value="{{$mtq_id}}">
                     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
                         <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
                         <form method="post" id="commentForm" novalidate="novalidate">
@@ -42,8 +43,8 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Product code * </label>
-                                                    <select class="form-control Item-code item_code1" id="1"
-                                                        name="moreItems[0][Itemcode]" id="Itemcode">
+                                                    <select class="form-control product product_code1" id="1"
+                                                        name="moreItems[0][product]" id="product">
                                                     </select>
                                                     
                                                 </div>
@@ -65,8 +66,8 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
-                                                    <select class="form-control Item-code item_code1" id="1"
-                                                        name="moreItems[0][Itemcode]" id="Itemcode">
+                                                    <select class="form-control batch_number batch_no1" id="1"
+                                                        name="moreItems[0][batch_no]" id="batch_no1">
                                                     </select>
                                                     
                                                 </div>
@@ -74,28 +75,29 @@
                                             <div class="row"> 
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
-                                                    <label>Batch Qty * </label>
-                                                    <input type="text" readonly class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="Batch Qty">
+                                                    <label>Quantity * </label>
+                                                    <input type="text"  class="form-control" name="moreItems[0][qty]"
+                                                        id="stock_qty1" placeholder="Stock Qty">
                                                 </div>
                                             
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
                                                     style="float:left;">
                                                     <label>UOM </label>
-                                                    <input type="text"  class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="UOM">
+                                                    <input type="text"  class="form-control" readonly name="uom"
+                                                        id="uom1" placeholder="Nos">
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label>Date of Mfg. * </label>
-                                                    <input type="text"  class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="Date of Mfg.">
+                                                    <input type="text"  class="form-control datepicker manufacturing_date" name="moreItems[0][manufacturing_date]" value="{{date('d-m-Y')}}"
+                                                        id="manufacturing_date1" placeholder="Date of Mfg.">
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label>Date of Expiry * </label>
-                                                    <input type="text"  class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="Date of Expiry">
+                                                    @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
+                                                    <input type="text"  class="form-control datepicker expiry_date" name="moreItems[0][expiry_date]" value="{{date('d-m-Y', strtotime($date .' -2 day'))}}"
+                                                        id="expiry_date1" placeholder="Date of Expiry">
                                                 </div>
                                                 <button type="button" name="add" id="add" class="btn btn-success"
                                                     style="height:38px;margin-top:28px;"><i
@@ -189,7 +191,7 @@ function getsearch(){
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label for="exampleInputEmail1">Product code * </label>
-                                <select class="form-control Item-code item_code${i}" id="${i}" name="moreItems[0][Itemcode]" id="Itemcode">
+                                <select class="form-control product item_code${i}" id="${i}" name="moreItems[${i}][product]" id="product">
                                 </select>                        
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
@@ -203,26 +205,26 @@ function getsearch(){
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label for="exampleInputEmail1">Batch No* </label>
-                                <select class="form-control Item-code item_code1" id="1" name="moreItems[0][Itemcode]" id="Itemcode${i}">
+                                <select class="form-control batch_number batch_no${i}" id="${i}" name="moreItems[${i}][batch_no]" id="batch_no${i}">
                                 </select>                
                             </div>
                         </div>
                         <div class="row"> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                                <label>Batch Qty * </label>
-                                <input type="text" readonly class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="Batch Qty">
+                                <label>Quantity * </label>
+                                <input type="text"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Quantity">
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>UOM </label>
-                                <input type="text"  class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="UOM">
+                                <input type="text"  class="form-control" readonly name="moreItems[${i}][uom]" id="uom${i}" placeholder="NOS">
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Date of Mfg. * </label>
-                                <input type="text"  class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="Date of Mfg.">
+                                <input type="text"  class="form-control datepicker manufacturing_date" name="moreItems[${i}][manufacturing_date]" id="manufacturing_date${i}" value="">
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Date of Expiry * </label>
-                                <input type="text"  class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="Date of Expiry">
+                                <input type="text"  class="form-control datepicker expiry_date" name="moreItems[${i}][expiry_date]" id="expiry_date${i}" value="">
                             </div>
                             <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
                         </div>
@@ -234,16 +236,24 @@ function getsearch(){
                 var button_id = $(this).attr("id");
                 $("#row"+button_id+"").remove();
             });
+            $('.batch_number').on('change', function (){
+                var select_id = $(this).attr("id");
+                //alert(select_id);
+                var element = $("option:selected", this); 
+                var stock_qty = element.attr("qty"); 
+                $("#stock_qty"+select_id+"").val(stock_qty);
+             //alert(stock_qty);
+            }); 
         });
             $(function(){
                 $("#commentForm").validate({
                     rules: {
-                        Itemcode: {
-                                required: true,
+                        product: {
+                            required: true,
                         },
-                        ActualorderQty: {
-                                    required: true,
-                                    number: true
+                        qty: {
+                            required: true,
+                            number: true
                         },
                     },
                      submitHandler: function(form) {
@@ -252,13 +262,13 @@ function getsearch(){
                 });
             });
             function initSelect2() {
-                $(".Item-code").select2({
+                $(".product").select2({
                     placeholder: 'Choose one',
                     searchInputPlaceholder: 'Search',
-                    minimumInputLength: 6,
+                    minimumInputLength: 3,
                     allowClear: true,
                     ajax: {
-                        url: "{{ url('inventory/itemcodesearch') }}",
+                        url: "{{ url('fgs/productsearch') }}",
                         processResults: function (data) {
                                 return { results: data };
                         }
@@ -272,6 +282,7 @@ function getsearch(){
 
                     Itemdescription1
                     let res = $(this).select2('data')[0];
+                    var mtq_id = $('.mtq_id').val();
                         if(typeof(res) != "undefined" ){
                             if(res.type_name){
                                 $("#Itemtype"+select_id+"").val(res.type_name);
@@ -283,8 +294,39 @@ function getsearch(){
                             if(res.discription){
                                 $("#Itemdescription"+select_id+"").val(res.discription);
                             }
+                            if(res.is_sterile==0){
+                                //$(".expiry_date"+select_id+"").datepicker();
+    
+                                $("#expiry_date"+select_id+"").val('N.A');
+                            }
+                            else
+                            {
+                                //$(".expiry_date"+select_id+"").datepicker();
+                                $("#expiry_date"+select_id+"").datepicker({
+                                    format: " dd-mm-yyyy",
+                                    autoclose:true
+                                });
+                                var date = new Date();
+                                date.setFullYear(date.getFullYear() + 5);
+                                date.setDate(date.getDate() - 2);
+                                $("#expiry_date"+select_id+"").datepicker("setDate", date);
+                            }
+                            $.get("{{ url('fgs/fetchProductBatchCardsforMTQ') }}?product_id="+res.id+"&mtq_id="+mtq_id,function(data)
+                            {
+                                if(data.length>0)
+                                {
+                                    $(".batch_no"+select_id+"").append('<option>..Select One..</option>')
+                                $.each(data, function(index, item) {   
+                                    $(".batch_no"+select_id+"").append($("<option value="+item.batch_id+" qty="+item.quantity+">"+item.batch_no+"</option>"));
+                                });
+                                }
+                                else
+                                {
+                                    alert('Out of stock...');
+                                }
+                            });
                        }
                     });   
-            }   
+            }    
     </script>
 @stop

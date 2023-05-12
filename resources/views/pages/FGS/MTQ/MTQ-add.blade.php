@@ -54,33 +54,50 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Ref No.  *</label>
-                                <input type="text" class="form-control" name="f_name" value="" placeholder="Supplier Doc No">
+                                <input type="text" class="form-control" name="ref_no" value="" placeholder="Ref No">
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Ref Date  *</label>
-                                <input type="text" class="form-control datepicker" name="f_name" value="" placeholder="">
+                                <input type="text" class="form-control datepicker" name="ref_date" value="" placeholder="Ref Date">
                             </div>
-                            
+                            <!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                                <label for="exampleInputEmail1">Product code * </label>
+                                <select class="form-control product" name="product" id="product">
+                                </select>
+                            </div> -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Product Category  *</label>
-                                <select class="form-control">
-                                    <option>Select one...</option>
-                                    <option>ASD</option>
-                                    <option>AWM</option>
+                                <select class="form-control" name="product_category">
+                                    <option value="">Select one...</option>
+                                    @foreach($category as $cate)
+                                    <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Stock Location  *</label>
-                                <select class="form-control">
-                                    <option>Select one...</option>
-                                    <option>Location-1</option>
-                                    <option>Location-2</option>
-                                    <option>Location-3</option>
+                                <label for="exampleInputEmail1">Stock Location1  *</label>
+                                <select class="form-control" name="stock_location1">
+                                    <option value="">Select one...</option>
+                                    @foreach($locations as $loc)
+                                    @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')
+                                    <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
+                                    @endif 
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Stock Location2  *</label>
+                                <select class="form-control" name="stock_location2">
+                                    @foreach($locations as $loc)
+                                    @if($loc['location_name']=='Quarantine')
+                                    <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
+                                    @endif 
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>MTQ Date *</label>
-                                <input type="text" value="" class="form-control datepicker" name="Date" placeholder="">
+                                <input type="text" value="" class="form-control datepicker" name="mtq_date" placeholder="">
                             </div><!-- form-group -->
                         </div> 
                         <div class="row">
@@ -99,17 +116,8 @@
             </div>
             
 
-
-
-
-
         </div>
         
-
-
-
-
-
 	</div>
 	<!-- az-content-body -->
 </div>
@@ -141,16 +149,24 @@
 
     $("#commentForm").validate({
             rules: {
-                Requestor: {
+                ref_no: {
                     required: true,
                 },
-                Department: {
+                ref_date: {
                     required: true,
                 },
-                Date: {
+                product_category: {
                     required: true,
                 },
-                
+                stock_location1: {
+                    required: true,
+                },
+                stock_location2: {
+                    required: true,
+                },
+                mtq_date: {
+                    required: true,
+                }
                 
             },
             submitHandler: function(form) {
@@ -158,13 +174,21 @@
                 form.submit();
             }
         });
-
-    
   });
-  $('.requestor').select2({
-        placeholder: 'Choose one',
-        searchInputPlaceholder: 'Search',
-    });
+//   $('.product').select2({
+//         placeholder: 'Choose one',
+//         searchInputPlaceholder: 'Search',
+//         minimumInputLength: 4,
+//         allowClear: true,
+//         ajax: {
+//             url: "{{ url('batchcard/productsearch') }}",
+//             processResults: function (data) {
+//                 return { results: data };
+//             }
+//         }
+//     });
+  
+  
 </script>
 
 
