@@ -294,14 +294,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
 
 });
 
-// Route::group(['namespace' => 'App\Http\Controllers\Web\ServiceRequisition','middleware'=>['RolePermission']], function() {
-//     // Service requisition 
-//     Route::get('inventory/get-service-reqisition', 'ServiceController@get_service_reqisition');
 
-//     // service requisition item
-//     Route::get('inventory/get-service-reqisition-item', 'ServiceController@get_service_reqisition_item');
-//     Route::get('inventory/add-service-reqisition-item', 'ServiceController@add_service_reqisition_item');
-// });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePermission']], function() {
   
@@ -374,6 +367,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::post('product/alternative-input-material/add','ProductController@alternativeInputMaterialAdd');
     Route::get('product/location/{id?}', 'ProductController@locationList');
     Route::post('product/location/{id?}', 'ProductController@locationList');
+    Route::get('product/Product-add','ProductController@productAdd');
+    Route::post('product/Product-add','ProductController@productAdd');
 
 });
 

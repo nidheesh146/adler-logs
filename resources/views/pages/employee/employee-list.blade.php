@@ -20,32 +20,88 @@
         <div class="az-dashboard-nav">
 				<nav class="nav"> </nav>
 			</div>
-        
-			
-	
-      
-			
-		   @if (Session::get('success'))
+       @if (Session::get('success'))
 		   <div class="alert alert-success " style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		   @endif
-
+      <div class="row row-sm mg-b-20 mg-lg-b-0">
+						<div class="table-responsive" style="margin-bottom: 13px;">
+							<table class="table table-bordered mg-b-0">
+								<tbody>
+									<tr>
+										<style>
+											.select2-container .select2-selection--single {
+												height: 26px;
+												/* width: 122px; */
+											}
+											.select2-selection__rendered {
+												font-size:12px;
+											}
+										</style>
+										<form autocomplete="off" id="formfilter">
+											<th scope="row">
+                              <div class="row filter_search" style="margin-left: 0px;">
+                              <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
+                              <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                <label>Name</label>
+                                <input type="text" value="{{request()->get('f_name')}}" name="f_name"  id="f_name" class="form-control" placeholder="Name">
+                              </div><!-- form-group -->
+                                    
+                              <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                <label  style="font-size: 12px;">Employee ID</label>
+                              <input type="text" value="{{request()->get('employee_id')}}" id="employee_id" class="form-control" name="employee_id" placeholder="Employee ID">
+                               </div> 
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                 <label  style="font-size: 12px;">Department</label>
+                                 <select name="dept_name" id="dept_name" class="form-control">
+                                    <option value="">-- Select one ---</option>
+                                 @foreach ($department as $item)
+                                
+                                        <option value="{{$item->dept_name}}">{{$item->dept_name}} </option>
+                                       
+                                    @endforeach
+                                </select>
+                                 </div> 
+                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                 <label  style="font-size: 12px;">Designation</label>
+                                 <input type="text" value="{{request()->get('designation')}}"  class="form-control " name="designation" id="designation" placeholder="Designation" >
+                                 </div>
+                                                                 
+                             </div>
+                              <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+                              <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+                                 <label style="width: 100%;">&nbsp;</label>
+                                     <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+                                   @if(count(request()->all('')) > 2)
+                                 <a href="{{url()->current()}}" class="badge badge-pill badge-warning"
+                                                            style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+                                 @endif
+                                       </div> 
+                                </div>
+                                </div>
+                                </th>
+										</form>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
 
 			<div class="table-responsive">
                 <table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-                            <th>SL No:</th>
+              <th>SL No:</th>
 							<th>Name</th>
-                            <th>Employee ID</th>
-                            <th>Username</th>
+              <th>Employee ID</th>
+              <th>Username</th>
 							<th>Email</th>
 							<th>Phone</th>
 							<th>Designation</th>
 							<th>Department</th>
-                            <!-- <th>Date Of hire</th> -->
+              <!-- <th>Date Of hire</th> -->
 							<th>Action</th>
 						
 						</tr>
@@ -56,17 +112,17 @@
 						 <tr>
                             <td>{{$i++}}</td>
                             <td>{{$user->f_name}} {{$user->l_name}}</td>
-							<td>{{$user->employee_id}}</td>
+							              <td>{{$user->employee_id}}</td>
                             <td>{{$user->username}}</td>
                             <td>{{$user->email}}</td>
                             <td>{{$user->phone}}</td>
                             <td>{{$user->designation}}</td>
                             <td>{{$user->dept_name}}</td>
-							<!-- <td>{{date('d-m-Y',strtotime($user->date_of_hire))}}</td> -->
-							<td>
-								<a class="badge badge-info" style="font-size: 13px;" href="{{url('employee/edit/'.$user->user_id)}}"><i class="fas fa-edit"></i> Edit</a>
-								<a class="badge badge-danger" style="font-size: 13px;" href="{{url('employee/delete/'.$user->user_id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
-							</td>
+							              <!-- <td>{{date('d-m-Y',strtotime($user->date_of_hire))}}</td> -->
+							              <td>
+								            <a class="badge badge-info" style="font-size: 13px;" href="{{url('employee/edit/'.$user->user_id)}}"><i class="fas fa-edit"></i> Edit</a>
+								            <a class="badge badge-danger" style="font-size: 13px;" href="{{url('employee/delete/'.$user->user_id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+							              </td>
 						</tr>
 						@endforeach
 					</tbody>
@@ -109,11 +165,11 @@
 
   
 	$('.search-btn').on( "click", function(e)  {
-		var supplier = $('#supplier').val();
-		var rq_no = $('#rq_no').val();
-		var po_no = $('#po_no').val();
-		var from = $('#from').val();
-		if(!supplier & !rq_no & !po_no & !from)
+		var f_name = $('#f_name').val();
+		var employee_id = $('#employee_id').val();
+		var designation = $('#designation').val();
+		var dept_name = $('#dept_name').val();
+		if(!f_name & !employee_id & !designation & !dept_name)
 		{
 			e.preventDefault();
 		}

@@ -12,11 +12,12 @@ class product extends Model
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = false;
-     
     function insert_data($data){
         return $this->insertGetId($data);
     }
-    
+    function update_data($condition,$data){
+        return $this->where($condition)->update($data);
+    }
     function get_product_data($data){
         return $this->select(['id','sku_code as text','discription','process_sheet_no'])
                     ->where('sku_code','like','%'.$data.'%')

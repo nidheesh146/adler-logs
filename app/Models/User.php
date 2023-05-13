@@ -56,7 +56,7 @@ class User extends Model
    }
 
    function get_user($condition) {
-    return  $this->select(['user_id','email','username','f_name','l_name','employee_id','address' ,'department', 'designation','phone','email','date_of_hire','role_permission'])
+    return  $this->select(['user_id','password','email','username','f_name','l_name','employee_id','address' ,'department', 'designation','phone','email','date_of_hire','role_permission'])
         //->leftjoin('department','id','=','user.department')
         ->where(['status'=>1])
         ->where($condition)

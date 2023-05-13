@@ -17,10 +17,28 @@ class EmployeeController extends Controller
         $this->Role = new Role;
         $this->Department = new Department;
     }
-    public function employeeList() {
-        $data['users'] = $this->User->all_users($condition=null);
-
-        return view('pages.employee.employee-list',compact('data'));
+    public function employeeList(Request $request) {
+        $condition =[];
+          if($request->f_name)
+        {
+            $condition[] = ['user.f_name','like', '%' . $request->f_name . '%'];
+        }
+        if($request->employee_id)
+        {
+            $condition[] = ['user.employee_id','like', '%' . $request->employee_id . '%'];
+        }
+        if($request->designation)
+        {
+            $condition[] = ['user.designation','like', '%' . $request->designation . '%'];
+        }
+        if($request->dept_name  )
+        {
+            $condition[] = ['department.dept_name','like', '%' . $request->dept_name . '%'];
+        }
+        $data['users'] = $this->User->all_users($condition);
+        $department = $this->Department->get()->unique('dept_name');
+        
+        return view('pages.employee.employee-list',compact('data','department'));
     }
 
     public function employeeAdd(Request $request)
@@ -142,10 +160,11 @@ class EmployeeController extends Controller
                 }
         }
         $user = $this->User->get_user(['user_id'=>$id]);
+        $pass = $this->decrypt($user->password);
         //print_r($user);exit;
         $department = $this->Department->get_dept($condition=null);
         $roles = $this->Role->get_roles();
-        return view('pages.employee.employee-add',compact('department','user','roles'));
+        return view('pages.employee.employee-add',compact('department','user','roles','pass'));
     }
 
     public function employeeDelete(Request $request, $id)

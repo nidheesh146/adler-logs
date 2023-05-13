@@ -10,10 +10,14 @@ use App\Models\product;
 use App\Models\product_input_material;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\FGS\product_product;
+use App\Models\FGS\product_productfamily;
+use App\Models\PurchaseDetails\product_productgroup;
+use App\Models\FGS\product_productbrand;
 use Validator;
 use Redirect;
 use DB; 
 use App\Models\FGS\product_stock_location;
+use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     public function __construct()
@@ -23,6 +27,9 @@ class ProductController extends Controller
         $this->product_input_material = new product_input_material;
         $this->product_stock_location = new product_stock_location;
         $this->product_product = new product_product;
+        $this->product_productfamily = new product_productfamily;
+        $this->product_productgroup = new product_productgroup;
+        $this->product_productbrand = new product_productbrand;
     }
 
     public function productList(Request $request)
@@ -90,6 +97,112 @@ class ProductController extends Controller
             $materials = $this->product_input_material->getAllData(['product_input_material.product_id'=>$request->product_id]);
             //print_r($materials);exit;
             return view('pages/product/add-input-material', compact('product','materials'));
+        }
+    }
+
+    public function productAdd(Request $request)
+    {
+        if ($request->isMethod('post')) 
+        {
+             $validation['sku_code'] = ['required'];
+            // $validation['moreItems.*.Itemcode'] = ['required'];
+            //$validation['moreItems.*.quantity'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all()) 
+            {
+            if ($request->hasFile('image')) {
+              $image  = $request->file('image');
+              $image_fileName = $request->file('image')->getClientOriginalName(); 
+              $image->move(public_path('uploads/process_sheets'), $image_fileName);
+            }else{
+            $image_fileName =Null;
+            } 
+                
+                $data['sku_code'] = $request->sku_code;
+                $data['sku_name'] = $request->sku_name;
+                $data['discription'] = $request->discription;
+                $data['short_name'] = $request->short_name;
+                $data['ad_sp1'] = $request->ad_sp1;
+                $data['given_reason'] = $request->given_reason;
+                $data['minimum_stock'] = $request->minimum_stock;
+                $data['expiry'] = $request->expiry;
+                $data['sterilization_type'] = $request->sterilization_type;
+                $data['is_reusable'] = $request->is_reusable;
+                $data['is_instruction'] = $request->is_instruction;
+                $data['is_sterile'] = $request->is_sterile;
+                $data['ad_sp2'] = $request->ad_sp2;
+                $data['mrp'] = $request->mrp;
+                $data['product_family_id'] = $request->product_family_id;
+                $data['product_group_id'] = $request->product_group_id;
+                $data['brand_details_id'] = $request->brand_details_id;
+                $data['snn_description'] = $request->snn_description;
+                $data['drug_license_number'] = $request->drug_license_number;
+                $data['hierarchy_path'] = $request->hierarchy_path;
+                $data['hsn_code'] = $request->hsn_code;
+                $data['instruction_for_use'] = $request->instruction_for_use;
+                $data['is_ce_marked'] = $request->is_ce_marked;
+                $data['is_control_sample_applicable'] = $request->is_control_sample_applicable;
+                $data['is_doc_applicability'] = $request->is_doc_applicability;
+                $data['is_donot_reuse_logo'] = $request->is_donot_reuse_logo;
+                $data['is_donot_reuse_symbol'] = $request->is_donot_reuse_symbol;
+                $data['is_ear_log_address'] = $request->is_ear_log_address;
+                $data['is_instruction_for_reuse_symbol'] = $request->is_instruction_for_reuse_symbol;
+                $data['is_non_sterile_logo'] = $request->is_non_sterile_logo;
+                $data['is_read_instruction_logo'] = $request->is_read_instruction_logo;
+                $data['item_type'] = $request->item_type;
+                $data['label_format_number'] = $request->label_format_number;
+                $data['maximum_stock'] = $request->maximum_stock;
+                $data['min_stock_set_date'] = $request->min_stock_set_date;
+                $data['notified_body_number'] = $request->notified_body_number;
+                $data['over_stock_level'] = $request->over_stock_level;
+                $data['quantity_per_pack'] = $request->quantity_per_pack;
+                $data['record_file_no'] = $request->record_file_no;
+                $data['revision_record'] = $request->revision_record;
+                 $data['technical_file'] = $request->technical_file;
+                $data['unit_weight_kg'] = $request->unit_weight_kg;
+                $data['groups'] = $request->groups;
+                $data['family'] = $request->family;
+                $data['brand'] = $request->brand;
+                $data['is_active'] = 1;
+                $data['process_sheet_no'] = $request->process_sheet_no;
+                $data['process_sheet_pdf'] = $image_fileName;
+
+                if($request->id){
+                    $data['updated'] = date('Y-m-d H:i:s');
+                    $data['updated'] = config('user')['user_id'];
+                    $this->product_price_master->update_data(['id'=>$request->id],$data);
+                    $request->session()->flash('success',"You have successfully updated a product !");
+                    return redirect("product/Product-add/".$id);
+                }
+                else{
+                        
+                        $data['created_by_id'] = config('user')['user_id'];
+                        $data['created'] = date('Y-m-d H:i:s');
+                        $data['updated'] = date('Y-m-d H:i:s');
+                        $this->product->insert_data($data);
+                        $request->session()->flash('success',"You have successfully added a product !");
+                        return redirect("product/list");
+
+                    
+                }
+            }
+            if($validator->errors()->all()) 
+            { 
+            if($request->id)
+                return redirect("product/Product-add".$id)->withErrors($validator)->withInput();
+            else
+                return redirect("product/Product-add")->withErrors($validator)->withInput();
+            }
+        }
+        else
+        {
+            $product = product::find($request->id);
+            $materials = $this->product_input_material->getAllData(['product_input_material.product_id'=>$request->product_id]);
+            $family = $this->product_productfamily->distinct('product_productfamily.family_name')->get();
+            $group = $this->product_productgroup->distinct('product_productgroup.group_name')->get();
+            $brand = $this->product_productbrand->distinct('product_productbrand.brand_name')->get();
+            //print_r($materials);exit;
+            return view('pages/product/product-add', compact('product','materials','family','group','brand'));
         }
     }
 
