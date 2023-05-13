@@ -7,7 +7,7 @@
 		<div class="az-content-body">
 
             <div class="az-content-breadcrumb"> 
-                <span><a href="" style="color: #596881;">Material Transferred To Qurantine(MTQ)</a></span> 
+                <span><a href="" style="color: #596881;">Material Issue To Scrap(MIS)</a></span> 
                 <!-- <span><a href="" style="color: #596881;">MRN</a></span> -->
                 <span><a href="">
                    
@@ -15,7 +15,7 @@
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            Material Transferred To Qurantine(MTQ)
+            Material Issue To Scrap(MIS)
             </h4>
             <div class="az-dashboard-nav">
            
@@ -53,21 +53,13 @@
 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Ref No.  *</label>
-                                <input type="text" class="form-control" name="ref_no" value="" placeholder="Ref No">
+                                <label for="exampleInputEmail1">MTQ No.  *</label>
+                                <select name="mtq_no" id="mtq_no" class="form-control">
+                                </select>
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Ref Date  *</label>
-                                <input type="text" class="form-control datepicker" name="ref_date" value="" placeholder="Ref Date">
-                            </div>
-                            <!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                                <label for="exampleInputEmail1">Product code * </label>
-                                <select class="form-control product" name="product" id="product">
-                                </select>
-                            </div> -->
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Product Category  *</label>
-                                <select class="form-control" name="product_category">
+                                <select class="form-control" name="product_category" id="product_category">
                                     <option value="">Select one...</option>
                                     @foreach($category as $cate)
                                     <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
@@ -75,19 +67,8 @@
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Stock Location1  *</label>
-                                <select class="form-control" name="stock_location1">
-                                    <option value="">Select one...</option>
-                                    @foreach($locations as $loc)
-                                    @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')
-                                    <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
-                                    @endif 
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Stock Location2  *</label>
-                                <select class="form-control" name="stock_location2">
+                                <label for="exampleInputEmail1">Stock Location  *</label>
+                                <select class="form-control" name="stock_location">
                                     @foreach($locations as $loc)
                                     @if($loc['location_name']=='Quarantine')
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
@@ -96,13 +77,13 @@
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                                <label>MTQ Date *</label>
-                                <input type="text" value="" class="form-control datepicker" name="mtq_date" placeholder="">
+                                <label>MIS Date *</label>
+                                <input type="text" value="" class="form-control datepicker" name="mis_date" placeholder="">
                             </div><!-- form-group -->
                         </div> 
-                        <div class="row">
+                        <div class="row save-btn" style="display:none;">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <button type="submit"  class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
                                     role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                     Save & Next
                                 
@@ -111,7 +92,8 @@
                         </div>
                         <div class="form-devider"></div>
                     </form>
-
+                    <div class="data-bindings">
+                    </div>
                 </div>
             </div>
             
@@ -142,6 +124,7 @@
     format: " dd-mm-yyyy",
     autoclose:true
     });
+    $(".datepicker").datepicker("setDate", new Date());
   //  .datepicker('update', new Date());
 
     $('.datepicker').mask('99-99-9999');
@@ -149,22 +132,16 @@
 
     $("#commentForm").validate({
             rules: {
-                ref_no: {
-                    required: true,
-                },
-                ref_date: {
+                mtq_no: {
                     required: true,
                 },
                 product_category: {
                     required: true,
                 },
-                stock_location1: {
+                stock_location: {
                     required: true,
                 },
-                stock_location2: {
-                    required: true,
-                },
-                mtq_date: {
+                mis_date: {
                     required: true,
                 }
                 
@@ -175,19 +152,45 @@
             }
         });
   });
-//   $('.product').select2({
-//         placeholder: 'Choose one',
-//         searchInputPlaceholder: 'Search',
-//         minimumInputLength: 4,
-//         allowClear: true,
-//         ajax: {
-//             url: "{{ url('batchcard/productsearch') }}",
-//             processResults: function (data) {
-//                 return { results: data };
-//             }
-//         }
-//     });
-  
+  $('#mtq_no').select2({
+          placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 2,
+          allowClear: true,
+          ajax: {
+          url: "{{ url('fgs/MIS/find-mtq-number-for-mis') }}",
+          processResults: function (data) {
+            return { results: data };
+
+          }
+        }
+      });
+      $('#product_category').on('change', function (e) {
+        $('.spinner-button').show();
+        category = $('#product_category').val();
+        let mtq_id =  $('#mtq_no').val();
+        //alert(mtq_id);
+        if(mtq_id){
+          $.get("{{ url('fgs/MIS/find-mtq-info') }}?id="+mtq_id+"&category="+category,function(data){
+            if(data.length>0)
+            {
+                $('.data-bindings').html(data);
+                $('.spinner-button').hide();
+                $('.save-btn').show();
+            }
+            else{
+                $('.data-bindings').html('');
+                $('.spinner-button').hide();
+                $('.save-btn').hide();
+            }
+            
+          });
+        }else{
+          $('.data-bindings').html('');
+          $('.spinner-button').hide();
+          $('.save-btn').hide();
+        }
+      });
   
 </script>
 

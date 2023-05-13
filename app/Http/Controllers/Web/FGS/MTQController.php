@@ -89,7 +89,7 @@ class MTQController extends Controller
                 }
                 else
                 {
-                    $request->session()->flash('error', "MRN insertion is failed. Try again... !");
+                    $request->session()->flash('error', "MTQ insertion is failed. Try again... !");
                     return redirect('fgs/MTQ-add');
                 }
 

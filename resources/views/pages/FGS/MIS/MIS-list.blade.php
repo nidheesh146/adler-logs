@@ -6,16 +6,16 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Material Transferred To Qurantine(MTQ)</span>
+				 <span>Material Issue To Scrap(MIS)</span>
 				 <span><a href="">
-				 	MTQ  List
+                 MIS  List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-            MTQ List 
+            MIS List 
               <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MTQ-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						MTQ 
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MIS-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+                MIS 
 				</button>
               <div>  
 				
@@ -56,18 +56,18 @@
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
 													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>MTQ No :</label>
-														<input type="text" value="{{request()->get('mtq_no')}}" name="mtq_no" id="mtq_no" class="form-control" placeholder="MTQ NO">
+														<label>MIS No :</label>
+														<input type="text" value="{{request()->get('mis_no')}}" name="mis_no" id="mis_no" class="form-control" placeholder="MIS NO">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Referance No</label>
-														<input type="text" value="{{request()->get('supplier_doc_number')}}" name="ref_number" id="ref_number" class="form-control" placeholder="REFERANCE NUMBER">
+														<label for="exampleInputEmail1" style="font-size: 12px;">MTQ No</label>
+														<input type="text" value="{{request()->get('mtq_no')}}" name="mtq_no" id="mtq_no" class="form-control" placeholder="MTQ NO">
 													</div>
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">MRN Month</label>
+														<label  style="font-size: 12px;">MIS Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
 												</div>
@@ -97,36 +97,30 @@
 						<table class="table table-bordered mg-b-0" >
 							<thead>
 								<tr>
-									<th>MTQ Number</th>
-                                    <th>Referance number</th>
-									<th>Referance date</th>
+									<th>MIS Number</th>
+                                    <th>MTQ number</th>
 									<th>Product Category</th>
-									<th>Stock Location1</th>
-									<th>Stock Location2</th>
-									<th>MTQ date</th>
+									<th>Stock Location</th>
+									<th>MIS date</th>
                                     <th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-							@foreach($mtq as $item)
-                                <tr>
-									
-									<td>{{$item['mtq_number']}}</td>
-                                    <td>{{$item['ref_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['ref_date']))}}</td>
+                            	<tr>
+								@foreach($mis as $item)
+                            		<td>{{$item['mis_number']}}</td>
+                                    <td>{{$item['mtq_number']}}</td>
 									<td>{{$item['category_name']}}</td>
-									<td>{{$item['location_name1']}}</td>
-									<td>{{$item['location_name2']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['mtq_date']))}}</td>
-                                    <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MTQ/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
-                                    	<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/MTQ/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> 	</td>
-									
-								</tr>
+									<td>{{$item['location_name']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['mis_date']))}}</td>
+                                    <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MIS/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
+                                    	<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/MIS/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> 	</td>
 								@endforeach
+								</tr>
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							{{ $mtq->appends(request()->input())->links() }}
+							{{ $mis->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>

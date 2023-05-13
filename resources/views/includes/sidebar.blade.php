@@ -140,7 +140,7 @@
                   <a href="{{url('fgs/MTQ-list')}}"  class="nav-sub-link">MTQ</a>
                 </li>
                 <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
-                  <a href="{{url('fgs/MIS/add')}}"  class="nav-sub-link">MIS</a>
+                  <a href="{{url('fgs/MIS-list')}}"  class="nav-sub-link">MIS</a>
                 </li>
               </ul>
             </li>

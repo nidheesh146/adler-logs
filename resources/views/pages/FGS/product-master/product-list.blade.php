@@ -13,7 +13,7 @@
                 </a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Products
-			<button style="float: right;font-size: 14px;" onclick="" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Product</button>
+			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/product-master/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Product</button>
             </h4>
 			
 		   @if (Session::get('success'))

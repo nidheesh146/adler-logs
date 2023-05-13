@@ -22,7 +22,50 @@ class ProductMasterController extends Controller
     {
         if ($request->isMethod('post'))
         {
+            $validation['sku_code'] = ['required'];
+            $validation['description'] = ['required'];
+            $validation['hsn_code'] = ['required'];
+            $validation['product_group'] = ['required'];
+            $validation['product_brand'] = ['required'];
+            $validation['pack_size'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                $data['sku_code'] = $request->sku_code; 
+                $data['short_name'] = $request->short_name;
+                $data['discription'] = $request->description;
+                $data['hsn_code'] = $request->hsn_code;
+                $data['gs1_code'] = $request->gs1_code;
+                $data['product_group1_id'] = $request->product_group;
+                $data['product_type_id'] = $request->product_type;
+                $data['product_oem_id'] = $request->product_oem;
+                $data['brand_details_id'] = $request->product_brand;
+                $data['minimum_stock'] = $request->min_level;
+                $data['maximum_stock'] = $request->max_level;
+                $data['is_sterile'] = $request->sterile_nonsterile;
+                $data['quantity_per_pack'] = $request->pack_size;
+                $data['item_type'] = 'FINISHED GOODS';
+                $data['created_by_id']= config('user')['user_id'];
+                $data['is_active']=1;
+                $data['created'] =date('Y-m-d H:i:s');
+                $data['updated'] =date('Y-m-d H:i:s');
+                $add = $this->product->insert_data($data);
+                if($add)
+                {
+                    $request->session()->flash('success', "You have successfully added a product !");
+                    return redirect('fgs/product-master/list');
+                }
+                else
+                {
+                    $request->session()->flash('error', "Product insertion is failed. Try again... !");
+                    return redirect('fgs/product-master/add');
+                }
 
+            }
+            else
+            {
+                return redirect('fgs/product-master/add')->withErrors($validator)->withInput();
+            }
         }
         else
         {

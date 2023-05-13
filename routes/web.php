@@ -395,6 +395,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/price-master/excel-export','PriceController@PriceMasterExport');
     // Product master
     Route::get('fgs/product-master/list','ProductMasterController@productList');
+    Route::get('fgs/product-master/add','ProductMasterController@productAdd');
+    Route::post('fgs/product-master/add','ProductMasterController@productAdd');
     //Production stock
     Route::get('fgs/production-stock/list','StockManagementController@productionStockList');
     Route::get('fgs/production-stock/Add','StockManagementController@productionStockAdd');
@@ -434,8 +436,21 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/MTQ-list','MTQController@MTQList');
      Route::get('fgs/MTQ/add','MTQController@MTQAdd');
      Route::post('fgs/MTQ/add','MTQController@MTQAdd');
-     Route::get('fgs/MTQ/item-list/{min_id}','MTQController@MTQitemlist');
-     Route::get('fgs/MTQ/add-item','MTQController@MTQitemAdd');
+     Route::get('fgs/MTQ/item-list/{mtq_id}','MTQController@MTQitemlist');
+     Route::get('fgs/MTQ/add-item/{mtq_id}','MTQController@MTQitemAdd');
+     Route::post('fgs/MTQ/add-item/{mtq_id}','MTQController@MTQitemAdd');
+     Route::get('fgs/fetchProductBatchCardsforMTQ','MTQController@fetchProductBatchCardsforMTQ');
+
+     //MIS
+     Route::get('fgs/MIS-list','MISController@MISList');
+     Route::get('fgs/MIS-add','MISController@MISAdd');
+     Route::post('fgs/MIS-add','MISController@MISAdd');
+     Route::get('fgs/MIS/find-mtq-number-for-mis','MISController@findMTQNumberForMIS');
+     Route::get('fgs/MIS/find-mtq-info','MISController@findMTQInfo');
+     Route::get('fgs/MIS/item-list/{mis_id}','MISController@MISitemlist');
+     Route::get('fgs/MIS/add-item/{mis_id}','MISController@MISitemAdd');
+     Route::post('fgs/MIS/add-item/{mis_id}','MISController@MISitemAdd');
+
     //OEF
     Route::get('fgs/OEF-list','OEFController@OEFList');
     Route::get('fgs/OEF-add','OEFController@OEFAdd');
@@ -522,6 +537,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/stock-report/MAA','StockManagementController@MAAExport');
      Route::get('fgs/stock-report/SNN','StockManagementController@SNNExport');
      Route::get('fgs/stock-report/AHPL','StockManagementController@AHPLExport');
+
+     //MTQ
+     Route::get('fgs/MTQ-list','MTQController@MTQList');
+     Route::get('fgs/MTQ-add','MTQController@MTQAdd');
+     Route::get('fgs/MTQ-item-list','MTQController@MTQitemlist');
 
 
 });

@@ -6,21 +6,14 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Material Transferred To Qurantine(MTQ)</span>
+				 <span>Material Issue To Scrap(MIS)</span>
 				 <span><a href="">
-				 	MTQ  List
+				 	MIS Item List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-            MTQ List 
-              <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MTQ-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						MTQ 
-				</button>
-              <div>  
-				
-              </div>
-          </div>
+            MIS Item List @if($mis_number)({{$mis_number}}) @endif
+              
         </h4>	
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -36,8 +29,10 @@
 		   @endif
 		   
 			<div class="tab-content"> 
+				
 				<div class="row row-sm mg-b-20 mg-lg-b-0">
 						<div class="table-responsive" style="margin-bottom: 13px;">
+							
 							<table class="table table-bordered mg-b-0">
 								<tbody>
 								<tr>
@@ -56,20 +51,30 @@
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
 													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>MTQ No :</label>
-														<input type="text" value="{{request()->get('mtq_no')}}" name="mtq_no" id="mtq_no" class="form-control" placeholder="MTQ NO">
+														<label>Product :</label>
+														<input type="text" value="{{request()->get('product')}}" name="product" id="product" class="form-control" placeholder="PRODUCT">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Referance No</label>
-														<input type="text" value="{{request()->get('supplier_doc_number')}}" name="ref_number" id="ref_number" class="form-control" placeholder="REFERANCE NUMBER">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Batch No</label>
+														<input type="text" value="{{request()->get('batch_no')}}" name="batch_no" id="batch_no" class="form-control" placeholder="BATCH NO">
 													</div>
-													
+													<!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+														<label for="exampleInputEmail1" style="font-size: 12px;">PR/SR</label>
+														
+														<select name="pr_sr" id="pr_sr" class="form-control">
+															<option value="">PR/SR</option>
+															<option value="PR" {{(request()->get('pr_sr') == 'PR') ? 'selected' : ''}}>PR</option>
+															<option value="SR" {{(request()->get('pr_sr') == 'SR') ? 'selected' : ''}}>SR</option>
+														</select>
+													</div> -->
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">MRN Month</label>
+														<label  style="font-size: 12px;">Manufacturing Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
+												
+																		
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -97,36 +102,33 @@
 						<table class="table table-bordered mg-b-0" >
 							<thead>
 								<tr>
-									<th>MTQ Number</th>
-                                    <th>Referance number</th>
-									<th>Referance date</th>
-									<th>Product Category</th>
-									<th>Stock Location1</th>
-									<th>Stock Location2</th>
-									<th>MTQ date</th>
-                                    <th>Action</th>
+									<th>Product</th>
+                                    <th>HSN Code</th>
+									<th>Description</th>
+									<th>Batch No.</th>
+									<th>Batch Qty</th>
+									<th>UOM</th>
+                                    <th>Date of Mfg.</th>
+                                    <th>Date of Expiry</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-							@foreach($mtq as $item)
                                 <tr>
-									
-									<td>{{$item['mtq_number']}}</td>
-                                    <td>{{$item['ref_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['ref_date']))}}</td>
-									<td>{{$item['category_name']}}</td>
-									<td>{{$item['location_name1']}}</td>
-									<td>{{$item['location_name2']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['mtq_date']))}}</td>
-                                    <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MTQ/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
-                                    	<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/MTQ/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> 	</td>
-									
+									@foreach($items as $item)
+									<td>{{$item['sku_code']}}</td>
+									<td>{{$item['hsn_code']}}</td>
+									<td>{{$item['discription']}}</td>
+									<td>{{$item['batch_no']}}</td>
+									<td>{{$item['quantity']}}</td>
+									<td>Nos</td>
+                                    <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
+									@endforeach
 								</tr>
-								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							{{ $mtq->appends(request()->input())->links() }}
+							
 						</div>
 					</div>
 				</div>
@@ -160,12 +162,21 @@
 	$('#prbody1').show();
 	$('#prbody2').show();
   });
-  	
+  	$('#purchase_tab').on('click',function(){
+		$('#pr_no').val(" ");
+		$('#department').val("");
+		$('#from').val(" ");
+	});
+	$('#service_tab').on('click',function(){
+		$('#pr_no').val(" ");
+		$('#department').val("");
+		$('#from').val(" ");
+	});
 	$('.search-btn').on( "click", function(e)  {
-		var ref_number = $('#ref_number').val();
-		var mtq_no = $('#mtq_no').val();
+		var product = $('#product').val();
+		var batch_no = $('#batch_no').val();
 		var from = $('#from').val();
-		if(!mtq_no  & !ref_number & !from)
+		if(!product  & !batch_no & !from)
 		{
 			e.preventDefault();
 		}

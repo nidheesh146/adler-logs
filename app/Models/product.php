@@ -13,6 +13,10 @@ class product extends Model
     protected $guarded = [];
     public $timestamps = false;
      
+    function insert_data($data){
+        return $this->insertGetId($data);
+    }
+    
     function get_product_data($data){
         return $this->select(['id','sku_code as text','discription','process_sheet_no'])
                     ->where('sku_code','like','%'.$data.'%')
