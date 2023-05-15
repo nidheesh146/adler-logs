@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
+use PDF;
 use App\Models\product;
 use App\Models\FGS\product_stock_location;
 use App\Models\FGS\fgs_product_stock_management;
@@ -265,5 +266,14 @@ class MISController extends Controller
         }
         $items = $this->fgs_mis_item->getMISItems($condition);
         return view('pages/FGS/MIS/MIS-item-list',compact('mis_id','items','mis_number'));
+    }
+     public function MISpdf($mis_id)
+    { 
+        $data['mis'] = $this->fgs_mis->get_single_mis(['fgs_mis.id' => $mis_id]);
+        $data['items'] = $this->fgs_mis_item->get_items(['fgs_mis_item_rel.master' => $mis_id]);
+        $pdf = PDF::loadView('pages.FGS.MIS.pdf-view', $data);
+        // $pdf->set_paper('A4', 'landscape');
+        $file_name = "MIS" . $data['mis']['firm_name'] . "_" . $data['mis']['mis_date'];
+        return $pdf->stream($file_name . '.pdf');
     }
 }

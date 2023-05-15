@@ -454,6 +454,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/MIS/item-list/{mis_id}','MISController@MISitemlist');
      Route::get('fgs/MIS/add-item/{mis_id}','MISController@MISitemAdd');
      Route::post('fgs/MIS/add-item/{mis_id}','MISController@MISitemAdd');
+      Route::get('fgs/MIS/pdf/{mis_id}','MISController@MISpdf');
 
     //OEF
     Route::get('fgs/OEF-list','OEFController@OEFList');

@@ -89,7 +89,8 @@ class CMTQController extends Controller
                 $data['stock_location_id2'] = $request->stock_location_id2;
                 $data['stock_location_id1'] = $request->stock_location_id1;
                 $data['remarks'] = $request->remarks;
-                $cmtq_id = $this->fgs_cmtq->insert_data($data);
+                 $fgs_mtq_data = $this->fgs_mtq->get_master_data(['fgs_mtq.id' => $data['mtq_id']]);
+                 $cmtq_id = $this->fgs_cmtq->insert_data($data);
 
                 foreach ($request->mtq_item_id as $mtq_item_id) {
                         $mtq_item =fgs_mtq_item::find($mtq_item_id);
@@ -105,6 +106,21 @@ class CMTQController extends Controller
                          $fgs_mtq_item = fgs_mtq_item::
                                         where('product_id','=',$mtq_item['product_id'])
                                         ->update(['cmtq_status' => 1]);
+
+                        $qurantine_stock = fgs_qurantine_stock_management::where('product_id','=',$mtq_item['product_id'])
+                                        ->where('batchcard_id','=',$mtq_item['batchcard_id'])
+                                        ->first();
+                            $update_stock = $qurantine_stock['quantity']-$mtq_item['quantity'];
+                            $product_stock = $this->fgs_qurantine_stock_management->update_data(['id'=>$qurantine_stock['id']],['quantity'=>$update_stock]);
+
+
+
+                         $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$mtq_item['product_id'])
+                                        ->where('batchcard_id','=',$mtq_item['batchcard_id'])
+                                        ->where('stock_location_id','=',$fgs_mtq_data->stock_location_id1)
+                                        ->first();
+                            $update_stock = $fgs_product_stock['quantity']+$mtq_item['quantity'];
+                            $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
                    
                 if($cmtq_id)
                 {
