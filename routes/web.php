@@ -367,8 +367,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::post('product/alternative-input-material/add','ProductController@alternativeInputMaterialAdd');
     Route::get('product/location/{id?}', 'ProductController@locationList');
     Route::post('product/location/{id?}', 'ProductController@locationList');
-    Route::get('product/Product-add','ProductController@productAdd');
-    Route::post('product/Product-add','ProductController@productAdd');
+    Route::get('product/Product-add/{id?}','ProductController@productAdd');
+    Route::post('product/Product-add/{id?}','ProductController@productAdd');
 
 });
 
@@ -435,6 +435,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/MTQ/add-item/{mtq_id}','MTQController@MTQitemAdd');
      Route::post('fgs/MTQ/add-item/{mtq_id}','MTQController@MTQitemAdd');
      Route::get('fgs/fetchProductBatchCardsforMTQ','MTQController@fetchProductBatchCardsforMTQ');
+     Route::get('fgs/MTQ/pdf/{mtq_id}','MTQController@MTQpdf');
+     //CMTQ
+      Route::get('fgs/CMTQ-list','CMTQController@CMTQList');
+     Route::get('fgs/CMTQ/CMTQ-add','CMTQController@CMTQAdd');
+     Route::post('fgs/CMTQ/CMTQ-add','CMTQController@CMTQAdd');
+     Route::get('fgs/CMTQ/item-list/{cmtq_id}','CMTQController@CMTQitemlist');
+     Route::get('fgs/CMTQ/find-mtq-number-for-cmtq','CMTQController@findMTQNumberForCMTQ');
+     Route::get('fgs/CMTQ/find-mtq-info', 'CMTQController@mtqInfo');
+     Route::get('fgs/CMTQ/pdf/{cmtq_id}','CMTQController@CMTQpdf');
 
      //MIS
      Route::get('fgs/MIS-list','MISController@MISList');

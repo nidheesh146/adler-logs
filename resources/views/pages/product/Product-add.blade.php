@@ -50,9 +50,9 @@
 
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                  <label>Product SKU Name *</label>
+                                  <label>Product SKU Name </label>
 
-                                 <input type="text" name="sku_name" id="sku_name" class="form-control"  value="{{(!empty($data)) ? $data['sku_name']: ""}}" placeholder="Product SKU Name" > 
+                                 <input type="text" name="sku_name" id="sku_name" class="form-control"  value="{{(!empty($data)) ? $data['sku_name']: ""}}" placeholder="Product SKU Name"  > 
 
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -61,13 +61,13 @@
                                 </textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                  <label>Short Name *</label>
+                                  <label>Short Name </label>
 
                                  <input type="text" name="short_name" id="short_name" class="form-control"  value="{{(!empty($data)) ? $data['short_name']: ""}}" placeholder="Short Name" > 
 
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                  <label>Ad Sp1 *</label>
+                                  <label>Ad Sp1 </label>
 
                                  <input type="text" name="ad_sp1" id="ad_sp1" class="form-control"  value="{{(!empty($data)) ? $data['ad_sp1']: ""}}" placeholder="Ad Sp1" > 
 
@@ -132,8 +132,8 @@
                                 <input type="text" name="minimum_stock" class="form-control"  value="{{(!empty($data)) ? $data['minimum_stock']: ""}}" placeholder=""> 
                             </div> 
                              <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label>Family </label>
-                               <select name="product_family_id" id="product_family_id" class="form-control">
+                                <label>Family *</label>
+                               <select name="product_family_id" id="product_family_id" class="form-control" required>
                                     <option value="">-- Select one ---</option>
                                  @foreach ($family as $item)
                                         <option value="{{$item->id}}">{{$item->family_name}}</option>
@@ -142,7 +142,7 @@
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label> Group *</label>
-                                <select name="product_group_id" id="product_group_id" class="form-control">
+                                <select name="product_group_id" id="product_group_id" class="form-control" required>
                                     <option value="">-- Select one ---</option>
                                  @foreach ($group as $item)
                                         <option value="{{$item->id}}">{{$item->group_name}}</option>
@@ -150,8 +150,8 @@
                                 </select>  
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label> Brand</label>
-                                 <select name="brand_details_id" id="brand_details_id" class="form-control">
+                                <label> Brand *</label>
+                                 <select name="brand_details_id" id="brand_details_id" class="form-control" required>
                                     <option value="">-- Select one ---</option>
                                  @foreach ($brand as $item)
                                         <option value="{{$item->id}}">{{$item->brand_name}}</option>
@@ -185,7 +185,7 @@
                                 <input type="text" name="hierarchy_path" class="form-control"  value="{{(!empty($data)) ? $data['hierarchy_path']: ""}}" placeholder="Hierarchy Path"> 
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label>HSN Code *</label>
+                                <label>HSN Code </label>
                                 <input type="text" name="hsn_code" id="hsn_code" class="form-control"  value="{{(!empty($data)) ? $data['hsn_code']: ""}}" placeholder="HSN Code" > 
                             </div>
                              <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -410,9 +410,6 @@
 $("#commentForm").validate({
             rules: {
                 product: {
-                    required: true,
-                },
-                mrp: {
                     required: true,
                 },
                 purchase_price: {

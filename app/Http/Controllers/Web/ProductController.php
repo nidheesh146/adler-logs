@@ -100,24 +100,24 @@ class ProductController extends Controller
         }
     }
 
-    public function productAdd(Request $request)
+    public function productAdd(Request $request,$id=null)
     {
         if ($request->isMethod('post')) 
         {
              $validation['sku_code'] = ['required'];
-            // $validation['moreItems.*.Itemcode'] = ['required'];
-            //$validation['moreItems.*.quantity'] = ['required'];
+             $validation['product_family_id'] = ['required'];
+             $validation['product_group_id'] = ['required'];
+             $validation['brand_details_id'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) 
             {
-            if ($request->hasFile('image')) {
+             if ($request->hasFile('image')) {
               $image  = $request->file('image');
               $image_fileName = $request->file('image')->getClientOriginalName(); 
               $image->move(public_path('uploads/process_sheets'), $image_fileName);
-            }else{
-            $image_fileName =Null;
-            } 
-                
+             }else{
+             $image_fileName =Null;
+             } 
                 $data['sku_code'] = $request->sku_code;
                 $data['sku_name'] = $request->sku_name;
                 $data['discription'] = $request->discription;
@@ -167,10 +167,10 @@ class ProductController extends Controller
                 $data['process_sheet_no'] = $request->process_sheet_no;
                 $data['process_sheet_pdf'] = $image_fileName;
 
-                if($request->id){
+                if($request->id){ 
                     $data['updated'] = date('Y-m-d H:i:s');
                     $data['updated'] = config('user')['user_id'];
-                    $this->product_price_master->update_data(['id'=>$request->id],$data);
+                    $this->product->update_data(['id'=>$request->id],$data);
                     $request->session()->flash('success',"You have successfully updated a product !");
                     return redirect("product/Product-add/".$id);
                 }
@@ -185,6 +185,7 @@ class ProductController extends Controller
 
                     
                 }
+
             }
             if($validator->errors()->all()) 
             { 
@@ -195,15 +196,28 @@ class ProductController extends Controller
             }
         }
         else
-        {
-            $product = product::find($request->id);
+        { 
+
+             if($request->id)
+            {
+
+            $data = product::find($request->id);
             $materials = $this->product_input_material->getAllData(['product_input_material.product_id'=>$request->product_id]);
             $family = $this->product_productfamily->distinct('product_productfamily.family_name')->get();
             $group = $this->product_productgroup->distinct('product_productgroup.group_name')->get();
             $brand = $this->product_productbrand->distinct('product_productbrand.brand_name')->get();
             //print_r($materials);exit;
-            return view('pages/product/product-add', compact('product','materials','family','group','brand'));
+            return view('pages/product/product-add', compact('data','materials','family','group','brand'));
         }
+        else
+            $materials = $this->product_input_material->getAllData(['product_input_material.product_id'=>$request->product_id]);
+            $family = $this->product_productfamily->distinct('product_productfamily.family_name')->get();
+            $group = $this->product_productgroup->distinct('product_productgroup.group_name')->get();
+            $brand = $this->product_productbrand->distinct('product_productbrand.brand_name')->get();
+            //print_r($materials);exit;
+            return view('pages/product/product-add', compact('materials','family','group','brand'));
+        }
+
     }
 
     public function alternativeInputMaterialAdd(Request $request)
