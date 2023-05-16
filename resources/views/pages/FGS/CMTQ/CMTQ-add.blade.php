@@ -59,7 +59,7 @@
 
                         <div class="row">
                              <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" data-select2-id="7">
-                            <label>mtq number *<span class="spinner-border spinner-button spinner-border-sm"
+                            <label>MTQ Number *<span class="spinner-border spinner-button spinner-border-sm"
                                     style="display:none;" role="status" aria-hidden="true"></span></label>
                             @if(!empty($edit['mtq']))
                             <input type="hidden" name="mtq_number" value="{{$edit['mtq']->mtq_number}}">
