@@ -307,6 +307,10 @@ class RowMaterialController extends Controller
                     $data['created'] = date('Y-m-d');
                     $res[] = DB::table('inventory_rawmaterial')->insert($data);
                 }
+                else
+                {
+                    $res[] = 1;
+                }
                 
             }
     

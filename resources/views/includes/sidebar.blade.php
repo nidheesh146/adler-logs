@@ -155,7 +155,9 @@
                 <li class="nav-sub-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd'])){{'active'}} @endif ">
                   <a href="{{url('fgs/OEF-list')}}"  class="nav-sub-link">OEF</a>
                 </li>
-
+                <li class="nav-sub-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/OEF/pending-report')}}"  class="nav-sub-link">OEF Pending Report</a>
+                </li>
                  <li class="nav-sub-item @if(in_array($Action,['COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd'])){{'active'}} @endif ">
                   <a href="{{url('fgs/COEF/COEF-list')}}"  class="nav-sub-link">COEF</a>
                 </li> 
