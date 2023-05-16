@@ -83,6 +83,7 @@ class MISController extends Controller
                 $data['updated_at'] =date('Y-m-d H:i:s');
                 $mis_id = $this->fgs_mis->insert_data($data);
                 $condition[] = ['fgs_mtq_item_rel.master','=',$request->mtq_no];
+                $condition[] = ['fgs_mtq_item.cmtq_status','=',0];
                 $mtq_item = $this->fgs_mtq_item->get_items($condition);
                 foreach($mtq_item as $item)
                 {
@@ -94,7 +95,7 @@ class MISController extends Controller
                 if($mis_id)
                 {
                     $request->session()->flash('success', "You have successfully added a MIS !");
-                    return redirect('fgs/MIS/item-list/'.$add);
+                    return redirect('fgs/MIS/item-list/'.$mis_id);
                 }
                 else
                 {
@@ -260,8 +261,8 @@ class MISController extends Controller
         }
         if($request->from)
         {
-            $condition[] = ['fgs_mtq_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-            $condition[] = ['fgs_mtq_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_mis_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_mis_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
         $items = $this->fgs_mis_item->getMISItems($condition);
         return view('pages/FGS/MIS/MIS-item-list',compact('mis_id','items','mis_number'));
