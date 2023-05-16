@@ -325,7 +325,7 @@ class CPIController extends Controller
                        <td style="display:none;">'.$item->mrn_item_id.'</td>
                       
                 </tr>';
-            }
+            } 
             $data .= '</tbody>';
             $data .= '</table>
         </div>

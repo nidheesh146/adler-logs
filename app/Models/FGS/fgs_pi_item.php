@@ -52,6 +52,6 @@ class fgs_pi_item extends Model
                        ->where('fgs_pi_item.cpi_status','=',0)
                        ->where($condition)
                        ->get();
-    }
+    } 
     
 }

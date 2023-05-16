@@ -62,7 +62,7 @@
                                     <th>Net Value</th>
 								</tr>
 							</thead>
-							<tbody id="prbody1">
+							<tbody id="prbody1"> 
 							@foreach($items as $item)
                                 <tr>
 									
