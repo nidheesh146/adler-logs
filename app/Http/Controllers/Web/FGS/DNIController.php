@@ -177,6 +177,7 @@ class DNIController extends Controller
         $dni_items = fgs_dni_item_rel::select('fgs_dni_item.pi_id','fgs_pi.pi_number','fgs_pi.pi_date')
                             ->leftJoin('fgs_dni_item','fgs_dni_item.id','fgs_dni_item_rel.item')
                             ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_dni_item.pi_id')
+                            ->distinct('fgs_dni_item.pi_id')
                             ->where('master','=',$dni_id)->get();
         foreach($dni_items as $items)
         {

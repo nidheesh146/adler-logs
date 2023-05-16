@@ -42,6 +42,17 @@ class fgs_dni extends Model
             ->where('fgs_dni.status','=',1)
             ->first();
     }
+    function find_dni_num_for_srn($condition)
+    {
+        return $this->select(['fgs_dni.dni_number as text','fgs_dni.id'])
+        ->where($condition)
+        ->whereNotIn('fgs_dni.id',function($query) {
+
+            $query->select('fgs_srn.dni_id')->from('fgs_srn')->where('fgs_srn.status','=',1);
+        
+        })->where('fgs_dni.status','=',1)
+        ->get();
+    }
     
 
 }

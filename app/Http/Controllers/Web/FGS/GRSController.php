@@ -184,7 +184,8 @@ class GRSController extends Controller
     {
         $oef = $this->fgs_oef->get_single_oef(['fgs_oef.id'=>$id]);
         $condition[] = ['fgs_oef_item_rel.master','=', $id];
-        $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];            
+        $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];  
+        $condition[] = ['fgs_oef_item.coef_status','=',0];          
         $oef_items = $this->fgs_oef_item->getItems($condition);
         $data = '<div class="row">
            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">

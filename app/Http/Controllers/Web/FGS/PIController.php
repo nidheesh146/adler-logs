@@ -79,7 +79,10 @@ class PIController extends Controller
                 $pi_master=$this->fgs_pi->insert_data($data);
                 foreach($request->grs_id as $grs_id)
                 {
-                    $grs = fgs_grs_item_rel::where('master','=',$grs_id)->get();
+                    $grs = fgs_grs_item_rel::select('fgs_grs_item_rel.item','fgs_grs_item_rel.master')
+                            ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_grs_item_rel.item')
+                            ->where('cgrs_status','=',0)
+                            ->where('master','=',$grs_id)->get();
                     
                     foreach($grs as $grs_data)
                     {
