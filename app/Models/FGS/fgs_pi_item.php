@@ -43,13 +43,15 @@ class fgs_pi_item extends Model
     }
 
     function get_pi_item($condition){
-        return $this->select(['fgs_pi_item.*'])
-                    ->join('fgs_pi_item_rel','fgs_pi_item_rel.item','=','fgs_pi_item.id')
-                    ->join('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
-                    ->where('fgs_pi.status','=',1)
-                    ->where('fgs_pi_item.cpi_status','=',0)
-                    ->where($condition)
-                    ->get();
+        return $this->select('fgs_pi_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_pi.pi_number','fgs_grs.grs_number','fgs_grs_item.batch_quantity')
+                        ->join('fgs_pi_item_rel','fgs_pi_item_rel.item','=','fgs_pi_item.id')
+                        ->join('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
+                        ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
+                        ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+                        ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
+                       ->where('fgs_pi_item.cpi_status','=',0)
+                       ->where($condition)
+                       ->get();
     }
     
 }

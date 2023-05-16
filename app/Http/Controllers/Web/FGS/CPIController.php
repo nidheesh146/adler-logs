@@ -97,6 +97,7 @@ class CPIController extends Controller
                          $this->fgs_cpi_item->insert_data($datas,$cpi_id);
                          $fgs_pi_item = fgs_pi_item::
                                         where('grs_id','=',$pi_item['grs_id'])
+                                        ->where('id','=',$pi_item['id'])
                                         ->update(['cpi_status' => 1]);
                          $grs_item = fgs_grs_item::where('id','=',$pi_item['grs_item_id'])->first();   
                         $fgs_grs_data = fgs_grs::where('id','=',$pi_item['grs_id'])->first();
@@ -304,9 +305,10 @@ class CPIController extends Controller
             <thead>
             <tr>
                 <th ></th> 
-                <th>GRS ID</th>
-                <th>GRS ITEM ID</th>
-                <th>MRN ID</th>
+                <th>GRS NUMBER</th>
+                <th>PRODUCT</th>
+                <th>DESCRIPTION</th>
+                <th>QUANTITY</th>
             </tr>
             </thead>
             <tbody >';
@@ -314,9 +316,13 @@ class CPIController extends Controller
                 $data .= '
                 <tr>
                        <td ><input type="checkbox" name="pi_item_id[]" id="pi_item_id" value="'.$item->id.'"></td>
-                       <td>'.$item->grs_id.'</td>
-                       <td>'.$item->grs_item_id.'</td>
-                       <td>'.$item->mrn_item_id.'</td>
+                       <td>'.$item->grs_number.'</td>
+                       <td>'.$item->sku_code.'</td>
+                       <td>'.$item->discription.'</td>
+                       <td>'.$item->batch_quantity.'</td>
+                       <td style="display:none;">'.$item->grs_id.'</td>
+                       <td style="display:none;">'.$item->grs_item_id.'</td>
+                       <td style="display:none;">'.$item->mrn_item_id.'</td>
                       
                 </tr>';
             }

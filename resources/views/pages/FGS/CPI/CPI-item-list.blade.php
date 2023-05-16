@@ -6,13 +6,13 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Proforma Invoice(PI)</span>
+				 <span>Cancellation Proforma Invoice(PI)</span>
 				 <span><a href="">
-				 	PI Item List
+				 	CPI Item List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-                PI Item List 
+                CPI Item List 
               <div class="right-button">
                 
               <div>  
