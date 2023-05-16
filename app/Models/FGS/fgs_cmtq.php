@@ -5,9 +5,9 @@ namespace App\Models\FGS;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class fgs_mtq extends Model
+class fgs_cmtq extends Model
 {
-    protected $table = 'fgs_mtq';
+    protected $table = 'fgs_cmtq';
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = false;
@@ -19,9 +19,10 @@ class fgs_mtq extends Model
         return $this->where($condition)->update($data);
     }
 
-    function get_single_mtq($condition) 
+    function get_single_cmtq($condition) 
     {
-        return $this->select('fgs_mtq.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1', 'stock_location.location_name as location_name2')
+        return $this->select('fgs_cmtq.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1', 'stock_location.location_name as location_name2','fgs_mtq.ref_number','fgs_mtq.ref_date')
+                    ->leftJoin('fgs_mtq','fgs_mtq.id','fgs_cmtq.mtq_id')
                     ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_mtq.product_category_id')
                     ->leftJoin('product_stock_location','product_stock_location.id','fgs_mtq.stock_location_id1')
                     ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_mtq.stock_location_id2')
@@ -53,7 +54,8 @@ class fgs_mtq extends Model
     }
     function get_master_data($condition)
     {
-        return $this->select('fgs_mtq.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1','stock_location.location_name as location_name2')
+        return $this->select('fgs_cmtq.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1','stock_location.location_name as location_name2')
+                    ->leftJoin('fgs_mtq','fgs_mtq.id','fgs_cmtq.mtq_id')
                     ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_mtq.product_category_id')
                     ->leftJoin('product_stock_location','product_stock_location.id','fgs_mtq.stock_location_id1')
                     ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_mtq.stock_location_id2')
@@ -61,13 +63,6 @@ class fgs_mtq extends Model
                     ->where('fgs_mtq.status','=',1)
                     ->distinct('fgs_mtq.id')
                     ->first();
-    }
-     function find_mtq_num_for_cmtq($condition)
-    {
-        return $this->select(['fgs_mtq.mtq_number as text','fgs_mtq.id'])->where($condition)
-        ->where('fgs_mtq.status','=',1)
-        ->where($condition)
-        ->get();
     }
     
 }

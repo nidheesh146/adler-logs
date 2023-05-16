@@ -5,10 +5,10 @@ namespace App\Models\FGS;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DB;
-class fgs_mtq_item extends Model
+class fgs_cmtq_item extends Model
 {
     
-    protected $table = 'fgs_mtq_item';
+    protected $table = 'fgs_cmtq_item';
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = false;
@@ -16,7 +16,7 @@ class fgs_mtq_item extends Model
     function insert_data($data,$mtq_id){
         $item_id =  $this->insertGetId($data);
         if($item_id){
-            DB::table('fgs_mtq_item_rel')->insert(['master'=>$mtq_id,'item'=>$item_id]);
+            DB::table('fgs_cmtq_item_rel')->insert(['master'=>$mtq_id,'item'=>$item_id]);
         }
         return true;
     }
@@ -25,13 +25,13 @@ class fgs_mtq_item extends Model
     }
     function getMTQItems($condition)
     {
-        return $this->select('fgs_mtq_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_mtq.mtq_number')
-                        ->leftjoin('fgs_mtq_item_rel','fgs_mtq_item_rel.item','=','fgs_mtq_item.id')
-                        ->leftjoin('fgs_mtq','fgs_mtq.id','=','fgs_mtq_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_mtq_item.product_id')
-                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mtq_item.batchcard_id')
+        return $this->select('fgs_cmtq_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no')
+                        ->leftjoin('fgs_cmtq_item_rel','fgs_cmtq_item_rel.item','=','fgs_cmtq_item.id')
+                        ->leftjoin('fgs_cmtq','fgs_cmtq.id','=','fgs_cmtq_item_rel.master')
+                        ->leftjoin('product_product','product_product.id','=','fgs_cmtq_item.product_id')
+                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmtq_item.batchcard_id')
                         ->where($condition)
-                        ->orderBy('fgs_mtq_item.id','DESC')
+                        ->orderBy('fgs_cmtq_item.id','DESC')
                         ->paginate(15);
     }
     function get_items($condition)
@@ -45,17 +45,16 @@ class fgs_mtq_item extends Model
                         ->orderBy('fgs_mtq_item.id','DESC')
                         ->get();
     }
-      function get_mtq_item($condition)
+    function getAllItems($condition)
     {
-        return $this->select('fgs_mtq_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_mtq.mtq_number')
-                        ->leftjoin('fgs_mtq_item_rel','fgs_mtq_item_rel.item','=','fgs_mtq_item.id')
-                        ->leftjoin('fgs_mtq','fgs_mtq.id','=','fgs_mtq_item_rel.master')
+        return $this->select('fgs_cmtq_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_mtq_item.manufacturing_date','fgs_mtq_item.expiry_date')
+                        ->leftjoin('fgs_cmtq_item_rel','fgs_cmtq_item_rel.item','=','fgs_cmtq_item.id')
+                        ->leftjoin('fgs_cmtq','fgs_cmtq.id','=','fgs_cmtq_item_rel.master')
+                        ->leftjoin('fgs_mtq_item','fgs_mtq_item.id','=','fgs_cmtq_item.mtq_item_id')
                         ->leftjoin('product_product','product_product.id','=','fgs_mtq_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mtq_item.batchcard_id')
-                        ->where('fgs_mtq.status','=',1)
-                        ->where('fgs_mtq_item.cmtq_status','=',0)
                         ->where($condition)
-                        ->orderBy('fgs_mtq_item.id','DESC')
+                        ->orderBy('fgs_cmtq_item.id','DESC')
                         ->get();
     }
 }

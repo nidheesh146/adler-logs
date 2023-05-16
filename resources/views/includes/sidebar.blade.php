@@ -140,6 +140,9 @@
                 <li class="nav-sub-item @if(in_array($Action,['MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQAdd','MTQ.MTQitemAdd'])){{'active'}} @endif ">
                   <a href="{{url('fgs/MTQ-list')}}"  class="nav-sub-link">MTQ</a>
                 </li>
+                <li class="nav-sub-item @if(in_array($Action,['CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/CMTQ-list')}}"  class="nav-sub-link">CMTQ</a>
+                </li>
                 <li class="nav-sub-item @if(in_array($Action,['MIS.MISList','MIS.MISAdd','MIS.MISitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/MIS-list')}}"  class="nav-sub-link">MIS</a>
                 </li>

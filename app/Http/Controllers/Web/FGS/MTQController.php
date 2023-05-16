@@ -15,6 +15,7 @@ use App\Models\FGS\fgs_product_category;
 use App\Models\FGS\fgs_mtq;
 use App\Models\FGS\fgs_mtq_item;
 use App\Models\FGS\fgs_mtq_item_rel;
+use PDF;
 class MTQController extends Controller
 {
     public function __construct()
@@ -218,5 +219,16 @@ class MTQController extends Controller
                                         ->get();
         return $batchcards;
     }
+
+    public function MTQpdf($mtq_id)
+    { 
+        $data['mtq'] = $this->fgs_mtq->get_single_mtq(['fgs_mtq.id' => $mtq_id]);
+        $data['items'] = $this->fgs_mtq_item->get_items(['fgs_mtq_item_rel.master' => $mtq_id]);
+        $pdf = PDF::loadView('pages.FGS.MTQ.pdf-view', $data);
+        // $pdf->set_paper('A4', 'landscape');
+        $file_name = "MTQ" . $data['mtq']['firm_name'] . "_" . $data['mtq']['mtq_date'];
+        return $pdf->stream($file_name . '.pdf');
+    }
+
     
 }
