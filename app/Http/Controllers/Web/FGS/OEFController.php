@@ -188,4 +188,14 @@ class OEFController extends Controller
         $file_name = "OEF" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
         return $pdf->stream($file_name . '.pdf');
     }
+     public function OEFackpdf($oef_id)
+    {
+        $data['oef'] = $this->fgs_oef->get_single_oef(['fgs_oef.id' => $oef_id]);
+        $data['items'] = $this->fgs_oef_item->getAllItems(['fgs_oef_item_rel.master' => $oef_id]);
+        $pdf = PDF::loadView('pages.FGS.OEF.ack-pdf-view', $data);
+       // $pdf->set_paper('A4', 'landscape');
+        $file_name = "ORDER ACKNOWLEDGMENT" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
+        return $pdf->stream($file_name . '.pdf');
+    }
+    
 }

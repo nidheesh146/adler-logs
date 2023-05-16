@@ -464,6 +464,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::post('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::get('fgs/OEFproductsearch','OEFController@OEFproductsearch');
     Route::get('fgs/OEF/pdf/{oef_id}','OEFController@OEFpdf');
+    Route::get('fgs/OEF/ackpdf/{oef_id}','OEFController@OEFackpdf');
+
 
      //COEF
     Route::get('fgs/COEF/COEF-list','COEFController@COEFList');
