@@ -399,7 +399,7 @@
                 <th colspan="2">IGST</th>
                 <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
-            <tr>
+            <tr> 
                 <th style="width:3% !important">% </th>
                 <th width='12%'>Value</th>
                 <th style="width:3% !important">% </th>

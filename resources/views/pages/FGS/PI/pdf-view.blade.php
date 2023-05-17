@@ -214,7 +214,7 @@
     <div class="row3">
         <table border="1">
             <tr>
-                <th rowspan="2">S.NO</th>
+                <th rowspan="2">S.NO</th> 
                 <th rowspan="2">
                     HSN CODE  
                 </th>

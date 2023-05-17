@@ -502,7 +502,7 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;"></td>
                 </tr>
-                <tr>
+                <tr> 
                     <td style="width:160px">Round Off</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;"></td>

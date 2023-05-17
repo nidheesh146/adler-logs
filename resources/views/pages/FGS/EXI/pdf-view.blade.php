@@ -517,7 +517,7 @@
                     <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:160px">Other Charges</td>
+                    <td style="width:160px">Other Charges</td> 
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;"></td>
                 </tr>
