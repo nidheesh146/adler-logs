@@ -13,6 +13,8 @@ use App\Models\FGS\transaction_type;
 use App\Models\FGS\order_fulfil;
 use App\Models\inventory_gst;
 use App\Models\product;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PendingOEFExport;
 class OEFController extends Controller
 {
     public function __construct()
@@ -187,6 +189,49 @@ class OEFController extends Controller
         $pdf->set_paper('A4', 'landscape');
         $file_name = "OEF" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
         return $pdf->stream($file_name . '.pdf');
+    }
+
+    public function pendingOEF(Request $request)
+    {
+        $condition =[];
+        if($request->oef_number)
+        {
+            $condition[] = ['fgs_oef.oef_number','like', '%' . $request->oef_number . '%'];
+        }
+        if($request->order_number)
+        {
+            $condition[] = ['fgs_oef.order_number','like', '%' . $request->order_number . '%'];
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_oef.oef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_oef.oef_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        }
+        $oef = fgs_oef::select('fgs_oef.*','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.contact_person','customer_supplier.contact_number')
+                        ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
+                        ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
+                        ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
+                        ->whereNotIn('fgs_oef.id',function($query) {
+
+                            $query->select('fgs_grs.oef_id')->from('fgs_grs')->where('fgs_grs.status','=',1);
+                        
+                        })->where('fgs_oef.status','=',1)
+                        ->where($condition)
+                        ->distinct('fgs_oef.id')
+                        ->paginate(15);
+        return view('pages/FGS/OEF/pending-oef',compact('oef'));
+    }
+    public function pendingOEFExport(Request $request)
+    {
+        if($request)
+        {
+            return Excel::download(new PendingOEFExport($request), 'PendingOEF' . date('d-m-Y') . '.xlsx');
+        }
+        else
+        {
+            $request =null;
+            return Excel::download(new PendingOEFExport($request), 'PendingOEF' . date('d-m-Y') . '.xlsx');
+        }
     }
      public function OEFackpdf($oef_id)
     {
