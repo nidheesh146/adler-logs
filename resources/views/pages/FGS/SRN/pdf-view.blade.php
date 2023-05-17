@@ -54,7 +54,7 @@
          .row2{
             display:block;
             font-size:11px;
-            height:120px;
+            height:90px;
             border-bottom:solid 0.5px black;
         }
         .row3, .row4{
@@ -106,7 +106,7 @@
     </style>
    
     <!-- <div class="row1" style="height:150px;border-bottom:solid 2px black;"> -->
-    <div class="row1" style="height:200px;">
+    <div class="row1" style="height:180px;">
         <div class="col1">
             To<br/>
             <strong>{{$srn['firm_name']}}</strong>
@@ -138,7 +138,7 @@
         <div class="col4" style="float:right;">
             <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
         </div>
-    </div><br/>
+    </div>
             
     <div style="display:block;height: 8px;width:90%; border-bottom: solid black;margin-bottom:40px;">
         <span style="float:right;font-weight:bold;font-size: 24px; background-color: #f4f5f8; padding: 0 4px;margin-top:-12px;position: absolute;margin-right:-80px">
@@ -384,14 +384,14 @@
                     HSN CODE  
                 </th>
                 <th rowspan="2">SKU CODE</th>
-                <th rowspan="2" width='35%'>ITEM DESCRIPTION</th>
-                <th rowspan="2" style="width:10%;">DATE Of MFG.</th>
-                <th rowspan="2" style="width:10%;">DATE Of EXPIRY</th>
-                <th rowspan="2">BATCHCARD</th>
+                <th rowspan="2" width='28%'>ITEM DESCRIPTION</th>
+                <th rowspan="2" style="width:6% !important;">DATE Of MFG.</th>
+                <th rowspan="2" style="width:6% !important;">DATE Of EXPIRY</th>
+                <th rowspan="2">BATCH NO</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
                 <th rowspan="2">RATE</th>
-                <th rowspan="2">VALUE</th>
+               
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
                 <th colspan="2">CGST</th>
@@ -400,13 +400,13 @@
                 <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
             <tr>
-                <th>%</th>
+                <th >%</th>
+                <th >Value</th>
+                <th >%</th>
                 <th>Value</th>
-                <th>%</th>
-                <th>Value</th>
-                <th>%</th>
+                <th >%</th>
                 <th>Value  </th>
-                <th>%</th>
+                <th >%</th>
                 <th>Value</th>
             </tr>
             <?php $i=1;
@@ -429,7 +429,7 @@
                 <td>{{$item['quantity']}}</td>
                 <td>Nos</td>
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
-                <td>{{number_format((float)($item['rate']* $item['quantity']), 2, '.', '') }}</td>
+                
                 <td>{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
                 <td>{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
@@ -477,15 +477,11 @@
         <div class="col43">
             <table style="height:130px;">
                 <tr>
-                    <td style="width:160px">Sum of Net Amount</td>
+                    <td style="width:160px">Sum of Taxable Value</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
                 </tr>
-                <tr>
-                    <td style="width:160px">Total Discount</td>
-                    <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
-                </tr>
+                
                 <tr>
                     <td style="width:160px">Sum of CGST</td>
                     <td style="width:30px;">:</td>
@@ -506,11 +502,15 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;"></td>
                 </tr>
-                
+                <tr>
+                    <td style="width:160px">Round Off</td>
+                    <td style="width:30px;">:</td>
+                    <td style="text-align:right;"></td>
+                </tr>
             </table>
             <table style="border-bottom:solid 1px black;width:100%;border-top:solid 1px black;width:100%;">
                 <tr>
-                    <th style="width:130px">GRAND TOTAL</th>
+                    <th style="width:148px; text-align: left;">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
                     <th class="grand_total_value" style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}} {{$srn['currency_code']}}</th>
                 </tr> 
