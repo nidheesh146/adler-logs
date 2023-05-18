@@ -3,7 +3,7 @@
 <head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     
-    <title>PI_{{$pi['firm_name']}}_{{$pi['pi_number']}}</title
+    <title>PI_{{$pi['firm_name']}}_{{$pi['pi_number']}}</title>
 </head>
 <body>
 @inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\PurchaseController')
@@ -53,7 +53,7 @@
          .row2{
             display:block;
             font-size:11px;
-            height:35px;
+            height:40px;
             border-bottom:solid 0.5px black;
         }
         .row3, .row4{
@@ -101,7 +101,7 @@
     </style>
    
     <!-- <div class="row1" style="height:150px;border-bottom:solid 2px black;"> -->
-    <div class="row1" style="height:170px;">
+    <div class="row1" style="height:140px;">
         <div class="col1">
             To<br/>
             <strong>{{$pi['firm_name']}}</strong>
@@ -138,7 +138,7 @@
         Proforma Invoice(PI)<!--Padding is optional-->
         </span>
     </div>
-    <br/>
+   
     <div class="row2">
         <div class="col21">
             <table>
@@ -214,19 +214,19 @@
     <div class="row3">
         <table border="1">
             <tr>
-                <th rowspan="2">S.NO</th>
+                <th rowspan="2">S.NO</th> 
                 <th rowspan="2">
                     HSN CODE  
                 </th>
                 <th rowspan="2">SKU CODE</th>
-                <th rowspan="2" width='35%'>ITEM DESCRIPTION</th>
-                <th rowspan="2" style="width:10%;">DATE Of MFG.</th>
-                <th rowspan="2" style="width:10%;">DATE Of EXPIRY</th>
-                <th rowspan="2">BATCHCARD</th>
+                <th rowspan="2" width='25%'>ITEM DESCRIPTION</th>
+                <th rowspan="2" style="width:6% !important;">DATE Of MFG.</th>
+                <th rowspan="2" style="width:8% !important;">DATE Of EXPIRY</th>
+                <th rowspan="2">BATCH NO</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
                 <th rowspan="2">RATE</th>
-                <th rowspan="2">VALUE</th>
+                
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
                 <th colspan="2">CGST</th>
@@ -263,7 +263,7 @@
                 <td>{{$item['quantity']}}</td>
                 <td>Nos</td>
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
-                <td>{{number_format((float)($item['rate']* $item['quantity']), 2, '.', '') }}</td>
+               
                 <td>{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
                 <td>{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
@@ -288,7 +288,7 @@
         
         </table>
     </div>
-    <br/>
+    
     <div class="row4" style="border-bottom:solid 1px black;height:170px;">
         <div class="col41">
             <div class="valuewords">
@@ -310,15 +310,11 @@
         <div class="col43">
             <table style="height:130px;">
                 <tr>
-                    <td style="width:160px">Sum of Net Amount</td>
+                    <td style="width:160px">Sum of Taxable value</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
                 </tr>
-                <tr>
-                    <td style="width:160px">Total Discount</td>
-                    <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
-                </tr>
+                
                 <tr>
                     <td style="width:160px">Sum of CGST</td>
                     <td style="width:30px;">:</td>
@@ -339,11 +335,15 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;"></td>
                 </tr>
-                
+                 <tr>
+                    <td style="width:160px">Rounf Off</td>
+                    <td style="width:30px;">:</td>
+                    <td style="text-align:right;"></td>
+                </tr>
             </table>
             <table style="border-bottom:solid 1px black;width:100%;border-top:solid 1px black;width:100%;">
                 <tr>
-                    <th style="width:130px">GRAND TOTAL</th>
+                    <th style="width:148px; text-align: left;">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
                     <th class="grand_total_value" style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}} {{$pi['currency_code']}}</th>
                 </tr> 

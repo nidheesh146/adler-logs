@@ -496,15 +496,11 @@
         <div class="col43">
             <table style="height:130px;">
                 <tr>
-                    <td style="width:160px">Sum of Net Amount</td>
+                    <td style="width:160px">Sum of Taxable Value</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
                 </tr>
-                <tr>
-                    <td style="width:160px">Total Discount</td>
-                    <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
-                </tr>
+                
                 <tr>
                     <td style="width:160px">Sum of CGST</td>
                     <td style="width:30px;">:</td>
@@ -521,7 +517,12 @@
                     <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:160px">Other Charges</td>
+                    <td style="width:160px">Other Charges</td> 
+                    <td style="width:30px;">:</td>
+                    <td style="text-align:right;"></td>
+                </tr>
+                 <tr>
+                    <td style="width:160px">Round Off</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;"></td>
                 </tr>
@@ -529,7 +530,7 @@
             </table>
             <table style="border-bottom:solid 1px black;width:100%;border-top:solid 1px black;width:100%;">
                 <tr>
-                    <th style="width:130px">GRAND TOTAL</th>
+                    <th style="width:148px; text-align: left;">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
                     <th class="grand_total_value" style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}} {{$dni['currency_code']}}</th>
                 </tr> 

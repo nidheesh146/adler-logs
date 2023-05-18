@@ -55,7 +55,7 @@
          .row2{
             display:block;
             font-size:11px;
-            height:120px;
+            height:78px;
             border-bottom:solid 0.5px black;
         }
         .row3, .row4{
@@ -107,7 +107,7 @@
     </style>
    
     <!-- <div class="row1" style="height:150px;border-bottom:solid 2px black;"> -->
-    <div class="row1" style="height:200px;">
+    <div class="row1" style="height:210px;">
         <div class="col1">
             To<br/>
             <strong>{{$dni['firm_name']}}</strong>
@@ -115,12 +115,11 @@
             {{$dni['city']}}, {{$dni['state_name']}}<br/>
             Cell No : {{ $dni['contact_number'] }}<br/>
             <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$dni['email']}}<br/><span>
-           </p>
-            Shipping Address :
-           <p>{{$dni['shipping_address']}}<br/>
-           {{$dni['city']}},  {{$dni['state_name']}}
-           </p> 
-            <p>GST Details : {{$dni['gst_number']}}<br/>
+           
+            <b>Shipping Address</b> :
+           {{$dni['shipping_address']}}<br/>
+           {{$dni['city']}},  {{$dni['state_name']}}<br/>
+           <b>GST Details </b>: {{$dni['gst_number']}}<br/>
             D.L. Details: {{$dni['dl_number1']}}, {{$dni['dl_number2']}}, {{$dni['dl_number3']}} <p>
 
         </div>
@@ -146,7 +145,7 @@
         Tax Invoice Cum Delivery Note(DNI)<!--Padding is optional-->
         </span>
     </div>
-    <br/>
+    
     <div class="row2">
         <div class="col21">
             <table>
@@ -229,6 +228,7 @@
                 </tr>
             </table>
         </div>
+       
         <div class="col22">
             <table style="float:left;">
                 <tr>
@@ -369,7 +369,7 @@
                 
             </table>
         </div>
-    <br/>    
+   
     </div>
     
     <style>
@@ -377,8 +377,8 @@
             text-align:center;
         }
     </style>
-    <div class="row3">
-        <table border="1">
+    <div class="row3" >
+        <table border="1" >
             <tr>
                 <th rowspan="2">S.NO</th>
                 <th rowspan="2">
@@ -386,13 +386,12 @@
                 </th>
                 <th rowspan="2">SKU CODE</th>
                 <th rowspan="2" width='35%'>ITEM DESCRIPTION</th>
-                <th rowspan="2" style="width:10%;">DATE Of MFG.</th>
-                <th rowspan="2" style="width:10%;">DATE Of EXPIRY</th>
-                <th rowspan="2">BATCHCARD</th>
+                <th rowspan="2" style="width:8%;">DATE Of MFG.</th>
+                <th rowspan="2" style="width:10% !important;">DATE Of EXPIRY</th>
+                <th rowspan="2" >BATCH NO</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
                 <th rowspan="2">RATE</th>
-                <th rowspan="2">VALUE</th>
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
                 <th colspan="2">CGST</th>
@@ -400,15 +399,15 @@
                 <th colspan="2">IGST</th>
                 <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
-            <tr>
-                <th>%</th>
-                <th>Value</th>
-                <th>%</th>
-                <th>Value</th>
-                <th>%</th>
-                <th>Value  </th>
-                <th>%</th>
-                <th>Value</th>
+            <tr> 
+                <th style="width:3% !important">% </th>
+                <th width='12%'>Value</th>
+                <th style="width:3% !important">% </th>
+                <th width='12%'>Value</th>
+                <th style="width:3% !important">% </th>
+                <th width='12%'>Value  </th>
+                <th style="width:3% !important">% </th>
+                <th width='12%'>Value</th>
             </tr>
             <?php $i=1;
             $total = 0;
@@ -423,24 +422,23 @@
                 <td>{{$i++}}</td>
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
-                <td>{{$item['discription']}}</td>
-                <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
+                <td >{{$item['discription']}}</td>
+                <td >{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                <td >@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
                 <td>{{$item['batch_no']}}</td>
                 <td>{{$item['quantity']}}</td>
                 <td>Nos</td>
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
-                <td>{{number_format((float)($item['rate']* $item['quantity']), 2, '.', '') }}</td>
-                <td>{{$item['discount']}}</td>
+                <td >{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
-                <td>{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
-                <td>{{$discount_value}}</td>
-                <td>{{$item['cgst']}}</td>
+                <td  >{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
+                <td >{{$discount_value}}</td>
+                <td >{{$item['cgst']}}</td>
                 <td>{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
                 <td >{{$item['sgst']}}</td>
-                <td width="5%">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
-                <td>{{$item['igst']}}</td>
-                <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
+                <td >{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
+                <td >{{$item['igst']}}</td>
+                <td >{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
                 <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
                 <td>{{number_format((float)($total_amount), 2, '.', '')}}</td>
                 <?php 
@@ -455,7 +453,7 @@
             @endforeach        
         </table>
     </div>
-    <br/>
+   <br>
     <div class="row4" style="height:170px;">
         <div class="col41">
             <div class="remarks" style="">
@@ -494,17 +492,13 @@
             </div>
         </div>
         <div class="col43">
-            <table style="height:130px;">
+            <table style="height:110px;">
                 <tr>
-                    <td style="width:160px">Sum of Net Amount</td>
+                    <td style="width:160px">Sum of Taxable Value</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
                 </tr>
-                <tr>
-                    <td style="width:160px">Total Discount</td>
-                    <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
-                </tr>
+                
                 <tr>
                     <td style="width:160px">Sum of CGST</td>
                     <td style="width:30px;">:</td>
@@ -525,11 +519,15 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;"></td>
                 </tr>
-                
+                 <tr>
+                    <td style="width:160px">Round Off</td>
+                    <td style="width:30px;">:</td>
+                    <td style="text-align:right;"></td>
+                </tr>
             </table>
-            <table style="border-bottom:solid 1px black;width:100%;border-top:solid 1px black;width:100%;">
+            <table style="border-bottom:solid 1px black;width:100%;">
                 <tr>
-                    <th style="width:130px">GRAND TOTAL</th>
+                    <th style="width:148px; text-align: left;">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
                     <th class="grand_total_value" style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}} {{$dni['currency_code']}}</th>
                 </tr> 
