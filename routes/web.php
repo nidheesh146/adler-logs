@@ -504,6 +504,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/PI/item-list/{pi_id}','PIController@PIitemlist');
     Route::get('fgs/PI/fetchGRS','PIController@fetchGRS');
     Route::get('fgs/PI/pdf/{pi_id}','PIController@PIpdf');
+    Route::get('fgs/PI/payment-pdf/{pi_id}','PIController@PIPaymentpdf');
+
     //CPI
      Route::get('fgs/CPI/CPI-list','CPIController@CPIList');
     Route::get('fgs/CPI/CPI-add','CPIController@CPIAdd');
@@ -527,7 +529,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::post('fgs/EXI-add','EXIController@EXIAdd');
      Route::get('fgs/EXI/item-list/{exi_id}','EXIController@EXIitemlist');
      Route::get('fgs/EXI/fetchPI','EXIController@fetchPI');
-     Route::get('fgs/EXI/pdf/{grs_id}','EXIController@EXIpdf');
+     Route::get('fgs/EXI/pdf/{grs_id}','EXIController@EXIpdf'); 
 
      //stock-management
      Route::get('fgs/stock-management/all-locations','StockManagementController@allLocations');

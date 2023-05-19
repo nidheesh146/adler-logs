@@ -13,7 +13,7 @@
             width:33%;
             font-size:11px;
         }
-        .col2{
+        .col2{ 
             width:28%;
             float:left;
         }
@@ -392,7 +392,7 @@
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
                 <th rowspan="2">RATE</th>
-                <th rowspan="2">VALUE</th>
+               
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
                 <th colspan="2">CGST</th>
@@ -416,6 +416,11 @@
             $total_igst = 0;
             $total_cgst = 0;
             $total_sgst = 0;
+            $qsum = 0;
+            $rsum = 0;
+            $tsum = 0;
+            $isum = 0;
+            $totalsum = 0;
              ?>
             @foreach($dni_items as $dni_item)
             @foreach($dni_item['pi_item'] as $item)
@@ -430,7 +435,7 @@
                 <td>{{$item['quantity']}}</td>
                 <td>Nos</td>
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
-                <td>{{number_format((float)($item['rate']* $item['quantity']), 2, '.', '') }}</td>
+               
                 <td>{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
                 <td>{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
@@ -450,9 +455,38 @@
                 $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
                 $total_cgst = $total_cgst+($discount_value* $item['quantity']*$item['cgst'])/100;
                 ?>
+                 <?php 
+                 $qsum = $qsum+$item['quantity'];
+                 $rsum = $rsum+$item['rate'];
+                 $tsum = $tsum+$discount_value;
+                 $isum = $isum+$total_igst;
+                 $totalsum = $totalsum+$total_amount;
+                 ?>
             </tr>
             @endforeach
-            @endforeach        
+            @endforeach   
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{  $qsum }}</td>
+                <td></td>
+                <td> {{ $rsum }}</td>
+                <td></td>
+                <td></td>
+                <td>{{ $tsum }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ $totalsum }}</td>
+            </tr>              
         </table>
     </div>
     <br/>
@@ -524,7 +558,12 @@
                  <tr>
                     <td style="width:160px">Round Off</td>
                     <td style="width:30px;">:</td>
-                    <td style="text-align:right;"></td>
+                     <?php 
+                    $t = number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '');
+                    $round = round($t);
+                    $roundoff = number_format((float)($round-$t), 2, '.', '');
+                    ?>
+                    <td style="text-align:right;">{{ $roundoff }}</td>
                 </tr>
                 
             </table>
@@ -532,7 +571,13 @@
                 <tr>
                     <th style="width:148px; text-align: left;">GRAND TOTAL</th>
                     <th style="width:30px;">:</th>
-                    <th class="grand_total_value" style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}} {{$dni['currency_code']}}</th>
+                     <?php
+                     $grand = 0;
+                     $grandt = 0;
+                    $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))
+                   
+                    ?>
+                    <th class="grand_total_value" style="text-align:right;">{{ $grand }} {{$dni['currency_code']}}</th>
                 </tr> 
             </table>
         </div>
