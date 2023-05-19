@@ -152,7 +152,25 @@
                                     @endforeach
                                 </select>
                             </div>
-                            
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Type</label>
+                                <select name="master_type"  class="form-control">
+                                <option value="">-- Select one ---</option>
+                                    <option value="Supplier" @if(!empty($datas) && $datas['master_type'] == 'Supplier' ) selected   @endif>Supplier</option>
+                                    <option value="Customer" @if(!empty($datas) && $datas['master_type'] == 'Customer' ) selected   @endif>Customer</option>
+                                    
+                                </select>
+                            </div>
+                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Status</label>
+                                <select name="status_type"  class="form-control">
+                                <option value="">-- Select one ---</option>
+                                    <option value="1" @if(!empty($datas) && $datas['status_type'] == '1' ) selected   @endif>Active</option>
+                                    <option value="0" @if(!empty($datas) && $datas['status_type'] == '0' ) selected   @endif>Inactive</option>
+                                    
+                                </select>
+                            </div>
+                             
                               <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                   <label>Payment Terms *</label>
                                   <textarea value="" class="form-control autosize" name="payment_terms" placeholder="Terms and Conditions"><?php echo (!empty($datas)) ? $datas['terms_and_conditions'] : ""; ?></textarea>

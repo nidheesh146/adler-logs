@@ -62,6 +62,14 @@ class product extends Model
                     ->get()->toArray();
         
     }
+     function get_single_product($condition)
+    {
+        
+     return $this->select('product_product.*')
+                    ->where($condition)
+                   ->first();
+
+    }
 
 
     

@@ -54,11 +54,11 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>SKU code *</label>
-                                <input type="text" value="" class="form-control" name="sku_code" id="sku_code" placeholder="SKU Code">
+                                <input type="text" value="{{(!empty($datas)) ? $datas['sku_code']: ""}}" class="form-control" name="sku_code" id="sku_code" placeholder="SKU Code">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Short Name </label>
-                                <input type="text" value="" class="form-control" name="short_name" id="short_name" placeholder="Short Name">
+                                <input type="text" value="{{(!empty($datas)) ? $datas['short_name']: ""}}" class="form-control" name="short_name" id="short_name" placeholder="Short Name">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label> Description *</label>
@@ -66,18 +66,19 @@
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>HSN Code *</label>
-                                <input type="text" value="" class="form-control" name="hsn_code" id="hsn_code" placeholder="HSN Code" >
+                                <input type="text" value="{{(!empty($datas)) ? $datas['hsn_code']: ""}}" class="form-control" name="hsn_code" id="hsn_code" placeholder="HSN Code" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>GS1 Code</label>
-                                <input type="text" value="" class="form-control" name="gs1_code" id="gs1_code" placeholder="GS1 Code" >
+                                <input type="text" value="{{(!empty($datas)) ? $datas['gs1_code']: ""}}" class="form-control" name="gs1_code" id="gs1_code" placeholder="GS1 Code" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Product group *</label>
                                 <select class="form-control" name="product_group">
                                     <option>..select one..</option>
                                     @foreach($data['product_group1'] as $grp)
-                                    <option value="{{$grp->id}}">{{$grp->group_name}}</option>
+                                    <option value="{{$grp->id}}"
+                                     @if($datas != null)  @if($datas->product_group1_id == $grp->id) selected @endif @endif>{{$grp->group_name}}</option>
                                     @endforeach
                                 </select> 
                             </div><!-- form-group -->
@@ -86,7 +87,7 @@
                                 <select class="form-control" name="product_type">
                                     <option>..select one..</option>
                                     @foreach($data['product_type'] as $type)
-                                    <option value="{{$type->id}}">{{$type->product_type_name}}</option>
+                                    <option value="{{$type->id}}" @if($datas != null)  @if($datas->product_type_id == $type->id) selected @endif @endif>{{$type->product_type_name}}</option>
                                     @endforeach
                                 </select> 
                             </div>
@@ -95,7 +96,7 @@
                                 <select class="form-control" name="product_oem">
                                     <option>..select one..</option>
                                     @foreach($data['product_oem'] as $oem)
-                                    <option value="{{$oem->id}}">{{$oem->oem_name}}</option>
+                                    <option value="{{$oem->id}}" @if($datas != null)  @if($datas->product_oem_id == $oem->id) selected @endif @endif>{{$oem->oem_name}}</option>
                                     @endforeach
                                 </select> 
                             </div>
@@ -104,21 +105,21 @@
                                 <select class="form-control" name="product_brand" id="product_brand">
                                     <option>..select one..</option>
                                     @foreach($data['product_productbrand'] as $brand)
-                                    <option value="{{$brand->id}}">{{$brand->brand_name}}</option>
+                                    <option value="{{$brand->id}}" @if($datas != null)  @if($datas->brand_details_id == $brand->id) selected @endif @endif>{{$brand->brand_name}}</option>
                                     @endforeach
                                 </select> 
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Pack Size </label>
-                                <input type="text" value="" class="form-control " name="pack_size" placeholder="Pack Size " >
+                                <input type="text" value="{{(!empty($datas)) ? $datas['pack_size']: ""}}" class="form-control " name="pack_size" placeholder="Pack Size " >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Min Level </label>
-                                <input type="text" value="" class="form-control " name="min_level" placeholder="Min Level" >
+                                <input type="text" value="{{(!empty($datas)) ? $datas['min_level']: ""}}" class="form-control " name="min_level" placeholder="Min Level" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Max Level </label>
-                                <input type="text" value="" class="form-control " name="max_level" placeholder="Max Level " >
+                                <input type="text" value="{{(!empty($datas)) ? $datas['max_level']: ""}}" class="form-control " name="max_level" placeholder="Max Level " >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Sterile/ Non-Sterile</label>
@@ -129,11 +130,13 @@
                                 </select> 
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label>UOM</label>
-                                <select class="form-control" name="uom" id="uom">
-                                    <option>..select one..</option>
-                                    <option value="nos">Nos</option>
-                                </select> 
+                                <label>Status</label>
+                                <select name="status_type"  class="form-control">
+                                <option value="">-- Select one ---</option>
+                                    <option value="1" @if(!empty($datas) && $datas['status_type'] == '1' ) selected   @endif>Active</option>
+                                    <option value="0" @if(!empty($datas) && $datas['status_type'] == '0' ) selected   @endif>Inactive</option>
+                                    
+                                </select>
                             </div><!-- form-group -->
                             
                             

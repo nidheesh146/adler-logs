@@ -78,7 +78,7 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
             'Sales',
             'Transfer',
             'MRP',
-            'Created At',
+            'WEF',
             
         ];
     }

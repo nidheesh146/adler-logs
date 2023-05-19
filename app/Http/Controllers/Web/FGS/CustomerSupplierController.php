@@ -59,6 +59,7 @@ class CustomerSupplierController extends Controller
                 $validation['shipping_address'] = ['required'];
                 $validation['sales_type'] = ['required'];
                 $validation['pan_number'] = ['required'];
+                $validation['status_type'] = ['required'];
                 $validator = Validator::make($request->all(), $validation);
                 if(!$validator->errors()->all()) 
                 { 
@@ -83,6 +84,8 @@ class CustomerSupplierController extends Controller
                     $data['sales_person_name'] = $request->sales_person_name;
                     $data['sales_person_email'] = $request->sales_person_email;
                     $data['whatsapp_number'] = $request->whatsapp_number;
+                    $data['status_type'] = $request->status_type;
+                    $data['master_type'] = $request->master_type;
                     $data['dl_expiry_date'] =date('Y-m-d',strtotime($request->dl_expiry_date));
 
                     if($request->id)
@@ -120,6 +123,8 @@ class CustomerSupplierController extends Controller
                     $data['sales_person_email'] = $request->sales_person_email;
                     $data['whatsapp_number'] = $request->whatsapp_number;
                     $data['dl_expiry_date'] =date('Y-m-d',strtotime($request->dl_expiry_date));
+                    $data['status_type'] = $request->status_type;
+                    $data['master_type'] = $request->master_type;
 
                         $data['created_by'] = config('user')['user_id'];
                         $data['created_at'] = date('Y-m-d H:i:s');

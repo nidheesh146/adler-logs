@@ -84,7 +84,16 @@
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>MRP </label>
                                 <input type="text" name="mrp" class="form-control"  value="{{(!empty($data)) ? $data['mrp']: ""}}" placeholder="MRP"> 
-                            </div>   
+                            </div>  
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Status</label>
+                                <select name="status_type"  class="form-control">
+                                <option value="">-- Select one ---</option>
+                                    <option value="1" @if(!empty($data) && $data['status_type'] == '1' ) selected   @endif>Active</option>
+                                    <option value="0" @if(!empty($data) && $data['status_type'] == '0' ) selected   @endif>Inactive</option>
+                                    
+                                </select>
+                            </div> 
                           </div> 
               
                           <div class="row">

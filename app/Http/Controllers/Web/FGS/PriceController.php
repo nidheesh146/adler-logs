@@ -63,6 +63,7 @@ class PriceController extends Controller
                 $data['sales'] = $request->sales_price;
                 $data['transfer'] = $request->transfer_price;
                 $data['mrp'] = $request->mrp;
+                $data['status_type'] = $request->status_type;
 
                 if($request->id){
                     $data['updated_at'] = date('Y-m-d H:i:s');
@@ -89,6 +90,7 @@ class PriceController extends Controller
                         $data['created_by'] = config('user')['user_id'];
                         $data['created_at'] = date('Y-m-d H:i:s');
                         $data['updated_at'] = date('Y-m-d H:i:s');
+                        $data['status_type'] = $request->status_type;
                         $this->product_price_master->insert_data($data);
                         $request->session()->flash('success',"You have successfully added a price master !");
                         return redirect("fgs/price-master/list");
