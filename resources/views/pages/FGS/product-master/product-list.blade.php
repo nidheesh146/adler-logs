@@ -7,9 +7,9 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				<span><a href="" style="color: #596881;">PRODUCT</a></span> 
+				<span><a href="" style="color: #596881;">FGS Item Master</a></span> 
                 <span><a href="" style="color: #596881;">
-                PRODUCT LIST
+                FGS Item LIST
                 </a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Products

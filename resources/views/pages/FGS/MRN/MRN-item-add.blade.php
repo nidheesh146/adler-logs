@@ -76,6 +76,9 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
+                                                    <!-- <select class="form-control batch_number batch_no1" id="1"
+                                                        name="moreItems[0][batch_no]" id="batch_no1">
+                                                    </select> -->
                                                     <select class="form-control batch_number batch_no1" id="1"
                                                         name="moreItems[0][batch_no]" id="batch_no1">
                                                     </select>
@@ -193,7 +196,8 @@ function getsearch(){
     }
 
         $(document).ready(function(){
-            initSelect2();
+            initProductSelect2();
+           // initBatchSelect2();
             var i = 1;
             $('#add').click(function(){
                 //alert('kk');
@@ -243,7 +247,8 @@ function getsearch(){
                         </div>
                     </td>                        
                 </tr>`);
-                initSelect2();
+                initProductSelect2();
+                //initBatchSelect2();
                 $(".manufacturing_date").datepicker({
                     format: " dd-mm-yyyy",
                     autoclose:true
@@ -260,13 +265,13 @@ function getsearch(){
                 $("#row"+button_id+"").remove();
             });
         });
-        $('.batch_number').on('change', function (){
-            var select_id = $(this).attr("id");
-            var element = $("option:selected", this); 
-            var stock_qty = element.attr("qty"); 
-            $("#stock_qty"+select_id+"").val(stock_qty);
-           // alert(stock_qty);
-        }); 
+        // $('.batch_number').on('change', function (){
+        //     var select_id = $(this).attr("id");
+        //     var element = $("option:selected", this); 
+        //     var stock_qty = element.attr("qty"); 
+        //     $("#stock_qty"+select_id+"").val(stock_qty);
+        //    // alert(stock_qty);
+        // }); 
             $(function(){
                 $("#commentForm").validate({
                     rules: {
@@ -283,11 +288,11 @@ function getsearch(){
                      }
                 });
             });
-            function initSelect2() {
+            function initProductSelect2() {
                 $(".product").select2({
                     placeholder: 'Choose one',
                     searchInputPlaceholder: 'Search',
-                    minimumInputLength: 6,
+                    minimumInputLength: 4,
                     allowClear: true,
                     ajax: {
                         url: "{{ url('fgs/productsearch') }}",
@@ -338,7 +343,7 @@ function getsearch(){
                                 {
                                     $(".batch_no"+select_id+"").append('<option>..Select One..</option>')
                                 $.each(data, function(index, item) {   
-                                    $(".batch_no"+select_id+"").append($("<option value="+item.batch_id+" qty="+item.stock_qty+">"+item.batch_no+"</option>"));
+                                    $(".batch_no"+select_id+"").append($("<option value="+item.batch_id+">"+item.batch_no+"</option>"));
                                 });
                                 }
                                 else
@@ -347,7 +352,9 @@ function getsearch(){
                                 }
                             });
                        }
-                    });   
+                    }); 
+                
             }   
+            
     </script>
 @stop

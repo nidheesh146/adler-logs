@@ -7,14 +7,14 @@
 		<div class="az-content-body">
 
             <div class="az-content-breadcrumb">  
-                <span><a href="" style="color: #596881;"> PRODUCT - MASTER</a></span>
+                <span><a href="" style="color: #596881;"> FGS Item Master</a></span>
                 <span><a href="">
-                 ADD PRODUCT
+                 ADD FGS Item
                 </a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            PRODUCT - MASTER
+            FGS Item
             </h4>
             <div class="az-dashboard-nav">
                 
