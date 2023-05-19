@@ -152,10 +152,13 @@ class MRNController extends Controller
     // }
     public function fetchProductBatchCards(Request $request)
     {
-        $batchcards = production_stock_management::select('batchcard_batchcard.batch_no','production_stock_management.stock_qty','batchcard_batchcard.id as batch_id')
-                                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','production_stock_management.batchcard_id')
-                                        ->where('production_stock_management.product_id','=',$request->product_id)
-                                        ->where('production_stock_management.stock_qty','!=',0)
+        // $batchcards = production_stock_management::select('batchcard_batchcard.batch_no','production_stock_management.stock_qty','batchcard_batchcard.id as batch_id')
+        //                                 ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','production_stock_management.batchcard_id')
+        //                                 ->where('production_stock_management.product_id','=',$request->product_id)
+        //                                 ->where('production_stock_management.stock_qty','!=',0)
+        //                                 ->get();
+        $batchcards = batchcard::select('batchcard_batchcard.batch_no','batchcard_batchcard.id as batch_id')
+                                        ->where('batchcard_batchcard.product_id','=',$request->product_id)
                                         ->get();
         return $batchcards;
     }
@@ -202,11 +205,11 @@ class MRNController extends Controller
                     $this->fgs_mrn_item->insert_data($data,$request->mrn_id);
                     $this->fgs_mrn->update_data(['id'=>$request->mrn_id],$mrn_data);
                     $this->fgs_product_stock_management->insert_data($stock);
-                    $production_stock = production_stock_management::where('product_id','=',$value['product'])
-                                                ->where('batchcard_id','=',$value['batch_no'])
-                                                ->first();
-                    $update_stock = $production_stock['stock_qty']-$value['qty'];
-                    $production_stock = $this->production_stock_management->update_data(['id'=>$production_stock['id']],['stock_qty'=>$update_stock]);              
+                    // $production_stock = production_stock_management::where('product_id','=',$value['product'])
+                    //                             ->where('batchcard_id','=',$value['batch_no'])
+                    //                             ->first();
+                    // $update_stock = $production_stock['stock_qty']-$value['qty'];
+                    // $production_stock = $this->production_stock_management->update_data(['id'=>$production_stock['id']],['stock_qty'=>$update_stock]);              
                 }
                 $request->session()->flash('success',"You have successfully added a MRN item !");
                 return redirect('fgs/MRN/item-list/'.$request->mrn_id);
@@ -217,6 +220,7 @@ class MRNController extends Controller
             }
         }
         else{
+            //$batchcards = DB::table('batchcard_batchcard')->select('id',ba)->get();
             return view('pages/FGS/MRN/MRN-item-add');
         }
     }

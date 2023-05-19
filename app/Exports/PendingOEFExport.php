@@ -24,8 +24,8 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
         if($this->request=='null')
         {
             $items = fgs_oef_item::select('fgs_oef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','product_price_master.mrp',
-            'fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
-            'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person','customer_supplier.sales_type','customer_supplier.city',
+            'fgs_oef.oef_number','fgs_oef.due_date','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
+            'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.city','customer_supplier.sales_type','customer_supplier.city',
             'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3',
             'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id')
                             ->leftjoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
@@ -68,8 +68,8 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
                 $condition[] = ['fgs_oef.oef_date', '<=', date('Y-m-t', strtotime('01-' . $this->request->from))];
             }
             $items = fgs_oef_item::select('fgs_oef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','product_price_master.mrp',
-            'fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
-            'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person','customer_supplier.sales_type','customer_supplier.city',
+            'fgs_oef.oef_number','fgs_oef.due_date','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
+            'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.city','customer_supplier.sales_type','customer_supplier.city',
             'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3',
             'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id')
                             ->leftjoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
@@ -113,6 +113,7 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
                 'hsn_code'=>$item['hsn_code'],
                 'discription'=>$item['discription'],
                 'quantity'=>$item['quantity'],
+                'outstanding_quantity'=>$item['remaining_qty_after_cancel'],
                 'rate'=>$item['rate'],
                 'discount'=>$item['discount'],
                 'gst' =>"IGST:".$item['igst'].", SGST:".$item['sgst'].", CGST:".$item['cgst'],
@@ -125,11 +126,9 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
                 'transaction_name'=>$item['transaction_name'],
                 'due_date'=>date('d-m-Y',strtotime($item['due_date'])),
                 'firm_name'=>$item['firm_name'],
-                'contact_person'=>$item['contact_person'].'-'.$item['designation'],
-                'contact_number'=>$item['contact_number'],
-                'email'=>$item['email'],
-                'shipping_address'=>$item['shipping_address'],
-                'billing_address'=>$item['billing_address'],
+                'city'=>$item['city'],
+                'zone'=>$item['zone_name'],
+                'state'=>$item['state_name'],
                 'created_at'=>date('d-m-Y',strtotime($item['created_at'])),
 
 
@@ -146,6 +145,7 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
             'HSNCode',
             'Description',
             'Quantity',
+            'Outstanding Quantity',
             'Rate',
             'Discount',
             'GST',
@@ -156,13 +156,11 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
             'Transaction Type',
             'Due Date',
             'Customer',
-            'Contact Person',
-            'Contact Number',
-            'Email',
-            'Shipping_address',
-            'Billing Address',
+            'City',
+            'Zone',
+            'State',
             //'Created By',
-            'Created At',
+            'WEF',
         ];
     }
     public function styles(Worksheet $sheet)
