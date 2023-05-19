@@ -60,11 +60,8 @@ class COEFController extends Controller
     }
     public function COEFAdd(Request $request)
     { 
-         
         if($request->isMethod('post'))
         { 
-        //     print_r($request->oef_item_id);
-        //  print_r($request->qty_to_cancel);exit;
            $validation['coef_date'] = ['required'];
            $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
@@ -88,33 +85,21 @@ class COEFController extends Controller
                         
 
                 $coef_id = $this->fgs_coef->insert_data($data);
-                $i=0;
-                $qty_to_cancel_array = $request->qty_to_cancel;
-                foreach ($request->oef_item_id as $oef_item_id)
-                {
+
+                foreach ($request->oef_item_id as $oef_item_id) {
                         $oef_item =fgs_oef_item::find($oef_item_id);
                         $datas = [
                             "coef_item_id" => $oef_item_id,
                             "product_id" => $oef_item['product_id'],
-                            //"quantity" => $oef_item['quantity'],
-                            "quantity" =>$qty_to_cancel_array[$i],
+                            "quantity" => $oef_item['quantity'],
                             "created_at" => date('Y-m-d H:i:s')
                         ];
 
                          $this->fgs_coef_item->insert_data($datas,$coef_id);
-                         if($oef_item['quantity_to_allocate']==$qty_to_cancel_array[$i])
-                         {
-                            $fgs_oef_item = fgs_oef_item::where('product_id','=',$oef_item['product_id'])
-                                            ->update(['coef_status' => 1,'remaining_qty_after_cancel'=>0]);
-                         }
-                         else
-                         {
-                            $update_qty = $oef_item['quantity_to_allocate']-$qty_to_cancel_array[$i];
-                            $fgs_oef_item = fgs_oef_item::where('product_id','=',$oef_item['product_id'])
-                                            ->update(['remaining_qty_after_cancel'=>$update_qty,'quantity_to_allocate'=>$update_qty]);
-                         }
-                         $i++;
-                }
+                         $fgs_oef_item = fgs_oef_item::
+                                        where('product_id','=',$oef_item['product_id'])
+                                        ->update(['coef_status' => 1]);
+                   
                 if($coef_id)
                 {
                     $request->session()->flash('success', "You have successfully added a COEF !");
@@ -127,26 +112,31 @@ class COEFController extends Controller
                 }
 
             }
-        
-            if($validator->errors()->all())
-            {
-                return redirect('FGS/COEF-add')->withErrors($validator)->withInput();
-            }
         }
-        $condition1[] = ['user.status', '=', 1];
-        $data['users'] = $this->User->get_all_users($condition1);
-        if($request->id){
+            if($validator->errors()->all())
+                {
+                    return redirect('FGS/COEF-add')->withErrors($validator)->withInput();
+                }
+            }
+            $condition1[] = ['user.status', '=', 1];
+            $data['users'] = $this->User->get_all_users($condition1);
+
+            if($request->id){
                 $edit['oef'] = $this->fgs_oef->find_oef_datas(['fgs_oef.id' => $request->id]);
                 $edit['items'] = $this->fgs_oef_item->get_items(['fgs_oef_item_rel.master' =>$request->id]);
                 $transaction_type = transaction_type::get();
               return view('pages.FGS.COEF.COEF-add',compact('edit','data','transaction_type'));
-         }
-        else
-        {
-            $transaction_type = transaction_type::get();    
+            }
+
+            else
+            {
+                  $transaction_type = transaction_type::get();
+            
+            
             return view('pages.FGS.COEF.COEF-add',compact('data','transaction_type'));
-        }
+       
     }
+}
     public function findOefNumberForCOEF(Request $request){
         if ($request->q) {
             $condition[] = ['fgs_oef.oef_number', 'like', '%' . strtoupper($request->q) . '%'];
@@ -234,7 +224,6 @@ class COEFController extends Controller
                 <th>HSN CODE</th>
                 <th>DESCRIPTION</th>
                 <th> QUANTITY</th>
-                <th>QUANTITY TO CANCEL</th>
                 </tr>
                </thead>
                <tbody >';
@@ -245,7 +234,7 @@ class COEFController extends Controller
                        <td>'.$item->hsn_code.'</td>
                         <td>'.$item->discription.'</td>
                        <td class="qty" data-qty='.$item->quantity.'>'.$item->quantity.'</td>
-                       <td><input type="text" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" disabled></td>
+                    //    
                       </tr>';
                 }
                 $data .= '</tbody>';

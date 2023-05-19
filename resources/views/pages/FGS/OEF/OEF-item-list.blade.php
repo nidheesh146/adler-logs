@@ -91,6 +91,7 @@
                                     <th>HSN Code</th>
 									<th>Description</th>
 									<th>Quantity</th>
+									<th>Quantity after cancellation</th>
                                     <th>Rate</th>
                                     <th>Discount</th>
                                     <th>GST</th>
@@ -104,6 +105,7 @@
 									<td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
 									<td>{{$item['quantity']}} Nos</td>
+									<td>{{$item['remaining_qty_after_cancel']}} Nos</td>
 									<td>{{$item['rate']}}</td>
 									<td>{{$item['discount']}}%</td>
 									<td>IGST:{{$item['igst']}}%<br/>
