@@ -392,6 +392,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/product-master/list','ProductMasterController@productList');
     Route::get('fgs/product-master/add','ProductMasterController@productAdd');
     Route::post('fgs/product-master/add','ProductMasterController@productAdd');
+    Route::get('fgs/product-master/excel-export','ProductMasterController@ProductExport');
     //Production stock
     Route::get('fgs/production-stock/list','StockManagementController@productionStockList');
     Route::get('fgs/production-stock/Add','StockManagementController@productionStockAdd');

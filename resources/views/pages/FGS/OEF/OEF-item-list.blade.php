@@ -91,7 +91,7 @@
                                     <th>HSN Code</th>
 									<th>Description</th>
 									<th>Quantity</th>
-									<th>Quantity after cancellation</th>
+									<th>OutStanding Quantity</th>
                                     <th>Rate</th>
                                     <th>Discount</th>
                                     <th>GST</th>

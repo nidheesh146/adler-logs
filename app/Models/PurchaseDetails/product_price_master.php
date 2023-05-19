@@ -20,9 +20,9 @@ class product_price_master extends Model
     }
     function get_all($condition)
     {
-        return $this->select('product_price_master.*','product_product.discription','product_product.sku_code','product_productgroup.group_name','product_product.hsn_code')
+        return $this->select('product_price_master.*','product_product.discription','product_product.sku_code','product_group1.group_name','product_product.hsn_code')
                     ->leftjoin('product_product','product_product.id','=','product_price_master.product_id')
-                    ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
+                    ->leftjoin('product_group1','product_group1.id','=','product_product.product_group1_id')
                     ->where($condition)
                     ->where('product_price_master.is_active','=',1)
                     ->orderby('product_price_master.id','desc')

@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\product;
 use Validator;
 use DB;
+use App\Exports\FGSProductExport;
+use Maatwebsite\Excel\Facades\Excel; 
+
 class ProductMasterController extends Controller
 {
     public function __construct()
@@ -14,8 +17,28 @@ class ProductMasterController extends Controller
          $this->product = new product;
     }
     public function productList(Request $request)
-    {
-        $data['products'] = $this->product->get_products(['product_product.item_type'=>'FINISHED GOODS']);
+    {   
+        $condition[] = ['product_product.item_type','=','FINISHED GOODS'];
+        $condition[] = ['product_product.product_group1_id','!=','null'];
+        if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->hsn_code)
+        {
+            $condition[] = ['product_product.hsn_code','like', '%' . $request->hsn_code . '%'];
+        }
+        if($request->group)
+        {
+            $condition[] = ['product_group.group_name','like', '%' . $request->group . '%'];
+        }
+        if($request->brand)
+        {
+            $condition[] = ['product_productbrand.brand_name','like', '%' . $request->brand . '%'];
+        }
+
+        //$condition[] = ['']
+        $data['products'] = $this->product->get_products($condition);
         return view('pages/fgs/product-master/product-list',compact('data'));
     }
     public function productAdd(Request $request)
@@ -78,5 +101,30 @@ class ProductMasterController extends Controller
             $data['product_productgroup'] = DB::table('product_productgroup')->get();
             return view('pages/FGS/product-master/product-add', compact('data'));
         }
+    }
+    public function ProductExport(Request $request)
+    {
+        $condition[] = ['product_product.item_type','=','FINISHED GOODS'];
+        $condition[] = ['product_product.product_group1_id','!=','null'];
+        if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->hsn_code)
+        {
+            $condition[] = ['product_product.hsn_code','like', '%' . $request->hsn_code . '%'];
+        }
+        if($request->group)
+        {
+            $condition[] = ['product_group.group_name','like', '%' . $request->group . '%'];
+        }
+        if($request->brand)
+        {
+            $condition[] = ['product_productbrand.brand_name','like', '%' . $request->brand . '%'];
+        }
+
+        //$condition[] = ['']
+        $products = $this->product->get_all_products($condition);
+        return Excel::download(new FGSProductExport($products), 'FGSItemMaster' . date('d-m-Y') . '.xlsx');
     }
 }

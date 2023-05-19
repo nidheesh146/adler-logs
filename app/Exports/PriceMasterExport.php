@@ -22,23 +22,34 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
     {
         if($this->request=='null')
         {
-            $items=   product_price_master::select('product_price_master.*','product_product.discription','product_product.sku_code','product_productgroup.group_name')
-                      ->leftjoin('product_product','product_product.id','=','product_price_master.product_id')
-                    ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')              
-                          ->where('product_price_master.is_active','=',1)
-                          
-                                   ->orderBy('product_price_master.id','DESC')
+            $items=   product_price_master::select('product_price_master.*','product_product.discription','product_product.sku_code','product_group1.group_name')
+                                    ->leftjoin('product_product','product_product.id','=','product_price_master.product_id')
+                                    ->leftjoin('product_group1','product_group1.id','=','product_product.product_group1_id') 
+                                    ->where('product_price_master.is_active','=',1)
+                                    ->orderBy('product_price_master.id','DESC')
                                     ->get();
         }
         else
         {
-           $items=   product_price_master::select('product_price_master.*','product_product.discription','product_product.sku_code','product_product.hsn_code','product_productgroup.group_name')
-                      ->leftjoin('product_product','product_product.id','=','product_price_master.product_id')
-                    ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')              
-                          ->where('product_price_master.is_active','=',1)
-                          
-                                   ->orderBy('product_price_master.id','DESC')
-                                    ->get();
+            if($this->request->sku_code)
+            {
+                $condition[] = ['product_product.sku_code','like', '%' . $this->request->sku_code . '%'];
+            }
+            if($this->request->hsn_code)
+            {
+                $condition[] = ['product_product.hsn_code','like', '%' . $this->request->hsn_code . '%'];
+            }
+            if($this->request->group_name)
+            {
+                $condition[] = ['product_productgroup.group_name','like', '%' . $this->request->group_name . '%'];
+            }
+           $items=   product_price_master::select('product_price_master.*','product_product.discription','product_product.sku_code','product_product.hsn_code','product_group1.group_name')
+                            ->leftjoin('product_product','product_product.id','=','product_price_master.product_id')
+                            ->leftjoin('product_group1','product_group1.id','=','product_product.product_group1_id')              
+                            ->where('product_price_master.is_active','=',1)
+                            ->where($condition)
+                            ->orderBy('product_price_master.id','DESC')
+                            ->get();
         }
         $i=1;
         $data = [];
@@ -60,7 +71,7 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
                     'Sale'=>$item['sales'],
                     'Transfer'=>$item['transfer'],
                     'MRP'=>$item['mrp'],
-                    'created_at'=>date('d-m-Y',strtotime($item['created_at'])),
+                    'WEF'=>date('d-m-Y',strtotime($item['created_at'])),
 
             );
         }
@@ -78,7 +89,7 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
             'Sales',
             'Transfer',
             'MRP',
-            'Created At',
+            'WEF',
             
         ];
     }

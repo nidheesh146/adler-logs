@@ -262,7 +262,7 @@
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
                 <td>{{$item['discription']}}</td>
-                <td>{{$item['quantity']}}</td>
+                <td>{{$item['remaining_qty_after_cancel']}}</td>
                 <td>Nos</td>
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                 <td>{{number_format((float)($item['rate']* $item['quantity']), 2, '.', '') }}</td>

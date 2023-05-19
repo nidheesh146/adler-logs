@@ -41,7 +41,7 @@ class PriceController extends Controller
         {
             $condition[] = ['product_productgroup.group_name','like', '%' . $request->group_name . '%'];
         }
-        $price = $this->product_productgroup->distinct('product_productgroup.group_name')->get();
+        $price = DB::table('product_group1')->distinct('product_group1.group_name')->get();
         $prices = $this->product_price_master->get_all($condition);
         return view('pages/FGS/price-master/price-master-list',compact('prices','price'));
     }

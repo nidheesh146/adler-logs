@@ -155,6 +155,7 @@ class OEFController extends Controller
                         "product_id" => $value['product'],
                         "quantity" => $value['quantity'],
                         "quantity_to_allocate"=>$value['quantity'],
+                        "remaining_qty_after_cancel"=>$value['quantity'],
                         "rate"=>$value['rate'],
                         "gst" => 8,
                         "discount"=>$value['discount'],
@@ -225,12 +226,12 @@ class OEFController extends Controller
     {
         if($request)
         {
-            return Excel::download(new PendingOEFExport($request), 'PendingOEF' . date('d-m-Y') . '.xlsx');
+            return Excel::download(new PendingOEFExport($request), 'BackOrderReport' . date('d-m-Y') . '.xlsx');
         }
         else
         {
             $request =null;
-            return Excel::download(new PendingOEFExport($request), 'PendingOEF' . date('d-m-Y') . '.xlsx');
+            return Excel::download(new PendingOEFExport($request), 'BackOrderReport' . date('d-m-Y') . '.xlsx');
         }
     }
      public function OEFackpdf($oef_id)

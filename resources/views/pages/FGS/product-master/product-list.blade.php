@@ -14,7 +14,8 @@
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Products
 			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/product-master/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Product</button>
-            </h4>
+            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/product-master/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
+			</h4>
 			
 		   @if (Session::get('success'))
 		   <div class="alert alert-success " style="width: 100%;">
@@ -42,23 +43,22 @@
 												<div class="row filter_search" style="margin-left: 0px;">
 													<div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
 														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label>Item Code:</label>
-															<input type="text" value="{{request()->get('item_code')}}" name="item_code"  id="item_code" class="form-control" placeholder="ITEM CODE">
+															<label>SKU Code:</label>
+															<input type="text" value="{{request()->get('sku_code')}}" name="sku_code"  id="sku_code" class="form-control" placeholder="SKU CODE">
 														</div><!-- form-group -->
-									
 														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Type1</label>
-															<input type="text" value="{{request()->get('type1')}}" id="type1" class="form-control" name="type1" placeholder="TYPE1">
+															<label  style="font-size: 12px;">HSN CODE</label>
+															<input type="text" value="{{request()->get('hsn_code')}}" id="hsn_code" class="form-control " name="hsn_code" placeholder="HSN CODE" >
+														</div>
+														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+															<label  style="font-size: 12px;">Group</label>
+															<input type="text" value="{{request()->get('group')}}" id="group" class="form-control" name="group" placeholder="GROUP">
 														</div> 
 														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Type2</label>
-															<input type="text" value="{{request()->get('type2')}}"  class="form-control " name="type2" placeholder="TYPE2" >
+															<label  style="font-size: 12px;">Brand</label>
+															<input type="text" value="{{request()->get('brand')}}"  class="form-control " name="brand" placeholder="BRAND" >
 														</div> 
-														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label  style="font-size: 12px;">Origin</label>
-															<input type="text" value="{{request()->get('origin')}}"  class="form-control " name="origin" placeholder="ORIGIN" >
-														</div> 
-														
+										
 																			
 													</div>
 													<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
@@ -90,8 +90,8 @@
 									<th>SKU Code </th>
 									<th>Description </th>
 									<th>Type </th>
-									<th>GS1 Code </th>
-                                    <th>SNN Description</th>
+									<th>HSN Code </th>
+                                    <th>Product Condition</th>
                                     <th>Brand</th>
 									<th>Family</th>
 									<th>Group</th>
@@ -104,11 +104,11 @@
                             <td>{{$item['sku_code']}}</td>
                             <td>{{$item['discription']}}</td>
                             <td>{{$item['item_type']}}</td>
-                            <td>{{$item['gs1_code']}}</td>
-                            <td>{{$item['snn_description']}}</td>
+                            <td>{{$item['hsn_code']}}</td>
+                            <td>@if($item['is_sterile']==1) Sterile @else Non-Sterile @endif</td>
                             <td>{{$item['brand_name']}}</td>
                             <td>{{$item['family_name']}}</td>
-                            <td>{{$item['group_name']}}</td>
+                            <td>{{$item['group1_name']}}</td>
                             
 							<td>
 								@if($item['is_active']==1)
@@ -117,7 +117,6 @@
 									<a href="{{url('product/edit?id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
 									<a href="{{url('product/delete?id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
 								</div>
-								<a  style="width: 64px;" class="badge badge-primary" href="{{url('product/add-input-material?product_id='.$item["id"])}}"><i class="fas fa-plus"></i> Material</a>
 								@endif
 							</td>
                         </tr>
@@ -161,11 +160,11 @@
   });
   
 	$('.search-btn').on( "click", function(e)  {
-		//var supplier = $('#supplier').val();
-		var rq_no = $('#rq_no').val();
-		var po_no = $('#po_no').val();
-		var from = $('#from').val();
-		if(!rq_no & !po_no & !from)
+		var hsn_code = $('#hsn_code').val();
+		var sku_code = $('#sku_code').val();
+		var group = $('#group').val();
+		var brand = $('#brand').val();
+		if(!sku_code & !group & !brand & !hsn_code)
 		{
 			e.preventDefault();
 		}
