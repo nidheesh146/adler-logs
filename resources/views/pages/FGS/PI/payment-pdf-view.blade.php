@@ -188,7 +188,7 @@ The details for the same are as follows:</span>
         $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);
 
      ?>
-    @endforeach
+    @endforeach 
     <div class="row3" style="font-size:12px; ">
        
         <span>Kindly arrange to deposit the payment of Rs.{{number_format((float)($total_amount), 2, '.', '')}} ( In Words Rs. NINTY SIX THOUSAND TWO 

@@ -199,7 +199,7 @@ class PIController extends Controller
     }
 
     public function PIpdf($pi_id)
-    {
+    { 
         $data['pi'] = $this->fgs_pi->get_single_pi(['fgs_pi.id' => $pi_id]);
         $data['items'] = $this->fgs_pi_item_rel->getAllItems(['fgs_pi_item_rel.master' => $pi_id]);
         $pdf = PDF::loadView('pages.FGS.PI.pdf-view', $data);

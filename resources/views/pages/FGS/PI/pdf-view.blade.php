@@ -255,7 +255,7 @@
             $tsum = 0;
             $isum = 0;
             $totalsum = 0;
-             ?>
+             ?> 
             @foreach($items as $item)
             <tr style="border-bottom: solid black;">
                 <td>{{$i++}}</td>

@@ -229,7 +229,7 @@
                 <?php 
                 $total =$total+ $item['rate']* $item['quantity'];
                 $total_discount = $total_discount+($item['rate']* $item['quantity']*$item['discount'])/100;
-                $total_igst = $total_igst+($discount_value*$item['igst'])/100;
+                $total_igst = $total_igst+($discount_value*$item['igst'])/100; 
                 $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
                 $total_cgst = $total_cgst+($discount_value* $item['quantity']*$item['cgst'])/100;
                 ?>

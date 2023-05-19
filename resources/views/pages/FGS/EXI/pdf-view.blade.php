@@ -13,7 +13,7 @@
             width:33%;
             font-size:11px;
         }
-        .col2{
+        .col2{ 
             width:28%;
             float:left;
         }

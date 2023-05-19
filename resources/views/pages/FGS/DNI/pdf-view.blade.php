@@ -421,7 +421,7 @@
             $isum = 0;
             $totalsum = 0;
 
-             ?>
+             ?> 
             @foreach($dni_items as $dni_item)
             @foreach($dni_item['pi_item'] as $item)
             <tr>

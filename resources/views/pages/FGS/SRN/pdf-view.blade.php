@@ -3,7 +3,7 @@
 <head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     
-    <title>SRN_{{$srn['firm_name']}}_{{$srn['srn_number']}}</title
+    <title>SRN_{{$srn['firm_name']}}_{{$srn['srn_number']}}</title>
 </head>
 <body>
     <style>

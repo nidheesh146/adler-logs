@@ -528,7 +528,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::post('fgs/EXI-add','EXIController@EXIAdd');
      Route::get('fgs/EXI/item-list/{exi_id}','EXIController@EXIitemlist');
      Route::get('fgs/EXI/fetchPI','EXIController@fetchPI');
-     Route::get('fgs/EXI/pdf/{grs_id}','EXIController@EXIpdf');
+     Route::get('fgs/EXI/pdf/{grs_id}','EXIController@EXIpdf'); 
 
      //stock-management
      Route::get('fgs/stock-management/all-locations','StockManagementController@allLocations');
