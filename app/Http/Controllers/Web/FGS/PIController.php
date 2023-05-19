@@ -207,4 +207,13 @@ class PIController extends Controller
         $file_name = "PI" . $data['pi']['pi_number'] . "_" . $data['pi']['pi_date'];
         return $pdf->stream($file_name . '.pdf');
     }
+     public function PIPaymentpdf($pi_id)
+    {
+        $data['pi'] = $this->fgs_pi->get_single_pi(['fgs_pi.id' => $pi_id]);
+        $data['items'] = $this->fgs_pi_item_rel->getAllItems(['fgs_pi_item_rel.master' => $pi_id]);
+        $pdf = PDF::loadView('pages.FGS.PI.payment-pdf-view', $data);
+        $pdf->set_paper('A4', 'landscape');
+        $file_name = "PaymentPI" . $data['pi']['pi_number'] . "_" . $data['pi']['pi_date'];
+        return $pdf->stream($file_name . '.pdf');
+    }
 }
