@@ -31,6 +31,7 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
         }
         else
         {
+            $condition= [];
             if($this->request->sku_code)
             {
                 $condition[] = ['product_product.sku_code','like', '%' . $this->request->sku_code . '%'];
@@ -57,10 +58,10 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
         {
             $rate_aftr_discount = $item['rate']-($item['rate']*$item['discount'])/100;
             $value = $item['order_qty']*$rate_aftr_discount;
-            // if($item['expiry_control']==1)
-            // $expiry_control = 'Yes';
-            // else
-            // $expiry_control = 'No';
+            if($item['status_type']==1)
+            $status ="Active";
+            else
+            $status ="Inactive";
             $data[]= array(
                     '#'=>$i++,
                     'SKU CODE' =>$item['sku_code'],
@@ -71,6 +72,7 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
                     'Sale'=>$item['sales'],
                     'Transfer'=>$item['transfer'],
                     'MRP'=>$item['mrp'],
+                    'status'=>$status,
                     'WEF'=>date('d-m-Y',strtotime($item['created_at'])),
 
             );
@@ -89,6 +91,7 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
             'Sales',
             'Transfer',
             'MRP',
+            'Status',
             'WEF',
             
         ];

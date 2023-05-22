@@ -145,8 +145,8 @@
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Currency</label>
 
-                                    <select class="form-control" name="currency" id="currency">
-                                <option value="">--- select one ---</option> 
+                                <select class="form-control" name="currency" id="currency">
+                                    <option value="">--- select one ---</option> 
                                     @foreach($currency as $item)
                                     <option value="{{$item->currency_id}}" @if($datas != null)  @if($item->currency_id == $datas->currency) selected @endif @endif>{{$item->currency_code}}</option>
                                     @endforeach

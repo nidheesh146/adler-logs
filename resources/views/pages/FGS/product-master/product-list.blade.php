@@ -112,7 +112,7 @@
                             
 							<td>
 								@if($item['is_active']==1)
-								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
+								<button data-toggle="dropdown" style="width: 64px;" class="badge @if($item['status_type']==1) badge-success @else badge-warning @endif">@if($item['status_type']==1)  Active @else Inactive @endif<i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu">
 									<a href="{{url('fgs/product-master/add?id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
 									<a href="{{url('product/delete?id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 

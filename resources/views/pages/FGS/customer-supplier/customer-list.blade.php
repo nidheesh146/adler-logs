@@ -41,7 +41,7 @@
 												<div class="row filter_search" style="margin-left: 0px;">
 													<div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
 														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-															<label>ENTITY NAME:</label>
+														<label  style="font-size: 12px;">ENTITY NAME:</label>
 															<input type="text" value="{{request()->get('firm_name')}}" name="firm_name"  id="firm_name" class="form-control" placeholder="ENTITY NAME">
 														</div><!-- form-group -->
 									
@@ -56,14 +56,11 @@
 														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
 															<label  style="font-size: 12px;">STATE</label>
 															 <select name="state" id="state" class="form-control">
-                                    <option value="">-- Select one ---</option>
-                                 @foreach ($states as $item)
-                                        <option value="{{$item->state_id}}">{{$item->state_name}}</option>
-                                    @endforeach
-                                </select>
-															
-
-
+																<option value="">-- Select one ---</option>
+																@foreach ($states as $item)
+																	<option value="{{$item->state_id}}">{{$item->state_name}}</option>
+																@endforeach
+															</select>
 															<!-- <input type="text" value="{{request()->get('state')}}"  class="form-control " name="state" placeholder="STATE" > -->
 														</div> 
 														
@@ -115,7 +112,7 @@
 									<td>{{$customer['pan_number']}}</td>
 									<td>
 									@if($customer['is_active']==1)
-										<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
+										<button data-toggle="dropdown" style="width: 64px;" class="badge @if($customer['status_type']==1) badge-success @else badge-warning @endif">@if($customer['status_type']==1)  Active @else Inactive @endif<i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 										<div class="dropdown-menu">
 											<a href="{{url('fgs/customer-supplier/add?id='.$customer["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
 											<a href="{{url('fgs/customer-supplier/delete?id='.$customer["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 

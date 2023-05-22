@@ -25,7 +25,7 @@ class PriceController extends Controller
 
     public function priceList(Request $request)
     {
-       // $this->priceMasterUpload();
+       //$this->priceMasterUpload();
        // $this->productFgsUpload();
        //$this->fgsStockUpload();
         $condition =[];

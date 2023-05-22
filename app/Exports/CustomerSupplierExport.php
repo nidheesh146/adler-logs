@@ -51,10 +51,22 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
         {
             $rate_aftr_discount = $item['rate']-($item['rate']*$item['discount'])/100;
             $value = $item['order_qty']*$rate_aftr_discount;
-            // if($item['expiry_control']==1)
-            // $expiry_control = 'Yes';
-            // else
-            // $expiry_control = 'No';
+            if($item['dl_number1']==NULL)
+            $dl1 = 'NA';
+            else
+            $dl1 = $item['dl_number1'];
+            if($item['dl_number2']==NULL)
+            $dl2 = 'NA';
+            else
+            $dl2 = $item['dl_number2'];
+            if($item['dl_expiry_date']==NULL)
+            $dl_expiry_date = 'NA';
+            else
+            $dl_expiry_date = date('d-m-Y',strtotime($item['dl_expiry_date']));
+            if($item['status_type']==1)
+            $status ="Active";
+            else
+            $status ="Inactive";
             $data[]= array(
                     '#'=>$i++,
                     'Firm Name'=>$item['firm_name'],
@@ -68,16 +80,17 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
                     'Shipping Address'=>$item['shipping_address'],
                     'Pan Number'=>$item['pan_number'],
                     'GST Number'=>$item['gst_number'],
-                    'DL Number1'=>$item['dl_number1'],
-                    'DL Number2'=>$item['dl_number2'],
+                    'DL Number1'=>$dl1,
+                    'DL Number2'=>$dl2,
                     'E Mail'=>$item['email'],
                     'Currency'=>$item['currency_code'],
                     'Whatsapp Number'=>$item['whatsapp_number'],
-                    'DL Expiry Date'=>date('d-m-Y',strtotime($item['dl_expiry_date'])),
+                    'DL Expiry Date'=>$dl_expiry_date,
                     'Sales Person Name'=>$item['sales_person_name'],
                     'Sales Person Email'=>$item['sales_person_email'],
-                     'Sales Type'=>$item['sales_type'],
-                    'created_at'=>date('d-m-Y',strtotime($item['created_at'])),
+                    'Sales Type'=>$status,
+                    'master_type'=>$item['master_type'],
+                    'WEF'=>date('d-m-Y',strtotime($item['created_at'])),
 
             );
         }
@@ -107,7 +120,8 @@ class CustomerSupplierExport implements FromCollection, WithHeadings, WithStyles
             'Sales Person Name',
             'Sales Person Email',
             'Sales Type',
-            'W.e.f',
+            'Customer/Supplier',
+            'WEF',
         ];
     }
     public function styles(Worksheet $sheet)

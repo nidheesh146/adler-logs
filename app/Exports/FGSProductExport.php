@@ -27,6 +27,10 @@ class FGSProductExport implements FromCollection, WithHeadings, WithStyles,WithE
              $product_condition = 'Sterile';
              else
              $product_condition = 'Non-sterile';
+             if($item['status_type']==1)
+             $status ="Active";
+             else
+             $status ="Inactive";
             $data[]= array(
                     '#'=>$i++,
                     'SKU CODE' =>$item['sku_code'],
@@ -38,6 +42,7 @@ class FGSProductExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'Group Name' => $item['group1_name'],
                     'OEM'=>$item['oem_name'],
                     'Std pack size'=>$item['quantity_per_pack'],
+                    'status'=>$status,
                     'WEF'=>date('d-m-Y',strtotime($item['created'])),
 
             );
@@ -57,6 +62,7 @@ class FGSProductExport implements FromCollection, WithHeadings, WithStyles,WithE
             'Product Group ',
             'OEM',
             'Std pack size',
+            'Status',
             'WEF',
             
         ];
