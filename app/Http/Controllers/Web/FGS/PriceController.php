@@ -207,7 +207,7 @@ class PriceController extends Controller
         return 1;
         }
         else
-        return 0;
+        return 0;   
     }
     function identify_id($data,$type)
     {

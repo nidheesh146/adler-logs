@@ -1476,7 +1476,7 @@ class PurchaseController extends Controller
         {
             if ($item_type == "Finished Goods") 
             {
-                $data['po_number'] = "POI1-" .$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI1-'.$years_combo.'%')
+                $data['po_number'] = "POI1-" .$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
                                          ->Orwhere('po_number','like','%POC1-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
             }
             else if ($item_type == "Direct Items") 

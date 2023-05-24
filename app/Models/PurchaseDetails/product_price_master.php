@@ -26,6 +26,7 @@ class product_price_master extends Model
                     ->where($condition)
                     ->where('product_price_master.is_active','=',1)
                     ->orderby('product_price_master.id','desc')
+                    ->distinct('product_price_master.id')
                     ->paginate(15);
 
     }
