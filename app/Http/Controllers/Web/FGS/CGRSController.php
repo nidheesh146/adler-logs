@@ -89,20 +89,24 @@ class CGRSController extends Controller
                        $data['status']=1;
                        $data['created_at'] =date('Y-m-d H:i:s');
                        $cgrs_id = $this->fgs_cgrs->insert_data($data);
+                       $i=0;
+                        $qty_to_cancel_array = $request->qty_to_cancel;
                         foreach ($request->grs_item_id as $grs_item_id) 
                         {
                             $grs_item =fgs_grs_item::find($grs_item_id);
                             $datas = [
                                 "grs_item_id" => $grs_item_id,
                                 "product_id" => $grs_item['product_id'],
-                                "batch_quantity" => $grs_item['batch_quantity'],
+                                "batch_quantity" => $qty_to_cancel_array[$i],
                                 "created_at" => date('Y-m-d H:i:s')
                             ];
                             $this->fgs_cgrs_item->insert_data($datas,$cgrs_id);
-                            $fgs_grs_item = fgs_grs_item::where('fgs_grs_item.id','=',$grs_item_id)
-                                            // ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                            // ->where('product_id','=',$grs_item['product_id'])
-                                            ->update(['cgrs_status' => 1]);
+                            if($grs_item['batch_quantity']==$qty_to_cancel_array[$i])
+                            {
+                                 $fgs_grs_item_qty_update = fgs_grs_item::where('fgs_grs_item.id','=',$grs_item_id)
+                                                    // ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                                                    // ->where('product_id','=',$grs_item['product_id'])
+                                                         ->update(['cgrs_status' => 1]);
                    
                             // $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
                             //             ->where('batchcard_id','=',$grs_item['batchcard_id'])
@@ -118,16 +122,40 @@ class CGRSController extends Controller
 
                             // $update_maa_stocks = $fgs_maa_stock['quantity']-$grs_item['batch_quantity'];
                             // $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
+                            }
+                            else
+                            {
+                                $update_qty = $grs_item['batch_quantity']-$qty_to_cancel_array[$i];
+                                $fgs_grs_item_qty_update = fgs_grs_item::where('product_id','=',$grs_item['product_id'])
+                                                ->update(['remaining_qty_after_cancel'=>$update_qty]);
+                            }
+                            $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
+                                        ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                                        ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
+                                        ->first();
+
+                            $update_stock = $fgs_product_stock['quantity']+$qty_to_cancel_array[$i];
+                            $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+
+                            $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$grs_item['product_id'])
+                                                ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                                                ->first();
+
+                            $update_maa_stocks = $fgs_maa_stock['quantity']-$qty_to_cancel_array[$i];
+                            $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
+                           
+
+                            $i++;
                 
                         }
-                        if($cgrs_id )
+                        if($cgrs_id & $fgs_grs_item_qty_update)
                         {
-                            $request->session()->flash('success', "You have successfully created a Cgrs !");
+                            $request->session()->flash('success', "You have successfully created a CGRS !");
                               return redirect('fgs/CGRS/CGRS-list');
                         }
                         else
                         {
-                            $request->session()->flash('error', "MAC creation is failed. Try again... !");
+                            $request->session()->flash('error', "CGRS creation is failed. Try again... !");
                             return redirect('FGS/CGRS-add');
                         }
                         
@@ -208,7 +236,7 @@ class CGRSController extends Controller
                 </thead>
                 <tbody >
                     <tr>
-                        <th>grs Date</th>
+                        <th>GRS Date</th>
                         <td>' . date('d-m-Y', strtotime($grs
                 ->grs_date)) . '</td>
                     </tr>
@@ -251,17 +279,18 @@ class CGRSController extends Controller
                 <th>Description</th>
                 <th>Batch NUMBER</th>
                 <th> Qty</th>
+                <th>QUANTITY TO CANCEL</th>
                 </tr>
                </thead>
                <tbody >';
             foreach ($grs_item as $item) {
                 $data .= '<tr>
-                    <td ><input type="checkbox" name="grs_item_id[]" id="grs_item_id" value="'.$item->id.'"></td>
+                    <td ><input type="checkbox" name="grs_item_id[]" id="grs_item_id" onclick="enableTextBox(this)" value="'.$item->id.'"></td>
                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->discription.'</td>
                        <td>'.$item->batch_no.'</td>
                        <td>'.$item->batch_quantity.'</td>
-                      
+                       <td><input type="text" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" disabled></td>
                       
                       </tr>';
             }

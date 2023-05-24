@@ -88,7 +88,7 @@
                                             <td>{{$item['batch_no']}} </td>
                                             <td>{{$item['batch_quantity']}} Nos</td>
                                             <td>{{$item['manufacturing_date']}}</td>
-                                            <td>{{$item['expiry_date']}}</td>
+                                            <td>@if($item['expiry_date']=='0000-00-00') NA @else {{$item['expiry_date']}} @endif</td>
                                             <td>
 										@if($item['cgrs_status']==0)
 										<span class="badge badge-primary" style="width:60px;">Active</span>
@@ -100,7 +100,7 @@
                                     @endforeach
 									@else
 									<tr>
-										<td colspan="7" ><center>No data Found...</center></td></tr>
+										<td colspan="8" ><center>No data Found...</center></td></tr>
 									@endif
                                 </tbody>
                             </table>

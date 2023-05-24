@@ -79,6 +79,7 @@
                                         <option value="0">--select one--</option>
                                         <option value="1" @if(request()->get('type')==1) selected @endif>Indirect Items</option>
                                         <option value="2" @if(request()->get('type')==2) selected @endif>Direct Items</option>
+                                        <option value="4" @if(request()->get('type')==4) selected @endif>Finished Goods</option>
                                     </select>
                                     <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
                                     </div>

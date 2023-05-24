@@ -124,7 +124,11 @@ class PurchaseController extends Controller
                             $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
                             //$supplier_type =  $this->inv_supplier->get_supplier(['id'=>$ByItemSupplier->supplier_id])->supplier_type;
                             $item_type = $this->check_item_type($request->rq_master_id,$ByItemSupplier->supplier_id);
-                            if ($item_type == "Direct Items") {
+                            if ($item_type == "Finished Goods") {
+                                $data['po_number'] = "POI1-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI1-'.$years_combo.'%')
+                                                                                            ->Orwhere('po_number','like','%POC1-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
+                            }
+                            else if ($item_type == "Direct Items") {
                                 $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
                                                                                             ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
                             } else {
@@ -233,8 +237,11 @@ class PurchaseController extends Controller
                         if ($type == "PR") {
                             $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
                             $item_type = $this->check_item_type($quotation_id,$ByItemSupplier->supplier_id);
-                           
-                            if ($item_type == "Direct Items") {
+                            if ($item_type == "Finished Goods") {
+                                $data['po_number'] = "POI1-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI1-'.$years_combo.'%')
+                                                            ->Orwhere('po_number','like','%POC1-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
+                            }
+                            else if ($item_type == "Direct Items") {
                                 $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
                                                             ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
                                 //$data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
@@ -1467,7 +1474,12 @@ class PurchaseController extends Controller
         $item_type = $this->check_item_type($master['rq_master_id'],$master['supplier_id']);
         if($master['type']=='PO')
         {
-            if ($item_type == "Direct Items") 
+            if ($item_type == "Finished Goods") 
+            {
+                $data['po_number'] = "POI1-" .$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI1-'.$years_combo.'%')
+                                         ->Orwhere('po_number','like','%POC1-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
+            }
+            else if ($item_type == "Direct Items") 
             {
                 // $count = DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
                 // ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count();

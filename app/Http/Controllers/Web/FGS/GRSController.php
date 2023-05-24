@@ -336,6 +336,7 @@ class GRSController extends Controller
                 $data['mrn_item_id']=$request->mrn_item_id;
                 $data['batchcard_id'] = $request->batchcard;
                 $data['batch_quantity'] = $request->batch_qty;
+                $data['remaining_qty_after_cancel'] = $request->batch_qty;
                 $data['created_at'] =date('Y-m-d H:i:s');
                 $add = $this->fgs_grs_item->insert_data($data,$request->grs_id);
                 $grs_master = fgs_grs::find($request->grs_id);

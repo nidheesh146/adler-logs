@@ -5,6 +5,7 @@
     
     <title>EXI_{{$dni['firm_name']}}_{{$dni['dni_number']}}</title>
 </head>
+@inject('fn', 'App\Http\Controllers\Web\FGS\OEFController')
 <body>
 
     <style>
@@ -494,6 +495,7 @@
         <div class="col41">
             <div class="remarks" style="">
                 <strong>Value in words: </strong><br/>
+                <?php echo( number_format((float)($round-$t), 2, '.', '')) ?> 
                 <div></div><br/><br/>
                 <table style="float:left;">
                     <tr>

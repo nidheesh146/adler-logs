@@ -339,6 +339,7 @@ function getsearch(){
                             }
                             $.get("{{ url('fgs/fetchProductBatchCards') }}?product_id="+res.id,function(data)
                             {
+                                $(".batch_no"+select_id+"").find('option').remove();
                                 if(data.length>0)
                                 {
                                     $(".batch_no"+select_id+"").append('<option>..Select One..</option>')

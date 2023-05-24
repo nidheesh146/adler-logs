@@ -3,10 +3,10 @@
 <head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     
-    <title>DNI_{{$dni['firm_name']}}_{{$dni['dni_number']}}</title
+    <title>DNI_{{$dni['firm_name']}}_{{$dni['dni_number']}}</title>
 </head>
 <body>
-@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\PurchaseController')
+@inject('fn', 'App\Http\Controllers\Web\FGS\OEFController')
     <style>
         .col1,.col3{
             float:left;
@@ -494,6 +494,7 @@
         <div class="col41">
             <div class="remarks" style="">
                 <strong>Value in words: </strong><br/>
+                <?php echo( number_format((float)($round-$t), 2, '.', '')) ?> 
                 <div></div><br/><br/>
                 <table style="float:left;">
                     <tr>

@@ -184,6 +184,18 @@
           $('.spinner-button').hide();
         }
       });
+    function enableTextBox(cash) 
+    {
+        const checkbox = $(cash);
+        if(checkbox.is(':checked')){
+            checkbox.closest('tr').find('.qty_to_cancel').attr("disabled", false);
+            checkbox.closest('tr').find('.qty_to_cancel').attr("required", "true");
+        }else{
+            checkbox.closest('tr').find('.qty_to_cancel').val('');
+            checkbox.closest('tr').find('.qty_to_cancel').attr("required", "false");
+            checkbox.closest('tr').find('.qty_to_cancel').attr("disabled", true);
+        }
+    }
     
     </script>
 

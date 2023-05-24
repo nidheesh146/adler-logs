@@ -6,7 +6,7 @@
     <title>OEF_{{$oef['firm_name']}}_{{$oef['oef_number']}}</title
 </head>
 <body>
-@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\PurchaseController')
+@inject('fn', 'App\Http\Controllers\Web\FGS\OEFController')
     <style>
         .col1,.col3{
             float:left;
@@ -295,7 +295,7 @@
         <div class="col41">
             <div class="valuewords">
                 <strong>Value in Words</strong><br/>
-                <span class="value_in_words"></span>
+                <span class="value_in_words"><?php echo( $fn->getIndianCurrency(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))) ?> {{$oef['currency_code']}} </span>
             </div>
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>

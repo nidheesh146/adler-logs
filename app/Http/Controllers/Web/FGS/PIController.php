@@ -99,7 +99,7 @@ class PIController extends Controller
                         $stock['product_id'] =$grs_item['product_id'];
                         $stock['pi_item_id'] =$pi_item;
                         $stock['batchcard_id'] =$grs_item['batchcard_id'];
-                        $stock['quantity'] =$grs_item['batch_quantity'];
+                        $stock['quantity'] =$grs_item['remaining_qty_after_cancel'];
                         $stock['created_at'] =  date('Y-m-d H:i:s');
                         $maa_stock=$this->fgs_maa_stock_management->insert_data($stock);
                         
