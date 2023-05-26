@@ -657,10 +657,10 @@ class BatchCardController extends Controller
     public function BatchCardpdf($batch_id)
     { 
         $data['batch'] = $this->batchcard->get_batch_card(['batchcard_batchcard.id' => $batch_id]);
-      
+       
       $pdf = PDF::loadView('pages/batchcard/batchcard-list-pdf', $data);
         // $pdf->set_paper('A4', 'landscape');
-        $file_name = "batchcard" . $data['batch']['firm_name'] . "_" . $data['batch']['batch_date'];
+        $file_name = "batchcard" . $data['batch']['start_date'] . "_" . $data['batch']['start_date'];
         return $pdf->stream($file_name . '.pdf');
     }
   
