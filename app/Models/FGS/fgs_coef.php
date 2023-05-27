@@ -39,7 +39,8 @@ class fgs_coef extends Model
     {
         return $this->select('fgs_coef.*','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
         'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person','customer_supplier.sales_type','customer_supplier.city',
-        'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3')
+        'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1',
+        'customer_supplier.dl_number2','customer_supplier.dl_number3','fgs_oef.order_number','fgs_oef.order_date','fgs_oef.due_date')
                     ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_coef.oef_id')
                     ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
                     ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')

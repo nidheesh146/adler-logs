@@ -25,8 +25,8 @@ class PriceController extends Controller
 
     public function priceList(Request $request)
     {
-       //$this->priceMasterUpload();
-       // $this->productFgsUpload();
+      // $this->priceMasterUpload();
+      //  $this->productFgsUpload();
        //$this->fgsStockUpload();
         $condition =[];
         if($request->sku_code)
@@ -136,7 +136,7 @@ class PriceController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\itemMaster.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\Item_Master_FGS.xlsx';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
         $ExcelOBJ->reader->setReadDataOnly(true);
@@ -168,35 +168,40 @@ class PriceController extends Controller
     {
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
     
-            if ($key > 1 &&  $excelsheet[1]) 
+            if($key > 1 &&  $excelsheet[1])
              {
                 //echo $excelsheet[17];exit;
                 $not_exist =[];
                 $product_id = product::where('sku_code','=',$excelsheet[0])->pluck('id')->first();
                 if($product_id)
                 {
+                    $dat['hsn_code'] = $excelsheet[4];
+                    $dat['product_type_id'] = $this->identify_id($excelsheet[3],"PRODUCT TYPE");
+                    $dat['product_oem_id'] = $this->identify_id($excelsheet[8],"PRODUCT OEM");
+                    $dat['product_group1_id'] = $this->identify_id($excelsheet[7],"PRODUCT GROUP1");
+                    $dat['product_category_id'] = $this->identify_id($excelsheet[6],"PRODUCT CATEGORY");
+                    $dat['updated'] = date('Y-m-d H:i:s');
+                    $res[]=DB::table('product_product')->where('id','=',$product_id)->update($dat);
+                }
+                else
+                {
+                    // $not_exist[] = $excelsheet[0];
+                    // $res[] = 1;
+                    $data['sku_code'] = $excelsheet[0];
+                    $data['discription'] = $excelsheet[1];
                     $data['hsn_code'] = $excelsheet[4];
                     $data['product_type_id'] = $this->identify_id($excelsheet[3],"PRODUCT TYPE");
                     $data['product_oem_id'] = $this->identify_id($excelsheet[8],"PRODUCT OEM");
                     $data['product_group1_id'] = $this->identify_id($excelsheet[7],"PRODUCT GROUP1");
                     $data['product_category_id'] = $this->identify_id($excelsheet[6],"PRODUCT CATEGORY");
+                    $data['quantity_per_pack'] = $excelsheet[9];
+                    if( $excelsheet[5] =='Sterile')
+                    $data['is_sterile'] = 1;
+                    else
+                    $data['is_sterile'] = 0;
+                    $data['created'] = date('Y-m-d H:i:s');
                     $data['updated'] = date('Y-m-d H:i:s');
-                    $res[]=DB::table('product_product')->where('id','=',$product_id)->update($data);
-                }
-                else
-                {
-                    $not_exist[] = $excelsheet[0];
-                    $res[] = 1;
-                    // $data['sku_code'] = $excelsheet[0];
-                    // $data['discription'] = $excelsheet[1];
-                    // $data['hsn_code'] = $excelsheet[3];
-                    // $data['product_type_id'] = $this->identify_id($excelsheet[6],"PRODUCT TYPE");
-                    // $data['product_oem_id'] = $this->identify_id($excelsheet[6],"PRODUCT OEM");
-                    // $data['product_group1_id'] = $this->identify_id($excelsheet[6],"PRODUCT GROUP1");
-                    // $data['product_category_id'] = $this->identify_id($excelsheet[6],"PRODUCT CATEGORY");
-                    // $data['created_at'] = date('Y-m-d H:i:s');
-                    // $data['updated_at'] = date('Y-m-d H:i:s');
-                    // $res[]=DB::table('product_product')->insert($data);
+                    $res[]=DB::table('product_product')->insert($data);
                 }
                 
             }
@@ -212,19 +217,56 @@ class PriceController extends Controller
     function identify_id($data,$type)
     {
         if($type=='PRODUCT TYPE'){
-           return DB::table('product_type')->where('product_type_name',$data)->first()->id;
+            if($data=='Implant')
+                return 1;
+            else
+                return 2;
+           //return DB::table('product_type')->where('product_type_name',$data)->first()->id;
         }
         if($type=='PRODUCT OEM'){
-           return DB::table('product_oem')->where('oem_name',$data)->first()->id;
+            if($data=='Trade Link')
+                return 1;
+            else
+                return 2;
+           //return DB::table('product_oem')->where('oem_name',$data)->first()->id;
         }
         if($type=='PRODUCT GROUP1'){
-         return   DB::table('product_group1')->where('group_name',$data)->first()->id;
+         //return   DB::table('product_group1')->where('group_name',$data)->first()->id;
+         if($data=='Trauma')
+         return 1;
+         else if($data=='Restor')
+         return 2;
+         else if($data=='EndoFit')
+         return 3;
+         else if($data=='ModuLoc')
+         return 4;
+         else if($data=='GeneralHip')
+         return 5;
+         else if($data=='Legend')
+         return 6;
+         else if($data=='EndoFix')
+         return 7;
+         else if($data=='OneLock')
+         return 8;
+         else if($data=='PSI')
+         return 9;
+         else if($data=='Trading')
+         return 10;
+         else if($data=='Discontinued')
+         return 11;
         }
     
         if($type=='PRODUCT CATEGORY')
         {
-            return   DB::table('fgs_product_category')->where('category_name',$data)->first()->id;
+            if($data=='OBM')
+            return 1;
+            else if($data=='OEM')
+            return 2;
+            else
+            return 3;
+           // return   DB::table('fgs_product_category')->where('category_name',$data)->first()->id;
         }
+        //exit;
        
     }
 
@@ -234,7 +276,7 @@ class PriceController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\Price_Master1.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\AHPL_Price_Master.xlsx';
         $ExcelOBJ->aircraft = 'B737-MAX';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
@@ -274,18 +316,18 @@ class PriceController extends Controller
                 if($price_master)
                 {
                     $data['product_id'] = $product_id;
-                    $data['purchase'] =$excelsheet[16];
-                    $data['sales'] =$excelsheet[17];
-                    $data['mrp'] = $excelsheet[18];
+                    $data['purchase'] =$excelsheet[3];
+                    $data['sales'] =$excelsheet[4];
+                    $data['mrp'] = $excelsheet[5];
                     $data['updated_at'] = date('Y-m-d H:i:s');
                     $res[]=DB::table('product_price_master')->where('id','=',$price_master['id'])->update($data);
                 }
                 else
                 {
                     $data['product_id'] = $product_id;
-                    $data['purchase'] =$excelsheet[16];
-                    $data['sales'] =$excelsheet[17];
-                    $data['mrp'] = $excelsheet[18];
+                    $data['purchase'] =$excelsheet[3];
+                    $data['sales'] =$excelsheet[4];
+                    $data['mrp'] = $excelsheet[5];
                     $data['created_at'] = date('Y-m-d H:i:s');
                     $data['updated_at'] = date('Y-m-d H:i:s');
                     $res[]=DB::table('product_price_master')->insert($data);

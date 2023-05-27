@@ -168,8 +168,8 @@
             text-align:center;
         }
     </style>
-    <div class="row3" style="border-bottom:solid 0.5px black;">
-        <table >
+    <div class="row3"  style="border-bottom:solid 0.5px black;">
+        <table border=1>
             <tr style="font-weight:bold;font-size: 10px;">
                 <th rowspan="2">S.NO</th>
                 <th rowspan="2">ITEM NO.</th>
@@ -225,7 +225,7 @@
                 <td>{{$item['igst']}}</td>
                 <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
                 <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
-                <td>{{number_format((float)($total_amount), 2, '.', '')}}</td>
+                <td><b>{{number_format((float)($total_amount), 2, '.', '')}}</b></td>
                 <?php 
                 $total =$total+ $item['rate']* $item['quantity'];
                 $total_discount = $total_discount+($item['rate']* $item['quantity']*$item['discount'])/100;
@@ -246,19 +246,19 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{  $qsum }}</td>
+                <td><b>{{  $qsum }}</b></td>
                 <td></td>
-                <td> {{ $rsum }}</td>
-                <td></td>
-                <td></td>
-                <td>{{ $tsum }}</td>
+                <td><b> {{ $rsum }}</b></td>
                 <td></td>
                 <td></td>
+                <td><b>{{ $tsum }}</b></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{ $totalsum }}</td>
+                <td></td>
+                <td></td>
+                <td><b>{{ $totalsum }}</b></td>
             </tr>       
         
         </table><br>
@@ -268,7 +268,7 @@
         <div class="col41">
             <div class="valuewords">
                 <strong>Amount in Words</strong><br/>
-              
+                <?php echo( $fn->getIndianCurrencyInt(number_format((int)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))) ?> {{$oef['currency_code']}} 
                 
                 <span class="value_in_words"></span>
             </div>

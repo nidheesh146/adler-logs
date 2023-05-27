@@ -409,7 +409,7 @@ class BatchCardController extends Controller
                     <tr>
                         <input type="hidden" class="input_material_qty input_material_qty'.$i.'" name="input_material_qty'.$i.'" value="">
                         <td>
-                        <input type="radio" class="item-select-radio" name="material'.$i.'" value="'.$material['id'].'"><br/>
+                        <input type="radio" class="item-select-radio" checked name="material'.$i.'" value="'.$material['id'].'"><br/>
                         Item Code<input type="text" class="form-control"  value="'.$material['item_code1'].'" readonly>
                             <input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
                             <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['material_id1'].'">

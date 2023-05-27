@@ -251,11 +251,11 @@ function getsearch(){
                 //initBatchSelect2();
                 $(".manufacturing_date").datepicker({
                     format: " dd-mm-yyyy",
-                    autoclose:true
+                    autoclose:true,
                 });
                 $(".expiry_date").datepicker({
                     format: " dd-mm-yyyy",
-                    autoclose:true
+                    autoclose:true,
                 });
                 $(".manufacturing_date").datepicker("setDate", new Date());
                
@@ -337,6 +337,10 @@ function getsearch(){
                                 date.setDate(date.getDate() - 2);
                                 $("#expiry_date"+select_id+"").datepicker("setDate", date);
                             }
+                            $("#manufacturing_date"+select_id+"").datepicker({
+                                    format: " dd-mm-yyyy",
+                                    autoclose:true
+                                });
                             $.get("{{ url('fgs/fetchProductBatchCards') }}?product_id="+res.id,function(data)
                             {
                                 $(".batch_no"+select_id+"").find('option').remove();

@@ -200,9 +200,9 @@
             <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
             <a href="{{url('batchcard/batchcard-add')}}"  class="nav-sub-link">Batch Card Add</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['BatchCard.requestList'])){{'active'}} @endif ">
+            <!-- <li class="nav-sub-item @if(in_array($Action,['BatchCard.requestList'])){{'active'}} @endif ">
             <a href="{{url('batchcard/request-list')}}"  class="nav-sub-link">Quantity Updation Requests </a>
-            </li>
+            </li> -->
           </ul>
         </li>
         

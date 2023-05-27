@@ -3,18 +3,18 @@
 <head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     
-    <title>GRS_{{$grs['firm_name']}}_{{$grs['grs_number']}}</title
+    <title>GRS_{{$grs['firm_name']}}_{{$grs['grs_number']}}</title>
 </head>
 <body>
-@inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\PurchaseController')
+@inject('fn', 'App\Http\Controllers\Web\FGS\OEFController')
     <style>
         .col1,.col3{
             float:left;
-            width:33%;
+            width:37%;
             font-size:11px;
         }
         .col2{
-            width:28%;
+            width:23%;
             float:left;
         }
         .attn {
@@ -224,12 +224,12 @@
             <?php $i=1; ?>
             @foreach($items as $item)
             <tr>
-                <td>{{$i++}}</td>
+                <td style="text-align:center;">{{$i++}}</td>
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
                 <td>{{$item['discription']}}</td>
                 <td>{{$item['batch_no']}}</td>
-                <td>{{$item['batch_quantity']}}</td> 
+                <td style="text-align:center;">{{$item['batch_quantity']}}</td> 
                 <td>Nos</td> 
                 <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                 <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else N.A @endif</td>

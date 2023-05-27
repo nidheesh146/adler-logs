@@ -432,8 +432,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
 
      //MTQ
      Route::get('fgs/MTQ-list','MTQController@MTQList');
-     Route::get('fgs/MTQ/add','MTQController@MTQAdd');
-     Route::post('fgs/MTQ/add','MTQController@MTQAdd');
+     Route::get('fgs/MTQ-add','MTQController@MTQAdd');
+     Route::post('fgs/MTQ-add','MTQController@MTQAdd');
      Route::get('fgs/MTQ/item-list/{mtq_id}','MTQController@MTQitemlist');
      Route::get('fgs/MTQ/add-item/{mtq_id}','MTQController@MTQitemAdd');
      Route::post('fgs/MTQ/add-item/{mtq_id}','MTQController@MTQitemAdd');

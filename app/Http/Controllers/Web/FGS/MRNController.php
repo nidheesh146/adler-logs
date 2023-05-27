@@ -56,6 +56,7 @@ class MRNController extends Controller
                         ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_mrn.product_category')
                         ->leftJoin('product_stock_location','product_stock_location.id','fgs_mrn.stock_location')
                         ->where($condition)
+                        ->orderBy('fgs_mrn.id','DESC')
                         ->paginate(15);
         return view('pages/FGS/MRN/MRN-list', compact('mrn'));
     }
@@ -157,7 +158,7 @@ class MRNController extends Controller
         //                                 ->where('production_stock_management.product_id','=',$request->product_id)
         //                                 ->where('production_stock_management.stock_qty','!=',0)
         //                                 ->get();
-        $batchcards = batchcard::select('batchcard_batchcard.batch_no','batchcard_batchcard.id as batch_id')
+        $batchcards = batchcard::select('batchcard_batchcard.batch_no','batchcard_batchcard.id as batch_id','batchcard_batchcard.start_date','batchcard_batchcard.target_date')
                                         ->where('batchcard_batchcard.product_id','=',$request->product_id)
                                         ->get();
         return $batchcards;

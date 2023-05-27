@@ -92,6 +92,7 @@
 									<th>Type </th>
 									<th>HSN Code </th>
                                     <th>Product Condition</th>
+									<th>Category</th>
                                     <th>Brand</th>
 									<th>Family</th>
 									<th>Group</th>
@@ -106,6 +107,7 @@
                             <td>{{$item['item_type']}}</td>
                             <td>{{$item['hsn_code']}}</td>
                             <td>@if($item['is_sterile']==1) Sterile @else Non-Sterile @endif</td>
+							<td>{{$item['category_name']}}</td>
                             <td>{{$item['brand_name']}}</td>
                             <td>{{$item['family_name']}}</td>
                             <td>{{$item['group1_name']}}</td>

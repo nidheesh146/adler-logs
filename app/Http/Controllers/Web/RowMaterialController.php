@@ -274,8 +274,10 @@ class RowMaterialController extends Controller
                     $data['item_short_name'] = $excelsheet[3];
                     $data['discription'] = $excelsheet[4];
                     $data['short_description'] =  $excelsheet[5];
-                    $data['item_type_id'] = $this->identify_id($excelsheet[6],"ITEM TYPE");
-                    $data['item_type_id_2'] = $this->identify_id($excelsheet[7],"ITEM TYPE 2");
+                    //$data['item_type_id'] = $this->identify_id($excelsheet[6],"ITEM TYPE");
+                    $data['item_type_id'] = 4;
+                    // $data['item_type_id_2'] = $this->identify_id($excelsheet[7],"ITEM TYPE 2");
+                    $data['item_type_id_2'] = 18;
                     $data['receipt_unit_id'] = $this->identify_id($excelsheet[8],"RECEIPT UNIT");
                     $data['issue_unit_id'] = $this->identify_id($excelsheet[8],"ISSUE UNIT");
                     $data['stock_keeping_unit_id'] =  $this->identify_id($excelsheet[8],"STOCK KEEPING UNIT");

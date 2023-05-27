@@ -10,7 +10,7 @@
     <style>
         .col1,.col3{
             float:left;
-            width:23%;
+            width:25%;
             font-size:11px;
         }
         .col2{
@@ -223,7 +223,7 @@
         <table border="1">
             <tr>
                 <th rowspan="2">S.NO</th>
-                <th rowspan="2" style="width:10%;">
+                <th rowspan="2" style="">
                     HSN CODE  
                 </th>
                 <th rowspan="2">SKU CODE</th>
@@ -231,7 +231,7 @@
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
                 <th rowspan="2">RATE</th>
-                <th rowspan="2">VALUE</th>
+                <!-- <th rowspan="2">VALUE</th> -->
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
                 <th colspan="2">CGST</th>
@@ -258,14 +258,14 @@
              ?>
             @foreach($items as $item)
             <tr>
-                <td>{{$i++}}</td>
+                <td style="text-align:center;">{{$i++}}</td>
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
                 <td>{{$item['discription']}}</td>
-                <td>{{$item['remaining_qty_after_cancel']}}</td>
+                <td style="text-align:center;">{{$item['remaining_qty_after_cancel']}}</td>
                 <td>Nos</td>
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
-                <td>{{number_format((float)($item['rate']* $item['quantity']), 2, '.', '') }}</td>
+                {{--<td>{{number_format((float)($item['rate']* $item['quantity']), 2, '.', '') }}</td>--}}
                 <td>{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
                 <td>{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
@@ -277,7 +277,7 @@
                 <td>{{$item['igst']}}</td>
                 <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
                 <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
-                <td>{{number_format((float)($total_amount), 2, '.', '')}}</td>
+                <td><b>{{number_format((float)($total_amount), 2, '.', '')}}</b></td>
                 <?php 
                 $total =$total+ $item['rate']* $item['quantity'];
                 $total_discount = $total_discount+($item['rate']* $item['quantity']*$item['discount'])/100;
@@ -295,8 +295,8 @@
         <div class="col41">
             <div class="valuewords">
                 <strong>Value in Words</strong><br/>
-                <span class="value_in_words"><?php echo( $fn->getIndianCurrency(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))) ?> {{$oef['currency_code']}} </span>
-            </div>
+                <span class="value_in_words"><?php echo( $fn->getIndianCurrencyInt(number_format((int)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))) ?> {{$oef['currency_code']}} </span>
+            </div><br/>
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>
                 @if($oef['remarks'])
@@ -312,15 +312,15 @@
         <div class="col43">
             <table style="height:130px;">
                 <tr>
-                    <td style="width:160px">Sum of Net Amount</td>
+                    <td style="width:160px">Sum of Taxable Amount</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
                 </tr>
-                <tr>
+                {{--<tr>
                     <td style="width:160px">Total Discount</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
-                </tr>
+                </tr>--}}
                 <tr>
                     <td style="width:160px">Sum of CGST</td>
                     <td style="width:30px;">:</td>
@@ -337,17 +337,29 @@
                     <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:160px">Other Charges</td>
+                    <td style="width:160px">Rounf Off</td>
                     <td style="width:30px;">:</td>
-                    <td style="text-align:right;"></td>
+                     <?php 
+                    $t = number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '');
+                    $round = round($t);
+                    $roundoff = number_format((float)($round-$t), 2, '.', '');
+                    ?>
+                    <td style="text-align:right;">{{ $roundoff }}</td>
                 </tr>
                 
             </table>
             <table style="border-bottom:solid 1px black;width:100%;border-top:solid 1px black;width:100%;">
                 <tr>
                     <th style="width:130px">GRAND TOTAL</th>
+                    <?php
+                     $grand = 0;
+                     $grandt = 0;
+                    $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))
+                   
+                    ?>
                     <th style="width:30px;">:</th>
-                    <th class="grand_total_value" style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}} {{$oef['currency_code']}}</th>
+                    {{--<th class="grand_total_value" style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}} {{$oef['currency_code']}}</th>--}}
+                    <th class="grand_total_value" style="text-align:right;">{{ $grand }} </th>
                 </tr> 
             </table>
         </div>

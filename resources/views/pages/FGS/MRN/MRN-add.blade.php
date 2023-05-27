@@ -64,7 +64,7 @@
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Supplier Doc Date  *</label>
-                                <input type="text" class="form-control datepicker" name="supplier_doc_date" value="" placeholder="">
+                                <input type="text" class="form-control datepicker supplier_doc_date" name="supplier_doc_date" value="" placeholder="">
                             </div>
                             
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -143,6 +143,7 @@
     format: " dd-mm-yyyy",
     autoclose:true,
     });
+    $('.supplier_doc_date').datepicker("setDate", new Date());
     $(".mrn_date").datepicker("setDate", new Date());
   //  .datepicker('update', new Date());
 

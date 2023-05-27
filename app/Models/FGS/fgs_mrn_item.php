@@ -30,9 +30,10 @@ class fgs_mrn_item extends Model
                         ->leftjoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
                         ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
-                       ->where($condition)
-                    ->orderBy('fgs_mrn_item.id','DESC')
-                    ->get();
+                        ->where($condition)
+                        ->distinct('fgs_mrn_item.id')
+                        ->orderBy('fgs_mrn_item.id','DESC')
+                        ->get();
     }
     function getMRNItems($condition)
     {

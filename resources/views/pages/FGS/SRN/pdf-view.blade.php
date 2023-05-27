@@ -5,6 +5,7 @@
     
     <title>SRN_{{$srn['firm_name']}}_{{$srn['srn_number']}}</title>
 </head>
+@inject('fn', 'App\Http\Controllers\Web\FGS\OEFController')
 <body>
     <style>
         .col1,.col3{
@@ -120,7 +121,9 @@
            {{$srn['city']}},  {{$srn['state_name']}}
            </p>  -->
             <p>GST Details : {{$srn['gst_number']}}<br/>
-            D.L. Details: {{$srn['dl_number1']}}, {{$srn['dl_number2']}}, {{$srn['dl_number3']}} <p>
+            DL Number(Form 20B): {{$srn['dl_number1']}}<br/>
+            @if($srn['dl_number2']) DL Number (Form 21B) : {{$srn['dl_number2']}} @endif
+            @if($srn['dl_number3']) DL Number (Others if any) : {{$srn['dl_number3']}} @endif<p>
 
         </div>
         <div class="col2" style="text-align:center;">
@@ -385,11 +388,11 @@
                 </th>
                 <th rowspan="2">SKU CODE</th>
                 <th rowspan="2" width='28%'>ITEM DESCRIPTION</th>
-                <th rowspan="2" style="width:6% !important;">DATE Of MFG.</th>
-                <th rowspan="2" style="width:6% !important;">DATE Of EXPIRY</th>
                 <th rowspan="2">BATCH NO</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
+                <th rowspan="2" style="width:6% !important;">DATE Of MFG.</th>
+                <th rowspan="2" style="width:6% !important;">DATE Of EXPIRY</th>
                 <th rowspan="2">RATE</th>
                
                 <th colspan="2">DISC</th>
@@ -428,11 +431,11 @@
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
                 <td>{{$item['discription']}}</td>
-                <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
                 <td>{{$item['batch_no']}}</td>
                 <td>{{$item['quantity']}}</td>
                 <td>Nos</td>
+                <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                 
                 <td>{{$item['discount']}}</td>
@@ -470,9 +473,9 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td></td>
                 <td>{{  $qsum }}</td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td> {{ $rsum }}</td>
                 <td></td>
@@ -492,7 +495,9 @@
     <div class="row4" style="height:170px;">
         <div class="col41">
             <div class="remarks" style="">
-                <strong>Value in words: </strong><br/>
+                <strong>Value in words: </strong>
+                <br/>
+                <span class="value_in_words"><?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> {{--$srn['currency_code']--}}</span>
                 <div></div><br/><br/>
                 
                 <!-- <br/>
@@ -557,7 +562,7 @@
                     $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))
                    
                     ?>
-                    <th class="grand_total_value" style="text-align:right;">{{ $grand }} {{$srn['currency_code']}}</th>
+                    <th class="grand_total_value" style="text-align:right;">{{ $grand }} {{--$srn['currency_code']--}}</th>
                 </tr> 
             </table>
         </div>

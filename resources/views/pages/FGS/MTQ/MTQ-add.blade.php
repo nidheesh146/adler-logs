@@ -142,7 +142,7 @@
     format: " dd-mm-yyyy",
     autoclose:true
     });
-  //  .datepicker('update', new Date());
+    $(".datepicker").datepicker('update', new Date());
 
     $('.datepicker').mask('99-99-9999');
               
