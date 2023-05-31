@@ -492,6 +492,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/GRS/find-oef-number-for-grs','GRSController@findOEFforGRS');
     Route::get('fgs/GRS/find-oef-info','GRSController@findOEFInfo');
     Route::get('fgs/GRS/pdf/{grs_id}','GRSController@GRSpdf');
+    Route::get('fgs/GRS/pending-report','GRSController@pendingGRS');
+    Route::get('fgs/GRS/pending-GRS-export','GRSController@pendingGRSExport');
     //CGRS
     Route::get('fgs/CGRS/CGRS-list','CGRSController@CGRSList');
     Route::get('fgs/CGRS-add','CGRSController@CGRSAdd');
@@ -508,7 +510,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/PI/fetchGRS','PIController@fetchGRS');
     Route::get('fgs/PI/pdf/{pi_id}','PIController@PIpdf');
     Route::get('fgs/PI/payment-pdf/{pi_id}','PIController@PIPaymentpdf');
-
+    Route::get('fgs/PI/pending-report','PIController@pendingPI');
+    Route::get('fgs/PI/pending-PI-export','PIController@pendingPIExport');
     //CPI
      Route::get('fgs/CPI/CPI-list','CPIController@CPIList');
     Route::get('fgs/CPI/CPI-add','CPIController@CPIAdd');

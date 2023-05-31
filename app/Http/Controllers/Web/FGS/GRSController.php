@@ -18,6 +18,8 @@ use App\Models\FGS\fgs_grs;
 use App\Models\FGS\fgs_grs_item;
 use App\Models\FGS\fgs_grs_item_rel;
 use App\Models\FGS\fgs_mrn_item;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PendingGRSExport;
 class GRSController extends Controller
 {
     public function __construct()
@@ -466,5 +468,79 @@ class GRSController extends Controller
         //$pdf->set_paper('A4', 'landscape');
         $file_name = "GRS" . $data['grs']['firm_name'] . "_" . $data['grs']['grs_date'];
         return $pdf->stream($file_name . '.pdf');
+    }
+    public function pendingGRS(Request $request)
+    {
+        $condition = [];
+        if($request->grs_no)
+        {
+            $condition[] = ['fgs_grs.grs_number','like', '%' . $request->grs_no . '%'];
+        }
+        if($request->oef_no)
+        {
+            $condition[] = ['fgs_oef.oef_number','like', '%' . $request->oef_no . '%'];
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_grs.grs_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        }
+        
+        $grs = fgs_grs::select('fgs_grs.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1',
+                        'stock_location.location_name as location_name2','fgs_oef.oef_number','customer_supplier.firm_name', 'fgs_oef.order_number','fgs_oef.order_date')
+                            ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
+                            ->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
+                            ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
+                            ->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
+                            ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
+                            ->whereNotIn('fgs_grs.id',function($query) {
+
+                                $query->select('fgs_pi_item.grs_id')->from('fgs_pi_item');
+                            
+                            })->where('fgs_grs.status','=',1)
+                            ->where($condition)
+                            ->orderBy('fgs_grs.id','DESC')
+                            ->distinct('fgs_grs.id')
+                            ->paginate(15);
+        return view('pages/FGS/GRS/pending-grs',compact('grs'));
+    }
+    public function pendingGRSExport(Request $request)
+    {
+        $condition = [];
+        if($request->grs_no)
+        {
+            $condition[] = ['fgs_grs.grs_number','like', '%' . $request->grs_no . '%'];
+        }
+        if($request->oef_no)
+        {
+            $condition[] = ['fgs_oef.oef_number','like', '%' . $request->oef_no . '%'];
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_grs.grs_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        }
+        $grs_data =fgs_grs_item::select('fgs_grs_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date',
+        'batchcard_batchcard.batch_no','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_product_category.category_name','product_stock_location.location_name as location_name1',
+        'stock_location.location_name as location_name2','fgs_oef.oef_number','fgs_oef.oef_date','customer_supplier.firm_name', 'fgs_oef.order_number','fgs_oef.order_date','fgs_grs.created_at as grs_created_at')
+                    ->leftjoin('fgs_grs_item_rel','fgs_grs_item_rel.item','=', 'fgs_grs_item.id')
+                    ->leftjoin('fgs_grs','fgs_grs.id','=','fgs_grs_item_rel.master')
+                    ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+                    ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
+                    ->leftjoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_grs_item.mrn_item_id')
+                    ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
+                    ->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
+                    ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
+                    ->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
+                    ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
+                    ->where($condition)
+                    ->where('fgs_grs_item.cgrs_status','=',0)
+                    ->where('fgs_grs.status','=',1)
+                    ->orderBy('fgs_grs_item.id','DESC')
+                    ->distinct('fgs_grs_item.id')
+                    ->get();
+
+        return Excel::download(new PendingGRSExport($grs_data), 'GRSBackOrderReport' . date('d-m-Y') . '.xlsx');
+    
     }
 }

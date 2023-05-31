@@ -74,15 +74,20 @@ class fgs_pi extends Model
                     ->where('fgs_pi.status','=',1)
                     ->first();
     }
-      function find_pi_num_for_cpi($condition)
+
+    function find_pi_num_for_cpi($condition)
     {
-        return $this->select(['fgs_pi.pi_number as text','fgs_pi.id'])->where($condition)
+        return $this->select(['fgs_pi.pi_number as text','fgs_pi.id'])
         ->where('fgs_pi.status','=',1)
         ->where($condition)
         ->get();
     }
-     function get_master_data($condition){
-        return $this->select(['fgs_pi.*'])
+    function get_master_data($condition)
+    {
+        return $this->select(['fgs_pi.*','customer_supplier.firm_name','customer_supplier.city','zone.zone_name','state.state_name'])
+                    ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
+                    ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+                    ->leftJoin('state','state.state_id','=','customer_supplier.state')
                     ->where($condition)
                     ->first();
     }

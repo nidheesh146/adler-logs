@@ -8,20 +8,15 @@
 			<div class="az-content-breadcrumb"> 
 				 <span>Proforma Invoice(PI)</span>
 				 <span><a href="">
-				 	PI  List
+				 	PI - Back Order Report
 				</a></span>
-				 </div> 
+				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-                PI List 
-              <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/PI-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						PI
-				</button>
-              <div>  
-				
-              </div>
-          </div>
-        </h4>	
+            Pending PI List 
+				<div class="right-button">
+				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/PI/pending-PI-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
+				</div>
+            </h4>	
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -56,18 +51,18 @@
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
 												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>PI No :</label>
-														<input type="text" value="{{request()->get('pi_number')}}" name="pi_number" id="pi_number" class="form-control" placeholder="PI NO">
+														<label>OEF No :</label>
+														<input type="text" value="{{request()->get('oef_number')}}" name="oef_number" id="oef_number" class="form-control" placeholder="OEF NO">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Customer</label>
-														<input type="text" value="{{request()->get('customer')}}" name="customer" id="customer" class="form-control" placeholder="CUSTOMER">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Order No</label>
+														<input type="text" value="{{request()->get('order_number')}}" name="order_number" id="order_number" class="form-control" placeholder="ORDER NUMBER">
 													</div>
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">PI Month</label>
+														<label  style="font-size: 12px;">OEF Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
 			
@@ -96,7 +91,7 @@
 					
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" >
-							<thead>
+						<thead>
 								<tr>
 									<th>PI Number</th>
                                     <th>PI Date</th>
@@ -125,8 +120,8 @@
 									<td>{{$item['order_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
 									<td>{{$item['firm_name']}}<br/>
-										Contact Person:{{$item['contact_person']}}<br/>
-										Contact Number:{{$item['contact_number']}}<br/>
+										{{--Contact Person:{{$item['contact_person']}}<br/>
+										Contact Number:{{$item['contact_number']}}<br/>--}}
 									</td>
                                     <td>
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/PI/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 
@@ -173,10 +168,10 @@
 	$('#prbody2').show();
   });
 	$('.search-btn').on( "click", function(e)  {
-		var pi_number = $('#pi_number').val();
-		var customer = $('#customer').val();
+		var ref_number = $('#ref_number').val();
+		var min_no = $('#min_no').val();
 		var from = $('#from').val();
-		if(!pi_number   & !customer & !from)
+		if(!min_no   & !ref_number & !from)
 		{
 			e.preventDefault();
 		}

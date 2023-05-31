@@ -326,7 +326,7 @@
         <div class="col41">
             <div class="valuewords">
                 <strong>Value in Words</strong><br/>
-                <span class="value_in_words"> <?php echo( round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst)))) ?></span>
+                <span class="value_in_words"> <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?></span>
             </div>
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>

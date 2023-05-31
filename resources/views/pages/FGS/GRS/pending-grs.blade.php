@@ -6,22 +6,17 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Proforma Invoice(PI)</span>
+				 <span>Goods Reservation Slip(GRS)</span>
 				 <span><a href="">
-				 	PI  List
+				 	GRS - Back Order Report
 				</a></span>
-				 </div> 
+				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-                PI List 
-              <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/PI-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						PI
-				</button>
-              <div>  
-				
-              </div>
-          </div>
-        </h4>	
+            GRS - Back Order Report 
+				<div class="right-button">
+				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/GRS/pending-GRS-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
+				</div>
+            </h4>	
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -55,22 +50,21 @@
 											<div class="row filter_search" style="margin-left: 0px;">
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
-												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>PI No :</label>
-														<input type="text" value="{{request()->get('pi_number')}}" name="pi_number" id="pi_number" class="form-control" placeholder="PI NO">
+													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
+														<label>GRS No :</label>
+														<input type="text" value="{{request()->get('grs_no')}}" name="grs_no" id="grs_no" class="form-control" placeholder="GRS NO">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Customer</label>
-														<input type="text" value="{{request()->get('customer')}}" name="customer" id="customer" class="form-control" placeholder="CUSTOMER">
+														<label for="exampleInputEmail1" style="font-size: 12px;">OEF No</label>
+														<input type="text" value="{{request()->get('oef_no')}}" name="oef_no" id="oef_no" class="form-control" placeholder="OEF NO">
 													</div>
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">PI Month</label>
+														<label  style="font-size: 12px;">GRS Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
-			
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -98,47 +92,38 @@
 						<table class="table table-bordered mg-b-0" >
 							<thead>
 								<tr>
-									<th>PI Number</th>
-                                    <th>PI Date</th>
 									<th>GRS Number</th>
-                                    <th>GRS Date</th>
-									<th>OEF Number</th>
-                                    <th>OEF Date</th>
-									<th>Order Number</th>
-                                    <th>Order Date</th>
-									<th>Customer</th>
-									<!-- <th>Shipping Address</th>
-									<th>Billing Address</th> -->
-                                    <th>Action</th>
+									<th>GRS date</th>
+                                    <th>OEF Number</th>
+                                    <th>Order Number</th>
+									<th>Order date</th>
+                                    <th>Customer</th>
+									<th>Product category</th>
+									<th>Stock Location(Decrease)</th>
+                                    <th>Stock Location(Increase)</th>
+                                     <th>Action</th> 
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-							@foreach($pi as $item)
-                                <tr>
-									
-									<td>{{$item['pi_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['pi_date']))}}</td>	
-									<td>{{$item['grs_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['grs_date']))}}</td>
-									<td>{{$item['oef_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['oef_date']))}}</td>
-									<td>{{$item['order_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
-									<td>{{$item['firm_name']}}<br/>
-										Contact Person:{{$item['contact_person']}}<br/>
-										Contact Number:{{$item['contact_number']}}<br/>
-									</td>
-                                    <td>
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/PI/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 
-										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>	
-										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/payment-pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Payment</a>	
-									</td>
-								</tr>
-								@endforeach
+							@foreach($grs as $master)
+                            <tr>
+                                <td>{{$master['grs_number']}}</td>
+								<td>{{date('d-m-Y', strtotime($master['grs_date']))}}</td>
+								<td>{{date('d-m-Y', strtotime($master['order_date']))}}</td>
+								<td>{{$master['order_number']}}</td>
+                                <td>{{$master['oef_number']}}</td>
+                                <td>{{$master['category_name']}}</td>
+                                <td>{{$master['location_name1']}}</td>
+                                <td>{{$master['location_name2']}}</td>
+                                <td>{{$master['firm_name']}}</td>
+                                <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/item-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
+								<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/GRS/pdf/'.$master["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a></td>
+                            </tr>
+                            @endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-                        {{ $pi->appends(request()->input())->links() }}
+                        {{ $grs->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>
@@ -172,11 +157,11 @@
 	$('#prbody1').show();
 	$('#prbody2').show();
   });
-	$('.search-btn').on( "click", function(e)  {
-		var pi_number = $('#pi_number').val();
-		var customer = $('#customer').val();
+  $('.search-btn').on( "click", function(e)  {
+		var grs_no = $('#grs_no').val();
+		var oef_no = $('#oef_no').val();
 		var from = $('#from').val();
-		if(!pi_number   & !customer & !from)
+		if(!grs_no  & !oef_no & !from)
 		{
 			e.preventDefault();
 		}

@@ -57,6 +57,7 @@
 									<th>HSN Code</th>
 									<th>Batchcard</th>
                                     <th>Quantity</th>
+									<th>Outstanding Quantity</th>
                                     <th>Rate</th>
                                     <th>Discount</th>
                                     <th>Net Value</th>
@@ -72,6 +73,7 @@
 									<td>{{$item['hsn_code']}}</td>
 									<td>{{$item['batch_no']}}</td>
                                     <td>{{$item['batch_quantity']}}Nos</td>
+									<td>{{$item['remaining_qty_after_cancel']}}Nos</td>
                                     <td>{{$item['rate']}} {{$item['currency_code']}}</td>
                                     <td>{{$item['discount']}}%</td>
                                     <td>{{($item['rate']*$item['batch_quantity'])-(($item['batch_quantity']*$item['discount']*$item['rate'])/100)}} {{$item['currency_code']}}</td>

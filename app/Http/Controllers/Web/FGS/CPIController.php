@@ -83,39 +83,58 @@ class CPIController extends Controller
                 $data['customer_id'] = $request->customer_id;       
 
                 $cpi_id = $this->fgs_cpi->insert_data($data);
+                $i=0;
+                $qty_to_cancel_array = $request->qty_to_cancel;
 
-                foreach ($request->pi_item_id as $pi_item_id) {
-                        $pi_item =fgs_pi_item::find($pi_item_id);
-                        $datas = [
+                foreach ($request->pi_item_id as $pi_item_id) 
+                {
+                    $pi_item = fgs_pi_item::find($pi_item_id);
+                    $datas = [
                             "pi_item_id" => $pi_item_id,
                             "grs_id" => $pi_item['grs_id'],
                             "grs_item_id" => $pi_item['grs_item_id'],
                             "mrn_item_id" => $pi_item['mrn_item_id'],
+                            "batchcard_id" => $pi_item['batchcard_id'],
+                            "product_id" => $pi_item['product_id'],
+                            "quantity" =>$qty_to_cancel_array[$i],
                             "created_at" => date('Y-m-d H:i:s')
-                        ];
+                    ];
 
-                         $this->fgs_cpi_item->insert_data($datas,$cpi_id);
-                         $fgs_pi_item = fgs_pi_item::
-                                        where('grs_id','=',$pi_item['grs_id'])
-                                        ->where('id','=',$pi_item['id'])
-                                        ->update(['cpi_status' => 1]);
-                         $grs_item = fgs_grs_item::where('id','=',$pi_item['grs_item_id'])->first();   
-                        $fgs_grs_data = fgs_grs::where('id','=',$pi_item['grs_id'])->first();
-                        $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
-                                        ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                        ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
-                                        ->first();
+                    $this->fgs_cpi_item->insert_data($datas,$cpi_id);
+                    if($pi_item['remaining_qty_after_cancel']==$qty_to_cancel_array[$i])
+                    {
+                        $fgs_pi_item = fgs_pi_item::where('grs_id','=',$pi_item['grs_id'])
+                                                    ->where('id','=',$pi_item['id'])
+                                                    ->update(['cpi_status' => 1]);
+                        $update_qty = $pi_item['remaining_qty_after_cancel']-$qty_to_cancel_array[$i];
+                        $fgs_pi_item = fgs_pi_item::where('product_id','=',$pi_item['product_id'])
+                                                                        ->update(['remaining_qty_after_cancel'=>$update_qty]);
+                    }
+                    else
+                    {
+                        $update_qty = $pi_item['remaining_qty_after_cancel']-$qty_to_cancel_array[$i];
+                        $fgs_pi_item = fgs_pi_item::where('product_id','=',$pi_item['product_id'])
+                                            ->update(['remaining_qty_after_cancel'=>$update_qty]);
+                    }
 
-                            $update_stock = $fgs_product_stock['quantity']+$grs_item['batch_quantity'];
-                            $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+                    $grs_item = fgs_grs_item::where('id','=',$pi_item['grs_item_id'])->first();   
+                    $fgs_grs_data = fgs_grs::where('id','=',$pi_item['grs_id'])->first();
+                    $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$pi_item['product_id'])
+                                            ->where('batchcard_id','=',$pi_item['batchcard_id'])
+                                            ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
+                                            ->first();
 
-                            $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$grs_item['product_id'])
-                                                ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                    $update_stock = $fgs_product_stock['quantity']+$qty_to_cancel_array[$i];
+                    $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+
+                    $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$pi_item['product_id'])
+                                                ->where('batchcard_id','=',$pi_item['batchcard_id'])
                                                 ->first();
 
-                            $update_maa_stocks = $fgs_maa_stock['quantity']-$grs_item['batch_quantity'];
-                            $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
-                   
+                    $update_maa_stocks = $fgs_maa_stock['quantity']-$pi_item['batch_qty'];
+                    $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
+                    $i++;
+                }
                 if($cpi_id)
                 {
                     $request->session()->flash('success', "You have successfully added a CPI !");
@@ -128,30 +147,27 @@ class CPIController extends Controller
                 }
 
             }
-        }
             if($validator->errors()->all())
-                {
-                    return redirect('FGS/CPI/CPI-add')->withErrors($validator)->withInput();
-                }
-            }
-            $condition1[] = ['user.status', '=', 1];
-            $data['users'] = $this->User->get_all_users($condition1);
-
-            if($request->id){
-                $edit['pi'] = $this->fgs_pi->find_pi_datas(['fgs_pi.id' => $request->id]);
-                $edit['items'] = $this->fgs_pi_item->get_items(['fgs_pi_item_rel.master' =>$request->id]);
-                $transaction_type = transaction_type::get();
-              return view('pages.FGS.CPI.CPI-add',compact('edit','data','transaction_type'));
-            }
-
-            else
             {
-                  
-            
+                return redirect('FGS/CPI/CPI-add')->withErrors($validator)->withInput();
+            }
+        }
+        $condition1[] = ['user.status', '=', 1];
+        $data['users'] = $this->User->get_all_users($condition1);
+
+        if($request->id)
+        {
+            $edit['pi'] = $this->fgs_pi->find_pi_datas(['fgs_pi.id' => $request->id]);
+            $edit['items'] = $this->fgs_pi_item->get_items(['fgs_pi_item_rel.master' =>$request->id]);
+            $transaction_type = transaction_type::get();
+            return view('pages.FGS.CPI.CPI-add',compact('edit','data','transaction_type'));
+        }
+        else
+        {    
             return view('pages.FGS.CPI.CPI-add',compact('data'));
        
+        }
     }
-}
     public function PIitemlist($pi_id)
     {
         $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','product_product.sku_code','product_product.hsn_code','product_product.discription',
@@ -256,38 +272,40 @@ class CPIController extends Controller
       public function pi_details($id, $active = null)
       {
         $pi = $this->fgs_pi->get_master_data(['fgs_pi.id' => $id]);
+        //print_r($pi);exit;
        //return $invoice;
         $pi_item = $this->fgs_pi_item->get_pi_item(['fgs_pi_item_rel.master' => $id]);
+         //print_r($pi_item);exit;
         $data = '
 
-          <div class="row">
-         
+        <div class="row">
             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-               MIN number (' . $pi->pi_number . ')
+               PI number (' . $pi->pi_number . ')
                    </label>
               <div class="form-devider"></div>
             </div>
          
-           <table class="table table-bordered mg-b-0" style="padding-right: 15px;padding-left: 15px;">
+            <table class="table table-bordered mg-b-0" style="padding-right: 15px;padding-left: 15px;">
                 <thead>
                 </thead>
                 <tbody >
                     <tr>
-                        <th>PI Date</th>
-                        <td>' . date('d-m-Y', strtotime($pi->pi_date)) . '</td>
+                        <th>Customer</th>
+                        <td>' . $pi->firm_name . '</td>
+                        <th>City, Zone, State</th>
+                        <td>' . $pi->city .' ,'.$pi->zone_name.','.$pi->state_name.'</td>
                     </tr>
                     <tr>
-                            <th>Created Date</th>
-                            <td>' . date('d-m-Y', strtotime($pi->created_at)) . '</td>
-                            
+                        <th>PI Date</th>
+                        <td>' . date('d-m-Y', strtotime($pi->pi_date)) . '</td>
+                        <th>Created Date</th>
+                        <td>' . date('d-m-Y', strtotime($pi->created_at)) . '</td>     
                     </tr>
-                    
-                     
-                  
-             </tbody>
+
+                </tbody>
            </table>
-           </div>
+        </div>
            <br>
             <div class="row" >
              <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
@@ -309,21 +327,22 @@ class CPIController extends Controller
                 <th>PRODUCT</th>
                 <th>DESCRIPTION</th>
                 <th>QUANTITY</th>
+                <th>QUANTITY TO CANCEL</th>
             </tr>
             </thead>
             <tbody >';
             foreach ($pi_item as $item) {
                 $data .= '
                 <tr>
-                       <td ><input type="checkbox" name="pi_item_id[]" id="pi_item_id" value="'.$item->id.'"></td>
+                       <td ><input type="checkbox" name="pi_item_id[]" onclick="enableTextBox(this)" id="pi_item_id" value="'.$item->id.'"></td>
                        <td>'.$item->grs_number.'</td>
                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->discription.'</td>
-                       <td>'.$item->batch_quantity.'</td>
+                       <td>'.$item->batch_qty.'</td>
                        <td style="display:none;">'.$item->grs_id.'</td>
                        <td style="display:none;">'.$item->grs_item_id.'</td>
                        <td style="display:none;">'.$item->mrn_item_id.'</td>
-                      
+                       <td><input type="text" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" disabled></td>
                 </tr>';
             } 
             $data .= '</tbody>';

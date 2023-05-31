@@ -47,7 +47,7 @@ class fgs_pi_item extends Model
                         ->join('fgs_pi_item_rel','fgs_pi_item_rel.item','=','fgs_pi_item.id')
                         ->join('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                         ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
-                        ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+                        ->leftjoin('product_product','product_product.id','=','fgs_pi_item.product_id')
                         ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
                        ->where('fgs_pi_item.cpi_status','=',0)
                        ->where($condition)

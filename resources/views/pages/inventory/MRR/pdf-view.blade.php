@@ -202,8 +202,8 @@
                 @endif </td>
             <!-- <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td> -->
             <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
-            <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
-            <td>{{$item['rejected_quantity']}} {{$item['unit_name']}}</td>
+            <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
+            <td>@if($mrr['mrd_status']==1) {{$item['rejected_quantity']}} {{$item['unit_name']}} @endif</td>
             @if($type=='po')
             <td>{{$item['conversion_rate']}}</td>
             @endif
@@ -226,7 +226,7 @@
                 @endif
                 
             </td>
-            <td>{{$item['rejection_reason']}}</td>
+            <td>@if($mrr['mrd_status']==1) {{$item['rejection_reason']}} @endif</td>
             @if($type=='po')
             <td>{{$item['lot_number']}}</td>
             @endif
