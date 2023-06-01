@@ -52,8 +52,6 @@
                             </div>
                         </div>
                     <div class="row">
-                        
-
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4" >
                             <label>MIN number *</label>
                             @if(!empty($edit['min']))
@@ -74,7 +72,7 @@
                         </div>
                          @if(!empty($edit['min']))
                         <input type="hidden" name="stock_location" value="{{$edit['min']->stock_location}}">
-@endif
+                        @endif
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>Created by: *</label>
                             <select class="form-control user_list" name="created_by">
@@ -83,31 +81,20 @@
                             @endforeach                                          
                             </select>
                         </div>
-
-   @if(!empty($edit['items']))
-
-    foreach ($edit['items'] as $item) {
-        
-                   <input type="text" name="sku_code" value="{{ $item->sku_code }}">
-                        
+                        @if(!empty($edit['items']))
+                        foreach ($edit['items'] as $item) {
+                        <input type="text" name="sku_code" value="{{ $item->sku_code }}">
                         <input type="hidden" name="discription" value="{{ $item->discription }}">
                         <input type="hidden" name="batch_no" value="{{ $item->batch_no }}">
                         <input type="hidden" name="quantity" value="{{ $item->quantity }}">
-                       }
-@endif
-                            
-                       
- </div>
- <div class="data-bindings" style="width:100%;">
-                </div>
+                        }
+                        @endif
+                    </div>
+                    <div class="data-bindings" style="width:100%;">
+                    </div>
                </form>
-  
-  </div>
-
-               
-               
+            </div>   
         </div>
-        
     </div>
         <!-- az-content-body -->
     </div>
@@ -186,6 +173,18 @@
           $('.spinner-button').hide();
         }
       });
+    function enableTextBox(cash) 
+    {
+        const checkbox = $(cash);
+        if(checkbox.is(':checked')){
+            checkbox.closest('tr').find('.qty_to_cancel').attr("disabled", false);
+            checkbox.closest('tr').find('.qty_to_cancel').attr("required", "true");
+        }else{
+            checkbox.closest('tr').find('.qty_to_cancel').val('');
+            checkbox.closest('tr').find('.qty_to_cancel').attr("required", "false");
+            checkbox.closest('tr').find('.qty_to_cancel').attr("disabled", true);
+        }
+    }
     
     </script>
 

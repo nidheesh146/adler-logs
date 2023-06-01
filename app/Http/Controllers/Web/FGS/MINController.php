@@ -196,6 +196,7 @@ class MINController extends Controller
                         "product_id" => $value['product'],
                         "batchcard_id"=> $value['batch_no'],
                         "quantity" => $value['qty'],
+                        "remaining_qty_after_cancel" =>$value['qty'],
                         "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
                         "expiry_date" =>  $expiry_date,
                         "created_at" => date('Y-m-d H:i:s')

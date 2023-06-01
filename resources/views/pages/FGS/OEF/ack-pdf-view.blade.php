@@ -268,7 +268,7 @@
         <div class="col41">
             <div class="valuewords">
                 <strong>Amount in Words</strong><br/>
-                <?php echo( $fn->getIndianCurrencyInt(number_format((int)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))) ?> {{$oef['currency_code']}} 
+                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> {{$oef['currency_code']}} 
                 
                 <span class="value_in_words"></span>
             </div>

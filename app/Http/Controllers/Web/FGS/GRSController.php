@@ -533,6 +533,11 @@ class GRSController extends Controller
                     ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
                     ->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
                     ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
+                    ->whereNotIn('fgs_grs.id',function($query) {
+
+                        $query->select('fgs_pi_item.grs_id')->from('fgs_pi_item');
+                    
+                    })
                     ->where($condition)
                     ->where('fgs_grs_item.cgrs_status','=',0)
                     ->where('fgs_grs.status','=',1)

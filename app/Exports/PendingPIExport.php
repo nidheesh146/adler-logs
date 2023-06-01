@@ -10,11 +10,109 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEvents
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
+    private $pi_data;
+
+    public function __construct($pi_data) 
+    {
+        $this->pi_data = $pi_data;
+    }
     public function collection()
     {
-        //
+        $i=1;
+        $data = [];
+        foreach($this->pi_data as $item)
+        {
+            if($item['expiry_date']=='0000-00-00') 
+            $expiry = 'NA'; 
+            else 
+            $expiry = date('d-m-Y',strtotime($item['expiry_date']));
+            $data[]= array(
+                '#'=>$i++,
+                'pi_number'=>$item['pi_number'],
+                'grs_number'=>$item['grs_number'],
+                'grs_date'=>date('d-m-Y',strtotime($item['grs_date'])),
+                'oef_number'=>$item['oef_number'],
+                'oef_date'=>date('d-m-Y',strtotime($item['oef_date'])),
+                'order_number'=>$item['order_number'],
+                'order_date'=>date('d-m-Y',strtotime($item['order_date'])),
+                'sku_code'=>$item['sku_code'],
+                'hsn_code'=>$item['hsn_code'],
+                'discription'=>$item['discription'],
+                'batch_quantity'=>$item['batch_qty'],
+                'outstanding_quantity'=>$item['remaining_qty_after_cancel'],
+                'unit'=>'Nos',
+                'manufacturing_date'=>date('d-m-Y',strtotime($item['manufacturing_date'])),
+                'expiry_date'=>$expiry,
+                'customer'=>$item['firm_name'],
+                //'customer'=>$item['firm_name'],
+                'WEF'=>date('d-m-Y',strtotime($item['grs_created_at'])),
+            );
+        }
+        return collect($data);
+    }
+    public function headings(): array
+    {
+        return [
+            '#',
+            'PI Number',
+            'GRS Number',
+            'GRS Date',
+            'OEF Number',
+            'OEF Date',
+            'Order Number',
+            'Order Date',
+            'Product Sku Code',
+            'HSNCode',
+            'Description',
+            'Quantity',
+            'Outstanding Quantity',
+            'Unit',
+            'Manufacturing date',
+            'Expiry date',
+            'Customer',
+            'WEF',
+        ];
+    }
+    public function styles(Worksheet $sheet)
+    {   
+        
+        return [
+        // Style the first row as bold text.
+        1    => ['font' => ['size' => 12,'bold' => true]],
+        ];
+    }
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class    => function(AfterSheet $event) {
+                
+                $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(5);
+                $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(18);
+                $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(50);
+                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(12);
+                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(30);
+                $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('S')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('T')->setWidth(40);
+                $event->sheet->getDelegate()->getColumnDimension('U')->setWidth(40);
+                $event->sheet->getDelegate()->getColumnDimension('V')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('W')->setWidth(15);
+                
+                // $cellRange = 'F1:F20000';
+                // $event->sheet->getDelegate()->getStyle($cellRange)->getAlignment()->setWrapText(true);
+            },
+        ];
     }
 }

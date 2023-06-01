@@ -16,6 +16,8 @@ use App\Models\FGS\fgs_pi_item_rel;
 use App\Models\FGS\fgs_maa_stock_management;
 use App\Models\FGS\fgs_product_stock_management;
 use App\Models\product;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PendingPIExport;
 class PIController extends Controller
 {
     public function __construct()
@@ -260,5 +262,52 @@ class PIController extends Controller
                             ->distinct('fgs_pi.id')
                             ->paginate(15);
         return view('pages/FGS/PI/pending-pi',compact('pi'));
+    }
+    public function pendingPIExport(Request $request)
+    {
+        $condition =[];
+        if($request->pi_number)
+        {
+            $condition[] = ['fgs_pi.pi_number','like', '%' . $request->pi_number . '%'];
+        }
+        if($request->customer)
+        {
+            $condition[] = ['customer_supplier.firm_name','like', '%' . $request->customer . '%'];
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_pi.pi_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_pi.pi_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        }
+        $pi_data =fgs_pi_item::select('fgs_pi_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date',
+        'batchcard_batchcard.batch_no','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_product_category.category_name','fgs_oef.oef_number','fgs_oef.oef_date',
+        'customer_supplier.firm_name', 'fgs_oef.order_number','fgs_oef.order_date','fgs_pi.created_at as pi_created_at','fgs_pi.pi_number',)
+                    ->leftjoin('fgs_pi_item_rel','fgs_pi_item_rel.item','=', 'fgs_pi_item.id')
+                    ->leftjoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
+                    ->leftJoin('fgs_grs','fgs_grs.id','fgs_pi_item.grs_id')
+                    ->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
+                    ->leftjoin('product_product','product_product.id','=','fgs_pi_item.product_id')
+                    ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_pi_item.batchcard_id')
+                    ->leftjoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
+                    ->leftjoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_grs_item.mrn_item_id')
+                    ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
+                    //->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
+                    //->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
+                    //->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
+                    ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
+                    ->whereNotIn('fgs_pi.id',function($query) {
+
+                        $query->select('fgs_dni_item.pi_id')->from('fgs_dni_item');
+                    
+                    })->where('fgs_pi.status','=',1)
+                    ->where($condition)
+                    ->where('fgs_pi_item.cpi_status','=',0)
+                    //->where('fgs_grs.status','=',1)
+                    ->orderBy('fgs_pi_item.id','DESC')
+                    ->distinct('fgs_pi_item.id')
+                    ->get();
+
+        return Excel::download(new PendingPIExport($pi_data), 'PIBackOrderReport' . date('d-m-Y') . '.xlsx');
+    
     }
 }

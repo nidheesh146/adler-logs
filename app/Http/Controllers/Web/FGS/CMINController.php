@@ -83,7 +83,8 @@ class CMINController extends Controller
                         $Data['stock_location']= $fgs_min_data->stock_location;
                         $Data['remarks']= $request->remarks;
                         $cmin_id = $this->fgs_cmin->insert_data($Data);
-
+                        $i=0;
+                        $qty_to_cancel_array = $request->qty_to_cancel;
                         foreach ($request->min_item_id as $min_item_id) 
                         {
                             $min_item =fgs_min_item::find($min_item_id);
@@ -91,19 +92,25 @@ class CMINController extends Controller
                                 "cmin_item_id" => $min_item_id,
                                 "product_id" => $min_item['product_id'],
                                 "batchcard_id" => $min_item['batchcard_id'],
-                                "quantity" => $min_item['quantity'],
+                                "quantity" => $qty_to_cancel_array[$i],
                                 "created_at" => date('Y-m-d H:i:s')
                             ];
                             $this->fgs_cmin_item->insert_data($datas,$cmin_id);
+                            if($min_item['quantity']==$qty_to_cancel_array[$i])
+                            {
+                                $fgs_min_item = fgs_min_item::where('batchcard_id','=',$min_item['batchcard_id'])
+                                            ->where('product_id','=',$min_item['product_id'])
+                                            ->update(['cmin_status' => 1]);
+                            }
+                            $updatestock = $min_item['quantity']-$qty_to_cancel_array[$i];
                             $fgs_min_item = fgs_min_item::where('batchcard_id','=',$min_item['batchcard_id'])
-                                        ->where('product_id','=',$min_item['product_id'])
-                                        ->update(['cmin_status' => 1]);
-                   
+                                                            ->where('product_id','=',$min_item['product_id'])
+                                                            ->update(['remaining_qty_after_cancel' => $updatestock]);
                             $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$min_item['product_id'])
                                                 ->where('batchcard_id','=',$min_item['batchcard_id'])
                                                 ->where('stock_location_id','=',$fgs_min_data->stock_location)
                                                 ->first();
-                            $update_stock = $fgs_product_stock['quantity']+$min_item['quantity'];
+                            $update_stock = $fgs_product_stock['quantity']+$qty_to_cancel_array[$i];
                             $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
                         }
                         if($cmin_id )
@@ -230,16 +237,18 @@ class CMINController extends Controller
                 <th>Description</th>
                 <th>Batch NUMBER</th>
                 <th> Qty</th>
+                <th> Qty to cancel</th>
                 </tr>
                </thead>
                <tbody >';
             foreach ($invoice_item as $item) {
                 $data .= '<tr>
-                    <td ><input type="checkbox" name="min_item_id[]" id="min_item_id" value="'.$item->id.'"></td>
+                    <td ><input type="checkbox" name="min_item_id[]" onclick="enableTextBox(this)" id="min_item_id" value="'.$item->id.'"></td>
                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->discription.'</td>
                        <td>'.$item->batch_no.'</td>
-                       <td>'.$item->quantity.'</td>
+                       <td>'.$item->remaining_qty_after_cancel.'</td>
+                       <td><input type="text" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" disabled></td>
                       
                       
                       </tr>';

@@ -107,6 +107,7 @@
 									<th>Description</th>
 									<th>Batch No.</th>
 									<th>Quantity</th>
+									<th>Outstanding Quantity</th>
 									<th>UOM</th>
                   <th>Date of Mfg.</th>
                   <th>Date of Expiry</th>
@@ -121,10 +122,11 @@
 									<td>{{$item['discription']}}</td>
 									<td>{{$item['batch_no']}}</td>
 									<td>{{$item['quantity']}}</td> 
+									<td>{{$item['remaining_qty_after_cancel']}}</td> 
 									<td>Nos</td>
-                  <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                  <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
-                  <td>
+									<td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+									<td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
+									<td>
 										@if($item['cmin_status']==0) 
 										<span class="badge badge-primary" style="width:60px;">Active</span>
 										@else

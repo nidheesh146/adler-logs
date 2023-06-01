@@ -370,8 +370,8 @@ function getsearch(){
                             if(res.discription){
                                 $("#Itemdescription"+select_id+"").val(res.discription);
                             }
-                            if(res.mrp){
-                                $("#rate"+select_id+"").val(res.mrp);
+                            if(res.sales){
+                                $("#rate"+select_id+"").val(res.sales);
                             }
 
                        }

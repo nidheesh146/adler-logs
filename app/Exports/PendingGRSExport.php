@@ -98,9 +98,9 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
                 $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(50);
                 $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(12);
                 $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(12);
-                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(30);
+                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(25);
                 $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(30);
                 $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(20);

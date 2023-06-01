@@ -148,6 +148,7 @@
     autoclose:true
     });
     $(".min_date").datepicker("setDate", new Date());
+    $(".datepicker").datepicker("setDate", new Date());
   //  .datepicker('update', new Date());
 
     $('.datepicker').mask('99-99-9999');
