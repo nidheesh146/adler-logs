@@ -116,12 +116,15 @@
             <li class="nav-sub-item @if(in_array($Action,['ProductMaster.productAdd','ProductMaster.productList'])){{'active'}} @endif ">
             <a href="{{url('fgs/product-master/list')}}"  class="nav-sub-link">FGS Item Master</a>
             </li>
-            <!-- <li class="nav-sub-item @if(in_array($Action,['StockManagement.productionStockAdd','StockManagement.productionStockList'])){{'active'}} @endif ">
+            <li class="nav-sub-item @if(in_array($Action,['StockManagement.productionStockAdd','StockManagement.productionStockList'])){{'active'}} @endif ">
               <a href="{{url('fgs/production-stock/list')}}"  class="nav-sub-link">Production Stock</a>
-            </li> -->
+            </li>
             <li class="nav-sub-item @if(in_array($Action,['StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','StockManagement.allLocations',
             'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL'])){{'active'}} @endif ">
               <a href="{{url('fgs/stock-management/location1')}}"  class="nav-sub-link">Stock Management</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['GRS.pendingGRS'])){{'active'}} @endif ">
+              <a href="{{url('fgs/GRS/pending-report')}}"  class="nav-sub-link">Back order Report</a>
             </li>
             <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd',
               'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList',
@@ -140,9 +143,9 @@
                 <li class="nav-sub-item @if(in_array($Action,['GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/GRS-list')}}"  class="nav-sub-link">GRS</a>
                 </li>
-                <li class="nav-sub-item @if(in_array($Action,['GRS.pendingGRS'])){{'active'}} @endif ">
+                <!-- <li class="nav-sub-item @if(in_array($Action,['GRS.pendingGRS'])){{'active'}} @endif ">
                   <a href="{{url('fgs/GRS/pending-report')}}"  class="nav-sub-link">GRS - Back Order Report</a>
-                </li>
+                </li> -->
                  <li class="nav-sub-item @if(in_array($Action,['CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList'])){{'active'}} @endif ">
                   <a href="{{url('fgs/CGRS/CGRS-list')}}"  class="nav-sub-link">CGRS</a>
                 </li>
@@ -164,18 +167,18 @@
                 <li class="nav-sub-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd'])){{'active'}} @endif ">
                   <a href="{{url('fgs/OEF-list')}}"  class="nav-sub-link">OEF</a>
                 </li>
-                <li class="nav-sub-item @if(in_array($Action,['OEF.pendingOEF'])){{'active'}} @endif ">
+                <!-- <li class="nav-sub-item @if(in_array($Action,['OEF.pendingOEF'])){{'active'}} @endif ">
                   <a href="{{url('fgs/OEF/pending-report')}}"  class="nav-sub-link">OEF - Back Order Report</a>
-                </li>
+                </li> -->
                  <li class="nav-sub-item @if(in_array($Action,['COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd'])){{'active'}} @endif ">
                   <a href="{{url('fgs/COEF/COEF-list')}}"  class="nav-sub-link">COEF</a>
                 </li> 
                 <li class="nav-sub-item @if(in_array($Action,['PI.PIList','PI.PIAdd','PI.PIitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/PI-list')}}"  class="nav-sub-link">PI</a>
                 </li>
-                <li class="nav-sub-item @if(in_array($Action,['PI.pendingPI'])){{'active'}} @endif ">
+                <!-- <li class="nav-sub-item @if(in_array($Action,['PI.pendingPI'])){{'active'}} @endif ">
                   <a href="{{url('fgs/PI/pending-report')}}"  class="nav-sub-link">PI - Back Order Report</a>
-                </li>
+                </li> -->
                  <li class="nav-sub-item @if(in_array($Action,['CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList'])){{'active'}} @endif ">
                   <a href="{{url('fgs/CPI/CPI-list')}}"  class="nav-sub-link">CPI</a>
                 </li>
