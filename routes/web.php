@@ -288,7 +288,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/suppliers-add/{id?}','SupplierController@add_supplier');
     Route::get('inventory/suppliers-delete/{id}','SupplierController@delete_suppliers');
 
-   
+    Route::get('inventory/inventory-gst','InventorygstController@get_data');
+    Route::post('inventory/inventory-gst_add','InventorygstController@add_gst_details');
 
 
 
