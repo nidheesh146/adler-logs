@@ -289,6 +289,9 @@
         <li class="nav-item @if(in_array($Action,['RolePermission.roleList','RolePermission.moduleList','RolePermission.permissionList','RolePermission.rolePermission'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fa fa-cog" style="font-size: 19px"></i>Settings</a>
           <ul class="nav-sub">
+          <li class="nav-sub-item @if(in_array($Action,['RolePermission.roleList','RolePermission.rolePermission'])){{'active'}} @endif ">
+            <a href="{{url('inventory/inventory-gst')}}"  class="nav-sub-link">GST</a>
+            </li>
             <li class="nav-sub-item @if(in_array($Action,['RolePermission.roleList','RolePermission.rolePermission'])){{'active'}} @endif ">
             <a href="{{url('settings/role')}}"  class="nav-sub-link">Role</a>
             </li>
