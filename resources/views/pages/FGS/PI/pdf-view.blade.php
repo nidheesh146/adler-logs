@@ -389,7 +389,7 @@
                     $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))
                    
                     ?>
-                    <th class="grand_total_value" style="text-align:right;">{{ $grand }} {{$pi['currency_code']}}</th>
+                    <th class="grand_total_value" style="text-align:right;">{{ $grand }}</th>
                 </tr> 
             </table>
         </div>

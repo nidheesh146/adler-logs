@@ -34,6 +34,7 @@ class ProductController extends Controller
 
     public function productList(Request $request)
     {
+        //$this->prd_InputmaterialUpload();
          $condition =[];
           if($request->sku_code)
         {
@@ -474,7 +475,7 @@ class ProductController extends Controller
             $ExcelOBJ = new \stdClass();
             $ExcelOBJ->inputFileType = 'Xlsx';
            // $ExcelOBJ->filename = 'SL-1-01.xlsx';
-            $ExcelOBJ->inputFileName ='C:\xampp\htdocs\PRD_29.xlsx';
+            $ExcelOBJ->inputFileName ='C:\xampp\htdocs\prd291.xlsx';
             // $ExcelOBJ->filename = 'Book1.xlsx';
             // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
             $ExcelOBJ->spreadsheet = new Spreadsheet();
@@ -540,7 +541,7 @@ class ProductController extends Controller
         //print_r(json_encode($ExcelOBJ->excelworksheet));exit;
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
         {
-            if ($key > 4 && $excelsheet[0]) 
+            if ($key > 1 && $excelsheet[0]) 
             {   
                // print_r(json_encode($excelsheet));exit;
                 $product = product::where('sku_code',$excelsheet[0])->first();
@@ -550,70 +551,73 @@ class ProductController extends Controller
                                         ->where('product_product.id','=', $excelsheet[0])->first();
                     // //$input_material=DB::table('product_input_material')->where('id','=',1)->first(); 
                     // print_r($input_material);exit;
-                    if($excelsheet[2]!='N/A' || $excelsheet[2]!='NA' || $excelsheet[2]!='Assembly')
+                    if($excelsheet[2]!='N/A' || $excelsheet[3]!='N/A' || $excelsheet[4]!='N/A')
                     {
-                        $item1 = inventory_rawmaterial::where('item_code',$excelsheet[2])->first();
-                        if($item1)
-                        $item_id1 = $item1['id'];
+                        if($excelsheet[2]!='N/A' || $excelsheet[2]!='NA' || $excelsheet[2]!='Assembly')
+                        {
+                            $item1 = inventory_rawmaterial::where('item_code',$excelsheet[2])->first();
+                            if($item1)
+                            $item_id1 = $item1['id'];
+                            else
+                            $item_id1 = NULL;
+                        }
                         else
-                        $item_id1 = NULL;
+                        {
+                            $item_id1 = NULL;
+                        }
+                        if($excelsheet[3]!='N/A' || $excelsheet[3]!='NA')
+                        {
+                            $item2 = inventory_rawmaterial::where('item_code',$excelsheet[3])->first();
+                            if($item2)
+                            $item_id2 = $item2['id'];
+                            else
+                            $item_id2 = NULL;
+                        }
+                        else 
+                        {
+                            $item_id2 = NULL;
+                        }
+                        if($excelsheet[4]!='N/A' || $excelsheet[4]!='NA')
+                        {
+                            $item3 = inventory_rawmaterial::where('item_code',$excelsheet[4])->first();
+                            if($item3)
+                            $item_id3 = $item3['id'];
+                            else
+                            $item_id3 = NULL;
+                        }
+                        else 
+                        {
+                            $item_id3 = NULL;
+                        }
+                        if(!$input_material)
+                        {
+                            $data =[
+                                'product_id'=>$product['id'],
+                                'item_id1'=>$item_id1,
+                                'item_id2'=>$item_id2,
+                                'item_id2'=>$item_id3,
+                                'status'=>1,
+                                'created_at'=>date('Y-m-d H:i:s'),
+                            ];
+                            // $data['status'] = 1;
+                            // $data['created_at'] = date('Y-m-d H:i:s');
+                        
+                            $res[] = DB::table('product_input_material')->insert($data); 
+                        }
                     }
-                    else
-                    {
-                        $item_id1 = NULL;
-                    }
-                    if($excelsheet[3]!='N/A' || $excelsheet[3]!='NA')
-                    {
-                        $item2 = inventory_rawmaterial::where('item_code',$excelsheet[3])->first();
-                        if($item2)
-                        $item_id2 = $item2['id'];
-                        else
-                        $item_id2 = NULL;
-                    }
-                    else 
-                    {
-                        $item_id2 = NULL;
-                    }
-                    if($excelsheet[4]!='N/A' || $excelsheet[4]!='NA')
-                    {
-                        $item3 = inventory_rawmaterial::where('item_code',$excelsheet[4])->first();
-                        if($item3)
-                        $item_id3 = $item3['id'];
-                        else
-                        $item_id3 = NULL;
-                    }
-                    else 
-                    {
-                        $item_id3 = NULL;
-                    }
-                    if(!$input_material)
-                    {
-                        $data =[
-                            'product_id'=>$product['id'],
-                            'item_id1'=>$item_id1,
-                            'item_id2'=>$item_id2,
-                            'item_id2'=>$item_id3,
-                            'status'=>1,
-                            'created_at'=>date('Y-m-d H:i:s'),
-                        ];
-                        // $data['status'] = 1;
-                        // $data['created_at'] = date('Y-m-d H:i:s');
-                       
-                        $res[] = DB::table('product_input_material')->insert($data); 
-                    }
-                    else
-                    {
-                        //echo "yes";exit;
-                        $data =[
-                            'product_id'=>$product['id'],
-                            'item_id1'=>$item_id1,
-                            'item_id2'=>$item_id2,
-                            'item_id2'=>$item_id3,
-                            'status'=>1,
-                            'created_at'=>date('Y-m-d H:i:s'),
-                        ];
-                        $res[] = DB::table('product_input_material')->where('id', $input_material['id'])->update($data);
-                    }
+                    // else
+                    // {
+                    //     //echo "yes";exit;
+                    //     $data =[
+                    //         'product_id'=>$product['id'],
+                    //         'item_id1'=>$item_id1,
+                    //         'item_id2'=>$item_id2,
+                    //         'item_id2'=>$item_id3,
+                    //         'status'=>1,
+                    //         'created_at'=>date('Y-m-d H:i:s'),
+                    //     ];
+                    //     $res[] = DB::table('product_input_material')->where('id', $input_material['id'])->update($data);
+                    // }
                 }
                     
             }
