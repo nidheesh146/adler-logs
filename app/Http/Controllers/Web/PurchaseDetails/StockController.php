@@ -593,6 +593,7 @@ class StockController extends Controller
                 ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','batchcard_materials.item_id')
                 ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                 ->whereNotIn('batchcard_materials.id',$arr)
+                ->where('batchcard_batchcard.is_alloted','=',0)
                 ->where('batchcard_materials.item_id','=',$request->item_id)
                 ->get();
         

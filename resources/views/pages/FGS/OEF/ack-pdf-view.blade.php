@@ -210,7 +210,7 @@
             <tr style="text-align: center;">
                 <td>{{$i++}}</td>
                 <td>{{$item['sku_code']}}</td>
-                <td>{{$item['discription']}}</td>
+                <td style="text-align: left;">{{$item['discription']}}</td>
                 <td>{{$item['quantity']}}</td>
                 <td>Nos</td>
                 <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
@@ -242,23 +242,23 @@
                  ?>
             </tr>
             @endforeach
-            <tr>
+            <tr style="text-align: center;">
                 <td></td>
                 <td></td>
                 <td></td>
                 <td><b>{{  $qsum }}</b></td>
                 <td></td>
-                <td><b> {{ $rsum }}</b></td>
+                <td><b> {{number_format((float)($rsum), 2, '.', '')}}</b></td>
                 <td></td>
                 <td></td>
-                <td><b>{{ $tsum }}</b></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td><b>{{number_format((float)($tsum), 2, '.', '')}}</b></td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><b>{{ $totalsum }}</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>{{number_format((float)($totalsum), 2, '.', '')}}</b></td>
             </tr>       
         
         </table><br>
@@ -268,7 +268,7 @@
         <div class="col41">
             <div class="valuewords">
                 <strong>Amount in Words</strong><br/>
-                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> {{$oef['currency_code']}} 
+                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> 
                 
                 <span class="value_in_words"></span>
             </div>

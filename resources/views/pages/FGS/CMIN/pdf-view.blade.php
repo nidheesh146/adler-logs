@@ -172,7 +172,7 @@
             </tr>
             <?php $i=1; ?>
             @foreach($items as $item)
-            <tr style="text-align:right;">
+            <tr style="text-align:left;">
                 <td style="text-align:center;">{{$i++}}</td>
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
@@ -180,8 +180,8 @@
                 <td>{{$item['batch_no']}}</td>
                 <td style="text-align:center;">{{$item['quantity']}}</td> 
                 <td>Nos</td> 
-                <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                <td style="text-align:center;">{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                <td style="text-align:center;">{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                
             </tr>
             @endforeach

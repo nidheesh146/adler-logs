@@ -276,27 +276,6 @@ class MRNController extends Controller
     }
     function insert_MRN_stock_SNN_Mktd($ExcelOBJ)
     {
-        $prdct = [];
-        $batch_card = [];
-        if(date('m')==01 || date('m')==02 || date('m')==03)
-        {
-            $years_combo = date('y', strtotime('-1 year')).date('y');
-        }
-        else
-        {
-            $years_combo = date('y').date('y', strtotime('+1 year'));
-        }
-        $data['mrn_number'] = "MRN-".$this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-'.$years_combo.'%')->count()); 
-        $data['mrn_date'] = date('Y-m-d');
-        $data['supplier_doc_number'] = 'Open Stock1 SNN Mktd April 15-18';
-        $data['supplier_doc_date'] = date('Y-m-d');
-        $data['product_category'] = 1;//ASD
-        $data['stock_location'] = 6; // SNN_Mktd
-        $data['created_by']= config('user')['user_id'];
-        $data['status']=1;
-        $data['created_at'] =date('Y-m-d H:i:s');
-        $data['updated_at'] =date('Y-m-d H:i:s');
-        $mrn_master = $this->fgs_mrn->insert_data($data);
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
     
             if ($key > 0 &&  $excelsheet[1]) 
