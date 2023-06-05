@@ -307,14 +307,16 @@ class PurchaseController extends Controller
             $validation['quantity'] = ['required'];
             $validation['rate'] = ['required'];
             $validation['discount'] = ['required'];
-            $validation['delivery_schedule'] = ['required', 'date'];
-            $validation['specification'] = ['required'];
+            $validation['gst'] = ['required'];
+            // $validation['delivery_schedule'] = ['required', 'date'];
+            // $validation['specification'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if (!$validator->errors()->all()) {
                 $data['delivery_schedule'] = $request->delivery_schedule;
                 $data['order_qty'] = $request->quantity;
                 $data['rate'] = $request->rate;
                 $data['discount'] = $request->discount;
+                $data['gst']  = $request->gst;
                 $data['Specification'] = $request->specification;
                 $POitem = $this->inv_final_purchase_order_item->updatedata(['id' => $id], $data);
                 $po_master =inv_final_purchase_order_rel::where('item','=', $id)->pluck('master')->first();
@@ -328,8 +330,8 @@ class PurchaseController extends Controller
             }
         }
         $data = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id' => $id]);
-       
-        return view('pages.purchase-details.final-purchase.final-purchase-item-edit', compact('data'));
+        $gst = $this->inventory_gst->get_gst();
+        return view('pages.purchase-details.final-purchase.final-purchase-item-edit', compact('data','gst'));
 
     }
 

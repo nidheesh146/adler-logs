@@ -138,12 +138,67 @@
                                     <label> Discount (%) *</label>
                                     <input type="text" class="form-control" value="{{ (!empty($data)) ? $data['discount'] : ''}}" name="discount" id="discount" placeholder="Discount">
                                 </div>
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                  <label> IGST ( % ) </label>
+                                  <input type="hidden" name="gst" id="gst-id" value="@if(!empty($data['get_item_single']['gst'])) {{$data['get_item_single']['gst']}}  @endif">
+                                  <select class="form-control IGST" id="IGST" name="IGST">
+                                    <option value="">--- select one ---</option>
+                                    @if(!empty($data))
+                                    @if($data['igst']==0)
+                                      <option class="edit-zero" selected>0%</option>
+                                    @endif
+                                    @endif
+                                    <option class="zero-option-igst" value="" style="display:none;">0%</option>
+                                    @foreach ($gst as $item)
+                                      @if($item['igst']!=0)
+                                      <option value="{{ $item['id'] }}" @if(!empty($data))  @if($item['igst']==$data['igst'])
+                                        selected @endif @endif >{{ $item['igst'] }} %</option>
+                                      @endif
+                                    @endforeach
+                                  </select>
+                                </div>
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                  <label> SGST ( % ) </label>
+                                  <select class="form-control SGST" id="SGST" name="SGST">
+                                    <option value="">--- select one ---</option>
+                                    @if(!empty($data))
+                                    @if($data['sgst']==0)
+                                      <option class="edit-zero"  selected>0%</option>
+                                    @endif
+                                    @endif
+                                    <option  class="zero-option" value="" style="display:none;">0%</option>
+                                    @foreach ($gst as $item)
+                                      @if($item['sgst']!=0)
+                                      <option value="{{ $item['id'] }}" @if(!empty($data))  @if($item['sgst']==$data['sgst'])
+                                        selected @endif @endif >{{ $item['sgst'] }} %</option>
+                                      @endif
+                                    @endforeach
+                                  </select>
+                                </div>
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                  <label> CGST ( % ) </label>
+                                  <select class="form-control CGST" id="CGST" name="CGST">
+                                    <option value="">--- select one ---</option>
+                                    @if(!empty($data))
+                                    @if($data['cgst']==0)
+                                      <option class="edit-zero" selected>0%</option>
+                                    @endif
+                                    @endif
+                                    <option class="zero-option" value="" style="display:none;">0%</option>
+                                    @foreach ($gst as $item)
+                                      @if($item['cgst']!=0)
+                                      <option value="{{ $item['id'] }}" @if(!empty($data))  @if($item['cgst']==$data['cgst'])
+                                        selected @endif @endif >{{ $item['cgst'] }} %</option>
+                                      @endif
+                                    @endforeach
+                                  </select>
+                                </div>
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <label> Delivery Schedule *</label>
                                     <input type="date" class="form-control" value="{{ (!empty($data)) ? $data['delivery_schedule'] : ''}}" name="delivery_schedule" id="delivery_schedule" placeholder="Delivery schedule">
                                 </div>
                                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <label> Specification *</label>
+                                    <label> Specification </label>
                                     <textarea class="form-control" id="Specification" name="specification" placeholder="Specification">{{ (!empty($data)) ? $data['Specification'] : ''}}</textarea>
                                 </div>
                               
@@ -174,9 +229,6 @@
     <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
     <script>
       $(function(){
-
-    
-        
         $("#commentForm").validate({
                 rules: {
                     quantity: {
@@ -191,12 +243,12 @@
                       required: true,
                       number: true,
                     },
-                    delivery_schedule: {
-                        required: true,
-                    },
-                    Specification: {
-                        required: true,
-                    },
+                    // delivery_schedule: {
+                    //     required: true,
+                    // },
+                    // Specification: {
+                    //     required: true,
+                    // },
                 },
                 submitHandler: function(form) {
                 $('.spinner-button').show();
@@ -207,6 +259,114 @@
 
                 
       });
+      $('#IGST').on('change', function() {
+                let igst = $(this).val();
+                let igst_percent = $(this).find('option:selected').text();
+                var igst_val = parseInt(igst_percent.split('%', 1)[0]);
+               
+                let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+
+                new_net_val = (netvalue*igst_val/100)+netvalue;
+                $('#Netvalue').val(new_net_val.toFixed(2));
+
+                $('.append-option').remove();
+                $('.edit-zero').remove();
+                $('#gst-id').val('');
+                // $('#CGST').load();
+                // $('#SGST').load();
+                $.ajax ({
+                    type: 'GET',
+                    url: "{{url('getSGSTandCGST')}}",
+                    data: { id: '' + igst + '' },
+                    success : function(data) {
+                        $('#gst-id').val(data.id);
+                       $('#SGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.sgst + '%</option>');
+                       $('#CGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.cgst + '%</option>');
+    
+                    }
+                });
+                
+            });
+            $('#SGST').on('change', function() {
+                $('#Netvalue').val('');
+                let sgst = $(this).val();
+                let sgst_percent = $(this).find('option:selected').text();
+                var sgst_val = parseInt(sgst_percent.split('%', 1)[0]);
+               
+                let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+                
+                new_net_val = (netvalue*sgst_val/100)+(netvalue*sgst_val/100)+netvalue;
+                $('#Netvalue').val(new_net_val.toFixed(2));
+
+                $('#gst-id').val('');
+                $('.append-option').remove();
+                $('.edit-zero').remove();
+                $.ajax ({
+                    type: 'GET',
+                    url: "{{url('getSGSTandCGST')}}",
+                    data: { id: '' + sgst + '' },
+                    success : function(data) {
+                        // if(data.igst==0){
+                        //     $('.zero-option-igst').attr('value',data.id).show();
+                        //     $('.zero-option-igst').attr('selected','selected').show();
+                        // }
+                        // $('.zero-option-igst').hide();
+                       $('#gst-id').val(data.id);
+                       $('#IGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.igst + '%</option>');
+                       $('#CGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.cgst + '%</option>');
+    
+                    }
+                });
+                
+            });
+            $('#CGST').on('change', function() {
+                $('#Netvalue').val('');
+                let cgst = $(this).val();
+                let cgst_percent = $(this).find('option:selected').text();
+                var cgst_val = parseInt(cgst_percent.split('%', 1)[0]);
+               
+                let Rate = $('#Rate').val();
+                let actual_qty = $('#ActualorderQty').val();
+                let total = Rate*actual_qty;
+                let Discount = $('#Discount').val() ? $('#Discount').val() : 0;
+                let discount_rate = (actual_qty*Rate*Discount)/100;
+                let netvalue = (total-discount_rate);
+                
+                new_net_val = (netvalue*cgst_val/100)+(netvalue*cgst_val/100)+netvalue;
+                $('#Netvalue').val(new_net_val.toFixed(2));
+
+                $('.append-option').remove();
+                $('.edit-zero').remove();
+                $('#gst-id').val('');
+                //$("#SGST").selectmenu("refresh");
+                $.ajax ({
+                    type: 'GET',
+                    url: "{{url('getSGSTandCGST')}}",
+                    data: { id: '' + cgst + '' },
+                    success : function(data) {
+                        // if(data.igst==0){
+                        //     $('.zero-option-igst').attr('value',data.id).show();
+                        //     $('.zero-option-igst').attr('selected','selected').show();
+                        // }
+                        // $('.zero-option-igst').hide();
+                        $('#gst-id').val(data.id);
+                       $('#IGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.igst + '%</option>');
+                       $('#SGST').append('<option class="append-option" value=' + data.id + ' selected>' + data.sgst + '%</option>');
+    
+                    }
+                });
+                
+            });
     </script>
 
 

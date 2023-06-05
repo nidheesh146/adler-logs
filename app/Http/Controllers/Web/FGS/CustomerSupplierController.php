@@ -117,7 +117,7 @@ class CustomerSupplierController extends Controller
                     $data['dl_number2'] = $request->dl_number2;
                     $data['dl_number3'] = $request->dl_number3;
                     $data['currency'] = $request->currency;
-                    $data['payment_terms'] = $request->payment_terms;
+                    $data['payment_terms'] = nl2br($request->payment_terms);
                     $data['sales_type'] = $request->sales_type;
                     $data['sales_person_name'] = $request->sales_person_name;
                     $data['sales_person_email'] = $request->sales_person_email;
