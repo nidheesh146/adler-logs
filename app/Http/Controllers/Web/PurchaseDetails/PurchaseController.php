@@ -1753,6 +1753,33 @@ class PurchaseController extends Controller
             return $po_number;
     }
 
+    public function getTermsandConditions(Request $request)
+    {
+
+        $terms = DB::table('po_fpo_master_tc_rel')
+                                    ->select('po_supplier_terms_conditions.terms_and_conditions','po_supplier_terms_conditions.id')
+                                    ->join('po_supplier_terms_conditions', 'po_supplier_terms_conditions.id', '=', 'po_fpo_master_tc_rel.terms_id')
+                                    ->where('fpo_id', $request->po_id)
+                                    ->first();
+        return $terms;
+    }
+    public function changeTerms(Request $request)
+    {
+        $validation['terms'] = ['required'];
+        $validator = Validator::make($request->all(), $validation);
+        if (!$validator->errors()->all()) {
+                $data['terms_and_conditions'] = $request->terms;
+                //$data['terms_id'] = $request->terms_id;
+                DB::table('po_supplier_terms_conditions')->where('id','=',$request->terms_id)->update($data);
+                $request->session()->flash('success', "You have successfully updated a supplier Terms and conditions !");
+                return redirect()->back();
+            }
+            if ($validator->errors()->all()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+    }
+
 
 
 

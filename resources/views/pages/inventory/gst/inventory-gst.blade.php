@@ -82,7 +82,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>GST</th>
+                                        <th>SL NO</th> 
                                         <th>IGST</th>
                                         <th>CGST</th>
                                         <th>SGST</th>
@@ -95,7 +95,7 @@
                                     @foreach($gst_details as $gst_detail)
                                     <tr>
 
-                                        <td>{{$gst_detail->gst}}</td>
+                                        <td>{{$sl++}}</td>
                                         <td>{{$gst_detail->igst}}</td>
                                         <td>{{$gst_detail->cgst}}</td>
                                         <td>{{$gst_detail->sgst}}</td>

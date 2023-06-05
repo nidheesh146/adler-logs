@@ -130,6 +130,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/final-purchase/excess-qty-order','PurchaseController@excessPurchaseOrder');
     Route::get('inventory/pending-purchase-realisation','PurchaseController@pendingPurchaseRealisation');
     Route::get('inventory/pending-purchase-realisation/excel-export','PurchaseController@pendingPurchaseRealisationExport');
+    Route::get('inventory/getTermsandConditions','PurchaseController@getTermsandConditions');
+    Route::post('inventory/final-purchase/change/terms-condition','PurchaseController@changeTerms');
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');
     Route::get('inventory/supplier-invoice-add', 'PurchaseController@supplierInvoiceAdd');

@@ -180,6 +180,10 @@
                                             <br/>
                                             @endif
                                         @endif
+                                        <a href="#" data-toggle="modal"  po="{{$po_data->po_number}}" posupplier="{{$po_data->vendor_id}} - {{$po_data->vendor_name}}" value="{{$po_data->po_id}}" data-target="#termsConditionModal" id="itemscondition-model" class="itemscondition-model" class="dropdown-item" style="color: #141c2b;text-decoration:none;margin-left: 14px;">
+                                                <i class="fa fa-file"></i> Terms & Conditions
+                                        </a>
+                                        <br/>
                                         @if(in_array('order.delete',config('permission')))
                                         <a href="{{url('inventory/final-purchase-delete/'.$po_data->id)}}" class="dropdown-item"onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
                                         @endif
@@ -262,6 +266,39 @@
                             <label for="inputAddress">Remarks</label>
                             <textarea style="min-height: 100px;" name="remarks" type="text" class="form-control" id="remarks" placeholder="Remarks"></textarea>
                         </div> 
+                    </div>
+                    <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        <button type="submit" class="btn btn-primary" id="save"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+								role="status" aria-hidden="true"></span> <i class="fas fa-save"></i> Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div><!-- modal-dialog -->
+
+    <div id="termsConditionModal" class="modal">
+        <div class="modal-dialog modal-md" role="document">
+            <form id="status-change-form" method="post" action="{{ url('inventory/final-purchase/change/terms-condition')}}">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"># @if(request()->get('order_type')=="wo") Work Order @else Purchase Order @endif -Terms & Conditions<span class="po_number"></span></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <h6>Supplier :<span id="po-supplier"></span></h6>
+                            <h6>PO Number :<span id="purchaseorder"></span></h6>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="po_id" id="purchase_order_id" value="">
+                            <input type="hidden" name="terms_id" id="terms_id" value="">
+                            <label for="inputAddress2">Terms & Conditions *</label><br>
+                            <textarea style="min-height: 100px;" rows="15" name="terms" type="text" class="form-control" id="terms" placeholder="Terms & Conditions"></textarea>
+                        </div> 
+                        
                     </div>
                     <div class="modal-footer">
                         <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
@@ -356,6 +393,20 @@
             });
             //$('#status')
 
+        });
+        $('body').on('click', '#itemscondition-model', function (event) {
+            event.preventDefault();
+            var po = $(this).attr('po');
+            $('#purchaseorder').html(po);
+            var supplier = $(this).attr('posupplier');
+            $('#po-supplier').html(supplier);
+            let po_id = $(this).attr('value');
+			$('#purchase_order_id').val(po_id);
+            $.get("{{ url('inventory/getTermsandConditions') }}?po_id="+po_id,function(data)
+            {
+                $('#terms_id').val(data['id']);
+                $('#terms').text(data['terms_and_conditions']);
+            });
         });
         
         

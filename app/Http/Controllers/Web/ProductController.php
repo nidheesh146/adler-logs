@@ -253,7 +253,8 @@ class ProductController extends Controller
     {
         $product_input_material=product_input_material::select('product_product.sku_code','product_input_material.quantity1','product_input_material.quantity2',
         'product_input_material.quantity3','inventory_rawmaterial.item_code as item_code1','inventory_rawmaterial.discription as discription1','alternative2.discription as discription2',
-        'alternative3.discription as discription3','alternative2.item_code as item_code2','alternative3.item_code as item_code3','inv_unit.unit_name as unit1','inv_unit2.unit_name as unit2','inv_unit3.unit_name as unit3')
+        'alternative3.discription as discription3','alternative2.item_code as item_code2','alternative3.item_code as item_code3','inv_unit.unit_name as unit1','inv_unit2.unit_name as unit2',
+        'inv_unit3.unit_name as unit3','product_input_material.item_id1','product_input_material.item_id2','product_input_material.item_id3')
                                     ->leftJoin('product_product','product_product.id','=','product_input_material.product_id')
                                     ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id1')
                                     ->leftJoin('inventory_rawmaterial as alternative2','alternative2.id','=','product_input_material.item_id2')
@@ -274,6 +275,11 @@ class ProductController extends Controller
         else
         $request->session()->flash('err', "Input material deleting failed..");
         return Redirect::back();
+    }
+    public function get_item1_id($material_id)
+    {
+        $input_material = product_input_material::find($material_id);
+        return $input_material['item_id1'];
     }
     public function getProductUpload()
     {
@@ -475,7 +481,7 @@ class ProductController extends Controller
             $ExcelOBJ = new \stdClass();
             $ExcelOBJ->inputFileType = 'Xlsx';
            // $ExcelOBJ->filename = 'SL-1-01.xlsx';
-            $ExcelOBJ->inputFileName ='C:\xampp\htdocs\prd291.xlsx';
+            $ExcelOBJ->inputFileName ='C:\xampp\htdocs\prd294.xlsx';
             // $ExcelOBJ->filename = 'Book1.xlsx';
             // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
             $ExcelOBJ->spreadsheet = new Spreadsheet();
@@ -553,25 +559,39 @@ class ProductController extends Controller
                     // print_r($input_material);exit;
                     if($excelsheet[2]!='N/A' || $excelsheet[3]!='N/A' || $excelsheet[4]!='N/A')
                     {
-                        if($excelsheet[2]!='N/A' || $excelsheet[2]!='NA' || $excelsheet[2]!='Assembly')
+                        if($excelsheet[2]!='N/A' || $excelsheet[2]!='NA' )
                         {
-                            $item1 = inventory_rawmaterial::where('item_code',$excelsheet[2])->first();
-                            if($item1)
-                            $item_id1 = $item1['id'];
+                            if($excelsheet[2]=='Assembly')
+                            {
+                                $item_id1 = 0;
+                            }
                             else
-                            $item_id1 = NULL;
+                            {
+                                $item1 = inventory_rawmaterial::where('item_code',$excelsheet[2])->first();
+                                if($item1)
+                                $item_id1 = $item1['id'];
+                                else
+                                $item_id1 = NULL;
+                            }
                         }
                         else
                         {
                             $item_id1 = NULL;
                         }
-                        if($excelsheet[3]!='N/A' || $excelsheet[3]!='NA')
+                        if($excelsheet[3]!='N/A' || $excelsheet[3]!='NA' || $excelsheet[3]!='#N/A')
                         {
-                            $item2 = inventory_rawmaterial::where('item_code',$excelsheet[3])->first();
-                            if($item2)
-                            $item_id2 = $item2['id'];
+                            if($excelsheet[3]!='Assembly')
+                            {
+                                $item2 = inventory_rawmaterial::where('item_code',$excelsheet[3])->first();
+                                if($item2)
+                                $item_id2 = $item2['id'];
+                                else
+                                $item_id2 = NULL;
+                            }
                             else
-                            $item_id2 = NULL;
+                            {
+                                $item_id2 = 0;
+                            }
                         }
                         else 
                         {
