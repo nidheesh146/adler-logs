@@ -66,12 +66,13 @@ class product extends Model
                     ->get()->toArray();
         
     }
-    function get_product_info_for_oef($data)
+    function get_product_info_for_oef($data,$condition)
     {
         return $this->select(['product_product.id','product_product.sku_code as text','product_product.discription','product_productgroup.group_name','product_product.hsn_code','product_price_master.sales'])
                     ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
                     ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
                     ->where('product_product.sku_code','like','%'.$data.'%')
+                    ->where($condition)
                     ->get()->toArray();
     }
     function get_product_mrn($condition){

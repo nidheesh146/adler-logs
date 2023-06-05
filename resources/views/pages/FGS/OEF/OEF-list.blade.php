@@ -104,8 +104,8 @@
 									<th>Order date</th>
 									<th>Order Fulfil</th>
 									<th>Transaction Type</th>
+									<th>Product Category</th>
                                     <th>Due Date</th>
-									
                                     <th>Customer info</th>
                                     <th>Action</th>
 								</tr>
@@ -120,6 +120,7 @@
 									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
 									<td>{{$item['order_fulfil_type']}}</td>
 									<td>{{$item['transaction_name']}}</td>
+									<td>{{$item['category_name']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['due_date']))}}</td>
                                     
 									<td>{{$item['firm_name']}}<br/>

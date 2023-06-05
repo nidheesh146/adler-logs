@@ -12,6 +12,7 @@ use App\Models\FGS\fgs_oef_item_rel;
 use App\Models\FGS\transaction_type;
 use App\Models\FGS\order_fulfil;
 use App\Models\inventory_gst;
+use App\Models\FGS\fgs_product_category;
 use App\Models\product;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingOEFExport;
@@ -22,6 +23,7 @@ class OEFController extends Controller
     {
         $this->fgs_oef = new fgs_oef;
         $this->fgs_oef_item = new fgs_oef_item;
+        $this->fgs_product_category = new fgs_product_category;
         $this->fgs_oef_item_rel = new fgs_oef_item_rel;
         $this->transaction_type = new transaction_type;
         $this->order_fulfil = new order_fulfil;
@@ -48,9 +50,12 @@ class OEFController extends Controller
             $condition[] = ['fgs_oef.oef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
             $condition[] = ['fgs_oef.oef_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
-        $oef = fgs_oef::select('fgs_oef.*','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.contact_person','customer_supplier.contact_number')
+        $oef = fgs_oef::select('fgs_oef.*','order_fulfil.order_fulfil_type','transaction_type.transaction_name',
+        'customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.contact_person',
+        'customer_supplier.contact_number','fgs_product_category.category_name')
                         ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
                         ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_oef.product_category')
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
                         ->where($condition)
                         ->distinct('fgs_oef.id')
@@ -137,7 +142,7 @@ class OEFController extends Controller
             $validation['oef_date'] = ['required','date'];
             $validation['due_date'] = ['required','date'];
             $validation['order_fulfil'] = ['required'];
-            //$validation['transaction_type'] = ['required'];
+            $validation['product_category'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
@@ -157,6 +162,7 @@ class OEFController extends Controller
                 $data['due_date'] = date('Y-m-d', strtotime($request->due_date));
                 $data['order_fulfil'] = $request->order_fulfil;
                 $data['transaction_type'] = $request->transaction_type;
+                $data['product_category'] = $request->product_category;
                 $data['created_by']= config('user')['user_id'];
                 $data['status']=1;
                 $data['created_at'] =date('Y-m-d H:i:s');
@@ -183,16 +189,20 @@ class OEFController extends Controller
         {        
             $transaction_type = transaction_type::get();
             $order_fulfil = order_fulfil::get();
-            return view('pages/FGS/OEF/OEF-add', compact('transaction_type','order_fulfil'));
+            $category = fgs_product_category::get();
+            return view('pages/FGS/OEF/OEF-add', compact('transaction_type','order_fulfil','category'));
         }
        
     }
-    public function OEFproductsearch(Request $request)
+    public function OEFproductsearch(Request $request,$oef_id)
     {
+        $condition=[];
         if(!$request->q){
             return response()->json(['message'=>'Product is not valid'], 500); 
         }
-        $data =  $this->product->get_product_info_for_oef(strtoupper($request->q));
+        $oef = fgs_oef::find($oef_id);
+        $condition[] = ['product_product.product_category_id','=',$oef['product_category']];
+        $data =  $this->product->get_product_info_for_oef(strtoupper($request->q),$condition);
         if(!empty( $data)){
             return response()->json( $data, 200); 
         }else{
@@ -253,7 +263,8 @@ class OEFController extends Controller
         }
         else{
             $data['gst'] = $this->inventory_gst->get_gst();
-            return view('pages/FGS/OEF/OEF-item-add',compact('data'));
+            $oef_id = $request->oef_id;
+            return view('pages/FGS/OEF/OEF-item-add',compact('data','oef_id'));
         }
     }
 

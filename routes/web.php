@@ -469,7 +469,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/OEF/item-list/{oef_id}','OEFController@OEFitemlist');
     Route::get('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::post('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
-    Route::get('fgs/OEFproductsearch','OEFController@OEFproductsearch');
+    Route::get('fgs/OEFproductsearch/{oef_id}','OEFController@OEFproductsearch');
     Route::get('fgs/OEF/pdf/{oef_id}','OEFController@OEFpdf');
     Route::get('fgs/OEF/pending-report','OEFController@pendingOEF');
     Route::get('fgs/OEF/pending-OEF-export','OEFController@pendingOEFExport');
