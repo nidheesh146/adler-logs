@@ -127,6 +127,9 @@
             <li class="nav-sub-item @if(in_array($Action,['GRS.pendingGRS'])){{'active'}} @endif ">
               <a href="{{url('fgs/GRS/pending-report')}}"  class="nav-sub-link">Back order Report</a>
             </li>
+            <li class="nav-sub-item  ">
+              <a href="{{url('fgs/fgs-report')}}"  class="nav-sub-link">FGS Report</a>
+            </li>
             <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd',
               'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList',
               'CMIN.CMINitemAdd','MTQ.MTQAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','OEF.pendingOEF','GRS.pendingGRS'])){{'active show'}} @endif">
