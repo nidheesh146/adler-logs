@@ -1249,6 +1249,15 @@ class PurchaseController extends Controller
 
     public function supplier_invoice_delete(Request $request, $id)
     {
+        $invoice_items = inv_supplier_invoice_rel::where('master','=',$id)->get();
+        foreach($invoice_items as $item)
+        {
+            $invoice_item = inv_supplier_invoice_item::where('id','=',$item['item'])->first();
+            $po_item = inv_final_purchase_order_item::where('id','=',$invoice_item['po_item_id'])->first();
+            //print_r($po_item);exit;
+            $update_qty =$po_item['qty_to_invoice']+$invoice_item['order_qty'];
+            inv_final_purchase_order_item::where('id','=',$po_item['id'])->update(['qty_to_invoice'=>$update_qty]);
+        }
         $this->inv_supplier_invoice_master->deleteData(['id' => $id]);
         $request->session()->flash('success', "You have successfully deleted a supplier invoice master !");
         return redirect("inventory/supplier-invoice");
