@@ -130,6 +130,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/final-purchase/excess-qty-order','PurchaseController@excessPurchaseOrder');
     Route::get('inventory/pending-purchase-realisation','PurchaseController@pendingPurchaseRealisation');
     Route::get('inventory/pending-purchase-realisation/excel-export','PurchaseController@pendingPurchaseRealisationExport');
+    Route::get('inventory/getTermsandConditions','PurchaseController@getTermsandConditions');
+    Route::post('inventory/final-purchase/change/terms-condition','PurchaseController@changeTerms');
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');
     Route::get('inventory/supplier-invoice-add', 'PurchaseController@supplierInvoiceAdd');
@@ -468,7 +470,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/OEF/item-list/{oef_id}','OEFController@OEFitemlist');
     Route::get('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::post('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
-    Route::get('fgs/OEFproductsearch','OEFController@OEFproductsearch');
+    Route::get('fgs/OEFproductsearch/{oef_id}','OEFController@OEFproductsearch');
     Route::get('fgs/OEF/pdf/{oef_id}','OEFController@OEFpdf');
     Route::get('fgs/OEF/pending-report','OEFController@pendingOEF');
     Route::get('fgs/OEF/pending-OEF-export','OEFController@pendingOEFExport');

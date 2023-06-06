@@ -27,8 +27,8 @@ class fgs_mrn extends Model
         'customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
         'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person','customer_supplier.sales_type','customer_supplier.city',
         'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3')
-        ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_mrn.product_category')
-            ->leftJoin('product_stock_location','product_stock_location.id','fgs_mrn.stock_location')
+                    ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_mrn.product_category')
+                    ->leftJoin('product_stock_location','product_stock_location.id','fgs_mrn.stock_location')
                     ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_mrn.supplier_doc_number')
                     ->leftJoin('zone','zone.id','=','customer_supplier.zone')
                     ->leftJoin('state','state.state_id','=','customer_supplier.state')

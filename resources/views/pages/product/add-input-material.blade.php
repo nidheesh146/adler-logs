@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('prdt', 'App\Http\Controllers\Web\ProductController')
 
 <div class="az-content az-content-dashboard">
   <br>
@@ -113,11 +114,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <!--  -->
                                     @foreach($materials as $material)
                                     <?php $count=0; ?>
+                                    <?php $item1= $prdt->get_item1_id($material['id']); ?>
                                     <tr>
                                         <td> 
-                                            <a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$material->short_description}}" >{{$material->item_code}}</a></td>
+                                            <a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$material->short_description}}" >@if($item1==0) Assembly @else {{$material->item_code}} @endif</a></td>
                                         <td style>@if($material->quantity1) {{$material->quantity1}} {{$material->unit_name}} @endif</td>
                                         <!-- <td width="10%">{{$material->short_description}}</td> -->
                                         <td>
@@ -129,11 +132,11 @@
                                                 else
                                                 $count =0;
                                         ?>
-                                         @if($material->item_id1!=NULL)
+                                         
                                         <a href="" data-toggle="modal"  data-target="#alternative-input-material" class=" badge badge-primary"   id="alternativeItems" materialid="{{$material->id}}"><i class="fas fa-plus"></i> Alternative @if($count!=0) ({{$count}}) @endif</a>
                                         <!-- <a href="{{url('product/alternative-input-material?id='.$material->id)}}"  class="badge badge-primary"> <i class="fas fa-plus"></i> Alternative</a> -->
                                             <a href="{{url('product/delete-input-material?id='.$material->id)}}" onclick="return confirm('Are you sure you want to delete this ?');" class="badge badge-danger"><i class="fas fa-trash-alt"></i>  Delete</a> 
-                                        @endif
+                                    
                                         </td>
                                     </tr>
                                     @endforeach
@@ -181,7 +184,7 @@
                                         </th>
                                         <th id="description2" class="description"></th>
                                         <th id="">
-                                            <input type="text"  class="form-control " id="alternateqty2 quantity2"  name="quantity2" value=""><span id="unit2"></span>
+                                            <input type="text"  class="form-control " id="alternateqty2 quantity2"  name="quantity2" value="" ><span id="unit2"></span>
                                         </th>
                                     </tr>
                                     <tr>
@@ -359,24 +362,38 @@ function initSelect2() {
         {
                 $('#materialid').val(materialid);
                 $('#product_sku').html(data['sku_code']);
+                if(data['item_id1']==0)
+                $('#itemcode1').html('Assembly');
+                else
                 $('#itemcode1').html(data['item_code1']);
                 $('#description1').html(data['discription1']);
+                if(data['quantity1']!=null)
                 $('#quantity1').html(data['quantity1']+' '+data['unit1']);
                 
                 // $("#unit2").html(data['unit_name']);
                 // $("#unit3").html(data['unit_name']);
                 // $('#itemcode2').text(data['item_code2']);
                 // $('#description2').html(data['discription2']);
-                 $('#quantity2').val(data['quantity2']);
-                if(data['item_code2']!=null)
+                 //$('#quantity2').val(data['quantity2']);
+                if(data['item_code2']!=null || data['item_id2']==0)
                 {
                     $('#itemcode2').show();
-                    $('#quantity2').show();
+                    
                     $('#alternateitemcode2').next(".select2-container").hide();
-                    $('#itemcode2').html(data['item_code2']);
+                    if(data['item_id2']==0)
+                    {
+                    $('#itemcode2').html('Assembly');
+                    $('#quantity2').css("display", "none");
+                    }
+                    else
+                    {
+                        $('#quantity2').show();
+                        $('#quantity2').val(data['quantity2']);
+                        $('#unit2').text(data['unit2']);
+                        $('#itemcode2').html(data['item_code2']);
+                    }
                     $('#description2').html(data['discription2']);
-                    $('#quantity2').val(data['quantity2']);
-                    $('#unit2').text(data['unit2']);
+                    
                 }
                 else
                 {

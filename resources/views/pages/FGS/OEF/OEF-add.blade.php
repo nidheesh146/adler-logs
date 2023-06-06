@@ -98,6 +98,15 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Product Category  *</label>
+                                <select class="form-control" name="product_category">
+                                    <option>Select one...</option>
+                                    @foreach($category as $cate)
+                                    <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>OEF Date *</label>
                                 <input type="date" value="{{date('Y-m-d')}}" class="form-control oef_date" id="oef_date" name="oef_date"  placeholder="">

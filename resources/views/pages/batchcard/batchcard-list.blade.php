@@ -93,6 +93,7 @@
 								</tr>
 							</thead>
 							<tbody >
+								
 							@foreach($data['batchcards'] as $card)
                         <tr>
                             <td>{{$card['batch_no']}}</td>
@@ -101,11 +102,17 @@
                             <td>{{$card['start_date']}}</td>
                             <td>{{$card['target_date']}}</td>
                             <td>{{$card['process_sheet_id']}}</td>
-                            <td>@foreach($card['material'] as $material)
+                            <td>
+								@foreach($card['material'] as $material)
+								@if($material['item_code']!=NULL)
                                 <span>{{$material['item_code']}}</span> -
                                 <span>{{$material['quantity']}}{{$material['unit_name']}}</span><br/>
+								@else
+								Assembly
+								@endif
                                 @endforeach
                             </td>
+							
 							<td>
 								@if($card['is_active']==1)
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>

@@ -173,7 +173,7 @@
                              
                               <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                   <label>Payment Terms *</label>
-                                  <textarea value="" class="form-control autosize" name="payment_terms" placeholder="Terms and Conditions"><?php echo (!empty($datas)) ? $datas['terms_and_conditions'] : ""; ?></textarea>
+                                  <textarea value="" class="form-control autosize" name="payment_terms" placeholder="Terms and Conditions"><?php echo (!empty($datas)) ? $datas['payment_terms'] : ""; ?></textarea>
                               </div>
                           </div> 
               
@@ -181,7 +181,7 @@
                               <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                   <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                    
-                                     "Save"   
+                                     Save   
                                                                   
                                   </button>
                               </div>

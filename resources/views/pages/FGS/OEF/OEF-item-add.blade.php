@@ -46,7 +46,7 @@
                                 @endforeach
                                 <table class="table table-bordered">
                                     <tbody id="dynamic_field">
-
+                                        <input type="hidden" value="{{$oef_id}}" name="oef_id" id="oef_id">
                                         <tr id="row1" rel="1">
                                             <td>
                                                 <div class="row">
@@ -339,15 +339,21 @@ function getsearch(){
                 });
             });
             function initSelect2() {
+                var oef_id = $('#oef_id').val();
+                //alert(oef_id);
                 $(".product").select2({
                     placeholder: 'Choose one',
                     searchInputPlaceholder: 'Search',
                     minimumInputLength: 6,
                     allowClear: true,
                     ajax: {
-                        url: "{{ url('fgs/OEFproductsearch') }}",
+                        url: "{{ url('fgs/OEFproductsearch') }}/"+oef_id,
                         processResults: function (data) {
                                 return { results: data };
+                                // return {
+                                //     q: term,
+                                //     oef_id: oef_id,
+                                // }
                         }
                     }
                 }).on('change', function (e) {

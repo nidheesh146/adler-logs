@@ -102,10 +102,10 @@ class BatchCardController extends Controller
                         $batchcard_material[] =  $this->batchcard_material->insert_data($data);
                     }
                 }
-                if(count($batchcard_material)==$product_inputmaterial_count)
+               if(count($batchcard_material)==$product_inputmaterial_count)
                 $request->session()->flash('success',  "You have successfully inserted a batchcard !");
                 else
-                $request->session()->flash('error',  "You have failed to insert a batchcard !");
+                 $request->session()->flash('error',  "You have failed to insert a batchcard !");
                 return redirect('batchcard/batchcard-add');
             }
             if ($validator->errors()->all()) {
@@ -380,7 +380,7 @@ class BatchCardController extends Controller
     {
         $input_materials = product_input_material::select('product_input_material.id','inventory_rawmaterial.id as material_id1','material2.id as material_id2','material3.id as material_id3','inventory_rawmaterial.item_code as item_code1',
         'inventory_rawmaterial.discription as description1','material2.discription as description2','material3.discription as description3','product_input_material.quantity1','material2.item_code as item_code2','product_input_material.quantity2',
-        'material3.item_code as item_code3','product_input_material.quantity3','inv_unit.unit_name as unit1','inv_unit2.unit_name as unit2','inv_unit3.unit_name as unit3')
+        'material3.item_code as item_code3','product_input_material.quantity3','inv_unit.unit_name as unit1','inv_unit2.unit_name as unit2','inv_unit3.unit_name as unit3','product_input_material.item_id1','product_input_material.item_id2','product_input_material.item_id3')
                                                     ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id1')
                                                     ->leftJoin('inventory_rawmaterial as material2','material2.id','=','product_input_material.item_id2')
                                                     ->leftJoin('inventory_rawmaterial as material3','material3.id','=','product_input_material.item_id3')
@@ -407,12 +407,21 @@ class BatchCardController extends Controller
                         <th>Input Material Option2</th>
                         <th>Input Material Option3</th>
                     </tr>
-                    <tr>
-                        <input type="hidden" class="input_material_qty input_material_qty'.$i.'" name="input_material_qty'.$i.'" value="">
+                    <tr>';
+            if($material['item_id1']==0)
+            {
+                $data .= '<td><input type="radio" class="item-select-radio" checked name="material'.$i.'" value="'.$material['id'].'">Assembly<br/>
+                            <input type="hidden" name="rawmaterial_id'.$i.'" value="0">
+                            <input type="hidden" class="materialqty materialqty'.$i.'" name="materialqty'.$i.'" value="0">';
+
+            }
+            else
+            {
+                $data .= '<input type="hidden" class="input_material_qty input_material_qty'.$i.'" name="input_material_qty'.$i.'" value="">
                         <td>
                         <input type="radio" class="item-select-radio" checked name="material'.$i.'" value="'.$material['id'].'"><br/>
                         Item Code<input type="text" class="form-control"  value="'.$material['item_code1'].'" readonly>
-                            <input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
+                        <input type="hidden" name="product_inputmaterial_id'.$i.'" value="'.$material['id'].'">
                             <input type="hidden" name="rawmaterial_id'.$i.'" value="'.$material['material_id1'].'">
                             
                             Quantity
@@ -423,13 +432,22 @@ class BatchCardController extends Controller
                                     <span class="input-group-text unit-div" id="unit-div1">'.$material['unit1'].'</span>
                                 </div>
                             </div>';
-            $lotcard = $this->lotcard_item_availability($material['material_id1']);
-            if($lotcard)
-            {
-                $data .='(Lot Number:'.$lotcard['lot_number'].', Quantity: '.$lotcard['accepted_quantity'].' &nbsp;'.$lotcard['unit_name'].')';
             }
-            if($material['item_code2']) 
-            {             
+            // $lotcard = $this->lotcard_item_availability($material['material_id1']);
+            // if($lotcard)
+            // {
+            //     $data .='(Lot Number:'.$lotcard['lot_number'].', Quantity: '.$lotcard['accepted_quantity'].' &nbsp;'.$lotcard['unit_name'].')';
+            // }
+            if($material['item_id2']!=NULL || $material['item_id2']==0) 
+            {      
+                if($material['item_id2']==0)
+                {
+                    $data .= '<td><input type="radio" class="item-select-radio"  name="material'.$i.'" value="'.$material['id'].'">Assembly<br/>
+                                        <input type="hidden" name="rawmaterial_id'.$i.'" value="0">
+                                        <input type="hidden" class="materialqty materialqty'.$i.'" name="materialqty'.$i.'" value="0">';
+                }   
+                else
+                {    
                 $data .=' </td>
                             <td>
                             <input type="radio" class="item-select-radio" name="material'.$i.'" value="'.$material['id'].'"><br/>
@@ -445,11 +463,12 @@ class BatchCardController extends Controller
                                     <span class="input-group-text unit-div" id="unit-div1">'.$material['unit2'].'</span>
                                 </div>
                             </div>';
-                $lotcard2 = $this->lotcard_item_availability($material['material_id2']);
-                if($lotcard2)
-                {
-                    $data .='(Lot Number:'.$lotcard2['lot_number'].', Quantity: '.$lotcard2['accepted_quantity'].' &nbsp;'.$lotcard2['unit_name'].')';
                 }
+                // $lotcard2 = $this->lotcard_item_availability($material['material_id2']);
+                // if($lotcard2)
+                // {
+                //     $data .='(Lot Number:'.$lotcard2['lot_number'].', Quantity: '.$lotcard2['accepted_quantity'].' &nbsp;'.$lotcard2['unit_name'].')';
+                // }
             }
             else
             {
@@ -472,11 +491,11 @@ class BatchCardController extends Controller
                                     <span class="input-group-text unit-div" id="unit-div1">'.$material['unit3'].'</span>
                                 </div>
                             </div>';
-                $lotcard3 = $this->lotcard_item_availability($material['material_id3']);
-                if($lotcard3)
-                {
-                    $data .='(Lot Number:'.$lotcard3['lot_number'].', Quantity: '.$lotcard3['accepted_quantity'].' &nbsp;'.$lotcard3['unit_name'].')';
-                }
+                // $lotcard3 = $this->lotcard_item_availability($material['material_id3']);
+                // if($lotcard3)
+                // {
+                //     $data .='(Lot Number:'.$lotcard3['lot_number'].', Quantity: '.$lotcard3['accepted_quantity'].' &nbsp;'.$lotcard3['unit_name'].')';
+                // }
             }
             else
             {
