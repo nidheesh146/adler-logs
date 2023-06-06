@@ -93,7 +93,8 @@
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockFromProduction','Stock.StockFromProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/FromProduction')}}" class="nav-sub-link">Stock Return From Production</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockTransfer','Stock.StockTransferAdd','Stock.viewItems'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  
-          
+            <li class="nav-sub-item "><a href="{{url('inventory/inventory-trans-report')}}" class="nav-sub-link">Inventory Transaction Report</a></li>  
+
           </ul>
         </li>
         
