@@ -97,7 +97,7 @@
                                                     <input type="text"  class="form-control" name="moreItems[0][discount]"
                                                         id="discount1" placeholder="Discount">
                                                 </div>
-                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                               {{-- <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                                     <label> IGST ( % ) </label>
                                                     <input type="hidden" name="gst" id="gst-id1" index="1" value="">
                                                     <select class="form-control IGST" id="IGST1" name="moreItems[0][IGST]">
@@ -134,8 +134,20 @@
                                                             @endif
                                                         @endforeach
                                                     </select>
+                                                </div>--}}
+                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                                    <label> IGST ( % ) </label>
+                                                    <input type="hidden" name="gst" id="gst-id1" index="1" value="">
+                                                    <input type="text" class="form-control" name="igst" id="igst1" value="" readonly>
                                                 </div>
-                                            
+                                                <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                                    <label> SGST ( % ) </label>
+                                                    <input type="text" class="form-control" name="sgst" id="sgst1" value="" readonly>
+                                                </div>
+                                                <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                                    <label> CGST ( % ) </label>
+                                                    <input type="text" class="form-control" name="cgst" id="cgst1" value="" readonly>
+                                                </div>
                                                
                                                 <button type="button" name="add" id="add" class="btn btn-success"
                                                     style="height:38px;margin-top:28px;"><i

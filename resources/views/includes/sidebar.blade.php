@@ -177,9 +177,9 @@
                 <li class="nav-sub-item @if(in_array($Action,['PI.PIList','PI.PIAdd','PI.PIitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/PI-list')}}"  class="nav-sub-link">PI</a>
                 </li>
-                <!-- <li class="nav-sub-item @if(in_array($Action,['PI.pendingPI'])){{'active'}} @endif ">
-                  <a href="{{url('fgs/PI/pending-report')}}"  class="nav-sub-link">PI - Back Order Report</a>
-                </li> -->
+                <li class="nav-sub-item @if(in_array($Action,['PI.pendingPI'])){{'active'}} @endif ">
+                  <a href="{{url('fgs/merged-PI-list')}}"  class="nav-sub-link">Merged PI List</a>
+                </li>
                  <li class="nav-sub-item @if(in_array($Action,['CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList'])){{'active'}} @endif ">
                   <a href="{{url('fgs/CPI/CPI-list')}}"  class="nav-sub-link">CPI</a>
                 </li>

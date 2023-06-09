@@ -106,22 +106,7 @@ class SupplierQuotationController extends Controller
     }
    
 
-    public function delete_supplier_quotation(Request $request) {
-        if($request->qr_id)
-        {
-            $Request['Method'] = 'POST';
-            $Request['URL'] = config('app.ApiURL') . "/inventory/supplier-quotation-master-add-edit-delete/";
-            $Request['param'] = json_encode([
-                "action_type" => "DeleteSupplierQuotationMaster",
-                "supplier_quotation_id " => $request->qr_id
-            ]);
-            $data = $this->HttpRequest->HttpClient($Request);
-            if(!empty($data['response']['message']) && $data['response']['success']){
-                $request->session()->flash('success',  $data['response']['message']);
-            }
-        }
-        return redirect('inventory/supplier-quotation');
-    }
+    
 
     public function edit_supplier_quotation(Request $request)
     {

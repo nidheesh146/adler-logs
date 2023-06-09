@@ -13,6 +13,7 @@ use App\Models\FGS\transaction_type;
 use App\Models\FGS\order_fulfil;
 use App\Models\inventory_gst;
 use App\Models\FGS\fgs_product_category;
+use App\Models\PurchaseDetails\customer_supplier;
 use App\Models\product;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingOEFExport;
@@ -29,6 +30,7 @@ class OEFController extends Controller
         $this->order_fulfil = new order_fulfil;
         $this->inventory_gst = new inventory_gst;
         $this->product = new product;
+        $this->customer_supplier = new customer_supplier;
     }
     public function OEFList(Request $request)
     {
@@ -201,8 +203,32 @@ class OEFController extends Controller
             return response()->json(['message'=>'Product is not valid'], 500); 
         }
         $oef = fgs_oef::find($oef_id);
+        $customer = customer_supplier::select('customer_supplier.firm_name','zone.zone_name')
+                        ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+                        ->where('customer_supplier.id','=',$oef['customer_id'])->first();
         $condition[] = ['product_product.product_category_id','=',$oef['product_category']];
         $data =  $this->product->get_product_info_for_oef(strtoupper($request->q),$condition);
+        foreach($data as $dat)
+        {
+            if($dat['gst']!='')
+            {
+                if($customer['zone_name']=='Export')
+                {
+                    $gst = $dat['gst'];
+                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst','=',$gst)->first();
+                }
+                else
+                {
+                    $gst = $dat['gst']/2;
+                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst','=',$gst)->first();
+                }
+                $dat['gst_id'] = $gst_data['id'];
+                $dat['igst'] = $gst_data['igst'];
+                $dat['sgst'] = $gst_data['sgst'];
+                $dat['cgst'] = $gst_data['cgst'];
+            }
+        }
+       // print_r( $data);exit;
         if(!empty( $data)){
             return response()->json( $data, 200); 
         }else{

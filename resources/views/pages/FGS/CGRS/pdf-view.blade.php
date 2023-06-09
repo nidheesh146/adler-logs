@@ -217,8 +217,8 @@
                 <th>BATCH NO</th>
                 <th>BATCH QTY</th>
                 <th>UOM</th>
-                <th>DATE OF MFG.</th>
-                <th>DATE OF EXPIRY</th>
+                <th style="width:9%;">DATE OF MFG.</th>
+                <th style="width:9%;">DATE OF EXPIRY</th>
                 
             </tr>
             <?php $i=1; ?>

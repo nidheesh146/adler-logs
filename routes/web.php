@@ -516,6 +516,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/PI/payment-pdf/{pi_id}','PIController@PIPaymentpdf');
     Route::get('fgs/PI/pending-report','PIController@pendingPI');
     Route::get('fgs/PI/pending-PI-export','PIController@pendingPIExport');
+    Route::get('fgs/merged-PI-list','PIController@mergedPIList');
+    Route::get('fgs/merge-multiple-PI','PIController@mergeMutiplePI');
+    Route::post('fgs/merge-pi','PIController@mergePIInsert');
+    Route::get('fgs/PI/merged-payment-pdf/{mpi_id}','PIController@MergedPIPaymentpdf');
     //CPI
      Route::get('fgs/CPI/CPI-list','CPIController@CPIList');
     Route::get('fgs/CPI/CPI-add','CPIController@CPIAdd');

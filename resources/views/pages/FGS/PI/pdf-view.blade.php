@@ -10,11 +10,11 @@
     <style>
         .col1,.col3{
             float:left;
-            width:23%;
+            width:33%;
             font-size:11px;
         }
         .col2{
-            width:45%;
+            width:28%;
             float:left;
         }
         .attn {
@@ -267,20 +267,20 @@
                 <td>{{$item['batch_no']}}</td>
                 <td style="text-align:center;">{{$item['quantity']}}</td>
                 <td>Nos</td>
-                <td>{{number_format((float)$item['rate'], 2, '.', '')}}</td>
+                <td style="text-align:right;">{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                
-                <td>{{$item['discount']}}</td>
+                <td style="text-align:center;">{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
-                <td>{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
-                <td>{{$discount_value}}</td>
-                <td>{{$item['cgst']}}</td>
-                <td>{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
-                <td >{{$item['sgst']}}</td>
-                <td width="5%">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
-                <td>{{$item['igst']}}</td>
-                <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
+                <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
+                <td style="text-align:right;">{{$discount_value}}</td>
+                <td style="text-align:center;">{{$item['cgst']}}</td>
+                <td style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
+                <td style="text-align:center;">{{$item['sgst']}}</td>
+                <td width="5%" style="text-align:right;">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
+                <td style="text-align:center;">{{$item['igst']}}</td>
+                <td style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
                 <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
-                <td>{{number_format((float)($total_amount), 2, '.', '')}}</td>
+                <td style="text-align:right;">{{number_format((float)($total_amount), 2, '.', '')}}</td>
                 <?php 
                 $total =$total+ $item['rate']* $item['quantity'];
                 $total_discount = $total_discount+($item['rate']* $item['quantity']*$item['discount'])/100;
@@ -305,17 +305,17 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{  $qsum }}</td>
+                <td style="text-align:center;">{{  $qsum }}</td>
                 <td></td>
-                <td> {{ $rsum }}</td>
-                <td></td>
-                <td></td>
-                <td>{{ $tsum }}</td>
+                <td style="text-align:right;"> {{ $rsum }}</td>
                 <td></td>
                 <td></td>
+                <td style="text-align:right;">{{ $tsum }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td> 
                 <td></td>
                 <td>{{ $totalsum }}</td>
             </tr>       
