@@ -595,7 +595,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/SRN/pdf/{srn_id}','SRNController@SRNpdf');
 
      Route::get('fgs/fgs-report','FgsreportController@get_data');
-     Route::post('fgs/fgs-report-search','FgsreportController@get_result');
+    // Route::post('fgs/fgs-report-search','FgsreportController@get_result');
+     Route::get('fgs/fgs-export','FgsreportController@fgsExport');
 
 
 });

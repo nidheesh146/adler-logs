@@ -275,42 +275,19 @@ function getsearch(){
                                 <label>Discount %* </label>
                                 <input type="text"  class="form-control" name="moreItems[${i}][discount]" id="discount${i}" placeholder="Discount">
                             </div>
+                           
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label> IGST ( % ) </label>
-                                <input type="hidden" name="gst" id="gst-id${i}" value="">
-                                <select class="form-control IGST" id="IGST${i}" index="${i}" name="moreItems[${i}][IGST]">
-                                    <option value="">--- select one ---</option>
-                                    <option class="zero-option-igst" value="" style="display:none;">0%</option>
-                                    @foreach ($data['gst'] as $item)
-                                        @if($item['igst']!=0)
-                                            <option value="{{ $item['id'] }}" >{{ $item['igst'] }} %</option>
-                                        @endif
-                                    @endforeach
-                                </select>
+                                <input type="hidden" name="gst" id="gst-id${i}" index="${i}" value="">
+                                <input type="text" class="form-control" name="igst" id="igst${i}" value="" readonly>
                             </div>
                             <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label> SGST ( % ) </label>
-                                <select class="form-control SGST" id="SGST${i}" index="${i}" name="moreItems[${i}][SGST]">
-                                    <option value="">--- select one ---</option>
-                                    <option  class="zero-option" value="" style="display:none;">0%</option>
-                                        @foreach ($data['gst'] as $item)
-                                            @if($item['sgst']!=0)
-                                                <option value="{{ $item['id'] }}" >{{ $item['sgst'] }} %</option>
-                                            @endif
-                                        @endforeach
-                                </select>
+                                <input type="text" class="form-control" name="sgst" id="sgst${i}" value="" readonly>
                             </div>
                             <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label> CGST ( % ) </label>
-                                <select class="form-control CGST" id="CGST${i}" index="${i}" name="moreItems[${i}][CGST]">
-                                    <option value="">--- select one ---</option>
-                                    <option class="zero-option" value="" style="display:none;">0%</option>
-                                    @foreach ($data['gst'] as $item)
-                                        @if($item['cgst']!=0)
-                                            <option value="{{ $item['id'] }}" >{{ $item['cgst'] }} %</option>
-                                        @endif
-                                    @endforeach
-                                </select>
+                                <input type="text" class="form-control" name="cgst" id="cgst${i}" value="" readonly>
                             </div>
                             <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
                         </div>
@@ -390,6 +367,21 @@ function getsearch(){
                             }
                             if(res.sales){
                                 $("#rate"+select_id+"").val(res.sales);
+                            }
+                            if(res.igst){
+                                $("#igst"+select_id+"").val(res.igst);
+                            }
+                            if(res.cgst){
+                                if(res.cgst==0)
+                                $("#cgst"+select_id+"").val(0);
+                                else
+                                $("#cgst"+select_id+"").val(res.cgst);
+                            }
+                            if(res.sgst){
+                                $("#sgst"+select_id+"").val(res.sgst);
+                            }
+                            if(res.gst_id){
+                                $("#gst_id"+select_id+"").val(res.gst_id);
                             }
 
                        }

@@ -222,15 +222,27 @@ class OEFController extends Controller
                     $gst = $dat['gst']/2;
                     $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst','=',$gst)->first();
                 }
-                $dat['gst_id'] = $gst_data['id'];
-                $dat['igst'] = $gst_data['igst'];
-                $dat['sgst'] = $gst_data['sgst'];
-                $dat['cgst'] = $gst_data['cgst'];
+                $prdct[] = array(
+                    'id'=>$dat['id'],
+                    'text'=>$dat['text'],
+                    'discription'=>$dat['discription'],
+                    'group_name'=>$dat['group_name'],
+                    'hsn_code'=>$dat['hsn_code'],
+                    'sales'=>$dat['sales'],
+                    'gst_id'=> $gst_data['id'],
+                    'igst'=> $gst_data['igst'],
+                    'sgst'=> $gst_data['sgst'],
+                    'cgst'=> $gst_data['cgst'],
+                );
+                // $dat['gst_id'] = $gst_data['id'];
+                // $dat['igst'] = $gst_data['igst'];
+                // $dat['sgst'] = $gst_data['sgst'];
+                // $dat['cgst'] = $gst_data['cgst'];
             }
         }
        // print_r( $data);exit;
         if(!empty( $data)){
-            return response()->json( $data, 200); 
+            return response()->json( $prdct, 200); 
         }else{
             return response()->json(['message'=>'Product is not exist'], 500); 
         }
