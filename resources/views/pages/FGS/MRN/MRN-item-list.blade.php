@@ -101,10 +101,11 @@
                                     <th>HSN Code</th>
 									<th>Description</th>
 									<th>Batch No.</th>
-									<th>Quantity</th>
+									<th>Qty.</th>
 									<th>UOM</th>
                                     <th>Date of Mfg.</th>
                                     <th>Date of Expiry</th>
+									<th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
@@ -116,8 +117,12 @@
 									<td>{{$item['batch_no']}}</td>
 									<td>{{$item['quantity']}}</td>
 									<td>Nos</td>
-                                    <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td>
+                                    <td width="10%">{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                                    <td width="10%">@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td>
+									<td>
+									<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRN-item-edit/'.$item['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                            		<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRN-item-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+									</td>
 								</tr>
 								@endforeach
 							</tbody>

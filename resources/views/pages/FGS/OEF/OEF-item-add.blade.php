@@ -62,7 +62,7 @@
                                                     style="float:left;">
                                                     <label>HSN Code * </label>
                                                     <input type="text" readonly class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="HSN Code">
+                                                        id="hsn_code1" placeholder="HSN Code">
                                                     <input type="hidden"
                                                         value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}"
                                                         name="Itemtypehidden" id="Itemtypehidden">
@@ -137,7 +137,7 @@
                                                 </div>--}}
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                                     <label> IGST ( % ) </label>
-                                                    <input type="hidden" name="gst" id="gst-id1" index="1" value="">
+                                                    <input type="hidden" name="moreItems[0][gst]" id="gst-id1" index="1" value="">
                                                     <input type="text" class="form-control" name="igst" id="igst1" value="" readonly>
                                                 </div>
                                                 <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
@@ -249,7 +249,7 @@ function getsearch(){
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>HSN Code * </label>
-                                <input type="text" readonly class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="HSN Code">
+                                <input type="text" readonly class="form-control" name="Itemtype" id="hsn_code${i}" placeholder="HSN Code">
                                 <input type="hidden" value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}" name="Itemtypehidden" id="Itemtypehidden">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
@@ -278,7 +278,7 @@ function getsearch(){
                            
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label> IGST ( % ) </label>
-                                <input type="hidden" name="gst" id="gst-id${i}" index="${i}" value="">
+                                <input type="hidden" name="moreItems[${i}][gst]" id="gst-id${i}" index="${i}" value="">
                                 <input type="text" class="form-control" name="igst" id="igst${i}" value="" readonly>
                             </div>
                             <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
@@ -365,8 +365,14 @@ function getsearch(){
                             if(res.discription){
                                 $("#Itemdescription"+select_id+"").val(res.discription);
                             }
+                            if(res.hsn_code){
+                                $("#hsn_code"+select_id+"").val(res.hsn_code);
+                            }
                             if(res.sales){
                                 $("#rate"+select_id+"").val(res.sales);
+                            }
+                            if(res.gst_id){
+                                $("#gst-id"+select_id+"").val(res.gst_id);
                             }
                             if(res.igst){
                                 $("#igst"+select_id+"").val(res.igst);

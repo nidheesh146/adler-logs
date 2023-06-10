@@ -117,9 +117,11 @@
             <li class="nav-sub-item @if(in_array($Action,['ProductMaster.productAdd','ProductMaster.productList'])){{'active'}} @endif ">
             <a href="{{url('fgs/product-master/list')}}"  class="nav-sub-link">FGS Item Master</a>
             </li>
+            {{--
             <li class="nav-sub-item @if(in_array($Action,['StockManagement.productionStockAdd','StockManagement.productionStockList'])){{'active'}} @endif ">
               <a href="{{url('fgs/production-stock/list')}}"  class="nav-sub-link">Production Stock</a>
             </li>
+            --}}
             <li class="nav-sub-item @if(in_array($Action,['StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','StockManagement.allLocations',
             'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL'])){{'active'}} @endif ">
               <a href="{{url('fgs/stock-management/location1')}}"  class="nav-sub-link">Stock Management</a>
