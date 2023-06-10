@@ -39,7 +39,7 @@ class ProductMasterController extends Controller
 
         //$condition[] = ['']
         $data['products'] = $this->product->get_products($condition);
-        return view('pages/fgs/product-master/product-list',compact('data'));
+        return view('pages/FGS/product-master/product-list',compact('data'));
     }
     public function productAdd(Request $request,$id=null)
     {
