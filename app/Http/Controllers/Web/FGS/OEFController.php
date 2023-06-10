@@ -272,6 +272,7 @@ class OEFController extends Controller
             if(!$validator->errors()->all())
             {
                 $mrn_info = fgs_oef::find($request->oef_id);
+                //print_r($request->moreItems);exit;
                 foreach ($request->moreItems as $key => $value) 
                 {
                     $data = [
@@ -280,7 +281,7 @@ class OEFController extends Controller
                         "quantity_to_allocate"=>$value['quantity'],
                         "remaining_qty_after_cancel"=>$value['quantity'],
                         "rate"=>$value['rate'],
-                        "gst" => 8,
+                        "gst" => $value['gst'],
                         "discount"=>$value['discount'],
                         "created_at" => date('Y-m-d H:i:s')
                     ];

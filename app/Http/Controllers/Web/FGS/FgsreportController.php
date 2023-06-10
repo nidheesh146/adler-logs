@@ -49,7 +49,7 @@ class FgsreportController extends Controller
         $to_date = date('m-Y');
 
 
-        return view('pages/fgs/product-master/fin-goods-report', compact('product_details', 'from_date', 'to_date'));
+        return view('pages/FGS/product-master/fin-goods-report', compact('product_details', 'from_date', 'to_date'));
     }
     public function get_result(Request $request)
     {
@@ -67,7 +67,7 @@ class FgsreportController extends Controller
                 
         $from_date = date('m-Y');
         $to_date = date('m-Y');
-        return view('pages/fgs/product-master/fin-goods-report', compact('product_details', 'from_date', 'to_date'));
+        return view('pages/FGS/product-master/fin-goods-report', compact('product_details', 'from_date', 'to_date'));
     }
     public function get_mrn($id)
     {

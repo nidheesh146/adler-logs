@@ -45,7 +45,7 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
                 'expiry_date'=>$expiry,
                 'customer'=>$item['firm_name'],
                 //'customer'=>$item['firm_name'],
-                'WEF'=>date('d-m-Y',strtotime($item['grs_created_at'])),
+                'WEF'=>date('d-m-Y',strtotime($item['pi_created_at'])),
             );
         }
         return collect($data);
