@@ -165,6 +165,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/MIQ/excel-export','MIQController@MIQExport');
     Route::get('inventory/MIQ/quarantine-excel-export','MIQController@MIQQuarantineExport');
     Route::get('inventory/MIQ/QuarantineReport','MIQController@LiveQuarantineReport');
+    Route::get('inventory/MIQ/find-invoice-info', 'MIQController@invoiceInfo');
     // MAC
     Route::get('inventory/MAC', 'MACController@MAClist');
     Route::get('inventory/MAC-add/{id?}', 'MACController@MACAdd');

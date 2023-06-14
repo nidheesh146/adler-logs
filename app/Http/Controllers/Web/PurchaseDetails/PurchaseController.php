@@ -950,7 +950,8 @@ class PurchaseController extends Controller
     {
         if ($request->isMethod('post'))
         {
-            $validation['invoice_number'] = ['required','unique:inv_supplier_invoice_master'];
+            //$validation['invoice_number'] = ['required','unique:inv_supplier_invoice_master'];
+            $validation['invoice_number'] = ['required'];
             $validation['invoice_date'] = ['required'];
             $validation['po_item_id'] = ['required'];
             $validator = Validator::make($request->all(), $validation);

@@ -293,6 +293,114 @@ class MIQController extends Controller
 
         return view('pages.inventory.MIQ.LiveQuarantineReport',compact('data'));
     }
+    public function invoiceInfo(Request $request)
+    {
+        if ($request->q) {
+            $condition[] = ['inv_supplier_invoice_master.invoice_number', 'like', '%' . strtoupper($request->q) . '%'];
+           
+            $data = $this->inv_supplier_invoice_master->find_invoice_num($condition);
+            if (!empty($data[0])) {
+                return response()->json($data, 200);
+            } else {
+                return response()->json(['message' => 'item code is not valid'], 500);
+            }
+        } else {
+            echo $this->invoice_details($request->id, null);
+            exit;
+        }
+    }
+    public function invoice_details($id, $active = null)
+    {
+        $invoice = $this->inv_supplier_invoice_master->get_master_data(['inv_supplier_invoice_master.id' => $id]);
+        //return $invoice;
+        $invoice_item = $this->inv_supplier_invoice_item->get_supplier_invoice_item_mac(['inv_supplier_invoice_rel.master' => $id]);
+        // if ($active) {
+        //     $inv_mac_item = $this->inv_mac_item->get_mac_items(['inv_mac_rel.master' => $active]);
+        // }
+
+        $data = '<div class="row">
+           <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+               <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                Supplier Invoice (' . $invoice->invoice_number . ')
+                   </label>
+               <div class="form-devider"></div>
+           </div>
+           </div>
+           <table class="table table-bordered mg-b-0">
+                <thead>
+            
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Invoice Date</th>
+                        <td>' . date('d-m-Y', strtotime($invoice->invoice_date)) . '</td>
+                    </tr>
+                    <tr>
+                            <th>Created Date</th>
+                            <td>' . date('d-m-Y', strtotime($invoice->invoice_created)) . '</td>
+                    </tr>
+                    <tr>
+                        <th>Supplier ID</th>
+                        <td>'.$invoice->vendor_id.'</td>
+                        
+                    </tr>
+                    <tr>
+                        <th>Supplier Name</th>
+                        <td>'.$invoice->vendor_name.'</td>
+                    </tr>
+                </tbody>
+           </table>
+           <br>
+           <div class="row">
+           <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+               <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">';
+       
+            $data .= 'Invoice Items ';
+            $data .= '</label>
+               <div class="form-devider"></div>
+                </div>
+                </div>
+                <div class="table-responsive">
+                <table class="table table-bordered mg-b-0" id="example1">';
+
+        
+            $data .= '<thead>
+                   <tr>
+                   <th>PR No</th>
+                   <th>Item Code:</th>
+                   <th>Lot No</th>
+                   <th>Invoice Qty</th>
+                   <th>Accepted Qty</th>
+                   <th>Rate</th>
+                   <th>Discount </th>
+                   <th>GST </th>
+                   
+                   </tr>
+               </thead>
+               <tbody >';
+            foreach ($invoice_item as $item) {
+                $data .= '<tr>
+                        <td>'.$item->pr_no.'</td>
+                       <td>'.$item->item_code.'</td>
+                       <td>'.$item->lot_number.'</td>
+                       <td>'.$item->order_qty. $item->unit_name.'</td>
+                       <td>'.$item->accepted_quantity. $item->unit_name.'</td>
+                       <td>'.$item->rate.'</td>
+                       <td>'.$item->discount.'</td>
+                       <td>IGST:'.$item->igst.'% ,
+                            SGST:'.$item->sgst.'%,
+                            CGST:'.$item->cgst.'%<br/>
+                       </td>
+                       
+                   </tr>';
+            }
+            $data .= '</tbody>';
+        
+
+        $data .= '</table>
+       </div>';
+        return $data;
+    }
 
 
     

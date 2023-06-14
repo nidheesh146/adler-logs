@@ -9,6 +9,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use DB;
 use Validator;
 use PDF;
+use Picqer;
 use App\Models\batchcard;
 use App\Models\product;
 use App\Models\product_input_material;
@@ -712,8 +713,12 @@ class BatchCardController extends Controller
     public function BatchCardpdf($batch_id)
     { 
         $data['batch'] = $this->batchcard->get_batch_card(['batchcard_batchcard.id' => $batch_id]);
-       
-      $pdf = PDF::loadView('pages/batchcard/batchcard-list-pdf', $data);
+        $prdct = product::find( $data['batch']->product_id);
+        $color =[0,0,0];
+        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+        $data['batchno_barcode'] = $generator->getBarcode($data['batch']->batch_no, $generator::TYPE_CODE_128, 1,40, $color);
+        $data['sku_code_barcode'] = $generator->getBarcode($prdct->sku_code, $generator::TYPE_CODE_128, 1,70, $color );
+        $pdf = PDF::loadView('pages/batchcard/batchcard-list-pdf', $data);
         // $pdf->set_paper('A4', 'landscape');
         $file_name = "batchcard" . $data['batch']['start_date'] . "_" . $data['batch']['start_date'];
         return $pdf->stream($file_name . '.pdf');
