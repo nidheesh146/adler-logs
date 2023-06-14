@@ -65,7 +65,7 @@ class BatchCardController extends Controller
         if ($request->isMethod('post')) {
             $validation['product'] = ['required'];
             $validation['batchcard'] = ['required'];
-            $validation['process_sheet'] = ['required'];
+           // $validation['process_sheet'] = ['required'];
             $validation['sku_quantity'] = ['required'];
             $validation['start_date'] = ['required'];
             $validation['target_date'] = ['required'];
@@ -123,7 +123,7 @@ class BatchCardController extends Controller
             $validation['product1'] = ['required'];
             $validation['batchcard'] = ['required'];
             $validation['primary_sku_batchcards'] = ['required'];
-            $validation['process_sheet'] = ['required'];
+            //$validation['process_sheet'] = ['required'];
             $validation['sku_quantity'] = ['required'];
             $validation['start_date'] = ['required'];
             $validation['target_date'] = ['required'];
@@ -133,7 +133,7 @@ class BatchCardController extends Controller
             if(!$validator->errors()->all())
             {
                 $datas['product_id'] = $request->product1;
-                $datas['process_sheet_id'] = $request->process_sheet;
+                //$datas['process_sheet_id'] = $request->process_sheet;
                 // $datas['input_material'] = $request->input_material;
                 // $datas['input_material_qty']=$request->input_material_qty;
                 $datas['batch_no'] = $request->batchcard;
@@ -473,7 +473,7 @@ class BatchCardController extends Controller
             // {
             //     $data .='(Lot Number:'.$lotcard['lot_number'].', Quantity: '.$lotcard['accepted_quantity'].' &nbsp;'.$lotcard['unit_name'].')';
             // }
-            if($material['item_id2']!=NULL || $material['item_id2']==0) 
+            if($material['item_id2']!=NULL ) 
             {      
                 if($material['item_id2']==0)
                 {
