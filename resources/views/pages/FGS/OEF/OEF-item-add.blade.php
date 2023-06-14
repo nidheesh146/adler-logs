@@ -62,7 +62,7 @@
                                                     style="float:left;">
                                                     <label>HSN Code * </label>
                                                     <input type="text" readonly class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="HSN Code">
+                                                        id="hsn_code1" placeholder="HSN Code">
                                                     <input type="hidden"
                                                         value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}"
                                                         name="Itemtypehidden" id="Itemtypehidden">
@@ -97,7 +97,7 @@
                                                     <input type="text"  class="form-control" name="moreItems[0][discount]"
                                                         id="discount1" placeholder="Discount">
                                                 </div>
-                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                               {{-- <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                                     <label> IGST ( % ) </label>
                                                     <input type="hidden" name="gst" id="gst-id1" index="1" value="">
                                                     <select class="form-control IGST" id="IGST1" name="moreItems[0][IGST]">
@@ -134,8 +134,20 @@
                                                             @endif
                                                         @endforeach
                                                     </select>
+                                                </div>--}}
+                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                                    <label> IGST ( % ) </label>
+                                                    <input type="hidden" name="moreItems[0][gst]" id="gst-id1" index="1" value="">
+                                                    <input type="text" class="form-control" name="igst" id="igst1" value="" readonly>
                                                 </div>
-                                            
+                                                <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                                    <label> SGST ( % ) </label>
+                                                    <input type="text" class="form-control" name="sgst" id="sgst1" value="" readonly>
+                                                </div>
+                                                <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                                                    <label> CGST ( % ) </label>
+                                                    <input type="text" class="form-control" name="cgst" id="cgst1" value="" readonly>
+                                                </div>
                                                
                                                 <button type="button" name="add" id="add" class="btn btn-success"
                                                     style="height:38px;margin-top:28px;"><i
@@ -237,7 +249,7 @@ function getsearch(){
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>HSN Code * </label>
-                                <input type="text" readonly class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="HSN Code">
+                                <input type="text" readonly class="form-control" name="Itemtype" id="hsn_code${i}" placeholder="HSN Code">
                                 <input type="hidden" value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}" name="Itemtypehidden" id="Itemtypehidden">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
@@ -263,42 +275,19 @@ function getsearch(){
                                 <label>Discount %* </label>
                                 <input type="text"  class="form-control" name="moreItems[${i}][discount]" id="discount${i}" placeholder="Discount">
                             </div>
+                           
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label> IGST ( % ) </label>
-                                <input type="hidden" name="gst" id="gst-id${i}" value="">
-                                <select class="form-control IGST" id="IGST${i}" index="${i}" name="moreItems[${i}][IGST]">
-                                    <option value="">--- select one ---</option>
-                                    <option class="zero-option-igst" value="" style="display:none;">0%</option>
-                                    @foreach ($data['gst'] as $item)
-                                        @if($item['igst']!=0)
-                                            <option value="{{ $item['id'] }}" >{{ $item['igst'] }} %</option>
-                                        @endif
-                                    @endforeach
-                                </select>
+                                <input type="hidden" name="moreItems[${i}][gst]" id="gst-id${i}" index="${i}" value="">
+                                <input type="text" class="form-control" name="igst" id="igst${i}" value="" readonly>
                             </div>
                             <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label> SGST ( % ) </label>
-                                <select class="form-control SGST" id="SGST${i}" index="${i}" name="moreItems[${i}][SGST]">
-                                    <option value="">--- select one ---</option>
-                                    <option  class="zero-option" value="" style="display:none;">0%</option>
-                                        @foreach ($data['gst'] as $item)
-                                            @if($item['sgst']!=0)
-                                                <option value="{{ $item['id'] }}" >{{ $item['sgst'] }} %</option>
-                                            @endif
-                                        @endforeach
-                                </select>
+                                <input type="text" class="form-control" name="sgst" id="sgst${i}" value="" readonly>
                             </div>
                             <div class="form-group col-sm-12 col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label> CGST ( % ) </label>
-                                <select class="form-control CGST" id="CGST${i}" index="${i}" name="moreItems[${i}][CGST]">
-                                    <option value="">--- select one ---</option>
-                                    <option class="zero-option" value="" style="display:none;">0%</option>
-                                    @foreach ($data['gst'] as $item)
-                                        @if($item['cgst']!=0)
-                                            <option value="{{ $item['id'] }}" >{{ $item['cgst'] }} %</option>
-                                        @endif
-                                    @endforeach
-                                </select>
+                                <input type="text" class="form-control" name="cgst" id="cgst${i}" value="" readonly>
                             </div>
                             <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
                         </div>
@@ -376,8 +365,29 @@ function getsearch(){
                             if(res.discription){
                                 $("#Itemdescription"+select_id+"").val(res.discription);
                             }
+                            if(res.hsn_code){
+                                $("#hsn_code"+select_id+"").val(res.hsn_code);
+                            }
                             if(res.sales){
                                 $("#rate"+select_id+"").val(res.sales);
+                            }
+                            if(res.gst_id){
+                                $("#gst-id"+select_id+"").val(res.gst_id);
+                            }
+                            if(res.igst){
+                                $("#igst"+select_id+"").val(res.igst);
+                            }
+                            if(res.cgst){
+                                if(res.cgst==0)
+                                $("#cgst"+select_id+"").val(0);
+                                else
+                                $("#cgst"+select_id+"").val(res.cgst);
+                            }
+                            if(res.sgst){
+                                $("#sgst"+select_id+"").val(res.sgst);
+                            }
+                            if(res.gst_id){
+                                $("#gst_id"+select_id+"").val(res.gst_id);
                             }
 
                        }

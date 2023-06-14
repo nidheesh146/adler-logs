@@ -101,7 +101,7 @@
 									<th>Date</th>
 									<th>delivery Schedule </th>
 									<th>Suppliers</th>
-									{{-- <th>Item count</th> --}}
+									<th>Created By</th> 
 									<th>Action</th>
 								
 								</tr>
@@ -125,6 +125,7 @@
 										?>
 										@endif
 									</td>
+									<td>{{$item['f_name']}} {{$item['l_name']}}</td>
 									<td>
 									<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/view-supplier-quotation-items/'.$item['quotation_id'].'/'.$supp['supplier_id'])}}"  class="dropdown-item"><i class="fas fa-eye"></i> View</a>
 										<a class="badge badge-primary" style="font-size: 13px;" href="{{url('inventory/comparison-quotation/'.$item['quotation_id']) }}"  class="dropdown-item"><i class="fa fa-balance-scale"></i> Comparison</a>

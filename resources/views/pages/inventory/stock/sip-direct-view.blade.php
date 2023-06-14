@@ -55,10 +55,10 @@
                                 <th>{{$sip['qty_to_production']}} {{$sip['unit_name']}}</th>
                             </tr>
                             <tr>
-                                <th>Work Centre Code</th>
-                                <th>{{$sip['centre_code']}}</th>
-                                <th>Work Centre Description</th>
-                                <th>{{$sip['centre_description']}}</th>
+                                <th>Work Centre Code & Description</th>
+                                <th>{{$sip['centre_code']}} <br/> {{$sip['centre_description']}}</th>
+                                <th>Transaction Slip No</th>
+                                <th>{{$sip['transaction_slip']}}</th>
                             </tr>
                             
                         </tbody> 
@@ -109,14 +109,18 @@
                                 <thead>
                                     <tr>
                                         <th>Batchcard</th>
-                                        <th>SKU Quantity</th>
+                                        <th>Item Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                      @foreach($sip['items'] as $item)
                                     <tr>
                                         <th>{{$item['batch_no']}}</th>
-                                        <th>{{$item['qty_to_production']}} Nos</th>
+                                        <th>@if($item['qty_to_production']!=NULL) {{$item['qty_to_production']}} Nos 
+                                            @else 
+                                            Not Specified
+                                            @endif
+                                        </th>
                                     </tr>
                                     @endforeach
                                 </tbody>

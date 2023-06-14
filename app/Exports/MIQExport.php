@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 use App\Models\PurchaseDetails\inv_miq_item;
+use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use DB;   
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -22,7 +23,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
     {
         if($this->request=='null')
         {
-            $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
+            $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_supplier_invoice_item.id as supplier_invoice_item_id',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
                     'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number')
                     ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
@@ -61,7 +62,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                 $condition[] = ['inv_miq.miq_date', '>=', date('Y-m-d', strtotime('01-' . $this->request->from))];
                 $condition[] = ['inv_miq.miq_date', '<=', date('Y-m-t', strtotime('01-' . $this->request->from))];
             }
-            $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
+            $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_supplier_invoice_item.id as supplier_invoice_item_id',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
                     'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number')
                     ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
@@ -94,11 +95,32 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             $expiry_control = 'Yes';
             else
             $expiry_control = 'No';
+            if(!$item['po_number'])
+            {
+                $po_nos = inv_supplier_invoice_item::leftJoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+                        ->leftJoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_supplier_invoice_item.po_item_id')
+                        ->where('inv_supplier_invoice_item.merged_invoice_item','=',$item['supplier_invoice_item_id'])
+                        ->select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_item.order_qty')
+                        ->get();
+                //return $po_nos;
+                $po = '';
+                foreach($po_nos as $po_no)
+                {
+                    $po .= $po_no['po_number'];
+                    $po .=', ';
+                }
+            }
+            else
+            {
+                $po = $item['po_number'];
+            }
+           
             $data[]= array(
                     '#'=>$i++,
                     'miq_number'=>$item['miq_number'],
                     'invoice_number'=>$item['invoice_number'],
                     'po_number'=>$item['po_number'],
+                    'po_number'=>$po,
                     'invoice_date'=>$item['invoice_date'],
                     'item_code'=>$item['item_code'],
                     'hsn_code'=>$item['hsn_code'],

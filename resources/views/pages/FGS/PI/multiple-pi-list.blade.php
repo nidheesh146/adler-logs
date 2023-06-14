@@ -6,16 +6,16 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Material Receipt Note(MRN)</span>
+				 <span>Proforma Invoice(PI)</span>
 				 <span><a href="">
-				 	MRN Item List
+				 	Merged PI  List
 				</a></span>
-				 </div>
+				 </div> 
 			<h4 class="az-content-title" style="font-size: 20px;">
-            MRN Item List 
+            Merged PI  List
               <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MRN/add-item/'.$mrn_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-						MRN Item
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/merge-multiple-PI')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+					Merged PI  
 				</button>
               <div>  
 				
@@ -56,20 +56,21 @@
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 								
 													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>Product :</label>
-														<input type="text" value="{{request()->get('product')}}" name="product" id="product" class="form-control" placeholder="PRODUCT">
+														<label>Merged PI Number</label>
+														<input type="text" value="{{request()->get('merged_pi_number')}}" name="merged_pi_number" id="merged_pi_number" class="form-control" placeholder="Merged PI Number">
 													</div><!-- form-group -->
 													
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Batch No</label>
-														<input type="text" value="{{request()->get('batchnumber')}}" name="batchnumber" id="batchnumber" class="form-control" placeholder="BATCH NO">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Customer</label>
+														<input type="text" value="{{request()->get('customer')}}" name="customer" id="customer" class="form-control" placeholder="CUSTOMER">
 													</div>
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">Manufacturing Month</label>
-														<input type="text" value="{{request()->get('manufaturing_from')}}" id="manufaturing_from" class="form-control datepicker" name="manufaturing_from" placeholder="Month(MM-YYYY)">
+														<label  style="font-size: 12px;">Merged PI Month</label>
+														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
+			
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -97,38 +98,34 @@
 						<table class="table table-bordered mg-b-0" >
 							<thead>
 								<tr>
-									<th>Product</th>
-                                    <th>HSN Code</th>
-									<th>Description</th>
-									<th>Batch No.</th>
-									<th>Qty.</th>
-									<th>UOM</th>
-                                    <th>Date of Mfg.</th>
-                                    <th>Date of Expiry</th>
-									<th>Action</th>
+									<th>Merged PI Number</th>
+                                    <th>Merged PI Date</th>
+									<th>Customer</th>
+									<th>Shipping Address</th>
+									<th>Billing Address</th> 
+                                    <th>Created By</th> 
+                                    <th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-								@foreach($items as $item)
+							@foreach($mergedpi as $item)
                                 <tr>
-									<td>{{$item['sku_code']}}</td>
-                                    <td>{{$item['hsn_code']}}</td>
-									<td>{{$item['discription']}}</td>
-									<td>{{$item['batch_no']}}</td>
-									<td>{{$item['quantity']}}</td>
-									<td>Nos</td>
-                                    <td width="10%">{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                                    <td width="10%">@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td>
-									<td>
-									<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRN-item-edit/'.$item['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
-                            		<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRN-item-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+									
+									<td>{{$item['merged_pi_name']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['created_at']))}}</td>	
+									<td>{{$item['firm_name']}}</td>
+									<td>{{$item['shipping_address']}}</td>
+									<td>{{$item['shipping_address']}}</td>
+									<td>{{$item['f_name']}} {{$item['l_name']}}</td>
+                                    <td>
+										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/merged-payment-pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Payment</a>	
 									</td>
 								</tr>
 								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-						{{ $items->appends(request()->input())->links() }}
+                        {{ $mergedpi->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>
@@ -159,14 +156,15 @@
         // startDate: date,
         autoclose:true
     });
-	
+	$('#prbody1').show();
+	$('#prbody2').show();
   });
-  
 	$('.search-btn').on( "click", function(e)  {
-		var product = $('#pr_no').val();
-		var batchnumber = $('#batchnumber').val();
-		var manufaturing_from = $('#manufaturing_from').val();
-		if(!pr_no  & !department & !from)
+		var pi_number = $('#pi_number').val();
+		var customer = $('#customer').val();
+		var merged_pi_number = $('#merged_pi_number').val();
+		var from = $('#from').val();
+		if(!merged_pi_number   & !customer & !from)
 		{
 			e.preventDefault();
 		}

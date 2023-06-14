@@ -172,7 +172,7 @@
             </tr>
             <?php $i=1; ?>
             @foreach($items as $item)
-            <tr style="text-align:right;">
+            <tr style="text-align:left;">
                 <td style="text-align:center;">{{$i++}}</td>
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>

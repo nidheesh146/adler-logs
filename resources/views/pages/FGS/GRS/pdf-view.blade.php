@@ -209,16 +209,16 @@
     <table border="1">
             <tr>
                 <th>S.NO</th>
-                <th style="width:10%;">
+                <th style="width:9%;">
                     HSN CODE  
                 </th>
                 <th>SKU CODE</th>
-                <th width='40%'> DESCRIPTION</th>
+                <th width='35%'> DESCRIPTION</th>
                 <th>BATCH NO</th>
                 <th>BATCH QTY</th>
                 <th>UOM</th>
-                <th>DATE OF MFG.</th>
-                <th>DATE OF EXPIRY</th>
+                <th style="width:9%;">DATE OF MFG.</th>
+                <th style="width:9%;">DATE OF EXPIRY</th>
                 
             </tr>
             <?php $i=1; ?>

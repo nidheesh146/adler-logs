@@ -215,7 +215,8 @@ class PurchaseController extends Controller
         return view('pages.purchase-details.final-purchase.final-purchase-add',compact('data'));
     }
 
-    public function insertFinalPurchase(Request $request){
+    public function insertFinalPurchase(Request $request)
+    {
         $validation['quotation_id'] = ['required'];
         // $validation['create_by'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
@@ -307,7 +308,7 @@ class PurchaseController extends Controller
             $validation['quantity'] = ['required'];
             $validation['rate'] = ['required'];
             $validation['discount'] = ['required'];
-            $validation['gst'] = ['required'];
+           // $validation['gst'] = ['required'];
             // $validation['delivery_schedule'] = ['required', 'date'];
             // $validation['specification'] = ['required'];
             $validator = Validator::make($request->all(), $validation);

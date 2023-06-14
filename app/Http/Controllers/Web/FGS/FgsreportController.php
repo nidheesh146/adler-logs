@@ -8,21 +8,48 @@ use Illuminate\Http\Request;
 
 use DB;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FGSTransactionExport;
 
 class FgsreportController extends Controller
 {
-    public function get_data()
+    public function get_data(Request $request)
     {
-        $product_details = DB::table('product_product')
-            ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
-            ->select('product_product.*', 'batchcard_batchcard.batch_no')
-
-            ->paginate(15);
+        //$condition = [];
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%'];
+            $product_details = DB::table('product_product')
+                    ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
+                    ->select('product_product.*', 'batchcard_batchcard.batch_no')
+                    ->where($condition)
+                    ->paginate(15);
+        }
+        if($request->from || $request->to)
+        {
+            $from_date=\Carbon\Carbon::createFromFormat('m-Y',  $request->from)->format('Y-m');
+            $to_date=\Carbon\Carbon::createFromFormat('m-Y',  $request->to)->format('Y-m');
+            $product_details = DB::table('product_product')
+                    ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
+                    ->select('product_product.*', 'batchcard_batchcard.batch_no')           
+                    ->whereRaw("DATE_FORMAT(product_product.created,'%Y-%m') BETWEEN '$from_date' AND '$to_date'")
+                    ->paginate(15);
+        }
+        if(!$request->item_code && !$request->from && !$request->to)
+        {
+            $product_details = DB::table('product_product')
+                    ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
+                    ->select('product_product.*', 'batchcard_batchcard.batch_no')
+                    //->where($condition)
+                    ->paginate(15);
+        }
+        
+        
         $from_date = date('m-Y');
         $to_date = date('m-Y');
 
 
-        return view('pages/fgs/product-master/fin-goods-report', compact('product_details', 'from_date', 'to_date'));
+        return view('pages/FGS/product-master/fin-goods-report', compact('product_details', 'from_date', 'to_date'));
     }
     public function get_result(Request $request)
     {
@@ -40,7 +67,7 @@ class FgsreportController extends Controller
                 
         $from_date = date('m-Y');
         $to_date = date('m-Y');
-        return view('pages/fgs/product-master/fin-goods-report', compact('product_details', 'from_date', 'to_date'));
+        return view('pages/FGS/product-master/fin-goods-report', compact('product_details', 'from_date', 'to_date'));
     }
     public function get_mrn($id)
     {
@@ -225,5 +252,248 @@ class FgsreportController extends Controller
         } else {
             return 0;
         }
+    }
+    public function fgsExport(Request $request)
+    {
+        // echo "kk";exit;
+        ini_set('max_execution_time', 500);
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%'];
+            $product_details = DB::table('product_product')
+                    ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
+                    ->select('product_product.*', 'batchcard_batchcard.batch_no')
+                    ->where($condition)
+                    ->get();
+        }
+        if($request->from || $request->to)
+        {
+            $from_date=\Carbon\Carbon::createFromFormat('m-Y',  $request->from)->format('Y-m');
+            $to_date=\Carbon\Carbon::createFromFormat('m-Y',  $request->to)->format('Y-m');
+            $product_details = DB::table('product_product')
+                    ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
+                    ->select('product_product.*', 'batchcard_batchcard.batch_no')           
+                    ->whereRaw("DATE_FORMAT(product_product.created,'%Y-%m') BETWEEN '$from_date' AND '$to_date'")
+                    ->get();
+        }
+        if(!$request->item_code && !$request->from && !$request->to)
+        {
+            $product_details = DB::table('product_product')
+                    ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
+                    ->select('product_product.*', 'batchcard_batchcard.batch_no')
+                    //->where($condition)
+                    ->get();
+        }
+        foreach($product_details as $product_detail)
+        {
+            if(!empty($this->get_mrn($product_detail->id)))
+            {
+                $mrn_number = $this->get_mrn($product_detail->id)->mrn_number;
+                $mrn_qty =$this->get_mrn($product_detail->id)->quantity;
+                $mrn_date = $this->get_mrn($product_detail->id)->mrn_date;
+                $mrn_wef = date('d-m-Y',strtotime($this->get_mrn($product_detail->id)->created_at));
+            }
+            else
+            {
+                $mrn_number = '';
+                $mrn_qty ='';
+                $mrn_date = '';
+                $mrn_wef = '';
+            }
+            if(!empty($this->get_oef($product_detail->id)))
+            {
+                $oef_number = $this->get_oef($product_detail->id)->oef_number;
+                $oef_qty =$this->get_oef($product_detail->id)->quantity;
+                $oef_date = $this->get_oef($product_detail->id)->oef_date;
+                $oef_wef = date('d-m-Y',strtotime($this->get_oef($product_detail->id)->created_at));
+            }
+            else
+            {
+                $oef_number = '';
+                $oef_qty ='';
+                $oef_date = '';
+                $oef_wef = '';
+            }
+            if(!empty($this->get_coef($product_detail->id)))
+            {
+                $coef_number = $this->get_coef($product_detail->id)->coef_number;
+               // $coef_qty =$this->get_coef($product_detail->id)->quantity;
+                $coef_date = $this->get_coef($product_detail->id)->coef_date;
+                $coef_wef = date('d-m-Y',strtotime($this->get_coef($product_detail->id)->created_at));
+            }
+            else
+            {
+                $coef_number = '';
+                $coef_qty ='';
+                $coef_date = '';
+                $coef_wef = '';
+            }
+            if(!empty($this->get_pi($product_detail->id)))
+            {
+                $pi_number = $this->get_pi($product_detail->id)->pi_number;
+                $pi_qty =$this->get_pi($product_detail->id)->batch_qty;
+                $pi_date = $this->get_pi($product_detail->id)->pi_date;
+                $pi_wef = date('d-m-Y',strtotime($this->get_pi($product_detail->id)->created_at));
+            }
+            else
+            { 
+                $pi_number ='';
+                $pi_qty ='';
+                $pi_date = '';
+                $pi_wef = '';
+
+            }
+            if(!empty($this->get_cpi($product_detail->id)))
+            {
+                $cpi_number = $this->get_cpi($product_detail->id)->cpi_number;
+               // $cpi_qty =$this->get_cpi($product_detail->id)->batch_qty;
+                $cpi_date = $this->get_cpi($product_detail->id)->cpi_date;
+                $cpi_wef = date('d-m-Y',strtotime($this->get_cpi($product_detail->id)->created_at));
+            }
+            else
+            {
+                $cpi_number ='';
+                $cpi_qty = '';
+                $cpi_date = '';
+                $cpi_wef = '';
+            }
+            if(!empty($this->get_grs($product_detail->id)))
+            {
+                $grs_number = $this->get_grs($product_detail->id)->grs_number;
+                $grs_date = $this->get_grs($product_detail->id)->grs_date;
+                $grs_wef =date('d-m-Y',strtotime($this->get_grs($product_detail->id)->created_at));
+            }
+            else
+            {
+                $grs_number = '';
+                $grs_date = '';
+                $grs_wef = '';
+            }
+            if(!empty($this->get_cgrs($product_detail->id)))
+            {
+                $cgrs_number = $this->get_cgrs($product_detail->id)->cgrs_number;
+                $cgrs_date = $this->get_cgrs($product_detail->id)->cgrs_date;
+                $cgrs_wef =date('d-m-Y',strtotime($this->get_cgrs($product_detail->id)->created_at));
+            }
+            else
+            {
+                $cgrs_number = '';
+                $cgrs_date ='';
+                $cgrs_wef ='';
+            }
+            if(!empty($this->get_min($product_detail->id)))
+            {
+                $min_number = $this->get_min($product_detail->id)->min_number;
+                $min_date = $this->get_min($product_detail->id)->min_date;
+                $min_wef =date('d-m-Y',strtotime($this->get_min($product_detail->id)->created_at));
+            }
+            else
+            {
+                $min_number ='';
+                $min_date ='';
+                $min_wef ='';
+
+            }
+            if(!empty($this->get_cmin($product_detail->id)))
+            {
+                $cmin_number = $this->get_cmin($product_detail->id)->cmin_number;
+                $cmin_date = $this->get_cmin($product_detail->id)->cmin_date;
+                $cmin_wef =date('d-m-Y',strtotime($this->get_cmin($product_detail->id)->created_at));
+            }
+            else
+            {
+                $cmin_number ='';
+                $cmin_date ='';
+                $cmin_wef ='';
+            }
+            if(!empty($this->get_mis($product_detail->id)))
+            {
+                $mis_number = $this->get_mis($product_detail->id)->mis_number;
+                $mis_date = $this->get_mis($product_detail->id)->mis_date;
+                $mis_wef =date('d-m-Y',strtotime($this->get_mis($product_detail->id)->created_at));
+            }
+            else
+            {
+                $mis_number ='';
+                $mis_date ='';
+                $mis_wef ='';
+            }
+            if(!empty($this->get_mtq($product_detail->id)))
+            {
+                $mtq_number = $this->get_mtq($product_detail->id)->mtq_number;
+                $mtq_date = $this->get_mtq($product_detail->id)->mtq_date;
+                $mtq_wef =date('d-m-Y',strtotime($this->get_mtq($product_detail->id)->created_at));
+            }
+            else
+            {
+                $mtq_number ='';
+                $mtq_date = '';
+                $mtq_wef ='';
+            }
+            if(!empty($this->get_cmtq($product_detail->id)))
+            {
+                $cmtq_number = $this->get_cmtq($product_detail->id)->cmtq_number;
+                $cmtq_date = $this->get_cmtq($product_detail->id)->cmtq_date;
+                $cmtq_wef =date('d-m-Y',strtotime($this->get_cmtq($product_detail->id)->created_at));
+            }
+            else
+            {
+                $cmtq_number ='';
+                $cmtq_date = '';
+                $cmtq_wef ='';
+            }
+            $datas[] = array(
+                'sku_code'=>$product_detail->sku_code,
+                'batch_no'=>$product_detail->batch_no,
+                'Date'=>date('d-m-Y',strtotime($product_detail->created)),
+                'description'=>$product_detail->discription,
+                'mrn_number' =>$mrn_number,
+                'mrn_qty' =>$mrn_qty,
+                'mrn_date' =>$mrn_date,
+                'mrn_wef' =>$mrn_wef,
+                'oef_number'=>$oef_number,
+                'oef_qty'=>$oef_qty,
+                'oef_date'=>$oef_date,
+                'oef_wef'=>$oef_wef,
+                'coef_number'=>$coef_number,
+                'coef_qty'=>$coef_qty,
+                'coef_date'=>$coef_date,
+                'coef_wef'=>$coef_wef,
+                'pi_number'=>$pi_number,
+                'pi_qty' =>$pi_qty,
+                'pi_date' => $pi_date,
+                'pi_wef' =>$pi_wef,
+                'cpi_number'=>$cpi_number,
+                'cpi_qty' =>$cpi_qty,
+                'cpi_date' => $cpi_date,
+                'cpi_wef' =>$cpi_wef,
+                'grs_number'=>$grs_number,
+                'grs_date' => $grs_date,
+                'grs_wef' =>$grs_wef,
+                'cgrs_number'=>$cgrs_number,
+                'cgrs_date' => $cgrs_date,
+                'cgrs_wef' =>$cgrs_wef,
+                'min_number'=>$min_number,
+                'min_date' => $min_date,
+                'min_wef' =>$min_wef,
+                'cmin_number'=>$cmin_number,
+                'cmin_date' => $cmin_date,
+                'cmin_wef' =>$cmin_wef,
+                'mis_number'=>$mis_number,
+                'mis_date' => $mis_date,
+                'mis_wef' =>$mis_wef,
+                'mtq_number'=>$mtq_number,
+                'mtq_date' => $mtq_date,
+                'mtq_wef' =>$mtq_wef,
+                'cmtq_number'=>$cmtq_number,
+                'cmtq_date' => $cmtq_date,
+                'cmtq_wef' =>$cmtq_wef,
+
+
+            );
+        }
+        ini_set('max_execution_time', 500);
+        //print_r($datas);exit;
+        return Excel::download(new FGSTransactionExport($datas), 'fgs-transaction-report' . date('d-m-Y') . '.xlsx');
     }
 }

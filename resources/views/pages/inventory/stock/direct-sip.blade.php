@@ -65,6 +65,20 @@
                         @endforeach
                     </select> 
                 </div>
+                <div class="form-group col-sm-12col-md-4 col-lg-4 col-xl-4">
+                    <label>Quantity To Production</label>
+                    <div class="input-group mb-6">
+                        <input type="text" class="form-control" name="qty_to_production" id="qty_to_production" placeholder="Quantity To Production" aria-describedby="unit-div2">
+                        <div class="input-group-append">
+                            <span class="input-group-text unit-div" id="unit-div">Unit</span>
+                        </div>
+                    </div>
+                    <label id="qty_to_production-error" class="error" for="qty_to_production" style="display:none;">This field is required.</label>
+                </div>
+                <div class="form-group col-sm-12col-md-4 col-lg-4 col-xl-4">
+                    <label>Transaction Slip No</label>
+                    <input type="text"  class="form-control" name="transaction_slip" id="transaction_slip" >
+                </div>
                 <br/>
             </div>
             <div class="form-devider"></div>
@@ -195,6 +209,9 @@
             if(res.discription){
                 $("#item_description").text(res.discription);
             }
+            if(res.unit_name){
+                $("#unit-div").text(res.unit_name);
+            }
             $('.batchcards').empty();
             $('.lotcards').empty();
             $('.spinner-button').hide();
@@ -250,6 +267,8 @@
     });
     function enableTextBox(cash) {
         const checkbox = $(cash);
+        // var unit = $("#unit-div").text();
+        // var qty_prdtn = $('#qty_to_production').val();
         if(checkbox.is(':checked')){
             checkbox.closest('tr').find('.qty_to_production').attr("disabled", false);
             checkbox.closest('tr').find('.qty_to_production').attr("required", "true");

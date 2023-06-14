@@ -135,7 +135,7 @@
                         <td>{{date('d-m-Y', strtotime($sip['created_at']))}}</td>
                         <td>@foreach($sip['items'] as $item)
                             @if($item['batch_no'])
-                            {{$item['batch_no']}} - {{$item['qty_to_production']}}<br/>
+                            {{$item['batch_no']}} - @if($item['qty_to_production']!=NULL) {{$item['qty_to_production']}} @else Not specified @endif<br/>
                             @endif
                             @endforeach
                         </td>

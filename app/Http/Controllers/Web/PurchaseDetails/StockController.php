@@ -643,6 +643,21 @@ class StockController extends Controller
             
             foreach($batchcards as $card)
              {
+                // $data['batchcards'] .="<tr>
+                //                             <th><input type='checkbox' class='batchcard-checkbox' onclick='enableTextBox(this)'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
+                //                             <th>".$card->batch_no."</th>
+                //                             <th>".$card->sku_code."</th>
+                //                             <th>".$card->sku_quantity."</th>
+                //                             <th class='qty'>
+                //                                 <span>".$card->material_qty." ".$card->unit_name."</span>
+                //                                 <span class='' style='float:right;'>
+                //                                     <a href='#' data-toggle='modal' data-target='#requestModal'  class='badge badge-pill badge-primary request-btn' id='request-btn' style='border:none;display:none;'batchid='".$card->batchcard_id."'  batchno='".$card->batch_no."' skucode='".$card->sku_code."' skuqty='".$card->sku_quantity."' unit='".$card->unit_name."' batchqty='".$card->material_qty."' batchmaterialId='".$card->batchcard_material_id."'>
+                //                                     Quantity Update Request
+                //                                     </a>
+                //                                 </span>
+                //                             </th>
+                //                             <th><input type='text' class='qty_to_production' id='qty_to_production' name='qty_to_production[]' disabled>".$card->unit_name."</th>
+                //                         </tr> ";   
                 $data['batchcards'] .="<tr>
                                             <th><input type='checkbox' class='batchcard-checkbox' onclick='enableTextBox(this)'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
                                             <th>".$card->batch_no."</th>
@@ -656,8 +671,8 @@ class StockController extends Controller
                                                     </a>
                                                 </span>
                                             </th>
-                                            <th><input type='text' class='qty_to_production' id='qty_to_production' name='qty_to_production[]' disabled>".$card->unit_name."</th>
-                                        </tr> ";                                               
+                                            
+                                        </tr> ";                                              
                 $i++;
             }
             $data['batchcards'] .="<tbody></table></div></div><br/>";
@@ -705,6 +720,7 @@ class StockController extends Controller
         $validation['lot_id'] = ['required'];
         $validation['batchcard'] = ['required'];
         $validation['work_centre'] = ['required'];
+        $validation['qty_to_production'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
@@ -719,10 +735,12 @@ class StockController extends Controller
             $lot_data= $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$request->lot_id]);
             $data['sip_number'] = "SIP2-".$this->year_combo_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2-'.$years_combo.'%')->count()); 
             $data['lot_id'] = $request->lot_id;
-            $data['qty_to_production'] = array_sum($request->qty_to_production);
+            $data['qty_to_production'] = $request->qty_to_production;
             $data['type'] = 2;
             $data['status'] = 1;
             $data['work_centre'] = $request->work_centre;
+            $data['transaction_slip'] = $request->transaction_slip;
+            $data['qty_to_production'] = $request->qty_to_production;
             $data['created_at']= date('Y-m-d H:i:s');
             $data['updated_at']= date('Y-m-d H:i:s');
         
@@ -736,7 +754,8 @@ class StockController extends Controller
             // $inv_mac_item->save();
 
             $stock = inv_stock_management::where('lot_id','=',$request->lot_id)->first();
-            $stockQty = $stock->stock_qty - array_sum($request->qty_to_production);
+            // $stockQty = $stock->stock_qty - array_sum($request->qty_to_production);
+            $stockQty = $stock->stock_qty - $request->qty_to_production;
             $stock->stock_qty = $stockQty;
             $stock->save();
             if($mac_item)
@@ -756,7 +775,8 @@ class StockController extends Controller
                 $info['item_id'] = $stock['item_id'];
                 $info['transaction_type'] = 3;
                 $info['transaction_id'] = $sip_master;
-                $info['transaction_qty'] = array_sum($request->qty_to_production);
+                // $info['transaction_qty'] = array_sum($request->qty_to_production);
+                $info['transaction_qty'] = $request->qty_to_production;
                 $info['created_at'] = date('Y-m-d H:i:s');
                 $transaction = $this->inv_stock_transaction->insert_data($info);
                 $i = 0;
@@ -770,7 +790,7 @@ class StockController extends Controller
                     $batch['batchcard_material_id']=$batchdata['id'];
                     $batch['material_id']=$request->item_code;
                     //$batch['qty_to_production']=$batchdata['quantity'];
-                    $batch['qty_to_production'] = $qty_to_production_array[$i];
+                    //$batch['qty_to_production'] = $qty_to_production_array[$i];
                     $sip_item = $this->inv_stock_to_production_item->insert_data($batch);
 
                     $rel['master'] = $sip_master;

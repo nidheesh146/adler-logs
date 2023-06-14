@@ -4,7 +4,7 @@
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
 
-    <title>PI_{{$pi['firm_name']}}_{{$pi['pi_number']}}</title>
+    <title>PI_{{$mpi['firm_name']}}_{{$mpi['merged_pi_name']}}</title>
 </head>
 
 <body>
@@ -138,7 +138,7 @@
             <table style="font-weight:bold;font-size: 14px;">
                 <tr>
                     <td>Reference No</td>
-                    <td>: {{$pi['pi_number']}} </td>
+                    <td>: {{$mpi['merged_pi_name']}} </td>
 
                 </tr>
 
@@ -148,7 +148,7 @@
             <table style="font-weight:bold;font-size: 14px;">
                 <tr>
                     &nbsp &nbsp &nbsp &nbsp<td>Reference Date</td>
-                    <td>: {{$pi['pi_date']}} </td>
+                    <td>: {{date('d-m-Y', strtotime($mpi['created_at']))}} </td>
 
                 </tr>
 
@@ -162,12 +162,12 @@
             <table>
                 <tr>
                     <td>
-                        To <br/>
-                         <strong>
-                            <font size="12px">{{$pi['firm_name']}} </font>
+                        To <br/> 
+                        <strong>
+                            <font size="12px">{{$mpi['firm_name']}} </font>
                         </strong>
-                        <p>{{$pi['billing_address']}}<br />
-                            {{$pi['city']}}, {{$pi['state_name']}}
+                        <p>{{$mpi['billing_address']}}<br />
+                            {{$mpi['city']}}, {{$mpi['state_name']}}
 
                         </p>
                     </td>
@@ -178,25 +178,18 @@
         </div>
     </div>
     <div style="font-size:12px; padding-top: 30px;">
+
         <span style="padding-left:0px;">Dear Sir / Madam,</span><br>
         <span>We are pleased to inform you that the material against your following order/s is ready for dispatch. The details for the same are as follows:</span>
-    </div><br>
     </div><br>
     <style>
         th {
             text-align: center;
         }
     </style>
-    @foreach($items as $item)
-
-    <?php
-    $discount_value = ($item['rate'] * $item['quantity']) - (($item['rate'] * $item['quantity'] * $item['discount']) / 100);
-    $total_amount = $discount_value + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['igst']) / 100);
-
-    ?>
-    @endforeach
+    
     <div class="row3">
-        <table >
+        <table border=1 width="95%">
             <tr>
                 <th rowspan="2">Your Order No.</th>
                 <th rowspan="2">
@@ -207,25 +200,39 @@
                 <th rowspan="2">Inv. Value</th>
 
             </tr><br>
-
+            <?php $tot = 0;?>
+            @foreach($pis as $pi)
+                <tr style="text-align: center;">
+                <?php $items = $fn->getPIItems($pi['id']); 
+                foreach($items as $item)
+                {
+                $discount_value = ($item['rate'] * $item['quantity']) - (($item['rate'] * $item['quantity'] * $item['discount']) / 100);
+                $total_amount = $discount_value + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['igst']) / 100);
+                }
+                ?>
+                <?php $tot = $tot+$total_amount;?> 
+                
+                    <td>{{$pi['order_number']}}</td>
+                    <td>{{$pi['order_date']}}</td>
+                    <td>{{$pi['pi_number']}}</td>
+                    <td>{{$pi['pi_date']}}</td>
+                    <td>{{number_format($total_amount, 2, '.', '')}}</td>
+                </tr>
+            @endforeach
             <tr style="text-align: center;">
-
-                <td>{{$pi['order_number']}}</td>
-                <td>{{$pi['order_date']}}</td>
-                <td>{{$pi['pi_number']}}</td>
-                <td>{{$pi['pi_date']}}</td>
-                <td>{{number_format($total_amount)}}</td>
-
-
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right;"><b>Total</b>  </td>
+                <td><b>:  {{round(number_format($tot, 2, '.', ''))}}</b></td>
             </tr>
 
         </table>
     </div><br>
 
     <div class="row3" style="font-size:12px; ">
-
-    <span>
-        You are requested to deposit the payment of Rs. {{round(number_format((float)($total_amount), 2, '.', ''))}} (In Words:  Rs. <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total_amount), 2, '.', '')))) ?>  Only ) in our bank account, which details are given below and confirm to us by return mail to enabling us to dispatch your shipment immediately.
+        <span>
+        You are requested to deposit the payment of Rs. {{round(number_format((float)($tot), 2, '.', ''))}} (In Words:  Rs. <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($tot), 2, '.', '')))) ?>  Only ) in our bank account, which details are given below and confirm to us by return mail to enabling us to dispatch your shipment immediately.
         </span>
         <br><br>
         <b>Company's Bank Details:-</b><br>
@@ -244,6 +251,8 @@
         <span>Thanking You,</span><br>
         <span>Sincerely Yours,</span><br>
 
+
+        
     </div><br>
     <div class="row3">
 

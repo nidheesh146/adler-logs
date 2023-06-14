@@ -1,7 +1,5 @@
 @extends('layouts.default')
 @section('content')
-
-@inject('SupplierQuotation', 'App\Http\Controllers\Web\PurchaseDetails\SupplierQuotationController')
 @php
 use App\Http\Controllers\Web\FGS\FgsreportController;
 $obj_fgs=new FgsreportController();
@@ -16,10 +14,9 @@ $obj_fgs=new FgsreportController();
                         FGS Report
                     </a></span>
             </div>
-            <!-- <h4 class="az-content-title" style="font-size: 20px;">Products
-			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/product-master/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Product</button>
-            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/product-master/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
-			</h4> -->
+             <h4 class="az-content-title" style="font-size: 20px;">FGS Report
+            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/fgs-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
+			</h4> 
 
             @if (Session::get('success'))
             <div class="alert alert-success " style="width: 100%;">
@@ -43,36 +40,33 @@ $obj_fgs=new FgsreportController();
                                             font-size: 12px;
                                         }
                                     </style>
-                                    <form autocomplete="off" id="formfilter" method="post" action="{{url('fgs/fgs-report-search')}}">
-                                        @csrf
+                                    <form autocomplete="off">
                                         <th scope="row">
                                             <div class="row filter_search" style="margin-left: 0px;">
                                                 <div class="col-sm-3 col-md-4 col-lg-4 col-xl-4 row">
-                                                    
                                                     <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                        <label style="font-size: 12px;">Item CODE</label>
-                                                        <input type="text"  id="itm_code" class="form-control " name="itm_code" placeholder="Item CODE">
+                                                        <label style="font-size: 12px;">Item Code</label>
+                                                        <input type="text"  id="item_code" class="form-control" value="{{request()->get('item_code')}}" name="item_code" placeholder="Item Code">
                                                     </div>
                                                     <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                         <label style="font-size: 12px;">From Date</label>
-                                                        <input type="text"  id="group" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
+                                                        <input type="text"  id="from" class="form-control datepicker" value="{{request()->get('from')}}" name="from" placeholder="Month(MM-YYYY)">
                                                     </div>
                                                     <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                         <label style="font-size: 12px;">To Date</label>
-                                                        <input type="text"  id="group" class="form-control datepicker" name="to" placeholder="Month(MM-YYYY)">
+                                                        <input type="text"  id="to" class="form-control datepicker" value="{{request()->get('to')}}" name="to" placeholder="Month(MM-YYYY)">
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
+                                                        <label style="width: 100%;">&nbsp;</label>
+														<button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+														@if(count(request()->all('')) > 2)
+															<a href="{{url()->current()}}" class="badge badge-pill badge-warning"
+															style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+														@endif
                                                     </div>
 
-
                                                 </div>
-                                                <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
-                                                    <!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;"> -->
-                                                    <label style="width: 100%;">&nbsp;</label>
-                                                    <button type="submit" class="badge badge-pill badge-primary search-btn" onclick="document.getElementById('formfilter').submit();" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                   
-                                                    <a href="{{url('fgs/fgs-report')}}" class="badge badge-pill badge-warning" style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-                                                    
-                                                    <!-- </div>  -->
-                                                </div>
+                                                
                                             </div>
                                         </th>
                                     </form>
@@ -362,11 +356,11 @@ $obj_fgs=new FgsreportController();
     });
 
     $('.search-btn').on("click", function(e) {
-        var hsn_code = $('#hsn_code').val();
-        var sku_code = $('#sku_code').val();
-        var group = $('#group').val();
+        var item_code = $('#item_code').val();
+        var from = $('#from').val();
+        var to = $('#to').val();
         var brand = $('#brand').val();
-        if (!sku_code & !group & !brand & !hsn_code) {
+        if (!item_code & !from & !to ) {
             e.preventDefault();
         }
     });
