@@ -43,30 +43,22 @@ $obj_inv=new InventoryreportController();
                                         font-size: 12px;
                                     }
                                 </style>
-                                <!-- <form autocomplete="off">
+                                <form autocomplete="off">
                                     <th scope="row">
                                         <div class="row filter_search" style="margin-left: 0px;">
                                             <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
-                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                                                    <label>MIQ No:</label>
-                                                    <input type="text" value="{{request()->get('miq_no')}}" name="miq_no" id="miq_no" class="form-control" placeholder="MIQ NO">
-
-                                                </div>
+                                                
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                     <label>Item Code:</label>
                                                     <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="Item Code">
 
                                                 </div>
-                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                                    <label for="exampleInputEmail1" style="font-size: 12px;">Supplier</label>
-                                                    <input type="text" value="{{request()->get('supplier')}}" name="supplier" id="supplier" class="form-control" placeholder="SUPPLIER">
-
-                                                </div>
-                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                
+                                                <!-- <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
                                                     <label for="exampleInputEmail1" style="font-size: 12px;">Month</label>
                                                     <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 
-                                                </div>
+                                                </div> -->
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
                                                     <label style="width: 100%;">&nbsp;</label>
                                                     <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
@@ -78,9 +70,10 @@ $obj_inv=new InventoryreportController();
                                             <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
                                                
                                             </div>
+
                                         </div>
                                     </th>
-                                </form> -->
+                                </form>
                             </tr>
                         </tbody>
                     </table>
@@ -99,17 +92,17 @@ $obj_inv=new InventoryreportController();
                             <th>Txn_Doc_No.</th>
                             <th>Basic_Doc_No</th>
                             <!-- <th>Doc_ Ref_No</th>
-                            <th>Doc_Date</th>
+                            <th>Doc_Date</th>-->
                             <th> Doc_Qty</th>
-                            <th>Doc_ Inward_Dt</th> -->
+                            <!--     <th>Doc_ Inward_Dt</th> -->
                             <th>Work_Centre</th>
                             <th>Supplier_Name</th>
-                            <!-- <th>Supplier Code</th>
-                            <th>PO / WO Number</th> -->
+                            <th>Supplier Code</th>
+                            <!--  <th>PO / WO Number</th> -->
                             <th>Item_Code</th>
                             <th>Item_Description</th>
                             <th>Lot_Number</th>
-                            <th> Quantity</th>
+                            <!--  <th> Quantity</th> -->
                             <!-- <th>Stk_Kpng_Unt</th>
                             <th> Unit_Rate </th>
                             <th>Value in INR</th>
@@ -123,46 +116,39 @@ $obj_inv=new InventoryreportController();
                     <tbody>
                         @foreach($item_details as $item_detail)
                         <tr>
-                            
+
                             <td>{{$item_detail->item_name}}</td>
-                            @if(!empty($obj_inv->get_sip($item_detail->id)))
-                            <td>{{$obj_inv->get_sip($item_detail->id)->sip_number}}</td>
+                            <td>{{$item_detail->sip_number}}</td>
+                            <td>{{$item_detail->sip_number}}</td>
+                            <td>{{$item_detail->qty_to_production}}</td>
+                            @if(!empty($item_detail->work_centre))
+                            <td>{{$obj_inv->get_workcenter($item_detail->work_centre)}}</td>
                             @else
-                            <td>{{$obj_inv->get_sip($item_detail->id)}}</td>
-                            @endif
-                            @if(!empty($obj_inv->get_sip($item_detail->id)))
-                            <td>{{$obj_inv->get_sip($item_detail->id)->sip_number}}</td>
-                            @if(!empty($obj_inv->get_workcenter($obj_inv->get_sip($item_detail->id)->work_centre)))
-                            <td>{{$obj_inv->get_workcenter($obj_inv->get_sip($item_detail->id)->work_centre)}}</td>
-                            @else
-                            <td>{{ $obj_inv->get_workcenter($obj_inv->get_sip($item_detail->id)) }}</td>
-                            @endif
-                            @else
-                            <td>{{$obj_inv->get_sip($item_detail->id)}}</td>
                             <td></td>
                             @endif
-                            @if(!empty($obj_inv->get_suplier($obj_inv->get_lot_no($item_detail->lot_id))))
-                            <td>{{$obj_inv->get_suplier($obj_inv->get_lot_no($item_detail->lot_id)->supplier_id)}}</td>
+                            @if(!empty($obj_inv->get_suplier($item_detail->supplier)))
+                            <td>{{$obj_inv->get_suplier($item_detail->supplier)->vendor_name}}</td>
                             @else
-                            <td>{{$obj_inv->get_suplier($obj_inv->get_lot_no($item_detail->lot_id))}}</td>
+                            <td>{{$item_detail->supplier}}</td>
                             @endif
-                            
+                            @if(!empty($obj_inv->get_suplier($item_detail->supplier)))
+                            <td>{{$obj_inv->get_suplier($item_detail->supplier)->vendor_id}}</td>
+                            @else
+                            <td>{{$item_detail->supplier}}</td>
+                            @endif
                             <td>{{$item_detail->item_code}}</td>
                             <td>{{$item_detail->discription}}</td>
-                            @if(!empty($obj_inv->get_lot_no($item_detail->lot_id)->lot_number))
+                            @if(!empty($obj_inv->get_lot_no($item_detail->lot_id)))
                             <td>{{$obj_inv->get_lot_no($item_detail->lot_id)->lot_number}}</td>
                             @else
-                            <td>{{$obj_inv->get_lot_no($item_detail->lot_id)}}</td>
+                            <td></td>
                             @endif
-                            <td>{{$item_detail->order_qty}}</td>
-                            
-
-
 
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
+                
             </div>
         </div>
     </div>
