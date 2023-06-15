@@ -1,0 +1,220 @@
+@extends('layouts.default')
+@section('content')
+
+<div class="az-content az-content-dashboard">
+	<br>
+	<div class="container">
+		<div class="az-content-body">
+			<div class="az-content-breadcrumb">
+				<span>Proforma Invoice(PI)</span>
+				<span><a href="">
+						All - Back Order Report
+					</a></span>
+			</div>
+			@include('includes.fgs.back-order-tab')
+			<br><br>
+			<h4 class="az-content-title" style="font-size: 20px;">
+				Pending PI List
+				<div class="right-button">
+					<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/PI/pending-PI-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
+				</div>
+			</h4>
+			@if(Session::get('error'))
+			<div class="alert alert-danger " role="alert" style="width: 100%;">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				{{Session::get('error')}}
+			</div>
+			@endif
+			@if (Session::get('success'))
+			<div class="alert alert-success " style="width: 100%;">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				<i class="icon fa fa-check"></i> {{ Session::get('success') }}
+			</div>
+			@endif
+
+			<div class="tab-content">
+				<div class="row row-sm mg-b-20 mg-lg-b-0">
+					<div class="table-responsive" style="margin-bottom: 13px;">
+						<table class="table table-bordered mg-b-0">
+							<tbody>
+								<tr>
+									<style>
+										.select2-container .select2-selection--single {
+											height: 26px;
+											/* width: 122px; */
+										}
+
+										.select2-selection__rendered {
+											font-size: 12px;
+										}
+									</style>
+									<form autocomplete="off">
+										<th scope="row">
+											<div class="row filter_search" style="margin-left: 0px;">
+												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
+
+													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
+														<label>GRS No :</label>
+														<input type="text" value="{{request()->get('grs_no')}}" name="grs_no" id="grs_no" class="form-control" placeholder="GRS NO">
+													</div><!-- form-group -->
+
+
+													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+														<label for="exampleInputEmail1" style="font-size: 12px;">OEF No:</label>
+														<input type="text" value="{{request()->get('oef_number')}}" name="oef_number" id="oef_number" class="form-control" placeholder="OEF NO">
+													</div>
+
+													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+														<label style="font-size: 12px;">PI No:</label>
+														<input type="text" value="{{request()->get('pi_number')}}" id="pi_number" class="form-control" name="pi_number" placeholder="PI NO">
+													</div>
+
+												</div>
+												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
+													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
+														<label style="width: 100%;">&nbsp;</label>
+														<button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
+														@if(count(request()->all('')) > 2)
+														<a href="{{url()->current()}}" class="badge badge-pill badge-warning" style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
+														@endif
+													</div>
+												</div>
+											</div>
+										</th>
+									</form>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+
+				<div class="tab-pane  active  show " id="purchase">
+
+					<div class="table-responsive">
+						<table class="table table-bordered mg-b-0">
+							<thead>
+								<tr>
+									
+									<th colspan="4">OEF</th>
+									<th colspan="4">PI</th>
+									<th colspan="4">GRS </th>
+
+								</tr>
+								<tr>
+									
+
+									<th>OEF NUMBER</th>
+									<th>OEF DATE</th>
+									<th>ORDER NUMBER</th>
+									<th>CUSTOMER INFO</th>
+
+									<th>PI NUMBER</th>
+									<th>PI DATE</th>
+									<th>ORDER NUMBER</th>
+									<th>CUSTOMER</th>
+
+									<th>GRS NUMBER</th>
+									<th>GRS DATE</th>
+									<th>PRODUCT CATEGORY</th>
+									<th>STOCK LOCATION(DECREASE)</th>
+								</tr>
+							</thead>
+							<tbody id="prbody1">
+								
+
+								
+
+								@foreach($oef as $item)
+
+
+
+								<td>{{$item['oef_number']}}</td>
+								<td>{{date('d-m-Y', strtotime($item['oef_date']))}}</td>
+								<td>{{$item['order_number']}}</td>
+
+
+
+								<td>{{$item['firm_name']}}<br />
+									Contact Person:{{$item['contact_person']}}<br />
+									Contact Number:{{$item['contact_number']}}<br />
+								</td>
+
+
+								@endforeach
+								@foreach($pi as $item)
+
+
+								<td>{{$item['pi_number']}}</td>
+								<td>{{date('d-m-Y', strtotime($item['pi_date']))}}</td>
+
+								<td>{{$item['order_number']}}</td>
+
+								<td>{{$item['firm_name']}}<br />
+									{{--Contact Person:{{$item['contact_person']}}<br />
+									Contact Number:{{$item['contact_number']}}<br />--}}
+								</td>
+
+
+								@endforeach
+								
+								@foreach($grs as $master)
+
+								<td>{{$master['grs_number']}}</td>
+								<td>{{date('d-m-Y', strtotime($master['grs_date']))}}</td>
+
+								<td>{{$master['category_name']}}</td>
+
+								<td>{{$master['firm_name']}}</td>
+								
+
+								@endforeach
+							</tbody>
+						</table>
+						<div class="box-footer clearfix">
+							{{ $pi->appends(request()->input())->links() }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- az-content-body -->
+</div>
+
+<script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
+<script src="<?= url(''); ?>/js/azia.js"></script>
+<script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js"> </script>
+<script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
+
+<script>
+	$(function() {
+		'use strict'
+		var date = new Date();
+		date.setDate(date.getDate());
+		$(".datepicker").datepicker({
+			format: "mm-yyyy",
+			viewMode: "months",
+			minViewMode: "months",
+			// startDate: date,
+			autoclose: true
+		});
+		$('#prbody1').show();
+		$('#prbody2').show();
+	});
+	$('.search-btn').on("click", function(e) {
+		var ref_number = $('#ref_number').val();
+		var min_no = $('#min_no').val();
+		var from = $('#from').val();
+		if (!min_no & !ref_number & !from) {
+			e.preventDefault();
+		}
+	});
+</script>
+
+
+@stop

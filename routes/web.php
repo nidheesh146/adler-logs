@@ -520,6 +520,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/merge-multiple-PI','PIController@mergeMutiplePI');
     Route::post('fgs/merge-pi','PIController@mergePIInsert');
     Route::get('fgs/PI/merged-payment-pdf/{mpi_id}','PIController@MergedPIPaymentpdf');
+    Route::get('fgs/PI/back-ordr-report','BackorderReportController@get_data');
     //CPI
      Route::get('fgs/CPI/CPI-list','CPIController@CPIList');
     Route::get('fgs/CPI/CPI-add','CPIController@CPIAdd');
