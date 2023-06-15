@@ -56,7 +56,10 @@
                                     <input type="hidden" name="mac_number" value="{{$edit['mrr']->mac_id}}">
                                 @endif
                         </div>
-
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                            <label>Supplier *</label>
+                            <input type="text" class="form-control supplier-name" readonly value="" name="supplier" placeholder="Supplier" redonly>
+                        </div>
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>MRD date *</label>
                             <input type="text" class="form-control datepicker" value="{{ (!empty($edit['mrd'])) ? date('d-m-Y',strtotime($edit['mrd']->mrd_date)) : date("d-m-Y")}}" name="mrd_date" placeholder="MRD date">

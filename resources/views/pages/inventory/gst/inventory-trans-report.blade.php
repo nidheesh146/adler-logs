@@ -14,11 +14,11 @@ $obj_inv=new InventoryreportController();
             <div class="az-content-breadcrumb">
                 <span><a href="">Inventory Transaction Report</a></span>
             </div>
-            <!-- <h4 class="az-content-title" style="font-size: 20px;">Inventory Transaction Report
+            <h4 class="az-content-title" style="font-size: 20px;">Inventory Transaction Report
                 <div class="right-button">
-                    <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/MIQ/quarantine-excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
+                    <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/inventory-trans-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
                 </div>
-            </h4> -->
+            </h4>
             <div class="az-dashboard-nav">
                 <nav class="nav"> </nav>
             </div>
@@ -90,18 +90,18 @@ $obj_inv=new InventoryreportController();
                             <!-- <th>Txn_Entry_Dt</th>
                             <th>Txn_Dc_Typ.</th> -->
                             <th>Txn_Doc_No.</th>
-                            <th>Basic_Doc_No</th>
+                            <th>Basic Doc No</th>
                             <!-- <th>Doc_ Ref_No</th>
                             <th>Doc_Date</th>-->
-                            <th> Doc_Qty</th>
+                            <th> Doc Qty</th>
                             <!--     <th>Doc_ Inward_Dt</th> -->
-                            <th>Work_Centre</th>
-                            <th>Supplier_Name</th>
+                            <th>Work Centre</th>
+                            <th>Supplier Name</th>
                             <th>Supplier Code</th>
                             <!--  <th>PO / WO Number</th> -->
-                            <th>Item_Code</th>
-                            <th>Item_Description</th>
-                            <th>Lot_Number</th>
+                            <th>Item Code</th>
+                            <th>Item Description</th>
+                            <th>Lot Number</th>
                             <!--  <th> Quantity</th> -->
                             <!-- <th>Stk_Kpng_Unt</th>
                             <th> Unit_Rate </th>
@@ -117,16 +117,19 @@ $obj_inv=new InventoryreportController();
                         @foreach($item_details as $item_detail)
                         <tr>
 
-                            <td>{{$item_detail->item_name}}</td>
+                            <td>{{$item_detail->item_code}}</td>
                             <td>{{$item_detail->sip_number}}</td>
                             <td>{{$item_detail->sip_number}}</td>
-                            <td>{{$item_detail->qty_to_production}}</td>
-                            @if(!empty($item_detail->work_centre))
+                            <td>{{$item_detail->qty_to_production}} {{$item_detail->unit_name}}</td>
+                            <td>{{$item_detail->centre_code}}</td>
+                            <!-- @if(!empty($item_detail->work_centre))
                             <td>{{$obj_inv->get_workcenter($item_detail->work_centre)}}</td>
                             @else
                             <td></td>
-                            @endif
-                            @if(!empty($obj_inv->get_suplier($item_detail->supplier)))
+                            @endif -->
+                            <td>{{$item_detail->vendor_name}}</td>
+                            <td>{{$item_detail->vendor_id}}</td>
+                            {{--@if(!empty($obj_inv->get_suplier($item_detail->supplier)))
                             <td>{{$obj_inv->get_suplier($item_detail->supplier)->vendor_name}}</td>
                             @else
                             <td>{{$item_detail->supplier}}</td>
@@ -135,14 +138,11 @@ $obj_inv=new InventoryreportController();
                             <td>{{$obj_inv->get_suplier($item_detail->supplier)->vendor_id}}</td>
                             @else
                             <td>{{$item_detail->supplier}}</td>
-                            @endif
+                            @endif--}}
                             <td>{{$item_detail->item_code}}</td>
                             <td>{{$item_detail->discription}}</td>
-                            @if(!empty($obj_inv->get_lot_no($item_detail->lot_id)))
-                            <td>{{$obj_inv->get_lot_no($item_detail->lot_id)->lot_number}}</td>
-                            @else
+                            <td>{{$item_detail->lot_number}}</td>
                             <td></td>
-                            @endif
 
                         </tr>
                         @endforeach

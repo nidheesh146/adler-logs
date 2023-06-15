@@ -105,6 +105,10 @@
                             @endif
                            @endif
                         </div>
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                            <label>Supplier *</label>
+                            <input type="text" class="form-control supplier-name" readonly @if(!empty($edit['mrr'])) value="{{$edit['mrr']->vendor_name}}" @else value="" @endif name="supplier" placeholder="Supplier" redonly>
+                        </div>
                         <input type="hidden" value="{{request()->get('order_type')}}" id="order_type"  name="order_type">
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>
@@ -259,7 +263,7 @@
         $('.invoice_number_po').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 3,
+          minimumInputLength: 1,
           allowClear: true,
           ajax: {
           url: "{{ url('inventory/find-invoice-for-mrr') }}",
@@ -273,6 +277,7 @@
         $('.spinner-button').show();
 
         let res = $(this).select2('data')[0];
+        $('.supplier-name').val(res.vendor_name);
         if(res){
           $.get("{{ url('inventory/MRR/find-invoice-info') }}?id="+res.id,function(data){
             $('.data-bindings').html(data);
@@ -286,7 +291,7 @@
       $('.invoice_number_wo').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 3,
+          minimumInputLength: 1,
           allowClear: true,
           ajax: {
           url: "{{ url('inventory/find-invoice-for-srr') }}",
@@ -300,6 +305,7 @@
         $('.spinner-button').show();
 
         let res = $(this).select2('data')[0];
+        $('.supplier-name').val(res.vendor_name);
         if(res){
           $.get("{{ url('inventory/MRR/find-invoice-info') }}?id="+res.id,function(data){
             $('.data-bindings').html(data);
@@ -314,7 +320,7 @@
     $('.mac_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 3,
+          minimumInputLength: 2,
           allowClear: true,
           ajax: {
           url: "{{ url('inventory/find-mac-for-mrr') }}",
@@ -342,7 +348,7 @@
       $('.woa_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 3,
+          minimumInputLength: 1,
           allowClear: true,
           ajax: {
           url: "{{ url('inventory/find-woa-for-mrr') }}",

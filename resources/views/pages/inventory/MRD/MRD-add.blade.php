@@ -58,7 +58,10 @@
                                 @endif
                             </select>
                         </div>
-
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                            <label>Supplier *</label>
+                            <input type="text" class="form-control supplier-name" readonly @if(!empty($edit['mrd'])) value="{{$edit['mrd']->vendor_name}}" @else value="" @endif name="supplier" placeholder="Supplier" redonly>
+                        </div>
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>MRD date *</label>
                             <input type="text" class="form-control datepicker" value="{{ (!empty($edit['mrd'])) ? date('d-m-Y',strtotime($edit['mrd']->mrd_date)) : date("d-m-Y")}}" name="mrd_date" placeholder="MRD date">
@@ -209,7 +212,7 @@
       $('.invoice_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 2,
+          minimumInputLength: 1,
           allowClear: true,
           ajax: {
           url: "{{ url('inventory/MRD/find-invoice-number-for-mrd') }}",
@@ -222,6 +225,7 @@
         $('.spinner-button').show();
 
         let res = $(this).select2('data')[0];
+        $('.supplier-name').val(res.vendor_name);
         if(res){
           $.get("{{ url('inventory/MRD/find-invoice-info') }}?id="+res.id,function(data){
             $('.data-bindings').html(data);

@@ -76,7 +76,7 @@
         
 
         <li class="nav-item @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','LotAllocation.addLotAllocation','LotAllocation.lotAllocation','MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MAC.MACAddItemInfo','MAC.MAClist','MAC.MACAdd','MRR.receiptReport',
-        'MRD.RMRNAddItemInfo','MRR.addMRR','Stock.viewItems',
+        'MRD.RMRNAddItemInfo','MRR.addMRR','Stock.viewItems','Inventoryreport.get_data',
         'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.RMRNlist','MRD.RMRNAdd','Stock.StockToProduction','Stock.StockToProductionAdd','MAC.WOAAdd','MRD.WORAdd','Stock.StockFromProduction','Stock.StockFromProductionAdd','Stock.StockTransfer','Stock.StockTransferAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview','MIQ.LiveQuarantineReport'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub">
             <i class="fas fa-boxes" style="font-size:19px"></i>Inventory</a>
@@ -93,7 +93,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockFromProduction','Stock.StockFromProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/FromProduction')}}" class="nav-sub-link">Stock Return From Production</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockTransfer','Stock.StockTransferAdd','Stock.viewItems'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  
-            <li class="nav-sub-item "><a href="{{url('inventory/inventory-trans-report')}}" class="nav-sub-link">Inventory Transaction Report</a></li>  
+            <li class="nav-sub-item @if(in_array($Action,['Inventoryreport.get_data'])){{'active'}} @endif "><a href="{{url('inventory/inventory-trans-report')}}" class="nav-sub-link">Inventory Transaction Report</a></li>  
 
           </ul>
         </li>
@@ -101,9 +101,9 @@
         <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','OEF.pendingOEF',
         'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINitemlist','CMIN.CMINitemAdd','OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist',
         'PI.PIAdd','PI.PIList','PI.PIitemlist','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','MTQ.MTQAdd','StockManagement.productionStockAdd',
-        'StockManagement.productionStockList','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','PI.pendingPI','GRS.pendingGRS',
+        'StockManagement.productionStockList','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','PI.pendingPI','GRS.pendingGRS','PI.mergedPIList',
         'COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','ProductMaster.productList','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist' ,
-        'StockManagement.allLocations','StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL'])){{'active show'}} @endif ">
+        'StockManagement.allLocations','StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','PI.pendingPI'])){{'active show'}} @endif ">
 
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
           <ul class="nav-sub">
@@ -126,7 +126,7 @@
             'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL'])){{'active'}} @endif ">
               <a href="{{url('fgs/stock-management/location1')}}"  class="nav-sub-link">Stock Management</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['GRS.pendingGRS'])){{'active'}} @endif ">
+            <li class="nav-sub-item @if(in_array($Action,['GRS.pendingGRS','PI.pendingPI','OEF.pendingOEF'])){{'active'}} @endif ">
               <a href="{{url('fgs/GRS/pending-report')}}"  class="nav-sub-link">Back order Report</a>
             </li>
             <li class="nav-sub-item  ">
@@ -134,7 +134,7 @@
             </li>
             <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd',
               'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList',
-              'CMIN.CMINitemAdd','MTQ.MTQAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','OEF.pendingOEF','GRS.pendingGRS'])){{'active show'}} @endif">
+              'CMIN.CMINitemAdd','MTQ.MTQAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','MIS.MISList','MIS.MISAdd','MIS.MISitemlist'])){{'active show'}} @endif">
               <a href="#" class="nav-link with-sub">Inventory</a>
               <ul class="nav-sub">
                 <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd'])){{'active'}} @endif ">
@@ -166,8 +166,8 @@
                 </li>
               </ul>
             </li>
-            <li class="nav-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','PI.PIAdd','PI.PIList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','OEF.pendingOEF',
-            'EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','PI.PIList','PI.PIAdd','PI.PIitemlist','COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist','PI.pendingPI'])){{'active show'}} @endif">
+            <li class="nav-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','PI.PIAdd','PI.PIList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','PI.mergedPIList',
+            'EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','PI.PIList','PI.PIAdd','PI.PIitemlist','COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist'])){{'active show'}} @endif">
               <a href="#" class="nav-link with-sub">Sales</a>
               <ul class="nav-sub">
                 <li class="nav-sub-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd'])){{'active'}} @endif ">
@@ -182,7 +182,7 @@
                 <li class="nav-sub-item @if(in_array($Action,['PI.PIList','PI.PIAdd','PI.PIitemlist'])){{'active'}} @endif ">
                   <a href="{{url('fgs/PI-list')}}"  class="nav-sub-link">PI</a>
                 </li>
-                <li class="nav-sub-item @if(in_array($Action,['PI.pendingPI'])){{'active'}} @endif ">
+                <li class="nav-sub-item @if(in_array($Action,['PI.mergedPIList'])){{'active'}} @endif ">
                   <a href="{{url('fgs/merged-PI-list')}}"  class="nav-sub-link">Merged PI List</a>
                 </li>
                  <li class="nav-sub-item @if(in_array($Action,['CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList'])){{'active'}} @endif ">

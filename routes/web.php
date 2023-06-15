@@ -294,7 +294,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/inventory-gst','InventorygstController@get_data');
     Route::post('inventory/inventory-gst_add','InventorygstController@add_gst_details');
     Route::get('inventory/inventory-trans-report','InventoryreportController@get_data');
-
+    Route::get('inventory/inventory-trans-export','InventoryreportController@Transactionexport');
 
 
 });

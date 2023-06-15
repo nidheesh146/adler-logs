@@ -41,6 +41,7 @@ class inv_supplier_invoice_item extends Model
                     ->where($condition)
                     ->where('inv_supplier_invoice_item.is_merged','=',0)
                     ->groupBy('inv_supplier_invoice_item.id')
+                    ->distinct('inv_supplier_invoice_item.id')
                     ->orderBy('inv_supplier_invoice_item.id','desc')
                     ->get();
     }

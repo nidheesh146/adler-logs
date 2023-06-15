@@ -1560,7 +1560,7 @@ class PurchaseController extends Controller
     {
         //$items = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $request->po_id]);
         $items = $this->inv_supplier_invoice_item->get_supplier_invoice_item(['inv_supplier_invoice_rel.master' =>$request->invoice_id]);
-        //print_r($items);exit;
+        //print_r(json_encode($items));exit;
         $data = '<div class="table-responsive">
            <table class="table table-bordered mg-b-0" id="example1">
            <tr>
@@ -1590,7 +1590,7 @@ class PurchaseController extends Controller
             $total_sgst = 0;
             $i=1;
         foreach($items as $item)
-        {/*<td>'.$item['order_qty'].' ' .$item['unit_name'] .'</td> */
+        {
             $data .='<tr>
                     <td>'.$item['item_code'].'</td>
                     <td>

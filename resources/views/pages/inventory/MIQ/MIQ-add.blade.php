@@ -57,7 +57,10 @@
                                 @endif
                             </select>
                         </div>
-
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                            <label>Supplier *</label>
+                            <input type="text" class="form-control supplier-name" @if(!empty($data['miq'])) value="{{$data['miq']->vendor_name}}" @else value="" @endif readonly  name="supplier" placeholder="Supplier" redonly>
+                        </div>
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>MIQ date *</label>
                             <input type="text" class="form-control datepicker" value="{{ (!empty($data['miq'])) ? date('d-m-Y',strtotime($data['miq']->miq_date)) : date("d-m-Y")}}" name="miq_date" placeholder="MIQ date">
@@ -84,8 +87,10 @@
                         </div>
                     </div>
                 </form>
-                @if(!empty($data['miq']))
                 <div class="data-bindings">
+                </div>
+                @if(!empty($data['miq']))
+                <div class="data-bindings6">
                     <div class="row">
                         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                             <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
@@ -204,7 +209,7 @@
         $('.invoice_number').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
-          minimumInputLength: 2,
+          minimumInputLength: 1,
           allowClear: true,
           ajax: {
           url: "{{ url('inventory/find-invoice-number') }}",
@@ -218,8 +223,10 @@
         $('.spinner-button').show();
 
         let res = $(this).select2('data')[0];
+        $('.supplier-name').val(res.vendor_name);
         if(res){
-          $.get("{{ url('inventory/find-po-number') }}?id="+res.id,function(data){
+          $.get("{{ url('inventory/MIQ/find-invoice-info') }}?id="+res.id,function(data){
+
             $('.data-bindings').html(data);
             $('.spinner-button').hide();
           });
