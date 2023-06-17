@@ -14,9 +14,9 @@
 			@include('includes.fgs.back-order-tab')
 			<br><br>
 			<h4 class="az-content-title" style="font-size: 20px;">
-				Pending PI List
+				Back Order Report - All
 				<div class="right-button">
-					<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/PI/pending-PI-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
+					<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/all/export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
 				</div>
 			</h4>
 			@if(Session::get('error'))
@@ -35,7 +35,7 @@
 			<div class="tab-content">
 				<div class="row row-sm mg-b-20 mg-lg-b-0">
 					<div class="table-responsive" style="margin-bottom: 13px;">
-						<table class="table table-bordered mg-b-0">
+						{{--<table class="table table-bordered mg-b-0">
 							<tbody>
 								<tr>
 									<style>
@@ -84,7 +84,7 @@
 									</form>
 								</tr>
 							</tbody>
-						</table>
+						</table>--}}
 					</div>
 				</div>
 
@@ -94,85 +94,50 @@
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0">
 							<thead>
-								<tr>
-									
+								<tr style="text-align:center;">
 									<th colspan="4">OEF</th>
-									<th colspan="4">PI</th>
-									<th colspan="4">GRS </th>
+									<th colspan="5">GRS</th>
+									<th colspan="2">PI </th>
 
 								</tr>
 								<tr>
-									
-
 									<th>OEF NUMBER</th>
 									<th>OEF DATE</th>
 									<th>ORDER NUMBER</th>
 									<th>CUSTOMER INFO</th>
 
-									<th>PI NUMBER</th>
-									<th>PI DATE</th>
-									<th>ORDER NUMBER</th>
-									<th>CUSTOMER</th>
-
 									<th>GRS NUMBER</th>
 									<th>GRS DATE</th>
 									<th>PRODUCT CATEGORY</th>
 									<th>STOCK LOCATION(DECREASE)</th>
+									<th>STOCK LOCATION(INCREASE)</th>
+
+									<th>PI NUMBER</th>
+									<th>PI DATE</th>
+
+									
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-								
-
-								
-
-								@foreach($oef as $item)
-
-
-
-								<td>{{$item['oef_number']}}</td>
-								<td>{{date('d-m-Y', strtotime($item['oef_date']))}}</td>
-								<td>{{$item['order_number']}}</td>
-
-
-
-								<td>{{$item['firm_name']}}<br />
-									Contact Person:{{$item['contact_person']}}<br />
-									Contact Number:{{$item['contact_number']}}<br />
-								</td>
-
-
-								@endforeach
-								@foreach($pi as $item)
-
-
-								<td>{{$item['pi_number']}}</td>
-								<td>{{date('d-m-Y', strtotime($item['pi_date']))}}</td>
-
-								<td>{{$item['order_number']}}</td>
-
-								<td>{{$item['firm_name']}}<br />
-									{{--Contact Person:{{$item['contact_person']}}<br />
-									Contact Number:{{$item['contact_number']}}<br />--}}
-								</td>
-
-
-								@endforeach
-								
-								@foreach($grs as $master)
-
-								<td>{{$master['grs_number']}}</td>
-								<td>{{date('d-m-Y', strtotime($master['grs_date']))}}</td>
-
-								<td>{{$master['category_name']}}</td>
-
-								<td>{{$master['firm_name']}}</td>
-								
-
+								@foreach($data as $info)
+								<tr>
+									<td>{{$info['oef_number']}}</td>
+									<td>@if($info['oef_date']) {{date('d-m-Y', strtotime($info['oef_date']))}} @endif</td>
+									<td>{{$info['order_number']}}</td>
+									<td>{{$info['firm_name']}}</td>
+									<td>{{$info['grs_number']}}</td>
+									<td>@if($info['grs_date']) {{date('d-m-Y', strtotime($info['grs_date']))}} @endif</td>
+									<td>{{$info['category_name']}}</td>
+									<td>{{$info['location_name1']}}</td>
+									<td>{{$info['location_name2']}}</td>
+									<td>{{$info['pi_number']}}</td>
+									<td>@if($info['pi_date'])  {{date('d-m-Y', strtotime($info['pi_date']))}} @endif</td>
+								</tr>
 								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							{{ $pi->appends(request()->input())->links() }}
+							
 						</div>
 					</div>
 				</div>

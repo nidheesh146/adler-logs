@@ -141,7 +141,8 @@
                                         <td>{{$item['hsn_code']}}</td>
                                         <td> {{$item['type_name']}}</td>
                                         <td> {{$item['short_description']}}</td>
-                                        <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>	
+                                        <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>
+                                        	
                                     </tr>
                                     @endforeach
                                   </tbody >
@@ -165,6 +166,7 @@
                                             <th>Type</th>
                                             <th>DESCRIPTION</th>
                                             <th> Quantity</th>
+                                            <th> Requestor</th>
                                         </tr>
                                     </thead>
                                     <tbody >
@@ -181,7 +183,8 @@
                                             <td>{{$item['hsn_code']}}</td>
                                             <td> {{$item['type_name']}}</td>
                                             <td> {{$item['short_description']}}</td>
-                                            <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>	
+                                            <td>{{$item['approved_qty']}} {{$item['unit_name']}}</td>
+                                            <td>{{$item['f_name']}} {{$item['l_name']}}</td>	
                                         </tr>
                                     
                                     @endforeach

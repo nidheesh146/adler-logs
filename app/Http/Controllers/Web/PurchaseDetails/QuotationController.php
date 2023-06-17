@@ -73,7 +73,7 @@ class QuotationController extends Controller
       
         $data['getdata'] = $this->inv_purchase_req_item->getdata($condition);
       
-      
+        //print_r($data['getdata']);exit;
         return view('pages/purchase-details/Quotation/quotation-add', compact('data','id'));
     }
 

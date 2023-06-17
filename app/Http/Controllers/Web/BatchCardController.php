@@ -44,6 +44,7 @@ class BatchCardController extends Controller
     public function BatchcardList(Request $request)
     {
         //$this->SetBatchcardAlloted();
+        //$this->SetBatchcardInputmaterial();
         $condition=[];
         if ($request->batch_no) {
             $condition[] = ['batchcard_batchcard.batch_no', 'like', '%' . $request->batch_no . '%'];
@@ -724,6 +725,10 @@ class BatchCardController extends Controller
         return $pdf->stream($file_name . '.pdf');
     }
 
+
+
+
+
     public function SetBatchcardAlloted()
     {
         $ExcelOBJ = new \stdClass();
@@ -778,6 +783,74 @@ class BatchCardController extends Controller
                         $dat = ['is_alloted'=>0];
                         DB::table('batchcard_batchcard')->where('id',$batchcard->id)->update($dat);
                     }
+                }
+             }
+        }
+    }
+
+    public function SetBatchcardInputmaterial()
+    {
+        $ExcelOBJ = new \stdClass();
+        $ExcelOBJ->inputFileType = 'Xlsx';
+        $ExcelOBJ->filename = 'SL-1-01.xlsx';
+        //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\batchmaterial.xlsx';
+        $ExcelOBJ->aircraft = 'B737-MAX';
+        $ExcelOBJ->spreadsheet = new Spreadsheet();
+        $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
+        $ExcelOBJ->reader->setReadDataOnly(true);
+        $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
+        $this->SetBatchcardInputMaterialExcelsplitsheet($ExcelOBJ);
+        exit;
+    }
+    public function SetBatchcardInputMaterialExcelsplitsheet($ExcelOBJ)
+    {
+        $ExcelOBJ->SQLdata = [];
+        $ExcelOBJ->arrayinc = 0;
+
+        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) {
+            $ExcelOBJ->sectionName = '';
+            $ExcelOBJ->sheetName = $worksheet['worksheetName'];
+            $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
+            $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
+            $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
+            $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
+            $ExcelOBJ->date_created = date('Y-m-d H:i:s');
+            $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
+            $this->set_batchcard_inputmaterial($ExcelOBJ);  
+            die("done");
+        }
+        exit('done');
+    }
+    public function set_batchcard_inputmaterial($ExcelOBJ)
+    {
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
+        {
+            if ($key > 0 &&  $excelsheet[0]) 
+             {
+                $product = DB::table('product_product')->select(['is_sterile','id'])->where('sku_code', $excelsheet[1])->first();
+                $batchcard =  DB::table('batchcard_batchcard')->select(['*'])->where('batch_no', $excelsheet[0])->first();
+                if($product && $batchcard)
+                {
+                    $input_material = DB::table('inventory_rawmaterial')->where('item_code', $excelsheet[3])->first();
+                    if($input_material)
+                    {
+                        $prdct_inputmaterial = DB::table('product_input_material')
+                                                    ->where('product_id','=',$product->id)
+                                                    ->orWhere('item_id1','=',$input_material->id)
+                                                    ->orWhere('item_id2','=',$input_material->id)
+                                                    ->orWhere('item_id3','=',$input_material->id)
+                                                    ->pluck('id')
+                                                    ->first();
+                        $data = [
+                            'batchcard_id' =>$batchcard->id,
+                            'quantity'=>0,
+                            'product_inputmaterial_id'=>$prdct_inputmaterial,
+                            'item_id'=>$input_material->id,
+                        ];
+                        $res = DB::table('batchcard_materials')->insert($data);
+                    }
+                    
                 }
              }
         }
