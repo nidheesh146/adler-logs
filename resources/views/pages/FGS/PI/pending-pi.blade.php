@@ -53,20 +53,20 @@
 											<div class="row filter_search" style="margin-left: 0px;">
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 
-													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
+												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
 														<label>OEF No :</label>
-														<input type="text" value="{{request()->get('oef_number')}}" name="oef_number" id="oef_number" class="form-control" placeholder="OEF NO">
+														<input type="text" value="{{request()->get('oef_no')}}" name="oef_no" id="oef_no" class="form-control" placeholder="OEF NO">
 													</div><!-- form-group -->
 
 
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Order No</label>
-														<input type="text" value="{{request()->get('order_number')}}" name="order_number" id="order_number" class="form-control" placeholder="ORDER NUMBER">
+														<label for="exampleInputEmail1" style="font-size: 12px;">GRS No:</label>
+														<input type="text" value="{{request()->get('grs_no')}}" name="grs_no" id="grs_no" class="form-control" placeholder="GRS NO">
 													</div>
 
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label style="font-size: 12px;">OEF Month</label>
-														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
+														<label style="font-size: 12px;">PI No:</label>
+														<input type="text" value="{{request()->get('pi_no')}}" id="pi_no" class="form-control" name="pi_no" placeholder="PI NO">
 													</div>
 
 												</div>
@@ -170,10 +170,10 @@
 		$('#prbody2').show();
 	});
 	$('.search-btn').on("click", function(e) {
-		var ref_number = $('#ref_number').val();
-		var min_no = $('#min_no').val();
-		var from = $('#from').val();
-		if (!min_no & !ref_number & !from) {
+		var oef_no = $('#oef_no').val();
+		var grs_no = $('#grs_no').val();
+		var pi_no = $('#pi_no').val();
+		if (!oef_no & !grs_no & !pi_no) {
 			e.preventDefault();
 		}
 	});

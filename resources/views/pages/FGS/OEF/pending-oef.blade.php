@@ -167,10 +167,10 @@
 		$('#prbody2').show();
 	});
 	$('.search-btn').on("click", function(e) {
-		var ref_number = $('#ref_number').val();
-		var min_no = $('#min_no').val();
+		var oef_number = $('#oef_number').val();
+		var order_number = $('#order_number').val();
 		var from = $('#from').val();
-		if (!min_no & !ref_number & !from) {
+		if (!oef_number & !order_number & !from) {
 			e.preventDefault();
 		}
 	});

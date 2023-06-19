@@ -35,7 +35,7 @@
 			<div class="tab-content">
 				<div class="row row-sm mg-b-20 mg-lg-b-0">
 					<div class="table-responsive" style="margin-bottom: 13px;">
-						{{--<table class="table table-bordered mg-b-0">
+						<table class="table table-bordered mg-b-0">
 							<tbody>
 								<tr>
 									<style>
@@ -54,19 +54,19 @@
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 
 													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>GRS No :</label>
-														<input type="text" value="{{request()->get('grs_no')}}" name="grs_no" id="grs_no" class="form-control" placeholder="GRS NO">
+														<label>OEF No :</label>
+														<input type="text" value="{{request()->get('oef_no')}}" name="oef_no" id="oef_no" class="form-control" placeholder="OEF NO">
 													</div><!-- form-group -->
 
 
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">OEF No:</label>
-														<input type="text" value="{{request()->get('oef_number')}}" name="oef_number" id="oef_number" class="form-control" placeholder="OEF NO">
+														<label for="exampleInputEmail1" style="font-size: 12px;">GRS No:</label>
+														<input type="text" value="{{request()->get('grs_no')}}" name="grs_no" id="grs_no" class="form-control" placeholder="GRS NO">
 													</div>
 
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label style="font-size: 12px;">PI No:</label>
-														<input type="text" value="{{request()->get('pi_number')}}" id="pi_number" class="form-control" name="pi_number" placeholder="PI NO">
+														<input type="text" value="{{request()->get('pi_no')}}" id="pi_no" class="form-control" name="pi_no" placeholder="PI NO">
 													</div>
 
 												</div>
@@ -84,7 +84,7 @@
 									</form>
 								</tr>
 							</tbody>
-						</table>--}}
+						</table>
 					</div>
 				</div>
 
@@ -172,10 +172,10 @@
 		$('#prbody2').show();
 	});
 	$('.search-btn').on("click", function(e) {
-		var ref_number = $('#ref_number').val();
-		var min_no = $('#min_no').val();
-		var from = $('#from').val();
-		if (!min_no & !ref_number & !from) {
+		var oef_no = $('#oef_no').val();
+		var grs_no = $('#grs_no').val();
+		var pi_no = $('#pi_no').val();
+		if (!oef_no & !grs_no & !pi_no) {
 			e.preventDefault();
 		}
 	});

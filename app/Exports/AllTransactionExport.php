@@ -22,40 +22,65 @@ class AllTransactionExport implements FromCollection, WithHeadings, WithStyles,W
     {
         $i=1;
         $data = [];
-        // foreach($this->info['oef'] as $oef)
-        // {
-        //     $data[] = array(
-        //         '#'=>$i++,
-        //         'oef_number'=>$oef->oef_number,
-        //         'oef_date'=>date('d-m-Y', strtotime($oef->oef_date),
-        //         'order_number'=>$oef->order_number,
-        //         'firm_name'=>$item_detail->firm_name.' '.$item_detail->unit_name,
-        //         'workcentre'=>$item_detail->centre_code,
-        //         'supplie_name'=>$item_detail->vendor_name,
-        //         'suppler_code'=>$item_detail->vendor_id,
-        //         'itemcode1'=>$item_detail->item_code,
-        //         'discription'=>$item_detail->discription,
-        //         'lot_number'=>$item_detail->lot_number,
+        foreach($this->info as $pi)
+        {
+            if($pi->oef_date)
+            {
+                $oef_date = date('d-m-Y', strtotime($pi->oef_date));
+            }
+            else
+            {
+                $oef_date = '';
+            }
+            if($pi->grs_date)
+            {
+                $grs_date = date('d-m-Y', strtotime($pi->grs_date));
+            }
+            else
+            {
+                $grs_date = '';
+            }
+            if($pi->pi_date)
+            {
+                $pi_date = date('d-m-Y', strtotime($pi->pi_date));
+            }
+            else
+            {
+                $pi_date = '';
+            }
+            $data[] = array(
+                '#'=>$i++,
+                'oef_number'=>$pi->oef_number,
+                'oef_date'=>$oef_date,
+                'order_number'=>$pi->order_number,
+                'firm_name'=>$pi->firm_name,
+                'grs_number'=>$pi->grs_number,
+                'grs_date'=>$grs_date,
+                'product_category'=>$pi->category_name,
+                'location1'=>$pi->location_name1,
+                'location2'=>$pi->location_name2,
+                'pi_number'=>$pi->pi_number,
+                'pi_date'=>$pi_date,
 
-        //     );
-        // }
+            );
+        }
         return collect($data);
     }
     public function headings(): array
         {
         return [
             '#',
-            'Code (ITEM+PO/WO)',
-            'Txn_Doc_No',
-            'Basic Doc No',
-            'Doc Qty',
-            'Work Centre',
-            'Supplier Name',
-            'Supplier Code',
-            'Item Code',
-            'Item Description',
-            'Lot Number',
-            
+            'OEF NUMBER',
+            'OEF DATE',
+            'ORDER NUMBER',
+            'FIRM NAME',
+            'GRS NUMBER',
+            'GRS DATE',
+            'PRODUCT CATEGORY',
+            'STOCK LOCATION(DECREASE)',
+            'STOCK LOCATION(INCREASE)',
+            'PI Number',
+            'PI DATE',
         ];
     }
     public function styles(Worksheet $sheet)
@@ -74,26 +99,15 @@ class AllTransactionExport implements FromCollection, WithHeadings, WithStyles,W
                 $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(5);
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(18);
                 $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(30);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(50);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(18);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(20);
                 $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(12);
                 $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(12);
-                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);
-                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(25);
-                $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(30);
-                $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('S')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('T')->setWidth(40);
-                $event->sheet->getDelegate()->getColumnDimension('U')->setWidth(40);
-                $event->sheet->getDelegate()->getColumnDimension('V')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('W')->setWidth(15);
                 
                 // $cellRange = 'F1:F20000';
                 // $event->sheet->getDelegate()->getStyle($cellRange)->getAlignment()->setWrapText(true);

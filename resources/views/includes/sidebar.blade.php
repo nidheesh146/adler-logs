@@ -127,7 +127,7 @@
               <a href="{{url('fgs/stock-management/location1')}}"  class="nav-sub-link">Stock Management</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['BackorderReport.get_data','GRS.pendingGRS','PI.pendingPI','OEF.pendingOEF'])){{'active'}} @endif ">
-              <a href="{{url('fgs/GRS/pending-report')}}"  class="nav-sub-link">Back order Report</a>
+              <a href="{{url('fgs/back-ordr-report')}}"  class="nav-sub-link">Back order Report</a>
             </li>
             <li class="nav-sub-item  @if(in_array($Action,['Fgsreport.get_data'])){{'active'}} @endif">
               <a href="{{url('fgs/fgs-report')}}"  class="nav-sub-link">FGS Report</a>
