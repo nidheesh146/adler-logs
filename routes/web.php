@@ -566,6 +566,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/stock-report/MAA','StockManagementController@MAAExport');
      Route::get('fgs/stock-report/SNN','StockManagementController@SNNExport');
      Route::get('fgs/stock-report/AHPL','StockManagementController@AHPLExport');
+     Route::get('fgs/batch-trace-report','StockManagementController@batchTraceReport');
+     Route::get('fgs/batch-trace-report/export','StockManagementController@batchTraceReportExport');
 
     //  //MTQ
     //  Route::get('fgs/MTQ-list','MTQController@MTQList');

@@ -82,7 +82,7 @@
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>Batch Card No *</label>
-                                            <input type="text" class="form-control"  value="{{$batch_no}}" name="batchcard" placeholder="Batch Card No" readonly>
+                                            <input type="text" class="form-control"  value="{{$batch_no}}" name="batchcard" placeholder="Batch Card No" >
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>Process Sheet No *</label>

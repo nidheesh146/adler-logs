@@ -96,6 +96,7 @@
                                     <th>Brand</th>
 									<th>Family</th>
 									<th>Group</th>
+									<th>GST</th>
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -111,7 +112,7 @@
                             <td>{{$item['brand_name']}}</td>
                             <td>{{$item['family_name']}}</td>
                             <td>{{$item['group1_name']}}</td>
-                            
+                            <td>{{$item['gst']}}%</td>
 							<td>
 								@if($item['is_active']==1)
 								<button data-toggle="dropdown" style="width: 64px;" class="badge @if($item['status_type']==1) badge-success @else badge-warning @endif">@if($item['status_type']==1)  Active @else Inactive @endif<i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>

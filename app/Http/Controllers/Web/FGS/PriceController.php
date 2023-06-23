@@ -25,8 +25,8 @@ class PriceController extends Controller
 
     public function priceList(Request $request)
     {
-      // $this->priceMasterUpload();
-      //  $this->productFgsUpload();
+     //$this->priceMasterUpload();
+       //$this->productFgsUpload();
        //$this->fgsStockUpload();
         $condition =[];
         if($request->sku_code)
@@ -276,7 +276,7 @@ class PriceController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\AHPL_Price_Master.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\AHPL_Price_Master1.xlsx';
         $ExcelOBJ->aircraft = 'B737-MAX';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
@@ -347,7 +347,7 @@ class PriceController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\fgs_stock.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\FGS_Stk1.xlsx';
         $ExcelOBJ->aircraft = 'B737-MAX';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);

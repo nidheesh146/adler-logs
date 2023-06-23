@@ -1570,6 +1570,8 @@ class StockController extends Controller
             }
         }
     }
+
+    
    
 
 }
