@@ -305,7 +305,7 @@
             </div>
             
         </div>
-        <div class="col42">
+        <!-- <div class="col42">
             <div class="" style="height:50px;">
             @if($oef['payment_terms'])
             <div class="row6" style="font-size:10px;display:block; font-weight:bold" >
@@ -313,7 +313,7 @@
             </div>
             @endif
             </div>
-        </div>
+        </div> -->
         <div class="col43">
             <table style="height:130px;">
                 <tr>

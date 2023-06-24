@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Web\PurchaseDetails;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Web\WebapiController;
 use Illuminate\Http\Request;
-
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Validator;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -493,4 +494,103 @@ class InventoryController extends Controller
        // $data['item'] = $this->inv_purchase_req_item->getItemdata(['inv_purchase_req_master_item_rel.master'=>$pr_id]);
         return Excel::download(new RequisitionItems($pr_id), 'Requisition-Items-' . $pr['pr_number'] . '.xlsx');
     }
+
+    public function upload_purchas_requesition_item(Request $request)
+    {
+        $file = $request->file('file');
+        if ($file) {
+            $pr_id = $request->pr_id;
+            $ExcelOBJ = new \stdClass();
+
+            // CONF
+            $path = storage_path().'/app/'.$request->file('file')->store('temp');
+
+            $ExcelOBJ->inputFileName = $path;
+            $ExcelOBJ->inputFileType = 'Xlsx';
+
+            // $ExcelOBJ->filename = 'Book1.xlsx';
+            // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
+            $ExcelOBJ->spreadsheet = new Spreadsheet();
+            $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
+            $ExcelOBJ->reader->setReadDataOnly(true);
+            $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
+            $no_column = 6;
+            $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
+            if($sheet1_column_count == $no_column)
+            {
+                 $res = $this->Excelsplitsheet($ExcelOBJ,$pr_id);
+                 //print_r($res);exit;
+                 if($res)
+                 {
+                    $request->session()->flash('success',  "Successfully uploaded.");
+                    return redirect()->back();
+                 }
+                 else{
+                    $request->session()->flash('error',  "The data already uploaded.");
+                    return redirect()->back();
+                 }
+            }
+            else 
+            {
+                $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
+                return redirect()->back();
+            }
+            
+            //dd($ExcelOBJ->worksheetData);
+            //exit;
+        }
+    }
+    public function Excelsplitsheet($ExcelOBJ, $pr_id)
+    {
+        $ExcelOBJ->SQLdata = [];
+        $ExcelOBJ->arrayinc = 0;
+
+        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) 
+        {
+            $ExcelOBJ->sectionName = '';
+            $ExcelOBJ->sheetName = $worksheet['worksheetName'];
+            $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
+            $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
+            $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
+           // print_r(json_encode($ExcelOBJ->worksheet));exit;
+            $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
+            $ExcelOBJ->date_created = date('Y-m-d H:i:s');
+            $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
+            $res = $this->insert_requisition_items($ExcelOBJ, $pr_id);
+            return $res;
+        }
+    }
+    function insert_requisition_items($ExcelOBJ, $pr_id)
+    {
+        //echo $pr_id;exit;
+        $data = [];
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
+        {
+            if ($key > 1 &&  $excelsheet[1]) 
+            {
+                $item = DB::table('inventory_rawmaterial')->where('item_code', $excelsheet[1])->first();
+                if($item)
+                {
+                    $data = [
+                        'item_code' =>$item['id'],
+                        'actual_order_qty'=>$excelsheet[4],
+                        'created'=>date('Y-m-d H:i:s'),
+                        'updated'=>date('Y-m-d H:i:s'),
+                        
+
+                    ];
+                    $this->inv_purchase_req_item->insert_data($data,$pr_id);
+                    //$res = DB::table('batchcard_batchcard')->insert($data);
+                }
+                    
+            }
+            // if( count($data) > 0){
+            // $res = DB::table('batchcard_batchcard')->insert($data);  
+            // }   
+        }
+        return $data;
+    
+            
+    }
+
 }

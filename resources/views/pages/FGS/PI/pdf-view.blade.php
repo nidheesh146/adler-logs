@@ -338,6 +338,11 @@
         </div>
         <div class="col42">
             <div class="" style="height:50px;">
+            @if($pi['payment_terms'])
+            <div class="row6" style="font-size:10px;display:block; font-weight:bold" >
+                <?= nl2br($pi['payment_terms']);?>
+            </div>
+            @endif
             </div>
         </div>
         <div class="col43">
