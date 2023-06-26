@@ -28,7 +28,7 @@
 					<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" data-prId="{{request()->pr_id}}" data-type="Purchase" data-master="{{$data["master"]['pr_no']}}" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>                                    
 					@else
 					<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?sr_id='.request()->sr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Service Requisition Details</button>
-					<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" data-prId="{{request()->pr_id}}" data-type="Service" data-master="{{$data["master"]['pr_no']}}" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>                 
+					<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" data-prId="{{request()->sr_id}}" data-type="Service" data-master="{{$data["master"]['pr_no']}}" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>                 
 					@endif
 				@endif
 				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/purchase-reqisition-item/excel-export?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button> 
@@ -154,6 +154,7 @@
                                     <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <label for="exampleInputEmail1">Select File*</label>
                                         <input type="file" required class="form-control file" name="file" id="file">
+										<a href="{{ asset('uploads/purchase_requisition_items_sample.xlsx') }}"  target="_blank" style="float: right; font-size: 10px;"> Download Template</a>
 										<input type="hidden" name="pr_id" id="pr_id" value="">
                                     </div> 
 								</div>

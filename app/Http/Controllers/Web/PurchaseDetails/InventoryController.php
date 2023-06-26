@@ -495,14 +495,13 @@ class InventoryController extends Controller
         return Excel::download(new RequisitionItems($pr_id), 'Requisition-Items-' . $pr['pr_number'] . '.xlsx');
     }
 
-    public function upload_purchas_requesition_item(Request $request)
+    public function upload_purchase_requesition_item(Request $request)
     {
         $file = $request->file('file');
         if ($file) {
             $pr_id = $request->pr_id;
             $ExcelOBJ = new \stdClass();
 
-            // CONF
             $path = storage_path().'/app/'.$request->file('file')->store('temp');
 
             $ExcelOBJ->inputFileName = $path;
@@ -542,6 +541,7 @@ class InventoryController extends Controller
     }
     public function Excelsplitsheet($ExcelOBJ, $pr_id)
     {
+        //echo $pr_id;exit;
         $ExcelOBJ->SQLdata = [];
         $ExcelOBJ->arrayinc = 0;
 
@@ -566,19 +566,21 @@ class InventoryController extends Controller
         $data = [];
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
         {
-            if ($key > 1 &&  $excelsheet[1]) 
+            if ($key > 1 &&  $excelsheet[0]) 
             {
-                $item = DB::table('inventory_rawmaterial')->where('item_code', $excelsheet[1])->first();
+                $item = DB::table('inventory_rawmaterial')->where('item_code', $excelsheet[0])->first();
+                //print_r($item);
                 if($item)
                 {
                     $data = [
-                        'item_code' =>$item['id'],
+                        'item_code' =>$item->id,
                         'actual_order_qty'=>$excelsheet[4],
-                        'created'=>date('Y-m-d H:i:s'),
-                        'updated'=>date('Y-m-d H:i:s'),
+                        'created_at'=>date('Y-m-d H:i:s'),
+                        'updated_at'=>date('Y-m-d H:i:s'),
                         
 
                     ];
+                    //print_r($data);exit;
                     $this->inv_purchase_req_item->insert_data($data,$pr_id);
                     //$res = DB::table('batchcard_batchcard')->insert($data);
                 }

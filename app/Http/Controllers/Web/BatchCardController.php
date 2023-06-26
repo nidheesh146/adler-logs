@@ -62,6 +62,86 @@ class BatchCardController extends Controller
         }
         return view('pages/batchcard/batchcard-list',compact('data'));
     }
+    public function getInputMaterial(Request $request)
+    {
+        $input_materials = product_input_material::select('product_input_material.id','material_option1.item_code as item1','material_option1.id as item1_id','material_option2.item_code as item2','material_option2.id as item2_id',
+        'material_option3.item_code as item3','material_option3.id as item3_id')
+                                ->leftJoin('inventory_rawmaterial as material_option1','material_option1.id','=','product_input_material.item_id1')
+                                ->leftJoin('inventory_rawmaterial as material_option2','material_option2.id','=','product_input_material.item_id2')
+                                ->leftJoin('inventory_rawmaterial as material_option3','material_option3.id','=','product_input_material.item_id3')
+                                ->where('product_input_material.product_id','=',$request->product_id)
+                                ->get();
+        //return $input_materials;
+        $i=1;
+        $data = '<tr>
+                    <th>Sl No.</th>
+                    <th>Option1</th>
+                    <th>Option2</th>
+                    <th>Option3
+                </tr>';
+        foreach($input_materials as $material)
+        {
+            $data .= '<tr>
+                        <th>'.$i++.'
+                        <input type="hidden" name="product_inputmaterial_id" value="'.$material['id'].'"></th></th>';
+            if($material['item1_id']==0)
+            {
+                $data.='<th><input type="radio" class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
+            }
+            else
+            {
+                $data.='<th><input type="radio" class="item-select-radio" name="material" value="'.$material['item1_id'].'">&nbsp; '.$material['item1'].'</th>';
+            }
+            if($material['item2_id']!=NULL ) 
+            {
+                if($material['item2_id']==0)
+                {
+                    $data.='<th><input type="radio" class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
+                }
+                else
+                {
+                    $data.='<th><input type="radio" class="item-select-radio" name="material" value="'.$material['item2_id'].'">&nbsp; '.$material['item2'].'</th>';
+                }
+            }
+            else
+            {
+                $data.='<th></th>';
+            }
+            if($material['item3_id']!=NULL ) 
+            {
+                if($material['item3_id']==0)
+                {
+                    $data.='<th><input type="radio" class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
+                }
+                else
+                {
+                    $data.='<th><input type="radio" class="item-select-radio" name="material" value="'.$material['item3_id'].'">&nbsp; '.$material['item3'].'</th>';
+                }
+            }
+            else
+            {
+                $data.='<th></th>';
+            }
+
+        }
+        return $data;
+    }
+    public function addInputMaterial(Request $request)
+    {
+        //echo $request->material;exit;
+        $data = [
+            'batchcard_id'=>$request->batch_id,
+            'product_inputmaterial_id'=>$request->product_inputmaterial_id,
+            'item_id'=>$request->material,
+            'quantity'=>0,
+        ];
+        $add = $this->batchcard_material->insert_data($data);
+        if($add)
+        $request->session()->flash('success',  "You have successfully inserted a batchcard input material !");
+        else
+        $request->session()->flash('error',  "You have failed insertion of batchcard input material !");
+        return redirect('batchcard/batchcard-list');
+    }   
     public function BatchcardAdd(Request $request)
     {
         if ($request->isMethod('post')) {

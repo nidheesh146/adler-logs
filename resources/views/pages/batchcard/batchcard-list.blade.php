@@ -122,6 +122,7 @@
 								</div>
 								@endif
 								<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('batchcard/batchcard-list/'.$card['id'].'/report')}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
+								<button style="font-size: 11px; color:white;border:solid black;border-width:thin;margin-top:2px;" class="badge badge-primary inputmaterial-add" style="font-size: 13px;" href="#" data-batchId="{{$card["id"]}}" data-batchno="{{$card['batch_no']}}" data-sku="{{$card['sku_code']}}" data-productId="{{$card['product_id']}}" data-toggle="modal" data-target="#addInputMaterialModal"><i class="fas fa-plus"></i> Input Material</a>                 
 							</td>
                         </tr>
                         @endforeach
@@ -136,6 +137,50 @@
 		</div>
 	</div>
 	<!-- az-content-body -->
+	<div class="modal fade" id="addInputMaterialModal" role="dialog">
+        <div class="modal-dialog modal-xs">
+              <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="display: block;">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Add BatchCard Input Material<span id="batchcard_number"></span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
+                            <form method="POST" id="commentForm"  action="{{url('batchcard/add-input-material')}}" novalidate="novalidate" enctype='multipart/form-data'>
+                                {{ csrf_field() }}
+                                <div class="row">
+									<table class="table table-bordered mg-b-0 sku">
+									</table>
+									
+                                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+									<br/>
+										<h5>Input Materials</h5>
+                                    	<input type="hidden" name="batch_id" id="batch_id" value="0">
+										<input type="hidden" name="product_id" id="product_id" value="0">
+										<table class="table table-bordered mg-b-0 input-material">
+											
+										</table>
+                                    </div> 
+								</div>
+								<hr/>
+								<div class="row">
+                                    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                        <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span
+                                                class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                                role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -171,6 +216,25 @@
 		if(!rq_no & !po_no & !from)
 		{
 			e.preventDefault();
+		}
+	});
+	$(".inputmaterial-add").on( "click", function() {
+		var batch_number = $(this).data('batchno');
+		$('#batchcard_number').html(' ('+batch_number+')');
+		var batch_id = $(this).data('batchid');
+		$('#batch_id').val(batch_id);
+		var sku = $(this).data('sku');
+		$('.sku').html('<tr><th>SKU CODE</th><th>'+sku +'</th></tr>');
+		var product_id = $(this).data('productid');
+		$('#product_id').val(product_id);
+		$('.input-material').html('');
+		if(product_id!=0)
+		{
+			$.get("{{ url('batchcard/get-InputMaterial') }}?product_id="+product_id,function(data)
+			{
+				//console.log(data);
+					$('.input-material').html(data);
+			});
 		}
 	});
 
