@@ -143,12 +143,12 @@
                 {{ csrf_field() }}  
                     <div class="table-responsive">
                         <div style="float:right;">
-                        <input type="checkbox" class="item-select-radio check-approve bg-success text-white"  style="color:green;width:20px;height:20px;">
-                        <span style="vertical-align: middle;"><label  style="font-size: 12px;">Approve</label></span>
-                        <input type="checkbox" class="item-select-radio check-hold bg-warning text-dark"   style="color:yellow;width:20px;height:20px;">
-                        <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>On Hold</span></label></span>
-                        <input type="checkbox" class="item-select-radio check-reject bg-danger text-white"  style="color:red;width:20px;height:20px;">
-                        <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>Reject</span></label></span>
+                        <input type="checkbox" class="item-select-radio check-approve bg-success text-white check-all-approve"  style="color:green;width:20px;height:20px;">
+                        <span style="vertical-align: middle;"><label  style="font-size: 12px;">Approve All </label></span>
+                        <input type="checkbox" class="item-select-radio check-hold bg-warning text-dark check-all-hold"   style="color:yellow;width:20px;height:20px;">
+                        <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>On Hold All</span></label></span>
+                        <input type="checkbox" class="item-select-radio check-reject bg-danger text-white check-all-reject"  style="color:red;width:20px;height:20px;">
+                        <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>Reject All</span></label></span>
                         </div>
                         <table class="table table-bordered mg-b-0" id="example1">
                             <thead>
@@ -213,9 +213,9 @@
                                     @if(request()->get('status')==4 || request()->get('status')==5 || !request()->get('status'))
                                     <td style="width:12%;" class="checkbox-group">
                                         @if($item['status']==4 || $item['status']==5 )
-                                        <input type="checkbox" class="item-select-radio check-approve bg-success text-white" id="check-approve" name="check_approve[]" value="{{$item['requisition_item_id']}}" style="color:green;">
-                                        <input type="checkbox" class="item-select-radio check-hold bg-warning text-dark"  id="check-hold" @if($item['status'] == 5)  checked @endif name="check_hold[]" value="{{$item['requisition_item_id']}}" style="color:yellow;">
-                                        <input type="checkbox" class="item-select-radio check-reject bg-danger text-white" id="check-reject" name="check_reject[]" value="{{$item['requisition_item_id']}}" style="color:red;">
+                                        <input type="checkbox" class="item-select-radio check-approve bg-success text-white approve" id="check-approve" name="check_approve[]" value="{{$item['requisition_item_id']}}" style="color:green;">
+                                        <input type="checkbox" class="item-select-radio check-hold bg-warning text-dark hold"  id="check-hold" @if($item['status'] == 5)  checked @endif name="check_hold[]" value="{{$item['requisition_item_id']}}" style="color:yellow;">
+                                        <input type="checkbox" class="item-select-radio check-reject bg-danger text-white reject" id="check-reject" name="check_reject[]" value="{{$item['requisition_item_id']}}" style="color:red;">
                                         @endif
                                     </td>
                                    @endif
@@ -372,6 +372,15 @@
     
   });
     
+   $(".check-all-approve").click(function () {
+     $('.approve').not(this).prop('checked', this.checked);
+    });
+    $(".check-all-hold").click(function () {
+     $('.hold').not(this).prop('checked', this.checked);
+    });
+     $(".check-all-reject").click(function () {
+     $('.reject').not(this).prop('checked', this.checked);
+    });
   
   $('.approved_by').select2({
         placeholder: 'Choose one',
