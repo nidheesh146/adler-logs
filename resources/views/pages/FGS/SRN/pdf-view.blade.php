@@ -441,7 +441,7 @@
                 <td style="text-align:center;">{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
                 <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
-                <td style="text-align:right;">{{$discount_value}}</td>
+                <td style="text-align:right;">{{number_format((float)$discount_value, 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['cgst']}}</td>
                 <td style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['sgst']}}</td>

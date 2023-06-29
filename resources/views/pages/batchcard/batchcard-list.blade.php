@@ -101,7 +101,7 @@
                             <td>{{$card['quantity']}}</td>
                             <td>{{$card['start_date']}}</td>
                             <td>{{$card['target_date']}}</td>
-                            <td>{{$card['process_sheet_id']}}</td>
+                            <td>{{$card['process_sheet_no']}}</td>
                             <td>
 								@foreach($card['material'] as $material)
 								@if($material['item_code']!=NULL)

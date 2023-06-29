@@ -53,7 +53,7 @@ class BatchCardController extends Controller
             $condition[] = ['product_product.sku_code', 'like', '%' . $request->sku_code . '%'];
         }
         if ($request->process_sheet) {
-            $condition[] = ['batchcard_batchcard.process_sheet_id', 'like', '%' . $request->process_sheet . '%'];
+            $condition[] = ['product_product.process_sheet_no', 'like', '%' . $request->process_sheet . '%'];
         }
         $data['batchcards'] = $this->batchcard->get_all_batchcard_list($condition);
         foreach($data['batchcards'] as $card)

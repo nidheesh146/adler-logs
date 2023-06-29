@@ -94,6 +94,16 @@
    
     <div class="row1" style="height:150px;border-bottom:solid 2px black;">
         <div class="col1">
+            @if(str_starts_with($final_purchase['po_number'] , 'POI1') )
+            To<br/>
+            <strong>Smith & Nephew Healthcare Pvt. Ltd.</strong>
+            <p>B-501 - 509, Dynasty Business Park,<br/>
+            Andheri Kurla Road, Andheri (E), <br/>
+            Mumbai - 400 059, Maharashtra, India<br/>	
+            E-mail: Vaibhav.Shinde@smith-nephew.com<br/>
+            GSTIN :  27AAACS8136N1ZW	
+            </p>
+            @else
             To<br/>
             <strong>{{$final_purchase['vendor_name']}}</strong>
             <p>{{$final_purchase['address']}}<br/>
@@ -123,7 +133,7 @@
             Cell No : {{ SplitPhone($final_purchase['contact_number']) }}<br/>
             <span style="font-size:10px;  overflow-wrap: break-word;">Email:<?php SplitMail($final_purchase['email'])?><br/><span>
             GSTIN :</p>
-
+            @endif
         </div>
         <div class="col2" style="text-align:center;">
             <div class="attn">Kind Attn: {{$final_purchase['contact_person']}}</div>

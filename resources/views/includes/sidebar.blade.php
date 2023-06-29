@@ -124,7 +124,7 @@
             --}}
             <li class="nav-sub-item @if(in_array($Action,['StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','StockManagement.allLocations',
             'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL'])){{'active'}} @endif ">
-              <a href="{{url('fgs/stock-management/location1')}}"  class="nav-sub-link">Stock Management</a>
+              <a href="{{url('fgs/stock-management/all-locations')}}"  class="nav-sub-link">Stock Management</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['BackorderReport.get_data','GRS.pendingGRS','PI.pendingPI','OEF.pendingOEF'])){{'active'}} @endif ">
               <a href="{{url('fgs/back-ordr-report')}}"  class="nav-sub-link">Back order Report</a>

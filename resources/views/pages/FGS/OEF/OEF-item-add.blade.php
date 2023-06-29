@@ -77,7 +77,7 @@
                                                     style="float:left;">
                                                     <label>Quantity * </label>
                                                     <input type="text"  class="form-control" name="moreItems[0][quantity]"
-                                                        id="quantity1" placeholder="Quantity">
+                                                        id="quantity1" placeholder="Quantity" value="1">
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-1 col-lg-1 col-xl-1"
                                                     style="float:left;">
@@ -95,7 +95,7 @@
                                                     style="float:left;">
                                                     <label>Discount %* </label>
                                                     <input type="text"  class="form-control" name="moreItems[0][discount]"
-                                                        id="discount1" placeholder="Discount">
+                                                        id="discount1" placeholder="Discount" value="0">
                                                 </div>
                                                {{-- <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                                     <label> IGST ( % ) </label>
@@ -258,7 +258,7 @@ function getsearch(){
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>Quantity * </label>
-                                <input type="text"  class="form-control" name="moreItems[${i}][quantity]" id="quantity${i}" placeholder="Quantity">
+                                <input type="text"  class="form-control" name="moreItems[${i}][quantity]" id="quantity${i}" placeholder="Quantity" value="1">
                             </div>
                             <div class="form-group col-sm-12 col-md-1 col-lg-1 col-xl-1" style="float:left;">
                                 <label>UOM </label>
@@ -273,7 +273,7 @@ function getsearch(){
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>Discount %* </label>
-                                <input type="text"  class="form-control" name="moreItems[${i}][discount]" id="discount${i}" placeholder="Discount">
+                                <input type="text"  class="form-control" name="moreItems[${i}][discount]" id="discount${i}" placeholder="Discount" value="0">
                             </div>
                            
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">

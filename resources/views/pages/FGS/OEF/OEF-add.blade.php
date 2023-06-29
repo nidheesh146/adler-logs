@@ -77,13 +77,13 @@
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Order Date  *</label>
-                                <input type="date" class="form-control datepicker" name="order_date" value="" placeholder="">
+                                <input type="date" value="{{date('Y-m-d')}}" class="form-control datepicker" name="order_date" value="" placeholder="">
                             </div>
                         
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Order Fulfil  *</label>
                                 <select class="form-control" name="order_fulfil">
-                                    <option>Select one...</option>
+                                    <!-- <option>Select one...</option> -->
                                     @foreach($order_fulfil as $type)
                                     <option value="{{$type['id']}}">{{$type['order_fulfil_type']}}</option>
                                     @endforeach
@@ -92,7 +92,7 @@
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Transaction Type  *</label>
                                 <select class="form-control" name="transaction_type">
-                                    <option>Select one...</option>
+                                    <!-- <option>Select one...</option> -->
                                     @foreach($transaction_type as $type)
                                     <option value="{{$type['id']}}">{{$type['transaction_name']}}</option>
                                     @endforeach

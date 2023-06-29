@@ -44,10 +44,10 @@
 <body>
   <table border="1" style="font-size:12px;width:100%;">
        <tr>
-            <td  style="width:15%; text-align: center;" > <img src="{{asset('/img/logo.png')}}"  style="width:60px;"></td>
-            <td  style="width:60%; text-align:center;font-weight:bold;">BATCH CARD <br>
+            <td  style="width:12%; text-align: center;" > <img src="{{asset('/img/logo.png')}}"  style="width:60px;"></td>
+            <td  style="width:70%; text-align:center;font-weight:bold;">BATCH CARD <br>
             (TOP SHEET TO BE USED WITH LATEST REVISION OF PROCESS SHEET FOR RECORDING BATCH PROCESSING RECORDS & LINE CLEARANCE LOG)</td>
-            <td style="width:20%">
+            <td style="width:18%">
               <table border="1" style="font-size:12px;width:100%;">
                <tr> <td><b>Doc. No :PC/F-01<b></td>
                </tr>
@@ -122,7 +122,7 @@
        <div class="row3" >
           @php
    $f = 1;
-   $l = 10;
+   $l = 23;
 @endphp
         
             <table border="1" style="width:100%;">
@@ -148,7 +148,7 @@
             @for ($i = $f; $i <= $l; $i++)
             <tr style="font-size:14px">
                 <!-- <td width="5%">{{$i}} </td> -->
-                <td width="20%;height:8%;"> </td>
+                <td width="20%;height:3.3%;"> </td>
                 <td width="20%"></td>
                 <td width="20%"></td>
                 <td width="20%"></td>
