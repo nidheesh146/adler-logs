@@ -366,6 +366,26 @@
                     <td> Doc  Date</td>
                     <td>: {{date('d-m-Y', strtotime($dni['dni_date']))}}</td>
                 </tr>
+                <tr>
+                    <td> Product Category</td>
+                    @foreach($dni_items as $dni_item)
+                        @foreach($dni_item['pi_item'] as $item)
+                            <?php $category_name[]=$item['category_name']; ?>
+                            <!-- {{$item['order_number']}} , -->
+                        @endforeach
+                    @endforeach
+                    <td>: 
+                        <?php
+                            $category_name_arr=array_filter(array_unique($category_name));
+                            for($x = 0; $x <count($category_name_arr); $x++) 
+                            {
+                            echo $category_name_arr[$x]; 
+                            echo ",";
+                            }
+                        ?>
+                       
+                    </td>
+                </tr>
                 
             </table>
         </div>

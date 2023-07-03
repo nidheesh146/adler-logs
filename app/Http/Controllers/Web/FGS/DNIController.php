@@ -216,12 +216,13 @@ class DNIController extends Controller
             $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','fgs_grs.grs_date','product_product.sku_code','product_product.hsn_code','product_product.discription',
             'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity as quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number',
             'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date',
-            'order_fulfil.order_fulfil_type','transaction_type.transaction_name','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date')
+            'order_fulfil.order_fulfil_type','transaction_type.transaction_name','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_product_category.category_name')
                             ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
                             ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                             ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
                             ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
                             ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
+                            ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
                             ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
                             ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
                             ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_grs.oef_id')

@@ -150,7 +150,8 @@ class MIQQuarantineExport implements FromCollection, WithHeadings, WithStyles,Wi
                     'item_type'=>$item['type_name'],
                     'description'=>$item['discription'],
                     'lot_number'=>$item['lot_number'],
-                    'supplier'=>$item['vendor_id'].'-'.$item['vendor_name'],
+                    'supplier_code'=>$item['vendor_id'],
+                    'supplier_name'=>$item['vendor_name'],
                     'quantity'=>$item['order_qty'],
                     'unit'=>$item['unit_name'],
                     'rate'=>$item['rate'],
@@ -183,7 +184,8 @@ class MIQQuarantineExport implements FromCollection, WithHeadings, WithStyles,Wi
             'Item Type',
             'Item Description',
             'Lot Number',
-            'Supplier',
+            'Supplier ID',
+            'Supplier Name',
             'Quantity',
             'Unit',
             'Rate',
@@ -223,8 +225,8 @@ class MIQQuarantineExport implements FromCollection, WithHeadings, WithStyles,Wi
                 $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(75);
                 $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(25);
-                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(35);
                 $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(10);

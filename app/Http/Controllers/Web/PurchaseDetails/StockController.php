@@ -595,6 +595,7 @@ class StockController extends Controller
                 ->whereNotIn('batchcard_materials.id',$arr)
                 ->where('batchcard_batchcard.is_alloted','=',0)
                 ->where('batchcard_materials.item_id','=',$request->item_id)
+                ->orderBy('batchcard_batchcard.batch_no','ASC')
                 ->get();
         
        /* $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_mac_item.available_qty','inv_mac_item.accepted_quantity',

@@ -26,11 +26,11 @@ class fgs_oef extends Model
                 ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_oef_item_rel.item')
                 ->where('fgs_oef_item.quantity_to_allocate','!=',0)
                 ->where('fgs_oef.status','=',1)
-                ->whereNotIn('fgs_oef.id',function($query) {
+                // ->whereNotIn('fgs_oef.id',function($query) {
 
-                    $query->select('fgs_grs.oef_id')->from('fgs_grs');
+                //     $query->select('fgs_grs.oef_id')->from('fgs_grs');
                 
-                })
+                // })
                 ->where($condition)
                 ->distinct('fgs_oef.id')
                 ->get();

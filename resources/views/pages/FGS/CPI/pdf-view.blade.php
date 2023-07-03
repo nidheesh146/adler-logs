@@ -166,6 +166,10 @@
                     <td> OEF Date</td>
                     <td>: {{date('d-m-Y', strtotime($cpi['oef_date']))}}</td>
                 </tr>
+                <tr>
+                    <td> Product Category</td>
+                    <td>: {{$pi['category_name']}}</td>
+                </tr>
             </table>
         </div>
         <div class="col23">

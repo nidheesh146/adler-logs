@@ -41,7 +41,7 @@ class batchcard extends Model
                     //->leftjoin('product_product', 'product_product.id','=','batchcard_batchcard.product_id')
                     ->where($condition)
                     ->where('batchcard_batchcard.is_active','=',1)
-                    ->orderBy('batchcard_batchcard.id', 'desc')
+                    ->orderBy('batchcard_batchcard.batch_no', 'desc')
                     ->paginate(15);
     }
 
@@ -58,7 +58,7 @@ class batchcard extends Model
             $query->select('inv_stock_to_production.batch_no_id')->from('inv_stock_to_production');
         
          })
-        ->orderBy('batchcard_batchcard.id', 'desc')
+         ->orderBy('batchcard_batchcard.batch_no', 'desc')
         ->get();
 
     }
@@ -84,7 +84,7 @@ class batchcard extends Model
       function get_batch_card($condition)
     {
         return $this->select(['batchcard_batchcard.*','batchcard_batchcard.batch_no','batchcard_batchcard.quantity','product_product.process_sheet_no',
-        'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_unit.unit_name','product_product.sku_code','inventory_rawmaterial.id as rawmaterial_id'])
+        'inventory_rawmaterial.item_code','product_product.discription','inv_unit.unit_name','product_product.sku_code','inventory_rawmaterial.id as rawmaterial_id'])
           ->leftjoin('batchcard_materials','batchcard_materials.batchcard_id','=','batchcard_batchcard.id')
         ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','batchcard_materials.item_id')
         //->leftjoin('product_product', 'product_product.id','=','batchcard_batchcard.product_id')

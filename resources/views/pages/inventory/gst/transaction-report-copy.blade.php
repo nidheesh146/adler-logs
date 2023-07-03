@@ -46,7 +46,7 @@ $obj_inv=new InventoryreportController();
                                 <form autocomplete="off">
                                     <th scope="row">
                                         <div class="row filter_search" style="margin-left: 0px;">
-                                            <div class="col-sm-10 col-md-6 col-lg-6 col-xl-6 row">
+                                            <div class="col-sm-10 col-md- col-lg-10 col-xl-12 row">
                                                 
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                     <label>Item Code:</label>
@@ -62,7 +62,7 @@ $obj_inv=new InventoryreportController();
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
                                                     <label style="width: 100%;">&nbsp;</label>
                                                     <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                    @if(count(request()->all('')) > 0)
+                                                    @if(count(request()->all('')) > 1)
                                                     <a href="{{url()->current();}}" class="badge badge-pill badge-warning" style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
                                                     @endif
                                                 </div>
@@ -84,125 +84,71 @@ $obj_inv=new InventoryreportController();
                 <table class="table table-bordered mg-b-0" id="example1">
                     <thead>
                         <tr>
-                            <th>Cr. year</th>
-                            <th>Month</th> 
+                            <!-- <th>Cr. year</th>
+                            <th>Month</th> -->
                             <th>Code (ITEM+PO/WO)</th>
-                            <th>Txn_Entry_Dt</th>
-                            <th>Item Code</th>
-                            <th>Item Description</th>
-                            <th>Item Group</th>
+                            <!-- <th>Txn_Entry_Dt</th>
+                            <th>Txn_Dc_Typ.</th> -->
+                            <th>Txn_Doc_No.</th>
+                            <th>Basic Doc No</th>
+                            <!-- <th>Doc_ Ref_No</th>
+                            <th>Doc_Date</th>-->
+                            <th> Doc Qty</th>
+                            <!--     <th>Doc_ Inward_Dt</th> -->
+                            <th>Work Centre</th>
                             <th>Supplier Name</th>
                             <th>Supplier Code</th>
-                            <th>PO / WO Number</th> 
-                            <th>Stk_Kpng_Unt</th>
-                            <th>Invoice No.</th> 
-                            <th>Invoice Qty.</th> 
-                            <th>Invoice Created</th>
+                            <!--  <th>PO / WO Number</th> -->
+                            <th>Item Code</th>
+                            <th>Item Description</th>
                             <th>Lot Number</th>
-                            <th>Lot Created</th>
-                            <th>MIQ No.</th> 
-                            <th>MIQ Date.</th>
+                            <!--  <th> Quantity</th> -->
+                            <!-- <th>Stk_Kpng_Unt</th>
                             <th> Unit_Rate </th>
-                            <th>Value in INR</th> 
+                            <th>Value in INR</th>
+                            <th>Item_Group</th>
+                            <th>Rejection_Reson_If_Any</th>
                             <th>Expiry Control Required Y/N</th>
-                            <th>MIQ Created</th>
-                            <th>MAC No.</th> 
-                            <th>MAC Date.</th>
-                            <th>Accepted Qty.</th>
-                            <th>MAC Created</th>
-                            <th>MRD No.</th> 
-                            <th>MRD Date.</th>
-                            <th>Rejected Qty.</th>
-                            <th>Rejection Reason.</th>
-                            <th>MRD Created</th>
-                            <th>MRR No</th>
-                            <th>MRR Date</th>
-                            <th> MRR created</th>
-                            <th>SIP Number</th>
-                            <th>SIP Date</th>
-                            <th>SIP Qty.</th>
-                            <th>SIP Created</th>
-                            <th>Work Center</th>
-                            <th>SIR Number</th>
-                            <th>SIR Date</th>
-                            <th>SIR Qty.</th>
-                            <th>SIR Created</th>
-                            <th>STO Number</th>
-                            <th>STO Date</th>
-                            <th>STO Qty.</th>
-                            <th>STO Created</th>
+                            <th>Prapare By</th>
+                            <th>REMARK RM STORE</th> -->
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($item_details as $item_detail)
                         <tr>
 
-                            <td>{{date('Y', strtotime($item_detail->invoice_date))}}</td>
-                            <td>{{date('m/y', strtotime($item_detail->invoice_date))}}</td>
-                            <td>{{$item_detail->item_code}}-{{$item_detail->po_number}}</td>
-                            <td>{{date('d-m-Y', strtotime($item_detail->transaction_date))}}</td>
                             <td>{{$item_detail->item_code}}</td>
-                            <td>{{$item_detail->discription}}</td>
-                            <td>{{$item_detail->type_name}}</td>
+                            <td>{{$item_detail->sip_number}}</td>
+                            <td>{{$item_detail->sip_number}}</td>
+                            <td>{{$item_detail->qty_to_production}} {{$item_detail->unit_name}}</td>
+                            <td>{{$item_detail->centre_code}}</td>
+                            <!-- @if(!empty($item_detail->work_centre))
+                            <td>{{$obj_inv->get_workcenter($item_detail->work_centre)}}</td>
+                            @else
+                            <td></td>
+                            @endif -->
                             <td>{{$item_detail->vendor_name}}</td>
                             <td>{{$item_detail->vendor_id}}</td>
-                            <td>{{$item_detail->po_number}}</td>
-                            <td>{{$item_detail->unit_name}}</td>
-                            <td>{{$item_detail->invoice_number}}</td>
-                            <td>{{$item_detail->invoice_qty}}</td>
-                            <td>{{$obj_inv->get_user($item_detail->invoice_created_by)}}</td>
+                            {{--@if(!empty($obj_inv->get_suplier($item_detail->supplier)))
+                            <td>{{$obj_inv->get_suplier($item_detail->supplier)->vendor_name}}</td>
+                            @else
+                            <td>{{$item_detail->supplier}}</td>
+                            @endif
+                            @if(!empty($obj_inv->get_suplier($item_detail->supplier)))
+                            <td>{{$obj_inv->get_suplier($item_detail->supplier)->vendor_id}}</td>
+                            @else
+                            <td>{{$item_detail->supplier}}</td>
+                            @endif--}}
+                            <td>{{$item_detail->item_code}}</td>
+                            <td>{{$item_detail->discription}}</td>
                             <td>{{$item_detail->lot_number}}</td>
-                            <td>{{$obj_inv->get_user($item_detail->lot_created_by)}}</td>
-                            <td>{{$item_detail->miq_number}}</td>
-                            <td>@if($item_detail->miq_number) {{date('d-m-Y', strtotime($item_detail->miq_date))}} @endif</td>
-                            <td>{{$item_detail->basic_rate}}</td>
-                            <td>{{$item_detail->value_inr}}</td>
-                            <td>@if($item_detail->expiry_control =='1') Yes 
-                                    @elseif($item_detail->expiry_control=='0') No 
-                                    @else {{$item_detail->expiry_control}}
-                                    @endif</td>
-                            <td>{{$obj_inv->get_user($item_detail->miq_created_by)}}</td>
-                            <td>{{$item_detail->mac_number}}</td>
-                            <td>@if($item_detail->mac_number) {{date('d-m-Y', strtotime($item_detail->mac_date))}} @endif</td>
-                            <td>{{$item_detail->accepted_quantity}}</td>
-                            <td>{{$obj_inv->get_user($item_detail->mac_created_by)}}</td>
-
-                            <td>{{$item_detail->mrd_number}}</td>
-                            <td>@if($item_detail->mrd_number) {{date('d-m-Y', strtotime($item_detail->mrd_date))}} @endif</td>
-                            <td>{{$item_detail->rejected_quantity}}</td>
-                            <td>{{$item_detail->remarks}}</td>
-                            <td>{{$obj_inv->get_user($item_detail->mrd_created_by)}}</td>
-                           
-                            
-                            
-                            <td>{{$item_detail->mrr_number}} </td>
-                            <td>@if($item_detail->mrr_number) {{date('d-m-Y', strtotime($item_detail->mrr_date))}} @endif</td>
-                            <td>{{$obj_inv->get_user($item_detail->mrr_created_by)}}</td>
-                            
-                            <td>{{$item_detail->sip_number}}</td>
-                            <td>@if($item_detail->sip_number) {{date('d-m-Y', strtotime($item_detail->sip_date))}} @endif</td>
-                            <td>{{$item_detail->qty_to_production}}</td>
-                            <td>{{$obj_inv->get_user($item_detail->sip_created_by)}}</td> 
-                            <td>{{$item_detail->centre_code}}</td>
-                            <td>{{$item_detail->sir_number}}</td>
-                            <td>@if($item_detail->sir_number) {{date('d-m-Y', strtotime($item_detail->sir_date))}} @endif</td>
-                            <td>{{$item_detail->qty_to_return}}</td> 
                             <td></td>
-
-                           <td>{{$item_detail->sto_number}}</td>
-                            <td>@if($item_detail->sto_number) {{date('d-m-Y', strtotime($item_detail->sto_date))}} @endif</td>
-                            <td>{{$item_detail->transfer_qty}}</td> 
-                            <td>{{$obj_inv->get_user($item_detail->sto_created_by)}}</td>
-                          
 
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-                <div class="box-footer clearfix">
-                    {{ $item_details->appends(request()->input())->links() }}
-                        
-                </div> 
+                
             </div>
         </div>
     </div>
@@ -229,8 +175,12 @@ $obj_inv=new InventoryreportController();
             autoclose: true
         });
         $('.search-btn').on("click", function(e) {
+            var miq_no = $('#miq_no').val();
             var item_code = $('#item_code').val();
-            if (!item_code) {
+            var from = $('#from').val();
+            var supplier = $('#supplier').val();
+            var prepared = $('#prepared').val();
+            if (!miq_no & !item_code & !from & !supplier & !prepared) {
                 e.preventDefault();
             }
         });

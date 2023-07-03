@@ -188,8 +188,10 @@
                     <td>:{{$coef['sales_type']}}</td>
                 </tr>
                 <tr>
-                    <!-- <td>Department</td>
-                    <td>: </td> -->
+                <tr>
+                    <td>Product Category</td>
+                    <td>: {{$coef['category_name']}}</td> -->
+                </tr>
                 </tr>
             </table>
         </div>

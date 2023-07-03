@@ -359,6 +359,22 @@ class ProductController extends Controller
        // print_r($ExcelOBJ);exit;
        
     }
+    function identify_id($data,$type)
+    {
+        if($type=='product group'){
+           $id =  DB::table('product_productgroup')->where('group_name',$data)->first()->id;
+           return $id;  
+        }
+        if($type=='product brand'){
+            $id =  DB::table('product_productbrand')->where('brand_name',$data)->first()->id;
+            return $id;  
+        }
+         if($type=='product family'){
+            $id =  DB::table('product_productfamily')->where('family_name',$data)->first()->id;
+            return $id;  
+        }
+        
+    }
     public function insert_product($ExcelOBJ)
     {
         //print_r(json_encode($ExcelOBJ->excelworksheet));exit;
@@ -366,6 +382,7 @@ class ProductController extends Controller
         {
             if ($key > 0) 
             {   
+                //echo $excelsheet[49];exit;
                     $data['minimum_stock'] = $excelsheet[44];
                     $data['maximum_stock'] = "0";
                     if ($excelsheet[47] && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[47])) != 'NA' && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[47])) != 'N. A.') {
@@ -418,6 +435,11 @@ class ProductController extends Controller
                     
                     $data['drug_license_number'] = $excelsheet[42];
                     $data['hsn_code'] = $excelsheet[43];
+                    
+                    //$data['product_group_id'] = $this->identify_id($excelsheet[49],"product group");
+                    $data['product_group_id'] = ((($excelsheet[49]) == '') ? NULL : $this->identify_id($excelsheet[49],"product group"));
+                    $data['brand_details_id'] = ((($excelsheet[27]) == '') ? NULL : $this->identify_id($excelsheet[27],"product brand"));
+                    $data['product_family_id'] = ((($excelsheet[28]) == '') ? NULL : $this->identify_id($excelsheet[28],"product family"));
                     if ($excelsheet[44] && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[44])) != 'NA' && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[44])) != 'N. A.' ) {
                         $data['quantity_per_pack'] = $excelsheet[44];
                     } else {
@@ -456,7 +478,26 @@ class ProductController extends Controller
                         $da['drug_license_number'] = $excelsheet[42];
                         $da['is_sterile'] = (strtolower($excelsheet[31]) == 'yes') ? 1 : 0;
                         $da['process_sheet_no'] = $excelsheet[16];
-                        $res[] = DB::table('product_product')->where('sku_code', $excelsheet[1])->update($da);
+                        $da['groups'] = $excelsheet[49];
+                        $da['family'] =  $excelsheet[28];
+                        $da['brand'] = $excelsheet[27];
+                        $da['product_group_id'] = ((($excelsheet[49]) == '') ? NULL : $this->identify_id($excelsheet[49],"product group"));
+                        $da['brand_details_id'] = ((($excelsheet[27]) == '') ? NULL : $this->identify_id($excelsheet[27],"product brand"));
+                        $da['product_family_id'] = ((($excelsheet[28]) == '') ? NULL : $this->identify_id($excelsheet[28],"product family"));
+                        if(empty($excelsheet[49]))
+                        $da['product_group_id'] = NULL;
+                        else
+                        $da['product_group_id'] = $this->identify_id($excelsheet[49],"product group");
+                        if($excelsheet[27]=='N. A.')
+                        $da['brand_details_id'] = NULL;
+                        else
+                        $da['brand_details_id'] = $this->identify_id($excelsheet[27],"product brand");
+                        if(empty($excelsheet[28]=='N. A.'))
+                        $da['product_family_id'] = NULL;
+                        else
+                        $da['product_family_id'] = $this->identify_id($excelsheet[27],"product family");
+                       // $data['product_group_id'] = ((($excelsheet[49]) == '') ? NULL : $this->identify_id($excelsheet[49],"product group")) ;
+                        $res[] = DB::table('product_product')->where('id', $product_product->id)->update($da);
                     }
             }
             

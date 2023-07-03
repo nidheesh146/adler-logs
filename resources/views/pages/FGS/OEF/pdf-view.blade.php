@@ -190,8 +190,8 @@
                     <td>:{{$oef['sales_type']}}</td>
                 </tr>
                 <tr>
-                    <!-- <td>Department</td>
-                    <td>: </td> -->
+                    <td>Product Category</td>
+                    <td>: {{$oef['category_name']}}</td> -->
                 </tr>
             </table>
         </div>

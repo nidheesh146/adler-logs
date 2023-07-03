@@ -244,8 +244,8 @@ class COEFController extends Controller
                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->hsn_code.'</td>
                         <td>'.$item->discription.'</td>
-                       <td class="qty" data-qty='.$item->quantity.'>'.$item->quantity.'</td>
-                       <td><input type="text" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" disabled></td>
+                       <td class="qty" data-qty='.$item->remaining_qty_after_cancel.'>'.$item->remaining_qty_after_cancel.'</td>
+                       <td><input type="number" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" min="1" max="'.$item->remaining_qty_after_cancel.'" disabled></td>
                       </tr>';
                 }
                 $data .= '</tbody>';

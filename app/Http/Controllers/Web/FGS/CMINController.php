@@ -248,7 +248,7 @@ class CMINController extends Controller
                        <td>'.$item->discription.'</td>
                        <td>'.$item->batch_no.'</td>
                        <td>'.$item->remaining_qty_after_cancel.'</td>
-                       <td><input type="text" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" disabled></td>
+                       <td><input type="number" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" min="1" max="'.$item->remaining_qty_after_cancel.'" disabled></td>
                       
                       
                       </tr>';
