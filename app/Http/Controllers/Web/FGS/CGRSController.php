@@ -109,7 +109,7 @@ class CGRSController extends Controller
                                                          ->update(['cgrs_status' => 1]);
                                 $update_qty = $grs_item['batch_quantity']-$qty_to_cancel_array[$i];
                                 $fgs_grs_item_qty_update = fgs_grs_item::where('product_id','=',$grs_item['product_id'])
-                                                                ->update(['remaining_qty_after_cancel'=>$update_qty]);
+                                                                ->update(['remaining_qty_after_cancel'=>$update_qty,'qty_to_invoice'=>$update_qty]);
                    
                             // $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
                             //             ->where('batchcard_id','=',$grs_item['batchcard_id'])

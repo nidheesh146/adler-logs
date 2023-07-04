@@ -112,18 +112,44 @@ class Controller extends BaseController
     }
 
     function year_combo_num_gen($Number){
-        $Number = (($Number + 1) / 999);
-        list($whole, $decimal) = explode('.', $Number);
-        if(!$decimal){
+       
+        if($Number==998)
+        {
             if(date('m')==01 || date('m')==02 || date('m')==03)
             return date('y', strtotime('-1 year')).date('y').'-'."999";
             else
             return date('y').date('y', strtotime('+1 year')).'-'."999";
         }
-        if(date('m')==01 || date('m')==02 || date('m')==03)
-        return date('y', strtotime('-1 year')).date('y').'-'.substr($decimal, 0, 3);
+        else if($Number>=999)
+        {
+            $Number = (($Number + 1) / 9999);
+            list($whole, $decimal) = explode('.', $Number);
+            if(!$decimal){
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                return date('y', strtotime('-1 year')).date('y').'-'."9999";
+                else
+                return date('y').date('y', strtotime('+1 year')).'-'."9999";
+            }
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            return date('y', strtotime('-1 year')).date('y').'-'.substr($decimal, 0, 4);
+            else
+            return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 4);
+        }
         else
-        return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
+        {
+            $Number = (($Number + 1) / 999);
+            list($whole, $decimal) = explode('.', $Number);
+            if(!$decimal){
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                return date('y', strtotime('-1 year')).date('y').'-'."999";
+                else
+                return date('y').date('y', strtotime('+1 year')).'-'."999";
+            }
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            return date('y', strtotime('-1 year')).date('y').'-'.substr($decimal, 0, 3);
+            else
+            return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
+        }
     }
     function lot_num_gen($Number){
         $Number = (($Number + 1) / 999);

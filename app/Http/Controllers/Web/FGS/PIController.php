@@ -19,6 +19,7 @@ use App\Models\FGS\fgs_multiple_pi;
 use App\Models\FGS\fgs_multiple_pi_item;    
 use App\Models\FGS\fgs_multiple_pi_item_rel;
 use App\Models\product;
+use App\Models\PurchaseDetails\customer_supplier;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingPIExport;
 class PIController extends Controller
@@ -155,7 +156,18 @@ class PIController extends Controller
         }
         else
         {
-            return view('pages/FGS/PI/PI-add');
+            if($request->customer)
+            {
+                $condition = ['customer_supplier.id'=>$request->customer];
+                $customer =customer_supplier::find($request->customer);
+                $grs_items = $this->fgs_grs_item->get_all_grs_item_for_pi(['customer_supplier.id'=>$request->customer]);
+                //echo $grs_items;exit;
+                return view('pages/FGS/PI/PI-add',compact('grs_items','customer'));
+            }
+            else
+            {
+                return view('pages/FGS/PI/PI-add');
+            } 
         }
     }
 
@@ -183,32 +195,35 @@ class PIController extends Controller
 
     public function fetchGRS(Request $request)
     {
-        $grs_masters =$this->fgs_grs->get_all_grs_for_pi(['customer_supplier.id'=>$request->customer_id]);
-        if(count($grs_masters)>0)
+        $grs_items = $this->fgs_grs_item->get_all_grs_item_for_pi(['customer_supplier.id'=>$request->customer_id]);
+        if(count($grs_items)>0)
         {
             $data = ' <table class="table table-bordered mg-b-0" id="example1">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th style="width:120px;">GRS Number</th>
-                                <th>OEF Number</th>
-                                <th>Product category</th>
-                                <th>STOCK LOCATION1(DECREASE)</th>
-                                <th>STOCK LOCATION2(INCREASE)</th>
+                                <th style="width:120px;">SKU Code</th>
+                                <th>Description</th>
+                                <th>HSN Code</th>
+                                <th>GRS NUMBER</th>
                                 <th>GRS Date</th>
+                                <th>Customer</th>
+                                <th>Qty</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">';
-            foreach($grs_masters as $grs)
+            foreach($grs_items as $items)
             {
                 $data.= '<tr>
-                        <td><input type="checkbox" name="grs_id[]" value='.$grs->id.' ></td>
-                        <td>'.$grs->grs_number.'</td>
-                        <td>'.$grs->oef_number.'</td>
-                        <td>'.$grs->category_name.'</td>
-                        <td>'.$grs->location_name1.'</td>
-                        <td>'.$grs->location_name2.'</td>
-                        <td>'.date('d-m-Y', strtotime($grs->grs_date)).'</td>
+                        <td><input type="checkbox" name="grs_id[]" value='.$items->id.' ></td>
+                        <td>'.$items->sku_code.'</td>
+                        <td>'.$items->discription.'</td>
+                        <td>'.$items->hsn_code.'</td>
+                        <td>'.$items->grs_number.'</td>
+                        <td>'.date('d-m-Y', strtotime($items->grs_date)).'</td>
+                        <td>'.$items->firm_name.'</td>
+                        <td>'.$items->remaining_qty_after_cancel.'Nos</td>
+                        
                 </tr>';
             }
             $data.= ' </tbody>
@@ -218,6 +233,43 @@ class PIController extends Controller
         else 
         return 0;
     }
+    // public function fetchGRS(Request $request)
+    // {
+    //     $grs_masters =$this->fgs_grs->get_all_grs_for_pi(['customer_supplier.id'=>$request->customer_id]);
+    //     if(count($grs_masters)>0)
+    //     {
+    //         $data = ' <table class="table table-bordered mg-b-0" id="example1">
+    //                     <thead>
+    //                         <tr>
+    //                             <th></th>
+    //                             <th style="width:120px;">GRS Number</th>
+    //                             <th>OEF Number</th>
+    //                             <th>Product category</th>
+    //                             <th>STOCK LOCATION1(DECREASE)</th>
+    //                             <th>STOCK LOCATION2(INCREASE)</th>
+    //                             <th>GRS Date</th>
+    //                         </tr>
+    //                     </thead>
+    //                     <tbody id="table-body">';
+    //         foreach($grs_masters as $grs)
+    //         {
+    //             $data.= '<tr>
+    //                     <td><input type="checkbox" name="grs_id[]" value='.$grs->id.' ></td>
+    //                     <td>'.$grs->grs_number.'</td>
+    //                     <td>'.$grs->oef_number.'</td>
+    //                     <td>'.$grs->category_name.'</td>
+    //                     <td>'.$grs->location_name1.'</td>
+    //                     <td>'.$grs->location_name2.'</td>
+    //                     <td>'.date('d-m-Y', strtotime($grs->grs_date)).'</td>
+    //             </tr>';
+    //         }
+    //         $data.= ' </tbody>
+    //         </table>';
+    //     return $data;
+    //     }
+    //     else 
+    //     return 0;
+    // }
 
     public function PIpdf($pi_id)
     { 
