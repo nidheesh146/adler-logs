@@ -525,6 +525,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/PI/merged-payment-pdf/{mpi_id}','PIController@MergedPIPaymentpdf');
     Route::get('fgs/back-ordr-report','BackorderReportController@get_data');
     Route::get('fgs/all/export','BackorderReportController@allExport');
+    Route::post('fgs/pi/partial-invoice','PIController@PartialPI');
     //CPI
      Route::get('fgs/CPI/CPI-list','CPIController@CPIList');
     Route::get('fgs/CPI/CPI-add','CPIController@CPIAdd');

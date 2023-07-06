@@ -72,7 +72,7 @@
 									<td>{{$item['discription']}}</td>	
 									<td>{{$item['hsn_code']}}</td>
 									<td>{{$item['batch_no']}}</td>
-                                    <td>{{$item['batch_quantity']}}Nos</td>
+                                    <td>{{$item['batch_qty']}}Nos</td>
 									<td>{{$item['remaining_qty_after_cancel']}}Nos</td>
                                     <td>{{$item['rate']}} {{$item['currency_code']}}</td>
                                     <td>{{$item['discount']}}%</td>

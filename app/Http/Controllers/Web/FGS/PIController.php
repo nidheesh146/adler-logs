@@ -74,8 +74,9 @@ class PIController extends Controller
     {
         if($request->isMethod('post'))
         {
-            $validation['customer'] = ['required'];
+            $validation['customer_id'] = ['required'];
             $validation['pi_date'] = ['required'];
+            $validation['grs_item_id'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
@@ -89,53 +90,71 @@ class PIController extends Controller
                 }
                 $data['pi_number'] = "PI-".$this->year_combo_num_gen(DB::table('fgs_pi')->where('fgs_pi.pi_number', 'LIKE', 'PI-'.$years_combo.'%')->count()); 
                 $data['pi_date'] = date('Y-m-d',strtotime($request->pi_date));
-                $data['customer_id'] =$request->customer;
+                $data['customer_id'] =$request->customer_id;
                 $data['created_by'] = config('user')['user_id'];
                 $data['created_at'] = date('Y-m-d H:i:s');
                 $data['updated_at'] = date('Y-m-d H:i:s');
                 $pi_master=$this->fgs_pi->insert_data($data);
-                foreach($request->grs_id as $grs_id)
+                foreach($request->grs_item_id as $grs_item_id)
                 {
+                    $grs_item = fgs_grs_item::where('id','=',$grs_item_id)->first();
                     $grs = fgs_grs_item_rel::select('fgs_grs_item_rel.item','fgs_grs_item_rel.master')
                             ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_grs_item_rel.item')
-                            ->where('cgrs_status','=',0)
-                            ->where('master','=',$grs_id)->get();
-                    
-                    foreach($grs as $grs_data)
+                            // ->where('cgrs_status','=',0)
+                            ->where('fgs_grs_item.id','=',$grs_item['id'])->first();
+                    $item['grs_id'] = $grs['master'];
+                    $item['grs_item_id'] = $grs_item['id'];
+                    $item['mrn_item_id'] = $grs_item['mrn_item_id'];
+                    $item['batchcard_id'] =$grs_item['batchcard_id'];
+                    $item['product_id'] =$grs_item['product_id'];
+                    $item['batch_qty'] =$grs_item['remaining_qty_after_cancel'];
+                    $item['remaining_qty_after_cancel'] =$grs_item['remaining_qty_after_cancel'];
+                    $item['created_at'] =  date('Y-m-d H:i:s');
+                    if($grs_item['current_invoice_qty']==0)
                     {
-                        $grs_item = fgs_grs_item::where('id','=',$grs_data['item'])->first();
-                        //print_r($grs_item);exit;
-                        $item['grs_id'] = $grs_data['master'];
-                        $item['grs_item_id'] = $grs_data['item'];
-                        $item['mrn_item_id'] = $grs_item['mrn_item_id'];
-                        $item['batchcard_id'] =$grs_item['batchcard_id'];
-                        $item['product_id'] =$grs_item['product_id'];
-                        $item['batch_qty'] =$grs_item['remaining_qty_after_cancel'];
-                        $item['remaining_qty_after_cancel'] =$grs_item['remaining_qty_after_cancel'];
-                        $item['created_at'] =  date('Y-m-d H:i:s');
-                        $pi_item=$this->fgs_pi_item->insert_data($item);
-                        if($pi_item && $pi_master ){
-                            DB::table('fgs_pi_item_rel')->insert(['master'=>$pi_master,'item'=>$pi_item]);
-                        }
-                        $grs_item = fgs_grs_item::where('id','=',$grs_data['item'])->first();
-                        $stock['product_id'] =$grs_item['product_id'];
-                        $stock['pi_item_id'] =$pi_item;
-                        $stock['batchcard_id'] =$grs_item['batchcard_id'];
-                        $stock['quantity'] =$grs_item['remaining_qty_after_cancel'];
-                        $stock['created_at'] =  date('Y-m-d H:i:s');
-                        $maa_stock=$this->fgs_maa_stock_management->insert_data($stock);
-                        
-                         $fgs_grs_data = fgs_grs::where('id','=',$grs_data['master'])->first();
-                        $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
+                        $item['batch_qty']= $grs_item['qty_to_invoice'];
+                        $item['remaining_qty_after_cancel'] =$grs_item['qty_to_invoice'];
+                    }
+                    else
+                    {
+                        $item['batch_qty']= $grs_item['current_invoice_qty'];
+                        $item['remaining_qty_after_cancel'] =$grs_item['current_invoice_qty'];
+                    }
+                    $pi_item=$this->fgs_pi_item->insert_data($item);
+                    if($pi_item && $pi_master ){
+                        DB::table('fgs_pi_item_rel')->insert(['master'=>$pi_master,'item'=>$pi_item]);
+                    }
+                    $grs_item = fgs_grs_item::where('id','=',$grs_item['id'])->first();
+                    $stock['product_id'] =$grs_item['product_id'];
+                    $stock['pi_item_id'] =$pi_item;
+                    $stock['batchcard_id'] =$grs_item['batchcard_id'];
+                    if($grs_item['current_invoice_qty']==0)
+                    {
+                        $stock['quantity'] =$grs_item['qty_to_invoice'];
+                    }
+                    else
+                    {
+                        $stock['quantity'] =$grs_item['current_invoice_qty'];
+                    }
+                    $stock['created_at'] =  date('Y-m-d H:i:s');
+                    $maa_stock=$this->fgs_maa_stock_management->insert_data($stock);
+                    $fgs_grs_data = fgs_grs::where('id','=',$grs['master'])->first();
+                    $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
                                         ->where('batchcard_id','=',$grs_item['batchcard_id'])
                                         ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
                                         ->first();
-
-                            $update_stock = $fgs_product_stock['quantity']-$grs_item['batch_quantity'];
-                            $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
-
-
+                    if($grs_item['current_invoice_qty']==0)
+                    {
+                        $update_stock = $fgs_product_stock['quantity']-$grs_item['qty_to_invoice'];
                     }
+                    else
+                    {
+                        $update_stock = $fgs_product_stock['quantity']-$grs_item['current_invoice_qty'];
+                    }
+                    $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+                    $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id], ['fgs_grs_item.current_invoice_qty'=>0]);
+
+                   
                 }
                 if($pi_master)
                 {
@@ -151,7 +170,7 @@ class PIController extends Controller
             }
             else
             {
-                return redirect('fgs/PI-add')->withErrors($validator)->withInput();
+                return redirect()->back()->withErrors($validator)->withInput();
             }
         }
         else
@@ -174,7 +193,7 @@ class PIController extends Controller
     public function PIitemlist($pi_id)
     {
         $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','product_product.sku_code','product_product.hsn_code','product_product.discription','fgs_pi_item.remaining_qty_after_cancel',
-        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code')
+        'batchcard_batchcard.batch_no','fgs_pi_item.batch_qty','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date')
                         ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
@@ -561,5 +580,30 @@ class PIController extends Controller
                         ->get();
         return Excel::download(new PendingPIExport($pi_data), 'PIBackOrderReport' . date('d-m-Y') . '.xlsx');
         
+    }
+    public function PartialPI(Request $request)
+    {
+        if ($request->isMethod('post'))
+        {
+            $validation['grs_item_id'] = ['required'];
+            $validation['partial_invoice_qty'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                $grs_item = fgs_grs_item::where('id', $request->grs_item_id)->first();
+                $qty_update = $grs_item['qty_to_invoice']-$request->partial_invoice_qty;
+                $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id], ['fgs_grs_item.qty_to_invoice'=>$qty_update,'fgs_grs_item.current_invoice_qty'=>$request->partial_invoice_qty,'fgs_grs_item.remaining_qty_after_cancel'=>$qty_update]);
+                $request->session()->flash('success', "You have successfully updated a  Partial PI quantity !");
+                // if($request->order_type)
+                // return redirect("inventory/supplier-invoice-add?order_type=".$request->order_type);
+                // else
+                // return redirect("inventory/supplier-invoice-add");
+                return redirect()->back();                  
+            }
+        }
+
+
+
+
     }
 }

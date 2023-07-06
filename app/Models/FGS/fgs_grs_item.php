@@ -67,8 +67,14 @@ class fgs_grs_item extends Model
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
                         ->where($condition)
                         ->where('fgs_grs_item.cgrs_status','=',0)
-                        ->where('remaining_qty_after_cancel','!=',0)
+                        ->where('fgs_grs_item.remaining_qty_after_cancel','!=',0)
+                        ->where('fgs_grs_item.qty_to_invoice','!=',0)
                         ->where('fgs_grs.status','=',1)
+                        // ->whereNotIn('fgs_grs_item.id',function($query) {
+
+                        //     $query->select('fgs_pi_item.grs_item_id')->from('fgs_pi_item');
+                        
+                        // })
                         ->orderBy('fgs_grs_item.id','DESC')
                         ->distinct('fgs_grs_item.id')
                         ->get();

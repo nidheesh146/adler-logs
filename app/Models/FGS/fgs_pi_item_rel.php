@@ -16,7 +16,7 @@ class fgs_pi_item_rel extends Model
     {
         return $this->select('fgs_grs.grs_number','product_product.sku_code','fgs_oef.oef_number','fgs_oef.oef_number','product_product.hsn_code','product_product.discription',
         'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity as quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code',
-        'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date')
+        'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_pi_item.remaining_qty_after_cancel')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
                         ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')

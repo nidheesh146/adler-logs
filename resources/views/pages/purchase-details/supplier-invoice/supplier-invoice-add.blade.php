@@ -284,7 +284,7 @@
 
   });
   $(document).ready(function() {
-        $('body').on('click', '#invoice-add-model', function (event) {
+        $('body').on('click', '.invoice-pending-model', function (event) {
             event.preventDefault();
             var itemCode = $(this).attr('itemCode');
             var description = $(this).attr('description');

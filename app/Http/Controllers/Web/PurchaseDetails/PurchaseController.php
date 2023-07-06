@@ -1638,6 +1638,7 @@ class PurchaseController extends Controller
     public function pendingPurchaseRealisation(Request $request)
     {
         $condition2=[];
+        $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-04-2023'))];
         if ($request->supplier) {
     
             $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];

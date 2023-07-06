@@ -26,6 +26,7 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
         if($this->request=='null')
         {
             $condition2=[];
+            $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-04-2023'))];
             $condition1[] = ['inv_final_purchase_order_master.type', '=', 'PO'];
             $condition1[] = ['inv_final_purchase_order_master.status', '=', 1];
             $po_data = inv_final_purchase_order_master::select(['inv_purchase_req_quotation.rq_no','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_final_purchase_order_master.po_date',
@@ -119,7 +120,8 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
         else
         {
             $condition2=[];
-            $condition1=[];
+            //$condition1=[];
+            $condition1[] = ['inv_final_purchase_order_master.po_date', '>=', date('Y-m-d', strtotime('01-04-2023'))];
             if ($this->request->supplier) {
         
                 $condition1[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' .$this->request->supplier . '%'];
@@ -273,8 +275,8 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
             'GST(%)',
             'Supplier',
             'Cancelled qty',
-            'Expected Delivery Date',
             'PO/WO Date',
+            'Expected Delivery Date',
             'Approved Date',
         ];
     }

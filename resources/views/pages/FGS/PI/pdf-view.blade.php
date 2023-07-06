@@ -269,13 +269,13 @@
                 <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                 <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
                 <td>{{$item['batch_no']}}</td>
-                <td style="text-align:center;">{{$item['quantity']}}</td>
+                <td style="text-align:center;">{{$item['remaining_qty_after_cancel']}}</td>
                 <td>Nos</td>
                 <td style="text-align:right;">{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                
                 <td style="text-align:center;">{{$item['discount']}}</td>
-                <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
-                <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
+                <?php $discount_value = ($item['rate']* $item['remaining_qty_after_cancel'])-(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100);?>
+                <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100), 2, '.', '')}}</td>
                 <td style="text-align:right;">{{number_format((float)$discount_value, 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['cgst']}}</td>
                 <td style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
@@ -286,14 +286,14 @@
                 <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
                 <td style="text-align:right;">{{number_format((float)($total_amount), 2, '.', '')}}</td>
                 <?php 
-                $total =$total+ $item['rate']* $item['quantity'];
-                $total_discount = $total_discount+($item['rate']* $item['quantity']*$item['discount'])/100;
+                $total =$total+ $item['rate']* $item['remaining_qty_after_cancel'];
+                $total_discount = $total_discount+($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100;
                 $total_igst = $total_igst+($discount_value*$item['igst'])/100;
                 $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
-                $total_cgst = $total_cgst+($discount_value* $item['quantity']*$item['cgst'])/100;
+                $total_cgst = $total_cgst+($discount_value* $item['remaining_qty_after_cancel']*$item['cgst'])/100;
                 ?>
                 <?php 
-                 $qsum = $qsum+$item['quantity'];
+                 $qsum = $qsum+$item['remaining_qty_after_cancel'];
                  $rsum = $rsum+$item['rate'];
                  $tsum = $tsum+$discount_value;
                  $isum = $isum+$total_igst;
@@ -311,17 +311,17 @@
                 <td></td>
                 <td style="text-align:center;">{{  $qsum }}</td>
                 <td></td>
-                <td style="text-align:right;"> {{ $rsum }}</td>
+                <td style="text-align:right;">{{number_format((float)($rsum), 2, '.', '') }}</td>
                 <td></td>
                 <td></td>
-                <td style="text-align:right;">{{ $tsum }}</td>
+                <td style="text-align:right;">{{number_format((float)($tsum), 2, '.', '') }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td> 
                 <td></td>
-                <td>{{ $totalsum }}</td>
+                <td>{{number_format((float)($totalsum), 2, '.', '') }}</td>
             </tr>       
         </table>
     </div>
