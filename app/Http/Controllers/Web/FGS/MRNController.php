@@ -158,10 +158,17 @@ class MRNController extends Controller
         //                                 ->where('production_stock_management.product_id','=',$request->product_id)
         //                                 ->where('production_stock_management.stock_qty','!=',0)
         //                                 ->get();
-        $batchcards = batchcard::select('batchcard_batchcard.batch_no','batchcard_batchcard.id as batch_id','batchcard_batchcard.start_date','batchcard_batchcard.target_date')
+        $batchcards = batchcard::select('batchcard_batchcard.batch_no','batchcard_batchcard.id as batch_id','batchcard_batchcard.start_date','batchcard_batchcard.target_date','batchcard_batchcard.quantity')
                                         ->where('batchcard_batchcard.product_id','=',$request->product_id)
+                                        ->orderBy('batchcard_batchcard.id','DESC')
                                         ->get();
         return $batchcards;
+    }
+
+    public function fetchBatchCardQty(Request $request)
+    {
+        $batchcard = batchcard::where('batchcard_batchcard.id','=',$request->batch_id)->first();
+        return $batchcard['quantity'];
     }
 
     public function MRNitemAdd(Request $request, $mrn_id)

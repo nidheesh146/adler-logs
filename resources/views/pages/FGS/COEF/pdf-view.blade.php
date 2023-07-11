@@ -350,16 +350,16 @@
             </table>
             <table style="border-bottom:solid 1px black;width:100%;border-top:solid 1px black;width:100%;">
                 <tr>
-                    <th style="width:130px">GRAND TOTAL</th>
+                    <th style="width:130px;color:#1434A4;">GRAND TOTAL</th>
                     <?php
                      $grand = 0;
                      $grandt = 0;
                     $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))
                    
                     ?>
-                    <th style="width:30px;">:</th>
+                    <th style="width:30px;color:#1434A4;">:</th>
                     {{--<th class="grand_total_value" style="text-align:right;">{{number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')}} {{$coef['currency_code']}}</th>--}}
-                    <th class="grand_total_value" style="text-align:right;">{{ $grand }} </th>
+                    <th class="grand_total_value" style="text-align:right;color:#1434A4;">{{ number_format((float)$grand,2,'.','') }} </th>
                 </tr> 
             </table>
         </div>

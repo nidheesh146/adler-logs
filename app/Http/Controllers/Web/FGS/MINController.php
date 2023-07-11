@@ -139,6 +139,7 @@ class MINController extends Controller
                                         ->where('fgs_product_stock_management.product_id','=',$request->product_id)
                                         ->where('fgs_product_stock_management.stock_location_id','=',$min['stock_location'])
                                         ->where('fgs_product_stock_management.quantity','!=',0)
+                                        ->orderBy('batchcard_batchcard.id','DESC')
                                         ->get();
         return $batchcards;
     }

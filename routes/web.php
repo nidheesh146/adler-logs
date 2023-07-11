@@ -423,6 +423,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
     Route::post('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
     Route::get('fgs/MRN/pdf/{mrn_id}','MRNController@MRNpdf');
+    Route::get('fgs/fetchBatchCardQty','MRNController@fetchBatchCardQty');
     //MIN
     Route::get('fgs/MIN-list','MINController@MINList');
     Route::get('fgs/MIN-add','MINController@MINAdd');

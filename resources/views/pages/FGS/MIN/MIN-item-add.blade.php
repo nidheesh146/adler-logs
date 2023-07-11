@@ -61,8 +61,8 @@
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
                                                     style="float:left;">
                                                     <label>HSN Code * </label>
-                                                    <input type="text" readonly class="form-control" name="Itemtype"
-                                                        id="Itemtype1" placeholder="HSN Code">
+                                                    <input type="text" readonly class="form-control" name="hsncode"
+                                                        id="hsncode1" placeholder="HSN Code">
                                                     <input type="hidden"
                                                         value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}"
                                                         name="Itemtypehidden" id="Itemtypehidden">
@@ -76,7 +76,7 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
-                                                    <select class="form-control batch_number batch_no1" id="1"
+                                                    <select class="form-control batch_number batch_no1" index="1"
                                                         name="moreItems[0][batch_no]" id="batch_no1">
                                                     </select>
                                                     
@@ -86,7 +86,7 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label>Quantity * </label>
-                                                    <input type="text"  class="form-control" name="moreItems[0][qty]"
+                                                    <input type="number"  class="form-control" name="moreItems[0][qty]"
                                                         id="stock_qty1" placeholder="Quantity">
                                                 </div>
                                             
@@ -192,7 +192,7 @@ $(".datepicker").datepicker({
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>HSN Code * </label>
-                                <input type="text" readonly class="form-control" name="Itemtype" id="Itemtype${i}" placeholder="HSN Code">
+                                <input type="text" readonly class="form-control" name="hsncode" id="hsncode${i}" placeholder="HSN Code">
                                 <input type="hidden" value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}" name="Itemtypehidden" id="Itemtypehidden">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
@@ -201,14 +201,14 @@ $(".datepicker").datepicker({
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label for="exampleInputEmail1">Batch No* </label>
-                                <select class="form-control batch_number batch_no${i}" id="${i}" name="moreItems[${i}][batch_no]" id="batch_no${i}">
+                                <select class="form-control batch_number batch_no${i}" index="${i}" name="moreItems[${i}][batch_no]" id="batch_no${i}">
                                 </select>                
                             </div>
                         </div>
                         <div class="row"> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Batch Qty * </label>
-                                <input type="text"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Stock Qty">
+                                <input type="number"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Stock Qty">
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>UOM </label>
@@ -243,13 +243,16 @@ $(".datepicker").datepicker({
                 $("#row"+button_id+"").remove();
             });
         });
-        $('.batch_number').on('change', function (){
-            var select_id = $(this).attr("id");
-            var element = $("option:selected", this); 
-            var stock_qty = element.attr("qty"); 
-            $("#stock_qty"+select_id+"").val(stock_qty);
-           // alert(stock_qty);
-        }); 
+        $(document).on('change', '.batch_number', function (e) {
+            var batch_id = $(this).val();
+            var select_id = $(this).attr("index");
+            $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id="+batch_id,function(data){
+                $("#stock_qty"+select_id+"").val(data);
+                $("#stock_qty"+select_id+"").attr('max',data);
+                $("#stock_qty"+select_id+"").attr('min',0);
+            });
+    // do something 
+        });
             function initSelect2() {
                 var min_id = $('#min_id').val();
                 $(".product").select2({
@@ -273,14 +276,14 @@ $(".datepicker").datepicker({
                     var select_id = $(this).attr("id");
                     $('#Itemcode-error').remove();
                     $("#Itemdescription"+select_id+"").text('');
-                    $("#Itemtype"+select_id+"").val('');
+                    $("#hsncode"+select_id+"").val('');
                     $("#Itemdescription"+select_id+"").val('');
 
                     Itemdescription1
                     let res = $(this).select2('data')[0];
                         if(typeof(res) != "undefined" ){
-                            if(res.type_name){
-                                $("#Itemtype"+select_id+"").val(res.type_name);
+                            if(res.hsn_code){
+                                $("#hsncode"+select_id+"").val(res.hsn_code);
                             }
                             if(res.unit_name){
                                 $('#Unit').val(res.unit_name);
@@ -308,6 +311,7 @@ $(".datepicker").datepicker({
                             }
                             $.get("{{ url('fgs/fetchProductBatchCardsFromFGSStock') }}?product_id="+res.id+'&min_id='+min_id,function(data)
                             {
+                                $(".batch_no"+select_id+"").find('option').remove();
                                 if(data.length>0)
                                 {
                                     $(".batch_no"+select_id+"").append('<option>..Select One..</option>')
