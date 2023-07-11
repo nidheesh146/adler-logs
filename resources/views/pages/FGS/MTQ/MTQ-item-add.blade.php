@@ -99,9 +99,9 @@
                                                     <input type="text"  class="form-control datepicker expiry_date" name="moreItems[0][expiry_date]" value="{{date('d-m-Y', strtotime($date .' -2 day'))}}"
                                                         id="expiry_date1" placeholder="Date of Expiry">
                                                 </div>
-                                                <button type="button" name="add" id="add" class="btn btn-success"
+                                                <!-- <button type="button" name="add" id="add" class="btn btn-success"
                                                     style="height:38px;margin-top:28px;"><i
-                                                        class="fas fa-plus"></i></button>
+                                                        class="fas fa-plus"></i></button> -->
                                             </div>
                                             </td>
                                         </tr>
@@ -110,6 +110,10 @@
                                     </tbody>
 
                                 </table>
+                                <div class=" col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                    <button type="button" name="add" id="add" class="btn btn-success btn-xs" style="height:38px;float:right;margin-right:19px;">
+                                    <i class="fas fa-plus"></i></button>
+                                </div>
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                     <label for="exampleInputEmail1">Remarks  *</label>
                                     <textarea type="text" class="form-control" name="f_name" value="" placeholder=""></textarea>

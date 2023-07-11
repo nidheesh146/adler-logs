@@ -90,6 +90,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.WORAdd'])){{'active'}} @endif "><a href="{{url('inventory/MRD')}}" class="nav-sub-link">MRD/WOR</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['MRD.RMRNlist','MRD.RMRNAdd','MRD.RMRNAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/RMRN')}}" class="nav-sub-link">RMRN</a></li>  
             <li class="nav-sub-item  @if(in_array($Action,['MRR.addMRR','MRR.receiptReport'])){{'active'}} @endif "><a href="{{url('inventory/receipt-report')}}" class="nav-sub-link">MRR/SRR</a></li>  
+            <li class="nav-sub-item  @if(in_array($Action,['Fgsreport.get_data'])){{'active'}} @endif"><a href="{{url('inventory/stock-report')}}"  class="nav-sub-link">Stock Report</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockFromProduction','Stock.StockFromProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/FromProduction')}}" class="nav-sub-link">Stock Return From Production</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockTransfer','Stock.StockTransferAdd','Stock.viewItems'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  
@@ -103,7 +104,7 @@
         'PI.PIAdd','PI.PIList','PI.PIitemlist','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','MTQ.MTQAdd','StockManagement.productionStockAdd',
         'StockManagement.productionStockList','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','PI.pendingPI','GRS.pendingGRS','PI.mergedPIList','BackorderReport.get_data','GRS.GRSitemAdd',
         'COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','ProductMaster.productList','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist' ,
-        'StockManagement.allLocations','StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','PI.pendingPI','Fgsreport.get_data','StockManagement.batchTraceReport'])){{'active show'}} @endif ">
+        'StockManagement.allLocations','StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','PI.pendingPI','Fgsreport.get_data','StockManagement.batchTraceReport','DNI.netBillingReport'])){{'active show'}} @endif ">
 
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
           <ul class="nav-sub">
@@ -134,6 +135,9 @@
             </li>
             <li class="nav-sub-item  @if(in_array($Action,['StockManagement.batchTraceReport'])){{'active'}} @endif">
               <a href="{{url('fgs/batch-trace-report')}}"  class="nav-sub-link">Batch Trace Report</a>
+            </li>
+            <li class="nav-sub-item  @if(in_array($Action,['DNI.netBillingReport'])){{'active'}} @endif">
+              <a href="{{url('fgs/net-billing-report')}}"  class="nav-sub-link">Net Billing Report</a>
             </li>
             <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','GRS.GRSitemAdd',
               'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList',

@@ -158,6 +158,12 @@ class BatchCardController extends Controller
 
             if(!$validator->errors()->all())
             {
+                $is_exist = batchcard::where('batch_no','LIKE','%'.$request->batchcard.'%')->count();
+                if($is_exist!=0)
+                {
+                    $request->session()->flash('error',  "This batchcard already exist.. !");
+                    return redirect('batchcard/batchcard-add');
+                }
                 //print_r($request->all());exit;
                 $datas['product_id'] = $request->product;
                 $datas['process_sheet_id'] = $request->process_sheet;
@@ -180,7 +186,7 @@ class BatchCardController extends Controller
                         $data['batchcard_id'] = $batchcard;
                         $data['product_inputmaterial_id'] = $_POST['material'.$i];
                         $data['item_id'] = $_POST['rawmaterial_id'.$i];
-                        $data['quantity'] = $_POST['qty'.$i];
+                        $data['quantity'] = $_POST['materialqty'.$i];
                         $batchcard_material[] =  $this->batchcard_material->insert_data($data);
                     }
                 }
@@ -934,6 +940,68 @@ class BatchCardController extends Controller
                 }
              }
         }
+    }
+
+    public function Batchcardedit(Request $request)
+    {
+        if ($request->isMethod('post')) 
+        {
+            $validation['product'] = ['required'];
+            $validation['batchcard'] = ['required'];
+            $validation['sku_quantity'] = ['required'];
+            $validation['start_date'] = ['required'];
+            $validation['target_date'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                //print_r($request->all());exit;
+                $datas['product_id'] = $request->product;
+                $datas['process_sheet_id'] = $request->process_sheet;
+                $datas['batch_no'] = $request->batchcard;
+                $datas['quantity'] = $request->sku_quantity;
+                $datas['start_date'] = date('Y-m-d',strtotime($request->start_date));
+                $datas['target_date'] = date('Y-m-d',strtotime($request->target_date));
+                //$datas['is_active'] = 1;
+               // $datas['updated'] = date('Y-m-d H:i:s');
+                $batchcard =  $this->batchcard->update_data(['batchcard_batchcard.id'=>$request->id],$datas);
+                if($batchcard)
+                {
+                    $product_inputmaterial_count = product_input_material::where('product_id','=',$request->product)->where('status','=',1)->count();
+                    for($i=1;$i<=$product_inputmaterial_count;$i++)
+                    {
+                        //$data['batchcard_id'] = $request->id;
+                        //$data['product_inputmaterial_id'] = $_POST['material'.$i];
+                        $data['item_id'] = $_POST['material'.$i];
+                        $data['quantity'] = $_POST['materialqty'.$i];
+                        $batchcard_material[] =  $this->batchcard_material->update_data(['batchcard_id'=>$request->id,'product_inputmaterial_id'=>$_POST['material'.$i]],$data);
+                    }
+                }
+                //if(count($batchcard_material)==$product_inputmaterial_count)
+                $request->session()->flash('success',  "You have successfully updated a batchcard !");
+                // else
+                //  $request->session()->flash('error',  "You have failed to insert a batchcard !");
+                return redirect('batchcard/batchcard-add');
+            }
+            if ($validator->errors()->all()) {
+                return redirect("batchcard/batchcard-add")->withErrors($validator)->withInput();
+            }
+
+        }
+        else
+        {
+            $products = product::select('id','sku_code')->where('is_active','=',1)->get();
+            $batchcard = batchcard::find($request->id);
+            $input_materials = product_input_material::select('product_input_material.id','material_option1.item_code as item_code1','material_option1.id as item1_id','material_option2.item_code as item_code2','material_option2.id as item2_id',
+                        'material_option3.item_code as item_code3','material_option3.id as item3_id','product_input_material.quantity1','product_input_material.quantity1','product_input_material.quantity1')
+                                                ->leftJoin('inventory_rawmaterial as material_option1','material_option1.id','=','product_input_material.item_id1')
+                                                ->leftJoin('inventory_rawmaterial as material_option2','material_option2.id','=','product_input_material.item_id2')
+                                                ->leftJoin('inventory_rawmaterial as material_option3','material_option3.id','=','product_input_material.item_id3')
+                                                ->where('product_input_material.product_id','=',$batchcard->product_id)
+                                                ->get();
+            return view('pages/batchcard/batchcard-edit',compact('batchcard','products','input_materials'));
+        }
+
+        
     }
   
     

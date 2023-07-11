@@ -25,7 +25,8 @@ use App\Models\PurchaseDetails\inv_stock_to_production_item;
 use App\Models\PurchaseDetails\inv_batchcard_qty_updation_request;
 use App\Models\PurchaseDetails\inv_stock_management;
 use App\Models\PurchaseDetails\inv_stock_transaction;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\InventoryStockExport;
 class StockController extends Controller
 {
     public function __construct()
@@ -350,6 +351,7 @@ class StockController extends Controller
     }
     public function StockFromProductionAdd(Request $request)
     {
+        
         // $condition = [];
         // if($request)
         // {
@@ -464,6 +466,7 @@ class StockController extends Controller
 
     public function DirectSIP()
     {
+        //$this->removeExistOpenDirectStock();
         //$this->indirectupload();
         //$this->directupload();
         $work_centre = work_centre::where('status','=',1)->get();
@@ -1508,6 +1511,19 @@ class StockController extends Controller
         //print_r($not_exist_item);
     }
 
+
+    public function removeExistOpenDirectStock()
+    {
+        $lots = DB::table('inv_lot_allocation')->where('inv_lot_allocation.si_invoice_item_id','=','NULL')->get();
+        //print_r($lots);exit;
+        foreach($lots as $lot)
+        {
+            DB::table('inv_stock_transaction')->where('lot_id','=',$lot->id)->delete();
+            DB::table('inv_stock_management')->where('lot_id','=',$lot->id)->delete();
+            //DB::table()->where('inv_lot_allocation')->where('id','=',$lot['id'])->delete();
+        }
+        DB::table('inv_lot_allocation')->where('inv_lot_allocation.si_invoice_item_id','=','NULL')->delete();
+    }
     
     public function directupload()
     {
@@ -1515,7 +1531,7 @@ class StockController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\InventoryDataSheetdirect.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\openStock11-07-23.xlsx';
         $ExcelOBJ->aircraft = 'B737-MAX';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
@@ -1551,25 +1567,137 @@ class StockController extends Controller
             if ($key > 1 &&  $excelsheet[1]) 
              {
                 //echo $excelsheet[2];exit;
-                $material_id = inventory_rawmaterial::where('item_code','=',$excelsheet[2])->pluck('id')->first();
+                $material_id = inventory_rawmaterial::where('item_code','=',$excelsheet[4])->pluck('id')->first();
                 $data['material_id'] = $material_id;
                 $data['lot_number']= $excelsheet[3];
-                $data['qty_received'] = $excelsheet[4];
-                $data['qty_accepted'] = $excelsheet[4];
+                $data['qty_received'] = $excelsheet[6];
+                $data['qty_accepted'] = $excelsheet[6];
                 $lot_id = DB::table('inv_lot_allocation')->insertGetId($data);
                 //echo $data['item_id'];exit;
                 $stock['lot_id'] = $lot_id;
                 $stock['item_id'] = $material_id;
-                $stock['stock_qty'] = $excelsheet[4];
+                $stock['stock_qty'] = $excelsheet[6];
                 DB::table('inv_stock_management')->insert($stock);
                 $info['item_id'] = $material_id;
                 $stock['lot_id'] = $lot_id;
                 $info['transaction_type'] = 1;
-                $info['transaction_qty'] = $excelsheet[4];
-                $info['created_at'] = date('2022-12-01');
+                $info['transaction_qty'] = $excelsheet[6];
+                $info['created_at'] = date('2023-07-11');
                 DB::table('inv_stock_transaction')->insert($info);
             }
         }
+    }
+
+    public function stockReport(Request $request)
+    {
+        $condition = [];
+        if ($request->item_code) {
+            $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+        }
+        // if($request->supplier)
+        // {
+        //     $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+        // }
+        if($request->item_type=='services')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Services'];
+        }
+        if($request->item_type=='direct')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Direct Items'];
+        }
+        if($request->item_type=='indirect')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Indirect Items'];
+        }
+        /*$mac_items = inv_mac_item::select('inv_mac_item.*','inv_mac.mac_number','inv_mac.mac_date','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inventory_rawmaterial.discription',
+        'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_supplier_invoice_item.gst','inv_supplier.vendor_name',
+        'inv_supplier.vendor_id','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst')
+                            ->leftJoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
+                            ->leftJoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
+                            ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+                            ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
+                            ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                            ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                            ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_mac_item.invoice_item_id')
+                            ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                            ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mac.invoice_id')
+                            ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                            ->leftjoin('inventory_gst','inventory_gst.id','=','inv_supplier_invoice_item.gst')
+                            ->where('inv_mac.status','=',1)
+                            ->where('inv_mac_item.available_qty','!=',0)
+                            ->where($condition)
+                            ->orderBy('inv_mac_item.id','DESC')
+                            ->distinct('inv_mac_item.id')
+                            ->paginate(15);*/
+        $stock_items = inv_stock_management::select('inv_stock_management.*','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inventory_rawmaterial.discription',
+        'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number')
+                                ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
+                                ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                ->leftjoin('inv_lot_allocation', 'inv_lot_allocation.id','=', 'inv_stock_management.lot_id')
+                                ->where($condition)
+                                ->where('inv_stock_management.stock_qty','!=',0)
+                                ->orderBy('inv_stock_management.id','DESC')
+                                ->distinct('inv_stock_management.id')
+                                ->paginate(15);
+
+        return view('pages/inventory/stock/stock-report',compact('stock_items'));
+    }
+
+    public function stockReportExport(Request $request)
+    {
+        $condition = [];
+        if ($request->item_code) {
+            $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+        }
+        if($request->item_type=='services')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Services'];
+        }
+        if($request->item_type=='direct')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Direct Items'];
+        }
+        if($request->item_type=='indirect')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Indirect Items'];
+        }
+        
+        /*$mac_items = inv_mac_item::select('inv_mac_item.*','inv_mac.mac_number','inv_mac.mac_date','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inventory_rawmaterial.discription',
+            'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_supplier_invoice_item.gst','inv_supplier.vendor_name',
+            'inv_supplier.vendor_id','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','user.f_name','user.l_name')
+                                ->leftJoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
+                                ->leftJoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
+                                ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+                                ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
+                                ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_mac_item.invoice_item_id')
+                                ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                                ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mac.invoice_id')
+                                ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                                ->leftjoin('inventory_gst','inventory_gst.id','=','inv_supplier_invoice_item.gst')
+                                ->leftjoin('user','user.user_id','=','inv_mac.created_by')
+                                ->where('inv_mac.status','=',1)
+                                ->where('inv_mac_item.available_qty','!=',0)
+                                ->where($condition)
+                                ->orderBy('inv_mac_item.id','DESC')
+                                ->distinct('inv_mac_item.id')
+                                ->get();*/
+            $stock_items = inv_stock_management::select('inv_stock_management.*','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inventory_rawmaterial.discription',
+                                'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number')
+                                                        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
+                                                        ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                                        ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                                        ->leftjoin('inv_lot_allocation', 'inv_lot_allocation.id','=', 'inv_stock_management.lot_id')
+                                                        ->where($condition)
+                                                        ->where('inv_stock_management.stock_qty','!=',0)
+                                                        ->orderBy('inv_stock_management.id','DESC')
+                                                        ->distinct('inv_stock_management.id')
+                                                        ->get();
+
+            return Excel::download(new InventoryStockExport($stock_items), 'InventoryStockReport' . date('d-m-Y') . '.xlsx');
     }
 
     

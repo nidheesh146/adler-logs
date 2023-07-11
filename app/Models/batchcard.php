@@ -34,6 +34,9 @@ class batchcard extends Model
     {
         return $this->insertGetId($data);
     }
+    function update_data($condition,$data){
+        return $this->where($condition)->update($data);
+    }
 
     function get_all_batchcard_list($condition)
     {
@@ -41,7 +44,7 @@ class batchcard extends Model
                     //->leftjoin('product_product', 'product_product.id','=','batchcard_batchcard.product_id')
                     ->where($condition)
                     ->where('batchcard_batchcard.is_active','=',1)
-                    ->orderBy('batchcard_batchcard.batch_no', 'desc')
+                    ->orderBy('batchcard_batchcard.id', 'desc')
                     ->paginate(15);
     }
 

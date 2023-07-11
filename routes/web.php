@@ -229,7 +229,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/find-invoice-for-srr','MRRController@find_invoice_for_srr');
     Route::get('inventory/MRR/find-invoice-info','MRRController@find_invoice_info');
     //Stock To Production
-   
+    Route::get('inventory/stock-report','StockController@stockReport');
+    Route::get('inventory/stock-excel-export','StockController@stockReportExport');
     Route::post('inventory/stock/issueToProduction', 'StockController@issueToProduction');
     Route::get('inventory/Stock/ToProduction/delete/{id}', 'StockController@StockToProductionDelete');
     Route::post('inventory/stock-ToProduction-edit', 'StockController@StockToProductionEdit');
@@ -311,6 +312,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('batchcard/batchcard-list', 'BatchCardController@BatchcardList');
     Route::get('batchcard/batchcard-upload', 'BatchCardController@getBatchcardUpload');
     Route::post('batchcard/batchcard-upload', 'BatchCardController@batchcardUpload');
+    
+    Route::get('batchcard/edit', 'BatchCardController@Batchcardedit');
+    Route::post('batchcard/edit', 'BatchCardController@Batchcardedit');
+
     Route::get('batchcard/batchcard-add', 'BatchCardController@BatchcardAdd');
     Route::post('batchcard/batchcard-add', 'BatchCardController@BatchcardAdd');
     Route::get('batchcard/productsearch', 'BatchCardController@productsearch');
@@ -544,6 +549,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/DNI/item-list/{dni_id}','DNIController@DNIitemlist');
     Route::get('fgs/DNI/fetchPI','DNIController@fetchPI');
     Route::get('fgs/DNI/pdf/{grs_id}','DNIController@DNIpdf');
+    Route::get('fgs/net-billing-report','DNIController@netBillingReport');
+    Route::get('fgs/net-billing-report/excel-export','DNIController@netBillingExport');
 
      //EXI
      Route::get('fgs/EXI-list','EXIController@EXIList');

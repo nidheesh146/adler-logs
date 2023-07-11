@@ -16,6 +16,9 @@ class batchcard_material extends Model
     {
         return $this->insertGetId($data);  
     }
+    function update_data($condition,$data){
+        return $this->where($condition)->update($data);
+    }
     function get_batchcard_material($condition)
     {
         return $this->select(['batchcard_materials.id','batchcard_materials.product_inputmaterial_id','batchcard_materials.quantity','inventory_rawmaterial.item_code',
