@@ -16,6 +16,9 @@ use App\Models\FGS\fgs_product_category;
 use App\Models\FGS\fgs_min;
 use App\Models\FGS\fgs_min_item;
 use App\Models\FGS\fgs_min_item_rel;
+use App\Models\FGS\fgs_mrn_item;
+use App\Models\FGS\fgs_mrn_item_rel;
+use App\Models\batchcard;
 class MINController extends Controller
 {
     public function __construct()
@@ -330,5 +333,14 @@ class MINController extends Controller
         }
         else
         return view('pages.inventory.MAC.MAC-add',compact('data'));
+    }
+    public function fetchBatchCardQtyManufatureDate(Request $request)
+    {
+        $batchcard = batchcard::where('batchcard_batchcard.id','=',$request->batch_id)->first();
+        $data['quantity'] = $batchcard['quantity'];
+        $fgs_mrn_item = fgs_mrn_item::where('fgs_mrn_item.batchcard_id','=',$request->batch_id)->first();
+        $data['manufacturing_date'] = $fgs_mrn_item['manufacturing_date'];
+        $data['expiry_date'] = $fgs_mrn_item['expiry_date'];
+        return $data;
     }
 }

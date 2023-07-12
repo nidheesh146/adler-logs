@@ -434,6 +434,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MIN/pdf/{min_id}','MINController@MINpdf');
     Route::get('fgs-stock/fetchproduct','MINController@fetchFGSStockProduct');
     Route::get('fgs/fetchProductBatchCardsFromFGSStock','MINController@fetchBatchCardsFromFGSStock');
+    Route::get('fgs/fetchBatchCardQtyManufatureDate','MINController@fetchBatchCardQtyManufatureDate');
     //CMIN
     Route::get('fgs/CMIN/CMIN-list','CMINController@CMINList');
     Route::get('fgs/CMIN-add','CMINController@CMINAdd');
