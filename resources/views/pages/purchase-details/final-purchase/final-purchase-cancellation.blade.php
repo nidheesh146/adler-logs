@@ -332,31 +332,31 @@
 
 <script>
  function cancelQuantity(id){
-   let orderQtyAccept = parseInt($(".orderQtyAccept"+id).val());
-   let orderQty =  parseInt($(".orderQty"+id).val());
-   $('.orderQtyReject'+id).val((isNaN(parseInt(orderQty - orderQtyAccept)) ? orderQty : parseInt(orderQty - orderQtyAccept) )  );
+   let orderQtyAccept = parseFloat($(".orderQtyAccept"+id).val());
+   let orderQty =  parseFloat($(".orderQty"+id).val()).toFixed(2);
+   $('.orderQtyReject'+id).val((isNaN(parseFloat(orderQty - orderQtyAccept)) ? orderQty : parseFloat(orderQty - orderQtyAccept).toFixed(2) )  );
  }
  function acceptQuantity(id){
-   let orderQtyReject = parseInt($(".orderQtyReject"+id).val());
-   let orderQty =  parseInt($(".orderQty"+id).val());
-   $('.orderQtyAccept'+id).val((isNaN(parseInt(orderQty - orderQtyReject)) ? orderQty : parseInt(orderQty - orderQtyReject) )  );
+   let orderQtyReject = parseFloat($(".orderQtyReject"+id).val());
+   let orderQty =  parseFloat($(".orderQty"+id).val()).toFixed(2);
+   $('.orderQtyAccept'+id).val((isNaN(parseFloat(orderQty - orderQtyReject)) ? orderQty : parseFloat(orderQty - orderQtyReject).toFixed(2))  );
  }
 function quantityCheck(id,type){
     if(type =='accept'){
-        if( parseInt($(".orderQtyAccept"+id).val()) >  parseInt($(".orderQty"+id).val())){
+        if( parseFloat($(".orderQtyAccept"+id).val()) >  parseFloat($(".orderQty"+id).val())){
             $(".orderQtyAccept"+id).val(Math.floor($(".orderQtyAccept"+id).val() /10));
         }
-        if( parseInt($(".orderQtyAccept"+id).val()) < 0){
+        if( parseFloat($(".orderQtyAccept"+id).val()) < 0){
             $(".orderQtyAccept"+id).val(0);
         }
          cancelQuantity(id);
     }
     if(type =='reject'){
-        if( parseInt($(".orderQtyReject"+id).val()) >  parseInt($(".orderQty"+id).val())){
+        if( parseFloat($(".orderQtyReject"+id).val()) >  parseFloat($(".orderQty"+id).val())){
             $(".orderQtyReject"+id).val(Math.floor($(".orderQtyReject"+id).val() /10));
         }
         
-        if( parseInt($(".orderQtyReject"+id).val()) < 0){
+        if( parseFloat($(".orderQtyReject"+id).val()) < 0){
             $(".orderQtyReject"+id).val(0);
         }
         acceptQuantity(id);

@@ -276,7 +276,7 @@ class PriceController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\AHPL_Price_Master1.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\AHPL_Price_Master.xlsx';
         $ExcelOBJ->aircraft = 'B737-MAX';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);

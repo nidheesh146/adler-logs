@@ -7,11 +7,11 @@
 
             <div class="az-content-breadcrumb"> 
                 <span><a href="" style="color: #596881;">LABEL CARD</a></span> 
-                <span><a href="" style="color: #596881;"> CREATE ADHL MRP Label</a></span>
+                <span><a href="" style="color: #596881;"> CREATE SNN MRP Label</a></span>
             </div>
 	
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            CREATE ADHL MRP Label
+            CREATE SNN MRP Label
             </h4>
             <div class="form-devider"></div>
 			<div class="row">
@@ -30,7 +30,7 @@
                     </div>
                     @endif                   
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" id="commentForm" action="{{url('label/adhl-mrp-label')}}">
+                    <form method="POST" id="commentForm" action="{{url('label/snn-mrp-label')}}">
                         {{ csrf_field() }}  
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">

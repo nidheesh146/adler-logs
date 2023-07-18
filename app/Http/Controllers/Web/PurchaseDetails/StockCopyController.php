@@ -25,7 +25,8 @@ use App\Models\PurchaseDetails\inv_stock_to_production_item;
 use App\Models\PurchaseDetails\inv_batchcard_qty_updation_request;
 use App\Models\PurchaseDetails\inv_stock_management;
 use App\Models\PurchaseDetails\inv_stock_transaction;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\InventoryStockExport;
 class StockController extends Controller
 {
     public function __construct()
@@ -350,6 +351,7 @@ class StockController extends Controller
     }
     public function StockFromProductionAdd(Request $request)
     {
+        
         // $condition = [];
         // if($request)
         // {
@@ -464,6 +466,7 @@ class StockController extends Controller
 
     public function DirectSIP()
     {
+        //$this->removeExistOpenDirectStock();
         //$this->indirectupload();
         //$this->directupload();
         $work_centre = work_centre::where('status','=',1)->get();
@@ -471,7 +474,118 @@ class StockController extends Controller
     }
     public function fetchBatchCards(Request $request)
     {
-        $batchmaterials_in_sip_item = inv_stock_to_production_item::pluck('batchcard_material_id')->toArray();
+    //     $batchmaterials_in_sip_item = inv_stock_to_production_item::pluck('batchcard_material_id')->toArray();
+    //     $arr=array_filter($batchmaterials_in_sip_item);
+    //    // ->whereNotIn('batchcard_materials.id',$batchmaterials_in_sip_item)
+    //    $data ="";
+    //     $batchcards = batchcard_material::select('batchcard_materials.id as batchcard_material_id','batchcard_batchcard.id as batchcard_id','batchcard_batchcard.batch_no','batchcard_materials.item_id','batchcard_materials.quantity as material_qty',
+    //     'batchcard_batchcard.quantity as sku_quantity','product_product.sku_code','inv_unit.unit_name')
+    //             ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'batchcard_materials.batchcard_id')
+    //             ->leftJoin('product_product','batchcard_batchcard.product_id','=', 'product_product.id')
+    //             ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','batchcard_materials.item_id')
+    //             ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+    //             ->whereNotIn('batchcard_materials.id',$arr)
+    //             ->where('batchcard_materials.item_id','=',$request->item_id)
+    //             ->get();
+        
+    //    /* $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_mac_item.available_qty','inv_mac_item.accepted_quantity',
+    //     'inv_unit.unit_name','inv_mac_item.id as mac_item_id')
+    //                         ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_lot_allocation.pr_item_id')
+    //                         ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_lot_allocation.si_invoice_item_id')
+    //                         //->leftJoin('inv_miq_item','inv_miq_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
+    //                         ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_supplier_invoice_item.id')
+    //                         ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+    //                         ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+    //                         ->where('inventory_rawmaterial.id','=', $request->item_id)
+    //                         ->where('inv_mac_item.available_qty','!=',0)
+    //                         ->orderBy('inv_lot_allocation.id','asc')
+    //                         ->get();*/
+    //     $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_unit.unit_name','inventory_rawmaterial.item_code',
+    //     'inv_stock_management.stock_qty','inv_stock_management.id as stock_id')
+    //                                     ->leftJoin('inv_stock_management','inv_stock_management.lot_id','=','inv_lot_allocation.id')
+    //                                     ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
+    //                                     ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+    //                                     ->where('inventory_rawmaterial.id','=', $request->item_id)
+    //                                     ->where('inv_stock_management.stock_qty','!=',0)
+    //                                     ->where('inv_stock_management.status','=',1)
+    //                                     ->orderBy('inv_lot_allocation.id','asc')
+    //                                     ->get();
+
+    //     //return $lotcards;
+    //     $itemcode = inventory_rawmaterial::where('id','=',$request->item_id)->pluck('item_code')->first();
+    //     if(count($batchcards)>0)
+    //     {
+    //         $data['batchcards'] = "<div style='color:#3366ff;font: size 15px;'><i class='typcn typcn-tabs-outline' style='font-size:21px;'></i>&nbsp;<strong>BatchCards</strong></div>
+    //                                 <div class='row'>
+    //                                         <div class='table-responsive'>
+    //                                             <table class='table table-bordered mg-b-0' id='example1'>
+    //                                                 <thead>
+    //                                                 <tr>
+    //                                                     <th></th>
+    //                                                     <th>BatchCard</th>
+    //                                                     <th>SKU Code</th>
+    //                                                     <th>SKU Quantity</th>
+    //                                                     <th>Item(".$itemcode.") Quantity Required</th>
+    //                                                     <th>Quantity to production</th>
+    //                                                 </tr>
+    //                                                 </thead>
+    //                                                 <tbody>";
+    //         $i=1;
+    //         foreach($batchcards as $card)
+    //         {
+    //             $data['batchcards'] .="<tr>
+    //                                         <th><input type='checkbox' class='batchcard-checkbox' onclick='enableTextBox(this)'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
+    //                                         <th>".$card->batch_no."</th>
+    //                                         <th>".$card->sku_code."</th>
+    //                                         <th>".$card->sku_quantity."</th>
+    //                                         <th class='qty'>
+    //                                             <span>".$card->material_qty." ".$card->unit_name."</span>
+    //                                             <span class='' style='float:right;'>
+    //                                                 <a href='#' data-toggle='modal' data-target='#requestModal'  class='badge badge-pill badge-primary request-btn' id='request-btn' style='border:none;display:none;'batchid='".$card->batchcard_id."'  batchno='".$card->batch_no."' skucode='".$card->sku_code."' skuqty='".$card->sku_quantity."' unit='".$card->unit_name."' batchqty='".$card->material_qty."' batchmaterialId='".$card->batchcard_material_id."'>
+    //                                                 Quantity Update Request
+    //                                                 </a>
+    //                                             </span>
+    //                                         </th>
+    //                                         <th><input type='text' class='qty_to_production' id='qty_to_production' name='qty_to_production[]' disabled>".$card->unit_name."</th>
+    //                                     </tr> ";                                               
+    //             $i++;
+    //         }
+    //         $data['batchcards'] .="<tbody></table></div></div><br/>";
+    //     }
+    //     if(count($lotcards)>0)
+    //     {
+    //         $data['lotcards'] = "<div style='color:#3366ff;font: size 15px;'><i class='fas fa-address-card' style='font-size:21px;'></i>&nbsp;<strong>LotCards</strong></div>
+    //                                 <div class='row'>
+    //                                         <div class='table-responsive'>
+    //                                             <table class='table table-bordered mg-b-0' id='example1' >
+    //                                                 <thead>
+    //                                                 <tr>
+    //                                                     <th></th>
+    //                                                     <th>LotCard</th>
+    //                                                     <th>Item Code</th>
+    //                                                     <th>Quantity</th>
+    //                                                 </tr>
+    //                                                 </thead>
+    //                                                 <tbody>";
+    //         $i=1;                                       
+    //         foreach($lotcards as $card)
+    //         {
+    //             $data['lotcards'] .="<tr>
+    //                                         <td><input type='radio' required class='lot-radio' name='lot_id' value='".$card->lot_id."' lotqty='".$card->stock_qty."' lotno='".$card->lot_number."' macItemid=".$card->stock_id."></td>
+    //                                         <th>".$card->lot_number."</th>
+    //                                         <th>".$itemcode."</th>
+    //                                         <th>".$card->stock_qty." ".$card->unit_name."</th>
+    //                                     </tr> ";                                               
+    //             $i++;
+    //         }
+    //         $data['lotcards'] .="<tbody></table></div></div>";
+    //     }
+    //     if($data)                               
+    //     return $data;
+    //     else
+    //     return 0;
+
+    $batchmaterials_in_sip_item = inv_stock_to_production_item::pluck('batchcard_material_id')->toArray();
         $arr=array_filter($batchmaterials_in_sip_item);
        // ->whereNotIn('batchcard_materials.id',$batchmaterials_in_sip_item)
        
@@ -482,7 +596,9 @@ class StockController extends Controller
                 ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','batchcard_materials.item_id')
                 ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                 ->whereNotIn('batchcard_materials.id',$arr)
+                ->where('batchcard_batchcard.is_alloted','=',0)
                 ->where('batchcard_materials.item_id','=',$request->item_id)
+                ->orderBy('batchcard_batchcard.batch_no','ASC')
                 ->get();
         
        /* $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_mac_item.available_qty','inv_mac_item.accepted_quantity',
@@ -528,10 +644,26 @@ class StockController extends Controller
                                                     </thead>
                                                     <tbody>";
             $i=1;
+            
             foreach($batchcards as $card)
-            {
+             {
+                // $data['batchcards'] .="<tr>
+                //                             <th><input type='checkbox' class='batchcard-checkbox' onclick='enableTextBox(this)'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
+                //                             <th>".$card->batch_no."</th>
+                //                             <th>".$card->sku_code."</th>
+                //                             <th>".$card->sku_quantity."</th>
+                //                             <th class='qty'>
+                //                                 <span>".$card->material_qty." ".$card->unit_name."</span>
+                //                                 <span class='' style='float:right;'>
+                //                                     <a href='#' data-toggle='modal' data-target='#requestModal'  class='badge badge-pill badge-primary request-btn' id='request-btn' style='border:none;display:none;'batchid='".$card->batchcard_id."'  batchno='".$card->batch_no."' skucode='".$card->sku_code."' skuqty='".$card->sku_quantity."' unit='".$card->unit_name."' batchqty='".$card->material_qty."' batchmaterialId='".$card->batchcard_material_id."'>
+                //                                     Quantity Update Request
+                //                                     </a>
+                //                                 </span>
+                //                             </th>
+                //                             <th><input type='text' class='qty_to_production' id='qty_to_production' name='qty_to_production[]' disabled>".$card->unit_name."</th>
+                //                         </tr> ";   
                 $data['batchcards'] .="<tr>
-                                            <th><input type='checkbox' class='batchcard-checkbox'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
+                                            <th><input type='checkbox' class='batchcard-checkbox' onclick='enableTextBox(this)'  name='batchcard[]' value='".$card->batchcard_id."' batchqty='".$card->material_qty."'></th>
                                             <th>".$card->batch_no."</th>
                                             <th>".$card->sku_code."</th>
                                             <th>".$card->sku_quantity."</th>
@@ -543,7 +675,8 @@ class StockController extends Controller
                                                     </a>
                                                 </span>
                                             </th>
-                                        </tr> ";                                               
+                                            
+                                        </tr> ";                                              
                 $i++;
             }
             $data['batchcards'] .="<tbody></table></div></div><br/>";
@@ -577,26 +710,41 @@ class StockController extends Controller
             $data['lotcards'] .="<tbody></table></div></div>";
         }
                                             
+        if($data)                               
         return $data;
+        else
+        return 0;
 
 
     }
 
     public function addDirectSIP(Request $request)
     {
+        //print_r(array_sum($request->qty_to_production));exit;
         $validation['lot_id'] = ['required'];
         $validation['batchcard'] = ['required'];
         $validation['work_centre'] = ['required'];
+        $validation['qty_to_production'] = ['required'];
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            {
+                $years_combo = date('y', strtotime('-1 year')).date('y');
+            }
+            else
+            {
+                $years_combo = date('y').date('y', strtotime('+1 year'));
+            }
             $lot_data= $this->inv_lot_allocation->get_single_lot1(['inv_lot_allocation.id'=>$request->lot_id]);
-            $data['sip_number'] = "SIP2-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2%')->count(),1); 
+            $data['sip_number'] = "SIP2-".$this->year_combo_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP2-'.$years_combo.'%')->count()); 
             $data['lot_id'] = $request->lot_id;
-            //$data['qty_to_production'] = $lot_data['available_qty'];
+            $data['qty_to_production'] = $request->qty_to_production;
             $data['type'] = 2;
             $data['status'] = 1;
             $data['work_centre'] = $request->work_centre;
+            $data['transaction_slip'] = $request->transaction_slip;
+            $data['qty_to_production'] = $request->qty_to_production;
             $data['created_at']= date('Y-m-d H:i:s');
             $data['updated_at']= date('Y-m-d H:i:s');
         
@@ -610,8 +758,9 @@ class StockController extends Controller
             // $inv_mac_item->save();
 
             $stock = inv_stock_management::where('lot_id','=',$request->lot_id)->first();
-            $stock_qty = $stock->stock_qty;
-            $stock->stock_qty = 0;
+            // $stockQty = $stock->stock_qty - array_sum($request->qty_to_production);
+            $stockQty = $stock->stock_qty - $request->qty_to_production;
+            $stock->stock_qty = $stockQty;
             $stock->save();
             if($mac_item)
             {
@@ -619,8 +768,7 @@ class StockController extends Controller
                 $data['pr_item_id'] = $inv_mac_item['pr_item_id'];
                 $data['mac_item_id'] = $mac_item['id'];
             }  
-           // $data['qty_to_production'] = $inv_mac_item['accepted_quantity'];
-            $data['qty_to_production'] = $stock_qty;
+           
             $data['stock_id']=$stock['id'];
             $sip_master = $this->inv_stock_to_production->insert_data($data);
             if($sip_master)
@@ -631,9 +779,12 @@ class StockController extends Controller
                 $info['item_id'] = $stock['item_id'];
                 $info['transaction_type'] = 3;
                 $info['transaction_id'] = $sip_master;
-                $info['transaction_qty'] = $stock_qty;
+                // $info['transaction_qty'] = array_sum($request->qty_to_production);
+                $info['transaction_qty'] = $request->qty_to_production;
                 $info['created_at'] = date('Y-m-d H:i:s');
                 $transaction = $this->inv_stock_transaction->insert_data($info);
+                $i = 0;
+                $qty_to_production_array = $request->qty_to_production;
                 foreach($request->batchcard as $batchcard)
                 {
                     $batchdata = batchcard_material::where('batchcard_id','=',$batchcard)
@@ -642,12 +793,14 @@ class StockController extends Controller
                     $batch['batchcard_id']=$batchcard;
                     $batch['batchcard_material_id']=$batchdata['id'];
                     $batch['material_id']=$request->item_code;
-                    $batch['qty_to_production']=$batchdata['quantity'];
+                    //$batch['mac_item_id']=$mac_item['id'];
+                    //$batch['qty_to_production'] = $qty_to_production_array[$i];
                     $sip_item = $this->inv_stock_to_production_item->insert_data($batch);
 
                     $rel['master'] = $sip_master;
                     $rel['item'] = $sip_item;
                     DB::table('inv_stock_to_production_item_rel')->insert($rel);
+                    $i++;
                 }
                
                 $request->session()->flash('success', "You have successfully added Stock issue to production !");
@@ -675,7 +828,15 @@ class StockController extends Controller
         $validator = Validator::make($request->all(), $validation);
         if(!$validator->errors()->all())
         {
-            $data['sip_number'] = "SIP3-".$this->po_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP3%')->count(),1); 
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            {
+                $years_combo = date('y', strtotime('-1 year')).date('y');
+            }
+            else
+            {
+                $years_combo = date('y').date('y', strtotime('+1 year'));
+            }
+            $data['sip_number'] = "SIP3-".$this->year_combo_num_gen(DB::table('inv_stock_to_production')->where('inv_stock_to_production.sip_number', 'LIKE', 'SIP3-'.$years_combo.'%')->count()); 
 
             $data['transaction_slip'] = $request->transaction_slip;
             $data['type'] = 3;
@@ -1054,7 +1215,15 @@ class StockController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                $data['sir_number'] = "SIR2-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2%')->count(),1);
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                {
+                    $years_combo = date('y', strtotime('-1 year')).date('y');
+                }
+                else
+                {
+                    $years_combo = date('y').date('y', strtotime('+1 year'));
+                }
+                $data['sir_number'] = "SIR2-".$this->year_combo_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR2-'.$years_combo.'%')->count());
                 $data['lot_id']= $request->lotcard;
                 $data['item_id'] = $request->item_code;
                 $data['batch_id'] = $request->batchcard;
@@ -1105,7 +1274,15 @@ class StockController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
-                $data['sir_number'] = "SIR3-".$this->po_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3%')->count(),1);
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                {
+                    $years_combo = date('y', strtotime('-1 year')).date('y');
+                }
+                else
+                {
+                    $years_combo = date('y').date('y', strtotime('+1 year'));
+                }
+                $data['sir_number'] = "SIR3-".$this->year_combo_num_gen(DB::table('inv_stock_from_production')->where('inv_stock_from_production.sir_number', 'LIKE', 'SIR3-'.$years_combo.'%')->count());
                 $data['item_id'] = $request->item_code;
                 $data['qty_to_return']= $request->return_quantity;
                 $data['status']= 1;
@@ -1334,6 +1511,19 @@ class StockController extends Controller
         //print_r($not_exist_item);
     }
 
+
+    public function removeExistOpenDirectStock()
+    {
+        $lots = DB::table('inv_lot_allocation')->where('inv_lot_allocation.si_invoice_item_id','=','NULL')->get();
+        //print_r($lots);exit;
+        foreach($lots as $lot)
+        {
+            DB::table('inv_stock_transaction')->where('lot_id','=',$lot->id)->delete();
+            DB::table('inv_stock_management')->where('lot_id','=',$lot->id)->delete();
+            //DB::table()->where('inv_lot_allocation')->where('id','=',$lot['id'])->delete();
+        }
+        DB::table('inv_lot_allocation')->where('inv_lot_allocation.si_invoice_item_id','=','NULL')->delete();
+    }
     
     public function directupload()
     {
@@ -1341,7 +1531,7 @@ class StockController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\InventoryDataSheetdirect.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\openStock11-07-23.xlsx';
         $ExcelOBJ->aircraft = 'B737-MAX';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
@@ -1377,26 +1567,142 @@ class StockController extends Controller
             if ($key > 1 &&  $excelsheet[1]) 
              {
                 //echo $excelsheet[2];exit;
-                $material_id = inventory_rawmaterial::where('item_code','=',$excelsheet[2])->pluck('id')->first();
+                $material_id = inventory_rawmaterial::where('item_code','=',$excelsheet[4])->pluck('id')->first();
                 $data['material_id'] = $material_id;
                 $data['lot_number']= $excelsheet[3];
-                $data['qty_received'] = $excelsheet[4];
-                $data['qty_accepted'] = $excelsheet[4];
+                $data['qty_received'] = $excelsheet[6];
+                $data['qty_accepted'] = $excelsheet[6];
                 $lot_id = DB::table('inv_lot_allocation')->insertGetId($data);
                 //echo $data['item_id'];exit;
                 $stock['lot_id'] = $lot_id;
                 $stock['item_id'] = $material_id;
-                $stock['stock_qty'] = $excelsheet[4];
+                $stock['stock_qty'] = $excelsheet[6];
                 DB::table('inv_stock_management')->insert($stock);
                 $info['item_id'] = $material_id;
                 $stock['lot_id'] = $lot_id;
                 $info['transaction_type'] = 1;
-                $info['transaction_qty'] = $excelsheet[4];
-                $info['created_at'] = date('2022-12-01');
+                $info['transaction_qty'] = $excelsheet[6];
+                $info['created_at'] = date('2023-07-11');
                 DB::table('inv_stock_transaction')->insert($info);
             }
         }
     }
+
+    public function stockReport(Request $request)
+    {
+        $condition = [];
+        if ($request->item_code) {
+            $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+        }
+        // if($request->supplier)
+        // {
+        //     $condition[] = [DB::raw("CONCAT(inv_supplier.vendor_id,' - ',inv_supplier.vendor_name)"), 'like', '%' . $request->supplier . '%'];
+        // }
+        if($request->item_type=='services')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Services'];
+        }
+        if($request->item_type=='direct')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Direct Items'];
+        }
+        if($request->item_type=='indirect')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Indirect Items'];
+        }
+        /*$mac_items = inv_mac_item::select('inv_mac_item.*','inv_mac.mac_number','inv_mac.mac_date','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inventory_rawmaterial.discription',
+        'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_supplier_invoice_item.gst','inv_supplier.vendor_name',
+        'inv_supplier.vendor_id','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst')
+                            ->leftJoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
+                            ->leftJoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
+                            ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+                            ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
+                            ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                            ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                            ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_mac_item.invoice_item_id')
+                            ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                            ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mac.invoice_id')
+                            ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                            ->leftjoin('inventory_gst','inventory_gst.id','=','inv_supplier_invoice_item.gst')
+                            ->where('inv_mac.status','=',1)
+                            ->where('inv_mac_item.available_qty','!=',0)
+                            ->where($condition)
+                            ->orderBy('inv_mac_item.id','DESC')
+                            ->distinct('inv_mac_item.id')
+                            ->paginate(15);*/
+        $stock_items = inv_stock_management::select('inv_stock_management.*','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inventory_rawmaterial.discription',
+        'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number')
+                                ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
+                                ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                ->leftjoin('inv_lot_allocation', 'inv_lot_allocation.id','=', 'inv_stock_management.lot_id')
+                                ->leftJoin('inv_mac_item','inv_mac_item.invoice_item_id','=','inv_lot_allocation.si_invoice_item_id')
+                                
+                                ->where($condition)
+                                ->where('inv_stock_management.stock_qty','!=',0)
+                                ->orderBy('inv_stock_management.id','DESC')
+                                ->distinct('inv_stock_management.id')
+                                ->paginate(15);
+
+        return view('pages/inventory/stock/stock-report',compact('stock_items'));
+    }
+
+    public function stockReportExport(Request $request)
+    {
+        $condition = [];
+        if ($request->item_code) {
+            $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
+        }
+        if($request->item_type=='services')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Services'];
+        }
+        if($request->item_type=='direct')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Direct Items'];
+        }
+        if($request->item_type=='indirect')
+        {
+            $condition[] = ['inv_item_type.type_name','=', 'Indirect Items'];
+        }
+        
+        /*$mac_items = inv_mac_item::select('inv_mac_item.*','inv_mac.mac_number','inv_mac.mac_date','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inventory_rawmaterial.discription',
+            'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_supplier_invoice_item.gst','inv_supplier.vendor_name',
+            'inv_supplier.vendor_id','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','user.f_name','user.l_name')
+                                ->leftJoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
+                                ->leftJoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
+                                ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+                                ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
+                                ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_mac_item.invoice_item_id')
+                                ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
+                                ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mac.invoice_id')
+                                ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+                                ->leftjoin('inventory_gst','inventory_gst.id','=','inv_supplier_invoice_item.gst')
+                                ->leftjoin('user','user.user_id','=','inv_mac.created_by')
+                                ->where('inv_mac.status','=',1)
+                                ->where('inv_mac_item.available_qty','!=',0)
+                                ->where($condition)
+                                ->orderBy('inv_mac_item.id','DESC')
+                                ->distinct('inv_mac_item.id')
+                                ->get();*/
+            $stock_items = inv_stock_management::select('inv_stock_management.*','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inventory_rawmaterial.discription',
+                                'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number')
+                                                        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
+                                                        ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+                                                        ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                                        ->leftjoin('inv_lot_allocation', 'inv_lot_allocation.id','=', 'inv_stock_management.lot_id')
+                                                        ->where($condition)
+                                                        ->where('inv_stock_management.stock_qty','!=',0)
+                                                        ->orderBy('inv_stock_management.id','DESC')
+                                                        ->distinct('inv_stock_management.id')
+                                                        ->get();
+
+            return Excel::download(new InventoryStockExport($stock_items), 'InventoryStockReport' . date('d-m-Y') . '.xlsx');
+    }
+
+    
    
 
 }

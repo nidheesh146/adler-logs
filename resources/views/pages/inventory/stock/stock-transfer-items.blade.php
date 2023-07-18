@@ -59,7 +59,7 @@
 				<thead>
 					<tr>
                         <th>Item Code</th>
-                        <th>SIP Number</th>
+                        <th>Lot Number</th>
                         <th>Transfer Quantity</th>
                         <th>Reason for Transfer</th>
 					</tr>
@@ -68,7 +68,7 @@
                  @foreach($data['items'] as $items)
                     <tr>
                         <td>{{$items['item_code']}}</td>
-                        <td>{{$items['sip_number']}}</td>
+                        <td>{{$items['lot_number']}}</td>
                         <td>{{$items['transfer_qty']}} {{$items['unit_name']}}</td>
                         <td>{{$items['transfer_reason']}}</td>
                     </tr>

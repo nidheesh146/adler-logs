@@ -173,11 +173,12 @@
 function getsearch(){
  return   table.search();
 }
-// $(".datepicker").datepicker({
-//     format: " dd-mm-yyyy",
-//     autoclose:true
-//     });
-
+$(".manufacturing_date").datepicker({
+                    format: " dd-mm-yyyy",
+                    autoclose:true,
+                    endDate: new Date()
+                });
+   
     function selectItem(itemId,divId){
         $('#Itemtype'+divId).val('');
         $.get("<?=url('inventory/get-single-item');?>?id="+itemId,function(response){
@@ -256,12 +257,16 @@ function getsearch(){
                 $(".manufacturing_date").datepicker({
                     format: " dd-mm-yyyy",
                     autoclose:true,
+                    //endDate: new Date()
                 });
                 $(".expiry_date").datepicker({
                     format: " dd-mm-yyyy",
                     autoclose:true,
+                    //endDate: "today"
                 });
                 $(".manufacturing_date").datepicker("setDate", new Date());
+               
+                //$(".manufacturing_date").datepicker('setEndDate', new Date());
                
             });
             $(document).on('click','.btn_remove', function(){

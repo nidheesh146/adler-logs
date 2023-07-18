@@ -95,7 +95,7 @@
                         <option>Select One</option>
                       </select> 
                   </div>
-                  <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                  <!-- <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                       <label for="exampleInputEmail1">Item Quantity issued to Production*</label>
                       <div class="input-group mb-3">
                         <input type="text" class="form-control qty_to_production" name="qty_to_production"   aria-describedby="unit-div1" readonly>
@@ -103,7 +103,7 @@
                             <span class="input-group-text unit-div" id="unit-div1">Unit</span>
                         </div>
                       </div>
-                  </div>
+                  </div> -->
                   <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                       <label for="exampleInputEmail1">Item Quantity return from Production*</label>
                       <div class="input-group mb-3">

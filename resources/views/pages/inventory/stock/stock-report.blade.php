@@ -115,6 +115,7 @@
                         <th>HSN Code</th>
                         <th>Stock Quantity</th>
                         <th>Lot Number</th>
+                        <th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -145,6 +146,9 @@
                             <td>{{$item['hsn_code']}}</td>
                             <td>{{$item['stock_qty']}} {{$item['unit_name']}}</td>
                             <td>{{$item['lot_number']}}</td>
+                            <td><a href="" data-toggle="modal"  data-target="#update-stock" class=" badge badge-primary"   id="updatestock" stockid="{{$item->id}}" itemcode ="{{$item['item_code']}}" lot="{{$item['lot_number']}}" unit="{{$item['unit_name']}}" qty="{{$item['stock_qty']}}"> 
+                                <i class="fas fa-edit"></i>Update Stock</a>
+                            </td>
                         </tr>
                     @endforeach
 				</tbody>
@@ -157,13 +161,13 @@
 
 	<!-- az-content-body -->
 	<!-- Modal content-->
-    <div id="myModal" class="modal">
+    <div id="update-stock" class="modal">
         <div class="modal-dialog modal-md" role="document">
-            <form id="form1" method="post" action="{{url('inventory/stock-ToProduction-edit')}}" autocomplete="off">
+            <form id="form1" method="post" action="{{url('inventory/stock-update')}}" autocomplete="off">
                 {{ csrf_field() }} 
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">#Edit Stock Issue to Production (<span class="sipNumber"></span>)</h4>
+                        <h4 class="modal-title">#Update Stock</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -171,7 +175,10 @@
                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                 <table>
                                     <tr>
-                                    <td>Item Code : </td><td><input type="text" class="item form-control" disabled></td>
+                                    <td>Item Code : </td><td><input type="text"  class="item form-control" disabled></td>
+                                    </tr>
+                                    </tr>
+                                    <td>Lot Number : </td><td><input type="text" class="lotnumber form-control" disabled></td>
                                     </tr>
                                     <tr> 
                                         <td>
@@ -187,7 +194,7 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <input type="hidden" name="sipId"  id="sip_Id"  class="sip_Id">
+                                <input type="hidden" name="stock_id"  id="stock_id"  class="stock_id">
                             </div>
                         </div>
                         <!-- <div class="form-devider"></div> -->
@@ -218,26 +225,26 @@
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script>
     $(document).ready(function() {
-        $('body').on('click', '#sip-edit', function (event) {
+        $('body').on('click', '#updatestock', function (event) {
             event.preventDefault()
-            var sip_id = $(this).attr('sipId');
             $('.quantity').val('');
-            $('.sip_Id').val('');
+            $('.stock_id').val('');
+            $('.item').val('');
+            $('.lotnumber').val('');
+            $('.unit-div').text('');
             $('#quantity-error').empty();
-            $.ajax ({
-                    type: 'GET',
-                    url: "{{url('getSingleSIP')}}",
-                    data: { sip_id: '' + sip_id + '' },
-                    success : function(data) {
-                        $('.sipNumber').html(data['sip_number']);
-                        $('.item').val(data['item_code']);
-                        $('.quantity').val(data['qty_to_production']);
-                        $('.sip_Id').val(data['id']);
-                        $('.unit-div').html(data['unit_name']);
-                    }
-                });
-           
-
+            var stockid = $(this).attr('stockid');
+            var itemcode = $(this).attr('itemcode');
+            var lot = $(this).attr('lot');
+            var unit = $(this).attr('unit');
+            var qty = $(this).attr('qty');
+            $('.quantity').val(qty);
+            $('.stock_id').val(stockid);
+            $('.item').val(itemcode);
+            $('.lotnumber').val(lot);
+            $('.unit-div').text(unit);
+            $('#quantity-error').empty();
+            
         });
         $("#form1").validate({
             rules: {

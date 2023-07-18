@@ -37,21 +37,20 @@
                 <div class=" label-container" style=" width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:14px; margin-left:10px;margin-bottom:6px; line-height:130%;">
                     <div class="subcolumn" style="float:left;width:95%;">
                         <div class="address" style="font-weight:bold;">
-                            Mktd and Distributed by : Smith & Nephew<br/>
-                            Healthcare Pvt. Ltd. B-501-509 Dynasty<br/>
-                            Business Park, Andheri East, Mumbai-400059 
+                            <span style="font-size:13px;">Mktd and Distributed by : Smith & Nephew Healthcare Pvt.Ltd.</span><br/>
+                            B-501-509, Dynasty Business Park, Andheri(E),<br/>
+                            Mumbai-400059 , Maharashtra, India<br/>
                         </div>
                         <strong>For Product Feedback, Contact on:</strong>
-                        <div><strong>Email :</strong>Complaint.india@smith-nephew.com<br/>
-                         Tel: +91-22-40055090 &nbsp; {{$product->drug_license_number}}<br/>
-                         <strong>Code No: {{$product->sku_code}}</strong><br/>
-                         <strong>MRP (Incl. of all taxes/pc) : Rs.{{$product->mrp}} /-</strong><br/>
+                        <div><span style="color:blue;font-size:11px;">E-mail:complaint.india@smith-nephew.com</span>&nbsp;|<span style="font-size:12px;">Tel: +91-22-40055090&nbsp;</span><br/>
+                            <span style="font-size:14px;">{{$product->drug_license_number}}</span><br/>
+                            <strong>Code No: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$product->sku_code}}</strong><br/>
+                            <strong>MRP : Rs.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$product->mrp}} /-&nbsp;&nbsp;(Incl. of all taxes/pc) </strong><br/>
                         </div>  
-                        <br/>
                     </div> 
                     <div class="subcolumn" style="float:left;width:5%;">
-                        <span class="smalltext" style="font-size:10px;margin-top:22px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
-                        LBL/F-08_rev00_{{date( 'd M y' , strtotime('29-01-2022') )}}
+                        <span class="smalltext" style="font-size:10px;margin-top:5px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
+                        LBL/F-08_REV00 Date:{{date( 'd M Y' , strtotime('29-01-2022') )}}
                         </span>
 
                     </div>    
@@ -80,22 +79,21 @@
                 <div class=" column" style="width:10.1cm;float: left;height:5cm;margin:2px;padding:2px;font-size:15px; margin-left:10px;margin-bottom:6px; line-height:135%;">
                 <div class="label-content{{$j}}" style="">
                     <div class="subcolumn" style="float:left;width:95%;">
-                        <div class="address" style="font-weight:bold;">
-                            Mktd and Distributed by : Adler Healthcare Pvt. Ltd.<br/>
-                            A-1, MIDC Sadavali, Tal. Sangameshwar<br/>
-                            Dist. Ratnagiri<br/>
-                            PIN 415804, Maharashtra, India 
+                    <div class="address" style="font-weight:bold;">
+                        <span style="font-size:13px;">Mktd and Distributed by : Smith & Nephew Healthcare Pvt.Ltd.</span><br/>
+                            B-501-509, Dynasty Business Park, Andheri(E),<br/>
+                            Mumbai-400059 , Maharashtra, India<br/>
                         </div>
                         <strong>For Product Feedback, Contact on:</strong>
-                        <div><strong>Email :</strong>adler-customer.care@adler-healthcare.com<br/>
-                         Tel: +91 8055136000&nbsp; {{$product->drug_license_number}}<br/>
-                         <strong>Code No: {{$product->sku_code}}</strong><br/>
-                         <strong>MRP (Incl. of all taxes/pc) : Rs.{{$product->mrp}} /-</strong><br/>
+                        <div><span style="color:blue;font-size:11px;">E-mail:complaint.india@smith-nephew.com</span>&nbsp;|<span style="font-size:12px;">Tel: +91-22-40055090&nbsp;</span><br/>
+                            <span style="font-size:14px;">{{$product->drug_license_number}}</span><br/>
+                            <strong>Code No: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$product->sku_code}}</strong><br/>
+                            <strong>MRP : Rs.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$product->mrp}} /-&nbsp;&nbsp;(Incl. of all taxes/pc) </strong><br/>
                         </div>  
                     </div> 
                     <div class="subcolumn" style="float:left;width:5%;">
-                        <span class="smalltext" style="font-size:8px;margin-top:22px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
-                        LBL/F-18_REV00_{{date( 'd M y' , strtotime('01-01-2023') )}}
+                        <span class="smalltext" style="font-size:8px;margin-top:5px; float: left;writing-mode: vertical-lr;transform: rotate(180deg);">
+                        LBL/F-08_REV00 Date:{{date( 'd M Y' , strtotime('29-01-2022') )}}
                         </span>
 
                     </div>  

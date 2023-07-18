@@ -3,7 +3,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
-        //echo $Action;
+       // echo $Action;
 @endphp
   <div class="az-sidebar"> 
     <div class="az-sidebar-header">
@@ -76,7 +76,7 @@
         
 
         <li class="nav-item @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','LotAllocation.addLotAllocation','LotAllocation.lotAllocation','MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MAC.MACAddItemInfo','MAC.MAClist','MAC.MACAdd','MRR.receiptReport',
-        'MRD.RMRNAddItemInfo','MRR.addMRR','Stock.viewItems','Inventoryreport.get_data',
+        'MRD.RMRNAddItemInfo','MRR.addMRR','Stock.viewItems','Inventoryreport.get_data','Stock.stockReport',
         'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.RMRNlist','MRD.RMRNAdd','Stock.StockToProduction','Stock.StockToProductionAdd','MAC.WOAAdd','MRD.WORAdd','Stock.StockFromProduction','Stock.StockFromProductionAdd','Stock.StockTransfer','Stock.StockTransferAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview','MIQ.LiveQuarantineReport'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub">
             <i class="fas fa-boxes" style="font-size:19px"></i>Inventory</a>
@@ -90,7 +90,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.WORAdd'])){{'active'}} @endif "><a href="{{url('inventory/MRD')}}" class="nav-sub-link">MRD/WOR</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['MRD.RMRNlist','MRD.RMRNAdd','MRD.RMRNAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/RMRN')}}" class="nav-sub-link">RMRN</a></li>  
             <li class="nav-sub-item  @if(in_array($Action,['MRR.addMRR','MRR.receiptReport'])){{'active'}} @endif "><a href="{{url('inventory/receipt-report')}}" class="nav-sub-link">MRR/SRR</a></li>  
-            <li class="nav-sub-item  @if(in_array($Action,['Fgsreport.get_data'])){{'active'}} @endif"><a href="{{url('inventory/stock-report')}}"  class="nav-sub-link">Stock Report</a></li>
+            <li class="nav-sub-item  @if(in_array($Action,['Stock.stockReport'])){{'active'}} @endif"><a href="{{url('inventory/stock-report')}}"  class="nav-sub-link">Stock Report</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockFromProduction','Stock.StockFromProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/FromProduction')}}" class="nav-sub-link">Stock Return From Production</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockTransfer','Stock.StockTransferAdd','Stock.viewItems'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>  
@@ -231,7 +231,7 @@
 
         <li class="nav-item @if(in_array($Action,['Label.sterilizationProductLabel', 'Label.nonSterileProductLabel' ,'Label.instrumentLabel','Label.patientLabel', 'Label.mrpLabel', 
         'Label.generateInstrumentLabel', 'Label.generateMRPLabel','Label.generateNonSterileProductLabel','Label.generateSterilizationProductLabel','Label.generatePatientLabel',
-        'Label.printingReport','Label.adhlMRPLabel','Label.generateADHLMRPLabel'])){{'active show'}} @endif ">
+        'Label.printingReport','Label.adhlMRPLabel','Label.generateADHLMRPLabel','Label.ahplMRPLabel','Label.generateAHPLMRPLabel','Label.snnMRPLabel','Label.generateSNNMRPLabel'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Label Card</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['Label.instrumentLabel', 'Label.generateInstrumentLabel'])){{'active'}} @endif ">
@@ -240,8 +240,11 @@
             <li class="nav-sub-item @if(in_array($Action,['Label.mrpLabel', 'Label.generateMRPLabel'])){{'active'}} @endif ">
               <a href="{{url('label/mrp-label')}}"  class="nav-sub-link">MRP Label</a>
             </li>
-            <li class="nav-sub-item @if(in_array($Action,['Label.adhlMRPLabel', 'Label.generateADHLMRPLabel'])){{'active'}} @endif ">
-              <a href="{{url('label/adhl-mrp-label')}}"  class="nav-sub-link">ADHL MRP Label</a>
+            <li class="nav-sub-item @if(in_array($Action,['Label.ahplMRPLabel', 'Label.generateAHPLMRPLabel'])){{'active'}} @endif ">
+              <a href="{{url('label/ahpl-mrp-label')}}"  class="nav-sub-link">AHPL MRP Label</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Label.snnMRPLabel', 'Label.generateADHLMRPLabel'])){{'active'}} @endif ">
+              <a href="{{url('label/snn-mrp-label')}}"  class="nav-sub-link">SNN MRP Label</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['Label.nonSterileProductLabel', 'Label.generateNonSterileProductLabel'])){{'active'}} @endif ">
               <a href="{{url('label/non-sterile-product-label')}}"  class="nav-sub-link">Non-Sterile Label</a>

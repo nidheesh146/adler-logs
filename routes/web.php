@@ -229,6 +229,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/find-invoice-for-srr','MRRController@find_invoice_for_srr');
     Route::get('inventory/MRR/find-invoice-info','MRRController@find_invoice_info');
     //Stock To Production
+    Route::post('inventory/stock-update','StockController@stockUpdate');
     Route::get('inventory/stock-report','StockController@stockReport');
     Route::get('inventory/stock-excel-export','StockController@stockReportExport');
     Route::post('inventory/stock/issueToProduction', 'StockController@issueToProduction');
@@ -275,9 +276,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
       Route::get('inventory/Stock/transfer', 'StockController@StockTransfer');
       Route::get('inventory/Stock/transfer-add', 'StockController@StockTransferAdd');
       Route::post('inventory/stock/transfer-order', 'StockController@transferOrder');
-      Route::get('inventory/stock/item_qty_in_mac_not_equal_zero','StockController@item_qty_in_mac_not_equal_zero');
-      Route::get('inventory/stock/fetchSIPlist_for_sto','StockController@fetchSIPlist_for_sto');
-      Route::get('inventory/Stock/transfer/items/{sto_id}','StockController@viewItems');
+      Route::get('inventory/stock/item_qty_in_mac','StockController@item_qty_in_mac');
+      Route::get('inventory/stock/fetchLotCard_for_sto','StockController@fetchLotCard_for_sto');
+      Route::get('inventory/stock/fetchLotStock','StockController@fetchLotStock');
+      Route::get('inventory/Stock/transfer/items/{sto_id}','StockController@viewSTOItems');
       Route::get('getSingleSTO', 'StockController@getSingleSTO');
 
     // suppliers
@@ -328,8 +330,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('batchcard/get-InputMaterial','BatchCardController@getInputMaterial');
     Route::post('batchcard/add-input-material','BatchCardController@addInputMaterial');
     //Label card
-    Route::get('label/adhl-mrp-label','LabelController@adhlMRPLabel');
-    Route::post('label/adhl-mrp-label','LabelController@generateADHLMRPLabel');
+    Route::get('label/snn-mrp-label','LabelController@snnMRPLabel');
+    Route::post('label/snn-mrp-label','LabelController@generateSNNMRPLabel');
+    Route::get('label/ahpl-mrp-label','LabelController@ahplMRPLabel');
+    Route::post('label/ahpl-mrp-label','LabelController@generateAHPLMRPLabel');
     Route::get('label/mrp-label','LabelController@mrpLabel');
     Route::post('label/mrp-label','LabelController@generateMRPLabel');
     Route::get('label/getBatchcard/{sku_code}', 'LabelController@getBatchcard');

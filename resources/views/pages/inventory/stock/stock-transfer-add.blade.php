@@ -57,23 +57,21 @@
                                 <textarea type="text" readonly class="form-control" id="Itemdescription1"name="Description" placeholder="Description"></textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
-                                <label>SIP Number * </label>
-                                <select class="form-control sip_number" count="1" name="moreItems[0][sip_number]" id="sip_number1" style="width:140px;">
+                                <label>Lot Number * </label>
+                                <select class="form-control lot_number" count="1" name="moreItems[0][lot_number]" id="lot_number1" style="width:140px;">
                                     <option>Select One</option>
                                 </select>
-                                <input type="hidden" name="moreItems[0][mac_item_id]" id="mac_item_id1">
-                                <input type="hidden" name="moreItems[0][available_qty]" id="available_qty1">
                             </div>
                             <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 qty" style="float:left;">
                                 <label>Transfer Qty*</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" name="moreItems[0][transfer_qty]" id="transfer_qty"
-                                        placeholder="" aria-describedby="unit-div1">
+                                    <input type="number" step="0.01" class="form-control" name="moreItems[0][transfer_qty]" id="transfer_qty1"
+                                        placeholder="" aria-describedby="unit-div1" min="0" max="">
                                     <div class="input-group-append">
                                         <span class="input-group-text unit-div" id="unit-div1">Unit</span>
                                     </div>
                                 </div>
-                                Available:<span id="available1"></span>
+                                Available:<span id="available1" style="font-weight:bold;"></span>
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>Reason for transfer*</label>
@@ -137,20 +135,18 @@
                                     <textarea type="text" readonly  class="form-control "  name="Description" id="Itemdescription${i}"  placeholder="Description"></textarea>
                                 </div>
                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
-                                    <label>SIP Number * </label>
-                                    <select class="form-control  sip_number"  count="${i}" name="moreItems[${i}][sip_number]" id="sip_number${i}"  style="width:140px;">
-                                    <option>Select One</option>
+                                    <label>Lot Number * </label>
+                                    <select class="form-control lot_number" count="${i}" name="moreItems[${i}][lot_number]" id="lot_number${i}" style="width:140px;">
+                                        <option>Select One</option>
                                     </select>
-                                    <input type="hidden" name="moreItems[${i}][mac_item_id]" id="mac_item_id${i}">
-                                    <input type="hidden" name="moreItems[${i}][available_qty]" id="available_qty${i}">
                                 </div>
                                 <div class="col-lg-2" style="float:left;">
                                     <label>Transfer Qty*</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value=""  name="moreItems[${i}][transfer_qty]"  id="transfer_qty" placeholder=""   aria-describedby="unit-div${i}" >
+                                        <input type="number" class="form-control" value=""  name="moreItems[${i}][transfer_qty]"  id="transfer_qty${i}" placeholder="" min="0" max="" step="0.01" aria-describedby="unit-div${i}" >
                                         <div class="input-group-append"><span class="input-group-text unit-div" id="unit-div${i}">Unit</span></div>
                                     </div>
-                                    Available:<span id="available${i}"></span>
+                                    Available:<span id="available${i}" style="font-weight:bold;"></span>
                                 </div>
                                 
                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
@@ -171,10 +167,10 @@
                 $(".Item-code").select2({
                     placeholder: 'Choose one',
                     searchInputPlaceholder: 'Search',
-                    minimumInputLength: 6,
+                    minimumInputLength:4,
                     allowClear: true,
                     ajax: {
-                        url: "{{ url('inventory/stock/item_qty_in_mac_not_equal_zero') }}",
+                        url: "{{ url('inventory/stock/item_qty_in_mac') }}",
                         processResults: function (data) {
                                 return { results: data };
                         }
@@ -185,11 +181,11 @@
                     $("#Itemdescription"+select_id+"").text('');
                     $("#Itemtype"+select_id+"").val('');
                     $("#Itemdescription"+select_id+"").val('');
+                    $("#lot_number"+select_id+"").val('');
+                    $("#available"+select_id+"").text('');
+                    $("#transfer_qty"+select_id+"").text('');
                     let res = $(this).select2('data')[0];
                         if(typeof(res) != "undefined" ){
-                            if(res.type_name){
-                                $("#Itemtype"+select_id+"").val(res.type_name);
-                            }
                             if(res.unit_name){
                                 $('#Unit').val(res.unit_name);
                                 $("#unit-div"+select_id+"").text(res.unit_name);
@@ -197,22 +193,49 @@
                             if(res.discription){
                                 $("#Itemdescription"+select_id+"").val(res.discription);
                             }
-                            $.get("{{ url('inventory/stock/fetchSIPlist_for_sto') }}?row_material_id="+res.id,function(response)
+                            if(res.type_name!='Direct Items')
                             {
-                                $.each(response,function(key, value)
+                               
+                                if(res.stock_qty)
                                 {
-                                    $("#sip_number"+select_id+"").append('<option qty=' + value.available_qty +' macItemId=' + value.mac_item_id +' value=' + value.sip_id + '>' + value.sip_number + '</option>');
+                                    $("#available"+select_id+"").text(res.stock_qty+' '+res.unit_name);
+                                    $("#transfer_qty"+select_id+"").attr('max',parseFloat(res.stock_qty));
+                                    $("#lot_number"+select_id+"").attr('disabled','disabled')
+                                }
+                            }
+                            else{
+                                $("#lot_number"+select_id+"").removeAttr('disabled')
+                                $.get("{{ url('inventory/stock/fetchLotCard_for_sto') }}?row_material_id="+res.id,function(response){
+                                    $.each(response,function(key, value)
+                                    {
+                                        $("#lot_number"+select_id+"").append('<option value=' + value.lotid + '>' + value.lot_number + '</option>');
+                                    });
                                 });
-                                //alert(response);
-                            });
+                            }
+                            // $.get("{{ url('inventory/stock/fetchSIPlist_for_sto') }}?row_material_id="+res.id,function(response)
+                            // {
+                            //     $.each(response,function(key, value)
+                            //     {
+                            //         $("#sip_number"+select_id+"").append('<option qty=' + value.available_qty +' macItemId=' + value.mac_item_id +' value=' + value.sip_id + '>' + value.sip_number + '</option>');
+                            //     });
+                            //     //alert(response);
+                            // });
                        }
                     });   
             } 
-            $('.sip_number').on('change',function(e){
+            $('.lot_number').on('change',function(e){
                 var count =$(this).attr('count');
-                var qty = $("#sip_number"+count+"").children(":selected").attr('qty');
+                var lot_id = $(this).val();
+
+                //var qty = $("#lot_number"+count+"").children(":selected").attr('qty');
                 //alert(count);
-                $("#available"+count+"").html(qty);
+                //$("#available"+count+"").text(qty);
+                $.get("{{ url('inventory/stock/fetchLotStock') }}?lot_id="+lot_id,function(data)
+                {
+                    var unit = $("#unit-div"+count+"").text();
+                    $("#available"+count+"").text(data+' '+unit);
+                    $("#transfer_qty"+count+"").attr('max',parseFloat(res.stock_qty));
+                });
                 
             });
             
