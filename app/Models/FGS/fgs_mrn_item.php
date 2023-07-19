@@ -31,6 +31,7 @@ class fgs_mrn_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                         ->where($condition)
+                        ->where('fgs_mrn_item.status',1)
                         ->distinct('fgs_mrn_item.id')
                         ->orderBy('fgs_mrn_item.id','asc')
                         ->get();
@@ -43,6 +44,7 @@ class fgs_mrn_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                        ->where($condition)
+                       ->where('fgs_mrn_item.status',1)
                     ->orderBy('fgs_mrn_item.id','DESC')
                     ->paginate(15);
     }
