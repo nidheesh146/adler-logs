@@ -554,17 +554,25 @@ class MRNController extends Controller
         $prdct=DB::table('fgs_mrn_item')
         ->where('id',$id) 
         ->first();
+        $qty=DB::table('fgs_product_stock_management')
+        ->where('id',$id)
+        ->first();
+
+$fgs_qty=number_format($prdct->quantity);
+$pstock_qty=number_format($qty->quantity);
+//dd($fgs_qty-$pstock_qty);
+// $value=$fgs_qty-$qty;
 
         DB::table('fgs_product_stock_management')
         ->where('id',$id)
         ->update([
-            'status'=>0
+            'quantity'=>0
         ]);
         DB::table('fgs_mrn_item')
         ->where('product_id',$prdct->product_id)
         ->where('batchcard_id',$prdct->batchcard_id)
         ->update([
-            'status'=>0
+            'status'=>$fgs_qty-$pstock_qty
         ]);
         $mrn_id=10;
         return redirect()->back();
