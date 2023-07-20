@@ -388,6 +388,18 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('product/Product-add/{id?}','ProductController@productAdd');
     Route::post('product/Product-add/{id?}','ProductController@productAdd');
 
+    Route::get('product/Product-add-group','ProductController@productAddGroup');
+    Route::post('product/Product-addgroup','ProductController@productAddingGroup');
+    Route::get('product/Product-add-family','ProductController@productAddFamily');
+    Route::post('product/Product-addfamily','ProductController@productAddingFamily');
+    Route::get('product/Product-add-brand','ProductController@productAddBrand');
+    Route::post('product/Product-addbrand','ProductController@productAddingBrand');
+
+
+    // Route::get('/product/Product-add-group', function () {
+    //     return view('pages/product/product_group_add');
+    //  });
+
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['RolePermission']], function() 
