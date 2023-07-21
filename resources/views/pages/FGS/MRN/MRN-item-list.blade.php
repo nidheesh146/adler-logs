@@ -109,8 +109,11 @@
 								</tr>
 							</thead>
 							<tbody id="prbody1">
+								<?php $qty=0; ?>
 								@foreach($items as $item)
                                 <tr>
+									<?php $qty=$qty+$item['quantity'];
+									 ?>
 									<td>{{$item['sku_code']}}</td>
                                     <td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
@@ -125,6 +128,7 @@
 									</td>
 								</tr>
 								@endforeach
+								
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">

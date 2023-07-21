@@ -20,6 +20,7 @@ use App\Models\PurchaseDetails\inv_supplier;
 use App\Models\currency_exchange_rate;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_item_approve;
+use App\Models\PurchaseDetails\inv_purchase_req_master_item_rel;
 
 class InventoryController extends Controller
 {
@@ -64,6 +65,12 @@ class InventoryController extends Controller
     // Purchase Reqisition Master get list
     public function get_purchase_reqisition(Request $request)
     {
+        $items =inv_purchase_req_master_item_rel::where('inv_purchase_req_master_item_rel.master','=',700)->get();
+        //print_r($items);exit;
+        foreach($items as $pr_item)
+        {
+            DB::table('inv_purchase_req_item_approve')->where('pr_item_id','=',$pr_item['item'])->update(['status'=>0]);
+        }
             $condition = []; 
             if ($request->department) {
                 $condition[] = ['department.dept_name', 'like', '%'.$request->department.'%'];
@@ -477,7 +484,7 @@ class InventoryController extends Controller
         
 
 
-        }
+    }
 
     public function getStatus($pr_item_id)
     {
@@ -515,6 +522,7 @@ class InventoryController extends Controller
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
             $no_column = 6;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
+            //echo $sheet1_column_count;exit;
             if($sheet1_column_count == $no_column)
             {
                  $res = $this->Excelsplitsheet($ExcelOBJ,$pr_id);

@@ -21,10 +21,11 @@ class inventory_rawmaterial extends Model
 
     function get_inv_raw_data($condition){
 
-        return $this->select(['inventory_rawmaterial.id','inventory_rawmaterial.item_code as text','inventory_rawmaterial.short_description','inventory_rawmaterial.discription','type_name','hsn_code','unit_name','min_stock',
-        'max_stock','opening_quantity','availble_quantity'])
+        return $this->select(['inventory_rawmaterial.id','inventory_rawmaterial.item_code as text','inventory_rawmaterial.short_description','inventory_rawmaterial.discription','inv_item_type.type_name','hsn_code','unit_name','min_stock',
+        'max_stock','opening_quantity','availble_quantity','inv_item_type_2.type_name as type2_name'])
         ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.receipt_unit_id')
         ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
+        ->leftjoin('inv_item_type_2','inv_item_type_2.id','=','inventory_rawmaterial.item_type_id_2')
         ->where($condition)->get()->toArray();
 
 

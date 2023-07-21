@@ -171,8 +171,11 @@
                 
             </tr>
             <?php $i=1; ?>
+            <?php $qty=0; ?>
             @foreach($items as $item)
             <tr style="text-align:left;">
+                <?php $qty=$qty+$item['quantity'];
+									 ?>
                 <td style="text-align:center;">{{$i++}}</td>
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
@@ -185,6 +188,17 @@
                
             </tr>
             @endforeach
+            <tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td style="color:#1434A4;text-align:center;font-weight:bold;">{{$qty}}</td>
+				<td style="color:#1434A4;font-weight:bold;">Nos</td>
+				<td></td>
+				<td></td>
+			</tr>
         
         </table>
     </div>

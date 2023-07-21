@@ -7,9 +7,9 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="">Stock Issue To Production - Direct</a></span>
+			 <span><a href="">Stock Issue To Production - Packing</a></span>
 		</div>
-		<h4 class="az-content-title" style="font-size: 20px;">Stock Issue To Production - Direct
+		<h4 class="az-content-title" style="font-size: 20px;">Stock Issue To Production - Packing
 		  	<div class="right-button">
 			  <!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
 				  <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -40,8 +40,8 @@
                @endforeach 
         <div class="card-header bg-gray-400 bd-b-0-f pd-b-0">
             <nav class="nav nav-tabs">
-                <a class="nav-link active" href="">Stock Issue To Production -Direct</a>
-                <a class="nav-link " href="{{url('inventory/Stock/ToProduction/Packing')}}">Stock Issue To Production -Packing</a>
+                <a class="nav-link" href="{{url('inventory/Stock/ToProduction/Direct')}}">Stock Issue To Production -Direct</a>
+                <a class="nav-link active" href="{{url('inventory/Stock/ToProduction/Packing')}}">Stock Issue To Production -Packing</a>
                 <a class="nav-link"  href="{{url('inventory/Stock/ToProduction/Indirect')}}">Stock Issue To Production -Indirect</a>
             </nav> 
         </div><br/>
@@ -80,15 +80,6 @@
                     <label>Transaction Slip No</label>
                     <input type="text"  class="form-control" name="transaction_slip" id="transaction_slip" >
                 </div>
-                <div class="form-group col-sm-12col-md-4 col-lg-4 col-xl-4">
-                    <label>Deviation No</label>
-                    <input type="text"  class="form-control" name="deviation_no" id="deviation_no" >
-                </div>
-                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                    <label for="exampleInputEmail1">Deviation Item Code*</label>
-                    <select class="form-control  deviation_item_code" name="deviation_item_code" id="deviation_item_code">
-                    </select> 
-                </div>
                 <br/>
             </div>
             <div class="form-devider"></div>
@@ -115,6 +106,7 @@
 	<!-- az-content-body -->
 	<!-- Modal content-->
     
+	
       
 
 <script src="<?=url('');?>/js/azia.js"></script>
@@ -139,49 +131,13 @@
           minimumInputLength: 3,
           allowClear: true
     });
-    $('.deviation_item_code').select2({
-          placeholder: 'Choose one',
-          searchInputPlaceholder: 'Search',
-          minimumInputLength: 3,
-          allowClear: true,
-          ajax: {
-          url: "{{ url('inventory/itemcodesearch') }}",
-          processResults: function (data) {
-            return { results: data };
-
-          }
-        }
-    }).on('change', function (e) 
-    {
-        let material = $(this).select2('data')[0];
-        $('.lotcards').empty();
-        $('.spinner-button').hide();
-        $('.savebtn').hide();
-        $.get("{{ url('inventory/stock/fetchDeviationItemLotcards') }}?item_id="+material.id,function(data)
-        {
-            if(data!=0)
-                {
-                    $('.lotcards').html(data);
-                    if(data)
-                    {
-                            $('.spinner-button').show();
-                            $('.savebtn').show();
-                    }
-                }
-                else
-                {
-                    alert('There is no lotcard exist for particular rawmaterial..')
-                }
-            
-        });
-    });
     $('.item_code').select2({
           placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
           minimumInputLength: 3,
           allowClear: true,
           ajax: {
-          url: "{{ url('inventory/itemcodesearch') }}",
+          url: "{{ url('inventory/Stock/packing-itemcodesearch') }}",
           processResults: function (data) {
             return { results: data };
 
@@ -199,31 +155,24 @@
             if(res.unit_name){
                 $("#unit-div").text(res.unit_name);
             }
-            $('.batchcards').empty();
+            //$('.batchcards').empty();
             $('.lotcards').empty();
             $('.spinner-button').hide();
             $('.savebtn').hide();
-            $.get("{{ url('inventory/stock/fetchBatchCards') }}?item_id="+res.id,function(data)
+            $.get("{{ url('stock/fetchLotCard') }}?item_id="+res.id,function(data)
             {
-                //alert('kk');
                 if(data!=0)
                 {
-                    if(data['batchcards']){
-                        $('.batchcards').html(data['batchcards']);
-                    }
-                    if(data['lotcards']){
-                        $('.lotcards').html(data['lotcards']);
-                    }
-
-                        if(data['batchcards'] && data['lotcards'])
-                        {
+                    $('.lotcards').html(data);
+                    if(data)
+                    {
                             $('.spinner-button').show();
                             $('.savebtn').show();
-                        }
+                    }
                 }
                 else
                 {
-                    alert('There is no batchcard and lotcard exist for particular rawmaterial..')
+                    alert('There is no lotcard exist for particular rawmaterial..')
                 }
                
             });

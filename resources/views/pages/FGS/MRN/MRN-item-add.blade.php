@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
                         <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                        <form method="post" id="commentForm" novalidate="novalidate">
+                        <form method="post" id="commentForm" novalidate="novalidate" autocomplete="off">
                             {{ csrf_field() }}
                             <div class="row">
 
@@ -173,11 +173,11 @@
 function getsearch(){
  return   table.search();
 }
-$(".manufacturing_date").datepicker({
-                    format: " dd-mm-yyyy",
-                    autoclose:true,
-                    endDate: new Date()
-                });
+// $(".manufacturing_date").datepicker({
+//                     format: " dd-mm-yyyy",
+//                     autoclose:true,
+//                     endDate: new Date()
+//                 });
    
     function selectItem(itemId,divId){
         $('#Itemtype'+divId).val('');
@@ -202,10 +202,8 @@ $(".manufacturing_date").datepicker({
 
         $(document).ready(function(){
             initProductSelect2();
-           // initBatchSelect2();
             var i = 1;
             $('#add').click(function(){
-                //alert('kk');
                 i++;
                 $('#dynamic_field').append(`
                       <tr id="row${i}" rel="${i}">
@@ -254,17 +252,17 @@ $(".manufacturing_date").datepicker({
                 </tr>`);
                 initProductSelect2();
                 //initBatchSelect2();
-                $(".manufacturing_date").datepicker({
-                    format: " dd-mm-yyyy",
-                    autoclose:true,
-                    //endDate: new Date()
-                });
-                $(".expiry_date").datepicker({
-                    format: " dd-mm-yyyy",
-                    autoclose:true,
-                    //endDate: "today"
-                });
-                $(".manufacturing_date").datepicker("setDate", new Date());
+                // $(".manufacturing_date").datepicker({
+                //     format: " dd-mm-yyyy",
+                //     autoclose:true,
+                //     //endDate: new Date()
+                // });
+                // $(".expiry_date").datepicker({
+                //     format: " dd-mm-yyyy",
+                //     autoclose:true,
+                //     //endDate: "today"
+                // });
+                // $(".manufacturing_date").datepicker("setDate", new Date());
                
                 //$(".manufacturing_date").datepicker('setEndDate', new Date());
                
@@ -348,6 +346,12 @@ $(".manufacturing_date").datepicker({
                                 //$(".expiry_date"+select_id+"").datepicker();
     
                                 $("#expiry_date"+select_id+"").val('N.A');
+                                $("#manufacturing_date"+select_id+"").datepicker({
+                                    format: " dd-mm-yyyy",
+                                    autoclose:true
+                                });
+                                $("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
+                                //$("#manufacturing_date"+select_id+"").datepicker("setDate", now());
                             }
                             else
                             {
@@ -364,7 +368,9 @@ $(".manufacturing_date").datepicker({
                             $("#manufacturing_date"+select_id+"").datepicker({
                                     format: " dd-mm-yyyy",
                                     autoclose:true
-                                });
+                            });
+                            $("#manufacturing_date"+select_id+"").datepicker("setDate", new Date());
+                            $("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
                             $.get("{{ url('fgs/fetchProductBatchCards') }}?product_id="+res.id,function(data)
                             {
                                 $(".batch_no"+select_id+"").find('option').remove();

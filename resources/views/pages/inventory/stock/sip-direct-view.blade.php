@@ -94,7 +94,6 @@
                             </tr>
                         </tbody>
                     </table><br>
-                    
                     <div class="row">
                         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                             <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
@@ -103,7 +102,6 @@
                             <div class="form-devider"></div>
                         </div>
                     </div>
-                   
                     <div class="table-responsive">
                             <table class="table table-bordered mg-b-0" id="example1">
                                 <thead>
@@ -126,6 +124,7 @@
                                 </tbody>
                             </table>
                     </div>
+                    @
                 </div>
             </div>
         </div>

@@ -242,13 +242,17 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/stock/find-batchcard','StockController@findBatchCard');
     Route::get('inventory/stock/fetchBatchCard-info','StockController@fetchBatchCard_info');
     Route::get('inventory/stock/fetchBatchCard-items','StockController@fetchBatchCard_items');
-    Route::get('inventory/stock/fetchLotcard','StockController@fetchLotcard');
+    Route::get('stock/fetchLotCard','StockController@fetchLotcard');
     Route::get('inventory/stock/fetchPrimaryBatchCard-info','StockController@fetchPrimaryBatchCard_info');
     Route::get('inventory/Stock/ToProduction/Direct','StockController@DirectSIP');
     Route::post('inventory/Stock/ToProduction/Direct','StockController@addDirectSIP');
     Route::get('inventory/Stock/ToProduction/Indirect','StockController@IndirectSIP');
     Route::post('inventory/Stock/ToProduction/Indirect','StockController@addIndirectSIP');
+    Route::get('inventory/Stock/ToProduction/Packing','StockController@PackingSIP');
+    Route::post('inventory/Stock/ToProduction/Packing','StockController@addPackingSIP');
+    Route::get('inventory/Stock/packing-itemcodesearch','StockController@packingItem');
     Route::get('inventory/Stock/ToProduction/excel-export','StockController@StockToProductionExport');
+    Route::get('inventory/stock/fetchDeviationItemLotcards','StockController@fetchDeviationItemLotcards');
 
 
     // Route::get('inventory/stock/item-mac-info','StockController@itemMacDetails');

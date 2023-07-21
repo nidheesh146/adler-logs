@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
                         <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                        <form method="post" id="commentForm" novalidate="novalidate">
+                        <form method="post" id="commentForm" novalidate="novalidate" >
                             {{ csrf_field() }}
                             <div class="row">
 
@@ -170,10 +170,10 @@
 function getsearch(){
  return   table.search();
 }
-$(".datepicker").datepicker({
-    format: " dd-mm-yyyy",
-    autoclose:true
-    });
+// $(".datepicker").datepicker({
+//     format: " dd-mm-yyyy",
+//     autoclose:true
+//     });
   
         $(document).ready(function(){
             initSelect2();
@@ -227,7 +227,7 @@ $(".datepicker").datepicker({
                     </td>                        
                 </tr>`);
                 initSelect2();
-               /* $(".manufacturing_date").datepicker({
+                $(".manufacturing_date").datepicker({
                     format: " dd-mm-yyyy",
                     autoclose:true
                 });
@@ -235,7 +235,7 @@ $(".datepicker").datepicker({
                     format: " dd-mm-yyyy",
                     autoclose:true
                 });
-                $(".manufacturing_date").datepicker("setDate", new Date());*/
+                $(".manufacturing_date").datepicker("setDate", new Date());
                
             });
             $(document).on('click','.btn_remove', function(){
