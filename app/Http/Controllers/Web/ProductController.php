@@ -777,4 +777,78 @@ class ProductController extends Controller
     }
     
 }
+public function productAddGroup()
+{
+    $product_group=DB::table('product_productgroup')
+    ->orderby('id','DESC')
+    //->get();
+    ->paginate(15);
+    return view('pages.product.product_group_add',compact('product_group'));
+}
+public function productAddingGroup(Request $request)
+{
+DB::table('product_productgroup')
+->insert([
+    'group_name'=>$request->pr_group,
+    'created'=>date('Y-m-d')
+]);
+$product_group=DB::table('product_productgroup')
+->orderby('id','DESC')
+// ->get();//
+->paginate(15);
+
+return view('pages.product.product_group_add',compact('product_group'));
+}
+public function productAddFamily()
+{
+    $product_family=DB::table('product_productfamily')
+    ->orderby('id','DESC')
+    //->get();
+    ->paginate(15);
+    return view('pages.product.product_family_add',compact('product_family'));
+}
+public function productAddingFamily(Request $request)
+{
+$id=DB::table('product_productfamily')
+->insertGetId([
+   // ->insert([
+    'family_name'=>$request->pr_family,
+    'created'=>date('Y-m-d')
+]);
+DB::table('product_productfamily')
+->where('id',$id)
+->update([
+    'specification_no'=>$id,
+    
+]);
+$product_family=DB::table('product_productfamily')
+->orderby('id','DESC')
+// ->get();//
+->paginate(15);
+
+return view('pages.product.product_family_add',compact('product_family'));
+}
+
+public function productAddBrand()
+{
+    $product_brand=DB::table('product_productbrand')
+    ->orderby('id','DESC')
+    //->get();
+    ->paginate(15);
+    return view('pages.product.product_brand_add',compact('product_brand'));
+}
+public function productAddingBrand(Request $request)
+{
+DB::table('product_productbrand')
+->insert([
+    'brand_name'=>$request->pr_brand,
+    'created'=>date('Y-m-d')
+]);
+$product_brand=DB::table('product_productbrand')
+->orderby('id','DESC')
+// ->get();//
+->paginate(15);
+
+return view('pages.product.product_brand_add',compact('product_brand'));
+}
 }

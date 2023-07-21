@@ -291,6 +291,9 @@
             <li class="nav-sub-item @if(in_array($Action,['Product.locationList'])){{'active'}} @endif ">
             <a href="{{url('product/location')}}"  class="nav-sub-link">Product Location</a>
             </li> 
+            <li class="nav-sub-item @if(in_array($Action,['Product.Product-addgroup'])){{'active'}} @endif ">
+            <a href="{{url('product/Product-add-group')}}"  class="nav-sub-link">Product Group Add</a>
+            </li> 
           </ul>
         </li>
 

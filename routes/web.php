@@ -224,6 +224,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/receipt-report/{id}/report', 'MRRController@receiptReportPDF');
     Route::get('getPO_for_merged_si_item','MRRController@getPO_for_merged_si_item');
      Route::get('inventory/MRR/excel-export','MRRController@MRRExport');
+     
+
 
     Route::get('inventory/find-invoice-for-mrr','MRRController@find_invoice_for_mrr');
     Route::get('inventory/find-invoice-for-srr','MRRController@find_invoice_for_srr');
@@ -390,6 +392,18 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::get('product/Product-add/{id?}','ProductController@productAdd');
     Route::post('product/Product-add/{id?}','ProductController@productAdd');
 
+    Route::get('product/Product-add-group','ProductController@productAddGroup');
+    Route::post('product/Product-addgroup','ProductController@productAddingGroup');
+    Route::get('product/Product-add-family','ProductController@productAddFamily');
+    Route::post('product/Product-addfamily','ProductController@productAddingFamily');
+    Route::get('product/Product-add-brand','ProductController@productAddBrand');
+    Route::post('product/Product-addbrand','ProductController@productAddingBrand');
+
+
+    // Route::get('/product/Product-add-group', function () {
+    //     return view('pages/product/product_group_add');
+    //  });
+
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['RolePermission']], function() 
@@ -426,6 +440,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MRN-add','MRNController@MRNAdd');
     Route::post('fgs/MRN-add','MRNController@MRNAdd');
     Route::get('fgs/MRN/item-list/{mrn_id}','MRNController@MRNitemlist');
+    Route::get('inventory/MRN-item-edit/{id?}', 'MRNController@edit_mrn');
+    Route::post('inventory/MRN-item-update', 'MRNController@update_mrn');
+    Route::get('inventory/MRN-item-delete/{id?}', 'MRNController@delete_mrn');
+    
+
+
     //Route::get('fgs/productsearch','MRNController@productsearch');
     Route::get('fgs/fetchProductBatchCards','MRNController@fetchProductBatchCards');
     Route::get('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
