@@ -50,10 +50,10 @@
                                 <label  style="font-size: 12px;">Brand</label>
                               <input type="text" value="{{request()->get('brand_name')}}" id="brand_name" class="form-control" name="brand_name" placeholder="Brand">
                                </div> 
-                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                               {{-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                  <label  style="font-size: 12px;">Product Condition</label>
                                  <select name="is_sterile" id="is_sterile" class="form-control">
-                                    <option value="">-- Select one ---</option>
+                                    <option value="0">-- Select one ---</option>
                                  @foreach ($pcondition as $item)
                                  @if($item['is_sterile']==1)
                                         <option value="{{$item->is_sterile}}">Sterile  </option>
@@ -62,7 +62,7 @@
                                  @endif     
                                     @endforeach
                                 </select>
-                                 </div> 
+                                 </div> --}}
                                   <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                  <label  style="font-size: 12px;">Product Group</label>
                                  <input type="text" value="{{request()->get('group_name')}}"  class="form-control " name="group_name" id="group_name" placeholder="Product Group" >

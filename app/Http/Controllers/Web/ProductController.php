@@ -36,9 +36,10 @@ class ProductController extends Controller
     {
         //$this->prd_InputmaterialUpload();
          $condition =[];
+         
           if($request->sku_code)
         {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+            $condition[] = ['product_product.sku_code','like', '%'.$request->sku_code.'%'];
         }
         if($request->brand_name)
         {
@@ -48,16 +49,18 @@ class ProductController extends Controller
         {
             $condition[] = ['product_productgroup.group_name','like', '%' . $request->group_name . '%'];
         }
-        if($request->is_sterile == 1)
-        {
-            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
-        }
-        if($request->is_sterile == 0)
-        {
-            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
-        }
+        // if($request->is_sterile == 1)
+        // {
+        //     $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        // }
+        // if($request->is_sterile == 0)
+        // {
+        //     $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        // }
         $pcondition = $this->product_product->get()->unique('is_sterile');
+        
         $data['products'] = $this->product->get_products($condition);
+        
         return view('pages/product/product-list',compact('data','pcondition'));
     }
     public function addInputMaterial(Request $request,$product_id=null)
@@ -106,9 +109,9 @@ class ProductController extends Controller
         if ($request->isMethod('post')) 
         {
              $validation['sku_code'] = ['required'];
-             $validation['product_family_id'] = ['required'];
-             $validation['product_group_id'] = ['required'];
-             $validation['brand_details_id'] = ['required'];
+            //  $validation['product_family_id'] = ['required'];
+            //  $validation['product_group_id'] = ['required'];
+            //  $validation['brand_details_id'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all()) 
             {
@@ -166,14 +169,14 @@ class ProductController extends Controller
                 $data['brand'] = $request->brand;
                 $data['is_active'] = 1;
                 $data['process_sheet_no'] = $request->process_sheet_no;
-                $data['process_sheet_pdf'] = $image_fileName;
+               // $data['process_sheet_pdf'] = $image_fileName;
 
                 if($request->id){ 
                     $data['updated'] = date('Y-m-d H:i:s');
                     $data['updated'] = config('user')['user_id'];
                     $this->product->update_data(['id'=>$request->id],$data);
                     $request->session()->flash('success',"You have successfully updated a product !");
-                    return redirect("product/Product-add/".$id);
+                    return redirect("product/list");
                 }
                 else{
                         
@@ -191,6 +194,7 @@ class ProductController extends Controller
             if($validator->errors()->all()) 
             { 
             if($request->id)
+            
                 return redirect("product/Product-add".$id)->withErrors($validator)->withInput();
             else
                 return redirect("product/Product-add")->withErrors($validator)->withInput();
@@ -850,5 +854,29 @@ $product_brand=DB::table('product_productbrand')
 ->paginate(15);
 
 return view('pages.product.product_brand_add',compact('product_brand'));
+}
+public function get_product_family($id)
+{
+    $product_family=DB::table('product_productfamily')
+    ->where('id',$id)
+    ->pluck('family_name')[0];
+
+    return $product_family;
+}
+public function get_product_brand($id)
+{
+    $product_brand=DB::table('product_productbrand')
+    ->where('id',$id)
+    ->pluck('brand_name')[0];
+    
+    return $product_brand;
+}
+public function get_product_group($id)
+{
+    $product_group=DB::table('product_productgroup')
+    ->where('id',$id)
+    ->pluck('group_name')[0];
+    
+    return $product_group;
 }
 }
