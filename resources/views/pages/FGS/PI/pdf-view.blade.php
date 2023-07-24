@@ -301,7 +301,7 @@
                  ?>
             </tr>
             @endforeach
-             <tr style="text-align:center;">
+             <tr>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -309,19 +309,19 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td style="text-align:center;">{{  $qsum }}</td>
+                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{  $qsum }}</td>
                 <td></td>
-                <td style="text-align:right;">{{number_format((float)($rsum), 2, '.', '') }}</td>
+                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</td>
                 <td></td>
                 <td></td>
-                <td style="text-align:right;">{{number_format((float)($tsum), 2, '.', '') }}</td>
+                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td> 
                 <td></td>
-                <td>{{number_format((float)($totalsum), 2, '.', '') }}</td>
+                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</td>
             </tr>       
         </table>
     </div>

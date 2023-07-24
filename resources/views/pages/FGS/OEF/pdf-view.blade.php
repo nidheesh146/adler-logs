@@ -255,6 +255,11 @@
             $total_igst = 0;
             $total_cgst = 0;
             $total_sgst = 0;
+            $qsum = 0;
+            $rsum = 0;
+            $tsum = 0;
+            $isum = 0;
+            $totalsum = 0;
              ?>
             @foreach($items as $item)
             <tr>
@@ -285,8 +290,34 @@
                 $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
                 $total_cgst = $total_cgst+($discount_value* $item['quantity']*$item['cgst'])/100;
                 ?>
+                <?php 
+                 $qsum = $qsum+$item['quantity'];
+                 $rsum = $rsum+$item['rate'];
+                 $tsum = $tsum+$discount_value;
+                 $isum = $isum+$total_igst;
+                 $totalsum = $totalsum+$total_amount;
+                 ?>
             </tr>
             @endforeach
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{  $qsum }}</td>
+                <td style="color:blue;font-weight:bold;">Nos</td>
+                <td style="text-align:right;color:#1434A4;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</td>
+                <td></td>
+                <td></td>
+                <td style="text-align:right;color:#1434A4;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td> 
+                <td></td>
+                <td style="text-align:right;color:#1434A4;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</td>
+            </tr>  
         
         </table>
     </div>
