@@ -32,6 +32,7 @@ class product extends Model
     }
 
     function get_products($condition){
+        //  dd($condition);
         return $this->select(['product_product.*','product_productfamily.family_name','product_productgroup.group_name','product_productbrand.brand_name',
         'product_group1.group_name as group1_name','fgs_product_category.category_name'])
                     ->leftjoin('product_productfamily','product_productfamily.id','=','product_product.product_family_id')

@@ -119,14 +119,14 @@
                                                     style="float:left;">
                                                     <label>Date of Mfg. * </label>
                                                     <input type="text"  class="form-control datepicker manufacturing_date" name="manufacturing_date1" 
-                                                        id="manufacturing_date1" value="{{date('d-m-Y', strtotime($item_details->manufacturing_date))}}">
+                                                        id="manufacturing" value="{{date('d-m-Y', strtotime($item_details->manufacturing_date))}}" onchange="myFunction()">
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label>Date of Expiry * </label>
                                                     @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
-                                                    <input type="text"  class="form-control datepicker expiry_date" readonly name="expiry_date" value="{{date('d-m-Y', strtotime($item_details->expiry_date))}}"
-                                                        id="expiry_date1" placeholder="Date of Expiry">
+                                                    <input type="text"  class="form-control datepicker expiry_date" readonly name="expiry_date1" value="{{date('d/m/Y', strtotime($item_details->expiry_date))}}"
+                                                        id="expiry" placeholder="Date of Expiry">
                                                 </div>
                                                 <!-- <button type="button" name="add" id="add" class="btn btn-success"
                                                     style="height:38px;margin-top:28px;"><i
@@ -183,6 +183,55 @@
        
 
        <script>
+function myFunction() {
+  var input_data = document.getElementById("manufacturing").value;
+  const parts = input_data.split("-");
+const givenDate = new Date(parts[2], parts[1] - 1, parts[0]);
+  //const givenDate = new Date(input_data);
+  givenDate.setFullYear(givenDate.getFullYear() + 5);
+  const datePlus5Years = givenDate.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+});
+  
+  $("#expiry").val(datePlus5Years);
+}
+//   var x=new Date(year,input_data);
+  
+  //var result1 = addYears(input_data, 2);
+  //input_data.setDate(input_data.getDate() + 5);
+    
+//    parsedDate.setDate(parsedDate.getDate() + 5);
+//   parsedDate.setFullYear(parsedDate.getFullYear() + 5);
+//   alert(input_data);
+//   const datePlus5Years = input_data.toLocaleDateString("en-US", {
+//   year: "numeric",
+//   month: "long",
+//   day: "numeric",
+// });
+// alert(datePlus5Years);
+//const inputDate = inputDateElement.value;
+//       const parsedDate = new Date(input_data);
+//       alert(parsedDate);
+//       if (!isNaN(parsedDate)) {
+//         // Add 5 years to the entered date
+//         parsedDate.setFullYear(parsedDate.getFullYear() + 5);
+// alert(parsedDate);
+//         // Format the new date
+//         const outputDates = parsedDate.toLocaleDateString("en-US", {
+//           year: "numeric",
+//           month: "numeric",
+//           day: "numeric",
+//         });
+  //document.getElementById("demo").innerHTML = "You selected: " + x;
+
+
+
+
+
+
+
   var divid = "";
 
 
@@ -400,6 +449,70 @@ $(".manufacturing_date").datepicker({
                     }); 
                 
             }   
+          
             
     </script>
+    <script>
+// function myFunction() {
+    
+//     const inputDate = document.getElementById("manufacturing_date1").value;
+//     const outputDate = document.getElementById("manufacturing_date1").value;
+//     //const inputDates = inputDate.value;
+//       const parsedDate = new Date(inputDate);
+//       if (!isNaN(parsedDate)) {
+//         // Add 5 years to the entered date
+//         parsedDate.setFullYear(parsedDate.getFullYear() + 5);
+//         const output = parsedDate.toLocaleDateString("en-US", {
+//           year: "numeric",
+//           month: "numeric",
+//           day: "numeric",
+//         });
+//          alert(output);
+//         //$("outputDate"+select_id+"").val(outputDates);
+//          outputDate.value=output;
+//     // }
+    //     else{
+    //         outputDate.value="";
+    //     }
+
+       // $(".expiry_date1"+select_id+"").datepicker("outputDate", date);
+        //document.getElementById("expiry_date1").textContent = outputDate;
+//     var manufacturingDateInput = document.getElementById("manufacturing_date1").value;
+//     var manufacturingDate = new Date(manufacturingDateInput);
+//     manufacturingDate.setFullYear(manufacturingDate.getFullYear() + 5);
+//     $("#expiry_date1"+manufacturingDate+"").val('');
+//    // var dateObject = moment(manufacturingDate).format('DD-MM-YYYY');
+//     alert(manufacturingDate);
+//   var x = document.getElementById("manufacturing_date1").value;
+//   var y=document.getElementById("expiry_date1").value;
+//   x.setFullYear(x.getFullYear() + 5);
+//  var yaer_no=date('Y',strtotime(x))+5;
+
+  
+ // var exp=
+  //alert(x.setFullYear(x.getFullYear() + 5));
+  //document.getElementById("demo").innerHTML = "You selected: " + 
+
+  // Get the input elements
+// var manufacturingDateInput = document.getElementById("manufacturing_date1");
+// var expiryDateInput = document.getElementById("expiry_date1");
+
+// // Add an event listener to the manufacturing date input
+// manufacturingDateInput.addEventListener("change", function() {
+//   // Get the value from the first input
+//   var manufacturingDate = new Date(manufacturingDateInput.value);
+
+//   // Add 5 years to the manufacturing date
+//   manufacturingDate.setFullYear(manufacturingDate.getFullYear() + 5);
+
+//   // Format the date as "yyyy-mm-dd"
+//   var formattedDate = manufacturingDate.toISOString().split("T")[0];
+
+//   // Set the value of the second input to the updated date
+  
+//   expiryDateInput.value = formattedDate;
+// });
+
+
+</script>
 @stop
