@@ -107,8 +107,8 @@
             <strong>{{$oef['firm_name']}}</strong>
             <p>{{$oef['billing_address']}}<br/>
             {{$oef['city']}}, {{$oef['state_name']}}<br/>
-            Cell No : {{ $oef['contact_number'] }}<br/>
-            <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$oef['email']}}<br/><span>
+            {{--<Cell No : {{ $oef['contact_number'] }}<br/>            
+            <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$oef['email']}}<br/><span>--}}
            </p>
            Shipping Address :
            <p>{{$oef['shipping_address']}}<br/>

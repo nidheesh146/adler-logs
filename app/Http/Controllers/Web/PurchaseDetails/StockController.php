@@ -25,6 +25,7 @@ use App\Models\PurchaseDetails\inv_stock_to_production_item;
 use App\Models\PurchaseDetails\inv_batchcard_qty_updation_request;
 use App\Models\PurchaseDetails\inv_stock_management;
 use App\Models\PurchaseDetails\inv_stock_transaction;
+use App\Models\PurchaseDetails\inv_transaction_slip;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InventoryStockExport;
 class StockController extends Controller
@@ -48,6 +49,8 @@ class StockController extends Controller
         $this->inv_batchcard_qty_updation_request = new inv_batchcard_qty_updation_request;
         $this->inv_stock_management = new inv_stock_management;
         $this->inv_stock_transaction = new inv_stock_transaction;
+        $this->inv_transaction_slip = new inv_transaction_slip;
+        
     }
     
     public function StockToProductionAdd(Request $request)
@@ -968,7 +971,7 @@ class StockController extends Controller
             $data['updated_at']= date('Y-m-d H:i:s');
            // $transaction = $this->inv_stock_transaction->insert_data($info);
             $data['qty_to_production'] = $request->qty_to_production;
-            $mac_items = inv_mac_item::lefJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+            $mac_items = inv_mac_item::leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
                                         //->leftJoin('','','=','inv_purchase_req_item.Item_code')
                                         ->where('id',$request->mac_item_id)->first();
         //    // echo $mac_item->mac_item_id;exit;
@@ -1936,7 +1939,100 @@ class StockController extends Controller
         return redirect("inventory/stock-report");
     }
 
+    public function transactionSlip(Request $request)
+    {
+        $condition=[];
+        if($request->transaction_slip)
+        {
+            $condition[] = ['inv_transaction_slip.transaction_slip_number','like','%'.$request->transaction_slip.'%'];
+        }
+        if($request->item_code)
+        {
+            $condition[] = ['inventory_rawmaterial.item_code','like','%'.$request->item_code.'%'];
+        }
+        if($request->lot_number)
+        {
+            $condition[] = ['inv_lot_allocation.lot_number','like','%'.$request->lot_number.'%'];
+        }
+        $data['transaction_slip'] = inv_transaction_slip::select('inv_transaction_slip.*','inv_lot_allocation.lot_number','inv_stock_management.stock_qty',
+        'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_unit.unit_name','created.f_name as created_f_name',
+        'created.l_name as created_l_name','accepted.f_name as accepted_f_name','accepted.l_name as accepted_l_name')
+                                        ->leftJoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_transaction_slip.lot_id')
+                                        ->leftJoin('inv_stock_management','inv_stock_management.lot_id','=','inv_transaction_slip.lot_id')
+                                        ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
+                                        ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                        ->leftJoin('user as created','created.user_id','=','inv_transaction_slip.created_by')
+                                        ->leftJoin('user as accepted','accepted.user_id','=','inv_transaction_slip.accepted_by')
+                                        ->where($condition)
+                                        ->distinct('inv_transaction_slip.id')
+                                        ->orderBy('inv_transaction_slip.id')
+                                        ->paginate(10);
+        return view('pages.inventory.stock.transaction-slip',compact('data'));
+    }
+    public function transactionSlipAdd(Request $request)
+    {
+        if($request->isMethod('post'))
+        {
+            $validation['lot_id'] = ['required'];
+            $validation['quantity'] = ['required'];
+            //$validation['created_by'] = ['required'];
+            $validation['transaction_slip'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                    $data['transaction_slip_number'] = $request->transaction_slip; 
+                    $data['lot_id'] = $request->lot_id; 
+                    $data['quantity'] = $request->quantity; 
+                    $data['created_by'] = $request->created_by; 
+                    $data['accepted_by'] = $request->accepted_by; 
+                    $data['status']= 1;
+                    $data['created_at']= date('Y-m-d H:i:s');
+                    $data['updated_at']= date('Y-m-d H:i:s');
+                    $add = $this->inv_transaction_slip->insert_data($data);
+                    $ys= inv_stock_management::where('lot_id','=',$request->lot_id)->decrement('stock_qty',$request->quantity);
+                    if($add && $ys)
+                    $request->session()->flash('success', "You have successfully created a Transaction Slip !");
+                    else
+                    $request->session()->flash('error', "Transaction Slip creation is failed. Try again... !");
+                    return redirect('inventory/transaction-slip');
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('inventory/transaction-slip/add');
+            }
+                    
+        }
+        else
+        {
+            
+            $condition1[] = ['user.status', '=', 1];
+            $data['users'] = $this->User->get_all_users($condition1);
+            return view('pages.inventory.stock.transaction-slip-add',compact('data'));
+        }
+        
+    }
+
+    function lotnumbersearch(Request $request)
+    {
+        if(!$request->q){
+            return response()->json(['message'=>'Lot Number is not valid'], 500); 
+        }
+        $condition[] = ['inv_lot_allocation.lot_number','like','%'.strtoupper($request->q).'%'];
+        $data = inv_lot_allocation::select('inv_lot_allocation.id','inv_lot_allocation.lot_number as text','inventory_rawmaterial.item_code',
+        'inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_unit.unit_name','inv_stock_management.stock_qty')
+                                            ->leftJoin('inv_stock_management','inv_stock_management.lot_id','=','inv_lot_allocation.id')
+                                            ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
+                                            ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+                                            ->where('inv_stock_management.stock_qty','!=',0)
+                                            ->where($condition)
+                                            ->distinct('inv_lot_allocation.id')
+                                            ->get();
+        if(!empty( $data)){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'Lot Number is not valid'], 500); 
+        }
+    }
     
-   
 
 }

@@ -255,6 +255,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/Stock/packing-itemcodesearch','StockController@packingItem');
     Route::get('inventory/Stock/ToProduction/excel-export','StockController@StockToProductionExport');
     Route::get('inventory/stock/fetchDeviationItemLotcards','StockController@fetchDeviationItemLotcards');
+    Route::get('inventory/transaction-slip','StockController@transactionSlip');
+    Route::get('inventory/transaction-slip/add','StockController@transactionSlipAdd');
+    Route::post('inventory/transaction-slip/add','StockController@transactionSlipAdd');
+    Route::get('inventory/lotnumbersearch','StockController@lotnumbersearch');
 
 
     // Route::get('inventory/stock/item-mac-info','StockController@itemMacDetails');

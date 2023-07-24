@@ -73,6 +73,7 @@
                                                     <textarea type="text" readonly class="form-control" id="Itemdescription1"name="Description"
                                                         placeholder="Description"></textarea>
                                                 </div>
+                                                <input type="hidden" id="is_sterile1" value="">
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
@@ -223,6 +224,7 @@ function getsearch(){
                                 <label>Description * </label>
                                 <textarea type="text" readonly class="form-control" id="Itemdescription${i}"name="Description" placeholder="Description"></textarea>
                             </div>
+                            <input type="hidden" id="is_sterile${i}" value="">
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label for="exampleInputEmail1">Batch No* </label>
                                 <select class="form-control batch_number batch_no${i}" index="${i}" name="moreItems[${i}][batch_no]" >
@@ -328,7 +330,7 @@ function getsearch(){
                     $("#Itemdescription"+select_id+"").text('');
                     $("#hsncode"+select_id+"").val('');
                     $("#Itemdescription"+select_id+"").val('');
-
+                    
                     Itemdescription1
                     let res = $(this).select2('data')[0];
                         if(typeof(res) != "undefined" ){
@@ -344,18 +346,19 @@ function getsearch(){
                             }
                             if(res.is_sterile==0){
                                 //$(".expiry_date"+select_id+"").datepicker();
-    
+                                $("#is_sterile"+select_id+"").val(0);
                                 $("#expiry_date"+select_id+"").val('N.A');
                                 $("#manufacturing_date"+select_id+"").datepicker({
                                     format: " dd-mm-yyyy",
                                     autoclose:true
                                 });
-                                $("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
-                                //$("#manufacturing_date"+select_id+"").datepicker("setDate", now());
+                                //$("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
+                                $("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
                             }
                             else
                             {
-                                //$(".expiry_date"+select_id+"").datepicker();
+                                $("#is_sterile"+select_id+"").val(1);
+                                $(".expiry_date"+select_id+"").datepicker();
                                 $("#expiry_date"+select_id+"").datepicker({
                                     format: " dd-mm-yyyy",
                                     autoclose:true
@@ -363,11 +366,33 @@ function getsearch(){
                                 var date = new Date();
                                 date.setFullYear(date.getFullYear() + 5);
                                 date.setDate(date.getDate() - 2);
+                                //var expiry_date = ( ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
                                 $("#expiry_date"+select_id+"").datepicker("setDate", date);
+                                //$("#expiry_date"+select_id+"").val(expiry_date);
                             }
                             $("#manufacturing_date"+select_id+"").datepicker({
                                     format: " dd-mm-yyyy",
-                                    autoclose:true
+                                    autoclose:true,
+                                    onSelect: function(date) {
+                                    $(this).change();
+                                    },
+                            }).on("change",function (){ 
+                                    // alert('inp changed');
+                                    //alert($(this).val());
+                                    if($("#is_sterile"+select_id+"").val()!=0)
+                                    {
+                                        var date = $("#manufacturing_date"+select_id+"").datepicker('getDate');  
+
+                                        //var date = $(this).val();
+                                        //alert(date);
+                                        var new_date = new Date(date);
+                                        new_date.setFullYear(new_date.getFullYear() + 5);
+                                        new_date.setDate(new_date.getDate() - 2);
+                                        //alert(new Date(new_date));
+                                        // var expiry_date = ( ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
+                                        // $("#expiry_date"+select_id+"").val(expiry_date);
+                                        $("#expiry_date"+select_id+"").datepicker("setDate", new_date);
+                                    }
                             });
                             $("#manufacturing_date"+select_id+"").datepicker("setDate", new Date());
                             $("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
