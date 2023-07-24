@@ -106,8 +106,8 @@
             <strong>{{$coef['firm_name']}}</strong>
             <p>{{$coef['billing_address']}}<br/>
             {{$coef['city']}}, {{$coef['state_name']}}<br/>
-            Cell No : {{ $coef['contact_number'] }}<br/>
-            <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$coef['email']}}<br/><span>
+            {{--Cell No : {{ $coef['contact_number'] }}<br/>
+            <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$coef['email']}}<br/><span>--}}
            </p>
            Shipping Address :
            <p>{{$coef['shipping_address']}}<br/>
@@ -255,6 +255,11 @@
             $total_igst = 0;
             $total_cgst = 0;
             $total_sgst = 0;
+            $qsum = 0;
+            $rsum = 0;
+            $tsum = 0;
+            $isum = 0;
+            $totalsum = 0;
              ?>
             @foreach($items as $item)
             <tr>
@@ -284,9 +289,33 @@
                 $total_igst = $total_igst+($discount_value*$item['igst'])/100;
                 $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
                 $total_cgst = $total_cgst+($discount_value* $item['quantity']*$item['cgst'])/100;
+                 $qsum = $qsum+$item['quantity'];
+                 $rsum = $rsum+$item['rate'];
+                 $tsum = $tsum+$discount_value;
+                 $isum = $isum+$total_igst;
+                 $totalsum = $totalsum+$total_amount;
                 ?>
             </tr>
             @endforeach
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
+                <th style="font-weight:bold;">Nos</th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
+                <th></th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th> 
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
+            </tr>
         
         </table>
     </div>

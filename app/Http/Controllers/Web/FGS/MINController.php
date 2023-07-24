@@ -53,6 +53,7 @@ class MINController extends Controller
                         ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_min.product_category')
                         ->leftJoin('product_stock_location','product_stock_location.id','fgs_min.stock_location')
                         ->where($condition)
+                        ->orderBy('fgs_min.id','DESC')
                         ->paginate(15);
         return view('pages/FGS/MIN/MIN-list', compact('min'));
     }

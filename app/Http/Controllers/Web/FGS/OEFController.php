@@ -203,8 +203,9 @@ class OEFController extends Controller
             return response()->json(['message'=>'Product is not valid'], 500); 
         }
         $oef = fgs_oef::find($oef_id);
-        $customer = customer_supplier::select('customer_supplier.firm_name','zone.zone_name')
+        $customer = customer_supplier::select('customer_supplier.firm_name','zone.zone_name','state.state_name')
                         ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+                        ->leftJoin('state','state.state_id','=','customer_supplier.state')
                         ->where('customer_supplier.id','=',$oef['customer_id'])->first();
         $condition[] = ['product_product.product_category_id','=',$oef['product_category']];
         $data =  $this->product->get_product_info_for_oef(strtoupper($request->q),$condition);
@@ -212,15 +213,16 @@ class OEFController extends Controller
         {
             if($dat['gst']!='')
             {
-                if($customer['zone_name']=='Export')
-                {
-                    $gst = $dat['gst'];
-                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst','=',$gst)->first();
-                }
-                else
+                if($customer['state_name']=='Maharashtra')
                 {
                     $gst = $dat['gst']/2;
                     $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst','=',$gst)->first();
+                }
+                else
+                {
+                    $gst = $dat['gst'];
+                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst','=',$gst)->first();
+                   
                 }
                 $prdct[] = array(
                     'id'=>$dat['id'],

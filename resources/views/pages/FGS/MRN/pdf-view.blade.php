@@ -189,15 +189,15 @@
             </tr>
             @endforeach
             <tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td style="color:#1434A4;text-align:center;font-weight:bold;">{{$qty}}</td>
-				<td style="color:#1434A4;font-weight:bold;">Nos</td>
-				<td></td>
-				<td></td>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th style="text-align:center;font-weight:bold;">{{$qty}}</th>
+				<th style="font-weight:bold;">Nos</th>
+				<th></th>
+				<th></th>
 			</tr>
         
         </table>

@@ -235,6 +235,17 @@
                 <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else N.A @endif</td>
             </tr>
             @endforeach
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th style="text-align:center;">{{$qsum}}</th>
+                <th>Nos</th>
+                <th></th>
+                <th></th>
+            </tr>
         
         </table>
     </div>

@@ -149,9 +149,9 @@
                                                     <input type="text" class="form-control" name="cgst" id="cgst1" value="" readonly>
                                                 </div>
                                                
-                                                <button type="button" name="add" id="add" class="btn btn-success"
+                                                <!-- <button type="button" name="add" id="add" class="btn btn-success"
                                                     style="height:38px;margin-top:28px;"><i
-                                                        class="fas fa-plus"></i></button>
+                                                        class="fas fa-plus"></i></button> -->
                                             </div>
                                             </td>
                                         </tr>
@@ -160,6 +160,10 @@
                                     </tbody>
 
                                 </table>
+                                <div class=" col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                    <button type="button" name="add" id="add" class="btn btn-success btn-xs" style="height:38px;float:right;margin-right:78px;">
+                                    <i class="fas fa-plus"></i></button>
+                                </div>
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                     <label for="exampleInputEmail1">Remarks  *</label>
                                     <textarea type="text" class="form-control" name="remarks" value="" placeholder=""></textarea>
@@ -289,7 +293,7 @@ function getsearch(){
                                 <label> CGST ( % ) </label>
                                 <input type="text" class="form-control" name="cgst" id="cgst${i}" value="" readonly>
                             </div>
-                            <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
+                            <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;margin-left: 18px;">X</button>
                         </div>
                     </td>                        
                 </tr>`);

@@ -78,7 +78,7 @@
                             <label for="exampleInputEmail1">Batch Quantity</label>
                             <div class="input-group mb-6">
                                 <input type="hidden" name="mrn_item_id" id="mrn_item_id"  value="" >
-                                <input type="text" class="form-control" name="batch_qty" id="batch_qty" placeholder="" aria-describedby="unit-div2" >
+                                <input type="number" class="form-control" max="" min="" name="batch_qty" id="batch_qty" placeholder="" aria-describedby="unit-div2" >
                                 <div class="input-group-append">
                                     <span class="input-group-text unit-div" id="unit-div2">Nos</span>
                                 </div>
@@ -143,6 +143,9 @@
         var expiry_date = element.attr("expiryDate"); 
         var mrn_item_id = element.attr('mrnItemId');
         $("#batch_qty").val(batchqty);
+        $("#batch_qty").attr('max',batchqty);
+        $("#batch_qty").attr('min',0);
+        $("#batch_qty").attr(batchqty);
         $("#manufacturing_date").val(manufacturing_date);
         $("#mrn_item_id").val(mrn_item_id);
         if(expiry_date=='0000-00-000')

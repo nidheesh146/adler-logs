@@ -86,8 +86,9 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label>Quantity * </label>
-                                                    <input type="number"  class="form-control" name="moreItems[0][qty]"
-                                                        id="stock_qty1" placeholder="Quantity">
+                                                    <input type="number"  class="form-control stock_qty" name="moreItems[0][qty]"
+                                                        id="stock_qty1" placeholder="Quantity" max="" min="0" index="1" value="" required>
+                                                    <span id="error1" style="color:red;"></span> 
                                                 </div>
                                             
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
@@ -208,7 +209,8 @@ function getsearch(){
                         <div class="row"> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Batch Qty * </label>
-                                <input type="number"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Stock Qty">
+                                <input type="number"  class="form-control stock_qty" name="moreItems[${i}][qty]" id="stock_qty${i}" index="${i}" placeholder="Stock Qty" max="" min="0" value="" required>
+                                <span id="error${i}" style="color:red;"></span>
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                 <label>UOM </label>
@@ -227,15 +229,15 @@ function getsearch(){
                     </td>                        
                 </tr>`);
                 initSelect2();
-                $(".manufacturing_date").datepicker({
-                    format: " dd-mm-yyyy",
-                    autoclose:true
-                });
-                $(".expiry_date").datepicker({
-                    format: " dd-mm-yyyy",
-                    autoclose:true
-                });
-                $(".manufacturing_date").datepicker("setDate", new Date());
+                // $(".manufacturing_date").datepicker({
+                //     format: " dd-mm-yyyy",
+                //     autoclose:true
+                // });
+                // $(".expiry_date").datepicker({
+                //     format: " dd-mm-yyyy",
+                //     autoclose:true
+                // });
+                // $(".manufacturing_date").datepicker("setDate", new Date());
                
             });
             $(document).on('click','.btn_remove', function(){
@@ -247,7 +249,8 @@ function getsearch(){
             var batch_id = $(this).val();
             var select_id = $(this).attr("index");
             $.get("{{ url('fgs/fetchBatchCardQtyManufatureDate') }}?batch_id="+batch_id,function(data){
-                $("#stock_qty"+select_id+"").val(data['qyantity']);
+                $("#stock_qty"+select_id+"").val(data['quantity']);
+                $("#qty"+select_id+"").val(data['quantity']);
                 $("#stock_qty"+select_id+"").attr('max',data['quantity']);
                 $("#stock_qty"+select_id+"").attr('min',0);
                 $("#manufacturing_date"+select_id+"").val(data['manufacturing_date']);
@@ -257,6 +260,15 @@ function getsearch(){
                 $("#expiry_date"+select_id+"").val(data['expiry_date']);
             });
     // do something 
+        });
+        $(document).on('change', '.stock_qty', function (e) {
+           var val = $(this).val();
+           var select_id = $(this).attr("index");
+           $("#error"+select_id+"").text('');
+           var max = $(this).attr("max");
+           if(val>max)
+           $("#error"+select_id+"").text('Please enter a value less than or equal to '+max);
+
         });
             function initSelect2() {
                 var min_id = $('#min_id').val();
@@ -332,5 +344,7 @@ function getsearch(){
                        }
                     });   
             }   
+
+            
     </script>
 @stop

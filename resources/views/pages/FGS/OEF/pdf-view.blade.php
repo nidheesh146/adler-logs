@@ -300,23 +300,23 @@
             </tr>
             @endforeach
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{  $qsum }}</td>
-                <td style="color:blue;font-weight:bold;">Nos</td>
-                <td style="text-align:right;color:#1434A4;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</td>
-                <td></td>
-                <td></td>
-                <td style="text-align:right;color:#1434A4;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td> 
-                <td></td>
-                <td style="text-align:right;color:#1434A4;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</td>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
+                <th style="font-weight:bold;">Nos</th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
+                <th></th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th> 
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
             </tr>  
         
         </table>
