@@ -44,6 +44,7 @@
                                         {{ $errorr }}
                                     </div>
                                 @endforeach
+                           
                                 <table class="table table-bordered">
                                     <tbody id="dynamic_field">
 
@@ -74,6 +75,21 @@
                                                         placeholder="Description"></textarea>
                                                 </div>
                                                 <input type="hidden" id="is_sterile1" value="">
+                                                @if($product_cat->product_category==3)
+                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
+                                                    style="float:left;">
+                                                    <label for="exampleInputEmail1">Batch No* </label>
+                                                    <input type="text"  class="form-control" name="batch_id" 
+                                                        placeholder="Batch No">
+                                                    <!-- <select class="form-control batch_number batch_no1" id="1"
+                                                        name="moreItems[0][batch_no]" id="batch_no1">
+                                                    </select> -->
+                                                    <!-- <select class="form-control batch_number batch_no1" index="1"
+                                                        name="moreItems[0][batch_no]" >
+                                                    </select> -->
+                                                    
+                                                </div>
+                                               @else
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
@@ -85,15 +101,24 @@
                                                     </select>
                                                     
                                                 </div>
+                                                @endif
                                                 </div>
-                                            <div class="row"> 
+                                            <div class="row">
+                                            @if($product_cat->product_category==3)
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
+                                                    style="float:left;">
+                                                    <label>Quantity * </label>
+                                                    <input type="number"  class="form-control" name="qty"
+                                                        id="stock_qty1" placeholder="Stock Qty">
+                                                </div>
+                                            @else
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label>Quantity * </label>
                                                     <input type="number"  class="form-control" name="moreItems[0][qty]"
                                                         id="stock_qty1" placeholder="Stock Qty">
                                                 </div>
-                                            
+                                            @endif
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
                                                     style="float:left;">
                                                     <label>UOM </label>

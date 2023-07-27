@@ -141,6 +141,7 @@ class MRNController extends Controller
         //                                 ->get();
         $batchcards = batchcard::select('batchcard_batchcard.batch_no', 'batchcard_batchcard.id as batch_id', 'batchcard_batchcard.start_date', 'batchcard_batchcard.target_date', 'batchcard_batchcard.quantity')
             ->where('batchcard_batchcard.product_id', '=', $request->product_id)
+            ->where('is_trade',0)
             ->orderBy('batchcard_batchcard.id', 'DESC')
             ->get();
         return $batchcards;
@@ -148,30 +149,66 @@ class MRNController extends Controller
 
     public function fetchBatchCardQty(Request $request)
     {
-        $batchcard = batchcard::where('batchcard_batchcard.id', '=', $request->batch_id)->first();
+        $batchcard = batchcard::where('batchcard_batchcard.id', '=', $request->batch_id)->where('is_trade',0)->first();
         return $batchcard['quantity'];
     }
 
     public function MRNitemAdd(Request $request, $mrn_id)
     {
+       $product_cat=DB::table('fgs_mrn')
+       ->where('id',$mrn_id)
+       ->first();
+       
         if ($request->isMethod('post')) {
-            $validation['moreItems.*.product'] = ['required'];
-            $validation['moreItems.*.batch_no'] = ['required'];
-            $validation['moreItems.*.qty'] = ['required'];
-            $validation['moreItems.*.manufacturing_date'] = ['required', 'date'];
+            if($product_cat->product_category==3)
+            {
+                $validation['moreItems.*.product'] = ['required'];
+               // $validation['moreItems.*.batch_no'] = ['required'];
+                $validation['batch_id'] = ['required'];
+                $validation['qty'] = ['required'];
+                //$validation['moreItems.*.qty'] = ['required'];
+                $validation['moreItems.*.manufacturing_date'] = ['required', 'date']; 
+            }else{
+                $validation['moreItems.*.product'] = ['required'];
+                $validation['moreItems.*.batch_no'] = ['required'];
+                // $validation['batch_id'] = ['required'];
+                // $validation['qty'] = ['required'];
+                $validation['moreItems.*.qty'] = ['required'];
+                $validation['moreItems.*.manufacturing_date'] = ['required', 'date'];
+            }
+            
             //$validation['moreItems.*.expiry_date'] = ['required','date'];
             $validator = Validator::make($request->all(), $validation);
+            //  dd($request->batch_id);
             if (!$validator->errors()->all()) {
                 $mrn_info = fgs_mrn::find($request->mrn_id);
+                if(!empty($request->batch_id)){
+                    $batch_card_id= DB::table('batchcard_batchcard')
+                    ->insertGetId([
+                    "batch_no"=>$request->batch_id,
+                    "quantity"=>$request->qty,
+                    "is_trade"=>1
+                    ]);
+                }
+               
                 foreach ($request->moreItems as $key => $value) {
                     if ($value['expiry_date'] != 'N.A')
                         $expiry_date = date('Y-m-d', strtotime($value['expiry_date']));
                     else
                         $expiry_date = '';
+                        if(empty($value['batch_no']))
+                        {
+                        $batchcard_id=$batch_card_id;
+                        $qty=$request->qty;
+                        }else{
+                           $batchcard_id=$value['batch_no'];
+                           $qty=$value['qty'];
+                        }
                     $data = [
                         "product_id" => $value['product'],
-                        "batchcard_id" => $value['batch_no'],
-                        "quantity" => $value['qty'],
+                       // "batchcard_id" => $value['batch_no'],moreItems[0][batch_no]
+                       "batchcard_id" => $batchcard_id,
+                        "quantity" => $qty,
                         "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
                         "expiry_date" => $expiry_date,
                         "created_at" => date('Y-m-d H:i:s')
@@ -181,10 +218,11 @@ class MRNController extends Controller
                     ];
                     $stock = [
                         "product_id" => $value['product'],
-                        "batchcard_id" => $value['batch_no'],
-                        "quantity" => $value['qty'],
+                       // "batchcard_id" => $value['batch_no'],
+                       "batchcard_id" =>$batchcard_id,
+                        "quantity" => $qty,
                         "stock_location_id" => $mrn_info['stock_location'],
-                        "quantity" => $value['qty'],
+                        "quantity" => $qty,
                         "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
                         "expiry_date" => $expiry_date,
                     ];
@@ -204,7 +242,7 @@ class MRNController extends Controller
             }
         } else {
             //$batchcards = DB::table('batchcard_batchcard')->select('id',ba)->get();
-            return view('pages/FGS/MRN/MRN-item-add');
+            return view('pages/FGS/MRN/MRN-item-add',compact('product_cat'));
         }
     }
 
