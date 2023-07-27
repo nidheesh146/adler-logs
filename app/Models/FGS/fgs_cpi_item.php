@@ -38,7 +38,7 @@ class fgs_cpi_item extends Model
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                         ->where('fgs_cpi_item_rel.master','=', $cpi_id)
                         ->where('fgs_grs.status','=',1)
-                        ->orderBy('fgs_grs_item.id','DESC')
+                        ->orderBy('fgs_grs_item.id','ASC')
                         ->distinct('fgs_grs_item.id')
                         ->paginate(15);
 

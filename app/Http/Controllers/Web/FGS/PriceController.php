@@ -136,7 +136,7 @@ class PriceController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\Item_Master_FGS.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\Item_Master_FGS1.xlsx';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
         $ExcelOBJ->reader->setReadDataOnly(true);
@@ -176,11 +176,12 @@ class PriceController extends Controller
                 if($product_id)
                 {
                     $dat['hsn_code'] = $excelsheet[4];
-                    $dat['product_type_id'] = $this->identify_id($excelsheet[3],"PRODUCT TYPE");
-                    $dat['product_oem_id'] = $this->identify_id($excelsheet[8],"PRODUCT OEM");
-                    $dat['product_group1_id'] = $this->identify_id($excelsheet[7],"PRODUCT GROUP1");
-                    $dat['product_category_id'] = $this->identify_id($excelsheet[6],"PRODUCT CATEGORY");
-                    $dat['updated'] = date('Y-m-d H:i:s');
+                    $dat['gst'] = $excelsheet[11];
+                    // $dat['product_type_id'] = $this->identify_id($excelsheet[3],"PRODUCT TYPE");
+                    // $dat['product_oem_id'] = $this->identify_id($excelsheet[8],"PRODUCT OEM");
+                    // $dat['product_group1_id'] = $this->identify_id($excelsheet[7],"PRODUCT GROUP1");
+                    // $dat['product_category_id'] = $this->identify_id($excelsheet[6],"PRODUCT CATEGORY");
+                    // $dat['updated'] = date('Y-m-d H:i:s');
                     $res[]=DB::table('product_product')->where('id','=',$product_id)->update($dat);
                 }
                 else

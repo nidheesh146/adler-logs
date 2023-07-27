@@ -151,6 +151,7 @@ class SRNController extends Controller
                         ->leftJoin('fgs_dni_item','fgs_dni_item.id','fgs_dni_item_rel.item')
                         ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_dni_item.pi_id')
                         ->where('master','=',$id)
+                        ->orderBy('fgs_dni_item.id','ASC')
                         ->distinct('fgs_dni_item.id')
                         ->distinct('fgs_dni_item.pi_id')
                         ->get();
@@ -171,7 +172,7 @@ class SRNController extends Controller
                     ->where('fgs_grs.status','=',1)
                     ->where('fgs_grs_item.cgrs_status','=',0)
                     ->where('fgs_pi_item.cpi_status','=',0)
-                    ->orderBy('fgs_grs_item.id','DESC')
+                    ->orderBy('fgs_grs_item.id','ASC')
                     ->distinct('fgs_grs_item.id')
                     ->get();
             $items['pi_item'] = $pi_item;
@@ -300,6 +301,7 @@ class SRNController extends Controller
                         ->where('fgs_srn_item_rel.master','=',$request->srn_id)
                         ->distinct('fgs_dni_item.pi_id')
                         ->distinct('fgs_srn_item.id')
+                        ->orderBy('fgs_srn_item.id','ASC')
                         ->get();
         //print_r(json_encode($srn_items));exit;
         foreach($srn_items as $items)
@@ -339,7 +341,7 @@ class SRNController extends Controller
                             ->where('fgs_grs.status','=',1)
                             ->where('fgs_grs_item.cgrs_status','=',0)
                             ->where('fgs_pi_item.cpi_status','=',0)
-                            ->orderBy('fgs_grs_item.id','DESC')
+                            ->orderBy('fgs_grs_item.id','ASC')
                             ->distinct('fgs_grs_item.id')
                             ->distinct('fgs_pi.id')
                             ->get();
@@ -361,6 +363,7 @@ class SRNController extends Controller
                         ->where('fgs_srn_item_rel.master','=',$srn_id)
                         ->distinct('fgs_dni_item.pi_id')
                         ->distinct('fgs_srn_item.id')
+                        ->orderBy('fgs_srn_item.id','ASC')
                         ->get();
         foreach($data['srn_items'] as $items)
         {

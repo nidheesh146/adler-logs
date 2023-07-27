@@ -31,7 +31,7 @@ class inv_final_purchase_order_master extends Model
             $datas['item_id'] = $items->item_id;
             $datas['order_qty'] = $items->quantity;
             $datas['qty_to_invoice'] = $items->quantity;
-            
+            $datas['delivery_schedule'] = $items->committed_delivery_date;
             $datas['discount'] =  $items->discount; 
             $datas['Specification'] =  $items->specification;
             $datas['rate'] =  $items->rate;

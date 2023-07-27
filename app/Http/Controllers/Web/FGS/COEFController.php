@@ -55,6 +55,7 @@ class COEFController extends Controller
                  ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_coef.oef_id')
                         ->where($condition)
                         ->distinct('fgs_coef.id')
+                        ->orderBy('fgs_coef.id','DESC')
                         ->paginate(15);
           return view('pages/FGS/COEF/COEF-list', compact('coef'));
     }

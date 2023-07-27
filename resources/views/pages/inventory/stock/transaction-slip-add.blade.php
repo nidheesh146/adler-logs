@@ -102,6 +102,15 @@
                                 @endforeach
                             </select> 
                         </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                            <label for="exampleInputEmail1">Work Centre*</label>
+                            <select class="form-control  work_centre" name="work_centre" id="work_centre" required>
+                                <option></option>
+                                @foreach($data['work_centre'] as $centre)
+                                <option value="{{ $centre['id'] }}">{{$centre['centre_code']}}</option>
+                                @endforeach
+                            </select> 
+                        </div>
                     </div>
                     <div class="form-devider"></div>
                     <div class="row">
@@ -134,6 +143,24 @@
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script>
     $('.lot_number1').select2({
+        placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 3,
+          allowClear: true
+    });
+    $('.work_centre').select2({
+        placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 3,
+          allowClear: true
+    });
+    $('.accepted_by').select2({
+        placeholder: 'Choose one',
+          searchInputPlaceholder: 'Search',
+          minimumInputLength: 3,
+          allowClear: true
+    });
+    $('.created_by').select2({
         placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',
           minimumInputLength: 3,

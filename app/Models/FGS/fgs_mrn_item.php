@@ -45,7 +45,7 @@ class fgs_mrn_item extends Model
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                        ->where($condition)
                        ->where('fgs_mrn_item.status',1)
-                    ->orderBy('fgs_mrn_item.id','DESC')
-                    ->paginate(15);
+                        ->orderBy('fgs_mrn_item.id','asc')
+                        ->paginate(15);
     }
 }

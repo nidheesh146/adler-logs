@@ -389,10 +389,10 @@
                 <th rowspan="2">SKU CODE</th>
                 <th rowspan="2" width='28%'>ITEM DESCRIPTION</th>
                 <th rowspan="2">BATCH NO</th>
-                <th rowspan="2">QTY</th>
-                <th rowspan="2">UNIT</th>
                 <th rowspan="2" style="width:6% !important;">DATE Of MFG.</th>
                 <th rowspan="2" style="width:6% !important;">DATE Of EXPIRY</th>
+                <th rowspan="2">QTY</th>
+                <th rowspan="2">UNIT</th>
                 <th rowspan="2">RATE</th>
                
                 <th colspan="2">DISC</th>
@@ -432,10 +432,10 @@
                 <td>{{$item['sku_code']}}</td>
                 <td>{{$item['discription']}}</td>
                 <td >{{$item['batch_no']}}</td>
-                <td style="text-align:center;">{{$item['quantity']}}</td>
-                <td style="text-align:center;">Nos</td>
                 <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                 <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
+                <td style="text-align:center;">{{$item['quantity']}}</td>
+                <td style="text-align:left;">Nos</td>
                 <td style="text-align:right;">{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                 
                 <td style="text-align:center;">{{$item['discount']}}</td>
@@ -449,7 +449,7 @@
                 <td style="text-align:center;">{{$item['igst']}}</td>
                 <td style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
                 <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
-                <td>{{number_format((float)($total_amount), 2, '.', '')}}</td>
+                <td style="text-align:right;">{{number_format((float)($total_amount), 2, '.', '')}}</td>
                 <?php 
                 $total =$total+ $item['rate']* $item['quantity'];
                 $total_discount = $total_discount+($item['rate']* $item['quantity']*$item['discount'])/100;
@@ -467,28 +467,28 @@
             </tr>
             @endforeach
             @endforeach  
-             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td style="text-align:center;">{{  $qsum }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td style="text-align:right;"> {{ number_format($rsum,  2, '.', '') }}</td>
-                <td></td>
-                <td></td>
-                <td style="text-align:right;">{{ number_format($tsum,  2, '.', '') }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>{{ number_format($totalsum,  2, '.', '') }}</td>
-            </tr>         
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
+                <th style="font-weight:bold;text-align:left;">Nos</th>
+                <th style="text-align:center;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_cgst), 2, '.', '') }}</th>
+                <th></th> 
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
+            </tr>            
         </table>
     </div>
     <br/>
@@ -497,7 +497,7 @@
             <div class="remarks" style="">
                 <strong>Value in words: </strong>
                 <br/>
-                <span class="value_in_words"><?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> {{--$srn['currency_code']--}}</span>
+                <span class="value_in_words"><?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> {{--$srn['currency_code']--}} Only</span>
                 <div></div><br/><br/>
                 
                 <!-- <br/>

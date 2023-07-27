@@ -8,11 +8,11 @@
 			<div class="az-content-breadcrumb"> 
 				 <span>Goods Reservation Slip(GRS)</span>
 				 <span><a href="">
-                 OEF Item
+                 GRS Item
 				</a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;margin-bottom: 20px">
-            OEF Item
+            GRS Item
             </h4>
             <div class="form-devider"></div>
            
@@ -75,14 +75,24 @@
                             </select>
                         </div> 
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                            <label for="exampleInputEmail1">Batch Quantity</label>
+                            <label for="exampleInputEmail1">Batchcard available Quantity</label>
                             <div class="input-group mb-6">
                                 <input type="hidden" name="mrn_item_id" id="mrn_item_id"  value="" >
+                                <input type="number" class="form-control" max="" min="" name="batch_qty1" id="batch_qty1" placeholder="" aria-describedby="unit-div2" readonly>
+                                <div class="input-group-append">
+                                    <span class="input-group-text unit-div" id="unit-div2">Nos</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                            <label for="exampleInputEmail1">Batch Quantity Taken</label>
+                            <div class="input-group mb-6">
                                 <input type="number" class="form-control" max="" min="" name="batch_qty" id="batch_qty" placeholder="" aria-describedby="unit-div2" >
                                 <div class="input-group-append">
                                     <span class="input-group-text unit-div" id="unit-div2">Nos</span>
                                 </div>
                             </div>
+                            <span id="error" style="color:red;"></span> 
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Manufacturing date</label>
@@ -142,18 +152,42 @@
         var manufacturing_date = element.attr("manufacturingDate"); 
         var expiry_date = element.attr("expiryDate"); 
         var mrn_item_id = element.attr('mrnItemId');
-        $("#batch_qty").val(batchqty);
-        $("#batch_qty").attr('max',batchqty);
+        $("#batch_qty1").val(batchqty);
+        $("#batch_qty1").attr('max',batchqty);
+        $("#batch_qty1").attr('qty',batchqty);
         $("#batch_qty").attr('min',0);
         $("#batch_qty").attr(batchqty);
         $("#manufacturing_date").val(manufacturing_date);
         $("#mrn_item_id").val(mrn_item_id);
-        if(expiry_date=='0000-00-000')
-        $("#expiry_date").val('NA');
-        else
+        if(expiry_date!='0000-00-00')
         $("#expiry_date").val(expiry_date);
+        else
+        $("#expiry_date").val('N.A');
+        
            // alert(stock_qty);
     }); 
+    $(document).on('change', '#batch_qty', function (e) {
+        var unreserved_qty = parseFloat($('#unreserved_qty').val());
+        var quantity = parseFloat($('#batch_qty').val());
+        //var batchqty = parseFloat($('#batch_qty').attr());
+        var batchqty = $('#batch_qty1').attr("qty");
+        $("#error").text('');
+        if(quantity>unreserved_qty)
+        {
+            $("#error").text('Quantity Taken do not exceed unreserved quantity...');
+            // alert('Quantity Taken do not exceed unreserved quantity...');
+                //e.preventDefault();
+        }
+        if(quantity>batchqty)
+        {
+            $("#error").text('Quantity Taken do not exceed Batch quantity...');
+            //alert('');
+            //e.preventDefault();
+        }
+        
+
+        //alert(available_qty);
+    }) ;
 </script>
 
 

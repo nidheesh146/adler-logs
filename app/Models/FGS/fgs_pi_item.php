@@ -26,7 +26,7 @@ class fgs_pi_item extends Model
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_pi_item.batchcard_id')
                         ->where($condition)
                         //->where('inv_mac.status','=',1)
-                        ->orderBy('fgs_pi_item.id','DESC')
+                        ->orderBy('fgs_pi_item.id','ASC')
                         ->distinct('fgs_pi_item.id')
                         ->paginate(15);
     }
@@ -38,7 +38,7 @@ class fgs_pi_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_pi_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_pi_item.batchcard_id')
                        ->where($condition)
-                    ->orderBy('fgs_pi_item.id','DESC')
+                    ->orderBy('fgs_pi_item.id','ASC')
                     ->get();
     }
 
@@ -50,6 +50,7 @@ class fgs_pi_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_pi_item.product_id')
                         ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
                        ->where('fgs_pi_item.cpi_status','=',0)
+                       ->orderBy('fgs_pi_item.id','ASC')
                        ->where($condition)
                        ->get();
     } 

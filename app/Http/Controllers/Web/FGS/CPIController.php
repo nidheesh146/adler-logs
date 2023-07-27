@@ -338,11 +338,11 @@ class CPIController extends Controller
                        <td>'.$item->grs_number.'</td>
                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->discription.'</td>
-                       <td>'.$item->batch_qty.'</td>
+                       <td>'.$item->batch_qty.'Nos</td>
                        <td style="display:none;">'.$item->grs_id.'</td>
                        <td style="display:none;">'.$item->grs_item_id.'</td>
                        <td style="display:none;">'.$item->mrn_item_id.'</td>
-                       <td><input type="text" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" disabled></td>
+                       <td><input type="text" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" min="0" max="'.$item->batch_qty.'" disabled></td>
                 </tr>';
             } 
             $data .= '</tbody>';

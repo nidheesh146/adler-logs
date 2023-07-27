@@ -32,7 +32,7 @@ class fgs_cmin_item extends Model
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmin_item.batchcard_id')
                         ->where($condition)
                         //->where('inv_mac.status','=',1)
-                        ->orderBy('fgs_cmin_item.id','DESC')
+                        ->orderBy('fgs_cmin_item.id','ASC')
                         ->distinct('fgs_cmin_item.id')
                         ->paginate(15);
     }
@@ -45,7 +45,7 @@ class fgs_cmin_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_cmin_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmin_item.batchcard_id')
                        ->where($condition)
-                    ->orderBy('fgs_cmin_item.id','DESC')
+                    ->orderBy('fgs_cmin_item.id','ASC')
                     ->get();
     }
 
@@ -55,6 +55,7 @@ class fgs_cmin_item extends Model
                     ->leftjoin('product_product','product_product.id','=','fgs_cmin_item.product_id')
                      ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmin_item.batchcard_id')
                     ->where($condition)
+                    ->orderBy('fgs_cmin_item.id','ASC')
                    ->get();
     }
 }

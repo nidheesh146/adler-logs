@@ -170,7 +170,9 @@
                 <th width='10%'>DATE OF EXPIRY.</th>
                 
             </tr>
-            <?php $i=1; ?>
+            <?php $i=1; 
+            $qsum=0;
+            ?>
             @foreach($items as $item)
             <tr style="text-align:right;">
                 <td style="text-align:center;">{{$i++}}</td>
@@ -182,9 +184,20 @@
                 <td>Nos</td> 
                 <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                 <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-               
+               <?php $qsum=$qsum+$item['quantity']; ?>
             </tr>
             @endforeach
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th style="text-align:center;">{{$item['quantity']}}</th>
+                <th>Nos</th>
+                <th></th>
+                <th></th>
+            </tr>
         
         </table>
     </div>

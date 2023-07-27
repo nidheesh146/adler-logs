@@ -453,7 +453,7 @@
                 <td >@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
                 <td>{{$item['batch_no']}}</td>
                 <td style="text-align:center;">{{$item['remaining_qty_after_cancel']}}</td>
-                <td style="text-align:center;">Nos</td>
+                <td style="text-align:left;">Nos</td>
                 <td style="text-align:right;">{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['remaining_qty_after_cancel'])-(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100);?>
@@ -475,7 +475,7 @@
                 $total_cgst = $total_cgst+($discount_value* $item['remaining_qty_after_cancel']*$item['cgst'])/100;
                 ?>
                  <?php 
-                 $qsum = $qsum+$item['fgs_pi_item.remaining_qty_after_cancel'];
+                 $qsum = $qsum+$item['remaining_qty_after_cancel'];
                  $rsum = $rsum+$item['rate'];
                  $tsum = $tsum+$discount_value;
                  $isum = $isum+$total_igst;
@@ -486,26 +486,26 @@
             @endforeach
             @endforeach 
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td style="text-align:center;">{{  $qsum }}</td>
-                <td></td>
-                <td  style="text-align:right;"> {{ number_format($rsum, 2, '.', '') }}</td>
-                <td></td>
-                <td></td>
-                <td  style="text-align:right;">{{ number_format($tsum,  2, '.', '') }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td  style="text-align:right;">{{ number_format($totalsum,  2, '.', '') }}</td>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
+                <th style="font-weight:bold;text-align:left;">Nos</th>
+                <th style="text-align:center;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_cgst), 2, '.', '') }}</th>
+                <th></th> 
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
             </tr>       
         </table>
     </div>
@@ -514,7 +514,7 @@
         <div class="col41">
             <div class="remarks" style="">
                 <strong>Value in words: </strong><br/>
-                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> 
+                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))))  ?>  Only
                 <div></div><br/><br/>
                 <table style="float:left;">
                     <tr>

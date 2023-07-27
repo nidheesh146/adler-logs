@@ -34,7 +34,7 @@ class fgs_grs_item extends Model
                         ->leftjoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_grs_item.mrn_item_id')
                         ->where($condition)
                         ->where('fgs_grs.status','=',1)
-                        ->orderBy('fgs_grs_item.id','DESC')
+                        ->orderBy('fgs_grs_item.id','ASC')
                         ->distinct('fgs_grs_item.id')
                         ->paginate(15);
     }
@@ -50,7 +50,7 @@ class fgs_grs_item extends Model
                         ->where($condition)
                         ->where('fgs_grs_item.cgrs_status','=',0)
                         ->where('fgs_grs.status','=',1)
-                        ->orderBy('fgs_grs_item.id','DESC')
+                        ->orderBy('fgs_grs_item.id','ASC')
                         ->distinct('fgs_grs_item.id')
                         ->get();
     }
@@ -75,7 +75,7 @@ class fgs_grs_item extends Model
                         //     $query->select('fgs_pi_item.grs_item_id')->from('fgs_pi_item');
                         
                         // })
-                        ->orderBy('fgs_grs_item.id','DESC')
+                        ->orderBy('fgs_grs_item.id','ASC')
                         ->distinct('fgs_grs_item.id')
                         ->get();
     }
@@ -90,7 +90,7 @@ class fgs_grs_item extends Model
                         ->leftjoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_grs_item.mrn_item_id')
                         ->where($condition)
                         ->where('fgs_grs.status','=',1)
-                        ->orderBy('fgs_grs_item.id','DESC')
+                        ->orderBy('fgs_grs_item.id','ASC')
                         ->distinct('fgs_grs_item.id')
                         ->paginate(15);
     }
@@ -106,7 +106,7 @@ class fgs_grs_item extends Model
                         ->where($condition)
                         ->where('fgs_grs.status','=',1)
                         ->where('fgs_grs_item.cgrs_status','=',0)
-                        ->orderBy('fgs_grs_item.id','DESC')
+                        ->orderBy('fgs_grs_item.id','ASC')
                         ->distinct('fgs_grs_item.id')
                         ->get();
     }

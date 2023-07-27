@@ -26,9 +26,9 @@ class fgs_coef_item extends Model
    
     function getAllItems($condition)
     {
-        return $this->select('fgs_oef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_coef.coef_number',
+        return $this->select('fgs_coef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_coef.coef_number',
         'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id')
-                    ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_coef_item.coef_item_id')
+                        ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_coef_item.coef_item_id')
                         ->leftjoin('fgs_coef_item_rel','fgs_coef_item_rel.item','=','fgs_coef_item.id')
                         ->leftjoin('fgs_coef','fgs_coef.id','=','fgs_coef_item_rel.master')
                         ->leftjoin('product_product','product_product.id','=','fgs_coef_item.product_id')
@@ -37,6 +37,7 @@ class fgs_coef_item extends Model
                         ->where('fgs_coef.status','=',1)
                         ->orderBy('fgs_coef_item.id','DESC')
                         ->distinct('fgs_coef_item.id')
+                        ->orderBy('fgs_coef_item.id','asc')
                         ->get();
     }
     
@@ -49,6 +50,7 @@ class fgs_coef_item extends Model
                          ->where($condition)
                         ->orderBy('fgs_coef_item.id','DESC')
                         ->distinct('fgs_coef_item.id')
+                        ->orderBy('fgs_coef_item.id','asc')
                         ->paginate(15);
     }
 }

@@ -226,7 +226,7 @@
                                         <th>
                                             <input type="hidden" name="grs_item_id" class="grs_item_id" value="">
                                             <div class="input-group mb-3">
-                                                <input type="text" class="partial_invoice_qty" id="partial_invoice_qty" name="partial_invoice_qty"  aria-describedby="unit" >
+                                                <input type="number" class="partial_invoice_qty" id="partial_invoice_qty" name="partial_invoice_qty" min="1" max="" aria-describedby="unit" >
                                                 <div class="input-group-append">
                                                     <span class="input-group-text unit-div" id="unit">Nos</span>
                                                 </div>
@@ -295,6 +295,7 @@
             $('#orderQuantity').html(Orderqty+'Nos');
             $('#balanceQuantity').html(balanceQty+'Nos');
             $('#balanceQuantityhidden').val(balanceQty);
+            $('.partial_invoice_qty').attr('max',balanceQty);
         });
   });
   $(".partial-save-btn").on("click", function(event){

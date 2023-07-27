@@ -513,7 +513,7 @@ class ProductController extends Controller
                         $da['is_reusable'] = (strtolower($excelsheet[41]) == 'yes') ? 1 : 0;
                         
                         $da['drug_license_number'] = $excelsheet[42];
-                        $da['hsn_code'] = $excelsheet[43];
+                        //$da['hsn_code'] = $excelsheet[43];
                         // $da['product_group_id'] = ((($excelsheet[49]) == '') ? NULL : $this->identify_id($excelsheet[49],"product group"));
                         // $da['brand_details_id'] = ((($excelsheet[27]) == '') ? NULL : $this->identify_id($excelsheet[27],"product brand"));
                         // $da['product_family_id'] = ((($excelsheet[28]) == '') ? NULL : $this->identify_id($excelsheet[28],"product family"));

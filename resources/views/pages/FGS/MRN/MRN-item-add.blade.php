@@ -200,8 +200,15 @@ function getsearch(){
                     divid = id 
                     table.search('').columns().search('').draw();            
     }
-
+    
+        // $("#manufacturing_date"+select_id+"").datepicker({
+                                //     format: " dd-mm-yyyy",
+                                //     autoclose:true
+                                // });
+                                // //$("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
+                                // $("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
         $(document).ready(function(){
+            
             initProductSelect2();
             var i = 1;
             $('#add').click(function(){
@@ -286,8 +293,13 @@ function getsearch(){
         //   // alert(select_id);
         // }); 
         $(document).on('change', '.batch_number', function (e) {
+            
             var batch_id = $(this).val();
             var select_id = $(this).attr("index");
+            $("#stock_qty"+select_id+"").val('');
+            $("#stock_qty"+select_id+"").attr('max','');
+            $("#stock_qty"+select_id+"-error").text('');
+            $("#stock_qty"+select_id+"").removeClass("error");
             $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id="+batch_id,function(data){
                 $("#stock_qty"+select_id+"").val(data);
                 $("#stock_qty"+select_id+"").attr('max',data);
@@ -330,7 +342,10 @@ function getsearch(){
                     $("#Itemdescription"+select_id+"").text('');
                     $("#hsncode"+select_id+"").val('');
                     $("#Itemdescription"+select_id+"").val('');
-                    
+                    $(".batch_number"+select_id+"").val('');
+                    $("#stock_qty"+select_id+"").val('');
+                    $("#stock_qty"+select_id+"").attr('max','');
+                    $("#stock_qty"+select_id+"-error").text('');
                     Itemdescription1
                     let res = $(this).select2('data')[0];
                         if(typeof(res) != "undefined" ){
@@ -348,15 +363,16 @@ function getsearch(){
                                 //$(".expiry_date"+select_id+"").datepicker();
                                 $("#is_sterile"+select_id+"").val(0);
                                 $("#expiry_date"+select_id+"").val('N.A');
-                                $("#manufacturing_date"+select_id+"").datepicker({
-                                    format: " dd-mm-yyyy",
-                                    autoclose:true
-                                });
-                                //$("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
-                                $("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
+                                // $("#manufacturing_date"+select_id+"").datepicker({
+                                //     format: " dd-mm-yyyy",
+                                //     autoclose:true
+                                // });
+                                // //$("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
+                                // $("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
                             }
                             else
                             {
+                                $("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
                                 $("#is_sterile"+select_id+"").val(1);
                                 $(".expiry_date"+select_id+"").datepicker();
                                 $("#expiry_date"+select_id+"").datepicker({
@@ -373,6 +389,7 @@ function getsearch(){
                             $("#manufacturing_date"+select_id+"").datepicker({
                                     format: " dd-mm-yyyy",
                                     autoclose:true,
+                                    "setDate": new Date(),
                                     onSelect: function(date) {
                                     $(this).change();
                                     },

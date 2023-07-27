@@ -104,12 +104,13 @@
 			<table class="table table-bordered mg-b-0" id="example1">
 				<thead>
 					<tr>
+                        <th>SIP Number</th>
                         <th>Transaction Slip Number</th>
                         <th>Lot Number</th>
                         <th>Item Code</th>
-                        <th>HSN Code</th>
 						<th>Description</th>
                         <th>Quantity</th>
+                        <th>Work Center</th>
                         <th>Created By</th>
                         <th>Accepted By</th>
                         <th>Created at</th>
@@ -118,12 +119,13 @@
 				<tbody>
                     @foreach($data['transaction_slip'] as $slip)
                     <tr>
+                        <td>{{$slip['sip_number']}}</td>
                         <td>{{$slip['transaction_slip_number']}}</td>
                         <td>{{$slip['lot_number']}}</td>
                         <td>{{$slip['item_code']}}</td>
-                        <td>{{$slip['hsn_code']}}</td>
                         <td>{{$slip['discription']}}</td>
                         <td>{{$slip['quantity']}} {{$slip['unit_name']}}</td>
+                        <td>{{$slip['centre_code']}}</td>
                         <td>{{$slip['created_f_name']}} {{$slip['created_l_name']}}</td>
                         <td>{{$slip['accepted_f_name']}} {{$slip['accepted_l_name']}}</td>
                         <td>{{date('d-m-Y', strtotime($slip['created_at']))}}</td>

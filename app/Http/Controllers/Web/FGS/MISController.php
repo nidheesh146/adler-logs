@@ -89,7 +89,7 @@ class MISController extends Controller
                 foreach($mtq_item as $item)
                 {
                     $mis_item['product_id'] = $item['product_id'];
-                    $mis_item['miq_item_id'] = $item['id'];
+                    $mis_item['mtq_item_id'] = $item['id'];
                     $mis_item['created_at'] =date('Y-m-d H:i:s');
                     $mis_item_id = $this->fgs_mis_item->insert_data($mis_item,$mis_id);
                 }

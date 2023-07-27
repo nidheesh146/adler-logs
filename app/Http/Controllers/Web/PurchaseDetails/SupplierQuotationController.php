@@ -173,6 +173,8 @@ class SupplierQuotationController extends Controller
                 return redirect('inventory/edit-supplier-quotation-item/'.$rq_no.'/'.$supp_id.'/'.$item_id)->withErrors($validator)->withInput();
             }
         }
+        $data['supplier_lead_time'] = inv_supplier::where('id','=',$supp_id)->pluck('lead_time')->first();
+        //echo $data['supplier_lead_time'];exit;
         $data['get_item_single'] = $this->inv_purchase_req_quotation_item_supp_rel->get_item_single(['inv_purchase_req_quotation_item_supp_rel.supplier_id'=>$supp_id,'inv_purchase_req_quotation_item_supp_rel.item_id'=>$item_id,'inv_purchase_req_quotation_item_supp_rel.quotation_id'=>$rq_no]);
         $data["currency"] = $this->currency_exchange_rate->get_currency([]);
         $data['gst'] = $this->inventory_gst->get_gst();

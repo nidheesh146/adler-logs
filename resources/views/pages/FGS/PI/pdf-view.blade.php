@@ -301,28 +301,28 @@
                  ?>
             </tr>
             @endforeach
-             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{  $qsum }}</td>
-                <td></td>
-                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</td>
-                <td></td>
-                <td></td>
-                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td> 
-                <td></td>
-                <td style="text-align:center;color:#1434A4;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</td>
-            </tr>       
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
+                <th style="font-weight:bold;text-align:left;">Nos</th>
+                <th style="text-align:center;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
+                <th></th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_cgst), 2, '.', '') }}</th>
+                <th></th> 
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
+            </tr>  
         </table>
     </div>
     
@@ -330,7 +330,7 @@
         <div class="col41">
             <div class="valuewords">
                 <strong>Value in Words</strong><br/>
-                <span class="value_in_words"> <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?></span>
+                <span class="value_in_words"> <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> Only</span>
             </div>
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>

@@ -735,7 +735,7 @@ class PurchaseController extends Controller
     <tbody>
     <tr>
         <td>' . $quotation->supplier_quotation_num . '</td>
-        <td>' . ($quotation->commited_delivery_date ? date('d-m-Y', strtotime($quotation->commited_delivery_date)) : '-') . '</td>
+        <td>' . ($quotation->committed_delivery_date ? date('d-m-Y', strtotime($quotation->committed_delivery_date)) : '-') . '</td>
         <td>' . ($quotation->quotation_date ? date('d-m-Y', strtotime($quotation->quotation_date)) : '-' ). '</td>
         <td>' . $quotation->contact_number . '</td>
     </tr>
@@ -751,7 +751,7 @@ class PurchaseController extends Controller
                 <th>PR NO.</th>
                 <th>Item Code:</th>
                 <th>HSN</th>
-                <th>Delivery schedule</th>
+                <th>Commited Delivery schedule</th>
                 <th>Quantity</th>
                 <th>rate</th>
                 <th>Discount </th>

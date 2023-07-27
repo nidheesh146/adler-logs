@@ -24,6 +24,7 @@ class fgs_dni_item extends Model
                 ->leftjoin('fgs_dni_item_rel','fgs_dni_item_rel.item','=','fgs_dni_item.id')
                 ->where($condition)
                 ->distinct('fgs_dni_item.id')
+                ->orderBy('fgs_dni_item.id','ASC')
                 ->get();
     }
 }

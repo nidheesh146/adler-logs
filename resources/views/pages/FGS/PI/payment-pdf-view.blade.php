@@ -51,7 +51,7 @@
         .col23 {
 
             float: left;
-            width: 25%;
+            width: 50%;
         }
 
         .col24 {
@@ -145,7 +145,7 @@
             </table>
         </div>
         <div class="col23">
-            <table style="font-weight:bold;font-size: 14px;">
+            <table style="font-weight:bold;font-size: 14px;float:right;">
                 <tr>
                     &nbsp &nbsp &nbsp &nbsp<td>Reference Date</td>
                     <td>: {{$pi['pi_date']}} </td>

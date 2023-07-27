@@ -181,8 +181,14 @@
 
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <?php
+                                    if($data['supplier_lead_time'])
+                                    {
+                                        $delivery_date= date('d-m-Y', strtotime('+30 days'));
+                                    }
+                                     ?>
                                     <label>Committed Delivery Date *</label>
-                                    <input type="text"  class="form-control datepicker" name="committed_delivery_date" value="@if(!empty($data['get_item_single']['committed_delivery_date']))  {{date('d-m-Y',strtotime($data['get_item_single']['committed_delivery_date']))}}  @endif" >
+                                    <input type="text"  class="form-control datepicker" name="committed_delivery_date" value="@if(!empty($data['get_item_single']['committed_delivery_date']))  {{date('d-m-Y',strtotime($data['get_item_single']['committed_delivery_date']))}} @elseif($data['supplier_lead_time']) {{date('d-m-Y',strtotime($delivery_date))}}  @endif" >
                                 </div>
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                     <label> Specification </label>

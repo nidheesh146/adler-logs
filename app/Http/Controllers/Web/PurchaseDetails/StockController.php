@@ -1956,13 +1956,14 @@ class StockController extends Controller
         }
         $data['transaction_slip'] = inv_transaction_slip::select('inv_transaction_slip.*','inv_lot_allocation.lot_number','inv_stock_management.stock_qty',
         'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_unit.unit_name','created.f_name as created_f_name',
-        'created.l_name as created_l_name','accepted.f_name as accepted_f_name','accepted.l_name as accepted_l_name')
+        'created.l_name as created_l_name','accepted.f_name as accepted_f_name','accepted.l_name as accepted_l_name','work_centre.centre_code')
                                         ->leftJoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_transaction_slip.lot_id')
                                         ->leftJoin('inv_stock_management','inv_stock_management.lot_id','=','inv_transaction_slip.lot_id')
                                         ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
                                         ->leftJoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                                         ->leftJoin('user as created','created.user_id','=','inv_transaction_slip.created_by')
                                         ->leftJoin('user as accepted','accepted.user_id','=','inv_transaction_slip.accepted_by')
+                                        ->leftJoin('work_centre','work_centre.id','=','inv_transaction_slip.work_centre')
                                         ->where($condition)
                                         ->distinct('inv_transaction_slip.id')
                                         ->orderBy('inv_transaction_slip.id')
@@ -1980,11 +1981,21 @@ class StockController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
+                    if(date('m')==01 || date('m')==02 || date('m')==03)
+                    {
+                        $years_combo = date('y', strtotime('-1 year')).date('y');
+                    }
+                    else
+                    {
+                        $years_combo = date('y').date('y', strtotime('+1 year'));
+                    }
+                    $data['sip_number'] = "SIP1-".$this->year_combo_num_gen(DB::table('inv_transaction_slip')->where('inv_transaction_slip.sip_number', 'LIKE', 'SIP1-'.$years_combo.'%')->count());
                     $data['transaction_slip_number'] = $request->transaction_slip; 
                     $data['lot_id'] = $request->lot_id; 
                     $data['quantity'] = $request->quantity; 
                     $data['created_by'] = $request->created_by; 
-                    $data['accepted_by'] = $request->accepted_by; 
+                    $data['accepted_by'] = $request->accepted_by;
+                    $data['work_centre'] = $request->work_centre; 
                     $data['status']= 1;
                     $data['created_at']= date('Y-m-d H:i:s');
                     $data['updated_at']= date('Y-m-d H:i:s');
@@ -2004,7 +2015,7 @@ class StockController extends Controller
         }
         else
         {
-            
+            $data['work_centre'] = work_centre::where('status','=',1)->get();
             $condition1[] = ['user.status', '=', 1];
             $data['users'] = $this->User->get_all_users($condition1);
             return view('pages.inventory.stock.transaction-slip-add',compact('data'));

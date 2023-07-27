@@ -32,7 +32,7 @@
         .col21{
             margin-top:-25px;
             float:left; 
-            width:25%;
+           /* width:25%;*/
         }
         .col22{
             margin-top:-25px;
@@ -152,13 +152,11 @@
                    
                 </tr>
                 <tr>
-                    
-                    <td >GST Details</td>
+                    <td>GST Details</td>
                     <td>: {{$oef['gst_number']}}</td>
-                   
                 </tr>
                 <tr>
-                    <td >D.L. Details</td>
+                    <td>D.L. Details</td>
                     <td>: {{$oef['dl_number1']}}, {{$oef['dl_number2']}}, {{$oef['dl_number3']}} </td>
                 </tr>
             </table>
@@ -260,6 +258,9 @@
             $tsum = 0;
             $isum = 0;
             $totalsum = 0;
+            $cgstsum = 0;
+            $sgstsum = 0;
+            $igstsum = 0;
              ?>
             @foreach($items as $item)
             <tr>
@@ -289,6 +290,10 @@
                 $total_igst = $total_igst+($discount_value*$item['igst'])/100;
                 $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
                 $total_cgst = $total_cgst+($discount_value* $item['quantity']*$item['cgst'])/100;
+                $cgstsum= $cgstsum+($discount_value*$item['cgst'])/100;
+                $sgstsum= $sgstsum+($discount_value*$item['sgst'])/100;
+                $igstsum= $igstsum+($discount_value*$item['igst'])/100;
+
                 ?>
                 <?php 
                  $qsum = $qsum+$item['quantity'];
@@ -305,17 +310,17 @@
                 <th></th>
                 <th></th>
                 <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
-                <th style="font-weight:bold;">Nos</th>
+                <th style="font-weight:bold;text-align:left;">Nos</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
                 <th></th>
-                <th></th>
+                <th style="text-align:right;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
                 <th></th>
+                <th style="text-align:right;">{{number_format((float)($sgstsum), 2, '.', '') }}</th>
                 <th></th>
-                <th></th>
-                <th></th>
+                <th style="text-align:right;">{{number_format((float)($cgstsum), 2, '.', '') }}</th>
                 <th></th> 
-                <th></th>
+                <th style="text-align:right;">{{number_format((float)($igstsum), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
             </tr>  
         
@@ -326,7 +331,7 @@
         <div class="col41">
             <div class="valuewords">
                 <strong>Value in Words</strong><br/>
-                <span class="value_in_words"><?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?>  </span>
+                <span class="value_in_words"><?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?>  Only </span>
             </div><br/>
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>

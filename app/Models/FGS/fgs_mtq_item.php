@@ -31,7 +31,7 @@ class fgs_mtq_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_mtq_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mtq_item.batchcard_id')
                         ->where($condition)
-                        ->orderBy('fgs_mtq_item.id','DESC')
+                        ->orderBy('fgs_mtq_item.id','ASC')
                         ->paginate(15);
     }
     function get_items($condition)
@@ -42,7 +42,7 @@ class fgs_mtq_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_mtq_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mtq_item.batchcard_id')
                         ->where($condition)
-                        ->orderBy('fgs_mtq_item.id','DESC')
+                        ->orderBy('fgs_mtq_item.id','ASC')
                         ->get();
     }
       function get_mtq_item($condition)
@@ -55,7 +55,7 @@ class fgs_mtq_item extends Model
                         ->where('fgs_mtq.status','=',1)
                         ->where('fgs_mtq_item.cmtq_status','=',0)
                         ->where($condition)
-                        ->orderBy('fgs_mtq_item.id','DESC')
+                        ->orderBy('fgs_mtq_item.id','ASC')
                         ->get();
     }
 }

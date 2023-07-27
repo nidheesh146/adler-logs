@@ -170,9 +170,12 @@
                 <th width='10%'>DATE OF EXPIRY.</th>
                 
             </tr>
-            <?php $i=1; ?>
+            <?php $i=1; 
+             $qty=0; 
+            ?>
             @foreach($items as $item)
             <tr style="text-align:right;">
+                <?php $qty = $qty+$item['quantity']; ?>
                 <td style="text-align:center;">{{$i++}}</td>
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
@@ -185,6 +188,17 @@
                
             </tr>
             @endforeach
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th style="text-align:center;font-weight:bold;">{{$qty}}</th>
+                <th style="font-weight:bold;">Nos</th>
+                <th></th>
+                <th></th>
+            </tr>
         
         </table>
     </div>
