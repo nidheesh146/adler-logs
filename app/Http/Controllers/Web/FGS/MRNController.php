@@ -163,9 +163,9 @@ class MRNController extends Controller
             if($product_cat->product_category==3)
             {
                 $validation['moreItems.*.product'] = ['required'];
-               // $validation['moreItems.*.batch_no'] = ['required'];
-                $validation['batch_id'] = ['required'];
-                $validation['qty'] = ['required'];
+                $validation['moreItems.*.batch_no'] = ['required'];
+                // $validation['batch_id.*'] = ['required'];
+                // $validation['qty'] = ['required'];
                 //$validation['moreItems.*.qty'] = ['required'];
                 $validation['moreItems.*.manufacturing_date'] = ['required', 'date']; 
             }else{
@@ -176,38 +176,52 @@ class MRNController extends Controller
                 $validation['moreItems.*.qty'] = ['required'];
                 $validation['moreItems.*.manufacturing_date'] = ['required', 'date'];
             }
-            
+            // dd($request->moreItems['batch_no']);
             //$validation['moreItems.*.expiry_date'] = ['required','date'];
             $validator = Validator::make($request->all(), $validation);
             //  dd($request->batch_id);
             if (!$validator->errors()->all()) {
                 $mrn_info = fgs_mrn::find($request->mrn_id);
-                if(!empty($request->batch_id)){
-                    $batch_card_id= DB::table('batchcard_batchcard')
-                    ->insertGetId([
-                    "batch_no"=>$request->batch_id,
-                    "quantity"=>$request->qty,
-                    "is_trade"=>1
-                    ]);
-                }
+                // if(!empty($request->batch_id)){
+                //     $batch_card_id= DB::table('batchcard_batchcard')
+                //     ->insertGetId([
+                //     "batch_no"=>$request->batch_id,
+                //     "quantity"=>$request->qty,
+                //     "is_trade"=>1
+                //     ]);
+                // }
                
                 foreach ($request->moreItems as $key => $value) {
+                    if($product_cat->product_category==3){
+                        $batch_card_id= DB::table('batchcard_batchcard')
+                        ->insertGetId([
+                        "batch_no"=>$value['batch_no'],
+                        "quantity"=>$value['qty'],
+                        "is_trade"=>1
+                        ]);
+                        $qty=$value['qty'];
+                    }else{
+                        $batch_card_id=$value['batch_no']; 
+                        $qty=$value['qty'];
+
+                    }
+
                     if ($value['expiry_date'] != 'N.A')
                         $expiry_date = date('Y-m-d', strtotime($value['expiry_date']));
                     else
                         $expiry_date = '';
-                        if(empty($value['batch_no']))
-                        {
-                        $batchcard_id=$batch_card_id;
-                        $qty=$request->qty;
-                        }else{
-                           $batchcard_id=$value['batch_no'];
-                           $qty=$value['qty'];
-                        }
+                        // if(empty($value['batch_no']))
+                        // {
+                        // $batchcard_id=$batch_card_id;
+                        // $qty=$request->qty;
+                        // }else{
+                        //    $batchcard_id=$value['batch_no'];
+                        //    $qty=$value['qty'];
+                        // }
                     $data = [
                         "product_id" => $value['product'],
                        // "batchcard_id" => $value['batch_no'],moreItems[0][batch_no]
-                       "batchcard_id" => $batchcard_id,
+                       "batchcard_id" => $batch_card_id,
                         "quantity" => $qty,
                         "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
                         "expiry_date" => $expiry_date,
@@ -219,7 +233,7 @@ class MRNController extends Controller
                     $stock = [
                         "product_id" => $value['product'],
                        // "batchcard_id" => $value['batch_no'],
-                       "batchcard_id" =>$batchcard_id,
+                       "batchcard_id" =>$batch_card_id,
                         "quantity" => $qty,
                         "stock_location_id" => $mrn_info['stock_location'],
                         "quantity" => $qty,
@@ -526,7 +540,7 @@ class MRNController extends Controller
         // ->where('id',$id)
         // ->first();
         $item_details = DB::table('fgs_mrn_item')
-            ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number')
+            ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
             ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
             ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
             ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
@@ -576,7 +590,7 @@ class MRNController extends Controller
                 'expiry_date' => $end
             ]);
         $item_details = DB::table('fgs_mrn_item')
-            ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number')
+            ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
             ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
             ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
             ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
