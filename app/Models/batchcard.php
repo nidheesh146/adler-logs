@@ -44,6 +44,7 @@ class batchcard extends Model
                     //->leftjoin('product_product', 'product_product.id','=','batchcard_batchcard.product_id')
                     ->where($condition)
                     ->where('batchcard_batchcard.is_active','=',1)
+                    ->where('batchcard_batchcard.is_trade','=',0)
                     ->orderBy('batchcard_batchcard.id', 'desc')
                     ->paginate(15);
     }

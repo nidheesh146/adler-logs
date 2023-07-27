@@ -1,145 +1,134 @@
 @extends('layouts.default')
 @section('content')
 
-    <div class="az-content az-content-dashboard">
-        <br>
-        <div class="container">
-            <div class="az-content-body">
+<div class="az-content az-content-dashboard">
+    <br>
+    <div class="container">
+        <div class="az-content-body">
 
-                <div class="az-content-breadcrumb">
-                    <span><a href="" style="color: #596881;">
-                    Material Receip Note(MRN)</a></span>
-                    <span><a href="" style="color: #596881;">
-                            MRN Item</a></span>
-                </div>
+            <div class="az-content-breadcrumb">
+                <span><a href="" style="color: #596881;">
+                        Material Receip Note(MRN)</a></span>
+                <span><a href="" style="color: #596881;">
+                        MRN Item</a></span>
+            </div>
 
-                <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
+            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                 MRN Item
-                </h4>
-                <div class="az-dashboard-nav">
-                </div>
+            </h4>
+            <div class="az-dashboard-nav">
+            </div>
 
-                <div class="row">
-                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
-                        <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                        <form method="post" id="commentForm" novalidate="novalidate" action="{{ url('inventory/MRN-item-update') }}">
-                            {{ csrf_field() }}
-                            <div class="row">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
+                    <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
+                    <form method="post" id="commentForm" novalidate="novalidate" action="{{ url('inventory/MRN-item-update') }}">
+                        {{ csrf_field() }}
+                        <div class="row">
 
-                                @if(Session::get('error'))
-                                <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    {{Session::get('error')}}
-                                </div>
-                                @endif
-                                @if (Session::get('success'))
-                                <div class="alert alert-success " style="width: 100%;">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    <i class="icon fa fa-check"></i> {{ Session::get('success') }}
-                                </div>
-                                @endif
-                                @foreach ($errors->all() as $errorr)
-                                    <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                        {{ $errorr }}
-                                    </div>
-                                @endforeach
-                                <table class="table table-bordered">
-                                    <tbody id="dynamic_field">
+                            @if(Session::get('error'))
+                            <div class="alert alert-danger " role="alert" style="width: 100%;">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                {{Session::get('error')}}
+                            </div>
+                            @endif
+                            @if (Session::get('success'))
+                            <div class="alert alert-success " style="width: 100%;">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                            </div>
+                            @endif
+                            @foreach ($errors->all() as $errorr)
+                            <div class="alert alert-danger " role="alert" style="width: 100%;">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                {{ $errorr }}
+                            </div>
+                            @endforeach
+                            <table class="table table-bordered">
+                                <tbody id="dynamic_field">
 
-                                        <tr id="row1" rel="1">
-                                            <td>
-                                                <div class="row">
-                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
-                                                    style="float:left;">
+                                    <tr id="row1" rel="1">
+                                        <td>
+                                            <div class="row">
+                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label for="exampleInputEmail1">Product code * </label>
-                                                    <input type="text" readonly class="form-control" name="prdctcode"
-                                                        id="hsncode1" value="{{$item_details->sku_code}}">
-                                                        <input type="hidden"
-                                                        value="{{$id }}"
-                                                        name="Itemtypehidden"  id="Itemtypehidden">
-                                                        <input type="hidden"
-                                                        value="{{$item_details->product_id}}"
-                                                        name="product_id" id="product_id">
-                                                        <input type="hidden"
-                                                        value="{{$item_details->batchcard_id}}"
-                                                        name="batchcard_id" id="batchcard_id">
-                                                   {{-- <select class="form-control product product_code1" id="1"
+                                                    <input type="text" readonly class="form-control" name="prdctcode" id="hsncode1" value="{{$item_details->sku_code}}">
+                                                    <input type="hidden" value="{{$id }}" name="Itemtypehidden" id="Itemtypehidden">
+                                                    <input type="hidden" value="{{$item_details->product_id}}" name="product_id" id="product_id">
+                                                    <input type="hidden" value="{{$item_details->batchcard_id}}" name="batchcard_id" id="batchcard_id">
+                                                    {{-- <select class="form-control product product_code1" id="1"
                                                         name="moreItems[0][product]" id="product">
                                                         
                                                     </select>--}}
-                                                    
+
                                                 </div>
-                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
-                                                    style="float:left;">
+                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                                     <label>HSN Code * </label>
-                                                    <input type="text" readonly class="form-control" name="hsncode"
-                                                        id="hsncode1" value="{{$item_details->hsn_code}}">
-                                                        {{-- <input type="hidden"
+                                                    <input type="text" readonly class="form-control" name="hsncode" id="hsncode1" value="{{$item_details->hsn_code}}">
+                                                    {{-- <input type="hidden"
                                                         value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}"
-                                                        name="Itemtypehidden" id="Itemtypehidden">--}}
+                                                    name="Itemtypehidden" id="Itemtypehidden">--}}
                                                 </div><!-- form-group -->
-                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
-                                                    style="float:left;">
+                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Description * </label>
-                                                    <textarea type="text" readonly class="form-control" id="Itemdescription1"name="Description"
-                                                        placeholder="Description">{{$item_details->discription}}</textarea>
+                                                    <textarea type="text" readonly class="form-control" id="Itemdescription1" name="Description" placeholder="Description">{{$item_details->discription}}</textarea>
                                                     {{--<textarea type="text" readonly class="form-control" id="Itemdescription1"name="Description"
                                                         placeholder="Description"></textarea>--}}
                                                 </div>
-                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
-                                                    style="float:left;">
+                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
-                                                    <input type="text" readonly class="form-control" name="batchno"
-                                                        id="batchno" value="{{$item_details->batch_no}}">
+                                                    <input type="text" readonly class="form-control" name="batchno" id="batchno" value="{{$item_details->batch_no}}">
                                                     <!-- <select class="form-control batch_number batch_no1" id="1"
                                                         name="moreItems[0][batch_no]" id="batch_no1">
                                                     </select> -->
-                                                   {{-- <select class="form-control batch_number batch_no1" index="1"
+                                                    {{-- <select class="form-control batch_number batch_no1" index="1"
                                                         name="moreItems[0][batch_no]" >
                                                     </select>--}}
-                                                    
+
                                                 </div>
-                                                </div>
-                                            <div class="row"> 
-                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
-                                                    style="float:left;">
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Quantity * </label>
-                                                    <input type="number"  class="form-control" name="stock_qty1"
-                                                        id="stock_qty1" value="{{$item_details->quantity}}">
+                                                    <input type="number" class="form-control" name="stock_qty1" id="stock_qty1" value="{{$item_details->quantity}}">
                                                 </div>
-                                            
-                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
-                                                    style="float:left;">
+
+                                                <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                                     <label>UOM </label>
-                                                    <input type="text"  class="form-control" readonly name="uom"
-                                                        id="uom1" value="Nos">
+                                                    <input type="text" class="form-control" readonly name="uom" id="uom1" value="Nos">
                                                 </div>
-                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
-                                                    style="float:left;">
+                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Date of Mfg. * </label>
-                                                    <input type="text"  class="form-control datepicker manufacturing_date" name="manufacturing_date1" 
-                                                        id="manufacturing" value="{{date('d-m-Y', strtotime($item_details->manufacturing_date))}}" onchange="myFunction()">
+                                                    
+                                                    <input type="text" class="form-control datepicker manufacturing_date" name="manufacturing_date1" id="manufacturing" value="{{date('d-m-Y', strtotime($item_details->manufacturing_date))}}" onchange="myFunction()">
+                                                    <input type="hidden" value="{{$item_details->is_sterile}}" id="sterile">
                                                 </div>
-                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
-                                                    style="float:left;">
+                                                @if($item_details->is_sterile==0)
+                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Date of Expiry * </label>
                                                     @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
-                                                    <input type="text"  class="form-control datepicker expiry_date" readonly name="expiry_date1" value="{{date('d/m/Y', strtotime($item_details->expiry_date))}}"
-                                                        id="expiry" placeholder="Date of Expiry">
+                                                    <input type="text" class="form-control datepicker expiry_date" readonly name="expiry_date1" value="NA" id="expiry" placeholder="Date of Expiry">
+                                                
+                                                    </div>
+                                                @else
+                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                                                    <label>Date of Expiry * </label>
+                                                    @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
+                                                    <input type="text" class="form-control datepicker expiry_date" readonly name="expiry_date1" value="{{date('d/m/Y', strtotime($item_details->expiry_date))}}" id="expiry" placeholder="Date of Expiry">
                                                 </div>
+                                                @endif
                                                 <!-- <button type="button" name="add" id="add" class="btn btn-success"
                                                     style="height:38px;margin-top:28px;"><i
                                                         class="fas fa-plus"></i></button> -->
                                             </div>
-                                            </td>
-                                        </tr>
+                                        </td>
+                                    </tr>
 
 
-                                    </tbody>
+                                </tbody>
 
-                                </table>
-                               {{-- <div class=" col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            </table>
+                            {{-- <div class=" col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                     <button type="button" name="add" id="add" class="btn btn-success btn-xs" style="height:38px;float:right;margin-right:19px;">
                                     <i class="fas fa-plus"></i></button>
                                 </div>
@@ -151,80 +140,84 @@
 
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                    <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span
-                                            class="spinner-border spinner-button spinner-border-sm" style="display:none;"
-                                            role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                    <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                         {{ request()->item ? '' : 'Update' }}
                                     </button>
                                 </div>
                             </div>
                             <div class="form-devider"></div>
-                        </form>
+                    </form>
 
-                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- az-content-body -->
     </div>
-        <script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
-        <script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-        <script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
-        <script src="<?= url('') ?>/js/azia.js"></script>
-        <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
-        <script src="<?= url('') ?>/js/jquery.validate.js"></script>
-        <script src="<?= url('') ?>/js/additional-methods.js"></script>
-        <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
-        <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
-        <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
-        <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
-       
 
-       <script>
-function myFunction() {
-  var input_data = document.getElementById("manufacturing").value;
-  const parts = input_data.split("-");
-const givenDate = new Date(parts[2], parts[1] - 1, parts[0]);
-  //const givenDate = new Date(input_data);
-  givenDate.setFullYear(givenDate.getFullYear() + 5);
-  const datePlus5Years = givenDate.toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "numeric",
-  day: "numeric",
-});
-  
-  $("#expiry").val(datePlus5Years);
+    <!-- az-content-body -->
+</div>
+<script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
+<script src="<?= url('') ?>/js/azia.js"></script>
+<script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js"> </script>
+<script src="<?= url('') ?>/js/jquery.validate.js"></script>
+<script src="<?= url('') ?>/js/additional-methods.js"></script>
+<script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
+<script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
+<script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
+
+
+<script>
+    function myFunction() {
+        var input_data = document.getElementById("manufacturing").value;
+        var sterile = document.getElementById("sterile").value;
+        
+        const parts = input_data.split("-");
+        const givenDate = new Date(parts[2], parts[1] - 1, parts[0]);
+        //const givenDate = new Date(input_data);
+        givenDate.setFullYear(givenDate.getFullYear() + 5);
+        const datePlus5Years = givenDate.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+        });
+if(sterile==0){
+    $("#expiry").val(NA);
+}else{
+    $("#expiry").val(datePlus5Years);
+    }
 }
-//   var x=new Date(year,input_data);
-  
-  //var result1 = addYears(input_data, 2);
-  //input_data.setDate(input_data.getDate() + 5);
-    
-//    parsedDate.setDate(parsedDate.getDate() + 5);
-//   parsedDate.setFullYear(parsedDate.getFullYear() + 5);
-//   alert(input_data);
-//   const datePlus5Years = input_data.toLocaleDateString("en-US", {
-//   year: "numeric",
-//   month: "long",
-//   day: "numeric",
-// });
-// alert(datePlus5Years);
-//const inputDate = inputDateElement.value;
-//       const parsedDate = new Date(input_data);
-//       alert(parsedDate);
-//       if (!isNaN(parsedDate)) {
-//         // Add 5 years to the entered date
-//         parsedDate.setFullYear(parsedDate.getFullYear() + 5);
-// alert(parsedDate);
-//         // Format the new date
-//         const outputDates = parsedDate.toLocaleDateString("en-US", {
-//           year: "numeric",
-//           month: "numeric",
-//           day: "numeric",
-//         });
-  //document.getElementById("demo").innerHTML = "You selected: " + x;
+        
+    //   var x=new Date(year,input_data);
+
+    //var result1 = addYears(input_data, 2);
+    //input_data.setDate(input_data.getDate() + 5);
+
+    //    parsedDate.setDate(parsedDate.getDate() + 5);
+    //   parsedDate.setFullYear(parsedDate.getFullYear() + 5);
+    //   alert(input_data);
+    //   const datePlus5Years = input_data.toLocaleDateString("en-US", {
+    //   year: "numeric",
+    //   month: "long",
+    //   day: "numeric",
+    // });
+    // alert(datePlus5Years);
+    //const inputDate = inputDateElement.value;
+    //       const parsedDate = new Date(input_data);
+    //       alert(parsedDate);
+    //       if (!isNaN(parsedDate)) {
+    //         // Add 5 years to the entered date
+    //         parsedDate.setFullYear(parsedDate.getFullYear() + 5);
+    // alert(parsedDate);
+    //         // Format the new date
+    //         const outputDates = parsedDate.toLocaleDateString("en-US", {
+    //           year: "numeric",
+    //           month: "numeric",
+    //           day: "numeric",
+    //         });
+    //document.getElementById("demo").innerHTML = "You selected: " + x;
 
 
 
@@ -232,47 +225,48 @@ const givenDate = new Date(parts[2], parts[1] - 1, parts[0]);
 
 
 
-  var divid = "";
+    var divid = "";
 
 
-function getsearch(){
- return   table.search();
-}
-$(".manufacturing_date").datepicker({
-                    format: " dd-mm-yyyy",
-                    autoclose:true,
-                    endDate: new Date()
-                });
-   
-    function selectItem(itemId,divId){
-        $('#Itemtype'+divId).val('');
-        $.get("<?=url('inventory/get-single-item');?>?id="+itemId,function(response){
+    function getsearch() {
+        return table.search();
+    }
+    $(".manufacturing_date").datepicker({
+        format: " dd-mm-yyyy",
+        autoclose: true,
+        endDate: new Date()
+    });
+
+    function selectItem(itemId, divId) {
+        $('#Itemtype' + divId).val('');
+        $.get("<?= url('inventory/get-single-item'); ?>?id=" + itemId, function(response) {
             let datas = [JSON.parse(response)];
-            $(".item_code"+divId).select2({
+            $(".item_code" + divId).select2({
                 data: datas
             });
-            $('#Itemtype'+divId).val(datas[0].type_name);
-            $('#Itemdescription'+divId).val(datas[0].discription);
-            $("#unit-div"+divId+"").text(datas[0].unit_name);
+            $('#Itemtype' + divId).val(datas[0].type_name);
+            $('#Itemdescription' + divId).val(datas[0].discription);
+            $("#unit-div" + divId + "").text(datas[0].unit_name);
             //$('#u'+divId).val(datas[0].discription);
             $('#myModal1').modal('hide');
             initSelect2();
         });
     }
-    function get_data(id){
-                    $('#myModal1').modal('show');
-                    divid = id 
-                    table.search('').columns().search('').draw();            
+
+    function get_data(id) {
+        $('#myModal1').modal('show');
+        divid = id
+        table.search('').columns().search('').draw();
     }
 
-        $(document).ready(function(){
-            initProductSelect2();
-           // initBatchSelect2();
-            var i = 1;
-            $('#add').click(function(){
-                //alert('kk');
-                i++;
-                $('#dynamic_field').append(`
+    $(document).ready(function() {
+        initProductSelect2();
+        // initBatchSelect2();
+        var i = 1;
+        $('#add').click(function() {
+            //alert('kk');
+            i++;
+            $('#dynamic_field').append(`
                       <tr id="row${i}" rel="${i}">
                       <td>
                         <div class="row">
@@ -317,202 +311,195 @@ $(".manufacturing_date").datepicker({
                         </div>
                     </td>                        
                 </tr>`);
-                initProductSelect2();
-                //initBatchSelect2();
-                $(".manufacturing_date").datepicker({
-                    format: " dd-mm-yyyy",
-                    autoclose:true,
-                    //endDate: new Date()
-                });
-                $(".expiry_date").datepicker({
-                    format: " dd-mm-yyyy",
-                    autoclose:true,
-                    //endDate: "today"
-                });
-                $(".manufacturing_date").datepicker("setDate", new Date());
-               
-                //$(".manufacturing_date").datepicker('setEndDate', new Date());
-               
+            initProductSelect2();
+            //initBatchSelect2();
+            $(".manufacturing_date").datepicker({
+                format: " dd-mm-yyyy",
+                autoclose: true,
+                //endDate: new Date()
             });
-            $(document).on('click','.btn_remove', function(){
-                var button_id = $(this).attr("id");
-                $("#row"+button_id+"").remove();
+            $(".expiry_date").datepicker({
+                format: " dd-mm-yyyy",
+                autoclose: true,
+                //endDate: "today"
             });
-        });
-        // $('.batch_number').on('change', function (){
-        //     var batch_id = $(this).val();
-        //     var select_id = $(this).attr("index");
-        //     // var element = $("option:selected", this); 
-        //     // var stock_qty = element.attr("qty"); 
-        //     // $("#stock_qty"+select_id+"").val(stock_qty);
-        //     $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id="+batch_id,function(data){
-                
-        //     });
-        //   // alert(select_id);
-        // }); 
-        $(document).on('change', '.batch_number', function (e) {
-            var batch_id = $(this).val();
-            var select_id = $(this).attr("index");
-            $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id="+batch_id,function(data){
-                $("#stock_qty"+select_id+"").val(data);
-                $("#stock_qty"+select_id+"").attr('max',data);
-                $("#stock_qty"+select_id+"").attr('min',0);
-            });
-    // do something 
-        });
+            $(".manufacturing_date").datepicker("setDate", new Date());
 
-            $(function(){
-                $("#commentForm").validate({
-                    rules: {
-                        Itemcode: {
-                                required: true,
-                        },
-                        ActualorderQty: {
-                                    required: true,
-                                    number: true
-                        },
-                    },
-                     submitHandler: function(form) {
-                         form.submit();
-                     }
+            //$(".manufacturing_date").datepicker('setEndDate', new Date());
+
+        });
+        $(document).on('click', '.btn_remove', function() {
+            var button_id = $(this).attr("id");
+            $("#row" + button_id + "").remove();
+        });
+    });
+    // $('.batch_number').on('change', function (){
+    //     var batch_id = $(this).val();
+    //     var select_id = $(this).attr("index");
+    //     // var element = $("option:selected", this); 
+    //     // var stock_qty = element.attr("qty"); 
+    //     // $("#stock_qty"+select_id+"").val(stock_qty);
+    //     $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id="+batch_id,function(data){
+
+    //     });
+    //   // alert(select_id);
+    // }); 
+    $(document).on('change', '.batch_number', function(e) {
+        var batch_id = $(this).val();
+        var select_id = $(this).attr("index");
+        $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id=" + batch_id, function(data) {
+            $("#stock_qty" + select_id + "").val(data);
+            $("#stock_qty" + select_id + "").attr('max', data);
+            $("#stock_qty" + select_id + "").attr('min', 0);
+        });
+        // do something 
+    });
+
+    $(function() {
+        $("#commentForm").validate({
+            rules: {
+                Itemcode: {
+                    required: true,
+                },
+                ActualorderQty: {
+                    required: true,
+                    number: true
+                },
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+    });
+
+    function initProductSelect2() {
+        $(".product").select2({
+            placeholder: 'Choose one',
+            searchInputPlaceholder: 'Search',
+            minimumInputLength: 4,
+            allowClear: true,
+            ajax: {
+                url: "{{ url('fgs/productsearch') }}",
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        }).on('change', function(e) {
+            var select_id = $(this).attr("id");
+            $('#Itemcode-error').remove();
+            $("#Itemdescription" + select_id + "").text('');
+            $("#hsncode" + select_id + "").val('');
+            $("#Itemdescription" + select_id + "").val('');
+
+            Itemdescription1
+            let res = $(this).select2('data')[0];
+            if (typeof(res) != "undefined") {
+                if (res.hsn_code) {
+                    $("#hsncode" + select_id + "").val(res.hsn_code);
+                }
+                if (res.unit_name) {
+                    $('#Unit').val(res.unit_name);
+                    $("#unit-div" + select_id + "").text(res.unit_name);
+                }
+                if (res.discription) {
+                    $("#Itemdescription" + select_id + "").val(res.discription);
+                }
+                if (res.is_sterile == 0) {
+                    //$(".expiry_date"+select_id+"").datepicker();
+
+                    $("#expiry_date" + select_id + "").val('N.A');
+                } else {
+                    //$(".expiry_date"+select_id+"").datepicker();
+                    $("#expiry_date" + select_id + "").datepicker({
+                        format: " dd-mm-yyyy",
+                        autoclose: true
+                    });
+                    var date = new Date();
+                    date.setFullYear(date.getFullYear() + 5);
+                    date.setDate(date.getDate() - 2);
+                    $("#expiry_date" + select_id + "").datepicker("setDate", date);
+                }
+                $("#manufacturing_date" + select_id + "").datepicker({
+                    format: " dd-mm-yyyy",
+                    autoclose: true
                 });
-            });
-            function initProductSelect2() {
-                $(".product").select2({
-                    placeholder: 'Choose one',
-                    searchInputPlaceholder: 'Search',
-                    minimumInputLength: 4,
-                    allowClear: true,
-                    ajax: {
-                        url: "{{ url('fgs/productsearch') }}",
-                        processResults: function (data) {
-                                return { results: data };
-                        }
+                $.get("{{ url('fgs/fetchProductBatchCards') }}?product_id=" + res.id, function(data) {
+                    $(".batch_no" + select_id + "").find('option').remove();
+                    if (data.length > 0) {
+                        $(".batch_no" + select_id + "").append('<option>..Select One..</option>')
+                        $.each(data, function(index, item) {
+                            $(".batch_no" + select_id + "").append($("<option qty=" + item.quantity + " value=" + item.batch_id + ">" + item.batch_no + "</option>"));
+                        });
+                    } else {
+                        alert('Out of stock...');
                     }
-                }).on('change', function (e) {
-                    var select_id = $(this).attr("id");
-                    $('#Itemcode-error').remove();
-                    $("#Itemdescription"+select_id+"").text('');
-                    $("#hsncode"+select_id+"").val('');
-                    $("#Itemdescription"+select_id+"").val('');
+                });
+            }
+        });
 
-                    Itemdescription1
-                    let res = $(this).select2('data')[0];
-                        if(typeof(res) != "undefined" ){
-                            if(res.hsn_code){
-                                $("#hsncode"+select_id+"").val(res.hsn_code);
-                            }
-                            if(res.unit_name){
-                                $('#Unit').val(res.unit_name);
-                                $("#unit-div"+select_id+"").text(res.unit_name);
-                            }
-                            if(res.discription){
-                                $("#Itemdescription"+select_id+"").val(res.discription);
-                            }
-                            if(res.is_sterile==0){
-                                //$(".expiry_date"+select_id+"").datepicker();
-    
-                                $("#expiry_date"+select_id+"").val('N.A');
-                            }
-                            else
-                            {
-                                //$(".expiry_date"+select_id+"").datepicker();
-                                $("#expiry_date"+select_id+"").datepicker({
-                                    format: " dd-mm-yyyy",
-                                    autoclose:true
-                                });
-                                var date = new Date();
-                                date.setFullYear(date.getFullYear() + 5);
-                                date.setDate(date.getDate() - 2);
-                                $("#expiry_date"+select_id+"").datepicker("setDate", date);
-                            }
-                            $("#manufacturing_date"+select_id+"").datepicker({
-                                    format: " dd-mm-yyyy",
-                                    autoclose:true
-                                });
-                            $.get("{{ url('fgs/fetchProductBatchCards') }}?product_id="+res.id,function(data)
-                            {
-                                $(".batch_no"+select_id+"").find('option').remove();
-                                if(data.length>0)
-                                {
-                                    $(".batch_no"+select_id+"").append('<option>..Select One..</option>')
-                                $.each(data, function(index, item) {   
-                                    $(".batch_no"+select_id+"").append($("<option qty="+item.quantity+" value="+item.batch_id+">"+item.batch_no+"</option>"));
-                                });
-                                }
-                                else
-                                {
-                                    alert('Out of stock...');
-                                }
-                            });
-                       }
-                    }); 
-                
-            }   
-          
-            
-    </script>
-    <script>
-// function myFunction() {
-    
-//     const inputDate = document.getElementById("manufacturing_date1").value;
-//     const outputDate = document.getElementById("manufacturing_date1").value;
-//     //const inputDates = inputDate.value;
-//       const parsedDate = new Date(inputDate);
-//       if (!isNaN(parsedDate)) {
-//         // Add 5 years to the entered date
-//         parsedDate.setFullYear(parsedDate.getFullYear() + 5);
-//         const output = parsedDate.toLocaleDateString("en-US", {
-//           year: "numeric",
-//           month: "numeric",
-//           day: "numeric",
-//         });
-//          alert(output);
-//         //$("outputDate"+select_id+"").val(outputDates);
-//          outputDate.value=output;
-//     // }
+    }
+</script>
+<script>
+    // function myFunction() {
+
+    //     const inputDate = document.getElementById("manufacturing_date1").value;
+    //     const outputDate = document.getElementById("manufacturing_date1").value;
+    //     //const inputDates = inputDate.value;
+    //       const parsedDate = new Date(inputDate);
+    //       if (!isNaN(parsedDate)) {
+    //         // Add 5 years to the entered date
+    //         parsedDate.setFullYear(parsedDate.getFullYear() + 5);
+    //         const output = parsedDate.toLocaleDateString("en-US", {
+    //           year: "numeric",
+    //           month: "numeric",
+    //           day: "numeric",
+    //         });
+    //          alert(output);
+    //         //$("outputDate"+select_id+"").val(outputDates);
+    //          outputDate.value=output;
+    //     // }
     //     else{
     //         outputDate.value="";
     //     }
 
-       // $(".expiry_date1"+select_id+"").datepicker("outputDate", date);
-        //document.getElementById("expiry_date1").textContent = outputDate;
-//     var manufacturingDateInput = document.getElementById("manufacturing_date1").value;
-//     var manufacturingDate = new Date(manufacturingDateInput);
-//     manufacturingDate.setFullYear(manufacturingDate.getFullYear() + 5);
-//     $("#expiry_date1"+manufacturingDate+"").val('');
-//    // var dateObject = moment(manufacturingDate).format('DD-MM-YYYY');
-//     alert(manufacturingDate);
-//   var x = document.getElementById("manufacturing_date1").value;
-//   var y=document.getElementById("expiry_date1").value;
-//   x.setFullYear(x.getFullYear() + 5);
-//  var yaer_no=date('Y',strtotime(x))+5;
-
-  
- // var exp=
-  //alert(x.setFullYear(x.getFullYear() + 5));
-  //document.getElementById("demo").innerHTML = "You selected: " + 
-
-  // Get the input elements
-// var manufacturingDateInput = document.getElementById("manufacturing_date1");
-// var expiryDateInput = document.getElementById("expiry_date1");
-
-// // Add an event listener to the manufacturing date input
-// manufacturingDateInput.addEventListener("change", function() {
-//   // Get the value from the first input
-//   var manufacturingDate = new Date(manufacturingDateInput.value);
-
-//   // Add 5 years to the manufacturing date
-//   manufacturingDate.setFullYear(manufacturingDate.getFullYear() + 5);
-
-//   // Format the date as "yyyy-mm-dd"
-//   var formattedDate = manufacturingDate.toISOString().split("T")[0];
-
-//   // Set the value of the second input to the updated date
-  
-//   expiryDateInput.value = formattedDate;
-// });
+    // $(".expiry_date1"+select_id+"").datepicker("outputDate", date);
+    //document.getElementById("expiry_date1").textContent = outputDate;
+    //     var manufacturingDateInput = document.getElementById("manufacturing_date1").value;
+    //     var manufacturingDate = new Date(manufacturingDateInput);
+    //     manufacturingDate.setFullYear(manufacturingDate.getFullYear() + 5);
+    //     $("#expiry_date1"+manufacturingDate+"").val('');
+    //    // var dateObject = moment(manufacturingDate).format('DD-MM-YYYY');
+    //     alert(manufacturingDate);
+    //   var x = document.getElementById("manufacturing_date1").value;
+    //   var y=document.getElementById("expiry_date1").value;
+    //   x.setFullYear(x.getFullYear() + 5);
+    //  var yaer_no=date('Y',strtotime(x))+5;
 
 
+    // var exp=
+    //alert(x.setFullYear(x.getFullYear() + 5));
+    //document.getElementById("demo").innerHTML = "You selected: " + 
+
+    // Get the input elements
+    // var manufacturingDateInput = document.getElementById("manufacturing_date1");
+    // var expiryDateInput = document.getElementById("expiry_date1");
+
+    // // Add an event listener to the manufacturing date input
+    // manufacturingDateInput.addEventListener("change", function() {
+    //   // Get the value from the first input
+    //   var manufacturingDate = new Date(manufacturingDateInput.value);
+
+    //   // Add 5 years to the manufacturing date
+    //   manufacturingDate.setFullYear(manufacturingDate.getFullYear() + 5);
+
+    //   // Format the date as "yyyy-mm-dd"
+    //   var formattedDate = manufacturingDate.toISOString().split("T")[0];
+
+    //   // Set the value of the second input to the updated date
+
+    //   expiryDateInput.value = formattedDate;
+    // });
 </script>
 @stop
