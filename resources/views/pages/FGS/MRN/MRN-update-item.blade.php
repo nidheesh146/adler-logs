@@ -114,7 +114,7 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Date of Expiry * </label>
                                                     @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
-                                                    <input type="text" class="form-control datepicker expiry_date" readonly name="expiry_date1" value="{{date('d/m/Y', strtotime($item_details->expiry_date))}}" id="expiry" placeholder="Date of Expiry">
+                                                    <input type="text" class="form-control datepicker expiry_date" readonly name="expiry_date1" value="{{date('d-mY', strtotime($item_details->expiry_date))}}" id="expiry" placeholder="Date of Expiry">
                                                 </div>
                                                 @endif
                                                 <!-- <button type="button" name="add" id="add" class="btn btn-success"

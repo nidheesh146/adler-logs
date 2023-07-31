@@ -31,6 +31,7 @@ class fgs_min_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_min_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_min_item.batchcard_id')
                         ->where($condition)
+                        ->where('fgs_min_item.status',1)
                         ->orderBy('fgs_min_item.id','ASC')
                         ->distinct('fgs_min_item.id')
                         ->paginate(15);
