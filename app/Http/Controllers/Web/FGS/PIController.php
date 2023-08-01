@@ -146,6 +146,7 @@ class PIController extends Controller
                     if($grs_item['current_invoice_qty']==0)
                     {
                         $update_stock = $fgs_product_stock['quantity']-$grs_item['qty_to_invoice'];
+                        $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id], ['fgs_grs_item.qty_to_invoice'=>0]);
                     }
                     else
                     {
@@ -220,7 +221,7 @@ class PIController extends Controller
             $data = ' <table class="table table-bordered mg-b-0" id="example1">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th><input type="checkbox" class="item-select-radio  check-all"></th>
                                 <th style="width:120px;">SKU Code</th>
                                 <th>Description</th>
                                 <th>HSN Code</th>
@@ -234,7 +235,7 @@ class PIController extends Controller
             foreach($grs_items as $items)
             {
                 $data.= '<tr>
-                        <td><input type="checkbox" name="grs_id[]" value='.$items->id.' ></td>
+                        <td><input type="checkbox" class="check_pi" name="grs_id[]" value='.$items->id.' ></td>
                         <td>'.$items->sku_code.'</td>
                         <td>'.$items->discription.'</td>
                         <td>'.$items->hsn_code.'</td>

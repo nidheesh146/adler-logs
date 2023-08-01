@@ -184,7 +184,7 @@
                 <td style="text-align:center;">{{$item['quantity']}}</td> 
                 <td>Nos</td> 
                 <td style="text-align:center;">{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td style="text-align:center;">{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                <td style="text-align:center;">{{date('d-m-Y', strtotime($item['expiry_date']))}}</td>
                
             </tr>
             @endforeach
@@ -195,7 +195,7 @@
 				<th></th>
 				<th></th>
 				<th style="text-align:center;font-weight:bold;">{{$qty}}</th>
-				<th style="font-weight:bold;">Nos</th>
+				<th style="text-align:left;font-weight:bold;">Nos</th>
 				<th></th>
 				<th></th>
 			</tr>

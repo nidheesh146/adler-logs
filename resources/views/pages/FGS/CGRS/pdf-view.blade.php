@@ -181,7 +181,7 @@
                 </tr>
                 <tr>
                     <td> Doc  Date</td>
-                    <td>: {{$cgrs['cgrs_date']}}</td>
+                    <td>: {{date('d-m-Y', strtotime($cgrs['cgrs_date']))}}</td>
                 </tr>
                 <tr>
                     <td> Product Category</td>
@@ -221,7 +221,9 @@
                 <th style="width:9%;">DATE OF EXPIRY</th>
                 
             </tr>
-            <?php $i=1; ?>
+            <?php $i=1; 
+            $qsum=0;
+            ?>
             @foreach($items as $item)
             <tr>
                 <td style="text-align:center;">{{$i++}}</td>
@@ -234,6 +236,7 @@
                 <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                 <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else N.A @endif</td>
             </tr>
+            @php  $qsum= $qsum+$item['batch_quantity']; @endphp
             @endforeach
             <tr>
                 <th></th>
@@ -242,7 +245,7 @@
                 <th></th>
                 <th></th>
                 <th style="text-align:center;">{{$qsum}}</th>
-                <th>Nos</th>
+                <th style="text-align:left;">Nos</th>
                 <th></th>
                 <th></th>
             </tr>

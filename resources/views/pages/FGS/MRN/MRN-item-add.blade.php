@@ -259,7 +259,6 @@ function getsearch(){
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label for="exampleInputEmail1">Batch No* </label>
                                 <input type="text"  class="form-control" name="moreItems[${i}][batch_no]"  placeholder="Batch No">
-               
                             </div>
                            
                         </div>
@@ -369,18 +368,19 @@ function getsearch(){
         //   // alert(select_id);
         // }); 
         $(document).on('change', '.batch_number', function (e) {
+           // const inputValue = myInput.value; 
+                var batch_id = $(this).val();
+                var select_id = $(this).attr("index");
+                $("#stock_qty"+select_id+"").val('');
+                $("#stock_qty"+select_id+"").attr('max','');
+                $("#stock_qty"+select_id+"-error").text('');
+                $("#stock_qty"+select_id+"").removeClass("error");
+                $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id="+batch_id,function(data){
+                    $("#stock_qty"+select_id+"").val(data);
+                    $("#stock_qty"+select_id+"").attr('max',data);
+                    $("#stock_qty"+select_id+"").attr('min',0);
+                });
             
-            var batch_id = $(this).val();
-            var select_id = $(this).attr("index");
-            $("#stock_qty"+select_id+"").val('');
-            $("#stock_qty"+select_id+"").attr('max','');
-            $("#stock_qty"+select_id+"-error").text('');
-            $("#stock_qty"+select_id+"").removeClass("error");
-            $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id="+batch_id,function(data){
-                $("#stock_qty"+select_id+"").val(data);
-                $("#stock_qty"+select_id+"").attr('max',data);
-                $("#stock_qty"+select_id+"").attr('min',0);
-            });
     // do something 
         });
 
@@ -420,7 +420,7 @@ function getsearch(){
                     $("#Itemdescription"+select_id+"").val('');
                     $(".batch_number"+select_id+"").val('');
                     $("#stock_qty"+select_id+"").val('');
-                    $("#stock_qty"+select_id+"").attr('max','');
+                    $("#stock_qty"+select_id+"").removeAttr('max');
                     $("#stock_qty"+select_id+"-error").text('');
                     Itemdescription1
                     let res = $(this).select2('data')[0];

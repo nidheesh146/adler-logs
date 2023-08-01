@@ -411,6 +411,7 @@
                 <th rowspan="2" >BATCH NO</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
+                <th rowspan="2">MRP</th>
                 <th rowspan="2">RATE</th>
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
@@ -440,6 +441,7 @@
             $tsum = 0;
             $isum = 0;
             $totalsum = 0;
+            $totalmrp = 0;
 
              ?> 
             @foreach($dni_items as $dni_item)
@@ -454,6 +456,7 @@
                 <td>{{$item['batch_no']}}</td>
                 <td style="text-align:center;">{{$item['remaining_qty_after_cancel']}}</td>
                 <td style="text-align:left;">Nos</td>
+                <td style="text-align:right;">{{number_format((float)$item['mrp'], 2, '.', '')}}</td>
                 <td style="text-align:right;">{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['remaining_qty_after_cancel'])-(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100);?>
@@ -473,6 +476,7 @@
                 $total_igst = $total_igst+($discount_value*$item['igst'])/100;
                 $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
                 $total_cgst = $total_cgst+($discount_value* $item['remaining_qty_after_cancel']*$item['cgst'])/100;
+                $totalmrp = $totalmrp + $item['mrp'];
                 ?>
                  <?php 
                  $qsum = $qsum+$item['remaining_qty_after_cancel'];
@@ -495,7 +499,8 @@
                 <th></th>
                 <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
                 <th style="font-weight:bold;text-align:left;">Nos</th>
-                <th style="text-align:center;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
+                <th style="text-align:center;font-weight:bold;">{{number_format((float)($totalmrp), 2, '.', '') }}</th>
+                <th style="text-align:center;font-weight:bold;">{{-- number_format((float)($rsum), 2, '.', '') --}}</th>
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
@@ -540,6 +545,13 @@
             
         </div>
         <div class="col42">
+            @if($dni['payment_terms'])
+            <div class="row6" style="font-size:10px;display:block; font-weight:bold" >
+                <?= nl2br($dni['payment_terms']);?>
+            </div>
+            @endif
+            <br/>
+            <br/>
             <div class="" style="height:50px;margin-left:50px;">
                <strong> Company's Bank Details:-</strong><br/>
                 Bank Name:- The Federal Bank Limited<br/>

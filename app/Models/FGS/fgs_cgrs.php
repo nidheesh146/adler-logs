@@ -52,10 +52,10 @@ class fgs_cgrs extends Model
             ->distinct('fgs_grs.id')
             ->get();
     }
-    function get_single_grs($condition)
+    function get_single_cgrs($condition)
     {
         return $this->select('fgs_grs.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1',
-        'stock_location.location_name as location_name2','fgs_oef.oef_number','order_fulfil.order_fulfil_type','fgs_oef.order_number','fgs_oef.order_date',
+        'stock_location.location_name as location_name2','fgs_oef.oef_number','fgs_oef.oef_date','order_fulfil.order_fulfil_type','fgs_oef.order_number','fgs_oef.order_date',
         'transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
         'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person',
         'customer_supplier.sales_type','customer_supplier.city','customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email',

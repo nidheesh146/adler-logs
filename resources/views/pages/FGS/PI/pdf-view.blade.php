@@ -311,7 +311,7 @@
                 <th></th>
                 <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
                 <th style="font-weight:bold;text-align:left;">Nos</th>
-                <th style="text-align:center;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
+                <th style="text-align:center;font-weight:bold;">{{-- number_format((float)($rsum), 2, '.', '') --}}</th>
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>

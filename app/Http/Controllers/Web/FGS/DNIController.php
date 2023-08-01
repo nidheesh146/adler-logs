@@ -220,7 +220,7 @@ class DNIController extends Controller
             'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity as quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number',
             'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date',
             'order_fulfil.order_fulfil_type','transaction_type.transaction_name','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_product_category.category_name',
-            'fgs_pi_item.remaining_qty_after_cancel')
+            'fgs_pi_item.remaining_qty_after_cancel','product_price_master.mrp')
                             ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
                             ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                             ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
@@ -234,6 +234,7 @@ class DNIController extends Controller
                             ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
                             ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                             ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+                            ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
                             ->leftjoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_pi_item.mrn_item_id')
                             ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                             ->where('fgs_pi_item_rel.master','=', $items['pi_id'])

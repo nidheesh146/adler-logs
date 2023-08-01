@@ -181,7 +181,7 @@
                 </tr>
                 <tr>
                     <td> Doc  Date</td>
-                    <td>: {{$grs['grs_date']}}</td>
+                    <td>: {{date('d-m-Y', strtotime($grs['grs_date']))}}</td>
                 </tr>
                 <tr>
                     <td> Product Category</td>

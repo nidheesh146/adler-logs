@@ -48,7 +48,7 @@ class CGRSController extends Controller
 
       public function CGRSpdf($cgrs_id)
     { 
-        $data['cgrs'] = $this->fgs_cgrs->get_single_grs(['fgs_cgrs.id' => $cgrs_id]);
+        $data['cgrs'] = $this->fgs_cgrs->get_single_cgrs(['fgs_cgrs.id' => $cgrs_id]);
         $data['items'] = $this->fgs_cgrs_item->getItems(['fgs_cgrs_item_rel.master' => $cgrs_id]);
         $pdf = PDF::loadView('pages.FGS.CGRS.pdf-view', $data);
         // $pdf->set_paper('A4', 'landscape');
@@ -349,6 +349,7 @@ class CGRSController extends Controller
                        ->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
                    ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
                         ->where($condition)
+                        ->orderBy('fgs_cgrs.id','DESC')
                         ->paginate(15);
         return view('pages/FGS/CGRS/CGRS-list', compact('cgrs'));
     }

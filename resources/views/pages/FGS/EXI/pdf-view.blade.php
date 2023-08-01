@@ -410,6 +410,7 @@
                 <th rowspan="2">BATCHCARD</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
+                <th rowspan="2">MRP</th>
                 <th rowspan="2">RATE</th>
                
                 <th colspan="2">DISC</th>
@@ -440,6 +441,7 @@
             $tsum = 0;
             $isum = 0;
             $totalsum = 0;
+            $totalmrp = 0;
              ?>
             @foreach($dni_items as $dni_item)
             @foreach($dni_item['pi_item'] as $item)
@@ -453,6 +455,7 @@
                 <td>{{$item['batch_no']}}</td>
                 <td  style="text-align:center;">{{$item['quantity']}}</td>
                 <td  style="text-align:center;">Nos</td>
+                <td style="text-align:right;">{{number_format((float)$item['mrp'], 2, '.', '')}}</td>
                 <td style="text-align:right;">{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                
                 <td  style="text-align:center;">{{$item['discount']}}</td>
@@ -480,6 +483,7 @@
                  $tsum = $tsum+$discount_value;
                  $isum = $isum+$total_igst;
                  $totalsum = $totalsum+$total_amount;
+                 $totalmrp = $totalmrp+$item['mrp'];
                  ?>
             </tr>
             @endforeach
@@ -494,7 +498,8 @@
                 <th></th>
                 <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
                 <th style="font-weight:bold;text-align:left;">Nos</th>
-                <th style="text-align:center;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
+                <th style="text-align:center;font-weight:bold;">{{ number_format((float)($totalmrp), 2, '.', '') }}</th>
+                <th style="text-align:center;font-weight:bold;">{{-- number_format((float)($rsum), 2, '.', '') --}}</th>
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
@@ -539,6 +544,12 @@
             
         </div>
         <div class="col42">
+            @if($dni['payment_terms'])
+            <div class="row6" style="font-size:10px;display:block; font-weight:bold" >
+                <?= nl2br($dni['payment_terms']);?>
+            </div>
+            @endif
+            <br/><br/>
             <div class="" style="height:50px;margin-left:50px;">
                <strong> Company's Bank Details:-</strong><br/>
                 Bank Name:- The Federal Bank Limited<br/>

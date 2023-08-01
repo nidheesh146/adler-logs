@@ -311,7 +311,7 @@
                 <th></th>
                 <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
                 <th style="font-weight:bold;text-align:left;">Nos</th>
-                <th style="text-align:right;font-weight:bold;">{{number_format((float)($rsum), 2, '.', '') }}</th>
+                <th style="text-align:right;font-weight:bold;">{{--number_format((float)($rsum), 2, '.', '') --}}</th>
                 <th></th>
                 <th style="text-align:right;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
@@ -341,7 +341,7 @@
             </div>
             
         </div>
-        <!-- <div class="col42">
+        <div class="col42">
             <div class="" style="height:50px;">
             @if($oef['payment_terms'])
             <div class="row6" style="font-size:10px;display:block; font-weight:bold" >
@@ -349,7 +349,7 @@
             </div>
             @endif
             </div>
-        </div> -->
+        </div> 
         <div class="col43">
             <table style="height:130px;">
                 <tr>

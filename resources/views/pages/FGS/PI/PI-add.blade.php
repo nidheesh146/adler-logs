@@ -126,7 +126,7 @@
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
-                            <th></th>
+                            <th><input type="checkbox" class="item-select-radio  check-all"></th>
 							<th style="width:120px;">GRS Number :</th>
 							<th>SKU Code</th>
 							<th>HSN Code</th>
@@ -139,7 +139,7 @@
 					<tbody>
     					@foreach($grs_items as $item)
                         <tr>
-                            <td><input type="checkbox" name="grs_item_id[]" id="grs_item_id" supplier="{{$item['firm_name']}}" value="{{$item['id']}}"></td>
+                            <td><input type="checkbox" class="check_pi" name="grs_item_id[]" id="grs_item_id" supplier="{{$item['firm_name']}}" value="{{$item['id']}}"></td>
                             <td>{{$item['grs_number']}}</td>
                             <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['discription']}}" >{{$item['sku_code']}}</td>
                             <td>{{$item['hsn_code']}}</td>
@@ -159,7 +159,7 @@
                                 {{$item['remaining_qty_after_cancel']}}
                                 @else
                                 {{$item['qty_to_invoice']}} 
-                                @endif"><i class="fas fa-plus"></i> Partial Invoice</a>
+                                @endif"><i class="fas fa-plus"></i> Partial</a>
                             </td>
                         </tr>
                         @endforeach
@@ -288,7 +288,7 @@
             var balanceQty = $(this).attr('balanceQty');
             //alert(poItem)
             $('.grs_item_id').val(grsitem);
-            $('#itemCode').text('itemCode');
+            $('#itemCode').text(skucode);
             $('#description').html(description);
             $('#unit').html(unit);
             $('#poId').html(grsId);
@@ -312,6 +312,9 @@
         $('#partial_invoice_qty-error').show();
     }
   });
+  $(".check-all").click(function () {
+     $('.check_pi').not(this).prop('checked', this.checked);
+    });
 </script>
 
 
