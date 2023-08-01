@@ -108,23 +108,23 @@
    
     <!-- <div class="row1" style="height:150px;border-bottom:solid 2px black;"> -->
     <div class="row1" style="height:210px;">
-        <div class="col1">
+    <div class="col1">
             To<br/>
             <strong>{{$dni['firm_name']}}</strong>
             <p>{{$dni['billing_address']}}<br/>
-            {{$dni['city']}}, {{$dni['state_name']}}<br/>
+            {{$dni['city']}},<br> {{$dni['state_name']}}<br/>
             Cell No : {{ $dni['contact_number'] }}<br/>
-            <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$dni['email']}}<br/><span>
+           {{-- <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$dni['email']}}<br/><span>--}}
            
-            <b>Shipping Address</b> :
-           {{$dni['shipping_address']}}<br/>
-           {{$dni['city']}},  {{$dni['state_name']}}<br/>
-           <b>GST Details </b>: {{$dni['gst_number']}}<br/>
-            D.L. Details: {{$dni['dl_number1']}}, {{$dni['dl_number2']}}, {{$dni['dl_number3']}} <p>
+            
 
         </div>
-        <div class="col2" style="text-align:center;">
-           
+        <div class="col2" style="text-align:left; font-size: 10px;" >
+        Shipping Address : <br>
+        <strong> {{$dni['shipping_address']}}</strong> <br/>
+           {{$dni['city']}}, <br> {{$dni['state_name']}}<br/>
+           <b>GST Details </b>: {{$dni['gst_number']}}<br/>
+            D.L. Details: {{$dni['dl_number1']}}, {{$dni['dl_number2']}}, {{$dni['dl_number3']}} <p>
         </div>
         <div class="col3">
             <span style="color:#1434A4;"><strong>ADLER HEALTHCARE PVT. LTD</strong></span>
