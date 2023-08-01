@@ -440,6 +440,7 @@ class MRNController extends Controller
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['updated_at'] = date('Y-m-d H:i:s');
         $mrn_master = $this->fgs_mrn->insert_data($data);
+        
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
 
             if ($key > 0 &&  $excelsheet[1]) {
@@ -618,15 +619,15 @@ $pstock_qty=number_format($qty->quantity);
         DB::table('fgs_product_stock_management')
         ->where('id',$id)
         ->update([
-            'quantity'=>0
+            'quantity'=>$fgs_qty-$pstock_qty
         ]);
         DB::table('fgs_mrn_item')
         ->where('product_id',$prdct->product_id)
         ->where('batchcard_id',$prdct->batchcard_id)
         ->update([
-            'status'=>$fgs_qty-$pstock_qty
+            'status'=>0
         ]);
-        $mrn_id=10;
+        //$mrn_id=$id;
         return redirect()->back();
         // $items = $this->MRNitemlist($mrn_id);
         // return view('pages/FGS/MRN/MRN-item-list',compact('mrn_id','items'));

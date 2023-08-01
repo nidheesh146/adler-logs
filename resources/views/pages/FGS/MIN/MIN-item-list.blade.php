@@ -112,6 +112,7 @@
                   <th>Date of Mfg.</th>
                   <th>Date of Expiry</th>
                   <th>Status</th>
+				  <th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
@@ -132,6 +133,10 @@
 										@else
 										<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
 										@endif
+									</td>
+									<td>
+									<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MIN/edit-item/'.$item['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                            		<a class="badge badge-danger" style="font-size: 13px;" href="{{url('fgs/MIN-item-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
 									</td>
                </tr>
 							@endforeach
