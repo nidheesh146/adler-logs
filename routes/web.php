@@ -322,6 +322,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::post('updateprofile','ProfileController@updateProfile');
    //Batchcard
     Route::get('batchcard/batchcard-list', 'BatchCardController@BatchcardList');
+    Route::post('batchcard/print', 'BatchCardController@BatchcardPrint');
     Route::get('batchcard/batchcard-upload', 'BatchCardController@getBatchcardUpload');
     Route::post('batchcard/batchcard-upload', 'BatchCardController@batchcardUpload');
     

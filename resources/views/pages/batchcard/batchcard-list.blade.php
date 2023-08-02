@@ -22,6 +22,18 @@
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		   @endif
+		   @if (Session::get('error'))
+		   <div class="alert alert-danger " style="width: 100%;">
+			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+		   </div>
+		   @endif
+		   @foreach ($errors->all() as $errorr)
+            <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {{ $errorr }}
+            </div>
+            @endforeach
 			<div class="tab-content">
 				<div class="row row-sm mg-b-20 mg-lg-b-0">
 						<div class="table-responsive" style="margin-bottom: 13px;">
@@ -35,6 +47,9 @@
 											}
 											.select2-selection__rendered {
 												font-size:12px;
+											}
+											#example1_filter{
+												display:none;
 											}
 										</style>
 										<form autocomplete="off" id="formfilter">
@@ -77,11 +92,14 @@
 						</div>
 					</div>
 				<div class="tab-pane tab-pane active  show" id="purchase">
-					
+					<form autocomplete="off" id="formprint" method="post" action="{{url('batchcard/print')}}">
+					{{ csrf_field() }}  
 					<div class="table-responsive">
-						<table class="table table-bordered mg-b-0" id="example1">
+						<button style="float: right;font-size: 14px;" type="submit"   class="badge badge-pill badge-info submitbatchcard"><i class="fas fa-file-pdf"></i> Print TopSheet</button><br/>
+						<table class="table table-bordered mg-b-0" id="example1" style="margin-top:10px;">
 							<thead>
 								<tr>
+									<th><input type="checkbox" class="item-select-radio  check-all"></th>
 									<th>Batch No</th>
 									<th>Product SKU Code </th>
 									<th>SKU Quantity</th>
@@ -96,6 +114,7 @@
 								
 							@foreach($data['batchcards'] as $card)
                         <tr>
+							<td><input type="checkbox" class="check_batchcard" name="batchcard_id[]" value="{{$card['id']}}"></td>
                             <td>{{$card['batch_no']}}</td>
                             <td>{{$card['sku_code']}}</td>
                             <td>{{$card['quantity']}}</td>
@@ -132,6 +151,7 @@
 							{{ $data['batchcards']->appends(request()->input())->links() }}
 						</div> 
 					</div>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -192,7 +212,15 @@
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="<?= url('') ?>/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
 <script>
+	// var dataTable = $('#example1').dataTable({
+    //     "sPaginationType": "full_numbers",
+    //     "ordering": false,
+    // });
   $(function(){
     'use strict'
 	var date = new Date();
@@ -218,6 +246,11 @@
 			e.preventDefault();
 		}
 	});
+	$('.submitbatchcard').on('click', function(){
+		$('.check_batchcard').prop('checked', false);
+		//$('.check_batchcard').not(this).prop('checked', this.checked);
+	});
+	
 	$(".inputmaterial-add").on( "click", function() {
 		var batch_number = $(this).data('batchno');
 		$('#batchcard_number').html(' ('+batch_number+')');
@@ -237,6 +270,9 @@
 			});
 		}
 	});
+	$(".check-all").click(function () {
+     	$('.check_batchcard').not(this).prop('checked', this.checked);
+    });
 
 </script>
 

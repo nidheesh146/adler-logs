@@ -34,7 +34,7 @@
                         
                         <div class="sub2" style="float:left;width:8%;padding:1px;height:70px">
                             <span class="smalltext" style="font-size:4.7px;font-weight:500;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:5px;">
-                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021')) )}}
+                            LBL/F-{{$batchcard_data->label_format_number}}_REV01_{{strtoupper(date( 'dMY' , strtotime('01-08-2023')) )}}
                             </span>
                         </div>
                         <div class="sub3" style="float:left;width:45%;padding:1px;font-size:8px;line-height:1.1;">
@@ -58,12 +58,17 @@
                         </div>
                     </div> 
                     <div class="subcolumn2" style="float:left;margin-top:1px;">
-                        <div style="float:left;width:80%;">
+                        <div style="float:left;width:40%;">
                             <div class="barcode2" style="font-size:5.6px">
-                                <img src="data:image/png;base64,{{ base64_encode($gs1_label_batch_combo_barcode)}}" style="width:95%;height:22px">   
+                                <img src="data:image/png;base64,{{ base64_encode($label_batch_combo_barcode)}}" style="width:95%;height:22px">   
                                 <br/>
-                                <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:550">{{$gs1_label_batch_combo}}</div>
+                                <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:550">{{$label_batch_combo}}</div>
                             </div>
+                        </div>
+                        <div class="barcode" style="width:30%;float:left;font-size:5.6px">
+                            <img src="data:image/png;base64,{{ base64_encode($manf_date_combo_barcode)}}" style="width:100%;">   
+                            <br/>
+                            <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:550">{{$manf_date_combo}}</div>
                         </div>
                         <div style="float:left;width:15%; margin-left:1px;">
                             <div class="logo" style="text-align:center;">
@@ -75,12 +80,12 @@
                     <div class="subcolumn3" style="float:left;margin-top:2px;">
                         <div style="float:left;width:83%;">
                             <div class="barcode3"  style="float:left;margin-top:4px;">
-                                <div class="barcode" style="width:30%;float:left;font-size:5.6px">
+                                <!--div class="barcode" style="width:30%;float:left;font-size:5.6px">
                                     <img src="data:image/png;base64,{{ base64_encode($manf_date_combo_barcode)}}" style="width:100%;">   
                                     <br/>
                                     <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:550">{{$manf_date_combo}}</div>
-                                </div>
-                                <div style="margin-left:2px;float:left;width:68%;">
+                                </div-->
+                                <div style="margin-left:2px;float:left;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
                                     <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">{{$batchcard_data->drug_license_number}}</span>
                                     <span class=" cls" style="padding-left:2px;font-size:7.5px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>
@@ -132,7 +137,7 @@
                         
                         <div class="sub2" style="float:left;width:8%;padding:1px;height:70px">
                             <span class="smalltext" style="font-size:4.7px;font-weight:500;text-align: center;writing-mode: vertical-lr;transform: rotate(180deg);margin-left:40%;margin-top:5px;">
-                            LBL/F-{{$batchcard_data->label_format_number}}_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021')) )}}
+                            LBL/F-{{$batchcard_data->label_format_number}}_REV01_{{strtoupper(date( 'dMY' , strtotime('01-08-2023')) )}}
                             </span>
                         </div>
                         <div class="sub3" style="float:left;width:45%;padding:1px;font-size:8px;line-height:1.1;">
@@ -156,12 +161,17 @@
                         </div>
                     </div> 
                     <div class="subcolumn2" style="float:left;margin-top:1px;">
-                        <div style="float:left;width:80%;">
+                        <div style="float:left;width:40%;">
                             <div class="barcode2" style="font-size:5.6px">
-                                <img src="data:image/png;base64,{{ base64_encode($gs1_label_batch_combo_barcode)}}" style="width:95%;height:22px">   
+                                <img src="data:image/png;base64,{{ base64_encode($label_batch_combo_barcode)}}" style="width:95%;height:22px">   
                                 <br/>
-                                <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:550">{{$gs1_label_batch_combo}}</div>
+                                <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:550">{{$label_batch_combo}}</div>
                             </div>
+                        </div>
+                        <div class="barcode" style="width:30%;float:left;font-size:5.6px">
+                            <img src="data:image/png;base64,{{ base64_encode($manf_date_combo_barcode)}}" style="width:100%;">   
+                            <br/>
+                            <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:550">{{$manf_date_combo}}</div>
                         </div>
                         <div style="float:left;width:15%; margin-left:1px;">
                             <div class="logo" style="text-align:center;">
@@ -173,12 +183,12 @@
                     <div class="subcolumn3" style="float:left;margin-top:2px;">
                         <div style="float:left;width:83%;">
                             <div class="barcode3"  style="float:left;margin-top:4px;">
-                                <div class="barcode" style="width:30%;float:left;font-size:5.6px">
+                                <!--div class="barcode" style="width:30%;float:left;font-size:5.6px">
                                     <img src="data:image/png;base64,{{ base64_encode($manf_date_combo_barcode)}}" style="width:100%;">   
                                     <br/>
                                     <div style="text-align:center;margin-top:1px;font-size:6.2px;font-weight:550">{{$manf_date_combo}}</div>
-                                </div>
-                                <div style="margin-left:2px;float:left;width:68%;">
+                                </div-->
+                                <div style="margin-left:2px;float:left;">
                                     <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="float:left;width:32px;height:17px; margin-left:2.5px;margin-top: 8px">
                                     <span style="font-size:6px; padding-left:2px;font-weight:bold;display:block;margin-top:-4px">{{$batchcard_data->drug_license_number}}</span> 
                                     <span class=" cls" style="padding-left:2px;font-size:7.5px;font-weight:bold;display:block;margin-left: 35px;margin-top: 2px;";>ADLER HEALTHCARE PVT. LTD</span>

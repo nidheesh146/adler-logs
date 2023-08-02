@@ -47,6 +47,7 @@ class batchcard extends Model
                     ->where('batchcard_batchcard.is_trade','=',0)
                     ->orderBy('batchcard_batchcard.id', 'desc')
                     ->paginate(15);
+                    //->get();
     }
 
 

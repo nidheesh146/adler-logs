@@ -62,6 +62,41 @@ class BatchCardController extends Controller
         }
         return view('pages/batchcard/batchcard-list',compact('data'));
     }
+    public function BatchcardPrint(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $validation['batchcard_id'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                $html = '';
+                foreach($request->batchcard_id as $batchcard_id)
+                {
+                    $batch = $this->batchcard->get_batch_card(['batchcard_batchcard.id' => $batchcard_id]);
+                    $prdct = product::find( $batch->product_id);
+                    $color =[0,0,0];
+                    $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+                    $batchno_barcode = $generator->getBarcode($batch->batch_no, $generator::TYPE_CODE_128, 1,40, $color);
+                    $sku_code_barcode = $generator->getBarcode($prdct->sku_code, $generator::TYPE_CODE_128, 1,70, $color );
+                    $view = view('pages/batchcard/batchcard-list-pdf')->with(compact('batch','batchno_barcode','sku_code_barcode'));
+                    $html .= $view->render();
+                    //$pdf = PDF::loadView('pages/batchcard/batchcard-list-pdf', $data);
+                    // $pdf->set_paper('A4', 'landscape');
+                    // $file_name = "batchcard" . $data['batch']['start_date'] . "_" . $data['batch']['start_date'];
+                    // return $pdf->stream($file_name . '.pdf');
+                }
+                $pdf = PDF::loadHTML($html);            
+                $sheet = $pdf->setPaper('a4', 'portrait');
+                return $sheet->download('batchcard_topsheets.pdf'); 
+                // $pdf = PDF::loadView('pages/batchcard/batchcard-list-pdf', $data);
+                // $file_name = "batchcard" . $data['batch']['start_date'] . "_" . $data['batch']['start_date'];
+                // return $pdf->stream($file_name . '.pdf');
+            }
+            if ($validator->errors()->all()) {
+                return redirect("batchcard/batchcard-list")->withErrors($validator)->withInput();
+            }
+        }
+    }
     public function getInputMaterial(Request $request)
     {
         $input_materials = product_input_material::select('product_input_material.id','material_option1.item_code as item1','material_option1.id as item1_id','material_option2.item_code as item2','material_option2.id as item2_id',
