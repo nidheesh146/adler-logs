@@ -799,7 +799,15 @@ class StockController extends Controller
                                                 </span>
                                             </th>
                                             
-                                        </tr> ";                                              
+                                        </tr> 
+                                        <script>
+            new DataTable('#example', {
+                info: false,
+                ordering: false,
+                paging: false,
+                searching:true
+            });
+            </script>";                                              
                 $i++;
             }
             $data['batchcards'] .="<tbody></table></div></div><br/>";
