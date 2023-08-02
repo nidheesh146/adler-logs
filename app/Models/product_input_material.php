@@ -41,4 +41,18 @@ class product_input_material extends Model
         ->where('product_input_material.status','=',1)
         ->first();
     }
+    function get_batchcard_material_product($condition)
+    {
+        return $this->select(['inventory_rawmaterial.item_code', ])
+        ->leftjoin('batchcard_materials','batchcard_materials.product_inputmaterial_id','=','product_input_material.id')
+        //->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id1')
+        ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','product_input_material.item_id1')
+        // ->leftJoin('inventory_rawmaterial as alternative2','alternative2.id','=','product_input_material.item_id2')
+        // ->leftJoin('inventory_rawmaterial as alternative3','alternative3.id','=','product_input_material.item_id3')
+        // ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.receipt_unit_id')
+        ->where($condition)
+        ->where('product_input_material.status','=',1)
+        // ->orderBy('product_input_material.id', 'desc')
+        ->get();
+    }
 }
