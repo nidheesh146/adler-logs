@@ -73,12 +73,13 @@ class BatchCardController extends Controller
                 foreach($request->batchcard_id as $batchcard_id)
                 {
                     $batch = $this->batchcard->get_batch_card(['batchcard_batchcard.id' => $batchcard_id]);
+                    $material = $this->batchcard_material->get_batchcard_material(['batchcard_materials.batchcard_id'=>$batchcard_id]);
                     $prdct = product::find( $batch->product_id);
                     $color =[0,0,0];
                     $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
                     $batchno_barcode = $generator->getBarcode($batch->batch_no, $generator::TYPE_CODE_128, 1,40, $color);
                     $sku_code_barcode = $generator->getBarcode($prdct->sku_code, $generator::TYPE_CODE_128, 1,70, $color );
-                    $view = view('pages/batchcard/batchcard-list-pdf')->with(compact('batch','batchno_barcode','sku_code_barcode'));
+                    $view = view('pages/batchcard/batchcard-list-pdf')->with(compact('batch','batchno_barcode','sku_code_barcode','material'));
                     $html .= $view->render();
                     //$pdf = PDF::loadView('pages/batchcard/batchcard-list-pdf', $data);
                     // $pdf->set_paper('A4', 'landscape');

@@ -246,10 +246,7 @@
 			e.preventDefault();
 		}
 	});
-	$('.submitbatchcard').on('click', function(){
-		$('.check_batchcard').prop('checked', false);
-		//$('.check_batchcard').not(this).prop('checked', this.checked);
-	});
+	
 	
 	$(".inputmaterial-add").on( "click", function() {
 		var batch_number = $(this).data('batchno');
