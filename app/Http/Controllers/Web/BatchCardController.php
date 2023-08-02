@@ -835,6 +835,8 @@ class BatchCardController extends Controller
     public function BatchCardpdf($batch_id)
     { 
         $data['batch'] = $this->batchcard->get_batch_card(['batchcard_batchcard.id' => $batch_id]);
+        $data['material'] = $this->batchcard_material->get_batchcard_material(['batchcard_materials.batchcard_id'=>$batch_id]);
+
         $prdct = product::find( $data['batch']->product_id);
         $color =[0,0,0];
         $generator = new Picqer\Barcode\BarcodeGeneratorPNG();

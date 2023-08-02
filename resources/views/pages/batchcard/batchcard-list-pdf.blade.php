@@ -80,7 +80,16 @@
         </tr> 
          <tr style="font-size:11px;height:20px;text-align:right;">
             <th style="width:27%;height:30px;">INPUT MATERIAL CODE NO:</th>
-            <td style="width:30%">{{ $batch->item_code }}</td>
+            {{--<td style="width:30%">{{ $batch->item_code }}</td>--}}
+            <td style="width:30%">
+            @foreach($material as $item)
+								@if($item['item_code']!=NULL)
+                                <span>{{$item['item_code']}}</span>
+								@else
+								Assembly
+								@endif
+                                @endforeach
+        </td>
             <th style="width:27%"></th>
             <td style="width:30%"></td>
         </tr>
