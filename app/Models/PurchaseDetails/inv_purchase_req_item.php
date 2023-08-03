@@ -117,7 +117,7 @@ class inv_purchase_req_item extends Model
                     ->leftjoin('inv_item_type','inv_item_type.id', '=', 'inventory_rawmaterial.item_type_id')
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->where($condition)
-                    //->where('inv_purchase_req_item_approve.status','=',1)
+                    ->where('inv_purchase_req_item.status','=',1)
                     ->groupBy('inv_purchase_req_item.requisition_item_id')
                     ->orderby('inv_purchase_req_item.requisition_item_id','desc')
                     ->paginate(10);

@@ -242,6 +242,11 @@ class InventoryController extends Controller
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
         
     }
+    public function get_qtn($id)
+    {
+        $qtn=DB::table('inv_purchase_req_quotation_item_supp_rel')->where('item_id',$id)->first();
+        return $qtn;
+    }
     public function addItems(Request $request){
         $number = count($_POST["Itemcode"]);   
         echo $number;
@@ -447,7 +452,11 @@ class InventoryController extends Controller
     public function delete_purchase_reqisition_item(Request $request)
     {
         if($request->item_id){
-            $this->inv_purchase_req_item->updatedata(['requisition_item_id'=>$request->item_id],['status'=>2]);
+            
+            $this->inv_purchase_req_item->updatedata(['requisition_item_id'=>$request->item_id],['inv_purchase_req_item.status'=>0]);
+            DB::table('inv_purchase_req_item_approve')
+            ->where('pr_item_id',$request->item_id)
+            ->update(['status'=>2]);
             $request->session()->flash('success',  "You have successfully deleted a  purchase requisition item !");
         }
         if($request->pr_id)
