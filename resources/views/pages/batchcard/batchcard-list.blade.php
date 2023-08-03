@@ -67,7 +67,7 @@
 														</div> 
 														<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 															<label  style="font-size: 12px;">Process Sheet</label>
-															<input type="text" value="{{request()->get('process_sheet')}}"  class="form-control " name="process_sheet" placeholder="Process Sheet" >
+															<input type="text" value="{{request()->get('process_sheet')}}"  class="form-control " name="process_sheet" id="process_sheet" placeholder="Process Sheet" >
 														</div> 		
 																			
 													</div>
@@ -141,7 +141,7 @@
 								</div>
 								@endif
 								<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('batchcard/batchcard-list/'.$card['id'].'/report')}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
-								<button style="font-size: 11px; color:white;border:solid black;border-width:thin;margin-top:2px;" class="badge badge-primary inputmaterial-add" style="font-size: 13px;" href="#" data-batchId="{{$card["id"]}}" data-batchno="{{$card['batch_no']}}" data-sku="{{$card['sku_code']}}" data-productId="{{$card['product_id']}}" data-toggle="modal" data-target="#addInputMaterialModal"><i class="fas fa-plus"></i> Input Material</a>                 
+								<a style="font-size: 11px; color:white;border:solid black;border-width:thin;margin-top:2px;" class="badge badge-primary inputmaterial-add" style="font-size: 13px;" href="#" data-batchId="{{$card["id"]}}" data-batchno="{{$card['batch_no']}}" data-sku="{{$card['sku_code']}}" data-productId="{{$card['product_id']}}" data-toggle="modal" data-target="#addInputMaterialModal"><i class="fas fa-plus"></i> Input Material</a>                 
 							</td>
                         </tr>
                         @endforeach
@@ -238,10 +238,10 @@
   
 	$('.search-btn').on( "click", function(e)  {
 		//var supplier = $('#supplier').val();
-		var rq_no = $('#rq_no').val();
-		var po_no = $('#po_no').val();
-		var from = $('#from').val();
-		if(!rq_no & !po_no & !from)
+		var batch_no = $('#batch_no').val();
+		var sku_code = $('#sku_code').val();
+		var process_sheet = $('#process_sheet').val();
+		if(!batch_no & !sku_code & !process_sheet)
 		{
 			e.preventDefault();
 		}
@@ -260,7 +260,7 @@
 		$('.input-material').html('');
 		if(product_id!=0)
 		{
-			$.get("{{ url('batchcard/get-InputMaterial') }}?product_id="+product_id,function(data)
+			$.get("{{ url('batchcard/get-InputMaterial') }}?product_id="+product_id+"&&batch_id="+batch_id,function(data)
 			{
 				//console.log(data);
 					$('.input-material').html(data);
