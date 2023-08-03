@@ -322,6 +322,9 @@
             <li class="nav-sub-item @if(in_array($Action,['RolePermission.permissionList'])){{'active'}} @endif ">
             <a href="{{url('settings/permission')}}"  class="nav-sub-link">Permissions</a>
             </li>
+            <li class="nav-sub-item  ">
+            <a href="{{url('settings/configlist')}}"  class="nav-sub-link">Config List</a>
+            </li>
           </ul>
         </li>
 

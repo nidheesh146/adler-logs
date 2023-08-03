@@ -677,4 +677,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\Settings','middleware'=>[
     Route::get('settings/role-permission/{role_id}', 'RolePermissionController@rolePermission');
     Route::post('settings/role-permission/{role_id}', 'RolePermissionController@rolePermission');
 
+    Route::get('settings/configlist', 'ConfigController@get_config_list');
+    Route::get('settings/config/{id}', 'ConfigController@get_configpage');
+    Route::post('settings/config/add', 'ConfigController@add_configsetting');
+
+
+
 });

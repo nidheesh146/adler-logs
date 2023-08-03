@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
 @inject('stock', 'App\Http\Controllers\Web\PurchaseDetails\StockController')
 <div class="az-content az-content-dashboard">
@@ -125,6 +126,7 @@
 <script src="<?= url('') ?>/js/jquery.validate.js"></script>
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
+
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 
