@@ -754,7 +754,7 @@ class StockController extends Controller
             $data['batchcards'] = "<div style='color:#3366ff;font: size 15px;'><i class='typcn typcn-tabs-outline' style='font-size:21px;'></i>&nbsp;<strong>BatchCards</strong></div>
                                     <div class='row'>
                                             <div class='table-responsive'>
-                                                <table class='table table-bordered mg-b-0' id='example1'>
+                                                <table class='table table-bordered mg-b-0' id='example'>
                                                     <thead>
                                                     <tr>
                                                         <th></th>
