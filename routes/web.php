@@ -309,6 +309,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/inventory-trans-report','InventoryreportController@get_data');
     Route::get('inventory/inventory-trans-export','InventoryreportController@Transactionexport');
 
+    Route::get('inventory/inventory-itemtype-add','InventorygstController@Add_itemtype');
+    Route::post('inventory/inventory-itemtype-add','InventorygstController@Add_itemtype');
+    Route::get('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
+    Route::post('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
+
+
 
 });
 

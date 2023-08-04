@@ -325,6 +325,9 @@
             <li class="nav-sub-item  ">
             <a href="{{url('settings/configlist')}}"  class="nav-sub-link">Config List</a>
             </li>
+            <li class="nav-sub-item  ">
+            <a href="{{url('inventory/inventory-itemtype-add')}}"  class="nav-sub-link">Inv item type</a>
+            </li>
           </ul>
         </li>
 
