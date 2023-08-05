@@ -313,7 +313,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/inventory-itemtype-add','InventorygstController@Add_itemtype');
     Route::get('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
     Route::post('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
-
+    Route::get('inventory/inv-item-upload','InventorygstController@add_inv_item');
+    Route::post('inventory/inv-item-upload','InventorygstController@invitemFileUpload');
 
 
 });
