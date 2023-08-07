@@ -18,6 +18,8 @@ use App\Models\product;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingOEFExport;
 use NumberFormatter;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 class OEFController extends Controller
 {
     public function __construct()
@@ -370,6 +372,119 @@ class OEFController extends Controller
        // $pdf->set_paper('A4', 'landscape');
         $file_name = "ORDER ACKNOWLEDGMENT" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
         return $pdf->stream($file_name . '.pdf');
+    }
+    public function upload_oef_item(Request $request,$oef_id)
+    {
+        $file = $request->file('file');
+        if ($file) {
+            $pr_id = $request->pr_id;
+            $ExcelOBJ = new \stdClass();
+
+            $path = storage_path().'/app/'.$request->file('file')->store('temp');
+
+            $ExcelOBJ->inputFileName = $path;
+            $ExcelOBJ->inputFileType = 'Xlsx';
+
+            // $ExcelOBJ->filename = 'Book1.xlsx';
+            // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
+            $ExcelOBJ->spreadsheet = new Spreadsheet();
+            $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
+            $ExcelOBJ->reader->setReadDataOnly(true);
+            $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
+            $no_column = 10;
+            $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
+            //echo $sheet1_column_count;exit;
+            if($sheet1_column_count == $no_column)
+            {
+                 $res = $this->Excelsplitsheet($ExcelOBJ,$oef_id);
+                 //print_r($res);exit;
+                 if($res)
+                 {
+                    $request->session()->flash('success',  "Successfully uploaded.");
+                    return redirect()->back();
+                 }
+                 else{
+                    $request->session()->flash('error',  "The data already uploaded.");
+                    return redirect()->back();
+                 }
+            }
+            else 
+            {
+                $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
+                return redirect()->back();
+            }
+            
+            //dd($ExcelOBJ->worksheetData);
+            //exit;
+        }
+    }
+    public function Excelsplitsheet($ExcelOBJ, $oef_id)
+    {
+        //echo $pr_id;exit;
+        $ExcelOBJ->SQLdata = [];
+        $ExcelOBJ->arrayinc = 0;
+
+        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) 
+        {
+            $ExcelOBJ->sectionName = '';
+            $ExcelOBJ->sheetName = $worksheet['worksheetName'];
+            $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
+            $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
+            $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
+           // print_r(json_encode($ExcelOBJ->worksheet));exit;
+            $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
+            $ExcelOBJ->date_created = date('Y-m-d H:i:s');
+            $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
+            $res = $this->insert_requisition_items($ExcelOBJ, $oef_id);
+            return $res;
+        }
+    }
+    function insert_requisition_items($ExcelOBJ, $oef_id)
+    {
+        //echo $pr_id;exit;
+        $data = [];
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
+        {
+            if ($key > 1 &&  $excelsheet[1]) 
+            {
+                $product = DB::table('product_product')->where('sku_code', $excelsheet[1])->first();
+                //print_r($item);
+                if($product)
+                {
+                    $data = [
+                        'product_id' =>$product->id,
+                        'quantity'=>$excelsheet[2],
+                        'quantity_to_allocate'=>$excelsheet[3],
+                        'remaining_qty_after_cancel'=>$excelsheet[4],
+                        'rate'=>$excelsheet[5],
+                        'discount'=>$excelsheet[6],
+                        'gst'=>$excelsheet[7],
+                        'created_at'=>date('Y-m-d H:i:s',strtotime($excelsheet[9],)),
+                        'coef_status'=>$excelsheet[8],
+                        
+
+                    ];
+                    $ins_id=DB::table('fgs_oef_item')
+                    ->insertGetId($data);
+
+                    DB::table('fgs_oef_item_rel')
+                    ->insert([
+                        'master'=>$oef_id,
+                        'item'=>$ins_id
+                    ]);
+                    //print_r($data);exit;
+                  //this->inv_purchase_req_item->insert_data($data,$pr_id);
+                    //$res = DB::table('batchcard_batchcard')->insert($data);
+                }
+                    
+            }
+            // if( count($data) > 0){
+            // $res = DB::table('batchcard_batchcard')->insert($data);  
+            // }   
+        }
+        return $data;
+    
+            
     }
     
 }

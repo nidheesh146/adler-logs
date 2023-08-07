@@ -530,6 +530,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/OEF/pending-report','OEFController@pendingOEF');
     Route::get('fgs/OEF/pending-OEF-export','OEFController@pendingOEFExport');
     Route::get('fgs/OEF/ackpdf/{oef_id}','OEFController@OEFackpdf');
+    Route::post('fgs/OEF/item-upload/{oef_id}','OEFController@upload_oef_item');
 
      //COEF
     Route::get('fgs/COEF/COEF-list','COEFController@COEFList');
