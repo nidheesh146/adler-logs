@@ -295,6 +295,9 @@
             <li class="nav-sub-item @if(in_array($Action,['Product.Product-addgroup'])){{'active'}} @endif ">
             <a href="{{url('product/Product-add-group')}}"  class="nav-sub-link">Product Group Add</a>
             </li> 
+            <li class="nav-sub-item @if(in_array($Action,['inventory.inv-item-upload'])){{'active'}} @endif ">
+            <a href="{{url('inventory/inv-item-upload')}}"  class="nav-sub-link">Product input material(prd-29)</a>
+            </li> 
           </ul>
         </li>
 
@@ -324,6 +327,9 @@
             </li>
             <li class="nav-sub-item  ">
             <a href="{{url('settings/configlist')}}"  class="nav-sub-link">Config List</a>
+            </li>
+            <li class="nav-sub-item  ">
+            <a href="{{url('inventory/inventory-itemtype-add')}}"  class="nav-sub-link">Inv item type</a>
             </li>
           </ul>
         </li>

@@ -13,10 +13,14 @@
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
             OEF Item List 
+			
               <div class="right-button">
+			  <button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" data-prId="{{$oef_id}}" data-type="Purchase"  data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>
+
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/OEF/add-item/'.$oef_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
                 OEF Item
 				</button>
+				
               <div>  
 				
               </div>
@@ -132,6 +136,42 @@
 		</div>
 	</div>
 	<!-- az-content-body -->
+	<div class="modal fade" id="uploadModal" role="dialog">
+		<div class="modal-dialog modal-xs">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header" style="display: block;">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Upload <span id="type"></span> OEF ITEM<span id="pr_master"></span></h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
+							<form method="POST" id="commentForm" action="{{url('fgs/OEF/item-upload/'.$oef_id)}}" novalidate="novalidate" enctype='multipart/form-data'>
+								{{ csrf_field() }}
+								<div class="row">
+
+									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<label for="exampleInputEmail1">Select File*</label>
+										<input type="file" required class="form-control file" name="file" id="file">
+										<a href="{{ asset('uploads/oef.xlsx') }}" target="_blank" style="float: right; font-size: 10px;"> Download Template</a>
+										<input type="hidden" name="pr_id" id="pr_id" value="">
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+											Save
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -166,6 +206,14 @@
 		{
 			e.preventDefault();
 		}
+	});
+	$(".item-upload").on("click", function() {
+		// var type = $(this).data('type');
+		// $('#type').html(type);
+		// var pr_master = $(this).data('master');
+		// $('#pr_master').html(' (' + pr_master + ')');
+		var pr_id = $(this).data('prid');
+		$('#pr_id').val(pr_id);
 	});
 </script>
 

@@ -309,6 +309,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/inventory-trans-report','InventoryreportController@get_data');
     Route::get('inventory/inventory-trans-export','InventoryreportController@Transactionexport');
 
+    Route::get('inventory/inventory-itemtype-add','InventorygstController@Add_itemtype');
+    Route::post('inventory/inventory-itemtype-add','InventorygstController@Add_itemtype');
+    Route::get('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
+    Route::post('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
+    Route::get('inventory/inv-item-upload','InventorygstController@add_inv_item');
+    Route::post('inventory/inv-item-upload','InventorygstController@invitemFileUpload');
+
 
 });
 
@@ -525,6 +532,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/OEF/pending-report','OEFController@pendingOEF');
     Route::get('fgs/OEF/pending-OEF-export','OEFController@pendingOEFExport');
     Route::get('fgs/OEF/ackpdf/{oef_id}','OEFController@OEFackpdf');
+    Route::post('fgs/OEF/item-upload/{oef_id}','OEFController@upload_oef_item');
 
      //COEF
     Route::get('fgs/COEF/COEF-list','COEFController@COEFList');

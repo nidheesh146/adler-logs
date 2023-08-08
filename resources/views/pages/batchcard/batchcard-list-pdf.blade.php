@@ -62,43 +62,41 @@
     <table border="1" style="font-size:12px;width:100%;margin-top:5px;">
         <tr  style="font-size:11px;text-align:right;">
             <th style="width:27%;height:30px;">START DATE :</th>
-            <td style="width:30%">@if($batch->start_date) {{strtoupper(date( 'd M Y' , strtotime($batch->start_date)) )}} @endif</td>
+            <td style="width:30%" >@if($batch->start_date) {{strtoupper(date( 'd M Y' , strtotime($batch->start_date)) )}} @endif</td>
             <th style="width:27%">TARGET COMPLETION DATE :</th>
             <td style="width:30%">@if($batch->target_date) {{strtoupper(date( 'd M Y' , strtotime($batch->target_date)) )}} @endif</td>
         </tr>
          <tr  style="font-size:11px;height:20px;text-align:right;">
             <th style="width:27%;height:30px;">BATCH NO.:</th>
-            <td style="width:30%;font-size:12px"><b>{{ $batch->batch_no }}</b></td>
+            <td style="width:30%;font-size:12px" ><b>{{ $batch->batch_no }}</b></td>
             <th style="width:27%">QTY :</th>
             <td style="width:30%">{{ $batch->quantity }} Nos</td>
         </tr>
          <tr style="font-size:11px;height:20px;text-align:right;">
-            <th style="width:27%;height:30px;">ITEM CODE :</th>
-            <td style="width:30%">{{ $batch->sku_code }}</td>
+            <th style="width:27%;height:30px;" >ITEM CODE :</th>
+            <td style="width:30%" >{{ $batch->sku_code }}</td>
             <th style="width:27%">PROCESS SHEET NO :</th>
             <td style="width:30%">{{ $batch->process_sheet_no }}</td>
         </tr> 
          <tr style="font-size:11px;height:20px;text-align:right;">
             <th style="width:27%;height:30px;">INPUT MATERIAL CODE NO:</th>
-            <td style="width:30%">
+            
             @if($material)
-            @if($material->item_id1==0) Assembly @else {{ $material->item1 }} @endif
-            @if($material->item_id2==0 && $material->item_id2!=NULL) , Assembly @elseif($material->item2) , {{ $material->item2 }} @endif
-            @if($material->item_id3==0 && $material->item_id3!=NULL) , Assembly @elseif($material->item3) , {{ $material->item3 }} @endif 
-            @endif
-            </td>
-            <th style="width:27%"></th>
-            <td style="width:30%"></td>
+            
+            <td style="width:27%">@if($material->item_id1==0) Assembly @else {{ $material->item1 }} @endif</td>
+            <td style="width:27%">@if($material->item_id2==0 && $material->item_id2!=NULL) Assembly @elseif($material->item2){{ $material->item2 }} @endif</td>
+            <td style="width:30%">@if($material->item_id3==0 && $material->item_id3!=NULL) Assembly @elseif($material->item3){{ $material->item3 }} @endif</td>
+        @endif
         </tr>
          <tr  style="font-size:11px;text-align:right;">
             <th style="width:27%;height:50px;">INPUT MATERIAL LOT NO :</th>
-            <td style="width:30%"></td>
+            <td style="width:30%" ></td>
             <th style="width:27%"></th>
             <td style="width:30%"></td>
         </tr>
          <tr style="font-size:11px;height:40px;">
             <th style="width:27%;text-align:right;">BARCODE BATCH NO :</th>
-            <td style="width:30%;">
+            <td style="width:30%;" >
                 <img src="data:image/png;base64,{{ base64_encode($batchno_barcode)}}" style="width:120px;height:30px;margin-left:10px;margin-top:10px;">
                 <br/>
                 <div style="font-size:8px;font-weight:bold;text-align:center;width:120px;margin-left:10px;">* {{ $batch->batch_no }} *</div>
