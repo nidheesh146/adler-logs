@@ -262,7 +262,7 @@
           </ul>
         </li>
         <li class="nav-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit','RowMaterial.fixedRateList','RowMaterial.getfixedRateUpload',
-        'RowMaterial.materialUpload'])){{'active show'}} @endif ">
+        'RowMaterial.materialUpload','Inventorygst.Add_itemtype'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fas fa-swatchbook" style="font-size: 19px"></i>Raw Material</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit'])){{'active'}} @endif ">
@@ -276,6 +276,9 @@
             </li>
             <li class="nav-sub-item @if(in_array($Action,['RowMaterial.getfixedRateUpload'])){{'active'}} @endif ">
             <a href="{{url('row-material/fixed-rate/upload')}}"  class="nav-sub-link">Fixed Rate Material Upload</a>
+            </li>
+            <li class="nav-sub-item @if(in_array($Action,['Inventorygst.Add_itemtype'])){{'active'}} @endif ">
+            <a href="{{url('inventory/inventory-itemtype-add')}}"  class="nav-sub-link">Inv item type</a>
             </li>
           </ul>
         </li>
@@ -310,7 +313,7 @@
             
           </ul>
         </li>
-        <li class="nav-item @if(in_array($Action,['RolePermission.roleList','RolePermission.moduleList','RolePermission.permissionList','RolePermission.rolePermission'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['RolePermission.roleList','RolePermission.moduleList','RolePermission.permissionList','RolePermission.rolePermission','Config.get_config_list','Config.get_configpage','Config.add_configsetting'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fa fa-cog" style="font-size: 19px"></i>Settings</a>
           <ul class="nav-sub">
           <li class="nav-sub-item @if(in_array($Action,['RolePermission.roleList','RolePermission.rolePermission'])){{'active'}} @endif ">
@@ -325,11 +328,8 @@
             <li class="nav-sub-item @if(in_array($Action,['RolePermission.permissionList'])){{'active'}} @endif ">
             <a href="{{url('settings/permission')}}"  class="nav-sub-link">Permissions</a>
             </li>
-            <li class="nav-sub-item  ">
+             <li class="nav-sub-item @if(in_array($Action,['Config.get_config_list','Config.get_configpage','Config.add_configsetting'])){{'active'}} @endif ">
             <a href="{{url('settings/configlist')}}"  class="nav-sub-link">Config List</a>
-            </li>
-            <li class="nav-sub-item  ">
-            <a href="{{url('inventory/inventory-itemtype-add')}}"  class="nav-sub-link">Inv item type</a>
             </li>
           </ul>
         </li>

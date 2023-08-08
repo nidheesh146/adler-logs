@@ -4,10 +4,10 @@
   <br>
   <div class="container">
 	<div class="az-content-body">
-		<div class="az-content-breadcrumb"> 
+		<!-- <div class="az-content-breadcrumb"> 
 			 <span><a href="" style="color: #596881;">Settings</a></span>
              <span><a href="">Role</a></span>
-        </div>
+        </div> -->
        
         <br/><br/>
         <div class="row ">
@@ -19,7 +19,7 @@
                         <i class="icon fa fa-check"></i> {{ Session::get('succs') }}
                     </div>
                     @endif
-                            <h6 class="card-title">User role</h6>
+                            <h6 class="card-title">Row material</h6>
                             <p class="az-content-text mg-b-20"></p>
                             <div class="table-responsive">
                                 <table class="table">
@@ -76,7 +76,7 @@
                             </div>
                             @endif
                           <form  method="POST"  id="commentForm">
-                          <h6 class="card-title"> {{isset($edit) ? 'Update' : 'Create new' }} user role </h6>
+                          <h6 class="card-title"> {{isset($edit) ? 'Update' : 'Create new' }} Row material </h6>
                             <p class="az-content-text mg-b-20"></p>
                             {{ csrf_field() }}   
                             <div class="row">
