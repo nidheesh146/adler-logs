@@ -373,14 +373,14 @@ class OEFController extends Controller
         $file_name = "ORDER ACKNOWLEDGMENT" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
         return $pdf->stream($file_name . '.pdf');
     }
-    public function upload_oef_item(Request $request,$oef_id)
+    public function upload_oef_item(Request $request, $oef_id)
     {
         $file = $request->file('file');
         if ($file) {
             $pr_id = $request->pr_id;
             $ExcelOBJ = new \stdClass();
 
-            $path = storage_path().'/app/'.$request->file('file')->store('temp');
+            $path = storage_path() . '/app/' . $request->file('file')->store('temp');
 
             $ExcelOBJ->inputFileName = $path;
             $ExcelOBJ->inputFileType = 'Xlsx';
@@ -394,26 +394,21 @@ class OEFController extends Controller
             $no_column = 10;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
             //echo $sheet1_column_count;exit;
-            if($sheet1_column_count == $no_column)
-            {
-                 $res = $this->Excelsplitsheet($ExcelOBJ,$oef_id);
-                 //print_r($res);exit;
-                 if($res)
-                 {
+            if ($sheet1_column_count == $no_column) {
+                $res = $this->Excelsplitsheet($ExcelOBJ, $oef_id);
+                //print_r($res);exit;
+                if ($res) {
                     $request->session()->flash('success',  "Successfully uploaded.");
                     return redirect()->back();
-                 }
-                 else{
+                } else {
                     $request->session()->flash('error',  "The data already uploaded.");
                     return redirect()->back();
-                 }
-            }
-            else 
-            {
+                }
+            } else {
                 $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
                 return redirect()->back();
             }
-            
+
             //dd($ExcelOBJ->worksheetData);
             //exit;
         }
@@ -424,14 +419,13 @@ class OEFController extends Controller
         $ExcelOBJ->SQLdata = [];
         $ExcelOBJ->arrayinc = 0;
 
-        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) 
-        {
+        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) {
             $ExcelOBJ->sectionName = '';
             $ExcelOBJ->sheetName = $worksheet['worksheetName'];
             $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
             $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
             $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
-           // print_r(json_encode($ExcelOBJ->worksheet));exit;
+            // print_r(json_encode($ExcelOBJ->worksheet));exit;
             $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
             $ExcelOBJ->date_created = date('Y-m-d H:i:s');
             $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
@@ -443,11 +437,49 @@ class OEFController extends Controller
     {
         //echo $pr_id;exit;
         $data = [];
-        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
-        {
-            if ($key > 1 &&  $excelsheet[1]) 
-            {
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
+            if ($key > 1 &&  $excelsheet[1]) {
                 $product = DB::table('product_product')->where('sku_code', $excelsheet[1])->first();
+
+                $oef = fgs_oef::find($oef_id);
+
+
+                $customer = customer_supplier::select('customer_supplier.firm_name', 'zone.zone_name', 'state.state_name')
+                    ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+                    ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+                    ->where('customer_supplier.id', '=', $oef['customer_id'])->first();
+
+                // $condition[] = ['product_product.product_category_id', '=', $oef['product_category']];
+                // $data =  $this->product->get_product_for_oef($product->sku_code, $condition);
+                $data=DB::table('product_product')
+                ->select(['product_product.id','product_product.sku_code as text','product_product.discription','product_productgroup.group_name',
+                'product_product.hsn_code','product_price_master.sales','product_product.gst'])
+                    ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
+                    ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
+                    ->where('product_product.id',$product->id)
+                    //->where('product_product.product_category_id',$oef['product_category'])
+                    ->first();
+
+                    
+                    if ($data->gst != '') {
+                        if ($customer['state_name'] == 'Maharashtra') {
+                            $gst = $data->gst / 2;
+                            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->first();
+                        } else {
+                            $gst = $data->gst;
+                            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->where('inventory_gst.cgst', '=', $gst)->first();
+                        }
+                    }else{
+                        $gst_data = inventory_gst::select('inventory_gst.*')
+                        ->where('inventory_gst.sgst', '=', 0)
+                        ->where('inventory_gst.igst', '=', 0)
+                        ->where('inventory_gst.cgst', '=', 0)
+                        ->first();
+
+                    }
+                
+               
+
                 //print_r($item);
                 if($product)
                 {
@@ -458,10 +490,10 @@ class OEFController extends Controller
                         'remaining_qty_after_cancel'=>$excelsheet[4],
                         'rate'=>$excelsheet[5],
                         'discount'=>$excelsheet[6],
-                        'gst'=>$excelsheet[7],
-                        'created_at'=>date('Y-m-d H:i:s',strtotime($excelsheet[9],)),
+                        'gst'=>$gst_data->id,
+                        'created_at'=>date('Y-m-d H:i:s',strtotime($excelsheet[9])),
                         'coef_status'=>$excelsheet[8],
-                        
+
 
                     ];
                     $ins_id=DB::table('fgs_oef_item')
@@ -476,15 +508,14 @@ class OEFController extends Controller
                   //this->inv_purchase_req_item->insert_data($data,$pr_id);
                     //$res = DB::table('batchcard_batchcard')->insert($data);
                 }
-                    
+
             }
+            
             // if( count($data) > 0){
             // $res = DB::table('batchcard_batchcard')->insert($data);  
             // }   
         }
         return $data;
-    
-            
     }
     
 }
