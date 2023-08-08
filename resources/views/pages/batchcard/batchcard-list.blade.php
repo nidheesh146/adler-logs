@@ -118,8 +118,8 @@
                             <td>{{$card['batch_no']}}</td>
                             <td>{{$card['sku_code']}}</td>
                             <td>{{$card['quantity']}}</td>
-                            <td>{{$card['start_date']}}</td>
-                            <td>{{$card['target_date']}}</td>
+                            <td>@if($card['start_date']) {{date( 'd-m-Y' , strtotime($card['start_date']))}} @endif</td>
+                            <td>@if($card['target_date']) {{date( 'd-m-Y' , strtotime($card['target_date']))}} @endif</td>
                             <td>{{$card['process_sheet_no']}}</td>
                             <td>
 								@foreach($card['material'] as $material)

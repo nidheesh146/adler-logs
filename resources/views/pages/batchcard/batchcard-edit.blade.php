@@ -107,12 +107,12 @@
                                         </div> --}}
                                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                                 <label>Start Date *</label>
-                                            <input type="date" class="form-control start_date"  value="{{date('Y-m-d',strtotime($batchcard['start_date']))}}" name="start_date" placeholder="Start Date">
+                                            <input type="date" class="form-control start_date"  value="@if($batchcard['start_date']) {{date('Y-m-d',strtotime($batchcard['start_date']))}} @endif" name="start_date" placeholder="Start Date">
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                             <label>Target Date *</label>
                                             @php $date= date('Y-m-d', strtotime('+60 days')) @endphp
-                                            <input type="text" class="form-control target_date" name="target_date" value="{{date('d-m-Y', strtotime($date))}}" placeholder="Target Date">
+                                            <input type="text" class="form-control target_date" name="target_date" value="@if($batchcard['start_date']) {{date('d-m-Y', strtotime($date))}} @endif" placeholder="Target Date">
                                         </div><!-- form-group -->
                                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                             <label>Product Description *</label>
@@ -128,7 +128,7 @@
                                             <?php $i=1; ?>
                                             @foreach($input_materials as $material)
                                             <tr>
-                                                <th>{{ $i++ }}
+                                                <th>{{ $i }}
                                                 <input type="hidden" name="product_inputmaterial_id" value="{{$material['id']}}"></th></th>
                                                 @if($material['item1_id']==0)
                                                 <td><input type="radio" class="item-select-radio" checked name="material{{$i}}" value="{{$material['id']}}">Assembly<br/>
@@ -188,7 +188,7 @@
                                                     Quantity
                                                     <div class="input-group mb-3">
                                                         <input type="text" class="form-control material-qty qty{{$i}}" name="qty{{$i}}" value="@if($material['quantity3']) {{$material['quantity3']}} @else 0 @endif" required aria-describedby="unit-div1" >
-                                                        <input type="hidden" class="materialqty materialqty{{$i}}" name="materialqty{{$i}}" value="@if($material['quantity3']) {{$material['quantity3']}} @else 0 @endif">
+                                                        <input type="hidden" class="materialqty materialqty{{$i++}}" name="materialqty{{$i}}" value="@if($material['quantity3']) {{$material['quantity3']}} @else 0 @endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text unit-div" id="unit-div1">{{$material['unit3']}}</span>
                                                         </div>

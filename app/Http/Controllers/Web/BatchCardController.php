@@ -464,7 +464,7 @@ class BatchCardController extends Controller
                         'created'=>date('Y-m-d H:i:s'),
                         'updated'=>date('Y-m-d H:i:s'),
                         'start_date' => ($excelsheet[3]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
-                        'target_date' => ($excelsheet[10]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[9]))->format('Y-m-d')) : NULL,
+                        'target_date' => ($excelsheet[10]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[10]))->format('Y-m-d')) : NULL,
 
                     ];
                     $res = DB::table('batchcard_batchcard')->insertGetId($data);
@@ -510,6 +510,30 @@ class BatchCardController extends Controller
                     $material['product_inputmaterial_id'] = $prdct_input_material_id;
                     $batchcard_material = DB::table('batchcard_materials')->insert($material);
                     
+                }
+                if($batchcard && $product)
+                {
+                    if(strtolower($excelsheet[6]) == 'assembly')
+                    $is_assemble = 1;
+                    elseif(strtolower($excelsheet[5]) == 'assembly')
+                    $is_assemble = 1;
+                    else
+                    $is_assemble = 0;
+                    $data = [
+                        'batch_no' =>$excelsheet[0],
+                        'quantity'=>$excelsheet[11],
+                        'description'=>$excelsheet[2],
+                        'product_id'=>$product->id,
+                        'process_sheet_id' => $excelsheet[12],
+                        'is_active'=>1,
+                        'is_assemble'=>$is_assemble,
+                        'created'=>date('Y-m-d H:i:s'),
+                        'updated'=>date('Y-m-d H:i:s'),
+                        'start_date' => ($excelsheet[3]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
+                        'target_date' => ($excelsheet[10]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[10]))->format('Y-m-d')) : NULL,
+
+                    ];
+                    $res = DB::table('batchcard_batchcard')->where('id', $batchcard->id)->update($data);
                 }
                     
             }
