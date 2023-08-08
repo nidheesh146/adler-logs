@@ -167,7 +167,7 @@
 									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
 										<label for="exampleInputEmail1">Select File*</label>
 										<input type="file" required class="form-control file" name="file" id="file">
-										<a href="{{ asset('uploads/mrn_items_sample.xlsx') }}" target="_blank" style="float: right; font-size: 10px;"> Download Template</a>
+										<a href="{{ asset('uploads/FGS_mrn_item_sample.xlsx') }}" target="_blank" style="float: right; font-size: 10px;"> Download Template</a>
 									</div>
 								</div>
 								<div class="row">
