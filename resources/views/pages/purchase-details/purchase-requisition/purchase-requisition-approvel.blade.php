@@ -70,7 +70,7 @@
 		@endif
         @include('includes.purchase-details.pr-sr-tab')
 		<div class="tab-content">
-        <div class="row row-sm mg-b-20 mg-lg-b-0">
+                <div class="row row-sm mg-b-20 mg-lg-b-0">
                     <div class="table-responsive" style="margin-bottom: 13px;">
                         <table class="table table-bordered mg-b-0">
                             <tbody>

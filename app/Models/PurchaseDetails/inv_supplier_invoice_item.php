@@ -154,6 +154,7 @@ class inv_supplier_invoice_item extends Model
                     ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id', '=','inv_supplier_invoice_master.po_master_id')
                     ->leftjoin('inv_supplier', 'inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
                     ->leftjoin('inv_item_type', 'inv_item_type.id', '=','inventory_rawmaterial.item_type_id' )
+                    ->leftjoin('inv_item_type_2', 'inv_item_type_2.id', '=','inventory_rawmaterial.item_type_id_2' )
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->leftjoin('inv_lot_allocation', function($join)
                     {
@@ -162,6 +163,7 @@ class inv_supplier_invoice_item extends Model
                     })
                     ->where($condition)
                     ->where('inv_item_type.type_name','=','Direct Items')
+                    ->where('inv_item_type_2.type_name','!=','Finished Goods')
                     ->where('inv_supplier_invoice_item.is_merged','=',0)
                     ->groupBy('inv_supplier_invoice_item.id')
                     ->orderBy('inv_supplier_invoice_item.id','desc')

@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="post" id="commentForm" novalidate="novalidate" action="{{ url('inventory/MRN-item-update') }}">
+                    <form method="post" id="commentForm" novalidate="novalidate" action="{{ url('fgs/MRN-item-update') }}">
                         {{ csrf_field() }}
                         <div class="row">
 

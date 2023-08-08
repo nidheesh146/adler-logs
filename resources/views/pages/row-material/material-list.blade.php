@@ -91,7 +91,7 @@
 									<th>Type1 </th>
 									<th>Type2 </th>
 									<th>Description</th>
-									<th>Brand </th>
+									<!--th>Brand </th-->
 									<th>Origin</th>
 									<th>Receipt Unit</th>
 									<th>Action</th>
@@ -104,7 +104,7 @@
                             <td>{{$item['type1']}}</td>
                             <td>{{$item['type2']}}</td>
                             <td>{{$item['discription']}}</td>
-                            <td>{{$item['item_code']}}</td>
+                            {{--<td>{{$item['item_code']}}</td> --}}
                             <td>{{$item['item_origin']}}</td>
                             <td>{{$item['unit_name']}}</td>
 							<td>

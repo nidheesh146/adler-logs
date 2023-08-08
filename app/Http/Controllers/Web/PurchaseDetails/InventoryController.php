@@ -226,18 +226,27 @@ class InventoryController extends Controller
     // Purchase Reqisition item get list
     public function get_purchase_reqisition_item(Request $request)
     {
-        if((!$request->pr_id) AND (!$request->sr_id)){
-            return response()->view('errors/404', [], 404);
+        $condition = [];
+        // if((!$request->pr_id) AND (!$request->sr_id)){
+        //     return response()->view('errors/404', [], 404);
+        // }
+        if($request->item_code) {
+            $condition[] = ['inventory_rawmaterial.item_code','like', '%'.$request->item_code.'%'];
+        }
+        if ($request->status || $request->status == '0') {
+            $condition = ['inv_purchase_req_item_approve.status'=>$request->status];
         }
         if($request->pr_id)
         {
+            $condition = ['inv_purchase_req_master_item_rel.master'=>$request->pr_id];
             $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->pr_id]);
-            $data['item'] = $this->inv_purchase_req_item->getItemdata(['inv_purchase_req_master_item_rel.master'=>$request->pr_id]);
+            $data['item'] = $this->inv_purchase_req_item->getItemdata($condition);
         }
         else 
         {
+            $condition = ['inv_purchase_req_master_item_rel.master'=>$request->sr_id];
             $data["master"] = $this->inv_purchase_req_master->get_data(['master_id'=>$request->sr_id]);
-            $data['item'] = $this->inv_purchase_req_item->getItemdata(['inv_purchase_req_master_item_rel.master'=>$request->sr_id]);
+            $data['item'] = $this->inv_purchase_req_item->getItemdata($condition);
         }
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-item-list', compact('data'));
         
@@ -451,18 +460,15 @@ class InventoryController extends Controller
     // Purchase Reqisition item delete 
     public function delete_purchase_reqisition_item(Request $request)
     {
-        if($request->item_id){
+        if($request->pr_item_id){
             
-            $this->inv_purchase_req_item->updatedata(['requisition_item_id'=>$request->item_id],['inv_purchase_req_item.status'=>0]);
+            $this->inv_purchase_req_item->updatedata(['requisition_item_id'=>$request->pr_item_id],['inv_purchase_req_item.status'=>0]);
             DB::table('inv_purchase_req_item_approve')
-            ->where('pr_item_id',$request->item_id)
-            ->update(['status'=>2]);
+            ->where('pr_item_id',$request->pr_item_id)
+            ->update(['status'=>2,'delete_reason'=>$request->reason]);
             $request->session()->flash('success',  "You have successfully deleted a  purchase requisition item !");
         }
-        if($request->pr_id)
-        return redirect('inventory/get-purchase-reqisition-item?pr_id='.$request->pr_id);
-        else
-        return redirect('inventory/get-purchase-reqisition-item?sr_id='.$request->sr_id);
+        return redirect()->back();
     }
 
     function itemcodesearch(Request $request,$itemcode = null){

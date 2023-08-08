@@ -2,7 +2,7 @@
 @section('content')
 @php
 use App\Http\Controllers\Web\FGS\FgsreportController;
-$obj_fgs=new FgsreportController();
+$fn=new FgsreportController();
 @endphp
 <div class="az-content az-content-dashboard">
     <br>
@@ -86,21 +86,21 @@ $obj_fgs=new FgsreportController();
                                     <th rowspan="2">Sl</th>
                                     <th rowspan="2">Item Code </th>
                                     <th rowspan="2">Batch </th>
-                                     <th rowspan="2">Date </th> 
                                     <th rowspan="2">Description </th>
+                                    <th rowspan="2">Date of Mfg. </th>
+                                    <th rowspan="2">Date of Expiry. </th> 
                                     <th colspan="4">MRN</th>
                                     <th colspan="4">OEF</th>
                                     <th colspan="4">COEF</th>
-                                    <th colspan="4">PI</th>
-                                    <th colspan="4">CPI</th>
                                     <th colspan="3">GRS</th>
                                     <th colspan="3">CGRS</th>
+                                    <th colspan="3">PI</th>
+                                    <th colspan="3">CPI</th>
                                     <th colspan="3">MIN</th>
 									<th colspan="3">CMIN</th>
-                                    <th colspan="3">MIS</th>
-                                    
                                     <th colspan="3">MTQ</th>
                                     <th colspan="3">CMTQ</th>
+                                    <th colspan="3">MIS</th>
                                     
                                 </tr>
                                 <tr>
@@ -119,23 +119,21 @@ $obj_fgs=new FgsreportController();
                                     <td>COEF date</td>
                                     <td>WEF</td>
 
-                                    <td>PI number</td>
-                                    <td>Qty</td>
-                                    <td>PI date</td>
-                                    <td>WEF</td>
-
-                                    <td>CPI number</td>
-                                    <td>Qty</td>
-                                    <td>CPI date</td>
-                                    <td>WEF</td>
-
                                     <td>GRS number</td>
-                                    <td>GRS date</td>
+                                    <td >GRS date</td>
                                     <td>WEF</td>
 
                                     <td>CGRS number</td>
                                     <td>CGRS date</td>
-                                    <td>WEF</td>
+                                    <td>WEF</td> 
+
+                                    <td>PI number</td>
+                                    <td>Qty</td>
+                                    <td>PI date</td>
+
+                                    <td>CPI number</td>
+                                    <td>Qty</td>
+                                    <td>CPI date</td>
 
                                     <td>MIN number</td>
                                     <td>MIN date</td>
@@ -145,10 +143,6 @@ $obj_fgs=new FgsreportController();
                                     <td>CMIN date</td>
                                     <td>WEF</td>
 
-                                    <td>MIS number</td>
-                                    <td>MIS date</td>
-                                    <td>WEF</td>
-
                                     <td>MTQ number</td>
                                     <td>MTQ date</td>
                                     <td>WEF</td>
@@ -156,162 +150,296 @@ $obj_fgs=new FgsreportController();
                                     <td>CMTQ number</td>
                                     <td>CMTQ date</td>
                                     <td>WEF</td>
+
+                                    <td>MIS number</td>
+                                    <td>MIS date</td>
+                                    <td>WEF</td>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($product_details as $product_detail)
+                                @foreach($items as $item)
                                 <tr>
                                     <td>{{$sl++}}</td>
-                                    <td>{{$product_detail->sku_code}}</td>
-                                    <td>{{$product_detail->batch_no}}</td>
-                                     <td>{{date('d-m-Y',strtotime($product_detail->created))}}</td> 
-                                    <td>{{$product_detail->discription}}</td>
+                                    <td>{{$item->sku_code}}</td>
+                                    <td>{{$item->batch_no}}</td>
+                                    <td>{{$item->discription}}</td>
+                                    <td>{{date('d-m-Y',strtotime($item->manufacturing_date))}}</td>
+                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td> 
                                     <!-- mrn -->
-                                    @if(!empty($obj_fgs->get_mrn($product_detail->id)))
-                                    <td>{{$obj_fgs->get_mrn($product_detail->id)->mrn_number}}</td>
-                                    <td>{{$obj_fgs->get_mrn($product_detail->id)->quantity}}</td>
-                                    <td>{{$obj_fgs->get_mrn($product_detail->id)->mrn_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_mrn($product_detail->id)->created_at))}}</td>
+                                    <td>{{$item->mrn_number}}</td>
+                                    <td>{{$item->quantity}} Nos</td>
+                                    <td>{{date('d-m-Y',strtotime($item->mrn_date))}}</td>
+                                    <td>{{date('d-m-Y',strtotime($item->mrn_wef))}}</td>
+                                    <!-- oef -->
+                                    <?php $oef_data=$fn->getOEFDetails($item->mrn_item_id);?>
+                                    @if($oef_data)
+                                    <td>{{$oef_data->oef_number}}</td>
+                                    <td>{{$oef_data->remaining_qty_after_cancel}}Nos</td>
+                                    <td>{{date('d-m-Y',strtotime($oef_data->oef_date))}}</td>
+                                    <td>{{date('d-m-Y',strtotime($oef_data->oef_wef))}}</td> 
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>          
-                                    @endif
-                                <!-- oef -->
-                                @if(!empty($obj_fgs->get_oef($product_detail->id)))
-                                    <td>{{$obj_fgs->get_oef($product_detail->id)->oef_number}}</td>
-                                    <td>{{$obj_fgs->get_oef($product_detail->id)->quantity}}</td>
-                                    <td>{{$obj_fgs->get_oef($product_detail->id)->oef_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_oef($product_detail->id)->created_at))}}</td>
-                                    @else
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>        
-                                    @endif
+                                    <td></td> 
+                                    @endif       
                                     <!-- coef -->
-                                @if(!empty($obj_fgs->get_coef($product_detail->id)))
-                                    <td>{{$obj_fgs->get_coef($product_detail->id)->coef_number}}</td>
-                                    <td>{{$obj_fgs->get_coef($product_detail->id)->quantity}}</td>
-                                    <td>{{$obj_fgs->get_coef($product_detail->id)->coef_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_coef($product_detail->id)->created_at))}}</td>
+                                    @if($oef_data)
+                                    <?php $coef_data=$fn->getCOEFDetails($oef_data->oef_item_id);?>
+                                    @endif
+                                    @if( $oef_data && $coef_data)
+                                    <td>{{$coef_data->coef_number}}</td>
+                                    <td>{{$coef_data->quantity}}Nos</td>
+                                    <td>{{date('d-m-Y',strtotime($coef_data->coef_date))}}</td>
+                                    <td>{{date('d-m-Y',strtotime($coef_data->coef_wef))}}</td>         
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>        
+                                    <td></td>
                                     @endif
+                                    <!-- GRS -->
+                                    <?php $grs_datas = $fn->getGRSDetails($item->mrn_item_id); ?>
+                                    @if($grs_datas)
+                                    <td>
+                                        @foreach($grs_datas as $grs_data)
+                                        {{$grs_data->grs_number}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($grs_datas as $grs_data)
+                                        {{date('d-m-Y',strtotime($grs_data->grs_date))}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($grs_datas as $grs_data)   
+                                        {{date('d-m-Y',strtotime($grs_data->grs_wef))}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <!-- <td></td>    -->
+                                    @else  
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- <td></td> -->
+                                    @endif     
+                                    
+                                    <!-- CGRS -->
+                                    @if($grs_datas)
+                                        <td>
+                                            @foreach($grs_datas as $grs_data)
+                                            <?php $cgrs_data = $fn->getCGRSDetails($grs_data->grs_item_id); ?>
+                                            @if($cgrs_data) 
+                                                {{$cgrs_data->cgrs_number}}<br/>
+                                            @endif
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach($grs_datas as $grs_data)
+                                            <?php $cgrs_data = $fn->getCGRSDetails($grs_data->grs_item_id); ?>
+                                            @if($cgrs_data) 
+                                                {{date('d-m-Y',strtotime($cgrs_data->cgrs_date))}}<br/>
+                                            @endif
+                                            @endforeach
+                                            
+                                        </td>
+                                        <td>@foreach($grs_datas as $grs_data)
+                                            <?php $cgrs_data = $fn->getCGRSDetails($grs_data->grs_item_id); ?>
+                                            @if($cgrs_data) 
+                                                {{date('d-m-Y',strtotime($cgrs_data->cgrs_wef))}}<br/>
+                                            @endif
+                                            @endforeach
+                                        </td>  
+                                    @else 
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>  
+                                     @endif
+
+                                    
                                     <!-- PI -->
-                                    @if(!empty($obj_fgs->get_pi($product_detail->id)))
-                                    <td>{{$obj_fgs->get_pi($product_detail->id)->pi_number}}</td>
-                                    <td>{{$obj_fgs->get_pi($product_detail->id)->batch_qty}}</td>
-                                    <td>{{$obj_fgs->get_pi($product_detail->id)->pi_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_pi($product_detail->id)->created_at))}}</td>
+                                    <?php $pi_datas = $fn->getPIDetails($item->mrn_item_id); ?>
+                                    @if($pi_datas)
+                                    <td>
+                                        @foreach($pi_datas as $pi_data)
+                                        {{$pi_data->pi_number}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($pi_datas as $pi_data)
+                                        {{$pi_data->remaining_qty_after_cancel}} Nos<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($pi_datas as $pi_data)
+                                        {{date('d-m-Y',strtotime($pi_data->pi_date))}}<br/>
+                                        @endforeach
+                                    </td>
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>          
                                     @endif
+                                           
                                     <!-- CPI -->
-                                    @if(!empty($obj_fgs->get_cpi($product_detail->id)))
-                                    <td>{{$obj_fgs->get_cpi($product_detail->id)->cpi_number}}</td>
-                                    <td>{{$obj_fgs->get_cpi($product_detail->id)->batch_qty}}</td>
-                                    <td>{{$obj_fgs->get_cpi($product_detail->id)->cpi_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_cpi($product_detail->id)->created_at))}}</td>
-                                    @else
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>          
-                                    @endif
-                                    <!-- grs -->
-                                    @if(!empty($obj_fgs->get_grs($product_detail->id)))
-                                    <td>{{$obj_fgs->get_grs($product_detail->id)->grs_number}}</td>
                                     
-                                    <td>{{$obj_fgs->get_grs($product_detail->id)->grs_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_grs($product_detail->id)->created_at))}}</td>
+                                    <?php $cpi_datas = $fn->getCPIDetails($item->mrn_item_id); ?>
+                                    @if($cpi_datas)
+                                    <td>
+                                        @foreach($cpi_datas as $cpi_data)
+                                        {{$cpi_data->cpi_number}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($cpi_datas as $cpi_data)
+                                        {{$cpi_data->quantity}} Nos<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($cpi_datas as $cpi_data)
+                                        {{date('d-m-Y',strtotime($cpi_data->cpi_date))}}<br/>
+                                        @endforeach
+                                    </td>
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                           
                                     @endif
-                                    <!-- cgrs -->
-                                    @if(!empty($obj_fgs->get_cgrs($product_detail->id)))
-                                    <td>{{$obj_fgs->get_cgrs($product_detail->id)->cgrs_number}}</td>
+                                           
                                     
-                                    <td>{{$obj_fgs->get_cgrs($product_detail->id)->cgrs_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_cgrs($product_detail->id)->created_at))}}</td>
-                                    @else
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                           
-                                    @endif
                                     <!-- min -->
-                                    @if(!empty($obj_fgs->get_min($product_detail->id)))
-                                    <td>{{$obj_fgs->get_min($product_detail->id)->min_number}}</td>
-                                    
-                                    <td>{{$obj_fgs->get_min($product_detail->id)->min_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_min($product_detail->id)->created_at))}}</td>
+                                    <?php $min_datas = $fn->getMINDetails($item->batch_id); ?>
+                                    @if($min_datas)
+                                    <td>
+                                        @foreach($min_datas as $min_data)
+                                        {{$min_data->min_number}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($min_datas as $min_data)
+                                        {{date('d-m-Y',strtotime($min_data->min_date))}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($min_datas as $min_data)
+                                        {{date('d-m-Y',strtotime($min_data->min_wef))}}<br/>
+                                        @endforeach
+                                    </td>
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                             
                                     @endif
+                                             
+                                
                                     <!-- cmin -->
-                                    @if(!empty($obj_fgs->get_cmin($product_detail->id)))
-                                    <td>{{$obj_fgs->get_cmin($product_detail->id)->cmin_number}}</td>
-                                    
-                                    <td>{{$obj_fgs->get_cmin($product_detail->id)->cmin_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_cmin($product_detail->id)->created_at))}}</td>
+                                    <?php $cmin_datas = $fn->getCMINDetails($item->batch_id); ?>
+                                    @if($cmin_datas)
+                                    <td>
+                                        @foreach($cmin_datas as $cmin_data)
+                                        {{$cmin_data->cmin_number}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($cmin_datas as $cmin_data)
+                                        {{date('d-m-Y',strtotime($cmin_data->cmin_date))}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($cmin_datas as $cmin_data)
+                                        {{date('d-m-Y',strtotime($cmin_data->cmin_wef))}}<br/>
+                                        @endforeach
+                                    </td>
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                             
-                                    @endif
-                                    <!-- mis -->
-                                    @if(!empty($obj_fgs->get_mis($product_detail->id)))
-                                    <td>{{$obj_fgs->get_mis($product_detail->id)->mis_number}}</td>
+                                    @endif       
+                                              
                                     
-                                    <td>{{$obj_fgs->get_mis($product_detail->id)->mis_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_mis($product_detail->id)->created_at))}}</td>
-                                    @else
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                             
-                                    @endif
                                     <!-- dni -->
                                    
                                      <!-- mtq -->
-                                     @if(!empty($obj_fgs->get_mtq($product_detail->id)))
-                                    <td>{{$obj_fgs->get_mtq($product_detail->id)->mtq_number}}</td>
-                                    
-                                    <td>{{$obj_fgs->get_mtq($product_detail->id)->mtq_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_mtq($product_detail->id)->created_at))}}</td>
+                                     <?php $mtq_datas = $fn->getMTQDetails($item->batch_id); ?>
+                                    @if($mtq_datas)
+                                    <td>
+                                        @foreach($mtq_datas as $mtq_data)
+                                        {{$mtq_data->mtq_number}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($mtq_datas as $mtq_data)
+                                        {{date('d-m-Y',strtotime($mtq_data->mtq_date))}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($mtq_datas as $mtq_data)
+                                        {{date('d-m-Y',strtotime($mtq_data->mtq_wef))}}<br/>
+                                        @endforeach
+                                    </td>
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                             
-                                    @endif
+                                    @endif   
                                      <!-- cmtq -->
-                                     @if(!empty($obj_fgs->get_cmtq($product_detail->id)))
-                                    <td>{{$obj_fgs->get_cmtq($product_detail->id)->cmtq_number}}</td>
-                                    
-                                    <td>{{$obj_fgs->get_cmtq($product_detail->id)->cmtq_date}}</td>
-                                    <td>{{date('d-m-Y',strtotime($obj_fgs->get_cmtq($product_detail->id)->created_at))}}</td>
+                                     <?php $cmtq_datas = $fn->getCMTQDetails($item->batch_id); ?>
+                                    @if($cmtq_datas)
+                                    <td>
+                                        @foreach($cmtq_datas as $cmtq_data)
+                                        {{$cmtq_data->cmtq_number}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($cmtq_datas as $cmtq_data)
+                                        {{date('d-m-Y',strtotime($cmtq_data->cmtq_date))}}<br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($cmtq_datas as $cmtq_data)
+                                        {{date('d-m-Y',strtotime($cmtq_data->cmtq_wef))}}<br/>
+                                        @endforeach
+                                    </td>
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
+                                    @endif  
+                                    
+                                    <!--mis -->
+                                    @if($mtq_datas)
+                                        <td>
+                                            @foreach($mtq_datas as $mtq_data)
+                                            <?php $mis_data = $fn->getMISDetails($mtq_data->mtq_item_id); ?>
+                                            @if($mis_data) 
+                                                {{$mis_data->mis_number}}<br/>
+                                            @endif
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach($mtq_datas as $mtq_data)
+                                            <?php $mis_data = $fn->getMISDetails($mtq_data->mtq_item_id); ?>
+                                            @if($mis_data)  
+                                                {{date('d-m-Y',strtotime($mis_data->mis_date))}}<br/>
+                                            @endif
+                                            @endforeach
+                                            
+                                        </td>
+                                        <td>
+                                            @foreach($mtq_datas as $mtq_data)
+                                            <?php $mis_data = $fn->getMISDetails($mtq_data->mtq_item_id); ?>
+                                            @if($mis_data)  
+                                                {{date('d-m-Y',strtotime($mis_data->mis_wef))}}<br/>
+                                            @endif
+                                            @endforeach
+                                        </td>  
+                                    @else 
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>  
+                                     @endif
                                              
-                                    @endif
+                                    
                                     
                                 </tr>
                                 @endforeach
@@ -319,7 +447,7 @@ $obj_fgs=new FgsreportController();
                             </tbody>
                         </table>
                         <div class="box-footer clearfix">
-                            {{$product_details->appends(request()->input())->links();}}
+                            {{$items->appends(request()->input())->links();}}
                         </div>
                     </div>
                 </div>

@@ -311,6 +311,45 @@ class RowMaterialController extends Controller
                 }
                 else
                 {
+                    $data['item_code'] = $excelsheet[1];
+                    $data['item_name'] = $excelsheet[2];
+                    $data['item_short_name'] = $excelsheet[3];
+                    $data['discription'] = $excelsheet[4];
+                    $data['short_description'] =  $excelsheet[5];
+                    $data['item_type_id'] = $this->identify_id($excelsheet[6],"ITEM TYPE");
+                    //$data['item_type_id'] = 4;
+                    $data['item_type_id_2'] = $this->identify_id($excelsheet[7],"ITEM TYPE 2");
+                    //$data['item_type_id_2'] = 18;
+                    $data['receipt_unit_id'] = $this->identify_id($excelsheet[8],"RECEIPT UNIT");
+                    $data['issue_unit_id'] = $this->identify_id($excelsheet[8],"ISSUE UNIT");
+                    $data['stock_keeping_unit_id'] =  $this->identify_id($excelsheet[8],"STOCK KEEPING UNIT");
+                    $data['conv_fact_in_ru'] =  $excelsheet[11];
+                    $data['conv_fact_in_iu'] =  $excelsheet[12];
+                    $data['reorder_level'] = $excelsheet[13];
+                    $data['min_stock'] = $excelsheet[14];
+                    $data['max_stock'] = $excelsheet[15];
+                    $data['over_stock'] = $excelsheet[16];
+                    $data['item_origin'] = $excelsheet[17];
+                    $data['min_stock_set_date'] =   (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[18]))->format('Y-m-d') == '1970-01-01') ? '2000-01-01' : \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[18]))->format('Y-m-d');
+                    $data['max_stock_set_date'] =   (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[19]))->format('Y-m-d') == '1970-01-01') ? '2000-01-01' : \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[19]))->format('Y-m-d');
+                    $data['reorder_set_date']   =   (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[20]))->format('Y-m-d') == '1970-01-01') ? '2000-01-01' : \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[20]))->format('Y-m-d');
+                    $data['overstock_set_date'] =   (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[21]))->format('Y-m-d') == '1970-01-01') ? '2000-01-01' : \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[21]))->format('Y-m-d');
+                    $data['quantity'] = $excelsheet[22];
+                    $data['stock_type'] = $excelsheet[23];
+                    $data['brand_id'] = $excelsheet[24];
+                    $data['company_purchase_rate'] = $excelsheet[25];
+                    $data['purchase_rate'] = $excelsheet[26];
+                    $data['sales_rate'] = $excelsheet[27];
+                    $data['ad_sp1'] = $excelsheet[28];
+                    $data['ad_sp2'] = $excelsheet[29];
+                    $data['path'] = $excelsheet[30];
+                    $data['hierarchy_path'] = $excelsheet[31];
+                    $data['unit_weight_kgs'] = $excelsheet[32];
+                    $data['revision_record'] = $excelsheet[33];
+                    $data['is_active'] = 1;
+                    $data['expiry_control'] = ($excelsheet[35] == 'N') ? 0 : 1;
+                    $data['created'] = date('Y-m-d');
+                    $res[] = DB::table('inventory_rawmaterial')->where('item_code',$excelsheet[1])->update($data);
                     $res[] = 1;
                 }
                 

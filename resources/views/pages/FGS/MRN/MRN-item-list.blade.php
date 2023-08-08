@@ -17,6 +17,7 @@
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MRN/add-item/'.$mrn_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
 						MRN Item
 				</button>
+				<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" mrnid="{{$mrn_id}}" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>
               <div>  
 				
               </div>
@@ -123,8 +124,8 @@
                                     <td width="10%">{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                                     <td width="10%">@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td>
 									<td>
-									{{--<a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRN-item-edit/'.$item['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> --}}
-                            		<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRN-item-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+									{{--<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MRN-item-edit/'.$item['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> --}}
+                            		<a class="badge badge-danger" style="font-size: 13px;" href="{{url('fgs/MRN-item-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
 									</td>
 								</tr>
 								@endforeach
@@ -140,6 +141,49 @@
 		</div>
 	</div>
 	<!-- az-content-body -->
+	<div class="modal fade" id="uploadModal" role="dialog">
+		<div class="modal-dialog modal-xs">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header" style="display: block;">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Upload  MRN Items<span id="mrn_number"></span></h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
+							<form method="POST" id="commentForm" action="{{url('fgs/MRN/item-upload')}}" novalidate="novalidate" enctype='multipart/form-data'>
+								{{ csrf_field() }}
+								<div class="row">
+									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<label for="exampleInputEmail1">Product Category</label>
+										<input type="text" required class="form-control" name="product_category" id="product_category">
+										<input type="hidden" name="mrn_id" id="mrn_id" value="">
+									</div>
+									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<label for="exampleInputEmail1">Stock Location</label>
+										<input type="text" required class="form-control" name="stock_location" id="stock_location">
+									</div>
+									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<label for="exampleInputEmail1">Select File*</label>
+										<input type="file" required class="form-control file" name="file" id="file">
+										<a href="{{ asset('uploads/mrn_items_sample.xlsx') }}" target="_blank" style="float: right; font-size: 10px;"> Download Template</a>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+											Save
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> <!-- model -->
 </div>
 
 <script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -174,6 +218,17 @@
 		{
 			e.preventDefault();
 		}
+	});
+	$(".item-upload").on("click", function() {
+		var mrn_number = $(this).data('MRNNumber');
+		var mrn_id = $(this).attr('mrnid');
+		$('#mrn_id').val(mrn_id);
+		$.get("{{ url('fgs/fetchMRNInfo') }}?mrn_id="+mrn_id,function(data)
+        {
+			$('#mrn_number').html(' (' + data.mrn_number + ')');
+			$('#product_category').val(data.category_name);
+			$('#stock_location').val(data.location_name);
+		});
 	});
 </script>
 

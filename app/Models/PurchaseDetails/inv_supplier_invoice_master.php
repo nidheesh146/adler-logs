@@ -230,7 +230,8 @@ class inv_supplier_invoice_master extends Model
 
     function find_invoice_num($condition)
     {
-        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id'])
+        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id','inv_supplier.vendor_name'])
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
         ->where($condition)
         ->whereNotIn('inv_supplier_invoice_master.id',function($query) {
 
@@ -243,7 +244,9 @@ class inv_supplier_invoice_master extends Model
 
     function find_invoice_num_for_mac($condition)
     {
-        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id'])->where($condition)
+        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id','inv_supplier.vendor_name'])
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+        ->where($condition)
         ->whereNotIn('inv_supplier_invoice_master.id',function($query) {
 
             $query->select('inv_mac.invoice_id')->from('inv_mac')->where('inv_mac.status','=',1);
@@ -255,7 +258,9 @@ class inv_supplier_invoice_master extends Model
     }
     function find_invoice_num_for_woa($condition)
     {
-        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id'])->where($condition)
+        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id','inv_supplier.vendor_name'])
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+        ->where($condition)
         ->whereNotIn('inv_supplier_invoice_master.id',function($query) {
 
             $query->select('inv_mac.invoice_id')->from('inv_mac')->where('inv_mac.status','=',1);
@@ -267,7 +272,9 @@ class inv_supplier_invoice_master extends Model
     }
     function find_invoice_num_for_mrd($condition)
     {
-        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id'])->where($condition)
+        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id','inv_supplier.vendor_name'])
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
+        ->where($condition)
         ->whereNotIn('inv_supplier_invoice_master.id',function($query) {
 
             $query->select('inv_mrd.invoice_id')->from('inv_mrd')->where('inv_mrd.status','=',1);
@@ -279,7 +286,8 @@ class inv_supplier_invoice_master extends Model
     }
     function find_invoice_num_for_wor($condition)
     {
-        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id'])->where($condition)
+        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id','inv_supplier.vendor_name'])
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
         ->whereNotIn('inv_supplier_invoice_master.id',function($query) {
 
             $query->select('inv_mrd.invoice_id')->from('inv_mrd')->where('inv_mrd.status','=',1);
@@ -292,25 +300,27 @@ class inv_supplier_invoice_master extends Model
 
     function find_invoice_number_not_in_mrr($condition)
     {
-        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id'])
-        ->where($condition)
+        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id','inv_supplier.vendor_name'])
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
         ->whereNotIn('inv_supplier_invoice_master.id',function($query) {
 
             $query->select('inv_mrr.invoice_id')->from('inv_mrr')->where('inv_mrr.status','=',1);
         
         })->where('inv_supplier_invoice_master.status','=',1)
+        ->where($condition)
         ->where('inv_supplier_invoice_master.type','=','PO')
         ->get();
     }
     function find_invoice_number_not_in_srr($condition)
     {
-        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id'])
-        ->where($condition)
+        return $this->select(['inv_supplier_invoice_master.invoice_number as text','inv_supplier_invoice_master.id','inv_supplier.vendor_name'])
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
         ->whereNotIn('inv_supplier_invoice_master.id',function($query) {
 
             $query->select('inv_mrr.invoice_id')->from('inv_mrr')->where('inv_mrr.status','=',1);
         
         })->where('inv_supplier_invoice_master.status','=',1)
+        ->where($condition)
         ->where('inv_supplier_invoice_master.type','=','WO')
         ->get();
     }

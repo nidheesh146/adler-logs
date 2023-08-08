@@ -19,6 +19,7 @@ use App\Models\PurchaseDetails\inv_mrr_item;
 use App\Models\PurchaseDetails\inv_mrr_item_rel;
 use App\Models\User;
 use App\Models\currency_exchange_rate;
+use App\Models\PurchaseDetails\inv_supplier_invoice_rel;
 use App\Models\PurchaseDetails\inv_supplier_invoice_item;
 use App\Models\PurchaseDetails\inv_supplier_invoice_master;
 use Maatwebsite\Excel\Facades\Excel;
@@ -116,7 +117,8 @@ class MRRController extends Controller
                     {
                         $years_combo = date('y').date('y', strtotime('+1 year'));
                     }
-                    $item_type = $this->get_item_type($request->mac_number);
+                    $item_type = $this->get_item_type($request->invoice_number);
+                    //echo $item_type;exit;
                     if($request->order_type=='po')
                     {
                         if($item_type=="Direct Items"){
@@ -231,13 +233,13 @@ class MRRController extends Controller
         else
         return view('pages.inventory.MRR.MRR-add',compact('data'));
     }
-    public function get_item_type($mac_number)
+    public function get_item_type($invoice_number)
     {
-        $item_type = inv_mac_item_rel::leftJoin('inv_mac_item','inv_mac_item.id','=','inv_mac_item_rel.item')
-                            ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+        $item_type = inv_supplier_invoice_rel::leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                            ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
                             ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
                             ->leftJoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
-                            ->where('inv_mac_item_rel.master','=', $mac_number)->pluck('inv_item_type.type_name')->first();
+                            ->where('inv_supplier_invoice_rel.master','=', $invoice_number)->pluck('inv_item_type.type_name')->first();
         return $item_type;
     }
 

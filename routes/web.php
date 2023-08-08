@@ -46,7 +46,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/add-purchase-reqisition-item', 'InventoryController@add_purchase_reqisition_item');
     Route::get('inventory/edit-purchase-reqisition-item', 'InventoryController@edit_purchase_reqisition_item');
     Route::post('inventory/edit-purchase-reqisition-item', 'InventoryController@edit_purchase_reqisition_item');
-    Route::get('inventory/delete-purchase-reqisition-item', 'InventoryController@delete_purchase_reqisition_item');
+    Route::post('inventory/delete-purchase-reqisition-item', 'InventoryController@delete_purchase_reqisition_item');
     Route::post('inventory/purchase-reqisition-item-upload','InventoryController@upload_purchase_requesition_item');
   
     Route::get('inventory/get-description', 'InventoryController@get_description');
@@ -445,9 +445,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/MRN-add','MRNController@MRNAdd');
     Route::post('fgs/MRN-add','MRNController@MRNAdd');
     Route::get('fgs/MRN/item-list/{mrn_id}','MRNController@MRNitemlist');
-    Route::get('inventory/MRN-item-edit/{id?}', 'MRNController@edit_mrn');
-    Route::post('inventory/MRN-item-update', 'MRNController@update_mrn');
-    Route::get('inventory/MRN-item-delete/{id?}', 'MRNController@delete_mrn');
+    Route::get('fgs/fetchMRNInfo','MRNController@fetchMRNInfo');
+    Route::post('fgs/MRN/item-upload','MRNController@MRNUpload');
+    Route::get('fgs/MRN-item-edit/{id?}', 'MRNController@edit_mrn');
+    Route::post('fgs/MRN-item-update', 'MRNController@update_mrn');
+    Route::get('fgs/MRN-item-delete/{id?}', 'MRNController@delete_mrn');
     
 
 

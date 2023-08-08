@@ -120,11 +120,28 @@
 
         </div>
         <div class="col2" style="text-align:left; font-size: 10px;" >
-        Shipping Address : <br>
-        <strong> {{$dni['shipping_address']}}</strong> <br/>
+        <strong>Shipping Address :</strong> <br>
+        {{$dni['shipping_address']}}<br/>
            {{$dni['city']}}, <br> {{$dni['state_name']}}<br/>
-           <b>GST Details </b>: {{$dni['gst_number']}}<br/>
-            D.L. Details: {{$dni['dl_number1']}}, {{$dni['dl_number2']}}, {{$dni['dl_number3']}} <p>
+           <table style="">
+                <tr>
+                    <td>GST Details :</td><td> {{$dni['gst_number']}}</td>
+                </tr>
+                <tr>
+                    <td>DL Number Details:</td><td> 20B: {{$dni['dl_number1']}}</td>
+                </tr>
+                @if($dni['dl_number2'])
+                <tr>
+                    <td></td><td> 21B : {{$dni['dl_number2']}} </td>
+                </tr> 
+                @endif
+                @if($dni['dl_number3'])
+                <tr> 
+                    <td></td><td>Others if any : {{$dni['dl_number3']}} </td> 
+                </tr>
+                @endif
+            
+            </table>
         </div>
         <div class="col3">
             <span style="color:#1434A4;"><strong>ADLER HEALTHCARE PVT. LTD</strong></span>
@@ -164,7 +181,7 @@
                         $arr=array_filter(array_unique($ar));
                         for($x = 0; $x <count($arr); $x++) {
                         echo $arr[$x];
-                         echo ",";
+                         echo "  ";
                         }
                         ?>
                     </td>
@@ -183,7 +200,7 @@
                         for($x = 0; $x <count($arr_date); $x++) 
                         {
                          echo $arr_date[$x]; 
-                         echo ",";
+                         echo "  ";
                         }
                         ?>
                     </td>
@@ -201,7 +218,7 @@
                         for($x = 0; $x <count($oef_arr); $x++) 
                         {
                          echo $oef_arr[$x]; 
-                         echo ",";
+                         echo "  ";
                         }
                         ?>
                     </td>
@@ -221,7 +238,7 @@
                         for($x = 0; $x <count($oef_date_arr); $x++) 
                         {
                          echo $oef_date_arr[$x]; 
-                         echo ",";
+                         echo "  ";
                         }
                         ?>
                     </td>
@@ -249,7 +266,7 @@
                         for($x = 0; $x <count($trnsctn_arr); $x++) 
                         {
                          echo $trnsctn_arr[$x]; 
-                         echo ",";
+                         echo "  ";
                         }
                         ?>
                     </td>
@@ -273,7 +290,7 @@
                         for($x = 0; $x <count($fulfil_type_arr); $x++) 
                         {
                          echo $fulfil_type_arr[$x]; 
-                         echo ",";
+                         echo "  ";
                         }
                         ?>
                     </td>
@@ -295,7 +312,7 @@
                         for($x = 0; $x <count($pi_arr); $x++) 
                         {
                          echo $pi_arr[$x]; 
-                         echo ",";
+                         echo "  ";
                         }
                     ?>
                     </td>
@@ -312,7 +329,7 @@
                             for($x = 0; $x <count($pi_date_arr); $x++) 
                             {
                             echo $pi_date_arr[$x]; 
-                            echo ",";
+                            echo "  ";
                             }
                         ?>
                     </td>
@@ -331,7 +348,7 @@
                             for($x = 0; $x <count($order_arr); $x++) 
                             {
                             echo $order_arr[$x]; 
-                            echo ",";
+                            echo "  ";
                             }
                         ?>
                     </td>
@@ -349,7 +366,7 @@
                             for($x = 0; $x <count($order_date_arr); $x++) 
                             {
                             echo $order_date_arr[$x]; 
-                            echo ",";
+                            echo "  ";
                             }
                         ?>
                     </td> 
@@ -380,7 +397,7 @@
                             for($x = 0; $x <count($category_name_arr); $x++) 
                             {
                             echo $category_name_arr[$x]; 
-                            echo ",";
+                            echo "  ";
                             }
                         ?>
                        
@@ -405,9 +422,9 @@
                     HSN CODE  
                 </th>
                 <th rowspan="2">SKU CODE</th>
-                <th rowspan="2" width='35%'>ITEM DESCRIPTION</th>
-                <th rowspan="2" style="width:8%;">DATE Of MFG.</th>
-                <th rowspan="2" style="width:10% !important;">DATE Of EXPIRY</th>
+                <th rowspan="2" width='30%'>ITEM DESCRIPTION</th>
+                <th rowspan="2" style="width:6%;">DATE Of MFG.</th>
+                <th rowspan="2" style="width:5% !important;">DATE Of EXPIRY</th>
                 <th rowspan="2" >BATCH NO</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
@@ -416,19 +433,19 @@
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
                 <th colspan="2">CGST</th>
-                <th colspan="2">SGST/UTGST  </th>
-                <th colspan="2">IGST</th>
+                <th colspan="2" style="width:5%;">SGST/UTGST  </th>
+                <!-- <th colspan="2">IGST</th> -->
                 <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
             <tr> 
                 <th style="width:3% !important">% </th>
-                <th width='12%'>Value</th>
+                <th width='3%'>Value</th>
                 <th style="width:3% !important">% </th>
-                <th width='12%'>Value</th>
+                <th width='3%'>Value</th>
                 <th style="width:3% !important">% </th>
-                <th width='12%'>Value  </th>
-                <th style="width:3% !important">% </th>
-                <th width='12%'>Value</th>
+                <th width='3%'>Value  </th>
+                <!-- <th style="width:3% !important">% </th>
+                <th width='12%'>Value</th> -->
             </tr>
             <?php $i=1;
             $total = 0;
@@ -466,8 +483,8 @@
                 <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['sgst']}}</td>
                 <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
-                <td style="text-align:center;">{{$item['igst']}}</td>
-                <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
+                {{--<td style="text-align:center;">{{$item['igst']}}</td>
+                <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>--}}
                 <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
                 <td  style="text-align:right;">{{number_format((float)($total_amount), 2, '.', '')}}</td>
                 <?php 
@@ -508,8 +525,8 @@
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_cgst), 2, '.', '') }}</th>
-                <th></th> 
-                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>
+                {{--<th></th> 
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>--}}
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
             </tr>       
         </table>

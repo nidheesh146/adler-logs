@@ -248,11 +248,15 @@ class MACController extends Controller
                         $years_combo = date('y').date('y', strtotime('+1 year'));
                     }
                     $item_type = $this->get_item_type($request->invoice_number);
+                    $item_type2 = $this->get_item_type2($request->invoice_number);
                     if($item_type=="Direct Items"){
                         $lot_alloted = $this->check_lot_alloted($request->invoice_number);
-                        if($lot_alloted==1){
-                            $request->session()->flash('error', "Please complete lot allocation for the particular invoice items...");  
-                            return redirect('inventory/MAC-add');
+                        if($item_type2!='Finished Goods')
+                        {
+                            if($lot_alloted==1){
+                                $request->session()->flash('error', "Please complete lot allocation for the particular invoice items...");  
+                                return redirect('inventory/MAC-add');
+                            }
                         }
                         $Data['mac_number'] = "MAC2-".$this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2-'.$years_combo.'%')->count()); 
                     }
@@ -335,6 +339,16 @@ class MACController extends Controller
                             ->where('inv_supplier_invoice_rel.master','=', $invoice_number)->pluck('inv_item_type.type_name')->first();
         return $item_type;
     }
+    public function get_item_type2($invoice_number)
+    {
+        $item_type = inv_supplier_invoice_rel::leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
+                           // ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
+                            ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
+                            ->leftJoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
+                            ->leftJoin('inv_item_type_2','inv_item_type_2.id','=','inventory_rawmaterial.item_type_id_2')
+                            ->where('inv_supplier_invoice_rel.master','=', $invoice_number)->pluck('inv_item_type_2.type_name')->first();
+        return $item_type;
+    }
     public function check_lot_alloted($invoice_number)
     {
         $not_alloted_item = [];
@@ -407,8 +421,11 @@ class MACController extends Controller
                         $years_combo = date('y').date('y', strtotime('+1 year'));
                     }
                     $item_type = $this->get_item_type($request->invoice_number);
+                    $item_type2 = $this->get_item_type2($request->invoice_number);
                     if($item_type=="Direct Items"){
-                        $Data['mac_number'] = "WOA2-".$this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA2-'.$years_combo.'%')->count()); 
+                        // if($item_type2!='Finished Goods')
+                        // {
+                            $Data['mac_number'] = "WOA2-".$this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA2-'.$years_combo.'%')->count()); 
                     }
                     //if($item_type=="Indirect Items"){
                     else {

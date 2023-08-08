@@ -82,6 +82,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                     ->where($condition)
                     //->groupBy('inventory_rawmaterial.item_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')
                     ->orderBy('inventory_rawmaterial.id','DESC')
+                    //->distinct('inv_purchase_req_quotation_item_supp_rel.id')
                     ->orderBy('inv_purchase_req_quotation_item_supp_rel.supplier_id','ASC')
                     ->get();
      }
