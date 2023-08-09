@@ -373,8 +373,9 @@ class OEFController extends Controller
         $file_name = "ORDER ACKNOWLEDGMENT" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
         return $pdf->stream($file_name . '.pdf');
     }
-    public function upload_oef_item(Request $request, $oef_id)
+   public function upload_oef_item(Request $request, $oef_id)
     {
+        
         $file = $request->file('file');
         if ($file) {
             $pr_id = $request->pr_id;
@@ -391,12 +392,12 @@ class OEFController extends Controller
             $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
             $ExcelOBJ->reader->setReadDataOnly(true);
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
-            $no_column = 10;
+            $no_column =5;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
             //echo $sheet1_column_count;exit;
             if ($sheet1_column_count == $no_column) {
                 $res = $this->Excelsplitsheet($ExcelOBJ, $oef_id);
-                //print_r($res);exit;
+               // print_r($res);exit;
                 if ($res) {
                     $request->session()->flash('success',  "Successfully uploaded.");
                     return redirect()->back();
@@ -430,6 +431,7 @@ class OEFController extends Controller
             $ExcelOBJ->date_created = date('Y-m-d H:i:s');
             $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
             $res = $this->insert_requisition_items($ExcelOBJ, $oef_id);
+            
             return $res;
         }
     }
@@ -453,7 +455,7 @@ class OEFController extends Controller
                 // $data =  $this->product->get_product_for_oef($product->sku_code, $condition);
                 $data=DB::table('product_product')
                 ->select(['product_product.id','product_product.sku_code as text','product_product.discription','product_productgroup.group_name',
-                'product_product.hsn_code','product_price_master.sales','product_product.gst'])
+                'product_product.hsn_code','product_price_master.mrp','product_product.gst'])
                     ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
                     ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
                     ->where('product_product.id',$product->id)
@@ -477,45 +479,40 @@ class OEFController extends Controller
                         ->first();
 
                     }
-                
-               
-
+                    if($data->mrp==null)
+                    {
+                        $rate=0;
+                    }else{
+                        $rate=$data->mrp;
+                    }
                 //print_r($item);
                 if($product)
                 {
-                    $data = [
+                    $test = [
                         'product_id' =>$product->id,
                         'quantity'=>$excelsheet[2],
-                        'quantity_to_allocate'=>$excelsheet[3],
-                        'remaining_qty_after_cancel'=>$excelsheet[4],
-                        'rate'=>$excelsheet[5],
-                        'discount'=>$excelsheet[6],
+                        'quantity_to_allocate'=>$excelsheet[2],
+                        'remaining_qty_after_cancel'=>$excelsheet[2],
+                        'rate'=>$rate,
+                        'discount'=>$excelsheet[3],
                         'gst'=>$gst_data->id,
-                        'created_at'=>date('Y-m-d H:i:s',strtotime($excelsheet[9])),
-                        'coef_status'=>$excelsheet[8],
-
-
-                    ];
+                        'created_at'=>date('Y-m-d H:i:s',strtotime($excelsheet[4])),
+                   ];
                     $ins_id=DB::table('fgs_oef_item')
-                    ->insertGetId($data);
+                    ->insertGetId($test);
 
                     DB::table('fgs_oef_item_rel')
                     ->insert([
                         'master'=>$oef_id,
                         'item'=>$ins_id
                     ]);
-                    //print_r($data);exit;
-                  //this->inv_purchase_req_item->insert_data($data,$pr_id);
-                    //$res = DB::table('batchcard_batchcard')->insert($data);
+                    
                 }
 
             }
             
-            // if( count($data) > 0){
-            // $res = DB::table('batchcard_batchcard')->insert($data);  
-            // }   
-        }
-        return $data;
+         
     }
-    
+    return $test;
+}
 }
