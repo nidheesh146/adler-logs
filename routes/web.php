@@ -223,9 +223,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::get('inventory/MRR-delete/{id}', 'MRRController@mrr_delete');
     Route::get('inventory/receipt-report/{id}/report', 'MRRController@receiptReportPDF');
     Route::get('getPO_for_merged_si_item','MRRController@getPO_for_merged_si_item');
-     Route::get('inventory/MRR/excel-export','MRRController@MRRExport');
-     
-
+    Route::get('inventory/MRR/excel-export','MRRController@MRRExport');
+    
+    // fgs transfer
+    Route::get('inventory/fgs-transfer', 'FGSTransferController@fgsTransfer');
 
     Route::get('inventory/find-invoice-for-mrr','MRRController@find_invoice_for_mrr');
     Route::get('inventory/find-invoice-for-srr','MRRController@find_invoice_for_srr');

@@ -90,6 +90,7 @@
             <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.WORAdd'])){{'active'}} @endif "><a href="{{url('inventory/MRD')}}" class="nav-sub-link">MRD/WOR</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['MRD.RMRNlist','MRD.RMRNAdd','MRD.RMRNAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/RMRN')}}" class="nav-sub-link">RMRN</a></li>  
             <li class="nav-sub-item  @if(in_array($Action,['MRR.addMRR','MRR.receiptReport'])){{'active'}} @endif "><a href="{{url('inventory/receipt-report')}}" class="nav-sub-link">MRR/SRR</a></li>  
+            <li class="nav-sub-item  @if(in_array($Action,['MRR.addMRR','MRR.receiptReport'])){{'active'}} @endif "><a href="{{url('inventory/fgs-transfer')}}" class="nav-sub-link">FGS Transfer</a></li>  
             <li class="nav-sub-item  @if(in_array($Action,['Stock.stockReport','Stock.transactionSlipAdd'])){{'active'}} @endif"><a href="{{url('inventory/stock-report')}}"  class="nav-sub-link">Stock Report</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.transactionSlip'])){{'active'}} @endif"><a href="{{url('inventory/transaction-slip')}}"  class="nav-sub-link">Transaction Slip</a></li>
             <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li> 
