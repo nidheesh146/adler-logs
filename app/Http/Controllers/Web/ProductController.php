@@ -781,102 +781,301 @@ class ProductController extends Controller
     }
     
 }
-public function productAddGroup()
-{
-    $product_group=DB::table('product_productgroup')
-    ->orderby('id','DESC')
-    //->get();
-    ->paginate(15);
-    return view('pages.product.product_group_add',compact('product_group'));
-}
-public function productAddingGroup(Request $request)
-{
-DB::table('product_productgroup')
-->insert([
-    'group_name'=>$request->pr_group,
-    'created'=>date('Y-m-d')
-]);
-$product_group=DB::table('product_productgroup')
-->orderby('id','DESC')
-// ->get();//
-->paginate(15);
+    public function productAddGroup()
+    {
+        $product_group=DB::table('product_productgroup')
+        ->orderby('id','DESC')
+        //->get();
+        ->paginate(15);
+        return view('pages.product.product_group_add',compact('product_group'));
+    }
+    public function productAddingGroup(Request $request)
+    {
+        DB::table('product_productgroup')
+        ->insert([
+            'group_name'=>$request->pr_group,
+            'created'=>date('Y-m-d')
+        ]);
+        $product_group=DB::table('product_productgroup')
+        ->orderby('id','DESC')
+        // ->get();//
+        ->paginate(15);
 
-return view('pages.product.product_group_add',compact('product_group'));
-}
-public function productAddFamily()
-{
-    $product_family=DB::table('product_productfamily')
-    ->orderby('id','DESC')
-    //->get();
-    ->paginate(15);
-    return view('pages.product.product_family_add',compact('product_family'));
-}
-public function productAddingFamily(Request $request)
-{
-$id=DB::table('product_productfamily')
-->insertGetId([
-   // ->insert([
-    'family_name'=>$request->pr_family,
-    'created'=>date('Y-m-d')
-]);
-DB::table('product_productfamily')
-->where('id',$id)
-->update([
-    'specification_no'=>$id,
-    
-]);
-$product_family=DB::table('product_productfamily')
-->orderby('id','DESC')
-// ->get();//
-->paginate(15);
+        return view('pages.product.product_group_add',compact('product_group'));
+    }
+    public function productAddFamily()
+    {
+        $product_family=DB::table('product_productfamily')
+        ->orderby('id','DESC')
+        //->get();
+        ->paginate(15);
+        return view('pages.product.product_family_add',compact('product_family'));
+    }
+    public function productAddingFamily(Request $request)
+    {
+        $id=DB::table('product_productfamily')
+        ->insertGetId([
+        // ->insert([
+            'family_name'=>$request->pr_family,
+            'created'=>date('Y-m-d')
+        ]);
+        DB::table('product_productfamily')
+        ->where('id',$id)
+        ->update([
+            'specification_no'=>$id,
+            
+        ]);
+        $product_family=DB::table('product_productfamily')
+        ->orderby('id','DESC')
+        // ->get();//
+        ->paginate(15);
 
-return view('pages.product.product_family_add',compact('product_family'));
-}
+        return view('pages.product.product_family_add',compact('product_family'));
+    }
 
-public function productAddBrand()
-{
-    $product_brand=DB::table('product_productbrand')
-    ->orderby('id','DESC')
-    //->get();
-    ->paginate(15);
+    public function productAddBrand()
+    {
+        $product_brand=DB::table('product_productbrand')
+        ->orderby('id','DESC')
+        //->get();
+        ->paginate(15);
+        return view('pages.product.product_brand_add',compact('product_brand'));
+    }
+    public function productAddingBrand(Request $request)
+    {
+        DB::table('product_productbrand')
+        ->insert([
+            'brand_name'=>$request->pr_brand,
+            'created'=>date('Y-m-d')
+        ]);
+        $product_brand=DB::table('product_productbrand')
+        ->orderby('id','DESC')
+        // ->get();//
+        ->paginate(15);
+
     return view('pages.product.product_brand_add',compact('product_brand'));
-}
-public function productAddingBrand(Request $request)
-{
-DB::table('product_productbrand')
-->insert([
-    'brand_name'=>$request->pr_brand,
-    'created'=>date('Y-m-d')
-]);
-$product_brand=DB::table('product_productbrand')
-->orderby('id','DESC')
-// ->get();//
-->paginate(15);
+    }
+    public function get_product_family($id)
+    {
+        $product_family=DB::table('product_productfamily')
+        ->where('id',$id)
+        ->pluck('family_name')[0];
 
-return view('pages.product.product_brand_add',compact('product_brand'));
-}
-public function get_product_family($id)
-{
-    $product_family=DB::table('product_productfamily')
-    ->where('id',$id)
-    ->pluck('family_name')[0];
+        return $product_family;
+    }
+    public function get_product_brand($id)
+    {
+        $product_brand=DB::table('product_productbrand')
+        ->where('id',$id)
+        ->pluck('brand_name')[0];
+        
+        return $product_brand;
+    }
+    public function get_product_group($id)
+    {
+        $product_group=DB::table('product_productgroup')
+        ->where('id',$id)
+        ->pluck('group_name')[0];
+        
+        return $product_group;
+    }
 
-    return $product_family;
-}
-public function get_product_brand($id)
-{
-    $product_brand=DB::table('product_productbrand')
-    ->where('id',$id)
-    ->pluck('brand_name')[0];
-    
-    return $product_brand;
-}
-public function get_product_group($id)
-{
-    $product_group=DB::table('product_productgroup')
-    ->where('id',$id)
-    ->pluck('group_name')[0];
-    
-    return $product_group;
-}
+    public function upload_product_inputmaterial()
+    {
+        return view('pages/product/input-material-upload');
+    }
+    public function inputMaterialFileUpload(Request $request)
+    {
+        
+        $file = $request->file('file');
+        if ($file) 
+        {
+            
+            $ExcelOBJ = new \stdClass();
+
+            // CONF
+            $path = storage_path() . '/app/' . $request->file('file')->store('temp');
+
+            $ExcelOBJ->inputFileName = $path;
+            $ExcelOBJ->inputFileType = 'Xlsx';
+
+            // $ExcelOBJ->filename = 'Book1.xlsx';
+            // $ExcelOBJ->inputFileName = 'C:\xampp7.4\htdocs\mel\sampleData\Book1.xlsx';
+            $ExcelOBJ->spreadsheet = new Spreadsheet();
+            $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
+            $ExcelOBJ->reader->setReadDataOnly(true);
+            $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
+            $no_column = 11;
+            $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
+            //echo $sheet1_column_count;exit;
+            if ($sheet1_column_count == $no_column) {
+                $res = $this->Excelsplitsheet_prd29($ExcelOBJ);
+                if ($res) {
+                    $request->session()->flash('success',  "Successfully uploaded.");
+                    return redirect('product/list');
+                } else {
+                    $request->session()->flash('error',  "The data already uploaded.");
+                    return redirect('product/list');
+                }
+            } else {
+                $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
+                return redirect('inventory/inv-item-upload');
+            }
+        }
+    }
+    public function Excelsplitsheet_prd29($ExcelOBJ)
+    {
+        //echo "kk";exit;
+        ini_set('max_execution_time', 500);
+        $ExcelOBJ->SQLdata = [];
+        $ExcelOBJ->arrayinc = 0;
+        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) {
+            $ExcelOBJ->sectionName = '';
+            $ExcelOBJ->sheetName = $worksheet['worksheetName'];
+            $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
+            $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
+            $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
+
+            $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
+            $res = $this->insert_product_inputmaterial($ExcelOBJ);
+            return $res;
+        }
+        // print_r($ExcelOBJ);exit;
+
+    }
+    public function insert_product_inputmaterial($ExcelOBJ)
+    {
+        //print_r(json_encode($ExcelOBJ->excelworksheet));exit;
+        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
+            if ($key > 0) {
+                if ($excelsheet[4] && $excelsheet[4] != 'NA' && $excelsheet[4] != 'N/A') {
+                    if ($excelsheet[4] == 'Assembly') {
+                        $data['item_id3'] = 0;
+                    } else {
+                        $item_id = DB::table('inventory_rawmaterial')->where('item_code', $excelsheet[4])->first();
+                        if($item_id) {
+                            $data['item_id3'] = $item_id->id;
+                        }
+                        else {
+                            $product = DB::table('product_product')->where('sku_code',$excelsheet[4])->first();
+                            if($product)
+                            {
+                                $info['item_code']=$product->sku_code;
+                                $info['item_name']=$product->sku_code;
+                                $info['item_short_name']=$product->sku_code;
+                                $info['discription'] =$product->discription;
+                                $info['short_description'] =$product->discription;
+                                $info['is_product'] = 1;
+                                $info['issue_unit_id'] = DB::table('inv_unit')->where('unit_name','Nos')->pluck('id')->first();
+                                $raw_material_id3 = $this->inventory_rawmaterial->insertdata($info);
+                                $data['item_id3'] =$raw_material_id3;
+                            }
+                            else
+                            {
+                                $raw['item_code']=$excelsheet[4];
+                                $raw['item_name']=$excelsheet[4];
+                                $raw['item_short_name']=$excelsheet[4];
+                                $raw_material_id3 = $this->inventory_rawmaterial->insertdata($raw);
+                                $data['item_id3'] =$raw_material_id3;
+                            }
+                        }
+
+                    }
+                } else {
+                    $data['item_id3'] = null;
+                }
+                if ($excelsheet[3] && $excelsheet[3] != 'NA' && $excelsheet[3] != 'N/A') {
+                    if ($excelsheet[3] == 'Assembly') {
+                        $data['item_id2'] = 0;
+                    } else {
+                        $item_id = DB::table('inventory_rawmaterial')->where('item_code', $excelsheet[3])->first();
+                        if($item_id) {
+                            $data['item_id2'] = $item_id->id;
+                        }
+                        else
+                        {
+                            $product = DB::table('product_product')->where('sku_code',$excelsheet[3])->first();
+                            if($product)
+                            {
+                                $info['item_code']=$product->sku_code;
+                                $info['item_name']=$product->sku_code;
+                                $info['item_short_name']=$product->sku_code;
+                                $info['discription'] =$product->discription;
+                                $info['short_description'] =$product->discription;
+                                $info['is_product'] = 1;
+                                $info['issue_unit_id'] = DB::table('inv_unit')->where('unit_name','Nos')->pluck('id')->first();
+                                $raw_material_id2 = $this->inventory_rawmaterial->insertdata($info);
+                                $data['item_id2'] =$raw_material_id2;
+                            }
+                            else
+                            {
+                                $raw['item_code']=$excelsheet[3];
+                                $raw['item_name']=$excelsheet[3];
+                                $raw['item_short_name']=$excelsheet[3];
+                                $raw_material_id2 = $this->inventory_rawmaterial->insertdata($raw);
+                                $data['item_id2'] =$raw_material_id2;
+                            }
+                        }
+                        //$data['item_id2'] = $item_id->id;
+                    }
+                } else {
+                    $data['item_id2'] = null;
+                }
+                if ($excelsheet[2] && $excelsheet[2] != 'NA' && $excelsheet[2] != 'NA') {
+                    if ($excelsheet[2] == 'Assembly') {
+                        $data['item_id1'] = 0;
+                    } else {
+                        $item_id = DB::table('inventory_rawmaterial')->where('item_code', $excelsheet[2])->first();
+                        if($item_id)
+                        {   
+                            $data['item_id1'] = $item_id->id;
+                        }
+                        else
+                        {
+                            $product = DB::table('product_product')->where('sku_code',$excelsheet[2])->first();
+                            if($product)
+                            {
+                                $info['item_code']=$product->sku_code;
+                                $info['item_name']=$product->sku_code;
+                                $info['item_short_name']=$product->sku_code;
+                                $info['discription'] =$product->discription;
+                                $info['short_description'] =$product->discription;
+                                $info['is_product'] = 1;
+                                $info['issue_unit_id'] = DB::table('inv_unit')->where('unit_name','Nos')->pluck('id')->first();
+                                $raw_material_id = $this->inventory_rawmaterial->insertdata($info);
+                                $data['item_id1'] =$raw_material_id;
+                            }
+                            else
+                            {
+                                $raw['item_code']=$excelsheet[2];
+                                $raw['item_name']=$excelsheet[2];
+                                $raw['item_short_name']=$excelsheet[2];
+                                $raw_material_id1 = $this->inventory_rawmaterial->insertdata($raw);
+                                $data['item_id1'] =$raw_material_id1;
+                            }
+                        }
+                    }
+                } else {
+                    $data['item_id1'] = null;
+                }
+
+                $product_id = DB::table('product_product')->where('sku_code', $excelsheet[0])->first();
+                if ($product_id) {
+                    $data['product_id'] = $product_id->id;
+                    $input_material = DB::table('product_input_material')->where('product_id','=',$product_id->id)->first();
+                    if( $input_material)
+                    $res[] = DB::table('product_input_material')->where('product_id','=',$product_id->id)->update($data); 
+                    else
+                    $res[] = DB::table('product_input_material')->insert($data); 
+                    
+                }
+               
+            }
+        }
+        
+        if (!empty($res))
+            return 1;
+        else
+            return 0;
+    }
 }

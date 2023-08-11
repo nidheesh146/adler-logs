@@ -26,18 +26,20 @@ class inventory_rawmaterial extends Model
         ->leftjoin('inv_unit','inv_unit.id','=','inventory_rawmaterial.receipt_unit_id')
         ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
         ->leftjoin('inv_item_type_2','inv_item_type_2.id','=','inventory_rawmaterial.item_type_id_2')
-        ->where($condition)->get()->toArray();
+        ->where($condition)
+        ->where('inventory_rawmaterial.is_product','!=',0)
+        ->get()->toArray();
 
 
     }
 
     function get_items()
     {
-        return $this->select('id','item_code')->get();
+        return $this->select('id','item_code')->where('inventory_rawmaterial.is_product','!=',0)->get();
     }
     function getItems($condition)
     {
-        return $this->select('id','item_code as text')->where($condition)->get();
+        return $this->select('id','item_code as text')->where($condition)->where('inventory_rawmaterial.is_product','!=',0)->get();
     }
     function getFilterDescription($condition,$length,$start){
         return $this->select(['inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.id'])
@@ -45,6 +47,7 @@ class inventory_rawmaterial extends Model
     }
     function getFilterDescription1($condition){
         return $this->select(['inventory_rawmaterial.discription','inventory_rawmaterial.id'])
+                ->where('inventory_rawmaterial.is_product','!=',0)
                ->where($condition)->get()->count();
     }
     function getSingleDescription($condition){
@@ -61,6 +64,7 @@ class inventory_rawmaterial extends Model
         ->leftjoin('inv_item_type','inv_item_type.id','=','inventory_rawmaterial.item_type_id')
         ->leftjoin('inv_item_type_2','inv_item_type_2.id','=','inventory_rawmaterial.item_type_id_2')
         ->where('inventory_rawmaterial.is_active','=',1)
+        ->where('inventory_rawmaterial.is_product','!=',0)
         ->where($condition)
         ->orderBy('inventory_rawmaterial.id','desc')
         ->paginate(15);

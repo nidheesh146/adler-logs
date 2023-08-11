@@ -314,9 +314,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/inventory-itemtype-add','InventorygstController@Add_itemtype');
     Route::get('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
     Route::post('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
-    Route::get('inventory/inv-item-upload','InventorygstController@add_inv_item');
-    Route::post('inventory/inv-item-upload','InventorygstController@invitemFileUpload');
-
+    
 
 });
 
@@ -411,6 +409,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::post('product/Product-addfamily','ProductController@productAddingFamily');
     Route::get('product/Product-add-brand','ProductController@productAddBrand');
     Route::post('product/Product-addbrand','ProductController@productAddingBrand');
+
+    Route::get('product/input-material-upload','ProductController@upload_product_inputmaterial');
+    Route::post('product/inputmaterial-upload','ProductController@inputMaterialFileUpload');
+
 
 
     // Route::get('/product/Product-add-group', function () {

@@ -3,7 +3,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
-       // echo $Action;
+        //echo $Action;
 @endphp
   <div class="az-sidebar"> 
     <div class="az-sidebar-header">
@@ -284,7 +284,7 @@
           </ul>
         </li>
 
-        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial','Product.getProductUpload','Product.locationList'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial','Product.getProductUpload','Product.locationList','Product.upload_product_inputmaterial'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fab fa-product-hunt" style="font-size: 19px"></i>Product</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['Product.productList','Product.addInputMaterial'])){{'active'}} @endif ">
@@ -299,8 +299,8 @@
             <li class="nav-sub-item @if(in_array($Action,['Product.Product-addgroup'])){{'active'}} @endif ">
             <a href="{{url('product/Product-add-group')}}"  class="nav-sub-link">Product Group Add</a>
             </li> 
-            <li class="nav-sub-item @if(in_array($Action,['inventory.inv-item-upload'])){{'active'}} @endif ">
-            <a href="{{url('inventory/inv-item-upload')}}"  class="nav-sub-link">Product input material(prd-29)</a>
+            <li class="nav-sub-item @if(in_array($Action,['Product.upload_product_inputmaterial'])){{'active'}} @endif ">
+            <a href="{{url('product/input-material-upload')}}"  class="nav-sub-link">Product input material(PRD-29)</a>
             </li> 
           </ul>
         </li>

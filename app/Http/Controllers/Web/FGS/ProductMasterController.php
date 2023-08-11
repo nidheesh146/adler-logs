@@ -18,8 +18,9 @@ class ProductMasterController extends Controller
     }
     public function productList(Request $request)
     {   
-        $condition[] = ['product_product.item_type','=','FINISHED GOODS'];
+        //$condition[] = ['product_product.item_type','=','FINISHED GOODS'];
         $condition[] = ['product_product.product_group1_id','!=','null'];
+        //$condition = [];
         if($request->sku_code)
         {
             $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];

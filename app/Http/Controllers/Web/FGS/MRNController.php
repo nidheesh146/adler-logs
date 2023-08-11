@@ -291,7 +291,7 @@ class MRNController extends Controller
             $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
             $ExcelOBJ->reader->setReadDataOnly(true);
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
-            $no_column = 10;
+            $no_column = 5;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
             //echo $sheet1_column_count;exit;
             if($sheet1_column_count == $no_column)
@@ -338,29 +338,30 @@ class MRNController extends Controller
     function insert_MRN_items($ExcelOBJ,$mrn_id)
     {
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
-
+            $mrn = $this->fgs_mrn->get_single_mrn(['fgs_mrn.id'=>$mrn_id]);
             if ($key > 0 &&  $excelsheet[1]) 
             {
-                if($excelsheet[9] != 'TRADE') 
+                //echo (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d'));exit;
+                if($mrn->category_name != 'TRADE') 
                 {
                     $product_id = product::where('sku_code', '=', $excelsheet[0])->pluck('id')->first();
-                    $batchcard_id = batchcard::where('batch_no', '=', $excelsheet[2])->pluck('batchcard_batchcard.id')->first();
+                    $batchcard_id = batchcard::where('batch_no', '=', $excelsheet[1])->pluck('batchcard_batchcard.id')->first();
                     if ($product_id && $batchcard_id)
                     {
                         $item['product_id'] = $product_id;
                         $item['batchcard_id'] = $batchcard_id;
-                        $item['quantity'] = $excelsheet[3];
-                        $item['manufacturing_date'] = ($excelsheet[5] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL;
-                        $item['expiry_date'] = ($excelsheet[6] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' ';
+                        $item['quantity'] = $excelsheet[2];
+                        $item['manufacturing_date'] = ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL;
+                        $item['expiry_date'] = ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' ';
                         $item['created_at'] = date('Y-m-d H:i:s');
                         $this->fgs_mrn_item->insert_data($item, $mrn_id);
                         $stock = [
                             "product_id" => $product_id,
                             "batchcard_id" => $batchcard_id,
-                            "quantity" => $excelsheet[3],
-                            "stock_location_id" => 6,
-                            'manufacturing_date' => ($excelsheet[5] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL,
-                            'expiry_date' => ($excelsheet[6] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' '
+                            "quantity" => $excelsheet[2],
+                            "stock_location_id" => $mrn->location_id,
+                            'manufacturing_date' => ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
+                            'expiry_date' => ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' '
                         ];
                         $res[]=$this->fgs_product_stock_management->insert_data($stock);
                         // $res[]=DB::table('production_stock_management')->insert($data);
@@ -368,7 +369,7 @@ class MRNController extends Controller
                     else 
                     {
                         $prdct[] = $excelsheet[0];
-                        $batch_card[] = $excelsheet[2];
+                        $batch_card[] = $excelsheet[1];
                         $res[] = 1;
                     }
                 }
@@ -379,26 +380,26 @@ class MRNController extends Controller
                     {
                         $batchcard_id= DB::table('batchcard_batchcard')
                                             ->insertGetId([
-                                                "batch_no"=>$excelsheet[2],
-                                                "quantity"=>$excelsheet[3],
+                                                "batch_no"=>$excelsheet[1],
+                                                "quantity"=>$excelsheet[2],
                                                 'product_id'=>$product_id,
                                                 "is_trade"=>1
                                             ]);
-                        $qty=$excelsheet[3];
+                        $qty=$excelsheet[2];
                         $item['product_id'] = $product_id;
                         $item['batchcard_id'] = $batchcard_id;
-                        $item['quantity'] = $excelsheet[3];
-                        $item['manufacturing_date'] = ($excelsheet[5] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL;
-                        $item['expiry_date'] = ($excelsheet[6] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' ';
+                        $item['quantity'] = $excelsheet[2];
+                        $item['manufacturing_date'] = ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL;
+                        $item['expiry_date'] = ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' ';
                         $item['created_at'] = date('Y-m-d H:i:s');
                         $this->fgs_mrn_item->insert_data($item, $mrn_id);
                         $stock = [
                             "product_id" => $product_id,
                             "batchcard_id" => $batchcard_id,
-                            "quantity" => $excelsheet[3],
-                            "stock_location_id" => 6,
-                            'manufacturing_date' => ($excelsheet[5] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[5]))->format('Y-m-d')) : NULL,
-                            'expiry_date' => ($excelsheet[6] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')) : ' '
+                            "quantity" => $excelsheet[2],
+                            "stock_location_id" => $mrn->location_id,
+                            'manufacturing_date' => ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
+                            'expiry_date' => ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' '
                         ];
                         $res[] = $this->fgs_product_stock_management->insert_data($stock);
                     }
@@ -736,13 +737,13 @@ class MRNController extends Controller
         $batch=$request->batchcard_id;
         //dd($batch);
         $ps_mangaer=DB::table('fgs_product_stock_management')
-        ->where('product_id','=',$product)
-        ->where('batchcard_id','=',$batch)
-        ->first();
+                        ->where('product_id','=',$product)
+                        ->where('batchcard_id','=',$batch)
+                        ->first();
         
         $sterile = DB::table('product_product')
-            ->where('id', $product)
-            ->first();
+                    ->where('id', $product)
+                    ->first();
 
         if ($sterile->is_sterile == 1) {
             $end = date('Y-m-d', strtotime($request->manufacturing_date1 . '+5 years'));
