@@ -182,6 +182,37 @@ class StockManagementController extends Controller
         $pcategory = $this->fgs_product_category->get()->unique('category_name');
         return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
     }
+    public function locationSNNTrade(Request $request)
+    {
+        $condition =[];
+         if($request->sku_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->sku_code . '%'];
+        }
+        if($request->batch_no)
+        {
+            $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
+        }
+        if($request->category_name)
+        {
+            $condition[] = ['fgs_product_category.category_name','like', '%' . $request->category_name . '%'];
+        }
+         if($request->is_sterile == 1)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        if($request->is_sterile == 0)
+        {
+            $condition[] = ['product_product.is_sterile','like', '%' . $request->is_sterile . '%'];
+        }
+        $title ="SNN Trade";
+        $location = 'SNN_Trade';
+        $condition[] = ['product_stock_location.location_name','like', '%' . 'SNN Trade' . '%'];
+        $stock  = $this->fgs_product_stock_management->get_stock($condition);
+        $pcondition = $this->product_product->get()->unique('is_sterile');
+        $pcategory = $this->fgs_product_category->get()->unique('category_name');
+        return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
+    }
     public function locationAHPL(Request $request)
     {
         $condition =[];
@@ -391,7 +422,27 @@ class StockManagementController extends Controller
                         ->distinct('fgs_product_stock_management.id')
                         ->orderBy('fgs_product_stock_management.id','DESC')
                         ->get();
-            return Excel::download(new StockLocationExport($stock), 'SNN-stock' . date('d-m-Y') . '.xlsx');
+            return Excel::download(new StockLocationExport($stock), 'SNNMKtd-stock' . date('d-m-Y') . '.xlsx');
+    }
+    public function SNNTradeExport(Request $request)
+    {
+        
+            $location ='SNN Trade';
+            $stock = fgs_product_stock_management::select('fgs_product_stock_management.manufacturing_date','fgs_product_stock_management.expiry_date','fgs_product_stock_management.quantity','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','product_type.product_type_name',
+            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+                        ->leftJoin('product_product','product_product.id','=','fgs_product_stock_management.product_id')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_product_stock_management.batchcard_id' )
+                        ->leftJoin('product_stock_location','product_stock_location.id','=','fgs_product_stock_management.stock_location_id' )
+                        ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+                        ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                        ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
+                        ->where('product_stock_location.location_name','=','SNN Trade')
+                        ->where('fgs_product_stock_management.quantity','!=',0)
+                        ->distinct('fgs_product_stock_management.id')
+                        ->orderBy('fgs_product_stock_management.id','DESC')
+                        ->get();
+            return Excel::download(new StockLocationExport($stock), 'SNNTrade-stock' . date('d-m-Y') . '.xlsx');
     }
     public function AHPLExport(Request $request)
     {

@@ -619,6 +619,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/stock-management/location2','StockManagementController@location2Stock');
      Route::get('fgs/stock-management/location3','StockManagementController@location3Stock');
      Route::get('fgs/stock-management/locationSNN','StockManagementController@locationSNN');
+     Route::get('fgs/stock-management/locationSNNTrade','StockManagementController@locationSNNTrade');
      Route::get('fgs/stock-management/locationAHPL','StockManagementController@locationAHPL');
      Route::get('fgs/stock-management/MAA','StockManagementController@MAAStock');
      Route::get('fgs/stock-management/quarantine','StockManagementController@quarantineStock');
@@ -628,6 +629,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/stock-report/location3','StockManagementController@location3Export');
      Route::get('fgs/stock-report/MAA','StockManagementController@MAAExport');
      Route::get('fgs/stock-report/SNN','StockManagementController@SNNExport');
+     Route::get('fgs/stock-report/SNNTrade','StockManagementController@SNNTradeExport');
      Route::get('fgs/stock-report/AHPL','StockManagementController@AHPLExport');
      Route::get('fgs/batch-trace-report','StockManagementController@batchTraceReport');
      Route::get('fgs/batch-trace-report/export','StockManagementController@batchTraceReportExport');

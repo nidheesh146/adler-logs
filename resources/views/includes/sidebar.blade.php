@@ -106,7 +106,7 @@
         'PI.PIAdd','PI.PIList','PI.PIitemlist','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','MTQ.MTQAdd','StockManagement.productionStockAdd',
         'StockManagement.productionStockList','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','PI.pendingPI','GRS.pendingGRS','PI.mergedPIList','BackorderReport.get_data','GRS.GRSitemAdd',
         'COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','ProductMaster.productList','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist' ,
-        'CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd',
+        'CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd','StockManagement.locationSNNTrade',
         'StockManagement.allLocations','StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','PI.pendingPI','Fgsreport.get_data','StockManagement.batchTraceReport','DNI.netBillingReport'])){{'active show'}} @endif ">
 
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
@@ -127,7 +127,7 @@
             </li>
             --}}
             <li class="nav-sub-item @if(in_array($Action,['StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','StockManagement.allLocations',
-            'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL'])){{'active'}} @endif ">
+            'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','StockManagement.locationSNNTrade'])){{'active'}} @endif ">
               <a href="{{url('fgs/stock-management/all-locations')}}"  class="nav-sub-link">Stock Management</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['BackorderReport.get_data','GRS.pendingGRS','PI.pendingPI','OEF.pendingOEF'])){{'active'}} @endif ">
