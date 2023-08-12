@@ -106,6 +106,7 @@
                                     <th>Action</th>
 								</tr>
 							</thead>
+							
 							<tbody id="prbody1">
 							@foreach($mrn as $item)
                                 <tr>

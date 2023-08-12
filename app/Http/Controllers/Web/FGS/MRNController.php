@@ -97,12 +97,17 @@ class MRNController extends Controller
             }
         } else {
             $locations = product_stock_location::get();
+            
             $category = fgs_product_category::get();
+           
             return view('pages/FGS/MRN/MRN-add', compact('locations', 'category'));
         }
     }
     public function MRNitemlist(Request $request, $mrn_id)
     {
+        $product_cat=DB::table('fgs_mrn')
+       ->where('id',$mrn_id)
+       ->first();
         $condition = ['fgs_mrn_item_rel.master' => $request->mrn_id];
         if ($request->product) {
             $condition[] = ['product_product.sku_code', 'like', '%' . $request->product . '%'];
@@ -115,7 +120,7 @@ class MRNController extends Controller
             $condition[] = ['fgs_mrn_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->manufaturing_from))];
         }
         $items = $this->fgs_mrn_item->getMRNItems($condition);
-        return view('pages/FGS/MRN/MRN-item-list', compact('mrn_id', 'items'));
+        return view('pages/FGS/MRN/MRN-item-list', compact('mrn_id', 'items','product_cat'));
     }
 
     public function fetchMRNInfo(Request $request)
@@ -158,6 +163,11 @@ class MRNController extends Controller
     }
 
     public function fetchBatchCardQty(Request $request)
+    {
+        $batchcard = batchcard::where('batchcard_batchcard.id', '=', $request->batch_id)->where('is_trade',0)->first();
+        return $batchcard['quantity'];
+    }
+    public function fetchBatchCardQty_trade(Request $request)
     {
         $batchcard = batchcard::where('batchcard_batchcard.id', '=', $request->batch_id)->where('is_trade',0)->first();
         return $batchcard['quantity'];
@@ -261,8 +271,13 @@ class MRNController extends Controller
                 return redirect('fgs/MRN/add-item/' . $request->mrn_id)->withErrors($validator)->withInput();
             }
         } else {
+            if($product_cat->product_category==3){
+                return view('pages/FGS/MRN/MRN-item-add-trade',compact('product_cat'));
+            }else{
+                return view('pages/FGS/MRN/MRN-item-add',compact('product_cat'));
+
+            }
             //$batchcards = DB::table('batchcard_batchcard')->select('id',ba)->get();
-            return view('pages/FGS/MRN/MRN-item-add',compact('product_cat'));
         }
     }
 

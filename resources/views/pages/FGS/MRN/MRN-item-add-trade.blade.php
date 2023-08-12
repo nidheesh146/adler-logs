@@ -58,6 +58,7 @@
                                                         name="moreItems[0][product]" id="product">
                                                     </select>
                                                     
+                                                    
                                                 </div>
                                                 
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
@@ -76,7 +77,7 @@
                                                         placeholder="Description"></textarea>
                                                 </div>
                                                 <input type="hidden" id="is_sterile1" value="">
-                                               {{--@if($product_cat->product_category==3)
+                                                {{--@if($product_cat->product_category==3)--}}
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
@@ -90,7 +91,7 @@
                                                     </select> -->
                                                     
                                                 </div>
-                                               @else--}}
+                                               {{--@else
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
@@ -102,7 +103,7 @@
                                                     </select>
                                                     
                                                 </div>
-                                                {{--@endif--}}
+                                                @endif--}}
                                                 </div>
                                             <div class="row">
                                            
@@ -110,7 +111,7 @@
                                                     style="float:left;">
                                                     <label>Quantity * </label>
                                                     <input type="number"  class="form-control" name="moreItems[0][qty]"
-                                                        id="stock_qty1" placeholder="Stock Qty">
+                                                        id="stock_qty1" placeholder="Stock Qty" >
                                                 </div>
                                             
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
@@ -237,54 +238,6 @@ function getsearch(){
                 const myInput = document.getElementById("product_cat");
                 const inputValue = myInput.value;
                 // if(inputValue==3){
-                //     $('#dynamic_field').append(`
-                //       <tr id="row${i}" rel="${i}">
-                //       <td>
-                //         <div class="row">
-                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                //                 <label for="exampleInputEmail1">Product code * </label>
-                //                 <select class="form-control product item_code${i}" id="${i}" name="moreItems[${i}][product]" id="product">
-                //                 </select>                        
-                //             </div>
-                //             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
-                //                 <label>HSN Code * </label>
-                //                 <input type="text" readonly class="form-control" name="hsncode" id="hsncode${i}" placeholder="HSN Code">
-                //                 <input type="hidden" value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}" name="Itemtypehidden" id="Itemtypehidden">
-                //             </div><!-- form-group -->
-                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                //                 <label>Description * </label>
-                //                 <textarea type="text" readonly class="form-control" id="Itemdescription${i}"name="Description" placeholder="Description"></textarea>
-                //             </div>
-                //             <input type="hidden" id="is_sterile${i}" value="">
-                           
-                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                //                 <label for="exampleInputEmail1">Batch No* </label>
-                //                 <input type="text"  class="form-control" name="moreItems[${i}][batch_no]"  placeholder="Batch No">
-                //             </div>
-                           
-                //         </div>
-                //         <div class="row"> 
-                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                //                 <label>Quantity * </label>
-                //                 <input type="number"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Quantity">
-                //             </div>
-                //             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
-                //                 <label>UOM </label>
-                //                 <input type="text"  class="form-control" readonly name="moreItems[${i}][uom]" id="uom${i}" placeholder="NOS">
-                //             </div>
-                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                //                 <label>Date of Mfg. * </label>
-                //                 <input type="text"  class="form-control datepicker manufacturing_date" name="moreItems[${i}][manufacturing_date]" id="manufacturing_date${i}" value="">
-                //             </div>
-                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                //                 <label>Date of Expiry * </label>
-                //                 <input type="text"  class="form-control datepicker expiry_date" name="moreItems[${i}][expiry_date]" id="expiry_date${i}" value="">
-                //             </div>
-                //             <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
-                //         </div>
-                //     </td>                        
-                // </tr>`);
-                // }else{
                     $('#dynamic_field').append(`
                       <tr id="row${i}" rel="${i}">
                       <td>
@@ -305,12 +258,11 @@ function getsearch(){
                             </div>
                             <input type="hidden" id="is_sterile${i}" value="">
                            
-                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label for="exampleInputEmail1">Batch No* </label>
-                                <select class="form-control batch_number batch_no${i}" index="${i}" name="moreItems[${i}][batch_no]" >
-                                </select>                
+                                <input type="text"  class="form-control" name="moreItems[${i}][batch_no]"  placeholder="Batch No">
                             </div>
-                            
+                           
                         </div>
                         <div class="row"> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
@@ -333,7 +285,56 @@ function getsearch(){
                         </div>
                     </td>                        
                 </tr>`);
-                
+                // }else{
+                //     $('#dynamic_field').append(`
+                //       <tr id="row${i}" rel="${i}">
+                //       <td>
+                //         <div class="row">
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label for="exampleInputEmail1">Product code * </label>
+                //                 <select class="form-control product item_code${i}" id="${i}" name="moreItems[${i}][product]" id="product">
+                //                 </select>                        
+                //             </div>
+                //             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                //                 <label>HSN Code * </label>
+                //                 <input type="text" readonly class="form-control" name="hsncode" id="hsncode${i}" placeholder="HSN Code">
+                //                 <input type="hidden" value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}" name="Itemtypehidden" id="Itemtypehidden">
+                //             </div><!-- form-group -->
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label>Description * </label>
+                //                 <textarea type="text" readonly class="form-control" id="Itemdescription${i}"name="Description" placeholder="Description"></textarea>
+                //             </div>
+                //             <input type="hidden" id="is_sterile${i}" value="">
+                           
+                //                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label for="exampleInputEmail1">Batch No* </label>
+                //                 <select class="form-control batch_number batch_no${i}" index="${i}" name="moreItems[${i}][batch_no]" >
+                //                 </select>                
+                //             </div>
+                            
+                //         </div>
+                //         <div class="row"> 
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label>Quantity * </label>
+                //                 <input type="number"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Quantity">
+                //             </div>
+                //             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                //                 <label>UOM </label>
+                //                 <input type="text"  class="form-control" readonly name="moreItems[${i}][uom]" id="uom${i}" placeholder="NOS">
+                //             </div>
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label>Date of Mfg. * </label>
+                //                 <input type="text"  class="form-control datepicker manufacturing_date" name="moreItems[${i}][manufacturing_date]" id="manufacturing_date${i}" value="">
+                //             </div>
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label>Date of Expiry * </label>
+                //                 <input type="text"  class="form-control datepicker expiry_date" name="moreItems[${i}][expiry_date]" id="expiry_date${i}" value="">
+                //             </div>
+                //             <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
+                //         </div>
+                //     </td>                        
+                // </tr>`);
+                // }
                 
                 initProductSelect2();
                 //initBatchSelect2();
@@ -369,18 +370,19 @@ function getsearch(){
         //   // alert(select_id);
         // }); 
         $(document).on('change', '.batch_number', function (e) {
-           // const inputValue = myInput.value; 
-                var batch_id = $(this).val();
-                var select_id = $(this).attr("index");
-                $("#stock_qty"+select_id+"").val('');
-                $("#stock_qty"+select_id+"").attr('max','');
-                $("#stock_qty"+select_id+"-error").text('');
-                $("#stock_qty"+select_id+"").removeClass("error");
-                $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id="+batch_id,function(data){
-                    $("#stock_qty"+select_id+"").val(data);
-                    $("#stock_qty"+select_id+"").attr('max',data);
-                    $("#stock_qty"+select_id+"").attr('min',0);
-                });
+            
+          
+                // var batch_id = $(this).val();
+                // var select_id = $(this).attr("index");
+                // $("#stock_qty"+select_id+"").val('');
+                // $("#stock_qty"+select_id+"").attr('max','');
+                // $("#stock_qty"+select_id+"-error").text('');
+                // $("#stock_qty"+select_id+"").removeClass("error");
+                // $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id="+batch_id,function(data){
+                //     $("#stock_qty"+select_id+"").val(data);
+                //     $("#stock_qty"+select_id+"").attr('max',data);
+                //     $("#stock_qty"+select_id+"").attr('min',0);
+                // });
             
     // do something 
         });
@@ -402,8 +404,7 @@ function getsearch(){
                 });
             });
             function initProductSelect2() {
-                const myInput = document.getElementById("product_cat");
-                const inputValue = myInput.value;
+                
                
                 $(".product").select2({
                     placeholder: 'Choose one',
@@ -411,21 +412,23 @@ function getsearch(){
                     minimumInputLength: 4,
                     allowClear: true,
                     ajax: {
-                        url: "{{ url('fgs/productsearch') }}",
+                        url: "{{ url('fgs/productsearch-trade') }}",
                         processResults: function (data) {
+                            
                                 return { results: data };
                         }
                     }
                 }).on('change', function (e) {
+                    
                     var select_id = $(this).attr("id");
                     $('#Itemcode-error').remove();
                     $("#Itemdescription"+select_id+"").text('');
                     $("#hsncode"+select_id+"").val('');
                     $("#Itemdescription"+select_id+"").val('');
                     $(".batch_number"+select_id+"").val('');
-                    $("#stock_qty"+select_id+"").val('');
-                    $("#stock_qty"+select_id+"").removeAttr('max');
-                    $("#stock_qty"+select_id+"-error").text('');
+                    $(".stock_qty"+select_id+"").val('');
+                    $(".stock_qty"+select_id+"").removeAttr('max');
+                    $(".stock_qty"+select_id+"-error").text('');
                     Itemdescription1
                     let res = $(this).select2('data')[0];
                         if(typeof(res) != "undefined" ){
@@ -438,6 +441,13 @@ function getsearch(){
                             }
                             if(res.discription){
                                 $("#Itemdescription"+select_id+"").val(res.discription);
+                            }
+                            if(res.qty)
+                            {
+                                
+                                $("#stock_qty"+select_id+"").val(res.qty);
+                    $("#stock_qty"+select_id+"").attr('max',res.qty);
+                    $("#stock_qty"+select_id+"").attr('min',0); 
                             }
                             if(res.is_sterile==0){
                                 //$(".expiry_date"+select_id+"").datepicker();
@@ -452,6 +462,7 @@ function getsearch(){
                             }
                             else
                             {
+                                
                                 $("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
                                 $("#is_sterile"+select_id+"").val(1);
                                 $(".expiry_date"+select_id+"").datepicker();
@@ -467,7 +478,7 @@ function getsearch(){
                                 //$("#expiry_date"+select_id+"").val(expiry_date);
                             }
                             $("#manufacturing_date"+select_id+"").datepicker({
-                                    format: " dd-mm-yyyy",
+                                    format: " dd/mm/yyyy",
                                     autoclose:true,
                                     "setDate": new Date(),
                                     onSelect: function(date) {
@@ -478,10 +489,10 @@ function getsearch(){
                                     //alert($(this).val());
                                     if($("#is_sterile"+select_id+"").val()!=0)
                                     {
-                                        var date = $("#manufacturing_date"+select_id+"").datepicker('getDate');  
+                                       var date = $("#manufacturing_date"+select_id+"").datepicker('getDate');  
 
                                         //var date = $(this).val();
-                                        //alert(date);
+                                        
                                         var new_date = new Date(date);
                                         new_date.setFullYear(new_date.getFullYear() + 5);
                                         new_date.setDate(new_date.getDate() - 2);
@@ -492,7 +503,7 @@ function getsearch(){
                                     }
                             });
                             $("#manufacturing_date"+select_id+"").datepicker("setDate", new Date());
-                            $("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
+                           // $("#manufacturing_date"+select_id+"").datepicker('setEndDate', new Date());
                             $.get("{{ url('fgs/fetchProductBatchCards') }}?product_id="+res.id,function(data)
                             {
                                 $(".batch_no"+select_id+"").find('option').remove();
@@ -505,7 +516,7 @@ function getsearch(){
                                 }
                                 else
                                 {
-                                    alert('Out of stock...');
+                                    //alert('Out of stock...');
                                 }
                             });
                        }

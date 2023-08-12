@@ -14,9 +14,15 @@
 			<h4 class="az-content-title" style="font-size: 20px;">
             MRN Item List 
               <div class="right-button">
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MRN/add-item/'.$mrn_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+				@if($product_cat->product_category==3)
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MRN/add-item-trade/'.$mrn_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
 						MRN Item
 				</button>
+				@else
+				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/MRN/add-item/'.$mrn_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
+						MRN Item
+				</button>
+				@endif
 				<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" mrnid="{{$mrn_id}}" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>
               <div>  
 				
@@ -109,6 +115,7 @@
 									<th>Action</th>
 								</tr>
 							</thead>
+							
 							<tbody id="prbody1">
 								<?php $qty=0; ?>
 								@foreach($items as $item)
