@@ -29,6 +29,8 @@
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/MAA')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @elseif($location=='SNN_Mktd')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/SNN')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                            @elseif($location=='SNN_Trade')
+                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/SNNTrade')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @elseif($location=='AHPL_Mktd')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/AHPL')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @endif

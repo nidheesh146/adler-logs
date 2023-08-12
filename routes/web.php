@@ -317,9 +317,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     Route::post('inventory/inventory-itemtype-add','InventorygstController@Add_itemtype');
     Route::get('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
     Route::post('inventory/inventory-itemtype-add/{id}','InventorygstController@Add_itemtype');
-    Route::get('inventory/inv-item-upload','InventorygstController@add_inv_item');
-    Route::post('inventory/inv-item-upload','InventorygstController@invitemFileUpload');
-
+    
 
 });
 
@@ -414,6 +412,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web','middleware'=>['RolePerm
     Route::post('product/Product-addfamily','ProductController@productAddingFamily');
     Route::get('product/Product-add-brand','ProductController@productAddBrand');
     Route::post('product/Product-addbrand','ProductController@productAddingBrand');
+
+    Route::get('product/input-material-upload','ProductController@upload_product_inputmaterial');
+    Route::post('product/inputmaterial-upload','ProductController@inputMaterialFileUpload');
+
 
 
     // Route::get('/product/Product-add-group', function () {
@@ -627,6 +629,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/stock-management/location2','StockManagementController@location2Stock');
      Route::get('fgs/stock-management/location3','StockManagementController@location3Stock');
      Route::get('fgs/stock-management/locationSNN','StockManagementController@locationSNN');
+     Route::get('fgs/stock-management/locationSNNTrade','StockManagementController@locationSNNTrade');
      Route::get('fgs/stock-management/locationAHPL','StockManagementController@locationAHPL');
      Route::get('fgs/stock-management/MAA','StockManagementController@MAAStock');
      Route::get('fgs/stock-management/quarantine','StockManagementController@quarantineStock');
@@ -636,6 +639,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/stock-report/location3','StockManagementController@location3Export');
      Route::get('fgs/stock-report/MAA','StockManagementController@MAAExport');
      Route::get('fgs/stock-report/SNN','StockManagementController@SNNExport');
+     Route::get('fgs/stock-report/SNNTrade','StockManagementController@SNNTradeExport');
      Route::get('fgs/stock-report/AHPL','StockManagementController@AHPLExport');
      Route::get('fgs/batch-trace-report','StockManagementController@batchTraceReport');
      Route::get('fgs/batch-trace-report/export','StockManagementController@batchTraceReportExport');

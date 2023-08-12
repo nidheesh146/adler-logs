@@ -13,7 +13,7 @@
                 </a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Batchcard List
-			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('batchcard/batchcard-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Batchcatd</button>
+			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('batchcard/batchcard-add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Batchcard</button>
             </h4>
 			
 		   @if (Session::get('success'))

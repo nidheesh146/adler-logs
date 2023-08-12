@@ -3,7 +3,7 @@
         $controllerAction = class_basename($routeArray['controller']);
         list($controller, $action) = explode('@', $controllerAction);
         $Action = str_replace('Controller','',$controller.'.'.request()->route()->getActionMethod());
-       // echo $Action;
+        //echo $Action;
 @endphp
   <div class="az-sidebar"> 
     <div class="az-sidebar-header">
@@ -107,7 +107,7 @@
         'PI.PIAdd','PI.PIList','PI.PIitemlist','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','MTQ.MTQAdd','StockManagement.productionStockAdd',
         'StockManagement.productionStockList','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','PI.pendingPI','GRS.pendingGRS','PI.mergedPIList','BackorderReport.get_data','GRS.GRSitemAdd',
         'COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','ProductMaster.productList','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist' ,
-        'CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd',
+        'CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd','StockManagement.locationSNNTrade',
         'StockManagement.allLocations','StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','PI.pendingPI','Fgsreport.get_data','StockManagement.batchTraceReport','DNI.netBillingReport'])){{'active show'}} @endif ">
 
           <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
@@ -128,7 +128,7 @@
             </li>
             --}}
             <li class="nav-sub-item @if(in_array($Action,['StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','StockManagement.allLocations',
-            'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL'])){{'active'}} @endif ">
+            'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','StockManagement.locationSNNTrade'])){{'active'}} @endif ">
               <a href="{{url('fgs/stock-management/all-locations')}}"  class="nav-sub-link">Stock Management</a>
             </li>
             <li class="nav-sub-item @if(in_array($Action,['BackorderReport.get_data','GRS.pendingGRS','PI.pendingPI','OEF.pendingOEF'])){{'active'}} @endif ">
@@ -285,7 +285,7 @@
           </ul>
         </li>
 
-        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial','Product.getProductUpload','Product.locationList'])){{'active show'}} @endif ">
+        <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial','Product.getProductUpload','Product.locationList','Product.upload_product_inputmaterial'])){{'active show'}} @endif ">
           <a href="#" class="nav-link with-sub"><i class="fab fa-product-hunt" style="font-size: 19px"></i>Product</a>
           <ul class="nav-sub">
             <li class="nav-sub-item @if(in_array($Action,['Product.productList','Product.addInputMaterial'])){{'active'}} @endif ">
@@ -300,8 +300,8 @@
             <li class="nav-sub-item @if(in_array($Action,['Product.Product-addgroup'])){{'active'}} @endif ">
             <a href="{{url('product/Product-add-group')}}"  class="nav-sub-link">Product Group Add</a>
             </li> 
-            <li class="nav-sub-item @if(in_array($Action,['inventory.inv-item-upload'])){{'active'}} @endif ">
-            <a href="{{url('inventory/inv-item-upload')}}"  class="nav-sub-link">Product input material(prd-29)</a>
+            <li class="nav-sub-item @if(in_array($Action,['Product.upload_product_inputmaterial'])){{'active'}} @endif ">
+            <a href="{{url('product/input-material-upload')}}"  class="nav-sub-link">Product input material(PRD-29)</a>
             </li> 
           </ul>
         </li>

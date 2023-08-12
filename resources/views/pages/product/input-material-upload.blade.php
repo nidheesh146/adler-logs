@@ -5,12 +5,12 @@
   <br>
 	<div class="container">
 		<div class="az-content-body">
-            <!-- <div class="az-content-breadcrumb"> 
-                <span><a href="{{url('product/list')}}" style="color: #596881;">INVENTORY </a></span> 
-                <span><a href="{{url('product/file/upload')}}" style="color: #596881;">Inventory UPLOAD</a></span>
-            </div> -->
-
-            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">Inventory Item Upload
+            <div class="az-content-breadcrumb"> 
+                <span><a href="{{url('product/list')}}" style="color: #596881;">Product </a></span> 
+                <span><a href="{{url('product/file/upload')}}" style="color: #596881;">Product Input Material Upload</a></span>
+            </div>
+            <br/>
+            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">Product Input Material Upload(PRD-29)
             </h4>
             <div class="form-devider"></div>
 			<div class="row">     
@@ -29,7 +29,7 @@
                     @endif                   
                     <br>
                     <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST"  action="{{url('inventory/inv-item-upload')}}" id="commentForm" enctype='multipart/form-data'>
+                    <form method="POST"  action="{{url('product/inputmaterial-upload')}}" id="commentForm" enctype='multipart/form-data'>
                
                         {{ csrf_field() }}  
                         <div class="row ">
@@ -37,10 +37,10 @@
                                 <label for="exampleInputEmail1">Select File </label>
                                 
                                 <input type="file"  accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" name="file" value="" >
-                               {{-- <a href="{{ asset('uploads/product_sample.xlsx') }}"  target="_blank" style="
+                                <a href="{{ asset('uploads/prd-29_sample.xlsx') }}"  target="_blank" style="
                                 float: right;
                                 font-size: 10px;
-                            "> Download Template</a>--}}
+                            "> Download Template</a>
                             </div> 
                         </div> 
                         <div class="row">
