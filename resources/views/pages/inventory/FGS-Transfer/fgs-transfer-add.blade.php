@@ -42,14 +42,18 @@
 											<th scope="row">
 												<div class="row filter_search" style="margin-left: 0px;">
                                                     <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 row">
-														<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
 															<label  style="font-size: 12px;">Supplier</label>
 															<input type="text" value="{{request()->get('supplier')}}"  class="form-control " name="supplier" placeholder="Supplier" >
 														</div>
-														<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
 															<label>MAC Number:</label>
 															<input type="text" value="{{request()->get('mac_no')}}" name="mac_no"  id="mac_no" class="form-control" placeholder="MAC NO">
-														</div><!-- form-group -->
+														</div>
+														<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                        <label>MAC Date:</label>
+                                                        <input type="text" value="{{request()->get('mac_date')}}" name="mac_no" id="mac_no" class="form-control datepicker" placeholder="DD-MM-YYYY">
+                                                    </div><!-- form-group -->
 														
 													<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
 														<!-- <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;"> -->
@@ -80,7 +84,7 @@
                             {{-- <div class="form-devider"></div> --}}
                         </div>
                     </div>
-                    <form method="post" action="">
+                    <form method="post" action="{{url('inventory/fgs-transfer-add')}}">
                     {{ csrf_field() }}
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" id="example1">
@@ -91,7 +95,7 @@
                                     </th>
                                 </tr>
 								<tr>
-                                    <th></th>
+								<th></th>
 									<th style="width:120px;">Item Code</th>
 									<th>Quantity</th>
 									<th>MAC Number</th>
@@ -101,7 +105,17 @@
 								</tr>
 							</thead>
 							<tbody >
-                            
+								@foreach($items as $item)
+                            <tr>
+							<td><input type="checkbox" class="item_id" id="item_id" name="item_id[]" value="{{$item->id}}"></td>
+							
+								<td>{{$item->item_code}}</td>
+								<td>{{$item->available_qty}} Nos</td>
+								<td>{{$item->mac_number}}</td>
+								<td>{{$item->mac_date}}</td>
+								<td>{{$item->vendor_name}}</td>
+							</tr>
+							@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
@@ -109,7 +123,7 @@
 						</div> 
                         <br/>
                         <div class="form-devider"></div>
-                        {{--@if(count($data['quotation'])>0) --}}
+                        @if(count($items)>0)
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                     <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
@@ -117,7 +131,7 @@
                                     </button>
                                 </div>
                             </div>
-                        {{-- @endif --}}
+                         @endif
 					</div>
                     </form>
 				</div>
@@ -142,15 +156,16 @@
 	var date = new Date();
     date.setDate(date.getDate());
 	$(".datepicker").datepicker({
-        format: "mm-yyyy",
-        viewMode: "months",
-        minViewMode: "months",
-        // startDate: date,
+        format: "dd-mm-yyyy",
+        // viewMode: "months",
+        // minViewMode: "months",
+         endDate: date,
         autoclose:true
     });
-
-    //$('#prbody').show();
-  });
+    $(".datepicker2").datepicker({
+        format: " dd-mm-yyyy",
+        autoclose:true
+    });
   
 	$('.search-btn').on( "click", function(e)  {
 		//var supplier = $('#supplier').val();

@@ -227,6 +227,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails','middlew
     
     // fgs transfer
     Route::get('inventory/fgs-transfer', 'FGSTransferController@fgsTransfer');
+    Route::post('inventory/fgs-transfer-add', 'FGSTransferController@fgsTransferAdd');
+    Route::get('inventory/fgs-transfer-list', 'FGSTransferController@fgsTransferList');
+
 
     Route::get('inventory/find-invoice-for-mrr','MRRController@find_invoice_for_mrr');
     Route::get('inventory/find-invoice-for-srr','MRRController@find_invoice_for_srr');
@@ -436,6 +439,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/price-master/add/{id?}','PriceController@priceAdd');
     Route::post('fgs/price-master/add/{id?}','PriceController@priceAdd');
     Route::get('fgs/productsearch','PriceController@productsearch');
+    Route::get('fgs/productsearch-trade','PriceController@productsearch_trade');
+
     Route::get('fgs/price-master/excel-export','PriceController@PriceMasterExport');
     // Product master
     Route::get('fgs/product-master/list','ProductMasterController@productList');
@@ -467,6 +472,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/fetchProductBatchCards','MRNController@fetchProductBatchCards');
     Route::get('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
     Route::post('fgs/MRN/add-item/{mrn_id}','MRNController@MRNitemAdd');
+    Route::get('fgs/MRN/add-item-trade/{mrn_id}','MRNController@MRNitemAdd');
+    Route::post('fgs/MRN/add-item-trade/{mrn_id}','MRNController@MRNitemAdd');
+
+
+    
     Route::get('fgs/MRN/pdf/{mrn_id}','MRNController@MRNpdf');
     Route::get('fgs/fetchBatchCardQty','MRNController@fetchBatchCardQty');
     //MIN

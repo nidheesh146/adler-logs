@@ -59,6 +59,7 @@
                                                     </select>
                                                     
                                                 </div>
+                                                
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
                                                     style="float:left;">
                                                     <label>HSN Code * </label>
@@ -75,7 +76,7 @@
                                                         placeholder="Description"></textarea>
                                                 </div>
                                                 <input type="hidden" id="is_sterile1" value="">
-                                                @if($product_cat->product_category==3)
+                                               {{--@if($product_cat->product_category==3)
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
@@ -89,7 +90,7 @@
                                                     </select> -->
                                                     
                                                 </div>
-                                               @else
+                                               @else--}}
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
@@ -101,7 +102,7 @@
                                                     </select>
                                                     
                                                 </div>
-                                                @endif
+                                                {{--@endif--}}
                                                 </div>
                                             <div class="row">
                                            
@@ -235,55 +236,55 @@ function getsearch(){
                 i++;
                 const myInput = document.getElementById("product_cat");
                 const inputValue = myInput.value;
-                if(inputValue==3){
-                    $('#dynamic_field').append(`
-                      <tr id="row${i}" rel="${i}">
-                      <td>
-                        <div class="row">
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                                <label for="exampleInputEmail1">Product code * </label>
-                                <select class="form-control product item_code${i}" id="${i}" name="moreItems[${i}][product]" id="product">
-                                </select>                        
-                            </div>
-                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
-                                <label>HSN Code * </label>
-                                <input type="text" readonly class="form-control" name="hsncode" id="hsncode${i}" placeholder="HSN Code">
-                                <input type="hidden" value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}" name="Itemtypehidden" id="Itemtypehidden">
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                                <label>Description * </label>
-                                <textarea type="text" readonly class="form-control" id="Itemdescription${i}"name="Description" placeholder="Description"></textarea>
-                            </div>
-                            <input type="hidden" id="is_sterile${i}" value="">
+                // if(inputValue==3){
+                //     $('#dynamic_field').append(`
+                //       <tr id="row${i}" rel="${i}">
+                //       <td>
+                //         <div class="row">
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label for="exampleInputEmail1">Product code * </label>
+                //                 <select class="form-control product item_code${i}" id="${i}" name="moreItems[${i}][product]" id="product">
+                //                 </select>                        
+                //             </div>
+                //             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                //                 <label>HSN Code * </label>
+                //                 <input type="text" readonly class="form-control" name="hsncode" id="hsncode${i}" placeholder="HSN Code">
+                //                 <input type="hidden" value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}" name="Itemtypehidden" id="Itemtypehidden">
+                //             </div><!-- form-group -->
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label>Description * </label>
+                //                 <textarea type="text" readonly class="form-control" id="Itemdescription${i}"name="Description" placeholder="Description"></textarea>
+                //             </div>
+                //             <input type="hidden" id="is_sterile${i}" value="">
                            
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                                <label for="exampleInputEmail1">Batch No* </label>
-                                <input type="text"  class="form-control" name="moreItems[${i}][batch_no]"  placeholder="Batch No">
-                            </div>
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label for="exampleInputEmail1">Batch No* </label>
+                //                 <input type="text"  class="form-control" name="moreItems[${i}][batch_no]"  placeholder="Batch No">
+                //             </div>
                            
-                        </div>
-                        <div class="row"> 
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                                <label>Quantity * </label>
-                                <input type="number"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Quantity">
-                            </div>
-                            <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
-                                <label>UOM </label>
-                                <input type="text"  class="form-control" readonly name="moreItems[${i}][uom]" id="uom${i}" placeholder="NOS">
-                            </div>
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                                <label>Date of Mfg. * </label>
-                                <input type="text"  class="form-control datepicker manufacturing_date" name="moreItems[${i}][manufacturing_date]" id="manufacturing_date${i}" value="">
-                            </div>
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-                                <label>Date of Expiry * </label>
-                                <input type="text"  class="form-control datepicker expiry_date" name="moreItems[${i}][expiry_date]" id="expiry_date${i}" value="">
-                            </div>
-                            <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
-                        </div>
-                    </td>                        
-                </tr>`);
-                }else{
+                //         </div>
+                //         <div class="row"> 
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label>Quantity * </label>
+                //                 <input type="number"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Quantity">
+                //             </div>
+                //             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
+                //                 <label>UOM </label>
+                //                 <input type="text"  class="form-control" readonly name="moreItems[${i}][uom]" id="uom${i}" placeholder="NOS">
+                //             </div>
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label>Date of Mfg. * </label>
+                //                 <input type="text"  class="form-control datepicker manufacturing_date" name="moreItems[${i}][manufacturing_date]" id="manufacturing_date${i}" value="">
+                //             </div>
+                //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
+                //                 <label>Date of Expiry * </label>
+                //                 <input type="text"  class="form-control datepicker expiry_date" name="moreItems[${i}][expiry_date]" id="expiry_date${i}" value="">
+                //             </div>
+                //             <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
+                //         </div>
+                //     </td>                        
+                // </tr>`);
+                // }else{
                     $('#dynamic_field').append(`
                       <tr id="row${i}" rel="${i}">
                       <td>
@@ -332,7 +333,7 @@ function getsearch(){
                         </div>
                     </td>                        
                 </tr>`);
-                }
+                
                 
                 initProductSelect2();
                 //initBatchSelect2();
@@ -401,6 +402,9 @@ function getsearch(){
                 });
             });
             function initProductSelect2() {
+                const myInput = document.getElementById("product_cat");
+                const inputValue = myInput.value;
+               
                 $(".product").select2({
                     placeholder: 'Choose one',
                     searchInputPlaceholder: 'Search',
@@ -409,9 +413,11 @@ function getsearch(){
                     ajax: {
                         url: "{{ url('fgs/productsearch') }}",
                         processResults: function (data) {
+                            
                                 return { results: data };
                         }
                     }
+                    
                 }).on('change', function (e) {
                     var select_id = $(this).attr("id");
                     $('#Itemcode-error').remove();
@@ -434,7 +440,7 @@ function getsearch(){
                             }
                             if(res.discription){
                                 $("#Itemdescription"+select_id+"").val(res.discription);
-                            }
+                            }                           
                             if(res.is_sterile==0){
                                 //$(".expiry_date"+select_id+"").datepicker();
                                 $("#is_sterile"+select_id+"").val(0);
@@ -448,7 +454,8 @@ function getsearch(){
                             }
                             else
                             {
-                                $("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
+                                //$("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
+                                
                                 $("#is_sterile"+select_id+"").val(1);
                                 $(".expiry_date"+select_id+"").datepicker();
                                 $("#expiry_date"+select_id+"").datepicker({

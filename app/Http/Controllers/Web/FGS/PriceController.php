@@ -123,7 +123,35 @@ class PriceController extends Controller
         if(!$request->q){
             return response()->json(['message'=>'Product is not valid'], 500); 
         }
-        $data =  $this->product->get_product_info(strtoupper($request->q));
+      
+            $data =  $this->product->get_product_info(strtoupper($request->q));   
+        
+        if(!empty( $data)){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'Product is not exist'], 500); 
+        }
+    }
+    public function productsearch_trade(Request $request)
+    {
+        if(!$request->q){
+            return response()->json(['message'=>'Product is not valid'], 500); 
+        }
+      
+           // $data =  $this->product->get_product_info(strtoupper($request->q)); 
+          $data= DB::table('product_product')
+           ->select(['product_product.id','product_product.sku_code as text','product_product.discription','product_productgroup.group_name','product_product.hsn_code',
+           'product_product.is_sterile','product_product.process_sheet_no','inv_stock_management.stock_qty as qty'])
+                           ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
+                           ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.item_code','=','product_product.sku_code')
+                           ->leftjoin('inv_stock_management','inv_stock_management.item_id','=','inventory_rawmaterial.id')
+                           ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.Item_code','=','inventory_rawmaterial.id')
+                           ->leftjoin('inv_mac_item','inv_mac_item.pr_item_id','=','inv_purchase_req_item.requisition_item_id')
+                           ->leftjoin('fgs_transfer','fgs_transfer.pr_item_id','=','inv_mac_item.pr_item_id')
+                           ->where('product_product.sku_code','like','%'.$request->q.'%')
+                           ->where('inv_mac_item.fgs_transfer_status',2)
+                           ->get()->toArray();  
+        
         if(!empty( $data)){
             return response()->json( $data, 200); 
         }else{

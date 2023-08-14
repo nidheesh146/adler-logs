@@ -20,6 +20,8 @@ class product extends Model
     }
     function get_product_data($data){
         return $this->select(['id','sku_code as text','discription','process_sheet_no'])
+        ->leftjoin('product_input_material','product_product.id','=','product_input_material.product_id')
+        ->leftjoin('fgs_transfer','fgs_transfer.pr_item_id','=','product_input_material.item_id1')
                     ->where('sku_code','like','%'.$data.'%')
                     ->get()->toArray();
         
@@ -32,7 +34,7 @@ class product extends Model
     }
 
     function get_products($condition){
-        //  dd($condition);
+        
         return $this->select(['product_product.*','product_productfamily.family_name','product_productgroup.group_name','product_productbrand.brand_name',
         'product_group1.group_name as group1_name','fgs_product_category.category_name','product_type.product_type_name'])
                     ->leftjoin('product_productfamily','product_productfamily.id','=','product_product.product_family_id')
@@ -68,6 +70,18 @@ class product extends Model
                     ->get()->toArray();
         
     }
+
+    // function get_product_info_trade($data){
+    //     return $this->select(['product_product.id','product_product.sku_code as text','product_product.discription','product_productgroup.group_name','product_product.hsn_code','product_product.is_sterile','product_product.process_sheet_no'])
+    //                 ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
+    //                 ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.item_code','=','product_product.sku_code')
+    //                 ->leftjoin('inv_purchase_req_item','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
+    //                 ->leftjoin('inv_mac_item','inv_purchase_req_item.requisition_item_id','=','inv_mac_item.pr_item_id')
+    //                 ->leftjoin('fgs_transfer','inv_mac_item.id','=','fgs_transfer.pr_item_id')
+    //                 ->where('inventory_rawmaterial.item_code','like','%'.$data.'%')
+    //                 ->get()->toArray();
+        
+    // }
     function get_product_info_for_oef($data,$condition)
     {
         return $this->select(['product_product.id','product_product.sku_code as text','product_product.discription','product_productgroup.group_name','product_product.hsn_code','product_price_master.sales','product_product.gst'])
