@@ -195,16 +195,20 @@ if (x == 1) {
     if (optionToDisplay) {
         optionToDisplay.selected = true;
     }
-} else {
-    var optionToRAdd = document.querySelector("#stock_location option[value='10']");
-    if (!optionToRAdd) {
-        // Create a new option element
-        optionToRAdd = new Option('SNN Trade', '10'); // Replace 'SNN Trade' with the actual text you want
-
-        // Append the option element to the select dropdown
-        var stockLocationDropdown = document.getElementById("stock_location");
-        stockLocationDropdown.appendChild(optionToRAdd);
+} else if(x == 2){
+    var optionToDisplay = document.querySelector("#stock_location option[value='11']");
+    if (optionToDisplay) {
+        optionToDisplay.selected = true;
     }
+    // var optionToRAdd = document.querySelector("#stock_location option[value='10']");
+    // if (!optionToRAdd) {
+    //     // Create a new option element
+    //     optionToRAdd = new Option('SNN Trade', '10'); // Replace 'SNN Trade' with the actual text you want
+
+    //     // Append the option element to the select dropdown
+    //     var stockLocationDropdown = document.getElementById("stock_location");
+    //     stockLocationDropdown.appendChild(optionToRAdd);
+    // }
 }
 
 

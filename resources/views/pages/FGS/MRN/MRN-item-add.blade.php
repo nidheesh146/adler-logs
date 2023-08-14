@@ -413,9 +413,11 @@ function getsearch(){
                     ajax: {
                         url: "{{ url('fgs/productsearch') }}",
                         processResults: function (data) {
+                            
                                 return { results: data };
                         }
                     }
+                    
                 }).on('change', function (e) {
                     var select_id = $(this).attr("id");
                     $('#Itemcode-error').remove();
@@ -438,7 +440,7 @@ function getsearch(){
                             }
                             if(res.discription){
                                 $("#Itemdescription"+select_id+"").val(res.discription);
-                            }
+                            }                           
                             if(res.is_sterile==0){
                                 //$(".expiry_date"+select_id+"").datepicker();
                                 $("#is_sterile"+select_id+"").val(0);
@@ -452,7 +454,8 @@ function getsearch(){
                             }
                             else
                             {
-                                $("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
+                                //$("#manufacturing_date"+select_id+"").datepicker('setDate',new Date());
+                                
                                 $("#is_sterile"+select_id+"").val(1);
                                 $(".expiry_date"+select_id+"").datepicker();
                                 $("#expiry_date"+select_id+"").datepicker({
