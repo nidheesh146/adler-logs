@@ -134,7 +134,7 @@
               <a href="{{url('fgs/back-ordr-report')}}"  class="nav-sub-link">Back order Report</a>
             </li>
             <li class="nav-sub-item  @if(in_array($Action,['Fgsreport.get_data'])){{'active'}} @endif">
-              <a href="{{url('fgs/fgs-report')}}"  class="nav-sub-link">FGS Report</a>
+              <a href="{{url('fgs/fgs-report')}}"  class="nav-sub-link">FGS Transaction Report</a>
             </li>
             <li class="nav-sub-item  @if(in_array($Action,['StockManagement.batchTraceReport'])){{'active'}} @endif">
               <a href="{{url('fgs/batch-trace-report')}}"  class="nav-sub-link">Batch Trace Report</a>

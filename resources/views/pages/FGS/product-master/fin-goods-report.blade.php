@@ -9,12 +9,12 @@ $fn=new FgsreportController();
     <div class="container">
         <div class="az-content-body">
             <div class="az-content-breadcrumb">
-                <span><a href="" style="color: #596881;">FGS Item Master</a></span>
+                <span><a href="" style="color: #596881;">FGS</a></span>
                 <span><a href="" style="color: #596881;">
-                        FGS Report
+                        FGS Transaction Report
                     </a></span>
             </div>
-             <h4 class="az-content-title" style="font-size: 20px;">FGS Report
+             <h4 class="az-content-title" style="font-size: 20px;">FGS Transaction Report
             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/fgs-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
 			</h4> 
 
@@ -85,47 +85,47 @@ $fn=new FgsreportController();
                                 <tr>
                                     <th rowspan="2">Sl</th>
                                     <th rowspan="2">Item Code </th>
-                                    <th rowspan="2">Batch </th>
+                                    {{--<th rowspan="2">Batch </th>--}}
                                     <th rowspan="2">Description </th>
-                                    <th rowspan="2">Date of Mfg. </th>
-                                    <th rowspan="2">Date of Expiry. </th> 
-                                    <th colspan="4">MRN</th>
-                                    <th colspan="4">OEF</th>
-                                    <th colspan="4">COEF</th>
-                                    <th colspan="3">GRS</th>
-                                    <th colspan="3">CGRS</th>
+                                    {{--<th rowspan="2">Date of Mfg. </th>
+                                    <th rowspan="2">Date of Expiry. </th> --}}
+                                    <th colspan="3">MRN</th>
+                                    <th colspan="3">OEF</th>
+                                    <th colspan="3">COEF</th>
+                                    <th colspan="2">GRS</th>
+                                    <th colspan="2">CGRS</th>
                                     <th colspan="3">PI</th>
                                     <th colspan="3">CPI</th>
-                                    <th colspan="3">MIN</th>
-									<th colspan="3">CMIN</th>
-                                    <th colspan="3">MTQ</th>
-                                    <th colspan="3">CMTQ</th>
-                                    <th colspan="3">MIS</th>
+                                    <th colspan="2">MIN</th>
+									<th colspan="2">CMIN</th>
+                                    <th colspan="2">MTQ</th>
+                                    <th colspan="2">CMTQ</th>
+                                    <th colspan="2">MIS</th>
                                     
                                 </tr>
                                 <tr>
                                     <td>MRN number</td>
                                     <td>Qty</td>
                                     <td>MRN date</td>
-                                    <td>WEF</td>
+                                    {{--<td>WEF</td> --}}
 
                                     <td>OEF number</td>
                                     <td>Qty</td>
                                     <td>OEF date</td>
-                                    <td>WEF</td>
+                                    {{--<td>WEF</td> --}}
 
                                     <td>COEF number</td>
                                     <td>Qty</td>
                                     <td>COEF date</td>
-                                    <td>WEF</td>
+                                    {{-- <td>WEF</td> --}}
 
                                     <td>GRS number</td>
                                     <td >GRS date</td>
-                                    <td>WEF</td>
+                                    {{-- <td>WEF</td> --}}
 
                                     <td>CGRS number</td>
                                     <td>CGRS date</td>
-                                    <td>WEF</td> 
+                                    {{-- <td>WEF</td> --}} 
 
                                     <td>PI number</td>
                                     <td>Qty</td>
@@ -137,23 +137,23 @@ $fn=new FgsreportController();
 
                                     <td>MIN number</td>
                                     <td>MIN date</td>
-                                    <td>WEF</td>
+                                    {{-- <td>WEF</td> --}}
 
                                     <td>CMIN number</td>
                                     <td>CMIN date</td>
-                                    <td>WEF</td>
+                                    {{-- <td>WEF</td> --}}
 
                                     <td>MTQ number</td>
                                     <td>MTQ date</td>
-                                    <td>WEF</td>
+                                    {{-- <td>WEF</td> --}}
 
                                     <td>CMTQ number</td>
                                     <td>CMTQ date</td>
-                                    <td>WEF</td>
+                                    {{-- <td>WEF</td> --}}
 
                                     <td>MIS number</td>
                                     <td>MIS date</td>
-                                    <td>WEF</td>
+                                    {{-- <td>WEF</td> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -161,27 +161,27 @@ $fn=new FgsreportController();
                                 <tr>
                                     <td>{{$sl++}}</td>
                                     <td>{{$item->sku_code}}</td>
-                                    <td>{{$item->batch_no}}</td>
+                                   {{-- <td>{{$item->batch_no}}</td> --}}
                                     <td>{{$item->discription}}</td>
-                                    <td>{{date('d-m-Y',strtotime($item->manufacturing_date))}}</td>
-                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td> 
+                                    {{--<td>{{date('d-m-Y',strtotime($item->manufacturing_date))}}</td>
+                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td> --}}
                                     <!-- mrn -->
                                     <td>{{$item->mrn_number}}</td>
                                     <td>{{$item->quantity}} Nos</td>
                                     <td>{{date('d-m-Y',strtotime($item->mrn_date))}}</td>
-                                    <td>{{date('d-m-Y',strtotime($item->mrn_wef))}}</td>
+                                    {{--<td>{{date('d-m-Y',strtotime($item->mrn_wef))}}</td> --}}
                                     <!-- oef -->
                                     <?php $oef_data=$fn->getOEFDetails($item->mrn_item_id);?>
                                     @if($oef_data)
                                     <td>{{$oef_data->oef_number}}</td>
                                     <td>{{$oef_data->remaining_qty_after_cancel}}Nos</td>
                                     <td>{{date('d-m-Y',strtotime($oef_data->oef_date))}}</td>
-                                    <td>{{date('d-m-Y',strtotime($oef_data->oef_wef))}}</td> 
+                                    {{-- <td>{{date('d-m-Y',strtotime($oef_data->oef_wef))}}</td> --}} 
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td> 
+                                    {{--<td></td> --}} 
                                     @endif       
                                     <!-- coef -->
                                     @if($oef_data)
@@ -191,12 +191,12 @@ $fn=new FgsreportController();
                                     <td>{{$coef_data->coef_number}}</td>
                                     <td>{{$coef_data->quantity}}Nos</td>
                                     <td>{{date('d-m-Y',strtotime($coef_data->coef_date))}}</td>
-                                    <td>{{date('d-m-Y',strtotime($coef_data->coef_wef))}}</td>         
+                                    {{--<td>{{date('d-m-Y',strtotime($coef_data->coef_wef))}}</td> --}}         
                                     @else
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>
+                                    {{--<td></td> --}}
                                     @endif
                                     <!-- GRS -->
                                     <?php $grs_datas = $fn->getGRSDetails($item->mrn_item_id); ?>
@@ -211,16 +211,16 @@ $fn=new FgsreportController();
                                         {{date('d-m-Y',strtotime($grs_data->grs_date))}}<br/>
                                         @endforeach
                                     </td>
-                                    <td>
+                                    {{--<td>
                                         @foreach($grs_datas as $grs_data)   
                                         {{date('d-m-Y',strtotime($grs_data->grs_wef))}}<br/>
                                         @endforeach
-                                    </td>
+                                    </td> --}}
                                     <!-- <td></td>    -->
                                     @else  
                                     <td></td>
                                     <td></td>
-                                    <td></td>
+                                    {{--<td></td> --}}
                                     <!-- <td></td> -->
                                     @endif     
                                     
@@ -243,17 +243,17 @@ $fn=new FgsreportController();
                                             @endforeach
                                             
                                         </td>
-                                        <td>@foreach($grs_datas as $grs_data)
+                                       {{-- <td>@foreach($grs_datas as $grs_data)
                                             <?php $cgrs_data = $fn->getCGRSDetails($grs_data->grs_item_id); ?>
                                             @if($cgrs_data) 
                                                 {{date('d-m-Y',strtotime($cgrs_data->cgrs_wef))}}<br/>
                                             @endif
                                             @endforeach
-                                        </td>  
+                                        </td>  --}}
                                     @else 
                                     <td></td>
                                     <td></td>
-                                    <td></td>  
+                                   {{-- <td></td>  --}}
                                      @endif
 
                                     
@@ -320,15 +320,15 @@ $fn=new FgsreportController();
                                         {{date('d-m-Y',strtotime($min_data->min_date))}}<br/>
                                         @endforeach
                                     </td>
-                                    <td>
+                                    {{--<td>
                                         @foreach($min_datas as $min_data)
                                         {{date('d-m-Y',strtotime($min_data->min_wef))}}<br/>
                                         @endforeach
-                                    </td>
+                                    </td> --}}
                                     @else
                                     <td></td>
                                     <td></td>
-                                    <td></td>
+                                    {{--<td></td> --}}
                                     @endif
                                              
                                 
@@ -345,15 +345,15 @@ $fn=new FgsreportController();
                                         {{date('d-m-Y',strtotime($cmin_data->cmin_date))}}<br/>
                                         @endforeach
                                     </td>
-                                    <td>
+                                   {{-- <td>
                                         @foreach($cmin_datas as $cmin_data)
                                         {{date('d-m-Y',strtotime($cmin_data->cmin_wef))}}<br/>
                                         @endforeach
-                                    </td>
+                                    </td> --}}
                                     @else
                                     <td></td>
                                     <td></td>
-                                    <td></td>
+                                    {{--<td></td> --}}
                                     @endif       
                                               
                                     
@@ -372,15 +372,15 @@ $fn=new FgsreportController();
                                         {{date('d-m-Y',strtotime($mtq_data->mtq_date))}}<br/>
                                         @endforeach
                                     </td>
-                                    <td>
+                                    {{--<td>
                                         @foreach($mtq_datas as $mtq_data)
                                         {{date('d-m-Y',strtotime($mtq_data->mtq_wef))}}<br/>
                                         @endforeach
-                                    </td>
+                                    </td> --}}
                                     @else
                                     <td></td>
                                     <td></td>
-                                    <td></td>
+                                    {{--<td></td> --}}
                                     @endif   
                                      <!-- cmtq -->
                                      <?php $cmtq_datas = $fn->getCMTQDetails($item->batch_id); ?>
@@ -395,15 +395,15 @@ $fn=new FgsreportController();
                                         {{date('d-m-Y',strtotime($cmtq_data->cmtq_date))}}<br/>
                                         @endforeach
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         @foreach($cmtq_datas as $cmtq_data)
                                         {{date('d-m-Y',strtotime($cmtq_data->cmtq_wef))}}<br/>
                                         @endforeach
-                                    </td>
+                                    </td> --}}
                                     @else
                                     <td></td>
                                     <td></td>
-                                    <td></td>
+                                    {{--<td></td> --}}
                                     @endif  
                                     
                                     <!--mis -->
@@ -425,18 +425,18 @@ $fn=new FgsreportController();
                                             @endforeach
                                             
                                         </td>
-                                        <td>
+                                        {{-- <td>
                                             @foreach($mtq_datas as $mtq_data)
                                             <?php $mis_data = $fn->getMISDetails($mtq_data->mtq_item_id); ?>
                                             @if($mis_data)  
                                                 {{date('d-m-Y',strtotime($mis_data->mis_wef))}}<br/>
                                             @endif
                                             @endforeach
-                                        </td>  
+                                        </td> --}}  
                                     @else 
                                     <td></td>
                                     <td></td>
-                                    <td></td>  
+                                    {{--<td></td> --}} 
                                      @endif
                                              
                                     

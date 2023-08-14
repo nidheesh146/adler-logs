@@ -26,7 +26,7 @@ class PriceController extends Controller
     public function priceList(Request $request)
     {
         //$this->priceMasterUpload();
-       //$this->productFgsUpload();
+      // $this->productFgsUpload();
        //$this->fgsStockUpload();
         $condition =[];
         if($request->sku_code)
@@ -134,9 +134,9 @@ class PriceController extends Controller
     {
         $ExcelOBJ = new \stdClass();
         $ExcelOBJ->inputFileType = 'Xlsx';
-        $ExcelOBJ->filename = 'SL-1-01.xlsx';
+        //$ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\SNN_Product_Master.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\Item_Master_FGS11.xlsx';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
         $ExcelOBJ->reader->setReadDataOnly(true);
@@ -232,7 +232,7 @@ class PriceController extends Controller
            //return DB::table('product_oem')->where('oem_name',$data)->first()->id;
         }
         if($type=='PRODUCT GROUP1'){
-         return   DB::table('product_group1')->where('group_name',$data)->first()->id;
+        return   DB::table('product_group1')->where('group_name',$data)->first()->id;
         //  if($data=='Trauma')
         //  return 1;
         //  else if($data=='Restor')
@@ -251,7 +251,7 @@ class PriceController extends Controller
         //  return 8;
         //  else if($data=='PSI')
         //  return 9;
-        //  else if($data=='Trading')
+        //  else if($data=='SNN-Trade')
         //  return 10;
         //  else if($data=='Discontinued')
         //  return 11;
@@ -277,7 +277,7 @@ class PriceController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\SNN_Product_Price_Master.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\AHPL_Price_Master.xlsx';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
         $ExcelOBJ->reader->setReadDataOnly(true);

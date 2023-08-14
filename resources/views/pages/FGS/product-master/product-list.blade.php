@@ -105,7 +105,7 @@
                         <tr>
                             <td>{{$item['sku_code']}}</td>
                             <td>{{$item['discription']}}</td>
-                            <td>{{$item['item_type']}}</td>
+                            <td>{{$item['product_type_name']}}</td>
                             <td>{{$item['hsn_code']}}</td>
                             <td>@if($item['is_sterile']==1) Sterile @else Non-Sterile @endif</td>
 							<td>{{$item['category_name']}}</td>

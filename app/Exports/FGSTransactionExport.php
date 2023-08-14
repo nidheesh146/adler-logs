@@ -359,63 +359,62 @@ class FGSTransactionExport implements FromCollection, WithHeadings, WithStyles,W
             $data[] = array(
                 '#'=>$i++,
                 'sku_code'=>$product_detail['sku_code'],
-                'batch_no'=>$product_detail['batch_no'],
-                //'Date'=>date('d-m-Y',strtotime($product_detail['Date'])),
-                'manufaturing_date'=>date('d-m-Y',strtotime($product_detail['manufacturing_date'])),
-                'expiry_date'=>$expiry,
-                'description'=>$product_detail['description'],
+                //'batch_no'=>$product_detail['batch_no'],
+                /*'manufaturing_date'=>date('d-m-Y',strtotime($product_detail['manufacturing_date'])),
+                'expiry_date'=>$expiry, */
+                'description'=>$product_detail['discription'],
                 'mrn_number' =>$product_detail['mrn_number'],
                 'mrn_qty' =>$product_detail['quantity'].' No',
                 'mrn_date' =>$product_detail['mrn_date'],
-                'mrn_wef' =>$product_detail['mrn_wef'],
+                //'mrn_wef' =>$product_detail['mrn_wef'],
 
                 'oef_number'=>$oef_number,
                 'oef_qty'=>$oef_qty,
                 'oef_date'=>$oef_date,
-                'oef_wef'=>$oef_wef,
+                //'oef_wef'=>$oef_wef,
 
                 'coef_number'=>$coef_number,
                 'coef_qty'=>$coef_qty,
                 'coef_date'=>$coef_date,
-                'coef_wef'=>$coef_wef,
+                //'coef_wef'=>$coef_wef,
 
                 'grs_number'=>$grs_number,
                 'grs_date' => $grs_date,
-                'grs_wef' =>$grs_wef,
+                //'grs_wef' =>$grs_wef,
 
                 'cgrs_number'=>$cgrs_number,
                 'cgrs_date' => $cgrs_date,
-                'cgrs_wef' =>$cgrs_wef,
+                //'cgrs_wef' =>$cgrs_wef,
 
                 'pi_number'=>$pi_number,
                 'pi_qty' =>$pi_qty,
                 'pi_date' =>$pi_date ,
-                'pi_wef' =>$pi_wef,
+                //'pi_wef' =>$pi_wef,
 
                 'cpi_number'=>$cpi_number,
                 'cpi_qty' =>$cpi_qty,
                 'cpi_date' => $cpi_date,
-                'cpi_wef' =>$cpi_wef,
+                //'cpi_wef' =>$cpi_wef,
                 
                 'min_number'=>$min_number,
                 'min_date' => $min_date,
-                'min_wef' =>$min_wef,
+                //'min_wef' =>$min_wef,
 
                 'cmin_number'=>$cmin_number,
                 'cmin_date' => $cmin_date,
-                'cmin_wef' =>$cmin_wef,
+                //'cmin_wef' =>$cmin_wef,
 
                 'mtq_number'=>$mtq_number,
                 'mtq_date' => $mtq_date,
-                'mtq_wef' =>$mtq_wef,
+                //'mtq_wef' =>$mtq_wef,
 
                 'cmtq_number'=>$cmtq_number,
                 'cmtq_date' => $cmtq_date,
-                'cmtq_wef' =>$cmtq_wef,
+                //'cmtq_wef' =>$cmtq_wef,
 
                 'mis_number'=>$mis_number,
                 'mis_date' => $mis_date,
-                'mis_wef' =>$mis_wef,
+                //'mis_wef' =>$mis_wef,
             );
         }
         return collect($data);
@@ -425,63 +424,63 @@ class FGSTransactionExport implements FromCollection, WithHeadings, WithStyles,W
         return [
             '#',
             'SKU Code',
-            'Batch No',
-            'Date of MFG.',
-            'Date of Expiry',
+            //'Batch No',
+            //'Date of MFG.',
+            //'Date of Expiry',
             'Description',
 
             'MRN Number',
             'MRN Qty',
             'MRN Date',
-            'MRN WEF',
+           // 'MRN WEF',
 
             'OEF Number',
             'OEF Qty',
             'OEF Date',
-            'OEF WEF',
+            //'OEF WEF',
 
             'COEF Number',
             'COEF Qty',
             'COEF Date',
-            'COEF WEF',
+            //'COEF WEF',
 
             'GRS number',
             'GRS date',
-            'GRS WEF',
+           // 'GRS WEF',
 
             'CGRS number',
             'CGRS date',
-            'CGRS WEF',
+            //'CGRS WEF',
 
             'PI Number',
             'PI Qty',
             'PI Date',
-            'PI WEF',
+           /// 'PI WEF',
 
             'CPI Number',
             'CPI Qty',
             'CPI Date',
-            'CPI WEF',
+            //'CPI WEF',
            
             'MIN number',
             'MIN date',
-            'MIN WEF',
+           // 'MIN WEF',
 
             'CMIN number',
             'CMIN date',
-            'CMIN WEF',
+            //'CMIN WEF',
 
             'MTQ number',
             'MTQ date',
-            'MTQ WEF',
+           // 'MTQ WEF',
 
             'CMTQ number',
             'CMTQ date',
-            'CMTQ WEF',
+            //'CMTQ WEF',
 
             'MIS number',
             'MIS date',
-            'MIS WEF',
+            //'MIS WEF',
         ];
     }
     public function styles(Worksheet $sheet)
