@@ -26,7 +26,7 @@ class PriceController extends Controller
     public function priceList(Request $request)
     {
         //$this->priceMasterUpload();
-      // $this->productFgsUpload();
+    //$this->productFgsUpload();
        //$this->fgsStockUpload();
         $condition =[];
         if($request->sku_code)
@@ -162,9 +162,9 @@ class PriceController extends Controller
     {
         $ExcelOBJ = new \stdClass();
         $ExcelOBJ->inputFileType = 'Xlsx';
-        //$ExcelOBJ->filename = 'SL-1-01.xlsx';
+        $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\Item_Master_FGS11.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\SNN_Product_Masterc.xlsx';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
         $ExcelOBJ->reader->setReadDataOnly(true);
@@ -205,11 +205,11 @@ class PriceController extends Controller
                 {
                     $dat['hsn_code'] = $excelsheet[4];
                     $dat['gst'] = $excelsheet[11];
-                    $dat['product_type_id'] = $this->identify_id($excelsheet[3],"PRODUCT TYPE");
-                    $dat['product_oem_id'] = $this->identify_id($excelsheet[8],"PRODUCT OEM");
-                    $dat['product_group1_id'] = $this->identify_id($excelsheet[7],"PRODUCT GROUP1");
-                    $dat['product_category_id'] = $this->identify_id($excelsheet[6],"PRODUCT CATEGORY");
-                    $dat['quantity_per_pack'] = $excelsheet[9];                    
+                    // $dat['product_type_id'] = $this->identify_id($excelsheet[3],"PRODUCT TYPE");
+                    // $dat['product_oem_id'] = $this->identify_id($excelsheet[8],"PRODUCT OEM");
+                    // $dat['product_group1_id'] = $this->identify_id($excelsheet[7],"PRODUCT GROUP1");
+                    // $dat['product_category_id'] = $this->identify_id($excelsheet[6],"PRODUCT CATEGORY");
+                    // $dat['quantity_per_pack'] = $excelsheet[9];                    
                     $res[]=DB::table('product_product')->where('id','=',$product_id)->update($dat);
                 }
                 else
@@ -305,7 +305,7 @@ class PriceController extends Controller
         $ExcelOBJ->inputFileType = 'Xlsx';
         $ExcelOBJ->filename = 'SL-1-01.xlsx';
         //$ExcelOBJ->inputFileName = '/Applications/XAMPP/xamppfiles/htdocs/mel/sampleData/simple/15-09-2022/Top sheet creater_BAtch card to sheet 11SEPT (1).xlsx';
-        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\AHPL_Price_Master.xlsx';
+        $ExcelOBJ->inputFileName ='C:\xampp\htdocs\SNN_Product_Price_Master2.xlsx';
         $ExcelOBJ->spreadsheet = new Spreadsheet();
         $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
         $ExcelOBJ->reader->setReadDataOnly(true);
@@ -335,7 +335,7 @@ class PriceController extends Controller
     function insert_price_master($ExcelOBJ)
     {
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
-            if ($key > 1 &&  $excelsheet[0]) 
+            if ($key > 0 &&  $excelsheet[0]) 
              {
                 $product_id = product::where('sku_code','=',$excelsheet[0])->pluck('id')->first();
                 $price_master=product_price_master::where('product_id','=',$product_id)->first();

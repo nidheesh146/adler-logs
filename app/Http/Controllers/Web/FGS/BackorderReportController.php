@@ -104,7 +104,7 @@ class BackorderReportController extends Controller
                     ->distinct('fgs_oef.id')
                     ->orderBy('fgs_oef.id','DESC')
                     ->get();
-            return Excel::download(new AllTransactionExport($info), 'all-fgs-transaction-report' . date('d-m-Y') . '.xlsx');
+            return Excel::download(new AllTransactionExport($info), 'all-back-order-report' . date('d-m-Y') . '.xlsx');
 
     }
 }

@@ -73,6 +73,7 @@
                                     <option value="Dealer" @if(!empty($datas) && $datas['sales_type'] == 'Dealer' ) selected   @endif>Dealer</option>
                                     <option value="Institutional" @if(!empty($datas) && $datas['sales_type'] == 'Institutional' ) selected   @endif>Institutional</option>
                                     <option value="Doctor" @if(!empty($datas) && $datas['sales_type'] == 'Doctor' ) selected   @endif>Doctor</option>
+                                    <option value="DUMY" @if(!empty($datas) && $datas['sales_type'] == 'DUMY' ) selected   @endif>DUMY</option>
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">

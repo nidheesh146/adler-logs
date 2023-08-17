@@ -121,7 +121,7 @@
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;font-size:11px;">
                                             <strong>{{$batchcard_data->ad_sp2}}</strong><br/>
-                                            <!-- <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;"> -->
+                                            {{-- <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;"> --}}
                                             {{--<img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:140px;margin-top:5px;">
                                             <br/>
                                             <small><span style="font-weight:550">{{$batchcard_data->gs1_code}}</span></small>--}}
@@ -263,7 +263,7 @@
                                         </div>
                                         <div class="ss" style="float:left;width:150px;text-align:center;font-size:11px;">
                                             <strong>{{$batchcard_data->ad_sp2}}</strong><br/>
-                                            <!-- <img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;"> -->
+                                            {{--<img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:80px;height:35px;margin-top:5px;"> -}}
                                             {{--<img src="data:image/png;base64,{{ base64_encode($gs1_code_barcode)}}" style="width:140px;margin-top:5px;">
                                             <br/>
                                             <span><small>{{$batchcard_data->gs1_code}}</small> --}}

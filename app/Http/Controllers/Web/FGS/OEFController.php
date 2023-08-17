@@ -148,6 +148,7 @@ class OEFController extends Controller
             $validation['due_date'] = ['required','date'];
             $validation['order_fulfil'] = ['required'];
             $validation['product_category'] = ['required'];
+
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
@@ -244,7 +245,34 @@ class OEFController extends Controller
                 // $dat['sgst'] = $gst_data['sgst'];
                 // $dat['cgst'] = $gst_data['cgst'];
             }
+            else
+            {
+                if($customer['state_name']=='Maharashtra')
+                {
+                    $gst = 0;
+                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst','=',$gst)->where('inventory_gst.cgst','=',$gst)->where('inventory_gst.sgst','=',$gst)->first();
+                }
+                else
+                {
+                    $gst = 0;
+                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst','=',$gst)->where('inventory_gst.cgst','=',$gst)->where('inventory_gst.sgst','=',$gst)->first();
+                   
+                }
+                $prdct[] = array(
+                    'id'=>$dat['id'],
+                    'text'=>$dat['text'],
+                    'discription'=>$dat['discription'],
+                    'group_name'=>$dat['group_name'],
+                    'hsn_code'=>$dat['hsn_code'],
+                    'sales'=>$dat['sales'],
+                    'gst_id'=> $gst_data['id'],
+                    'igst'=> $gst_data['igst'],
+                    'sgst'=> $gst_data['sgst'],
+                    'cgst'=> $gst_data['cgst'],
+                );
+            }
         }
+        
        // print_r( $data);exit;
         if(!empty( $data)){
             return response()->json( $prdct, 200); 
@@ -392,7 +420,7 @@ class OEFController extends Controller
             $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
             $ExcelOBJ->reader->setReadDataOnly(true);
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
-            $no_column =5;
+            $no_column =4;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
             //echo $sheet1_column_count;exit;
             if ($sheet1_column_count == $no_column) {
@@ -440,8 +468,8 @@ class OEFController extends Controller
         //echo $pr_id;exit;
         $data = [];
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
-            if ($key > 1 &&  $excelsheet[1]) {
-                $product = DB::table('product_product')->where('sku_code', $excelsheet[1])->first();
+            if ($key > 0 &&  $excelsheet[0]) {
+                $product = DB::table('product_product')->where('sku_code', $excelsheet[0])->first();
 
                 $oef = fgs_oef::find($oef_id);
 
@@ -461,50 +489,56 @@ class OEFController extends Controller
                     ->where('product_product.id',$product->id)
                     //->where('product_product.product_category_id',$oef['product_category'])
                     ->first();
-
+                   // print_r($data);exit;
                     
-                    if ($data->gst != '') {
+                    if ($data->gst != '') 
+                    {
+                       
                         if ($customer['state_name'] == 'Maharashtra') {
                             $gst = $data->gst / 2;
-                            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->first();
+                            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->where('inventory_gst.cgst', '=', $gst)->first();
                         } else {
+                        
                             $gst = $data->gst;
-                            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->where('inventory_gst.cgst', '=', $gst)->first();
+                            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->first();
                         }
-                    }else{
+                    }else
+                    {
+                        echo "yes";
                         $gst_data = inventory_gst::select('inventory_gst.*')
                         ->where('inventory_gst.sgst', '=', 0)
                         ->where('inventory_gst.igst', '=', 0)
                         ->where('inventory_gst.cgst', '=', 0)
                         ->first();
 
-                    }
+                    }exit;
                     if($data->mrp==null)
                     {
                         $rate=0;
                     }else{
                         $rate=$data->mrp;
                     }
-                //print_r($item);
+                print_r($gst_data); exit;
                 if($product)
                 {
-                    $test = [
+                    $item = [
                         'product_id' =>$product->id,
-                        'quantity'=>$excelsheet[2],
-                        'quantity_to_allocate'=>$excelsheet[2],
-                        'remaining_qty_after_cancel'=>$excelsheet[2],
-                        'rate'=>$rate,
-                        'discount'=>$excelsheet[3],
+                        'quantity'=>$excelsheet[1],
+                        'quantity_to_allocate'=>$excelsheet[1],
+                        'remaining_qty_after_cancel'=>$excelsheet[1],
+                        //'rate'=>$rate,
+                        'rate' =>$excelsheet[3],
+                        'discount'=>$excelsheet[2],
                         'gst'=>$gst_data->id,
-                        'created_at'=>date('Y-m-d H:i:s',strtotime($excelsheet[4])),
+                        'created_at'=>date('Y-m-d H:i:s'),
                    ];
-                    $ins_id=DB::table('fgs_oef_item')
-                    ->insertGetId($test);
+                    $item_id=DB::table('fgs_oef_item')
+                    ->insertGetId($item);
 
                     DB::table('fgs_oef_item_rel')
                     ->insert([
                         'master'=>$oef_id,
-                        'item'=>$ins_id
+                        'item'=>$item_id
                     ]);
                     
                 }
@@ -513,6 +547,6 @@ class OEFController extends Controller
             
          
     }
-    return $test;
+    return $item_id;
 }
 }
