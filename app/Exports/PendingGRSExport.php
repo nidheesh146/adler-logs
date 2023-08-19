@@ -27,7 +27,17 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
             $expiry = 'NA'; 
             else 
             $expiry = date('d-m-Y',strtotime($item['expiry_date']));
-
+            if($item->rate)
+            {
+                $total_rate = $item['remaining_qty_after_cancel']*$item['rate'];
+                $discount_value = $total_rate*$item['discount']/100;
+                $discounted_value = $total_rate-$discount_value;
+                $igst_value = $total_rate*$item['igst']/100;
+                $sgst_value = $total_rate*$item['sgst']/100;
+                $cgst_value = $total_rate*$item['cgst']/100;
+                $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+                
+            }
             $data[]= array(
                 '#'=>$i++,
                 'grs_number'=>$item['grs_number'],
@@ -42,6 +52,10 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
                 'batch_quantity'=>$item['batch_quantity'],
                 'outstanding_quantity'=>$item['remaining_qty_after_cancel'],
                 'unit'=>'Nos',
+                'rate'=>$item['rate'],
+                'discount'=>$item['discount'],
+                'gst' =>"IGST:".$item['igst'].", SGST:".$item['sgst'].", CGST:".$item['cgst'],
+                'value'=>(number_format((float)($total_value), 2, '.', '')),
                 'manufacturing_date'=>date('d-m-Y',strtotime($item['manufacturing_date'])),
                 'expiry_date'=>$expiry,
                 'customer'=>$item['firm_name'],
@@ -67,6 +81,10 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
             'Quantity',
             'Outstanding Quantity',
             'Unit',
+            'Rate',
+            'Discount',
+            'GST',
+            'Value',
             'Manufacturing date',
             'Expiry date',
             'Customer',

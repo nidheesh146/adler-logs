@@ -269,14 +269,24 @@ class StockManagementController extends Controller
         }
         $title ="Material Allocation Area(MAA) - Stock";
         $location = 'MAA';
-        $stock=fgs_maa_stock_management::select('fgs_maa_stock_management.*','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no')
+        $stock=fgs_maa_stock_management::select('fgs_maa_stock_management.*','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no',
+        'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_product.hsn_code','product_type.product_type_name')
                             ->leftJoin('product_product','product_product.id','=','fgs_maa_stock_management.product_id')
                             ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_maa_stock_management.batchcard_id' )
+                            //->leftJoin('product_stock_location','product_stock_location.id','=',4 )
+                            ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
+                            ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+                            ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                            ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
                             ->where('fgs_maa_stock_management.quantity','!=',0)
                             ->where($condition)
                             ->distinct('fgs_maa_stock_management.id')
                             ->orderBy('fgs_maa_stock_management.id','DESC')
                             ->paginate(15);
+        foreach($stock as $stck)
+        {
+            $stck['location_name'] = 'Material Allocation Area(MAA)';
+        }
         $pcondition = $this->product_product->get()->unique('is_sterile');
         $pcategory = $this->fgs_product_category->get()->unique('category_name');
         return view('pages/FGS/stock-management/location1stock',compact('title','stock','location','pcondition','pcategory'));
@@ -308,7 +318,7 @@ class StockManagementController extends Controller
         $location = 'Quarantine';
         $pcategory = $this->fgs_product_category->get()->unique('category_name');
         $stock=fgs_qurantine_stock_management::select('fgs_qurantine_stock_management.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','product_type.product_type_name',
-        'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+        'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile')
                             ->leftJoin('product_product','product_product.id','=','fgs_qurantine_stock_management.product_id')
                             ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_qurantine_stock_management.batchcard_id' )
                             ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
@@ -320,6 +330,10 @@ class StockManagementController extends Controller
                             ->distinct('fgs_qurantine_stock_management.id')
                             ->orderBy('fgs_qurantine_stock_management.id','DESC')
                             ->paginate(15);
+        foreach($stock as $stck)
+        {
+            $stck['location_name'] = 'Quarantine';
+        }
         $pcondition = $this->product_product->get()->unique('is_sterile');
         return view('pages/FGS/stock-management/quarantine_stock', compact('title','stock','location','pcondition','pcategory'));
     }
@@ -624,18 +638,22 @@ class StockManagementController extends Controller
         
             $location ='MAA';
             $stock = fgs_maa_stock_management::select('fgs_maa_stock_management.*','product_product.sku_code','product_product.discription','batchcard_batchcard.batch_no','product_product.hsn_code','batchcard_batchcard.batch_no','product_type.product_type_name',
-            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile')
                             ->leftJoin('product_product','product_product.id','=','fgs_maa_stock_management.product_id')
                             ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_maa_stock_management.batchcard_id' )
                             ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
                             ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
                             ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
                             ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
-                            ->leftJoin('product_stock_location','product_stock_location.id','=',4 )
+                            //->leftJoin('product_stock_location','product_stock_location.id','=',4 )
                             ->where('fgs_maa_stock_management.quantity','!=',0)
                             //->distinct('fgs_maa_stock_management.id')
                             ->orderBy('fgs_maa_stock_management.id','DESC')
                             ->get();
+            foreach($stock as $stck)
+            {
+                $stck['location_name'] = 'Material Allocation Area(MAA)';
+            }
             return Excel::download(new StockLocationExport($stock), 'MAA-stock' . date('d-m-Y') . '.xlsx');
     }
     public function QurantineExport(Request $request)
@@ -643,19 +661,23 @@ class StockManagementController extends Controller
         
             $location ='Quarantine';
             $stock=fgs_qurantine_stock_management::select('fgs_qurantine_stock_management.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','product_type.product_type_name',
-            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile','product_stock_location.location_name')
+            'product_group1.group_name','fgs_product_category.category_name','product_oem.oem_name','product_product.quantity_per_pack','product_product.is_sterile')
                                 ->leftJoin('product_product','product_product.id','=','fgs_qurantine_stock_management.product_id')
                                 ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_qurantine_stock_management.batchcard_id' )
                                 ->leftJoin('product_type','product_type.id','=','product_product.product_type_id')
                                 ->leftJoin('product_group1','product_group1.id','=','product_product.product_group1_id')
                                 ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
                                 ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
-                                ->leftJoin('product_stock_location','product_stock_location.id','=',5 )
+                                //->leftJoin('product_stock_location','product_stock_location.id','=',5 )
                                 ->where('fgs_qurantine_stock_management.quantity','!=',0)
                                 ->where($condition)
                                 //->distinct('fgs_qurantine_stock_management.id')
                                 ->orderBy('fgs_qurantine_stock_management.id','DESC')
                                 ->get();
+            foreach($stock as $stck)
+            {
+                $stck['location_name'] = 'Quarantine';
+            }
             return Excel::download(new StockLocationExport($stock), 'Qurantine-stock' . date('d-m-Y') . '.xlsx');
     }
     public function productionStockList(Request $request)

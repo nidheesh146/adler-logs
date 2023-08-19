@@ -106,6 +106,17 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
             $expiry_control = 'Yes';
             else
             $expiry_control = 'No';
+            if($item->rate)
+            {
+                $total_rate = $item['remaining_qty_after_cancel']*$item['rate'];
+                $discount_value = $total_rate*$item['discount']/100;
+                $discounted_value = $total_rate-$discount_value;
+                $igst_value = $total_rate*$item['igst']/100;
+                $sgst_value = $total_rate*$item['sgst']/100;
+                $cgst_value = $total_rate*$item['cgst']/100;
+                $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+                
+            }
             $data[]= array(
                 '#'=>$i++,
                 'oef_number'=>$item['oef_number'],
@@ -117,6 +128,7 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
                 'rate'=>$item['rate'],
                 'discount'=>$item['discount'],
                 'gst' =>"IGST:".$item['igst'].", SGST:".$item['sgst'].", CGST:".$item['cgst'],
+                'value'=>(number_format((float)($total_value), 2, '.', '')),
                 'oef_date'=>date('d-m-Y',strtotime($item['oef_date'])),
                 'order_number'=>$item['order_number'],
                 'order_date'=>date('d-m-Y',strtotime($item['order_date'])),
@@ -147,8 +159,9 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
             'Quantity',
             'Outstanding Quantity',
             'Rate',
-            'Discount',
-            'GST',
+            'Discount(%)',
+            'GST(%)',
+            'Value',
             'OEF Date',
             'Order Number',
             'Order Date',

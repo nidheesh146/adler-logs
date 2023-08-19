@@ -377,7 +377,7 @@
             <table style="float:right;">
                 <tr>
                     <td>Doc No.</td>
-                    <td>: {{$dni['dni_number']}}</td>
+                    <td>: <b>{{$dni['dni_number']}}</b></td>
                 </tr>
                 <tr>
                     <td> Doc  Date</td>
@@ -432,20 +432,26 @@
                 <th rowspan="2">RATE</th>
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
+                @if($dni_item['state_name']=='Maharashtra')
                 <th colspan="2">CGST</th>
                 <th colspan="2" style="width:5%;">SGST/UTGST  </th>
-                <!-- <th colspan="2">IGST</th> -->
+                @else
+                <th colspan="2">IGST</th>
+                @endif
                 <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
             <tr> 
                 <th style="width:3% !important">% </th>
                 <th width='3%'>Value</th>
+                @if($dni_item['state_name']=='Maharashtra')
                 <th style="width:3% !important">% </th>
                 <th width='3%'>Value</th>
                 <th style="width:3% !important">% </th>
                 <th width='3%'>Value  </th>
-                <!-- <th style="width:3% !important">% </th>
-                <th width='12%'>Value</th> -->
+                @else
+                <th style="width:3% !important">% </th>
+                <th width='3%'>Value</th> 
+                @endif
             </tr>
             <?php $i=1;
             $total = 0;
@@ -479,12 +485,15 @@
                 <?php $discount_value = ($item['rate']* $item['remaining_qty_after_cancel'])-(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100);?>
                 <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100), 2, '.', '')}}</td>
                 <td  style="text-align:right;">{{number_format((float)$discount_value, 2, '.', '')}}</td>
+                @if($dni_item['state_name']=='Maharashtra')
                 <td style="text-align:center;">{{$item['cgst']}}</td>
                 <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['sgst']}}</td>
                 <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
-                {{--<td style="text-align:center;">{{$item['igst']}}</td>
-                <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>--}}
+                @else
+                <td style="text-align:center;">{{$item['igst']}}</td>
+                <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
+                @endif
                 <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
                 <td  style="text-align:right;">{{number_format((float)($total_amount), 2, '.', '')}}</td>
                 <?php 
@@ -521,12 +530,15 @@
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
+                @if($dni_item['state_name']=='Maharashtra')
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_cgst), 2, '.', '') }}</th>
-                {{--<th></th> 
-                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>--}}
+                @else
+                <th></th> 
+                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>
+                @endif
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
             </tr>       
         </table>

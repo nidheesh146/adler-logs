@@ -111,8 +111,9 @@ class BackorderReportController extends Controller
             'customer_supplier.shipping_address',
             'customer_supplier.contact_person',
             'customer_supplier.contact_number',
-            'product_price_master.mrp',
-            'fgs_oef_item.remaining_qty_after_cancel'
+           // 'product_price_master.mrp',
+            'fgs_oef_item.remaining_qty_after_cancel',
+            'fgs_oef_item.rate as mrp'
             
         )
             ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
@@ -125,7 +126,8 @@ class BackorderReportController extends Controller
             ->where($condition1)
             ->distinct('fgs_oef.id')
             ->orderBy('fgs_oef.id', 'DESC')
-            ->paginate(15);
+            ->get();
+            //->paginate(15);
             $data_grs = fgs_grs_item::select(
                 'fgs_grs.*',
                 'product_product.*',
@@ -133,21 +135,24 @@ class BackorderReportController extends Controller
                 'customer_supplier.shipping_address',
                 'customer_supplier.contact_person',
                 'customer_supplier.contact_number',
-                'product_price_master.mrp',
-                'fgs_grs_item.remaining_qty_after_cancel'
+                //'product_price_master.mrp',
+                'fgs_grs_item.remaining_qty_after_cancel',
+                'fgs_oef_item.rate as mrp'
                 
             )
                 ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
                 ->leftJoin('fgs_grs', 'fgs_grs.id', '=', 'fgs_grs_item_rel.master')
                 ->leftJoin('product_product', 'product_product.id', '=', 'fgs_grs_item.product_id')
-                ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
+               // ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
                 ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_grs.customer_id')
+                ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
                 ->where('fgs_grs.status', '=', 1)
                 //->where('fgs_oef.status','=',1)
                 ->where($condition2)
                 ->distinct('fgs_grs.id')
                 ->orderBy('fgs_grs.id', 'DESC')
-                ->paginate(15);
+                ->get();
+                //->paginate(15);
 
                 $data_pi = fgs_pi_item::select(
                     'fgs_pi.*',
@@ -156,8 +161,9 @@ class BackorderReportController extends Controller
                     'customer_supplier.shipping_address',
                     'customer_supplier.contact_person',
                     'customer_supplier.contact_number',
-                    'product_price_master.mrp',
-                    'fgs_pi_item.remaining_qty_after_cancel'
+                    //'product_price_master.mrp',
+                    'fgs_pi_item.remaining_qty_after_cancel',
+                    'fgs_oef_item.rate as mrp'
                     
                 )
                     ->leftJoin('fgs_pi_item_rel', 'fgs_pi_item_rel.item', '=', 'fgs_pi_item.id')
@@ -165,12 +171,15 @@ class BackorderReportController extends Controller
                     ->leftJoin('product_product', 'product_product.id', '=', 'fgs_pi_item.product_id')
                     ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
                     ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_pi.customer_id')
+                    ->leftJoin('fgs_grs_item', 'fgs_grs_item.id', '=', 'fgs_pi_item.grs_item_id')
+                    ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
                     ->where('fgs_pi.status', '=', 1)
                     //->where('fgs_oef.status','=',1)
                     ->where($condition3)
                     ->distinct('fgs_pi.id')
                     ->orderBy('fgs_pi.id', 'DESC')
-                    ->paginate(15);
+                    ->get();
+                    // ->paginate(15);
         return view('pages/FGS/PI/back-ordr-report', compact('data_oef','data_grs','data_pi'));
     }
 
@@ -231,8 +240,14 @@ class BackorderReportController extends Controller
             'customer_supplier.shipping_address',
             'customer_supplier.contact_person',
             'customer_supplier.contact_number',
-            'product_price_master.mrp',
-            'fgs_oef_item.remaining_qty_after_cancel'
+            //'product_price_master.mrp',
+            'fgs_oef_item.remaining_qty_after_cancel',
+            'fgs_product_category.category_name',
+            'fgs_oef_item.rate as mrp',
+            'fgs_oef_item.discount',
+            'inventory_gst.igst',
+            'inventory_gst.cgst',
+            'inventory_gst.sgst',
             
         )
             ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
@@ -240,6 +255,8 @@ class BackorderReportController extends Controller
             ->leftJoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
             ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+            ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
             ->where('fgs_oef.status', '=', 1)
             //->where('fgs_oef.status','=',1)
             ->where($condition1)
@@ -253,8 +270,14 @@ class BackorderReportController extends Controller
                 'customer_supplier.shipping_address',
                 'customer_supplier.contact_person',
                 'customer_supplier.contact_number',
-                'product_price_master.mrp',
-                'fgs_grs_item.remaining_qty_after_cancel'
+                //'product_price_master.mrp',
+                'fgs_grs_item.remaining_qty_after_cancel',
+                'fgs_product_category.category_name',
+                'fgs_oef_item.rate as mrp',
+                'fgs_oef_item.discount',
+                'inventory_gst.igst',
+                'inventory_gst.cgst',
+                'inventory_gst.sgst',
                 
             )
                 ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
@@ -262,6 +285,9 @@ class BackorderReportController extends Controller
                 ->leftJoin('product_product', 'product_product.id', '=', 'fgs_grs_item.product_id')
                 ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
                 ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_grs.customer_id')
+                ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
+                ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+                ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
                 ->where('fgs_grs.status', '=', 1)
                 //->where('fgs_oef.status','=',1)
                 ->where($condition2)
@@ -276,8 +302,14 @@ class BackorderReportController extends Controller
                     'customer_supplier.shipping_address',
                     'customer_supplier.contact_person',
                     'customer_supplier.contact_number',
-                    'product_price_master.mrp',
-                    'fgs_pi_item.remaining_qty_after_cancel'
+                    //'product_price_master.mrp',
+                    'fgs_pi_item.remaining_qty_after_cancel',
+                    'fgs_product_category.category_name',
+                    'fgs_oef_item.rate as mrp',
+                    'fgs_oef_item.discount',
+                    'inventory_gst.igst',
+                    'inventory_gst.cgst',
+                    'inventory_gst.sgst',
                     
                 )
                     ->leftJoin('fgs_pi_item_rel', 'fgs_pi_item_rel.item', '=', 'fgs_pi_item.id')
@@ -285,6 +317,10 @@ class BackorderReportController extends Controller
                     ->leftJoin('product_product', 'product_product.id', '=', 'fgs_pi_item.product_id')
                     ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
                     ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_pi.customer_id')
+                    ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+                    ->leftJoin('fgs_grs_item', 'fgs_grs_item.id', '=', 'fgs_pi_item.grs_item_id')
+                    ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
+                    ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                     ->where('fgs_pi.status', '=', 1)
                     //->where('fgs_oef.status','=',1)
                     ->where($condition3)
