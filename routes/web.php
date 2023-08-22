@@ -679,6 +679,40 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
      Route::get('fgs/fgs-report','FgsreportController@get_data');
     // Route::post('fgs/fgs-report-search','FgsreportController@get_result');
      Route::get('fgs/fgs-export','FgsreportController@fgsExport');
+     Route::get('fgs/fgs-mrn-transaction-report','MRNController@mrn_transaction');
+     Route::get('fgs/fgs-mrn-export','MRNController@mrn_transaction_export');
+     Route::get('fgs/fgs-min-transaction-report','MINController@min_transaction');
+     Route::get('fgs/fgs-min-export','MINController@min_transaction_export');
+     Route::get('fgs/fgs-cmin-transaction-report','MINController@cmin_transaction');
+     Route::get('fgs/fgs-cmin-export','MINController@cmin_transaction_export');
+
+     Route::get('fgs/fgs-oef-transaction-report','OEFController@oef_transaction');
+     Route::get('fgs/fgs-oef-export','OEFController@oef_transaction_export');
+     Route::get('fgs/fgs-grs-transaction-report','GRSController@grs_transaction');
+     Route::get('fgs/fgs-grs-export','GRSController@grs_transaction_export');
+     Route::get('fgs/fgs-pi-transaction-report','PIController@pi_transaction');
+     Route::get('fgs/fgs-pi-export','PIController@pi_transaction_export');
+     Route::get('fgs/fgs-cpi-transaction-report','CPIController@cpi_transaction');
+     Route::get('fgs/fgs-cpi-export','CPIController@cpi_transaction_export');
+     Route::get('fgs/fgs-dni-transaction-report','DNIController@dni_transaction');
+     Route::get('fgs/fgs-dni-export','DNIController@dni_transaction_export');
+     Route::get('fgs/fgs-exi-transaction-report','EXIController@exi_transaction');
+     Route::get('fgs/fgs-exi-export','EXIController@exi_transaction_export');
+     Route::get('fgs/fgs-cexi-transaction-report','EXIController@cexi_transaction');
+     Route::get('fgs/fgs-cexi-export','EXIController@cexi_transaction_export');
+
+     Route::get('fgs/fgs-cgrs-transaction-report','CGRSController@cgrs_transaction');
+     Route::get('fgs/fgs-cgrs-export','CGRSController@cgrs_transaction_export');
+     Route::get('fgs/fgs-coef-transaction-report','COEFController@coef_transaction');
+     Route::get('fgs/fgs-coef-export','COEFController@coef_transaction_export');
+     Route::get('fgs/fgs-mtq-transaction-report','MTQController@mtq_transaction');
+     Route::get('fgs/fgs-mtq-export','MTQController@mtq_transaction_export');
+     Route::get('fgs/fgs-cmtq-transaction-report','MTQController@cmtq_transaction');
+     Route::get('fgs/fgs-cmtq-export','MTQController@cmtq_transaction_export');
+     Route::get('fgs/fgs-srn-transaction-report','SRNcontroller@srn_transaction');
+     Route::get('fgs/fgs-srn-export','SRNcontroller@srn_transaction_export');
+     Route::get('fgs/fgs-mis-transaction-report','MIScontroller@mis_transaction');
+     Route::get('fgs/fgs-mis-export','MIScontroller@mis_transaction_export');
 
 
 });
