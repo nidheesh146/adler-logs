@@ -23,6 +23,9 @@ use App\Models\FGS\fgs_cgrs;
 use App\Models\FGS\fgs_cgrs_item;
 use App\Models\FGS\fgs_cgrs_item_rel;
 use App\Models\FGS\fgs_mrn_item;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FGSgrstransactionExport;
+
 class CGRSController extends Controller
 {
     public function __construct()
@@ -377,6 +380,79 @@ class CGRSController extends Controller
         //print_r($items);exit; 
        // echo $grs_id;exit;
         return view('pages/FGS/CGRS/CGRS-items-list', compact('cgrs_id','items'));
+    }
+    public function cgrs_transaction(Request $request)
+    {
+        $condition = [];
+        if ($request->mrn_no) {
+            $condition[] = ['fgs_cgrs.cgrs_number', 'like', '%' . $request->cgrs_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_cgrs_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_cgrs_item::select(
+            'fgs_cgrs.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_cgrs.cgrs_number',
+            'fgs_cgrs.cgrs_date',
+            'fgs_cgrs.created_at as min_wef',
+            'fgs_cgrs_item.id as cgrs_item_id'
+        )
+            ->leftJoin('fgs_cgrs_item_rel', 'fgs_cgrs_item_rel.item', '=', 'fgs_cgrs_item.id')
+            ->leftJoin('fgs_cgrs', 'fgs_cgrs.id', '=', 'fgs_cgrs_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cgrs_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cgrs_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_cgrs_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_cgrs_item.id', 'desc')
+            ->paginate(15);
+
+        return view('pages/FGS/CGRS/CGRS-transaction-list', compact('items'));
+    }
+
+    public function cgrs_transaction_export(Request $request)
+    {
+        $condition = [];
+        if ($request->mrn_no) {
+            $condition[] = ['fgs_cgrs.grs_number', 'like', '%' . $request->grs_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_cgrs_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_grs_item::select(
+            'fgs_cgrs.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_cgrs.cgrs_number',
+            'fgs_cgrs.cgrs_date',
+            'fgs_cgrs.created_at as min_wef',
+            'fgs_cgrs_item.id as cgrs_item_id'
+        )
+            ->leftJoin('fgs_cgrs_item_rel', 'fgs_cgrs_item_rel.item', '=', 'fgs_cgrs_item.id')
+            ->leftJoin('fgs_cgrs', 'fgs_cgrs.id', '=', 'fgs_cgrs_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cgrs_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_grs_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_grs_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_cgrs_item.id', 'desc')
+            ->get();
+
+        return Excel::download(new FGScgrstransactionExport($items), 'FGS-cGRS-transaction' . date('d-m-Y') . '.xlsx');
     }
 }   
         

@@ -20,6 +20,9 @@ use App\Models\FGS\fgs_mtq_item;
 use App\Models\FGS\fgs_mtq_item_rel;
 use App\Models\User;
 use PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FGScmtqtransactionExport;
+
 class CMTQController extends Controller
 {
     public function __construct()
@@ -319,5 +322,68 @@ class CMTQController extends Controller
         $file_name = "CMTQ" . $data['cmtq']['firm_name'] . "_" . $data['cmtq']['cmtq_date'];
         return $pdf->stream($file_name . '.pdf');
     }
+    public function cmtq_transaction(Request $request)
+    {
+        $condition=[];
+        if($request->cmtq_no)
+        {
+            $condition[] = ['fgs_cmtq.cmtq_number','like', '%' . $request->cmtq_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_cmtq_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_cmtq_item::select('fgs_cmtq.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_cmtq.cmtq_number','fgs_cmtq.cmtq_date','fgs_cmtq.created_at as cmtq_wef','fgs_cmtq_item.id as cmtq_item_id')
+            ->leftJoin('fgs_cmtq_item_rel', 'fgs_cmtq_item_rel.item', '=', 'fgs_cmtq_item.id')
+            ->leftJoin('fgs_cmtq', 'fgs_cmtq.id', '=', 'fgs_cmtq_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cmtq_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cmtq_item.batchcard_id')
+            //->where('fgs_cmtq_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_cmtq_item.status',1)
+            //->distinct('fgs_cmtq_item.id')
+            ->orderBy('fgs_cmtq_item.id','desc')
+            ->paginate(15);
+            
+        return view('pages/fgs/CMTQ/CMTQ-transaction-list',compact('items'));
+    }
+    public function cmtq_transaction_export(Request $request)
+    {
+        $condition=[];
+        if($request->cmtq_no)
+        {
+            $condition[] = ['fgs_cmtq.cmtq_number','like', '%' . $request->cmtq_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_cmtq_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_cmtq_item::select('fgs_cmtq.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_cmtq.cmtq_number','fgs_cmtq.cmtq_date','fgs_cmtq.created_at as cmtq_wef','fgs_cmtq_item.id as cmtq_item_id')
+            ->leftJoin('fgs_cmtq_item_rel', 'fgs_cmtq_item_rel.item', '=', 'fgs_cmtq_item.id')
+            ->leftJoin('fgs_cmtq', 'fgs_cmtq.id', '=', 'fgs_cmtq_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cmtq_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cmtq_item.batchcard_id')
+            //->where('fgs_cmtq_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_cmtq_item.status',1)
+            //->distinct('fgs_cmtq_item.id')
+            ->orderBy('fgs_cmtq_item.id','desc')
+            ->get();
+            return Excel::download(new FGScmtqtransactionExport($items), 'FGS-CMTQ-transaction' . date('d-m-Y') . '.xlsx');
 
+    }
 }   

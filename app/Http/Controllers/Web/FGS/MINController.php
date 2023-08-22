@@ -19,6 +19,8 @@ use App\Models\FGS\fgs_min_item_rel;
 use App\Models\FGS\fgs_mrn_item;
 use App\Models\FGS\fgs_mrn_item_rel;
 use App\Models\batchcard;
+use App\Exports\FGSmintransactionExport;
+use App\Exports\FGScmintransactionExport;
 
 class MINController extends Controller
 {
@@ -403,5 +405,133 @@ class MINController extends Controller
             ]);
         
         return redirect()->back();
+    }
+    public function min_transaction(Request $request)
+    {
+        $condition=[];
+        if($request->min_no)
+        {
+            $condition[] = ['fgs_min.min_number','like', '%' . $request->min_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_min_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_min_item::select('fgs_min.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_min.min_number','fgs_min.min_date','fgs_min.created_at as min_wef','fgs_min_item.id as min_item_id')
+            ->leftJoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
+            ->leftJoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            ->where('fgs_min_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_min_item.id','desc')
+            ->paginate(15);
+            
+        return view('pages/fgs/MIN/MIN-transaction-list',compact('items'));
+    }
+    public function min_transaction_export(Request $request)
+    {
+        $condition=[];
+        if($request->min_no)
+        {
+            $condition[] = ['fgs_min.min_number','like', '%' . $request->min_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_min_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_min_item::select('fgs_min.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_min.min_number','fgs_min.min_date','fgs_min.created_at as min_wef','fgs_min_item.id as min_item_id')
+            ->leftJoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
+            ->leftJoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            ->where('fgs_min_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_min_item.id','desc')
+            ->get();
+            return Excel::download(new FGSmintransactionExport($items), 'FGS-MIN-transaction' . date('d-m-Y') . '.xlsx');
+
+    }
+    public function cmin_transaction(Request $request)
+    {
+        $condition=[];
+        if($request->cmin_no)
+        {
+            $condition[] = ['fgs_cmin.cmin_number','like', '%' . $request->cmin_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_cmin_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_cmin_item::select('fgs_cmin.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_cmin.cmin_number','fgs_cmin.cmin_date','fgs_cmin.created_at as cmin_wef','fgs_cmin_item.id as cmin_item_id')
+            ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
+            ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cmin_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cmin_item.batchcard_id')
+            //->where('fgs_cmin_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_cmin_item.status',1)
+            //->distinct('fgs_cmin_item.id')
+            ->orderBy('fgs_cmin_item.id','desc')
+            ->paginate(15);
+            
+        return view('pages/fgs/MIN/CMIN-transaction-list',compact('items'));
+    }
+    public function cmin_transaction_export(Request $request)
+    {
+        $condition=[];
+        if($request->cmin_no)
+        {
+            $condition[] = ['fgs_cmin.cmin_number','like', '%' . $request->cmin_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_cmin_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_cmin_item::select('fgs_cmin.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_cmin.cmin_number','fgs_cmin.cmin_date','fgs_cmin.created_at as cmin_wef','fgs_cmin_item.id as cmin_item_id')
+            ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
+            ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cmin_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cmin_item.batchcard_id')
+            //->where('fgs_cmin_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_cmin_item.status',1)
+            //->distinct('fgs_cmin_item.id')
+            ->orderBy('fgs_cmin_item.id','desc')
+            ->get();
+            return Excel::download(new FGScmintransactionExport($items), 'FGS-cmin-transaction' . date('d-m-Y') . '.xlsx');
+
     }
 }

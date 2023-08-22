@@ -18,6 +18,9 @@ use App\Models\FGS\fgs_mtq_item;
 use App\Models\FGS\fgs_mis;
 use App\Models\FGS\fgs_mis_item;
 use App\Models\FGS\fgs_mis_item_rel;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FGSmistransactionExport;
+
 class MISController extends Controller
 {
     public function __construct()
@@ -276,5 +279,69 @@ class MISController extends Controller
         // $pdf->set_paper('A4', 'landscape');
         $file_name = "MIS" . $data['mis']['firm_name'] . "_" . $data['mis']['mis_date'];
         return $pdf->stream($file_name . '.pdf');
+    }
+    public function mis_transaction(Request $request)
+    {
+        $condition=[];
+        if($request->mis_no)
+        {
+            $condition[] = ['fgs_mis.mis_number','like', '%' . $request->mis_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_mis_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_mis_item::select('fgs_mis.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_mis.mis_number','fgs_mis.mis_date','fgs_mis.created_at as mis_wef','fgs_mis_item.id as mis_item_id')
+            ->leftJoin('fgs_mis_item_rel', 'fgs_mis_item_rel.item', '=', 'fgs_mis_item.id')
+            ->leftJoin('fgs_mis', 'fgs_mis.id', '=', 'fgs_mis_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mis_item.product_id')
+            //->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mis_item.batchcard_id')
+            //->where('fgs_mis_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_mis_item.status',1)
+            //->distinct('fgs_mis_item.id')
+            ->orderBy('fgs_mis_item.id','desc')
+            ->paginate(15);
+            
+        return view('pages/fgs/MIS/MIS-transaction-list',compact('items'));
+    }
+    public function mis_transaction_export(Request $request)
+    {
+        $condition=[];
+        if($request->mis_no)
+        {
+            $condition[] = ['fgs_mis.mis_number','like', '%' . $request->mis_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_mis_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_mis_item::select('fgs_mis.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_mis.mis_number','fgs_mis.mis_date','fgs_mis.created_at as mis_wef','fgs_mis_item.id as mis_item_id')
+            ->leftJoin('fgs_mis_item_rel', 'fgs_mis_item_rel.item', '=', 'fgs_mis_item.id')
+            ->leftJoin('fgs_mis', 'fgs_mis.id', '=', 'fgs_mis_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mis_item.product_id')
+           // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mis_item.batchcard_id')
+            //->where('fgs_mis_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_mis_item.status',1)
+            //->distinct('fgs_mis_item.id')
+            ->orderBy('fgs_mis_item.id','desc')
+            ->get();
+            return Excel::download(new FGSmistransactionExport($items), 'FGS-MIS-transaction' . date('d-m-Y') . '.xlsx');
+
     }
 }

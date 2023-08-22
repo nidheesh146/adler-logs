@@ -18,6 +18,8 @@ use App\Models\product;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingOEFExport;
 use NumberFormatter;
+use App\Exports\FGSoeftransactionExport;
+
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 class OEFController extends Controller
@@ -549,5 +551,81 @@ class OEFController extends Controller
          
     }
     return $item_id;
+}
+public function oef_transaction(Request $request)
+    {
+        $condition = [];
+        if ($request->mrn_no) {
+            $condition[] = ['fgs_oef.oef_number', 'like', '%' . $request->oef_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_oef_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_oef_item::select(
+            'fgs_oef.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_oef.oef_number',
+            'fgs_oef.oef_date',
+            'fgs_oef.created_at as min_wef',
+            'fgs_oef_item.id as oef_item_id'
+        )
+            ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+            ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_oef_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_oef_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_oef_item.id', 'desc')
+            ->paginate(15);
+
+        return view('pages/FGS/OEF/OEF-transaction-list', compact('items'));
+    }
+public function oef_transaction_export(Request $request)
+{
+    $condition = [];
+    if ($request->mrn_no) {
+        $condition[] = ['fgs_oef.oef_number', 'like', '%' . $request->oef_no . '%'];
+    }
+
+    if ($request->item_code) {
+        $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+    }
+    if ($request->from) {
+        $condition[] = ['fgs_oef_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+    }
+    $items = fgs_oef_item::select(
+        'fgs_oef.*',
+        'product_product.sku_code',
+        'product_product.discription',
+        'product_product.hsn_code',
+        'fgs_oef.oef_number',
+        'fgs_oef.oef_date',
+        'fgs_oef.created_at as min_wef',
+        'fgs_oef_item.id as oef_item_id'
+    )
+        ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+        ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
+        ->leftjoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
+        // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_oef_item.batchcard_id')
+        //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+        ->where($condition)
+        //->where('fgs_oef_item.status',1)
+        //->distinct('fgs_min_item.id')
+        ->orderBy('fgs_oef_item.id', 'desc')
+        ->get();
+
+    return Excel::download(new FGSoeftransactionExport($items), 'FGS-OEF-transaction' . date('d-m-Y') . '.xlsx');
+}
+public function OEFdeliverychallan()
+{
+    return view('pages/FGS/OEF/Delivery_Challan_pdf');
 }
 }

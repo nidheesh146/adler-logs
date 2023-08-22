@@ -19,6 +19,8 @@ use App\Models\batchcard;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MRDExport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Exports\FGSmrntransactionExport;
+
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 
 class MRNController extends Controller
@@ -844,5 +846,70 @@ $pstock_qty=number_format($qty->quantity);
         return redirect()->back();
         // $items = $this->MRNitemlist($mrn_id);
         // return view('pages/FGS/MRN/MRN-item-list',compact('mrn_id','items'));
+    }
+
+    public function mrn_transaction(Request $request)
+    {
+        $condition=[];
+        if($request->mrn_no)
+        {
+            $condition[] = ['fgs_mrn.mrn_number','like', '%' . $request->mrn_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_mrn_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        
+        $items = fgs_mrn_item::select('fgs_mrn_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'batchcard_batchcard.batch_no','batchcard_batchcard.id as batch_id','fgs_mrn.mrn_number','fgs_mrn.mrn_date','fgs_mrn.created_at as mrn_wef','fgs_mrn_item.id as mrn_item_id')
+                        ->leftjoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
+                        ->leftjoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
+                        ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
+                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
+                        ->where($condition)
+                        ->where('fgs_mrn_item.status',1)
+                        ->distinct('fgs_mrn_item.id')
+                        ->orderBy('fgs_mrn_item.id','desc')
+                        ->paginate(15);
+                        
+        return view('pages/fgs/MRN/MRN-transaction-list',compact('items'));
+    }
+    public function mrn_transaction_export(Request $request)
+    {
+        $condition=[];
+        if($request->mrn_no)
+        {
+            $condition[] = ['fgs_mrn.mrn_number','like', '%' . $request->mrn_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_mrn_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        
+        $items = fgs_mrn_item::select('fgs_mrn_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'batchcard_batchcard.batch_no','batchcard_batchcard.id as batch_id','fgs_mrn.mrn_number','fgs_mrn.mrn_date','fgs_mrn.created_at as mrn_wef','fgs_mrn_item.id as mrn_item_id')
+                        ->leftjoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
+                        ->leftjoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
+                        ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
+                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
+                        ->where($condition)
+                        ->where('fgs_mrn_item.status',1)
+                        ->distinct('fgs_mrn_item.id')
+                        ->orderBy('fgs_mrn_item.id','desc')
+                        ->get();
+
+                        return Excel::download(new FGSmrntransactionExport($items), 'FGS-MRN-transaction' . date('d-m-Y') . '.xlsx');
     }
 }

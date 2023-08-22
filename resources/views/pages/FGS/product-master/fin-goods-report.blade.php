@@ -178,11 +178,19 @@ $fn=new FgsreportController();
                                     <td>{{date('d-m-Y',strtotime($oef_data->oef_date))}}</td>
                                     {{-- <td>{{date('d-m-Y',strtotime($oef_data->oef_wef))}}</td> --}} 
                                     @else
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <?php $oef_nogrs_data=$fn->get_nongrsOEFDetails($item->product_id);?>
+                                    @if($oef_nogrs_data);
+                                    <td>{{$oef_nogrs_data->oef_number}}</td>
+                                    <td>{{$oef_nogrs_data->remaining_qty_after_cancel}}Nos</td>
+                                    <td>{{date('d-m-Y',strtotime($oef_nogrs_data->oef_date))}}</td>
                                     {{--<td></td> --}} 
-                                    @endif       
+                                    @else
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    {{--<td></td> --}}
+                                    @endif
+                                    @endif      
                                     <!-- coef -->
                                     @if($oef_data)
                                     <?php $coef_data=$fn->getCOEFDetails($oef_data->oef_item_id);?>

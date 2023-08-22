@@ -99,6 +99,18 @@ class FgsreportController extends Controller
                             ->first();
         return $oef_details;
     }
+    function get_nongrsOEFDetails($product_id)
+    {
+        $oef_details = fgs_oef_item::select('fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.created_at as oef_wef','fgs_oef_item.remaining_qty_after_cancel','fgs_oef_item.id as oef_item_id')
+                            //->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
+                            ->leftJoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
+                            ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
+                            ->where('fgs_oef_item.product_id','=',$product_id)
+                            ->orderBy('fgs_oef_item.id', 'desc')
+                            ->first();
+                            
+        return $oef_details;
+    }
     function getCOEFDetails($oef_item_id)
     {
         $coef_details = fgs_coef_item::select('fgs_coef.coef_number','fgs_coef.coef_date','fgs_coef.created_at as coef_wef','fgs_coef_item.quantity')

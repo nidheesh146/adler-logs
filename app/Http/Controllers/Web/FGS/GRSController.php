@@ -20,6 +20,8 @@ use App\Models\FGS\fgs_grs_item_rel;
 use App\Models\FGS\fgs_mrn_item;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingGRSExport;
+use App\Exports\FGSgrstransactionExport;
+
 class GRSController extends Controller
 {
     public function __construct()
@@ -552,5 +554,78 @@ class GRSController extends Controller
 
         return Excel::download(new PendingGRSExport($grs_data), 'GRSBackOrderReport' . date('d-m-Y') . '.xlsx');
     
+    }
+    public function grs_transaction(Request $request)
+    {
+        $condition = [];
+        if ($request->mrn_no) {
+            $condition[] = ['fgs_grs.grs_number', 'like', '%' . $request->grs_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_grs_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_grs_item::select(
+            'fgs_grs.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_grs.grs_number',
+            'fgs_grs.grs_date',
+            'fgs_grs.created_at as min_wef',
+            'fgs_grs_item.id as grs_item_id'
+        )
+            ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
+            ->leftJoin('fgs_grs', 'fgs_grs.id', '=', 'fgs_grs_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_grs_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_grs_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_grs_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_grs_item.id', 'desc')
+            ->paginate(15);
+
+        return view('pages/FGS/GRS/GRS-transaction-list', compact('items'));
+    }
+
+    public function grs_transaction_export(Request $request)
+    {
+        $condition = [];
+        if ($request->mrn_no) {
+            $condition[] = ['fgs_grs.grs_number', 'like', '%' . $request->grs_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_grs_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_grs_item::select(
+            'fgs_grs.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_grs.grs_number',
+            'fgs_grs.grs_date',
+            'fgs_grs.created_at as min_wef',
+            'fgs_grs_item.id as grs_item_id'
+        )
+            ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
+            ->leftJoin('fgs_grs', 'fgs_grs.id', '=', 'fgs_grs_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_grs_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_grs_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_grs_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_grs_item.id', 'desc')
+            ->get();
+
+        return Excel::download(new FGSgrstransactionExport($items), 'FGS-GRS-transaction' . date('d-m-Y') . '.xlsx');
     }
 }
