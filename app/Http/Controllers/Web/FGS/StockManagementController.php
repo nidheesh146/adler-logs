@@ -375,7 +375,7 @@ class StockManagementController extends Controller
                         ->leftJoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
                         ->leftJoin('product_oem','product_oem.id','=','product_product.product_oem_id')
                         ->where('fgs_product_stock_management.quantity','!=',0)
-                        ->distinct('fgs_product_stock_management.id')
+                        //->distinct('fgs_product_stock_management.id')
                         ->where($condition)
                         ->orderBy('fgs_product_stock_management.id','DESC')
                         ->get(); 

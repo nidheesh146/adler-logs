@@ -171,6 +171,7 @@ class OEFController extends Controller
                 $data['product_category'] = $request->product_category;
                 $data['created_by']= config('user')['user_id'];
                 $data['status']=1;
+                $data['remarks'] = $request->remarks;
                 $data['created_at'] =date('Y-m-d H:i:s');
                 $data['updated_at'] =date('Y-m-d H:i:s');
                 $add = $this->fgs_oef->insert_data($data);
@@ -318,12 +319,12 @@ class OEFController extends Controller
                         "discount"=>$value['discount'],
                         "created_at" => date('Y-m-d H:i:s')
                     ];
-                    $oef_data =[
+                    /*$oef_data =[
                         'remarks' => $request->remarks
-                    ];
+                    ];*/
                     
                     $this->fgs_oef_item->insert_data($data,$request->oef_id);
-                    $this->fgs_oef->update_data(['id'=>$request->oef_id],$oef_data);
+                    //$this->fgs_oef->update_data(['id'=>$request->oef_id],$oef_data);
                 }
                 $request->session()->flash('success',"You have successfully added a OEF item !");
                 return redirect('fgs/OEF/item-list/'.$request->oef_id);

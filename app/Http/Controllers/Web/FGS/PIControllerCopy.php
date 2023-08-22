@@ -97,7 +97,6 @@ class PIController extends Controller
                 $pi_master=$this->fgs_pi->insert_data($data);
                 foreach($request->grs_item_id as $grs_item_id)
                 {
-                    //print_r($request->grs_item_id);exit;
                     $grs_item = fgs_grs_item::where('id','=',$grs_item_id)->first();
                     $grs = fgs_grs_item_rel::select('fgs_grs_item_rel.item','fgs_grs_item_rel.master')
                             ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_grs_item_rel.item')
@@ -125,7 +124,7 @@ class PIController extends Controller
                     if($pi_item && $pi_master ){
                         DB::table('fgs_pi_item_rel')->insert(['master'=>$pi_master,'item'=>$pi_item]);
                     }
-                    //$grs_item = fgs_grs_item::where('id','=',$grs_item['id'])->first();
+                    $grs_item = fgs_grs_item::where('id','=',$grs_item['id'])->first();
                     $stock['product_id'] =$grs_item['product_id'];
                     $stock['pi_item_id'] =$pi_item;
                     $stock['batchcard_id'] =$grs_item['batchcard_id'];
@@ -147,13 +146,12 @@ class PIController extends Controller
                     if($grs_item['current_invoice_qty']==0)
                     {
                         $update_stock = $fgs_product_stock['quantity']-$grs_item['qty_to_invoice'];
-                        $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$grs_item->id], ['fgs_grs_item.current_invoice_qty'=>0,'fgs_grs_item.qty_to_invoice'=>0,'fgs_grs_item.remaining_qty_after_cancel'=>0]);
+                        $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id], ['fgs_grs_item.qty_to_invoice'=>0]);
                     }
                     else
                     {
                         $update_stock = $fgs_product_stock['quantity']-$grs_item['current_invoice_qty'];
-                        $grs_stock = $grs_item['qty_to_invoice'] - $grs_item['current_invoice_qty'];
-                        $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$grs_item->id], ['fgs_grs_item.current_invoice_qty'=>0,'fgs_grs_item.qty_to_invoice'=>$grs_stock,'fgs_grs_item.remaining_qty_after_cancel'=>$grs_stock]);
+                        $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id], ['fgs_grs_item.current_invoice_qty'=>0]);
                     }
                     $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
                     //$grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id], ['fgs_grs_item.current_invoice_qty'=>0]);
@@ -596,7 +594,7 @@ class PIController extends Controller
             {
                 $grs_item = fgs_grs_item::where('id', $request->grs_item_id)->first();
                 $qty_update = $grs_item['qty_to_invoice']-$request->partial_invoice_qty;
-                $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id], ['fgs_grs_item.current_invoice_qty'=>$request->partial_invoice_qty]);
+                $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id], ['fgs_grs_item.qty_to_invoice'=>$qty_update,'fgs_grs_item.current_invoice_qty'=>$request->partial_invoice_qty,'fgs_grs_item.remaining_qty_after_cancel'=>$qty_update]);
                 $request->session()->flash('success', "You have successfully updated a  Partial PI quantity !");
                 // if($request->order_type)
                 // return redirect("inventory/supplier-invoice-add?order_type=".$request->order_type);

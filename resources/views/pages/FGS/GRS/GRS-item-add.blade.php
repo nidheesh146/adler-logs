@@ -16,7 +16,7 @@
             </h4>
             <div class="form-devider"></div>
            
-            <form method="post" id="commentForm" novalidate="novalidate">
+            <form method="post" id="commentForm" novalidate="novalidate" >
                 {{ csrf_field() }}	
                 @if(Session::get('error'))
                 <div class="alert alert-danger "  role="alert" style="width: 100%;">
@@ -131,6 +131,9 @@
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 
 <script>
+    
+
+
   $(function(){
     'use strict'
 	var date = new Date();

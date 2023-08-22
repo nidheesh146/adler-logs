@@ -178,10 +178,12 @@
                         @endforeach
                         
                         <?php
-                        $arr=array_filter(array_unique($ar));
-                        for($x = 0; $x <count($arr); $x++) {
-                        echo $arr[$x];
-                         echo "  ";
+                       // print_r(array_filter(array_unique($ar)));exit;
+                        $arr_dni=array_values(array_unique($ar));
+                       // print_r($arr_dni);exit;
+                        for($x = 0; $x <count($arr_dni); $x++) {
+                        echo $arr_dni[$x];
+                        echo " ";
                         }
                         ?>
                     </td>
@@ -196,7 +198,7 @@
                         @endforeach
                         @endforeach
                         <?php
-                        $arr_date=array_filter(array_unique($grs_date));
+                        $arr_date=array_values(array_unique($grs_date));
                         for($x = 0; $x <count($arr_date); $x++) 
                         {
                          echo $arr_date[$x]; 
@@ -214,7 +216,7 @@
                         @endforeach
                         @endforeach 
                         <?php
-                        $oef_arr=array_filter(array_unique($oef));
+                        $oef_arr=array_values(array_unique($oef));
                         for($x = 0; $x <count($oef_arr); $x++) 
                         {
                          echo $oef_arr[$x]; 
@@ -234,7 +236,7 @@
                         @endforeach
                         @endforeach
                         <?php
-                        $oef_date_arr=array_filter(array_unique($oef_date));
+                        $oef_date_arr=array_values(array_unique($oef_date));
                         for($x = 0; $x <count($oef_date_arr); $x++) 
                         {
                          echo $oef_date_arr[$x]; 
@@ -262,7 +264,7 @@
                         @endforeach
                         @endforeach
                         <?php
-                        $trnsctn_arr=array_filter(array_unique($trnsctn));
+                        $trnsctn_arr=array_values(array_unique($trnsctn));
                         for($x = 0; $x <count($trnsctn_arr); $x++) 
                         {
                          echo $trnsctn_arr[$x]; 
@@ -286,7 +288,7 @@
                         @endforeach
                         @endforeach 
                         <?php
-                        $fulfil_type_arr=array_filter(array_unique($fulfil_type));
+                        $fulfil_type_arr=array_values(array_unique($fulfil_type));
                         for($x = 0; $x <count($fulfil_type_arr); $x++) 
                         {
                          echo $fulfil_type_arr[$x]; 
@@ -308,7 +310,7 @@
                         <?php $pi[]=$dni_item['pi_number']; ?>
                     @endforeach
                     <?php
-                        $pi_arr=array_filter(array_unique($pi));
+                        $pi_arr=array_values(array_unique($pi));
                         for($x = 0; $x <count($pi_arr); $x++) 
                         {
                          echo $pi_arr[$x]; 
@@ -325,7 +327,7 @@
                         <?php $pi_date[]=date('d-m-Y', strtotime($dni_item['pi_date'])); ?>
                         @endforeach
                         <?php
-                            $pi_date_arr=array_filter(array_unique($pi_date));
+                            $pi_date_arr=array_values(array_unique($pi_date));
                             for($x = 0; $x <count($pi_date_arr); $x++) 
                             {
                             echo $pi_date_arr[$x]; 
@@ -344,7 +346,7 @@
                         @endforeach
                     @endforeach
                     <?php
-                            $order_arr=array_filter(array_unique($order_no));
+                            $order_arr=array_values(array_unique($order_no));
                             for($x = 0; $x <count($order_arr); $x++) 
                             {
                             echo $order_arr[$x]; 
@@ -362,7 +364,7 @@
                         @endforeach
                     @endforeach
                     <?php
-                            $order_date_arr=array_filter(array_unique($order_date));
+                            $order_date_arr=array_values(array_unique($order_date));
                             for($x = 0; $x <count($order_date_arr); $x++) 
                             {
                             echo $order_date_arr[$x]; 
@@ -393,7 +395,7 @@
                     @endforeach
                     <td>: 
                         <?php
-                            $category_name_arr=array_filter(array_unique($category_name));
+                            $category_name_arr=array_values(array_unique($category_name));
                             for($x = 0; $x <count($category_name_arr); $x++) 
                             {
                             echo $category_name_arr[$x]; 

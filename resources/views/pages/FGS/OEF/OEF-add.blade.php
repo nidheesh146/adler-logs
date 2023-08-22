@@ -116,6 +116,10 @@
                                 @php $date= date('Y-m-d', strtotime('+30 days')) @endphp 
                                 <input type="text" value="{{date('d-m-Y', strtotime($date))}}" class="form-control due_date" id="due_date" name="due_date" placeholder="">
                             </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-8 col-xl-8">
+                                <label for="exampleInputEmail1">Remarks  </label>
+                                <textarea type="text" class="form-control" name="remarks" value="" placeholder=""></textarea>
+                            </div>
                         </div>                       
             
                         <div class="row">

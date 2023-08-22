@@ -198,6 +198,7 @@ class MINController extends Controller
                     $this->fgs_min->update_data(['id' => $request->min_id], $min_data);
                     $fgs_product_stock = fgs_product_stock_management::where('product_id', '=', $value['product'])
                         ->where('batchcard_id', '=', $value['batch_no'])
+                        ->where('stock_location_id','=',$min_info['stock_location'])
                         ->first();
                     $update_stock = $fgs_product_stock['quantity'] - $value['qty'];
                     $production_stock = $this->fgs_product_stock_management->update_data(['id' => $fgs_product_stock['id']], ['quantity' => $update_stock]);
@@ -310,11 +311,15 @@ class MINController extends Controller
     }
     public function fetchBatchCardQtyManufatureDate(Request $request)
     {
-        $batchcard = batchcard::where('batchcard_batchcard.id', '=', $request->batch_id)->first();
-        $data['quantity'] = $batchcard['quantity'];
-        $fgs_mrn_item = fgs_mrn_item::where('fgs_mrn_item.batchcard_id', '=', $request->batch_id)->first();
-        $data['manufacturing_date'] = $fgs_mrn_item['manufacturing_date'];
-        $data['expiry_date'] = $fgs_mrn_item['expiry_date'];
+        // $batchcard = batchcard::where('batchcard_batchcard.id', '=', $request->batch_id)->first();
+        // $data['quantity'] = $batchcard['quantity'];
+        // $fgs_mrn_item = fgs_mrn_item::where('fgs_mrn_item.batchcard_id', '=', $request->batch_id)->first();
+        // $data['manufacturing_date'] = $fgs_mrn_item['manufacturing_date'];
+        // $data['expiry_date'] = $fgs_mrn_item['expiry_date'];
+        $min_info = fgs_min::find($request->min_id);
+        $data = fgs_product_stock_management::where('batchcard_id', '=', $request->batch_id)
+                        ->where('stock_location_id','=',$min_info['stock_location'])
+                        ->first();
         return $data;
     }
     public function MINitemedit($min_id)

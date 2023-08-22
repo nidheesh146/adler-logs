@@ -247,8 +247,9 @@ function getsearch(){
         });
         $(document).on('change', '.batch_number', function (e) {
             var batch_id = $(this).val();
+            var min_id = $('#min_id').val();
             var select_id = $(this).attr("index");
-            $.get("{{ url('fgs/fetchBatchCardQtyManufatureDate') }}?batch_id="+batch_id,function(data){
+            $.get("{{ url('fgs/fetchBatchCardQtyManufatureDate') }}?batch_id="+batch_id+"&min_id="+min_id ,function(data){
                 $("#stock_qty"+select_id+"").val(data['quantity']);
                 $("#qty"+select_id+"").val(data['quantity']);
                 $("#stock_qty"+select_id+"").attr('max',data['quantity']);
@@ -265,7 +266,7 @@ function getsearch(){
            var val = $(this).val();
            var select_id = $(this).attr("index");
            $("#error"+select_id+"").text('');
-           var max = $(this).attr("max");
+           var max = parseInt($(this).attr("max"));
            if(val>max)
            $("#error"+select_id+"").text('Please enter a value less than or equal to '+max);
 

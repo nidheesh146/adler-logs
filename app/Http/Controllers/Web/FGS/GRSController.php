@@ -351,6 +351,7 @@ class GRSController extends Controller
                                                         ->first();*/
                 $oef_qty_updation = $oef_item['quantity_to_allocate']- $request->batch_qty;
                 $oef_item['quantity_to_allocate'] = $oef_qty_updation;
+                $oef_item['remaining_qty_after_cancel'] = $oef_qty_updation;
                 $oef_item->save();
                 /*$stock_updation = $fgs_stock['quantity']-$request->batch_qty;
                 $stock_mngment= fgs_product_stock_management::find($fgs_stock['fgs_stock_id']);

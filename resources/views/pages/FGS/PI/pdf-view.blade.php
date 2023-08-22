@@ -50,10 +50,15 @@
             float:right;
             width:25%;
         }
+        .col25{
+            margin-top:-25px;
+            float:right;
+            width:20%;
+        }
          .row2{
             display:block;
             font-size:11px;
-            height:40px;
+            height:50px;
             border-bottom:solid 0.5px black;
         }
         .row3, .row4{
@@ -193,6 +198,14 @@
         </div>
         <div class="col24">
             <table style="float:left;">
+            <tr>
+                    <td>Doc Number</td>
+                    <td>:{{$pi['pi_number']}} </td>
+                </tr>
+                <tr>
+                    <td> Doc Date:</td>
+                    <td>:{{date('d-m-Y', strtotime($pi['pi_date']))}}</td>
+                </tr>
                 <tr>
                     <td>Trnsctn Type</td>
                     <td>:{{$pi['transaction_name']}} </td>
@@ -207,6 +220,7 @@
                 </tr>
             </table>
         </div>
+        
     <br/>    
     </div>
     
