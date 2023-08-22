@@ -105,6 +105,23 @@ class MRNController extends Controller
             return view('pages/FGS/MRN/MRN-add', compact('locations', 'category'));
         }
     }
+
+    public function MRN_delete($id)
+    {
+       
+        fgs_mrn::where('id',$id)
+        ->update([
+            'status'=>0
+        ]);
+        fgs_mrn_item::leftjoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
+        ->leftjoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
+        ->where('fgs_mrn.id',$id)
+        ->update([
+            'fgs_mrn_item.status'=>0
+        ]);
+        session()->flash('success', "You have  deleted MRN  !");
+        return redirect()->back();
+    }
     public function MRNitemlist(Request $request, $mrn_id)
     {
         $product_cat=DB::table('fgs_mrn')

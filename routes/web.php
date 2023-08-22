@@ -458,6 +458,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     //MRN
     Route::get('fgs/MRN-list','MRNController@MRNList');
     Route::get('fgs/MRN-add','MRNController@MRNAdd');
+    Route::get('fgs/MRN-delete/{id}','MRNController@MRN_delete');
     Route::post('fgs/MRN-add','MRNController@MRNAdd');
     Route::get('fgs/MRN/item-list/{mrn_id}','MRNController@MRNitemlist');
     Route::get('fgs/fetchMRNInfo','MRNController@fetchMRNInfo');
