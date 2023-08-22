@@ -122,6 +122,10 @@ class BackorderReportController extends Controller
             ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
             ->where('fgs_oef.status', '=', 1)
+            ->whereNotIn('fgs_oef_item.id', function ($query) {
+
+                $query->select('fgs_grs_item.oef_item_id')->from('fgs_grs_item');
+            })
             //->where('fgs_oef.status','=',1)
             ->where($condition1)
             ->distinct('fgs_oef.id')
@@ -147,6 +151,10 @@ class BackorderReportController extends Controller
                 ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_grs.customer_id')
                 ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
                 ->where('fgs_grs.status', '=', 1)
+                ->whereNotIn('fgs_grs_item.id', function ($query) {
+
+                    $query->select('fgs_pi_item.grs_item_id')->from('fgs_pi_item');
+                })
                 //->where('fgs_oef.status','=',1)
                 ->where($condition2)
                 ->distinct('fgs_grs.id')
@@ -258,6 +266,10 @@ class BackorderReportController extends Controller
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
             ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
             ->where('fgs_oef.status', '=', 1)
+            ->whereNotIn('fgs_oef_item.id', function ($query) {
+
+                $query->select('fgs_grs_item.oef_item_id')->from('fgs_grs_item');
+            })
             //->where('fgs_oef.status','=',1)
             ->where($condition1)
             ->distinct('fgs_oef.id')
@@ -289,6 +301,10 @@ class BackorderReportController extends Controller
                 ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                 ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
                 ->where('fgs_grs.status', '=', 1)
+                ->whereNotIn('fgs_grs_item.id', function ($query) {
+
+                    $query->select('fgs_pi_item.grs_item_id')->from('fgs_pi_item');
+                })
                 //->where('fgs_oef.status','=',1)
                 ->where($condition2)
                 ->distinct('fgs_grs.id')
