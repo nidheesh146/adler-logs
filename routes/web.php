@@ -538,7 +538,17 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS','middleware'=>['Role
     Route::get('fgs/OEF-list','OEFController@OEFList');
     Route::get('fgs/OEF-add','OEFController@OEFAdd');
     Route::post('fgs/OEF-add','OEFController@OEFAdd');
+    Route::get('fgs/OEF-delete/{id}','OEFController@OEFDelete');
     Route::get('fgs/OEF/item-list/{oef_id}','OEFController@OEFitemlist');
+    Route::get('fgs/OEF-item-delete/{oef_item_id}','OEFController@delete_oef_item');
+    Route::get('fgs/OEF-item-edit/{oef_item_id}','OEFController@edit_oef_item');
+    Route::post('fgs/OEF-item-update','OEFController@update_oef_item');
+    Route::get('fgs/OEF-edit/{oef_id}','OEFController@edit_oef');
+    Route::post('fgs/OEF-update','OEFController@update_oef');
+
+
+
+
     Route::get('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::post('fgs/OEF/add-item/{oef_id}','OEFController@OEFitemAdd');
     Route::get('fgs/OEFproductsearch/{oef_id}','OEFController@OEFproductsearch');

@@ -79,6 +79,7 @@
                                                    {{-- <textarea type="text" readonly class="form-control" id="Itemdescription1"name="Description"
                                                         placeholder="Description"></textarea>--}}
                                                 </div>
+                                                
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
@@ -88,13 +89,26 @@
                                                     </select>--}}
                                                     
                                                 </div>
+                                                
                                             </div>
                                             <div class="row"> 
+                                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
+                                                    style="float:left;">
+                                                    <label for="exampleInputEmail1">Stock qty* </label>
+                                                    <input type="text" readonly class="form-control" name="batchno" id="batchno" value="{{$item_details->stk_qty}}">
+                                                   {{-- <select class="form-control batch_number batch_no1" index="1"
+                                                        name="moreItems[0][batch_no]" id="batch_no1">
+                                                    </select>--}}
+                                                    
+                                                </div>
+                                                
+                                            
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
-                                                    <label>Quantity * </label>
+                                                    
+                                                    <label><span style="color: red;font-size: 10px;">Quantity should be less than stock qty</span><br>Quantity * </label>
                                                     <input type="number"  class="form-control stock_qty" name="moreItems[0][qty]"
-                                                        id="stock_qty1" placeholder="Quantity" max="" min="0" index="1" value="{{$item_details->quantity}}" >
+                                                        id="stock_qty1" placeholder="Quantity" max="{{$item_details->stk_qty}}" min="0" index="1" value="{{$item_details->quantity}}" >
                                                     <span id="error1" style="color:red;"></span> 
                                                 </div>
                                             
@@ -214,6 +228,7 @@ function getsearch(){
                             </div>
                         </div>
                         <div class="row"> 
+                        
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                 <label>Batch Qty * </label>
                                 <input type="number"  class="form-control stock_qty" name="moreItems[${i}][qty]" id="stock_qty${i}" index="${i}" placeholder="Stock Qty" max="" min="0" value="" required>
@@ -256,6 +271,7 @@ function getsearch(){
             var batch_id = $(this).val();
             var select_id = $(this).attr("index");
             $.get("{{ url('fgs/fetchBatchCardQtyManufatureDate') }}?batch_id="+batch_id,function(data){
+                alert(data['quantity']);
                 $("#stock_qty"+select_id+"").val(data['quantity']);
                 $("#qty"+select_id+"").val(data['quantity']);
                 $("#stock_qty"+select_id+"").attr('max',data['quantity']);
@@ -273,8 +289,8 @@ function getsearch(){
            var select_id = $(this).attr("index");
            $("#error"+select_id+"").text('');
            var max = $(this).attr("max");
-           if(val>max)
-           $("#error"+select_id+"").text('Please enter a value less than or equal to '+max);
+        //    if(val>max)
+        //    $("#error"+select_id+"").text('Please enter a value less than or equal to '+max);
 
         });
             function initSelect2() {

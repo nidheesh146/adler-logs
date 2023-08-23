@@ -328,14 +328,17 @@ class MINController extends Controller
     {
 
         $item_details = DB::table('fgs_min_item')
-            ->select('fgs_min_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_min.min_number', 'product_product.is_sterile')
+            ->select('fgs_min_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_min.min_number', 'product_product.is_sterile','fgs_product_stock_management.quantity as stk_qty')
             ->leftjoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
             ->leftjoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
             ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
+            ->leftjoin('fgs_product_stock_management','fgs_product_stock_management.batchcard_id','=','batchcard_batchcard.id')
             ->where('fgs_min_item.id', $min_id)
             ->orderBy('fgs_min_item.id', 'DESC')
             ->first();
+            
+            
         return view('pages/fgs/MIN/MIN-item-edit', compact('item_details', 'min_id'));
     }
     public function MINitemupdate(Request $request)
@@ -347,8 +350,10 @@ class MINController extends Controller
             ->where('product_id', '=', $product)
             ->where('batchcard_id', '=', $batch)
             ->first();
+            $qty=$ps_mangaer->quantity;
+            
         foreach ($request->moreItems as $key => $value) {
-
+            
 
             DB::table('fgs_min_item')
                 ->where('id', $request->Itemtypehidden)
@@ -360,17 +365,19 @@ class MINController extends Controller
             DB::table('fgs_product_stock_management')
                 ->where('id', $ps_mangaer->id)
                 ->update([
-                    'quantity' => $value['qty'],
+                    'quantity' => $qty-($value['qty']),
                     // 'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date1)),
                     // 'expiry_date' => $end
                 ]);
         }
         $item_details = DB::table('fgs_min_item')
-            ->select('fgs_min_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_min.min_number', 'product_product.is_sterile')
+            ->select('fgs_min_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code',
+             'batchcard_batchcard.batch_no', 'fgs_min.min_number', 'product_product.is_sterile','fgs_product_stock_management.quantity as stk_qty')
             ->leftjoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
             ->leftjoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
             ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
+            ->leftjoin('fgs_product_stock_management','fgs_product_stock_management.batchcard_id','=','batchcard_batchcard.id')
             ->where('fgs_min_item.id', $request->Itemtypehidden)
             ->orderBy('fgs_min_item.id', 'DESC')
             ->first();

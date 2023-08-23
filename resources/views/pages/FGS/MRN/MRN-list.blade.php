@@ -1,5 +1,9 @@
 @extends('layouts.default')
 @section('content')
+@php
+use App\Http\Controllers\Web\FGS\MRNController;
+$obj_mrn=new MRNController;
+@endphp
 
 <div class="az-content az-content-dashboard">
 	<br>
@@ -121,8 +125,13 @@
 									<td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MRN/item-list/'.$item["id"])}}" class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/MRN/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
 									</td>
-									<td> <a class="badge badge-danger" style="font-size: 13px;" href="{{url('fgs/MRN-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
 
+									@if(!empty($obj_mrn->check_item($item["id"])))
+									<td> <a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cant Delete.MRN have items!');"><i class="fa fa-trash"></i> Delete</a></td>
+									@else
+
+									<td> <a class="badge badge-danger" style="font-size: 13px;" href="{{url('fgs/MRN-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
+									@endif
 								</tr>
 								@endforeach
 							</tbody>
