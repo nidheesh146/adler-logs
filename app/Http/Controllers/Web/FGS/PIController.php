@@ -22,6 +22,8 @@ use App\Models\product;
 use App\Models\PurchaseDetails\customer_supplier;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingPIExport;
+use App\Exports\FGSpitransactionExport;
+use App\Exports\FGScpitransactionExport;
 class PIController extends Controller
 {
     public function __construct()
@@ -609,5 +611,75 @@ class PIController extends Controller
 
 
 
+    }
+    public function pi_transaction(Request $request)
+    {
+        $condition = [];
+        if ($request->pi_no) {
+            $condition[] = ['fgs_pi.pi_number', 'like', '%' . $request->pi_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_pi_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_pi_item::select(
+            'fgs_pi.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_pi.pi_number',
+            'fgs_pi.pi_date',
+            'fgs_pi.created_at as min_wef',
+            'fgs_pi_item.id as pi_item_id'
+        )
+            ->leftJoin('fgs_pi_item_rel', 'fgs_pi_item_rel.item', '=', 'fgs_pi_item.id')
+            ->leftJoin('fgs_pi', 'fgs_pi.id', '=', 'fgs_pi_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_pi_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_pi_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_pi_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_pi_item.id', 'desc')
+            ->paginate(15);
+        return view('pages/FGS/PI/PI-transaction-list', compact('items'));
+    }
+    public function pi_transaction_export(Request $request)
+    {
+        $condition = [];
+        if ($request->pi_no) {
+            $condition[] = ['fgs_pi.pi_number', 'like', '%' . $request->pi_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_pi_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_pi_item::select(
+            'fgs_pi.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_pi.pi_number',
+            'fgs_pi.pi_date',
+            'fgs_pi.created_at as min_wef',
+            'fgs_pi_item.id as pi_item_id'
+        )
+            ->leftJoin('fgs_pi_item_rel', 'fgs_pi_item_rel.item', '=', 'fgs_pi_item.id')
+            ->leftJoin('fgs_pi', 'fgs_pi.id', '=', 'fgs_pi_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_pi_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_pi_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_pi_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_pi_item.id', 'desc')
+            ->get();
+        return Excel::download(new FGSpitransactionExport($items), 'FGS-PI-transaction' . date('d-m-Y') . '.xlsx');
     }
 }

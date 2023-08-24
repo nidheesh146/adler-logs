@@ -17,6 +17,9 @@ use App\Models\product;
 use App\Models\FGS\fgs_coef;
 use App\Models\FGS\fgs_coef_item;
 use App\Models\FGS\fgs_coef_item_rel;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FGScoeftransactionExport;
+
 
 class COEFController extends Controller
 { 
@@ -302,6 +305,78 @@ class COEFController extends Controller
         $pdf->set_paper('A4', 'landscape');
         $file_name = "COEF" . $data['coef']['firm_name'] . "_" . $data['coef']['coef_date'];
         return $pdf->stream($file_name . '.pdf');
+    }
+    public function coef_transaction(Request $request)
+    {
+        $condition = [];
+        if ($request->mrn_no) {
+            $condition[] = ['fgs_oef.oef_number', 'like', '%' . $request->oef_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_oef_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_coef_item::select(
+            'fgs_coef.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_coef.coef_number',
+            'fgs_coef.coef_date',
+            'fgs_coef.created_at as min_wef',
+            'fgs_coef_item.id as coef_item_id'
+        )
+            ->leftJoin('fgs_coef_item_rel', 'fgs_coef_item_rel.item', '=', 'fgs_coef_item.id')
+            ->leftJoin('fgs_coef', 'fgs_coef.id', '=', 'fgs_coef_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_coef_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_coef_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_coef_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_coef_item.id', 'desc')
+            ->paginate(15);
+
+        return view('pages/FGS/COEF/COEF-transaction-list', compact('items'));
+    }
+    public function coef_transaction_export(Request $request)
+    {
+        $condition = [];
+        if ($request->mrn_no) {
+            $condition[] = ['fgs_coef.coef_number', 'like', '%' . $request->coef_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_coef_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_coef_item::select(
+            'fgs_coef.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_coef.coef_number',
+            'fgs_coef.coef_date',
+            'fgs_coef.created_at as min_wef',
+            'fgs_coef_item.id as coef_item_id'
+        )
+            ->leftJoin('fgs_coef_item_rel', 'fgs_coef_item_rel.item', '=', 'fgs_coef_item.id')
+            ->leftJoin('fgs_coef', 'fgs_coef.id', '=', 'fgs_coef_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_coef_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_coef_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_coef_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_coef_item.id', 'desc')
+            ->get();
+
+        return Excel::download(new FGScoeftransactionExport($items), 'FGS-COEF-transaction' . date('d-m-Y') . '.xlsx');
     }
 
 }   

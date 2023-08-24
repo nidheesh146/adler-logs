@@ -122,6 +122,7 @@
                                 <tr>
 									<?php $qty=$qty+$item['quantity'];
 									 ?>
+									 
 									<td>{{$item['sku_code']}}</td>
                                     <td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>

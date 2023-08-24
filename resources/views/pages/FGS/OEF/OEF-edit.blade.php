@@ -1,0 +1,214 @@
+@extends('layouts.default')
+@section('content')
+
+<div class="az-content az-content-dashboard">
+  <br>
+	<div class="container">
+		<div class="az-content-body">
+
+            <div class="az-content-breadcrumb"> 
+                <span><a href="" style="color: #596881;"> Order Execution Form(OEF)</a></span> 
+                <!-- <span><a href="" style="color: #596881;">MRN</a></span> -->
+                <span><a href="">
+                   
+                </a></span>
+            </div>
+	
+            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
+            Order Execution Form(OEF)
+            </h4>
+            <div class="az-dashboard-nav">
+           
+            </div>
+
+			<div class="row">
+                    
+                <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
+                @if(Session::get('error'))
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{Session::get('error')}}
+                </div>
+                @endif
+                @if (Session::get('success'))
+                <div class="alert alert-success " style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                </div>
+                @endif
+                @foreach ($errors->all() as $errorr)
+                <div class="alert alert-danger "  role="alert" style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        {{ $errorr }}
+                </div>
+             @endforeach            
+                   
+                    <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
+                    <form method="POST" id="commentForm" autocomplete="off" action="{{url('fgs/OEF-update')}}" >
+               
+
+                        {{ csrf_field() }}  
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                                    <i class="fas fa-address-card"></i> Basic details  
+                                </label>
+                                <div class="form-devider"></div>
+                            </div>
+                         </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Customer  *</label>
+                                <input type="text" class="form-control" name="customer" value="{{$oef->firm_name}}" readonly>
+
+                            </div> 
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Customer Biiling Address</label>
+                                <textarea name="billing_address" class="form-control" id="billing_address" readonly>{{$oef->shipping_address}}</textarea>
+                            </div> 
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Customer Shipping Address</label>
+                                <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly>{{$oef->shipping_address}}</textarea>
+                            </div> 
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Order Number  *</label>
+                                <input type="text" class="form-control" name="order_number" value="{{$oef->order_number}}" placeholder="Order Number">
+                            </div> 
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Order Date  *</label>
+                                
+                                <input type="date"  class="form-control datepicker" name="order_date" value="{{$oef->order_date}}" placeholder="">
+                            </div>
+                        
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Order Fulfil  *</label>
+                                <input type="text" class="form-control" name="order_fulfil" value="{{$oef->order_fulfil_type}}" placeholder="Order Number" readonly>
+
+                            </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Transaction Type  *</label>
+                                <input type="text" class="form-control" name="transaction" value="{{$oef->transaction_name}}" placeholder="Order Number" readonly>
+
+                            </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Product Category  *</label>
+                                <input type="text" readonly class="form-control" name="pro_category" value="{{$oef->category_name}}" placeholder="Order Number">
+
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                <label>OEF Date *</label>
+                                <input type="date" value="{{$oef->oef_date}}" class="form-control oef_date" id="oef_date" name="oef_date">
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                <label>Due Date *</label>
+                                @php $date= date('Y-m-d', strtotime('+30 days')) @endphp 
+                                <input type="text" value="{{date('d-m-Y',strtotime($oef->due_date))}}" class="form-control due_date" id="due_date" name="due_date"readonly placeholder="">
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-8 col-xl-8">
+                                <label for="exampleInputEmail1">Remarks  </label>
+                                <textarea type="text" class="form-control" name="remarks" value="" placeholder="">{{$oef->remarks}}</textarea>
+                                <input type="hidden"  class="form-control" name="id" value="{{$oef->id}}" >
+
+                            </div>
+                        </div>                       
+            
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <button type="submit"  class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
+                                    role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                    update
+                                
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-devider"></div>
+                    </form>
+
+                </div>
+            </div>
+            
+
+        </div>
+
+	</div>
+	<!-- az-content-body -->
+</div>
+
+
+
+
+<script src="<?= url('') ?>/js/azia.js"></script>
+<script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+<script src="<?= url('') ?>/js/jquery.validate.js"></script>
+<script src="<?= url('') ?>/js/additional-methods.js"></script>
+<script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
+<script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
+<script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
+<script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
+
+<script>
+  
+
+    $(".datepicker").datepicker({
+        format: " dd-mm-yyyy",
+        endDate: new Date(),
+        autoclose:true
+    });
+    // $(".due_date").datepicker({
+    //     format: " dd-mm-yyyy",
+    //     autoclose:true
+    // });
+    // $(".oef_date").datepicker({
+    //     format: " dd-mm-yyyy",
+    //     autoclose:true
+    // });
+    // $(".oef_date").datepicker("setDate", new Date());
+    // var date = new Date();
+    // date.setDate(date.getDate() + 30);
+    // $(".due_date").datepicker("setDate", date);
+    
+        $('.oef_date').on('change',function()
+        {
+            var oef_date = new Date($(this).val());
+            var date  = new Date(oef_date.setDate(oef_date.getDate()+30));
+            var aftr_30_days = ( ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
+            $('#due_date').val(aftr_30_days);
+        });
+    
+    // $(".oef_date").change(function(){
+    //    var oef_date= new Date($(this).val());
+    //    var day = new Date( oef_date.setDate(oef_date.getDate() + 30));
+    //    var date = ((day.getDate() < 10) ? "0" : "") + String(day.getDate()) + "-" +((day.getMonth() < 9) ? "0" : "") + String(day.getMonth() + 1)+ "-" +day.getFullYear();
+    //    alert(day);
+    // //    date.setDate(date.getDate() + 30);
+    // //      alert(day);
+    // //    var aftr_30_days = ((day.getDate() < 10) ? "0" : "") + String(day.getDate()) + "-" +((day.getMonth() < 9) ? "0" : "") + String(day.getMonth() + 1)+ "-" +day.getFullYear();
+    //    $(".due_date").val(date);
+    // });
+              
+
+    $("#commentForm").validate({
+            rules: {
+                Requestor: {
+                    required: true,
+                },
+                Department: {
+                    required: true,
+                },
+                Date: {
+                    required: true,
+                },
+                
+                
+            },
+            submitHandler: function(form) {
+                $('.spinner-button').show();
+                form.submit();
+            }
+        });
+
+</script>
+
+
+@stop

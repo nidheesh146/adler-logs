@@ -16,6 +16,9 @@ use App\Models\FGS\fgs_mtq;
 use App\Models\FGS\fgs_mtq_item;
 use App\Models\FGS\fgs_mtq_item_rel;
 use PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FGSmtqtransactionExport;
+
 class MTQController extends Controller
 {
     public function __construct()
@@ -228,6 +231,70 @@ class MTQController extends Controller
         // $pdf->set_paper('A4', 'landscape');
         $file_name = "MTQ" . $data['mtq']['firm_name'] . "_" . $data['mtq']['mtq_date'];
         return $pdf->stream($file_name . '.pdf');
+    }
+    public function mtq_transaction(Request $request)
+    {
+        $condition=[];
+        if($request->mtq_no)
+        {
+            $condition[] = ['fgs_mtq.mtq_number','like', '%' . $request->mtq_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_mtq_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_mtq_item::select('fgs_mtq.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_mtq.mtq_number','fgs_mtq.mtq_date','fgs_mtq.created_at as mtq_wef','fgs_mtq_item.id as mtq_item_id')
+            ->leftJoin('fgs_mtq_item_rel', 'fgs_mtq_item_rel.item', '=', 'fgs_mtq_item.id')
+            ->leftJoin('fgs_mtq', 'fgs_mtq.id', '=', 'fgs_mtq_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mtq_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mtq_item.batchcard_id')
+            //->where('fgs_mtq_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_mtq_item.status',1)
+            //->distinct('fgs_mtq_item.id')
+            ->orderBy('fgs_mtq_item.id','desc')
+            ->paginate(15);
+            
+        return view('pages/fgs/MTQ/MTQ-transaction-list',compact('items'));
+    }
+    public function mtq_transaction_export(Request $request)
+    {
+        $condition=[];
+        if($request->mtq_no)
+        {
+            $condition[] = ['fgs_mtq.mtq_number','like', '%' . $request->mtq_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_mtq_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items = fgs_mtq_item::select('fgs_mtq.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_mtq.mtq_number','fgs_mtq.mtq_date','fgs_mtq.created_at as mtq_wef','fgs_mtq_item.id as mtq_item_id')
+            ->leftJoin('fgs_mtq_item_rel', 'fgs_mtq_item_rel.item', '=', 'fgs_mtq_item.id')
+            ->leftJoin('fgs_mtq', 'fgs_mtq.id', '=', 'fgs_mtq_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mtq_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mtq_item.batchcard_id')
+            //->where('fgs_mtq_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_mtq_item.status',1)
+            //->distinct('fgs_mtq_item.id')
+            ->orderBy('fgs_mtq_item.id','desc')
+            ->get();
+            return Excel::download(new FGSmtqtransactionExport($items), 'FGS-MTQ-transaction' . date('d-m-Y') . '.xlsx');
+
     }
 
     
