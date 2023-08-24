@@ -92,6 +92,13 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                         if($item['sgst']!=0)
                             $gst .='SGST:'.$item['sgst'].'%';
                         
+                            $total_rate = $item['qty_to_invoice']*$item['rate'];
+                            $discount_value = $total_rate*$item['discount']/100;
+                            $discounted_value = $total_rate-$discount_value;
+                            $igst_value = $total_rate*$item['igst']/100;
+                            $sgst_value = $total_rate*$item['sgst']/100;
+                            $cgst_value = $total_rate*$item['cgst']/100;
+                            $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
                         $data[]=[
                             '#'=>$i++,
                             'pr_number'=>$item['pr_no'],
@@ -106,6 +113,7 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                             'rate'=>$item['rate'],
                             'discount'=>$item['discount'],
                             'gst' =>$gst,
+                            'value'=>(number_format((float)($total_value), 2, '.', '')),
                             'vendor'=>$item['vendor_name'],
                             'cancelled_qty' =>$item['cancelled_qty'],
                             //'createdBy'=>$item['f_name']." ".$item['l_name'],
@@ -228,6 +236,14 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                         if($item['sgst']!=0)
                             $gst .='SGST:'.$item['sgst'].'%';
                         
+                        $total_rate = $item['qty_to_invoice']*$item['rate'];
+                        $discount_value = $total_rate*$item['discount']/100;
+                        $discounted_value = $total_rate-$discount_value;
+                        $igst_value = $total_rate*$item['igst']/100;
+                        $sgst_value = $total_rate*$item['sgst']/100;
+                        $cgst_value = $total_rate*$item['cgst']/100;
+                        $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+                        
                         $data[]=[
                             '#'=>$i++,
                             'pr_number'=>$item['pr_no'],
@@ -243,6 +259,7 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                             'discount'=>$item['discount'],
                             //'gst' =>"IGST:".$item['igst'].", SGST:".$item['sgst'].", CGST:".$item['cgst'],
                             'gst' =>$gst,
+                            'value'=>(number_format((float)($total_value), 2, '.', '')),
                             //'po_date'=>date('d-m-Y',strtotime($item['po_date'])),
                             'vendor'=>$item['vendor_name'],
                             'cancelled_qty' =>$item['cancelled_qty'],
@@ -273,6 +290,7 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
             'Rate',
             'Discount(%)',
             'GST(%)',
+            'Value',
             'Supplier',
             'Cancelled qty',
             'PO/WO Date',
@@ -306,8 +324,8 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                 $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(12);
                 $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(25);
-                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(40);
-                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(40);
                 $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(17);
                 $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(25);
                 $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(15);

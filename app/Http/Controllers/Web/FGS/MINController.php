@@ -17,6 +17,7 @@ use App\Models\FGS\fgs_min;
 use App\Models\FGS\fgs_min_item;
 use App\Models\FGS\fgs_min_item_rel;
 use App\Models\FGS\fgs_mrn_item;
+use App\Models\FGS\fgs_cmin_item;
 use App\Models\FGS\fgs_mrn_item_rel;
 use App\Models\batchcard;
 
@@ -222,93 +223,7 @@ class MINController extends Controller
         return $pdf->stream($file_name . '.pdf');
     }
 
-    public function CMINAdd(Request $request)
-    {
-        if ($request->isMethod('post')) {
-            $validation['mac_date'] = ['required', 'date'];
-            $validation['invoice_number'] = ['required'];
-            $validation['created_by'] = ['required'];
-            $validator = Validator::make($request->all(), $validation);
-            if (!$validator->errors()->all()) {
-                if (!$request->id) {
-                    if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
-                        $years_combo = date('y', strtotime('-1 year')) . date('y');
-                    } else {
-                        $years_combo = date('y') . date('y', strtotime('+1 year'));
-                    }
-                    $item_type = $this->get_item_type($request->invoice_number);
-                    if ($item_type == "Direct Items") {
-                        $lot_alloted = $this->check_lot_alloted($request->invoice_number);
-                        if ($lot_alloted == 1) {
-                            $request->session()->flash('error', "Please complete lot allocation for the particular invoice items...");
-                            return redirect('inventory/MAC-add');
-                        }
-                        $Data['mac_number'] = "MAC2-" . $this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2-' . $years_combo . '%')->count());
-                    }
-                    //if($item_type=="Indirect Items"){
-                    else {
-                        $Data['mac_number'] = "MAC3-" . $this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC3-' . $years_combo . '%')->count());
-                    }
-                    $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
-                    $Data['invoice_id'] = $request->invoice_number;
-                    $Data['created_by'] = $request->created_by;
-                    $Data['status'] = 1;
-                    $Data['created_at'] = date('Y-m-d H:i:s');
-                    $Data['updated_at'] = date('Y-m-d H:i:s');
-                    $add_id = $this->inv_mac->insert_data($Data);
-                    $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item', 'inv_supplier_invoice_item.item_id')
-                        ->leftJoin('inv_supplier_invoice_item', 'inv_supplier_invoice_item.id', '=', 'inv_supplier_invoice_rel.item')
-                        ->where('inv_supplier_invoice_item.is_merged', '=', 0)
-                        ->where('master', '=', $request->invoice_number)->get();
-                    foreach ($invoice_items as $item) {
-                        $dat = [
-                            'invoice_item_id' => $item->item,
-                            'pr_item_id' => $item->item_id,
-                            'status' => 1,
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'updated_at' => date('Y-m-d H:i:s')
-
-                        ];
-                        $item_id = $this->inv_mac_item->insert_data($dat);
-                        $dat2 = [
-                            'master' => $add_id,
-                            'item' => $item_id,
-                        ];
-                        $rel = DB::table('inv_mac_item_rel')->insert($dat2);
-                    }
-
-                    if ($add_id && $item_id && $rel)
-                        $request->session()->flash('success', "You have successfully created a MAC !");
-                    else
-                        $request->session()->flash('error', "MAC creation is failed. Try again... !");
-                    return redirect('inventory/MAC-add/' . $add_id);
-                } else {
-                    $data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
-                    $data['created_by'] = $request->created_by;
-                    $data['updated_at'] = date('Y-m-d H:i:s');
-                    $update = $this->inv_mac->update_data(['id' => $request->id], $data);
-                    if ($update)
-                        $request->session()->flash('success', "You have successfully updated a MAC !");
-                    else
-                        $request->session()->flash('error', "MAC updation is failed. Try again... !");
-                    return redirect('inventory/MAC-add/' . $request->id);
-                }
-            }
-            if ($validator->errors()->all()) {
-                return redirect('inventory/MAC-add')->withErrors($validator)->withInput();
-            }
-        }
-        $condition1[] = ['user.status', '=', 1];
-        $data['users'] = $this->User->get_all_users($condition1);
-
-        if ($request->id) {
-            $edit['mac'] = $this->inv_mac->find_mac_data(['inv_mac.id' => $request->id]);
-
-            $edit['items'] = $this->inv_mac_item->get_items(['inv_mac_item_rel.master' => $request->id]);
-            return view('pages.inventory.MAC.MAC-add', compact('edit', 'data'));
-        } else
-            return view('pages.inventory.MAC.MAC-add', compact('data'));
-    }
+   
     public function fetchBatchCardQtyManufatureDate(Request $request)
     {
         // $batchcard = batchcard::where('batchcard_batchcard.id', '=', $request->batch_id)->first();
@@ -322,59 +237,74 @@ class MINController extends Controller
                         ->first();
         return $data;
     }
-    public function MINitemedit($min_id)
+    public function MINitemedit($min_item_id)
     {
 
         $item_details = DB::table('fgs_min_item')
-            ->select('fgs_min_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_min.min_number', 'product_product.is_sterile')
-            ->leftjoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
-            ->leftjoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
-            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
-            ->where('fgs_min_item.id', $min_id)
-            ->orderBy('fgs_min_item.id', 'DESC')
-            ->first();
-        return view('pages/fgs/MIN/MIN-item-edit', compact('item_details', 'min_id'));
+        ->select('fgs_min_item.*', 'fgs_min.id as min_id','product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_min.min_number', 'product_product.is_sterile','fgs_product_stock_management.quantity as stk_qty')
+        ->leftjoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
+        ->leftjoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
+        ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
+        ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
+        ->leftjoin('fgs_product_stock_management','fgs_product_stock_management.batchcard_id','=','batchcard_batchcard.id')
+        ->where('fgs_min_item.id', $min_item_id)
+        ->orderBy('fgs_min_item.id', 'DESC')
+        ->first();
+        return view('pages/fgs/MIN/MIN-item-edit', compact('item_details', 'min_item_id'));
     }
     public function MINitemupdate(Request $request)
     {
-        $product = $request->product_id;
-        $batch = $request->batchcard_id;
-        //dd($batch);
-        $ps_mangaer = DB::table('fgs_product_stock_management')
-            ->where('product_id', '=', $product)
-            ->where('batchcard_id', '=', $batch)
-            ->first();
-        foreach ($request->moreItems as $key => $value) {
-
-
-            DB::table('fgs_min_item')
-                ->where('id', $request->Itemtypehidden)
-                ->update([
-                    'quantity' => $value['qty'],
-                    // 'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date1)),
-                    // 'expiry_date' => $end
-                ]);
-            DB::table('fgs_product_stock_management')
-                ->where('id', $ps_mangaer->id)
-                ->update([
-                    'quantity' => $value['qty'],
-                    // 'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date1)),
-                    // 'expiry_date' => $end
-                ]);
+        $cmin_item = fgs_cmin_item::where('cmin_item_id','=',$request->min_item_id)->first();
+        if($cmin_item)
+        {
+            $request->session()->flash('error', "You can't edit this MIN item !");
+            return redirect('fgs/MIN/item-list/' . $request->min_id);
         }
-        $item_details = DB::table('fgs_min_item')
-            ->select('fgs_min_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_min.min_number', 'product_product.is_sterile')
-            ->leftjoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
-            ->leftjoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
-            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
-            ->where('fgs_min_item.id', $request->Itemtypehidden)
-            ->orderBy('fgs_min_item.id', 'DESC')
-            ->first();
-        $min_id = $request->Itemtypehidden;
-
-        return view('pages/fgs/MIN/MIN-item-edit', compact('item_details', 'min_id'));
+        else
+        {
+            $quantity = $request->quantity;
+            $stock_quantity = $request->stk_qty;
+            if($quantity<=$stock_quantity)
+            {
+                $min_info = fgs_min::find($request->min_id);
+                $product = $request->product_id;
+                $batchcard_id = $request->batchcard_id;
+                $stock = DB::table('fgs_product_stock_management')
+                                    ->where('product_id', '=', $product)
+                                    ->where('batchcard_id', '=', $batchcard_id)
+                                    ->where('stock_location_id','=', $min_info->stock_location)
+                                    ->first();
+                if($min_info->quantity>$request['quantity'])
+                {
+                    $diff = $min_info->quantity-$request['quantity'];
+                    $new_stock = $stock->quantity+$diff;
+                }
+                else
+                {
+                    $diff = $request['quantity']-$min_info->quantity;
+                    $new_stock = $stock->quantity-$diff;
+                }
+                $min_update = DB::table('fgs_min_item')
+                                    ->where('id', $request->min_item_id)
+                                    ->update([
+                                        'quantity' => $request['quantity'],
+                                        'remaining_qty_after_cancel' => $request['quantity'],           
+                                    ]);
+                $stock_update = DB::table('fgs_product_stock_management')
+                                        ->where('id', $stock->id)
+                                        ->update([
+                                            'quantity' => $new_stock,
+                                        ]);
+                $request->session()->flash('success', "You have successfully updated a MIN item !");
+                return redirect('fgs/MIN/item-list/' . $request->min_id);
+                
+            }
+            else
+            {
+                $request->session()->flash('error', "Quantity should be less than stock quantity!");
+                return redirect('fgs/MIN/item-list/' . $request->min_id);
+            }
+        }
     }
     public function delete_min($min_id)
     {

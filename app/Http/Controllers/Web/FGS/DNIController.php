@@ -18,6 +18,8 @@ use App\Models\FGS\fgs_grs_item;
 use App\Models\product;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\NetBillingExport;
+use App\Exports\FGSdnitransactionExport;
+
 class DNIController extends Controller
 {
     public function __construct()
@@ -70,7 +72,7 @@ class DNIController extends Controller
                 {
                     $years_combo = date('y').date('y', strtotime('+1 year'));
                 }
-                $data['dni_number'] = "DNI-".$this->year_combo_num_gen(DB::table('fgs_dni')->where('fgs_dni.dni_number', 'LIKE', 'DNI-'.$years_combo.'%')->count()); 
+                $data['dni_number'] = "DNI-".$this->year_combo_num_gen(DB::table('fgs_dni')->where('fgs_dni.dni_number', 'LIKE', 'DNI-'.$years_combo.'%')->count()+704); 
                 $data['dni_date'] = date('Y-m-d',strtotime($request->dni_date));
                 $data['customer_id'] =$request->customer;
                 $data['dni_exi']= 'DNI';
@@ -198,7 +200,7 @@ class DNIController extends Controller
                             ->where('fgs_pi_item_rel.master','=', $items['pi_id'])
                             ->where('fgs_grs.status','=',1)
                             ->orderBy('fgs_grs_item.id','DESC')
-                            ->distinct('fgs_grs_item.id')
+                            //->distinct('fgs_grs_item.id')
                             ->get();
             $items['pi_item'] = $pi_item;
         }
@@ -240,7 +242,7 @@ class DNIController extends Controller
                             ->where('fgs_pi_item_rel.master','=', $items['pi_id'])
                             ->where('fgs_grs.status','=',1)
                             ->orderBy('fgs_grs_item.id','DESC')
-                            ->distinct('fgs_grs_item.id')
+                            //->distinct('fgs_grs_item.id')
                             ->get();
             $items['pi_item'] = $pi_item;
         }
@@ -348,5 +350,73 @@ class DNIController extends Controller
                                     ->distinct('fgs_dni_item.id')
                                     ->get();
         return Excel::download(new NetBillingExport($dni_items), 'NetBillingReport' . date('d-m-Y') . '.xlsx');
+    }
+    public function dni_transaction(Request $request)
+    {
+        $condition=[];
+        if($request->dni_no)
+        {
+            $condition[] = ['fgs_dni.dni_number','like', '%' . $request->dni_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_dni_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items=fgs_dni_item::select('fgs_dni.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_dni.dni_number','fgs_dni.dni_date','fgs_dni.created_at as min_wef','fgs_dni_item.id as dni_item_id')
+            ->leftJoin('fgs_dni_item_rel', 'fgs_dni_item_rel.item', '=', 'fgs_dni_item.id')
+            ->leftJoin('fgs_dni', 'fgs_dni.id', '=', 'fgs_dni_item_rel.master')
+            ->leftJoin('fgs_mrn_item', 'fgs_mrn_item.id', '=', 'fgs_dni_item.mrn_item_id')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+           // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_dni_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            ->where('fgs_dni.dni_exi','DNI')
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_dni_item.id','desc')
+            ->paginate(15);
+            
+        return view('pages/FGS/DNI/DNI-transaction-list',compact('items'));
+
+    }
+    public function dni_transaction_export(Request $request)
+    {
+        $condition=[];
+        if($request->dni_no)
+        {
+            $condition[] = ['fgs_dni.dni_number','like', '%' . $request->dni_no . '%']; 
+        }
+        
+        if($request->item_code)
+        {
+            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        }
+        if($request->from)
+        {
+            $condition[] = ['fgs_dni_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+        }
+        $items=fgs_dni_item::select('fgs_dni.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        'fgs_dni.dni_number','fgs_dni.dni_date','fgs_dni.created_at as min_wef','fgs_dni_item.id as dni_item_id')
+            ->leftJoin('fgs_dni_item_rel', 'fgs_dni_item_rel.item', '=', 'fgs_dni_item.id')
+            ->leftJoin('fgs_dni', 'fgs_dni.id', '=', 'fgs_dni_item_rel.master')
+            ->leftJoin('fgs_mrn_item', 'fgs_mrn_item.id', '=', 'fgs_dni_item.mrn_item_id')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+           // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_dni_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            ->where('fgs_dni.dni_exi','DNI')
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_dni_item.id','desc')
+            ->get();
+            
+            return Excel::download(new FGSdnitransactionExport($items), 'FGS-DNI-transaction' . date('d-m-Y') . '.xlsx');
+
     }
 }

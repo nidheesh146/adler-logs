@@ -394,8 +394,12 @@ class MRNController extends Controller
                     if($product_id)
                     {
                         
-                        $mrn_item = fgs_mrn_item::where('product_id','=',$product_id)
+                        $mrn_item = fgs_mrn_item::select('fgs_mrn_item.id as item_id','fgs_mrn.stock_location')
+                                                ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
+                                                ->leftJoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
+                                                ->where('product_id','=',$product_id)
                                                 ->where('quantity','=',$excelsheet[2])
+                                                ->where('fgs_mrn.stock_location','=',10)
                                                 ->where('manufacturing_date','=',(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')))
                                                 ->first();
                         $stock = fgs_product_stock_management::where('product_id','=',$product_id)
@@ -403,7 +407,7 @@ class MRNController extends Controller
                                                 ->where('stock_location_id','=',10)
                                                 ->where('manufacturing_date','=',(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')))
                                                 ->first();
-                        if($mrn_item)
+                        if($mrn_item && $stock)
                         {
                             $batchcard_id= DB::table('batchcard_batchcard')
                                                 ->insertGetId([
@@ -412,7 +416,7 @@ class MRNController extends Controller
                                                     'product_id'=>$product_id,
                                                     "is_trade"=>1
                                                 ]);
-                            $mrn_item_update = fgs_mrn_item::where('id','=',$mrn_item['id'])->update([
+                            $mrn_item_update = fgs_mrn_item::where('id','=',$mrn_item['item_id'])->update([
                                 'batchcard_id'=>$batchcard_id,
                                 'manufacturing_date'=>($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
                                 'expiry_date'=>($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' ',
