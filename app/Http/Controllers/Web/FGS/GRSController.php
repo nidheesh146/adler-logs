@@ -346,20 +346,21 @@ class GRSController extends Controller
                 $add = $this->fgs_grs_item->insert_data($data,$request->grs_id);
                 $grs_master = fgs_grs::find($request->grs_id);
                 $mrn_item = fgs_mrn_item::find($request->mrn_item_id);
-                /*$fgs_stock = fgs_product_stock_management::select('id as fgs_stock_id','quantity')
+                $fgs_stock = fgs_product_stock_management::select('id as fgs_stock_id','quantity')
                                                         ->where('product_id','=',$oef_item['product_id'])
                                                         ->where('stock_location_id','=',$grs_master['stock_location1'])
                                                         ->where('batchcard_id','=',$request->batchcard)
-                                                        ->first();*/
+                                                        ->first();
                 $oef_qty_updation = $oef_item['quantity_to_allocate']- $request->batch_qty;
                 $oef_item['quantity_to_allocate'] = $oef_qty_updation;
                 $oef_item['remaining_qty_after_cancel'] = $oef_qty_updation;
                 $oef_item->save();
-                /*$stock_updation = $fgs_stock['quantity']-$request->batch_qty;
+            
+                $stock_updation = $fgs_stock['quantity']-$request->batch_qty;
                 $stock_mngment= fgs_product_stock_management::find($fgs_stock['fgs_stock_id']);
                 $stock_mngment->quantity = $stock_updation;
-                $stock_mngment->save();*/
-                /*$maa_stock = fgs_maa_stock_management::select('id as maa_stock_id','quantity')
+                $stock_mngment->save();
+                $maa_stock = fgs_maa_stock_management::select('id as maa_stock_id','quantity')
                                         ->where('product_id','=',$oef_item['product_id'])
                                         ->where('batchcard_id','=',$request->batchcard)
                                         ->first();
@@ -375,7 +376,7 @@ class GRSController extends Controller
                     $stock['quantity']= $request->batch_qty;
                     $data['created_at'] =date('Y-m-d H:i:s');
                     $stock_add = $this->fgs_maa_stock_management->insert_data($stock);
-                }*/
+                }
 
                 if($add)
                 {

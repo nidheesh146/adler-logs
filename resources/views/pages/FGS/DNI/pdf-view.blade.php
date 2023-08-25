@@ -399,6 +399,7 @@
                             for($x = 0; $x <count($category_name_arr); $x++) 
                             {
                             echo $category_name_arr[$x]; 
+                            $category = $category_name_arr[$x];
                             echo "  ";
                             }
                         ?>
@@ -430,11 +431,13 @@
                 <th rowspan="2" >BATCH NO</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
+                @if($category!='TRADE')
                 <th rowspan="2">MRP</th>
+                @endif
                 <th rowspan="2">RATE</th>
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
-                @if($dni_item['state_name']=='Maharashtra')
+                @if($dni['state_name']=='Maharashtra')
                 <th colspan="2">CGST</th>
                 <th colspan="2" style="width:5%;">SGST/UTGST  </th>
                 @else
@@ -445,7 +448,7 @@
             <tr> 
                 <th style="width:3% !important">% </th>
                 <th width='3%'>Value</th>
-                @if($dni_item['state_name']=='Maharashtra')
+                @if($dni['state_name']=='Maharashtra')
                 <th style="width:3% !important">% </th>
                 <th width='3%'>Value</th>
                 <th style="width:3% !important">% </th>
@@ -481,13 +484,15 @@
                 <td>{{$item['batch_no']}}</td>
                 <td style="text-align:center;">{{$item['remaining_qty_after_cancel']}}</td>
                 <td style="text-align:left;">Nos</td>
+                @if($category!='TRADE')
                 <td style="text-align:right;">{{number_format((float)$item['mrp'], 2, '.', '')}}</td>
+                @endif
                 <td style="text-align:right;">{{number_format((float)$item['rate'], 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['remaining_qty_after_cancel'])-(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100);?>
                 <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100), 2, '.', '')}}</td>
                 <td  style="text-align:right;">{{number_format((float)$discount_value, 2, '.', '')}}</td>
-                @if($dni_item['state_name']=='Maharashtra')
+                @if($dni['state_name']=='Maharashtra')
                 <td style="text-align:center;">{{$item['cgst']}}</td>
                 <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['sgst']}}</td>
@@ -527,12 +532,14 @@
                 <th></th>
                 <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
                 <th style="font-weight:bold;text-align:left;">Nos</th>
-                <th style="text-align:center;font-weight:bold;">{{-- number_format((float)($totalmrp), 2, '.', '') --}}</th>
+                @if($category!='TRADE')
+                <th style="text-align:center;font-weight:bold;">{{--number_format((float)($totalmrp), 2, '.', '') --}}</th>
+                @endif
                 <th style="text-align:center;font-weight:bold;">{{-- number_format((float)($rsum), 2, '.', '') --}}</th>
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
-                @if($dni_item['state_name']=='Maharashtra')
+                @if($dni['state_name']=='Maharashtra')
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
                 <th></th>

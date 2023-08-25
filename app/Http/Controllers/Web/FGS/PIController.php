@@ -131,7 +131,7 @@ class PIController extends Controller
                     $stock['product_id'] =$grs_item['product_id'];
                     $stock['pi_item_id'] =$pi_item;
                     $stock['batchcard_id'] =$grs_item['batchcard_id'];
-                    if($grs_item['current_invoice_qty']==0)
+                   /* if($grs_item['current_invoice_qty']==0)
                     {
                         $stock['quantity'] =$grs_item['qty_to_invoice'];
                     }
@@ -140,24 +140,24 @@ class PIController extends Controller
                         $stock['quantity'] =$grs_item['current_invoice_qty'];
                     }
                     $stock['created_at'] =  date('Y-m-d H:i:s');
-                    $maa_stock=$this->fgs_maa_stock_management->insert_data($stock);
+                    $maa_stock=$this->fgs_maa_stock_management->insert_data($stock);*/
                     $fgs_grs_data = fgs_grs::where('id','=',$grs['master'])->first();
-                    $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
+                    /*$fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
                                         ->where('batchcard_id','=',$grs_item['batchcard_id'])
                                         ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
-                                        ->first();
+                                        ->first();*/
                     if($grs_item['current_invoice_qty']==0)
                     {
-                        $update_stock = $fgs_product_stock['quantity']-$grs_item['qty_to_invoice'];
+                       // $update_stock = $fgs_product_stock['quantity']-$grs_item['qty_to_invoice'];
                         $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$grs_item->id], ['fgs_grs_item.current_invoice_qty'=>0,'fgs_grs_item.qty_to_invoice'=>0,'fgs_grs_item.remaining_qty_after_cancel'=>0]);
                     }
                     else
                     {
-                        $update_stock = $fgs_product_stock['quantity']-$grs_item['current_invoice_qty'];
-                        $grs_stock = $grs_item['qty_to_invoice'] - $grs_item['current_invoice_qty'];
+                        //$update_stock = $fgs_product_stock['quantity']-$grs_item['current_invoice_qty'];
+                        //$grs_stock = $grs_item['qty_to_invoice'] - $grs_item['current_invoice_qty'];
                         $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$grs_item->id], ['fgs_grs_item.current_invoice_qty'=>0,'fgs_grs_item.qty_to_invoice'=>$grs_stock,'fgs_grs_item.remaining_qty_after_cancel'=>$grs_stock]);
                     }
-                    $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+                    //$production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
                     //$grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id], ['fgs_grs_item.current_invoice_qty'=>0]);
 
                    

@@ -171,7 +171,7 @@
             <th>SI No</th>
             <th style="width:8%">Item Code</th>
             <th style="width:20%">Description</th>
-            <th>Ordered Qty</th>
+            <th>PO Qty</th>
             <th>Received Qty</th>
             <th>Accepted Qty</th>
             <th>Rejected Qty</th>
@@ -195,10 +195,10 @@
             <td>{{$item['item_description']}}</td>
             <td>@if(!$item['po_number']) 
                     @foreach($pos as $po)
-                        {{$po['order_qty']}} {{$item['unit_name']}}<br/>
+                        {{$po['order_qty']+$po['cancelled_qty']}} {{$item['unit_name']}}<br/>
                      @endforeach
                 @else
-                    {{$item['actual_order_qty']}} {{$item['unit_name']}}
+                    {{$item['actual_order_qty']+$item['cancelled_qty']}} {{$item['unit_name']}}
                 @endif </td>
             <td>{{$item['received_qty']}} {{$item['unit_name']}}</td>
             <td>{{$item['accepted_quantity']}} {{$item['unit_name']}}</td>
