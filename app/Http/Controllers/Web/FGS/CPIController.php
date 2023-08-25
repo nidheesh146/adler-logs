@@ -117,22 +117,22 @@ class CPIController extends Controller
                                             ->update(['remaining_qty_after_cancel'=>$update_qty]);
                     }
 
-                    $grs_item = fgs_grs_item::where('id','=',$pi_item['grs_item_id'])->first();   
-                    $fgs_grs_data = fgs_grs::where('id','=',$pi_item['grs_id'])->first();
-                    $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$pi_item['product_id'])
-                                            ->where('batchcard_id','=',$pi_item['batchcard_id'])
-                                            ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
-                                            ->first();
+                    // $grs_item = fgs_grs_item::where('id','=',$pi_item['grs_item_id'])->first();   
+                    // $fgs_grs_data = fgs_grs::where('id','=',$pi_item['grs_id'])->first();
+                    // $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$pi_item['product_id'])
+                    //                         ->where('batchcard_id','=',$pi_item['batchcard_id'])
+                    //                         ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
+                    //                         ->first();
 
-                    $update_stock = $fgs_product_stock['quantity']+$qty_to_cancel_array[$i];
-                    $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
+                    // $update_stock = $fgs_product_stock['quantity']+$qty_to_cancel_array[$i];
+                    // $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
 
-                    $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$pi_item['product_id'])
-                                                ->where('batchcard_id','=',$pi_item['batchcard_id'])
-                                                ->first();
+                    // $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$pi_item['product_id'])
+                    //                             ->where('batchcard_id','=',$pi_item['batchcard_id'])
+                    //                             ->first();
 
-                    $update_maa_stocks = $fgs_maa_stock['quantity']-$pi_item['batch_qty'];
-                    $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
+                    // $update_maa_stocks = $fgs_maa_stock['quantity']-$pi_item['batch_qty'];
+                    // $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
                     $i++;
                 }
                 if($cpi_id)
