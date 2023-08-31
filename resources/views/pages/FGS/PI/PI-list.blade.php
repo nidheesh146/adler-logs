@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-
+@inject('fn', 'App\Http\Controllers\Web\FGS\PIController')
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -117,13 +117,37 @@
                                 <tr>
 									
 									<td>{{$item['pi_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['pi_date']))}}</td>	
-									<td>{{$item['grs_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['grs_date']))}}</td>
-									<td>{{$item['oef_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['oef_date']))}}</td>
-									<td>{{$item['order_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
+									<td>{{date('d-m-Y', strtotime($item['pi_date']))}}</td>
+									<?php $grs_info = $fn->getGRSInfo($item['id']); ?>	
+									<td>
+										@foreach($grs_info as $grs)
+										{{$grs['grs_number']}}<br/>
+										@endforeach
+									</td>
+									<td>@foreach($grs_info as $grs)
+										{{date('d-m-Y', strtotime($grs['grs_date']))}}<br/>
+										@endforeach
+									</td>
+									<?php $oef_info = $fn->getOEFInfo($item['id']); ?>	
+									<td>@foreach($oef_info as $oef)
+										{{$oef['oef_number']}}<br/>
+										@endforeach
+									</td>
+									<td>
+										@foreach($oef_info as $oef)
+										{{date('d-m-Y', strtotime($oef['oef_date']))}}<br/>
+										@endforeach
+									</td>
+									<td>
+										@foreach($oef_info as $oef)
+										{{$oef['order_number']}}<br/>
+										@endforeach
+									</td>
+									<td>
+										@foreach($oef_info as $oef)
+										{{date('d-m-Y', strtotime($oef['order_date']))}}<br/>
+										@endforeach
+									</td>
 									<td>{{$item['firm_name']}}<br/>
 										Contact Person:{{$item['contact_person']}}<br/>
 										Contact Number:{{$item['contact_number']}}<br/>

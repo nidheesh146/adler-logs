@@ -9,6 +9,7 @@ use DB;
 use PDF;
 use App\Models\FGS\fgs_pi;
 use App\Models\FGS\fgs_grs;
+use App\Models\FGS\fgs_oef;
 use App\Models\FGS\fgs_grs_item_rel;
 use App\Models\FGS\fgs_grs_item;
 use App\Models\FGS\fgs_pi_item;
@@ -58,19 +59,46 @@ class PIController extends Controller
             $condition[] = ['fgs_pi.pi_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
         $pi = fgs_pi::select('fgs_pi.*','customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.billing_address',
-        'customer_supplier.contact_person','customer_supplier.contact_number','fgs_oef.order_number','fgs_oef.order_date','fgs_grs.grs_number','fgs_grs.grs_date',
-        'fgs_oef.oef_number','fgs_oef.oef_date')
+        'customer_supplier.contact_person','customer_supplier.contact_number')
                 ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
-                ->leftJoin('fgs_pi_item_rel','fgs_pi_item_rel.master','=','fgs_pi.id')
-                ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
-                ->leftJoin('fgs_grs','fgs_grs.id','fgs_pi_item.grs_id')
-                ->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
+                //->leftJoin('fgs_pi_item_rel','fgs_pi_item_rel.master','=','fgs_pi.id')
+                //->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
+                //->leftJoin('fgs_grs','fgs_grs.id','fgs_pi_item.grs_id')
+                //->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
                 ->where($condition)
                 ->distinct('fgs_pi.id')
                 ->orderBy('fgs_pi.id','DESC')
+                ->where('fgs_pi.status','=',1)
                 ->paginate(15);
                
         return view('pages/FGS/PI/PI-list', compact('pi'));
+    }
+    public function getGRSInfo($pi_id)
+    {
+        $grs_info = fgs_grs::select('fgs_grs.grs_number','fgs_grs.grs_date')
+                         ->leftJoin('fgs_pi_item','fgs_pi_item.grs_id','=','fgs_grs.id')
+                        ->leftJoin('fgs_pi_item_rel','fgs_pi_item_rel.item','=','fgs_pi_item.id')
+                        ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
+                        ->where('fgs_pi.id','=',$pi_id)
+                        ->where('fgs_grs.status','=',1)
+                        ->distinct('fgs_grs.id')
+                        ->get();
+        return $grs_info;
+
+    }
+    public function getOEFInfo($pi_id)
+    {
+        $oef_info = fgs_oef::select('fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_date','fgs_oef.order_number')
+                        ->leftJoin('fgs_grs','fgs_grs.oef_id','fgs_oef.id')
+                        ->leftJoin('fgs_pi_item','fgs_pi_item.grs_id','=','fgs_grs.id')
+                        ->leftJoin('fgs_pi_item_rel','fgs_pi_item_rel.item','=','fgs_pi_item.id')
+                        ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
+                        ->where('fgs_pi.id','=',$pi_id)
+                        ->where('fgs_oef.status','=',1)
+                        ->distinct('fgs_oef.id')
+                        ->get();
+        return $oef_info;
+
     }
     public function PIAdd(Request $request)
     {
@@ -154,7 +182,7 @@ class PIController extends Controller
                     else
                     {
                         //$update_stock = $fgs_product_stock['quantity']-$grs_item['current_invoice_qty'];
-                        //$grs_stock = $grs_item['qty_to_invoice'] - $grs_item['current_invoice_qty'];
+                        $grs_stock = $grs_item['qty_to_invoice'] - $grs_item['current_invoice_qty'];
                         $grs_item_update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$grs_item->id], ['fgs_grs_item.current_invoice_qty'=>0,'fgs_grs_item.qty_to_invoice'=>$grs_stock,'fgs_grs_item.remaining_qty_after_cancel'=>$grs_stock]);
                     }
                     //$production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);

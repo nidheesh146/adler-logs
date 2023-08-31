@@ -80,6 +80,7 @@ class MRNController extends Controller
                 $data['supplier_doc_date'] = date('Y-m-d', strtotime($request->supplier_doc_date));
                 $data['product_category'] = $request->product_category;
                 $data['stock_location'] = $request->stock_location;
+                $data['supplier']=$request->supplier;
                 $data['created_by'] = config('user')['user_id'];
                 $data['status'] = 1;
                 $data['created_at'] = date('Y-m-d H:i:s');
@@ -97,17 +98,28 @@ class MRNController extends Controller
             }
         } else {
             $locations = product_stock_location::get();
-            
             $category = fgs_product_category::get();
-           
             return view('pages/FGS/MRN/MRN-add', compact('locations', 'category'));
         }
     }
+    public function MRN_delete($id)
+    {
+
+        fgs_mrn::where('id', $id)
+            ->update([
+                'status' => 0
+            ]);
+        // fgs_mrn_item::leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+        //     ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+        //     ->where('fgs_mrn.id', $id)
+        //     ->update([
+        //         'fgs_mrn_item.status' => 0
+        //     ]);
+        session()->flash('success', "You have  deleted MRN  !");
+        return redirect()->back();
+    }
     public function MRNitemlist(Request $request, $mrn_id)
     {
-        $product_cat=DB::table('fgs_mrn')
-       ->where('id',$mrn_id)
-       ->first();
         $condition = ['fgs_mrn_item_rel.master' => $request->mrn_id];
         if ($request->product) {
             $condition[] = ['product_product.sku_code', 'like', '%' . $request->product . '%'];
@@ -120,7 +132,7 @@ class MRNController extends Controller
             $condition[] = ['fgs_mrn_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->manufaturing_from))];
         }
         $items = $this->fgs_mrn_item->getMRNItems($condition);
-        return view('pages/FGS/MRN/MRN-item-list', compact('mrn_id', 'items','product_cat'));
+        return view('pages/FGS/MRN/MRN-item-list', compact('mrn_id', 'items'));
     }
 
     public function fetchMRNInfo(Request $request)
@@ -157,17 +169,12 @@ class MRNController extends Controller
         $batchcards = batchcard::select('batchcard_batchcard.batch_no', 'batchcard_batchcard.id as batch_id', 'batchcard_batchcard.start_date', 'batchcard_batchcard.target_date', 'batchcard_batchcard.quantity')
             ->where('batchcard_batchcard.product_id', '=', $request->product_id)
             ->where('is_trade',0)
-            ->orderBy('batchcard_batchcard.id', 'DESC')
+            ->orderBy('batchcard_batchcard.id', 'asc')
             ->get();
         return $batchcards;
     }
 
     public function fetchBatchCardQty(Request $request)
-    {
-        $batchcard = batchcard::where('batchcard_batchcard.id', '=', $request->batch_id)->where('is_trade',0)->first();
-        return $batchcard['quantity'];
-    }
-    public function fetchBatchCardQty_trade(Request $request)
     {
         $batchcard = batchcard::where('batchcard_batchcard.id', '=', $request->batch_id)->where('is_trade',0)->first();
         return $batchcard['quantity'];
@@ -271,13 +278,8 @@ class MRNController extends Controller
                 return redirect('fgs/MRN/add-item/' . $request->mrn_id)->withErrors($validator)->withInput();
             }
         } else {
-            if($product_cat->product_category==3){
-                return view('pages/FGS/MRN/MRN-item-add-trade',compact('product_cat'));
-            }else{
-                return view('pages/FGS/MRN/MRN-item-add',compact('product_cat'));
-
-            }
             //$batchcards = DB::table('batchcard_batchcard')->select('id',ba)->get();
+            return view('pages/FGS/MRN/MRN-item-add',compact('product_cat'));
         }
     }
 
@@ -311,9 +313,9 @@ class MRNController extends Controller
             //echo $sheet1_column_count;exit;
             if($sheet1_column_count == $no_column)
             {
-                $res = $this->Excelsplitsheet($ExcelOBJ,$request->mrn_id);
+                $reslt = $this->Excelsplitsheet($ExcelOBJ,$request->mrn_id);
                  //print_r($res);exit;
-                 if($res)
+                 if($reslt)
                  {
                     $request->session()->flash('success',  "Successfully uploaded.");
                     return redirect('fgs/MRN/item-list/'.$request->mrn_id);
@@ -427,12 +429,13 @@ class MRNController extends Controller
                 }
             }
         }
-        if ($res) {
+        if($res) {
             //print_r($not_exist);
             return 1;
         } else
             return 0;
     }
+
 
 
 
@@ -725,6 +728,11 @@ class MRNController extends Controller
         } else
             return 0;
     }
+    public function check_item($id)
+    {
+        $mrn_check = fgs_mrn_item_rel::where('master', $id)->first();
+        return $mrn_check;
+    }
     public function edit_mrn($id)
     {
         // $item_details=DB::table('fgs_mrn')
@@ -821,5 +829,81 @@ $pstock_qty=number_format($qty->quantity);
         return redirect()->back();
         // $items = $this->MRNitemlist($mrn_id);
         // return view('pages/FGS/MRN/MRN-item-list',compact('mrn_id','items'));
+    }
+    public function mrn_transaction(Request $request)
+    {
+        $condition = [];
+        if ($request->mrn_no) {
+            $condition[] = ['fgs_mrn.mrn_number', 'like', '%' . $request->mrn_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_mrn_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+
+        $items = fgs_mrn_item::select(
+            'fgs_mrn_item.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'batchcard_batchcard.batch_no',
+            'batchcard_batchcard.id as batch_id',
+            'fgs_mrn.mrn_number',
+            'fgs_mrn.mrn_date',
+            'fgs_mrn.created_at as mrn_wef',
+            'fgs_mrn_item.id as mrn_item_id'
+        )
+            ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+            ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+            ->where($condition)
+            ->where('fgs_mrn_item.status', 1)
+            ->distinct('fgs_mrn_item.id')
+            ->orderBy('fgs_mrn_item.id', 'desc')
+            ->paginate(15);
+
+        return view('pages/fgs/MRN/MRN-transaction-list', compact('items'));
+    }
+    public function mrn_transaction_export(Request $request)
+    {
+        $condition = [];
+        if ($request->mrn_no) {
+            $condition[] = ['fgs_mrn.mrn_number', 'like', '%' . $request->mrn_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_mrn_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+
+        $items = fgs_mrn_item::select(
+            'fgs_mrn_item.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'batchcard_batchcard.batch_no',
+            'batchcard_batchcard.id as batch_id',
+            'fgs_mrn.mrn_number',
+            'fgs_mrn.mrn_date',
+            'fgs_mrn.created_at as mrn_wef',
+            'fgs_mrn_item.id as mrn_item_id'
+        )
+            ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+            ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+            ->where($condition)
+            ->where('fgs_mrn_item.status', 1)
+            ->distinct('fgs_mrn_item.id')
+            ->orderBy('fgs_mrn_item.id', 'desc')
+            ->get();
+
+        return Excel::download(new FGSmrntransactionExport($items), 'FGS-MRN-transaction' . date('d-m-Y') . '.xlsx');
     }
 }

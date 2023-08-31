@@ -82,7 +82,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                     ->where($condition)
                     //->groupBy('inventory_rawmaterial.item_code', 'inv_purchase_req_quotation_item_supp_rel.supplier_id')
                     ->orderBy('inventory_rawmaterial.id','DESC')
-                    //->distinct('inv_purchase_req_quotation_item_supp_rel.id')
+                    ->distinct('inv_purchase_req_quotation_item_supp_rel.id')
                     ->orderBy('inv_purchase_req_quotation_item_supp_rel.supplier_id','ASC')
                     ->get();
      }
@@ -114,7 +114,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->orderBy('inventory_rawmaterial.id','DESC')
                     ->where($condition)
-                    //->groupBy('inventory_rawmaterial.item_code')
+                    ->groupBy('inv_purchase_req_item.requisition_item_id')
                     ->get()->toArray();
         }
         function get_quotation_items_without_fixed_item($condition, $fixed_items)
