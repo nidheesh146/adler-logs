@@ -61,6 +61,7 @@ class OEFController extends Controller
             'fgs_oef.*',
             'order_fulfil.order_fulfil_type',
             'transaction_type.transaction_name',
+            'customer_supplier.id as cust_id',
             'customer_supplier.firm_name',
             'customer_supplier.shipping_address',
             'customer_supplier.contact_person',
@@ -228,6 +229,7 @@ class OEFController extends Controller
         'fgs_oef.*',
         'order_fulfil.order_fulfil_type',
         'transaction_type.transaction_name',
+        'customer_supplier.id as cust_id',
         'customer_supplier.firm_name',
         'customer_supplier.shipping_address',
         'customer_supplier.contact_person',
@@ -249,17 +251,20 @@ public function update_oef(Request $request)
 {
     fgs_oef::where('id',$request->id)
     ->update([
+        'customer_id'=>$request->customer,
         'order_number'=>$request->order_number,
         'order_date'=>$request->order_date,
         'oef_date'=>$request->oef_date,
         'due_date'=>$request->due_date,
         'remarks'=>$request->remarks
     ]);
-    $request->session()->flash('success', "You have successfully added a OEF !");
+    $request->session()->flash('success', "You have successfully updated OEF !");
+    
     $oef = fgs_oef::select(
         'fgs_oef.*',
         'order_fulfil.order_fulfil_type',
         'transaction_type.transaction_name',
+        'customer_supplier.id as cust_id',
         'customer_supplier.firm_name',
         'customer_supplier.shipping_address',
         'customer_supplier.contact_person',
