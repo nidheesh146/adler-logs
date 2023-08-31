@@ -46,9 +46,8 @@
 			
 			
 					<div class="tab-pane  active  show " id="purchase"> 
-					@foreach($dni_items as $dni_item)
-					<div style="width:50%;float:left;font-size:14px;font-weight:bold;">PI Number : {{$dni_item['pi_number']}}</div>
-					<div style="width:50%;float:right;font-size:14px;font-weight:bold; text-align:right;">PI Date : {{date('d-m-Y', strtotime($dni_item['pi_date']))}}</div>
+					{{--<div style="width:50%;float:left;font-size:14px;font-weight:bold;">PI Number : {{$dni_item['pi_number']}}</div>
+					<div style="width:50%;float:right;font-size:14px;font-weight:bold; text-align:right;">PI Date : {{date('d-m-Y', strtotime($dni_item['pi_date']))}}</div>--}}
 					<div class="table-responsive">
                         <table class="table table-bordered mg-b-0" >
 							<thead>
@@ -67,6 +66,7 @@
 							</thead>
 							<tbody id="prbody1">
 							@php $i=1; @endphp
+							@foreach($dni_items as $dni_item)
 							@foreach($dni_item['pi_item'] as $item)
                                 <tr>
 									<td>{{$i++}}</td>
@@ -81,6 +81,7 @@
                                     <td>{{($item['rate']*$item['batch_quantity'])-(($item['batch_quantity']*$item['discount']*$item['rate'])/100)}} {{$item['currency_code']}}</td>
 								</tr>
 								@endforeach
+								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
@@ -88,7 +89,7 @@
 						</div>
 					</div>
 					<br/>
-					@endforeach
+					{{--@endforeach--}}
 				</div>
 			</div>
 		</div>

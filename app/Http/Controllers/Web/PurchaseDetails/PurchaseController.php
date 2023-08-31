@@ -1294,7 +1294,10 @@ class PurchaseController extends Controller
     {
 
         $data['final_purchase'] = $this->inv_final_purchase_order_item->get_purchase_order_single_item_receipt(['inv_final_purchase_order_master.id' => $id]);
-        $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $id]);
+        $condition[] = ['inv_final_purchase_order_rel.master','=', $id];
+        $condition[] = ['inv_final_purchase_order_item.order_qty','!=',0];
+        $data['items'] = $this->inv_final_purchase_order_item->get_purchase_items($condition);
+        //$data['items'] = $this->inv_final_purchase_order_item->get_purchase_items(['inv_final_purchase_order_rel.master' => $id]);
         //print_r( json_encode($data['items']));exit;
         $data['terms_condition'] = DB::table('po_fpo_master_tc_rel')
             ->select('po_supplier_terms_conditions.terms_and_conditions')

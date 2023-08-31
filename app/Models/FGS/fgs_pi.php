@@ -33,6 +33,7 @@ class fgs_pi extends Model
             
             })
             ->where($condition)
+            ->where('fgs_pi.status','=',1)
             ->orderBy('fgs_pi.id','DESC')
             ->distinct('fgs_pi.id')
             ->get();

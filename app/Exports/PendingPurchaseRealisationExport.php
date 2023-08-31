@@ -92,34 +92,38 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                         if($item['sgst']!=0)
                             $gst .='SGST:'.$item['sgst'].'%';
                         
-                            $total_rate = $item['qty_to_invoice']*$item['rate'];
+                            $total_rate = $item['rate'];
                             $discount_value = $total_rate*$item['discount']/100;
                             $discounted_value = $total_rate-$discount_value;
                             $igst_value = $total_rate*$item['igst']/100;
                             $sgst_value = $total_rate*$item['sgst']/100;
                             $cgst_value = $total_rate*$item['cgst']/100;
-                            $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+                            $total_gst_value = $igst_value+$cgst_value+$sgst_value;
+                            $product_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
                         $data[]=[
                             '#'=>$i++,
                             'pr_number'=>$item['pr_no'],
                             'po_number'=>$item['po_number'],
+                            'vendor'=>$item['vendor_name'],
+                            'po_date'=>date('d-m-Y',strtotime($item['po_date'])),
+                            'updated_at'=>date('d-m-Y',strtotime($item['updated_at'])),
                             'item_code'=>$item['item_code'],
                             'hsn_code'=>$item['hsn_code'],
                             'type'=>$item['type_name'],
                             'short_description'=>$item['short_description'],
-                            'order_qty'=>$item['order_qty'],
-                            'qty_to_invoice'=>$item['qty_to_invoice'],
-                            'unit_name'=>$item['unit_name'],
                             'rate'=>$item['rate'],
                             'discount'=>$item['discount'],
+                            'discounted_value' =>$discounted_value,
                             'gst' =>$gst,
-                            'value'=>(number_format((float)($total_value), 2, '.', '')),
-                            'vendor'=>$item['vendor_name'],
+                            'total_gst_value'=>$total_gst_value,
+                            'product_value'=>(number_format((float)($product_value), 2, '.', '')),
+                            'order_qty'=>$item['order_qty'],
+                            'qty_to_invoice'=>$item['qty_to_invoice'],
                             'cancelled_qty' =>$item['cancelled_qty'],
+                            'unit_name'=>$item['unit_name'],
                             //'createdBy'=>$item['f_name']." ".$item['l_name'],
-                            'po_date'=>date('d-m-Y',strtotime($item['po_date'])),
                             'expected_delivery_date' =>$committed_delivery_date,
-                            'updated_at'=>date('d-m-Y',strtotime($item['updated_at'])),
+                            
                         ];
                     }
                 }
@@ -236,37 +240,38 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                         if($item['sgst']!=0)
                             $gst .='SGST:'.$item['sgst'].'%';
                         
-                        $total_rate = $item['qty_to_invoice']*$item['rate'];
-                        $discount_value = $total_rate*$item['discount']/100;
-                        $discounted_value = $total_rate-$discount_value;
-                        $igst_value = $total_rate*$item['igst']/100;
-                        $sgst_value = $total_rate*$item['sgst']/100;
-                        $cgst_value = $total_rate*$item['cgst']/100;
-                        $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+                            $total_rate = $item['rate'];
+                            $discount_value = $total_rate*$item['discount']/100;
+                            $discounted_value = $total_rate-$discount_value;
+                            $igst_value = $total_rate*$item['igst']/100;
+                            $sgst_value = $total_rate*$item['sgst']/100;
+                            $cgst_value = $total_rate*$item['cgst']/100;
+                            $total_gst_value = $igst_value+$cgst_value+$sgst_value;
+                            $product_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
                         
                         $data[]=[
                             '#'=>$i++,
                             'pr_number'=>$item['pr_no'],
                             'po_number'=>$item['po_number'],
+                            'vendor'=>$item['vendor_name'],
+                            'po_date'=>date('d-m-Y',strtotime($item['po_date'])),
+                            'updated_at'=>date('d-m-Y',strtotime($item['updated_at'])),
                             'item_code'=>$item['item_code'],
                             'hsn_code'=>$item['hsn_code'],
                             'type'=>$item['type_name'],
                             'short_description'=>$item['short_description'],
-                            'order_qty'=>$item['order_qty'],
-                            'qty_to_invoice'=>$item['qty_to_invoice'],
-                            'unit_name'=>$item['unit_name'],
                             'rate'=>$item['rate'],
                             'discount'=>$item['discount'],
-                            //'gst' =>"IGST:".$item['igst'].", SGST:".$item['sgst'].", CGST:".$item['cgst'],
+                            'discounted_value' =>$discounted_value,
                             'gst' =>$gst,
-                            'value'=>(number_format((float)($total_value), 2, '.', '')),
-                            //'po_date'=>date('d-m-Y',strtotime($item['po_date'])),
-                            'vendor'=>$item['vendor_name'],
+                            'total_gst_value'=>$total_gst_value,
+                            'product_value'=>(number_format((float)($product_value), 2, '.', '')),
+                            'order_qty'=>$item['order_qty'],
+                            'qty_to_invoice'=>$item['qty_to_invoice'],
                             'cancelled_qty' =>$item['cancelled_qty'],
+                            'unit_name'=>$item['unit_name'],
                             //'createdBy'=>$item['f_name']." ".$item['l_name'],
-                            'po_date'=>date('d-m-Y',strtotime($item['po_date'])),
                             'expected_delivery_date' =>$committed_delivery_date,
-                            'updated_at'=>date('d-m-Y',strtotime($item['updated_at'])),
                         ];
                     }
                 }
@@ -280,22 +285,25 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
             '#',
             'PR Number',
             'PO/WO Number',
+            'Supplier',
+            'PO/WO Date',
+            'Approved Date',
             'Item Code',
             'HSN/SAC Code',
             'Item Type',
             'Item Description',
-            'Order Qty',
-            'Pending Qty ',
-            'Unit',
             'Rate',
             'Discount(%)',
+            'Discounted Value',
             'GST(%)',
-            'Value',
-            'Supplier',
+            'GST Value',
+            'Product Value',
+            'Order Qty',
+            'Pending Qty ',
             'Cancelled qty',
-            'PO/WO Date',
+            'Unit',
             'Expected Delivery Date',
-            'Approved Date',
+            
         ];
     }
     public function styles(Worksheet $sheet)
@@ -314,22 +322,24 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                 $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(5);
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(18);
                 $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(35);
                 $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(35);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(40);
                 $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(12);
-                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(25);
-                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(40);
-                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(17);
-                $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('S')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('T')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('U')->setWidth(20);
                 // $cellRange = 'F1:F20000';
                 // $event->sheet->getDelegate()->getStyle($cellRange)->getAlignment()->setWrapText(true);
             },
