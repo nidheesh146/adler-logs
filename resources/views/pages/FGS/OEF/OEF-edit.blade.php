@@ -60,7 +60,9 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Customer  *</label>
-                                <input type="text" class="form-control" name="customer" value="{{$oef->firm_name}}" readonly>
+                                <!-- <input type="text" class="form-control" name="customer" value="{{$oef->firm_name}}" > -->
+                                <select class="form-control customer" name="customer" >{{$oef->firm_name}}
+                                </select>
 
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -207,6 +209,34 @@
                 form.submit();
             }
         });
+        $(".customer").select2({
+        placeholder: "{{$oef->firm_name}}",
+        value:"{{$oef->cust_id}}",
+        searchInputPlaceholder: 'Search',
+        minimumInputLength: 4,
+        allowClear: true,
+        ajax: {
+            url: "{{ url('fgs/customersearch') }}",
+            processResults: function(data) {
+                return {
+                    results: data
+                };
+            }
+        }
+    }).on('change', function(e) {
+        $('#Itemcode-error').remove();
+        $("#billing_address").text('');
+        $("#shipping_address").text('');
+        let res = $(this).select2('data')[0];
+        if (typeof(res) != "undefined") {
+            if (res.billing_address) {
+                $("#billing_address").val(res.billing_address);
+            }
+            if (res.shipping_address) {
+                $("#shipping_address").val(res.shipping_address);
+            }
+        }
+    });
 
 </script>
 
