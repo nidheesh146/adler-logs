@@ -76,7 +76,27 @@
                                     @endforeach
                                 </select>
                             </div>
-                            
+
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Supplier</label>
+                                <select class="form-control" name="supplier" id="supplier">
+                                    <option>Select one...</option>
+                                    <option value="1">Adler Healthcare Pvt. Ltd.</option>
+                                    <option value="2">Smith & Nephew Healthcare Pvt. Ltd.</option>
+
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Supplier Address</label>
+                                <select class="form-control" name="supplier_address" id="supplier_address">
+                                    <option>Select one...</option>
+                                    <option value="1">MIDC Sadavali, Devrukh, Tal. Sangameshwar – 415 804</option>
+                                    <option value="2">Andheri (East), Mumbai – 400 059</option>
+
+                                </select>
+                            </div>
+
+
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location *</label>
                                 <select class="form-control" name="stock_location" id="stock_location">
@@ -84,7 +104,7 @@
                                     @foreach($locations as $loc)
                                     @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
-                                    
+
                                     @endif
                                     @endforeach
                                 </select>

@@ -80,6 +80,7 @@ class MRNController extends Controller
                 $data['supplier_doc_date'] = date('Y-m-d', strtotime($request->supplier_doc_date));
                 $data['product_category'] = $request->product_category;
                 $data['stock_location'] = $request->stock_location;
+                $data['supplier']=$request->supplier;
                 $data['created_by'] = config('user')['user_id'];
                 $data['status'] = 1;
                 $data['created_at'] = date('Y-m-d H:i:s');
