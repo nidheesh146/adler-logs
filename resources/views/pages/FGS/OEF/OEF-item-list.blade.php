@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@php
 use App\Http\Controllers\Web\FGS\OEFController;
 $obj_oef=new OEFController;
 @endphp

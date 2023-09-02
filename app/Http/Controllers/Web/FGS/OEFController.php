@@ -18,6 +18,9 @@ use App\Models\inventory_gst;
 use App\Models\FGS\fgs_product_category;
 use App\Models\PurchaseDetails\customer_supplier;
 use App\Models\product;
+use App\Models\FGS\product_product;
+
+
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingOEFExport;
 use NumberFormatter;
@@ -38,6 +41,8 @@ class OEFController extends Controller
         $this->order_fulfil = new order_fulfil;
         $this->inventory_gst = new inventory_gst;
         $this->product = new product;
+        $this->product_product = new product_product;
+
         $this->customer_supplier = new customer_supplier;
     }
     public function OEFList(Request $request)
@@ -249,6 +254,41 @@ class OEFController extends Controller
 }
 public function update_oef(Request $request)
 {
+    $condition=[];
+    $cust=fgs_oef::where('id',$request->id)->first();
+    $oldcust=customer_supplier::where('id',$cust->customer_id)->first();
+$newcust=customer_supplier::where('id',$request->customer)->first();
+
+
+
+    $oefitem=fgs_oef_item::select('fgs_oef_item.*')
+    ->leftjoin('fgs_oef_item_rel','fgs_oef_item.id','=','fgs_oef_item_rel.item')
+    ->where('fgs_oef_item_rel.master',$request->id)->get();
+    $customer = customer_supplier::select('customer_supplier.firm_name', 'zone.zone_name', 'state.state_name')
+            ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+            ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+            ->where('customer_supplier.id', '=', $request->customer)->first();
+            
+    foreach($oefitem as $items){
+       $itemproduct=$items['product_id'];
+
+      // $condition[] = ['product_product._id', '=', $itemproduct];
+       $data = product_product::where('id',$itemproduct)->first();
+       if ($data['gst'] != '') {
+        if ($customer['state_name'] == 'Maharashtra') {
+            $gst = $data['gst'] / 2;
+            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->first();
+        } else {
+            $gst = $data['gst'];
+            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->first();
+        }
+        
+        fgs_oef_item::where('id',$items['id'])
+        ->update(['gst'=>$gst_data['id']]);
+    }}
+       
+    
+    
     fgs_oef::where('id',$request->id)
     ->update([
         'customer_id'=>$request->customer,
@@ -258,6 +298,8 @@ public function update_oef(Request $request)
         'due_date'=>$request->due_date,
         'remarks'=>$request->remarks
     ]);
+    
+
     $request->session()->flash('success', "You have successfully updated OEF !");
     
     $oef = fgs_oef::select(
