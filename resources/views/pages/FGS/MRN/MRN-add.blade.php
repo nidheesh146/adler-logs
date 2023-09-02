@@ -58,13 +58,20 @@
                         </div>
 
                         <div class="row">
+                            @if(!empty($mrn))
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">MRN Number</label>
+                                <input type="text" class="form-control" name="mrn_number" value="{{$mrn->mrn_number}}" placeholder="MRN Number" readonly>
+                                <input type="hidden" class="form-control" name="mrn_id" value="{{$mrn->id}}" placeholder="MRN id">
+                            </div>
+                            @endif
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Supplier Doc No. *</label>
-                                <input type="text" class="form-control" name="supplier_doc_number" value="" placeholder="Supplier Doc No">
+                                <input type="text" class="form-control" name="supplier_doc_number" value="@if(!empty($mrn)) {{$mrn->supplier_doc_number}} @endif" placeholder="Supplier Doc No">
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Supplier Doc Date *</label>
-                                <input type="text" class="form-control datepicker supplier_doc_date" name="supplier_doc_date" value="" placeholder="">
+                                <input type="text" class="form-control datepicker supplier_doc_date" name="supplier_doc_date" value="@if(!empty($mrn)) {{date('d-m-Y', strtotime($mrn->supplier_doc_date))}} @else {{date('d-m-Y')}} @endif" placeholder="">
                             </div>
 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -72,7 +79,7 @@
                                 <select class="form-control" name="product_category" id="product_category" onchange="myFunction()">
                                     <option>Select one...</option>
                                     @foreach($category as $cate)
-                                    <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
+                                    <option value="{{$cate['id']}}" @if(!empty($mrn) && ($mrn->product_category==$cate['id'])) selected="selected" @endif>{{$cate['category_name']}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -83,7 +90,7 @@
                                     <option>Select one...</option>
                                     @foreach($locations as $loc)
                                     @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')
-                                    <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
+                                    <option value="{{$loc['id']}}" @if(!empty($mrn) && ($mrn->stock_location==$loc['id'])) selected="selected" @endif>{{$loc['location_name']}}</option>
                                     
                                     @endif
                                     @endforeach
@@ -91,7 +98,7 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>MRN Date *</label>
-                                <input type="text" value="" class="form-control datepicker mrn_date" name="mrn_date" value="{{date('Y-m-d')}}" placeholder="">
+                                <input type="text" value="@if(!empty($mrn)) {{date('d-m-Y', strtotime($mrn->mrn_date))}} @else {{date('d-m-Y')}} @endif" class="form-control datepicker mrn_date" name="mrn_date"  placeholder="">
                             </div><!-- form-group -->
                         </div>
                         <div class="row">
@@ -144,8 +151,8 @@
             format: " dd-mm-yyyy",
             autoclose: true,
         });
-        $('.supplier_doc_date').datepicker("setDate", new Date());
-        $(".mrn_date").datepicker("setDate", new Date());
+        // $('.supplier_doc_date').datepicker("setDate", new Date());
+        // $(".mrn_date").datepicker("setDate", new Date());
         //  .datepicker('update', new Date());
 
         $('.datepicker').mask('99-99-9999');

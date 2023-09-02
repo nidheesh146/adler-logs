@@ -207,7 +207,7 @@
         <div class="col41">
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>
-              
+                {{$min['remarks']}}
 
             </div>
             
