@@ -120,6 +120,9 @@ class MRNController extends Controller
     }
     public function MRNitemlist(Request $request, $mrn_id)
     {
+        $product_cat=DB::table('fgs_mrn')
+       ->where('id',$mrn_id)
+       ->first();
         $condition = ['fgs_mrn_item_rel.master' => $request->mrn_id];
         if ($request->product) {
             $condition[] = ['product_product.sku_code', 'like', '%' . $request->product . '%'];
@@ -132,7 +135,7 @@ class MRNController extends Controller
             $condition[] = ['fgs_mrn_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->manufaturing_from))];
         }
         $items = $this->fgs_mrn_item->getMRNItems($condition);
-        return view('pages/FGS/MRN/MRN-item-list', compact('mrn_id', 'items'));
+        return view('pages/FGS/MRN/MRN-item-list', compact('mrn_id', 'items','product_cat'));
     }
 
     public function fetchMRNInfo(Request $request)

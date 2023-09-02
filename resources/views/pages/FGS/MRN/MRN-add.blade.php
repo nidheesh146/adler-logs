@@ -79,7 +79,7 @@
 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Supplier</label>
-                                <select class="form-control" name="supplier" id="supplier">
+                                <select class="form-control" name="supplier" id="supplier" onchange="myFunction1()">
                                     <option>Select one...</option>
                                     <option value="1">Adler Healthcare Pvt. Ltd.</option>
                                     <option value="2">Smith & Nephew Healthcare Pvt. Ltd.</option>
@@ -199,54 +199,95 @@
 
 
     });
-  
 </script>
 <script>
     function myFunction() {
-    
+
         var x = document.getElementById("product_category").value;
-if (x == 1) {
-    var optionToRemove = document.querySelector("#stock_location option[value='10']");
-    if (optionToRemove) {
-        optionToRemove.remove();
-    }
-} else if (x == 3) {
-    var optionToDisplay = document.querySelector("#stock_location option[value='10']");
-    if (optionToDisplay) {
-        optionToDisplay.selected = true;
-    }
-} else if(x == 2){
-    var optionToDisplay = document.querySelector("#stock_location option[value='11']");
-    if (optionToDisplay) {
-        optionToDisplay.selected = true;
-    }
-    // var optionToRAdd = document.querySelector("#stock_location option[value='10']");
-    // if (!optionToRAdd) {
-    //     // Create a new option element
-    //     optionToRAdd = new Option('SNN Trade', '10'); // Replace 'SNN Trade' with the actual text you want
+        if (x == 1) {
+            var optionToRemove = document.querySelector("#stock_location option[value='10']");
+            if (optionToRemove) {
+                optionToRemove.remove();
+            }
+            var optionToDisplay = document.querySelector("#supplier option[value='1']");
+            if (optionToDisplay) {
+                optionToDisplay.selected = true;
+                //         var supplierSelect = document.querySelector("#supplier");
 
-    //     // Append the option element to the select dropdown
-    //     var stockLocationDropdown = document.getElementById("stock_location");
-    //     stockLocationDropdown.appendChild(optionToRAdd);
-    // }
+                // if (supplierSelect) {
+                //     supplierSelect.setAttribute("readonly", true);
+                // }
+            }
+            var optionToDisplay = document.querySelector("#supplier_address option[value='1']");
+            if (optionToDisplay) {
+                optionToDisplay.selected = true;
+            }
+
+        } else if (x == 3) {
+            var optionToDisplay = document.querySelector("#stock_location option[value='10']");
+            if (optionToDisplay) {
+                optionToDisplay.selected = true;
+            }
+            var optionToDisplay = document.querySelector("#supplier option[value='2']");
+            if (optionToDisplay) {
+                optionToDisplay.selected = true;
+            }
+            var optionToDisplay = document.querySelector("#supplier_address option[value='2']");
+            if (optionToDisplay) {
+                optionToDisplay.selected = true;
+            }
+        } else if (x == 2) {
+            var optionToDisplay = document.querySelector("#stock_location option[value='11']");
+            if (optionToDisplay) {
+                optionToDisplay.selected = true;
+            }
+            var optionToDisplay = document.querySelector("#supplier");
+            if (optionToDisplay) {
+                optionToDisplay.display = block;
+            }
+
+            var optionToDisplay = document.querySelector("#supplier_address");
+            if (optionToDisplay) {
+                optionToDisplay.display = block;
+            }
+
+
+            // if(optionToDisplay==1)
+            // var optionToDisplay = document.querySelector("#supplier_address option[value='1'");
+            // if (optionToDisplay) {
+            //     optionToDisplay.selected = true;
+            // }
+            // var optionToRAdd = document.querySelector("#stock_location option[value='10']");
+            // if (!optionToRAdd) {
+            //     // Create a new option element
+            //     optionToRAdd = new Option('SNN Trade', '10'); // Replace 'SNN Trade' with the actual text you want
+
+            //     // Append the option element to the select dropdown
+            //     var stockLocationDropdown = document.getElementById("stock_location");
+            //     stockLocationDropdown.appendChild(optionToRAdd);
+            // }
+        }
+
+
+
+    }
+</script>
+<script>
+    function myFunction1() {
+        var y = document.getElementById("supplier").value;
+if(y==1)
+{
+    var optionToDisplay = document.querySelector("#supplier_address option[value='1']");
+            if (optionToDisplay) {
+                optionToDisplay.selected = true;
+            }
+}else{
+    var optionToDisplay = document.querySelector("#supplier_address option[value='2']");
+            if (optionToDisplay) {
+                optionToDisplay.selected = true;
+            }
 }
-
-
-    
-}
-// function myFunction() {
-// //   var x = document.getElementById("product_category").value;
-// //   var y=document.getElementById("stock_location11").value;
-// //   if(x==3){
-// //     y=".y[value='10']".remove();
-  
-// // }
-// var x = document.getElementById("product_category").value;
-// if (x == 3) {
-//   $("#stock_location11 option[value='10']").remove();
-// }
-// }
-
+    }
 </script>
 
 @stop
