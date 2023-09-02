@@ -1,6 +1,10 @@
 @extends('layouts.default')
 @section('content')
 @inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\InventoryController')
+@php
+use App\Http\Controllers\Web\PurchaseDetails\InventoryController;
+$obj_req= new InventoryController;
+@endphp
 <div class="az-content az-content-dashboard">
 	<br>
 	<div class="container">
@@ -139,6 +143,19 @@
 							<td>{{$item['type_name']}}</td>
 							<td>{{$item['actual_order_qty']}}</td>
 							<td> {{$item['unit_name']}}</td>
+							<td>
+								
+								@if(!empty($obj_req->get_purchase($item['requisition_item_id'])))
+								<a class="badge badge-info" style="font-size: 13px;" class="dropdown-item">Purchase </a>
+								@elseif(!empty($obj_req->get_suplier_qtn($item['requisition_item_id'])))
+								<a class="badge badge-info" style="font-size: 13px;" class="dropdown-item">supplier Qtn</a>
+								@elseif(!empty($obj_req->get_requisition_qtn($item['requisition_item_id'])))
+								<a class="badge badge-info" style="font-size: 13px;" class="dropdown-item">Requisition </a>
+							
+								@endif
+								
+							
+							</td>
 							<td>
 								@php $status =$fn->getStatus($item['requisition_item_id']); @endphp
 								<button data-toggle="dropdown" style="width: 70px;" class="badge @if($status == 1) badge-success @elseif($status== 4) badge-info  @elseif($status==5 ) badge-warning   @elseif($item['status'] == 0) badge-danger @endif ">

@@ -179,8 +179,6 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
           <li class="nav-sub-item @if(in_array($Action,['DeliveryNote.ChallanList','DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist'])){{'active'}} @endif ">
             <a href="{{url('fgs/Delivery_challan/Challan-list')}}" class="nav-sub-link">Delivery Note</a>
           </li>
-
-
         </ul>
       </li>
       <li class="nav-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','PI.PIAdd','PI.PIList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','PI.mergedPIList',

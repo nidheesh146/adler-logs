@@ -21,6 +21,8 @@ use App\Models\currency_exchange_rate;
 use App\Models\PurchaseDetails\inv_purchase_req_item;
 use App\Models\PurchaseDetails\inv_purchase_req_item_approve;
 use App\Models\PurchaseDetails\inv_purchase_req_master_item_rel;
+use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
+
 
 class InventoryController extends Controller
 {
@@ -616,6 +618,40 @@ class InventoryController extends Controller
         return $data;
     
             
+    }
+    public function get_suplier_qtn($id)
+    {
+        $suplier_qtn=inv_purchase_req_quotation_item_supp_rel::where('item_id',$id)->first();
+return $suplier_qtn;
+    }
+    public function get_requisition_qtn($id)
+    {
+        $requisition_qtn=DB::table('inv_purchase_req_item_approve')->where('pr_item_id',$id)->first();
+return $requisition_qtn;
+    }
+  
+    public function get_requisition($id)
+    {
+        $requisition=inv_purchase_req_item::where('requisition_item_id',$id)->first();
+return $requisition;
+    }
+    public function get_purchase($id)
+    {
+        $purchase=DB::table('inv_final_purchase_order_item')
+        
+        ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_final_purchase_order_item.item_id')
+        ->where('inv_purchase_req_item.requisition_item_id',$id)
+        ->first();
+return $purchase;
+    }
+    public function approved_items($id)
+    {
+    $items=DB::table('inv_purchase_req_item_approve')
+    ->join('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_purchase_req_item_approve.pr_item_id')
+    ->where('inv_purchase_req_item_approve.status','=',1)
+    ->where('inv_purchase_req_item.requisition_item_id',$id)
+    ->first();
+    return $items;
     }
 
 }
