@@ -508,7 +508,7 @@
                 $total_discount = $total_discount+($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100;
                 $total_igst = $total_igst+($discount_value*$item['igst'])/100;
                 $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
-                $total_cgst = $total_cgst+($discount_value* $item['remaining_qty_after_cancel']*$item['cgst'])/100;
+                $total_cgst = $total_cgst+($discount_value*$item['cgst'])/100;
                 $totalmrp = $totalmrp + $item['mrp'];
                 ?>
                  <?php 

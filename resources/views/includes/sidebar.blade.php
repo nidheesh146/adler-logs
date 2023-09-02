@@ -101,7 +101,7 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         </ul>
       </li>
 
-      <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','OEF.pendingOEF',
+      <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRN_edit','MRN.MRNitemlist','OEF.pendingOEF',
         'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINitemlist','CMIN.CMINitemAdd','OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist',
         'PI.PIAdd','PI.PIList','PI.PIitemlist','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','MTQ.MTQAdd','StockManagement.productionStockAdd',
         'StockManagement.productionStockList','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','PI.pendingPI','GRS.pendingGRS','PI.mergedPIList','BackorderReport.get_data','GRS.GRSitemAdd',
@@ -144,12 +144,12 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         <a href="{{url('fgs/net-billing-report')}}" class="nav-sub-link">Net Billing Report</a>
       </li>
       <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','GRS.GRSitemAdd',
-              'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList',
+              'MRN.MRNitemAdd','MRN.MRN_edit','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList',
               'CMIN.CMINitemAdd','MTQ.MTQAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd','DeliveryNote.ChallanList',
               'DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist'])){{'active show'}} @endif">
         <a href="#" class="nav-link with-sub">Inventory</a>
         <ul class="nav-sub">
-          <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd'])){{'active'}} @endif ">
+          <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd','MRN.MRN_edit'])){{'active'}} @endif ">
             <a href="{{url('fgs/MRN-list')}}" class="nav-sub-link">MRN</a>
           </li>
           <li class="nav-sub-item @if(in_array($Action,['MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd'])){{'active'}} @endif ">

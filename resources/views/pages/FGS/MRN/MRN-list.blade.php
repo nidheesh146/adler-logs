@@ -127,10 +127,15 @@ $obj_mrn=new MRNController;
 									</td>
 
 									@if(!empty($obj_mrn->check_item($item["id"])))
-									<td> <a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cant Delete.MRN have items!');"><i class="fa fa-trash"></i> Delete</a></td>
+									<td> 
+									<a class="badge badge-primary" style="font-size: 13px;" href="{{url('fgs/MRN-edit/'.$item['id'])}}"><i class="fa fa-edit"></i> Edit</a>
+										<a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cant Delete.MRN have items!');"><i class="fa fa-trash"></i> Delete</a>
+									</td>
 									@else
 
-									<td> <a class="badge badge-danger" style="font-size: 13px;" href="{{url('fgs/MRN-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
+									<td> 
+										<a class="badge badge-danger" style="font-size: 13px;" href="{{url('fgs/MRN-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+									</td>
 									@endif
 								</tr>
 								@endforeach

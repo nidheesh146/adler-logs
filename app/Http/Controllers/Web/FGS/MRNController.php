@@ -102,6 +102,51 @@ class MRNController extends Controller
             return view('pages/FGS/MRN/MRN-add', compact('locations', 'category'));
         }
     }
+    public function MRN_edit($id,Request $request)
+    {
+        if ($request->isMethod('post')) 
+        {
+            $validation['supplier_doc_number'] = ['required'];
+            $validation['supplier_doc_date'] = ['required', 'date'];
+            $validation['mrn_date'] = ['required', 'date'];
+            $validation['product_category'] = ['required'];
+            $validation['stock_location'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if (!$validator->errors()->all()) 
+            {
+                $data['mrn_date'] = date('Y-m-d', strtotime($request->mrn_date));
+                $data['supplier_doc_number'] = $request->supplier_doc_number;
+                $data['supplier_doc_date'] = date('Y-m-d', strtotime($request->supplier_doc_date));
+                $data['product_category'] = $request->product_category;
+                $data['stock_location'] = $request->stock_location;
+                //$data['supplier']=$request->supplier;
+                //$data['created_by'] = config('user')['user_id'];
+                //$data['status'] = 1;
+                //$data['created_at'] = date('Y-m-d H:i:s');
+                $data['updated_at'] = date('Y-m-d H:i:s');
+                $update = $this->fgs_mrn->update_data(['fgs_mrn.id'=>$request->mrn_id],$data);
+                if ($update) {
+                    $request->session()->flash('success', "You have successfully updated a MRN !");
+                    return redirect('fgs/MRN-list');
+                } else {
+                    $request->session()->flash('error', "MRN updation is failed. Try again... !");
+                    return redirect('fgs/MRN-edit/'.$request->mrn_id);
+                }
+
+            }
+            else 
+            {
+                return redirect('fgs/MRN-edit/'.$request->mrn_id)->withErrors($validator)->withInput();
+            }
+        }
+        else
+        {
+            $mrn = fgs_mrn::find($id);
+            $locations = product_stock_location::get();
+            $category = fgs_product_category::get();
+            return view('pages/FGS/MRN/MRN-add', compact('locations', 'category','mrn'));
+        }
+    }
     public function MRN_delete($id)
     {
 
@@ -909,4 +954,5 @@ $pstock_qty=number_format($qty->quantity);
 
         return Excel::download(new FGSmrntransactionExport($items), 'FGS-MRN-transaction' . date('d-m-Y') . '.xlsx');
     }
+   
 }

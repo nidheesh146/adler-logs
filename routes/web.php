@@ -453,6 +453,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/MRN-list', 'MRNController@MRNList');
     Route::get('fgs/MRN-add', 'MRNController@MRNAdd');
     Route::get('fgs/MRN-delete/{id}', 'MRNController@MRN_delete');
+    Route::get('fgs/MRN-edit/{id}', 'MRNController@MRN_edit');
+    Route::post('fgs/MRN-edit/{id}', 'MRNController@MRN_edit');
     Route::post('fgs/MRN-add', 'MRNController@MRNAdd');
     Route::get('fgs/MRN/item-list/{mrn_id}', 'MRNController@MRNitemlist');
     Route::get('fgs/fetchMRNInfo', 'MRNController@fetchMRNInfo');
