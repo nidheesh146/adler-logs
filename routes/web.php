@@ -588,6 +588,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/GRS/pending-report', 'GRSController@pendingGRS');
     Route::get('fgs/GRS/pending-GRS-export', 'GRSController@pendingGRSExport');
     Route::get('fgs/GRS-item-edit/{grs_item_id}','GRSController@GRSItemEdit');
+    Route::post('fgs/GRS-item-edit/{grs_item_id}','GRSController@GRSItemEdit');
     Route::get('fgs/GRS-item-delete/{grs_item_id}','GRSController@GRSItemDelete');
     //CGRS
     Route::get('fgs/CGRS/CGRS-list', 'CGRSController@CGRSList');
