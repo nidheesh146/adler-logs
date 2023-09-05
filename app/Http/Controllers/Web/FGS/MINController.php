@@ -292,79 +292,123 @@ class MINController extends Controller
                         ->first();
         return $data;
     }
-    public function MINitemedit($min_item_id)
+    public function MINitemedit($min_item_id,Request $request)
     {
-
-        $item_details = DB::table('fgs_min_item')
-        ->select('fgs_min_item.*', 'fgs_min.id as min_id','product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_min.min_number', 'product_product.is_sterile','fgs_product_stock_management.quantity as stk_qty')
-        ->leftjoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
-        ->leftjoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
-        ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
-        ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
-        ->leftjoin('fgs_product_stock_management','fgs_product_stock_management.batchcard_id','=','batchcard_batchcard.id')
-        ->where('fgs_min_item.id', $min_item_id)
-        ->orderBy('fgs_min_item.id', 'DESC')
-        ->first();
-        return view('pages/fgs/MIN/MIN-item-edit', compact('item_details', 'min_item_id'));
-    }
-    public function MINitemupdate(Request $request)
-    {
-        $cmin_item = fgs_cmin_item::where('cmin_item_id','=',$request->min_item_id)->first();
-        if($cmin_item)
+        $cmin_item = fgs_cmin_item::where('cmin_item_id','=',$min_item_id)->get();
+        $min_rel = DB::table('fgs_min_item_rel')->where('item',$min_item_id)->first();
+        $min = fgs_min::find($min_rel->master);
+        //echo $min_item_id;exit;
+        if(count($cmin_item)>0)
         {
             $request->session()->flash('error', "You can't edit this MIN item !");
-            return redirect('fgs/MIN/item-list/' . $request->min_id);
+            return redirect('fgs/MIN/item-list/' . $min_rel->master);
         }
         else
         {
+
+            $item_details = DB::table('fgs_min_item')
+                    ->select('fgs_min_item.*', 'fgs_min.id as min_id','product_product.sku_code', 'product_product.discription','product_product.id as product_id' ,'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_min.min_number',
+                    'product_product.is_sterile','fgs_product_stock_management.quantity as stk_qty','fgs_product_stock_management.stock_location_id')
+                    ->leftjoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
+                    ->leftjoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
+                    ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
+                    ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
+                    ->leftjoin('fgs_product_stock_management','fgs_product_stock_management.batchcard_id','=','batchcard_batchcard.id')
+                    ->where('fgs_min_item.id', $min_item_id)
+                    ->orderBy('fgs_min_item.id', 'DESC')
+                    ->first();
+            //$min = fgs_min::find($request->min_id);
+            $batchcards = fgs_product_stock_management::select('batchcard_batchcard.batch_no', 'fgs_product_stock_management.quantity', 'batchcard_batchcard.id as batch_id')
+                ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_product_stock_management.batchcard_id')
+                ->where('fgs_product_stock_management.product_id', '=', $item_details->product_id)
+                ->where('fgs_product_stock_management.stock_location_id', '=', $item_details->stock_location_id)
+                ->where('fgs_product_stock_management.quantity', '!=', 0)
+                ->orderBy('batchcard_batchcard.id', 'DESC')
+                ->get();
+            return view('pages/fgs/MIN/MIN-item-edit', compact('item_details', 'min_item_id','batchcards'));
+        }
+    }
+    public function MINitemupdate(Request $request)
+    {
+        if ($request->isMethod('post')) 
+        {
             $quantity = $request->quantity;
             $stock_quantity = $request->stk_qty;
-            if($quantity<=$stock_quantity)
+            $validation['batch_no'] = ['required'];
+            $validation['quantity'] = ['required'];
+            //$validation['manufacturing_date'] = ['required', 'date'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
             {
-                $min_info = fgs_min::find($request->min_id);
+                $min = fgs_min::find($request->min_id);
+                $min_item = fgs_min_item::find($request->min_item_id);
                 $product = $request->product_id;
-                $batchcard_id = $request->batchcard_id;
-                $stock = DB::table('fgs_product_stock_management')
-                                    ->where('product_id', '=', $product)
-                                    ->where('batchcard_id', '=', $batchcard_id)
-                                    ->where('stock_location_id','=', $min_info->stock_location)
-                                    ->first();
-                if($min_info->quantity>$request['quantity'])
+                $old_batch = $min_item->batchcard_id;
+                $old_qty = $min_item->quantity;
+
+                //old batch Stock updation 
+                $old_stock = DB::table('fgs_product_stock_management')
+                                        ->where('product_id','=',$product)
+                                        ->where('batchcard_id','=',$old_batch)
+                                        ->where('stock_location_id','=',$min->stock_location)
+                                        ->first();
+                $old_stock_update = $old_stock->quantity + $min_item->quantity; 
+                $old_stock_updation = DB::table('fgs_product_stock_management')
+                                                ->where('id',$old_stock->id)
+                                                ->update(['quantity'=>$old_stock_update]);
+
+
+                //new batch stock updation
+                $new_stock = DB::table('fgs_product_stock_management')
+                    ->where('product_id','=',$product)
+                    ->where('batchcard_id','=',$request->batch_no)
+                    ->first();
+                if(!empty($new_stock))
                 {
-                    $diff = $min_info->quantity-$request['quantity'];
-                    $new_stock = $stock->quantity+$diff;
-                }
-                else
-                {
-                    $diff = $request['quantity']-$min_info->quantity;
-                    $new_stock = $stock->quantity-$diff;
-                }
-                $min_update = DB::table('fgs_min_item')
-                                    ->where('id', $request->min_item_id)
-                                    ->update([
-                                        'quantity' => $request['quantity'],
-                                        'remaining_qty_after_cancel' => $request['quantity'],           
-                                    ]);
-                $stock_update = DB::table('fgs_product_stock_management')
-                                        ->where('id', $stock->id)
-                                        ->update([
-                                            'quantity' => $new_stock,
-                                        ]);
-                $request->session()->flash('success', "You have successfully updated a MIN item !");
-                return redirect('fgs/MIN/item-list/' . $request->min_id);
                 
+                    $new_stock_update = $new_stock->quantity - $request->quantity; 
+                    $new_stock_updation = DB::table('fgs_product_stock_management')
+                                        ->where('id',$new_stock->id)
+                                        ->update([
+                                            'quantity'=>$new_stock_update,
+                                        ]);
+                }
+                // else
+                // {
+
+                //     $stock = [
+                //         "product_id" => $product,
+                //         "batchcard_id" => $request->batch_no,
+                //         "quantity" => $request->quantity,
+                //         "stock_location_id" =>$min->stock_location,
+                //         'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date)),
+                //         'expiry_date' => $expiry_date,
+                //         //'created_at'=>date('Y-m-d'),
+                //     ];
+                //     $res = $this->fgs_product_stock_management->insert_data($stock);
+                // }
+                $data['batchcard_id']=$request->batch_no;
+                $data['quantity'] = $request->quantity;
+                $data['remaining_qty_after_cancel'] = $request->quantity;
+                $update_min = $this->fgs_min_item->update_data(['id'=>$min_item->id],$data);
+                if($update_min)
+                $request->session()->flash('success', "You have successfully updated a MIN Item !");
+                else
+                $request->session()->flash('error', "You have failed to update a MIN Item !");
+                return redirect('fgs/MIN/item-list/' . $min->id);
             }
             else
             {
-                $request->session()->flash('error', "Quantity should be less than stock quantity!");
-                return redirect('fgs/MIN/item-list/' . $request->min_id);
+                return redirect()->back()->withErrors($validator)->withInput();
             }
+
         }
+        
     }
-    public function delete_min($min_id)
+    public function delete_min($min_item_id)
     {
         $prdct = DB::table('fgs_min_item')
-            ->where('id', $min_id)
+            ->where('id', $min_item_id)
             ->first();
         $qty = DB::table('fgs_product_stock_management')
             ->where('id', $min_id)
