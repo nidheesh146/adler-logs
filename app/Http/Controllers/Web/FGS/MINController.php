@@ -100,6 +100,59 @@ class MINController extends Controller
             return view('pages/FGS/MIN/MIN-add', compact('locations', 'category'));
         }
     }
+    public function MINEdit(Request $request,$min_id)
+    {
+        if ($request->isMethod('post')) {
+            $data['ref_number'] = $request->ref_number;
+            $data['ref_date'] = date('Y-m-d', strtotime($request->ref_date));
+            $data['product_category'] = $request->product_category;
+            $data['stock_location'] = $request->stock_location; 
+            $data['min_date'] = date('Y-m-d', strtotime($request->min_date));
+            $add = fgs_min::where('id',$min_id)
+            ->update($data);
+            if ($add) {
+                $min = fgs_min::select(
+                    'product_stock_location.location_name as location_name',
+                    'product_stock_location.id as location_id',
+                    'fgs_product_category.category_name AS category_name',
+                    'fgs_product_category.id AS category_id',
+                    'fgs_min.*'
+                )
+                ->leftJoin('product_stock_location', 'product_stock_location.id', '=', 'fgs_min.stock_location')
+                ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_min.product_category')
+                ->where('fgs_min.id', $min_id)
+                ->first();
+        
+                $minitem=fgs_min_item_rel::where('master',$min_id)->first();
+                $locations = product_stock_location::get();
+                    $category = fgs_product_category::get();
+
+                $request->session()->flash('success', "You have successfully Edit MIN !");
+                
+                return view('pages/FGS/MIN/MIN-edit',compact('min','locations', 'category','minitem'));
+
+        }}else{
+        // $min=fgs_min::select('product_stock_location.*','fgs_product_category.*','fgs_min.*')
+        // ->leftjoin('product_stock_location','product_stock_location.id','=','fgs_min.stock_location')
+        // ->leftjoin('fgs_product_category','fgs_product_category.id','=','fgs_min.product_category')
+        // ->where('fgs_min.id',$min_id)->first();
+        $min = fgs_min::select(
+            'product_stock_location.location_name as location_name',
+            'product_stock_location.id as location_id',
+            'fgs_product_category.category_name AS category_name',
+            'fgs_product_category.id AS category_id',
+            'fgs_min.*'
+        )
+        ->leftJoin('product_stock_location', 'product_stock_location.id', '=', 'fgs_min.stock_location')
+        ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_min.product_category')
+        ->where('fgs_min.id', $min_id)
+        ->first();
+
+        $minitem=fgs_min_item_rel::where('master',$min_id)->first();
+        $locations = product_stock_location::get();
+            $category = fgs_product_category::get();
+        return view('pages/FGS/MIN/MIN-edit',compact('min','locations', 'category','minitem'));
+    }}
     public function fetchFGSStockProduct(Request $request)
     {
         if (!$request->q) {

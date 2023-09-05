@@ -479,6 +479,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     //MIN
     Route::get('fgs/MIN-list', 'MINController@MINList');
     Route::get('fgs/MIN-add', 'MINController@MINAdd');
+    Route::get('fgs/MIN-edit/{min_id}', 'MINController@MINEdit');
+    Route::post('fgs/MIN-edit/{min_id}', 'MINController@MINEdit');
+
     Route::post('fgs/MIN-add', 'MINController@MINAdd');
     Route::get('fgs/MIN/item-list/{min_id}', 'MINController@MINitemlist');
     Route::get('fgs/MIN/add-item/{min_id}', 'MINController@MINitemAdd');
