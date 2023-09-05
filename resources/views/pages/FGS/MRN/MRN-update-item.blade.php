@@ -89,21 +89,21 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Date of Mfg. * </label>
                                                     
-                                                    <input type="text" class="form-control datepicker manufacturing_date" name="manufacturing_date" id="manufacturing" value="{{date('d-m-Y', strtotime($item_details->manufacturing_date))}}" onchange="myFunction()">
+                                                    <input type="text" class="form-control datepicker manufacturing_date" name="manufacturing_date" id="manufacturing_date" value="{{date('d-m-Y', strtotime($item_details->manufacturing_date))}}" onchange="myFunction()">
                                                     <input type="hidden" value="{{$item_details->is_sterile}}" id="sterile">
                                                 </div>
                                                 @if($item_details->is_sterile==0)
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Date of Expiry * </label>
                                                     @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
-                                                    <input type="text" class="form-control datepicker expiry_date" readonly name="expiry_date" value="N.A" id="expiry" placeholder="Date of Expiry">
+                                                    <input type="text" class="form-control datepicker expiry_date" readonly name="expiry_date" value="N.A"  placeholder="Date of Expiry">
                                                 
                                                     </div>
                                                 @else
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Date of Expiry * </label>
                                                     @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
-                                                    <input type="text" class="form-control datepicker expiry_date" readonly name="expiry_date" value="{{date('d-m-Y', strtotime($item_details->expiry_date))}}" id="expiry" placeholder="Date of Expiry">
+                                                    <input type="text" class="form-control datepicker expiry_date"  name="expiry_date" id="expiry_date" value="{{date('d-m-Y', strtotime($item_details->expiry_date))}}" id="expiry" placeholder="Date of Expiry">
                                                 </div>
                                                 @endif
                                                 <!-- <button type="button" name="add" id="add" class="btn btn-success"
@@ -158,6 +158,26 @@
         $('#stock_qty1').val(batchqty);
         //alert(batchqty);
     });
+    $("#manufacturing_date").datepicker({
+                    format: " dd-mm-yyyy",
+                    autoclose: true,
+                    "setDate": new Date(),
+                    onSelect: function(date) {
+                        $(this).change();
+                    },
+                }).on("change", function() {
+                    var date = $("#manufacturing_date").datepicker('getDate');
+                    var new_date = new Date(date);
+                    var myDate  = new Date(new_date.setDate(new_date.getDate()-1));
+                    var date = new Date(myDate.setFullYear(myDate.getFullYear() + 5));
+                    var expiry_date = ( ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
+                    // new_date.setFullYear(new_date.getFullYear() + 5);
+                    // new_date.setDate(new_date.getDate() - 2);
+                    // var expiry_date = ( ((new_date.getDate() > 9) ? new_date.getDate() : ('0' + new_date.getDate())) + '-' + ((new_date.getMonth() > 8) ? (new_date.getMonth() + 1) : ('0' + (new_date.getMonth() + 1))) + '-' + new_date.getFullYear());
+                    //alert(new_date);
+                    $("#expiry_date").val('');
+                    $("#expiry_date").val(expiry_date);
+                });
 
     $(function() {
         $("#commentForm").validate({
