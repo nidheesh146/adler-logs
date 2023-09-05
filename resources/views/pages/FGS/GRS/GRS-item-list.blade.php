@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-
+@inject('fn', 'App\Http\Controllers\Web\FGS\GRSController')
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -74,6 +74,7 @@
                                             <th>Manufacturing Date</th>
                                             <th>Expiry Date</th>
                                             <th>Status</th>
+											<th>Action</th>
                                         </tr>                                                
                                 </thead>
                                 <tbody id="prbody1">
@@ -90,17 +91,27 @@
                                             <td>{{$item['manufacturing_date']}}</td>
                                             <td>@if($item['expiry_date']=='0000-00-00') NA @else {{$item['expiry_date']}} @endif</td>
                                             <td>
-										@if($item['cgrs_status']==0)
-										<span class="badge badge-primary" style="width:60px;">Active</span>
-										@else
-										<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
-										@endif
-									</td> 
+												@if($item['cgrs_status']==0)
+												<span class="badge badge-primary" style="width:60px;">Active</span>
+												@else
+												<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
+												@endif
+											</td> 
+											<td>
+												<?php $is_exist_in_pi = $fn->grsItemExistInPI($item['id']);?>
+												@if($is_exist_in_pi==1)
+												<a class="badge badge-primary" style="font-size: 13px;" onclick="return confirm('Cannot edit GRS Item. It moved to next step!');"><i class="fa fa-edit"></i> Edit</a>
+												<a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cannot delete GRS Item. It moved to next step!');"><i class="fa fa-trash"></i> Delete</a>
+												@else
+												<a class="badge badge-primary" style="font-size: 13px;" href="{{url('fgs/GRS-item-edit/'.$item['id'])}}"><i class="fa fa-edit"></i> Edit</a>
+												<a class="badge badge-danger" style="font-size: 13px;"  href="{{url('fgs/GRS-item-delete/'.$item['id'])}}"><i class="fa fa-trash"></i> Delete</a>
+												@endif
+											</td>
                                         </tr>
                                     @endforeach
 									@else
 									<tr>
-										<td colspan="8" ><center>No data Found...</center></td></tr>
+										<td colspan="9" ><center>No data Found...</center></td></tr>
 									@endif
                                 </tbody>
                             </table>

@@ -88,17 +88,17 @@
                                 <label for="exampleInputEmail1">Supplier</label>
                                 <select class="form-control" name="supplier" id="supplier" onchange="myFunction1()">
                                     <option>Select one...</option>
-                                    <option value="1">Adler Healthcare Pvt. Ltd.</option>
-                                    <option value="2">Smith & Nephew Healthcare Pvt. Ltd.</option>
+                                    <option value="1" @if(!empty($mrn) && ($mrn->supplier==1)) selected="selected" @endif>Adler Healthcare Pvt. Ltd.</option>
+                                    <option value="2" @if(!empty($mrn) && ($mrn->supplier==2)) selected="selected" @endif>Smith & Nephew Healthcare Pvt. Ltd.</option>
 
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Supplier Address</label>
-                                <select class="form-control" name="supplier_address" id="supplier_address">
+                                <select class="form-control" name="supplier_address" id="supplier_address" readonly>
                                     <option>Select one...</option>
-                                    <option value="1">MIDC Sadavali, Devrukh, Tal. Sangameshwar – 415 804</option>
-                                    <option value="2">Andheri (East), Mumbai – 400 059</option>
+                                    <option value="1" @if(!empty($mrn) && ($mrn->supplier==1)) selected="selected" @endif>MIDC Sadavali, Devrukh, Tal. Sangameshwar – 415 804</option>
+                                    <option value="2" @if(!empty($mrn) && ($mrn->supplier==2)) selected="selected" @endif>Andheri (East), Mumbai – 400 059</option>
 
                                 </select>
                             </div>

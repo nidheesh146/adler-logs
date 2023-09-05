@@ -73,6 +73,7 @@ class CustomerSupplierController extends Controller
                     $data['city'] = $request->city;
                     $data['state'] = $request->state;
                     $data['zone'] = $request->zone;
+                    $data['country'] = $request->country;
                     $data['pan_number'] = $request->pan_number;
                     $data['gst_number'] = $request->gst_number;
                     $data['dl_number1'] = $request->dl_number1;

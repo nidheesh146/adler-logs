@@ -590,6 +590,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/GRS/pdf/{grs_id}', 'GRSController@GRSpdf');
     Route::get('fgs/GRS/pending-report', 'GRSController@pendingGRS');
     Route::get('fgs/GRS/pending-GRS-export', 'GRSController@pendingGRSExport');
+    Route::get('fgs/GRS-item-edit/{grs_item_id}','GRSController@GRSItemEdit');
+    Route::post('fgs/GRS-item-edit/{grs_item_id}','GRSController@GRSItemEdit');
+    Route::get('fgs/GRS-item-delete/{grs_item_id}','GRSController@GRSItemDelete');
+    Route::get('fgs/GRS-edit/{grs_id}','GRSController@GRSEdit');
+    Route::post('fgs/GRS-edit/{grs_id}','GRSController@GRSEdit');
+    Route::get('fgs/GRS-delete/{grs_id}','GRSController@GRSDelete');
     //CGRS
     Route::get('fgs/CGRS/CGRS-list', 'CGRSController@CGRSList');
     Route::get('fgs/CGRS-add', 'CGRSController@CGRSAdd');
@@ -602,7 +608,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/PI-list', 'PIController@PIList');
     Route::get('fgs/PI-add', 'PIController@PIAdd');
     Route::post('fgs/PI-add', 'PIController@PIAdd');
+    Route::get('fgs/PI-delete/{pi_id}', 'PIController@PIDelete');
+    Route::get('fgs/PI-edit/{grs_id}','PIController@PIEdit');
+    Route::post('fgs/PI-edit/{grs_id}','PIController@PIEdit');
     Route::get('fgs/PI/item-list/{pi_id}', 'PIController@PIitemlist');
+    Route::get('fgs/PI-item-delete/{pi_item_id}','PIController@PIItemDelete');
     Route::get('fgs/PI/fetchGRS', 'PIController@fetchGRS');
     Route::get('fgs/PI/pdf/{pi_id}', 'PIController@PIpdf');
     Route::get('fgs/PI/payment-pdf/{pi_id}', 'PIController@PIPaymentpdf');

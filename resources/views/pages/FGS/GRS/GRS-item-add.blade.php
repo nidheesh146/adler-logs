@@ -40,22 +40,26 @@
                     <div class="row " id="purchase"> 
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Product</label>
-                            <input type="text"  class="form-control" name="product" value="{{$oef_item['sku_code']}}" readonly>
+                            <input type="text"  class="form-control" name="product" value="@if(!empty($oef_item)) {{$oef_item['sku_code']}} @elseif(!empty($grs_item)) {{$grs_item['sku_code']}} @endif" readonly>
+                            @if(!empty($oef_item))
                             <input type="hidden" name="oef_item_id" value="{{$oef_item['id']}}" >
+                            @elseif(!empty($grs_item))
+                            <input type="hidden" name="grs_item_id" value="{{$grs_item['id']}}" >
+                            @endif
                             <input type="hidden" name="grs_id" value="{{$grs_id}}" >
                         </div> 
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Description</label>
-                            <textarea readonly class="form-control">{{$oef_item['discription']}}</textarea>
+                            <textarea readonly class="form-control">@if(!empty($oef_item)) {{$oef_item['discription']}} @else {{$grs_item['discription']}} @endif </textarea>
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">OEF Number</label>
-                            <input type="text" class="form-control" name="oef_number" value="{{$oef_item['oef_number']}}" readonly>
+                            <input type="text" class="form-control" name="oef_number" value="@if(!empty($oef_item)) {{$oef_item['oef_number']}} @else {{$grs_item['oef_number']}} @endif " readonly>
                         </div> 
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Unreserved Quantity</label>
                             <div class="input-group mb-6">
-                                <input type="text" class="form-control" name="unreserved_qty" value="{{$oef_item['quantity_to_allocate']}}" id="unreserved_qty" aria-describedby="unit-div2" readonly>
+                                <input type="text" class="form-control" name="unreserved_qty" value="@if(!empty($oef_item)) {{$oef_item['quantity_to_allocate']}} @else {{$grs_item['batch_quantity']}} @endif" id="unreserved_qty" aria-describedby="unit-div2" readonly>
                                 <div class="input-group-append">
                                     <span class="input-group-text unit-div" id="unit-div2">Nos</span>
                                 </div>
@@ -65,9 +69,15 @@
                             <label for="exampleInputEmail1">Batchcard</label>
                             <select class="form-control" name="batchcard" class="batchcard" id="batchcard" required>
                                 <option value="">..Select One..</option>
-                                @if($oef_item['batchcards'])
+                                @if((!empty($oef_item)) && ($oef_item['batchcards']))
                                 @foreach($oef_item['batchcards'] as $batchcard)
                                 <option value="{{$batchcard['batchcard_id']}}" manufacturingDate="{{$batchcard['manufacturing_date']}}" expiryDate="{{$batchcard['expiry_date']}}" qty="{{$batchcard['batchcard_available_qty']}}" mrnItemId="{{$batchcard['mrn_item_id']}}">
+                                    {{$batchcard['batch_no']}}
+                                </option>
+                                @endforeach
+                                @elseif((!empty($grs_item)) && ($grs_item['batchcards']))
+                                @foreach($grs_item['batchcards'] as $batchcard)
+                                <option value="{{$batchcard['batchcard_id']}}" @if($grs_item['batchcard_id']==$batchcard['batchcard_id']) selected @endif manufacturingDate="{{$batchcard['manufacturing_date']}}" expiryDate="{{$batchcard['expiry_date']}}" qty="{{$batchcard['batchcard_available_qty']}}" mrnItemId="{{$batchcard['mrn_item_id']}}">
                                     {{$batchcard['batch_no']}}
                                 </option>
                                 @endforeach
@@ -87,7 +97,7 @@
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Batch Quantity Taken</label>
                             <div class="input-group mb-6">
-                                <input type="number" class="form-control" max="" min="" name="batch_qty" id="batch_qty" placeholder="" aria-describedby="unit-div2" >
+                                <input type="number" class="form-control" @if($grs_item['batchcard_id']) value="{{$grs_item['batch_quantity']}}"  @endif max="" min="" name="batch_qty" id="batch_qty" placeholder="" aria-describedby="unit-div2" >
                                 <div class="input-group-append">
                                     <span class="input-group-text unit-div" id="unit-div2">Nos</span>
                                 </div>
@@ -96,11 +106,11 @@
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Manufacturing date</label>
-                            <input type="text" class="form-control" name="manufacturing_date" id="manufacturing_date" readonly>
+                            <input type="text" class="form-control" name="manufacturing_date" @if($grs_item['batchcard_id']) value="{{date('d-m-Y', strtotime($grs_item['manufacturing_date']))}}"  @endif id="manufacturing_date" readonly>
                         </div> 
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Expiry date</label>
-                            <input type="text" class="form-control" name="expiry_date" id="expiry_date" readonly >
+                            <input type="text" class="form-control" name="expiry_date" id="expiry_date" @if($grs_item['batchcard_id']) value="{{date('d-m-Y', strtotime($grs_item['expiry_date']))}}"  @endif  readonly >
                         </div>    
 				    </div>
 			    </div>

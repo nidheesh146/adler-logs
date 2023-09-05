@@ -18,6 +18,7 @@ use App\Models\FGS\fgs_grs;
 use App\Models\FGS\fgs_grs_item;
 use App\Models\FGS\fgs_grs_item_rel;
 use App\Models\FGS\fgs_mrn_item;
+use App\Models\FGS\fgs_pi_item;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingGRSExport;
 use App\Exports\FGSgrstransactionExport;
@@ -190,7 +191,7 @@ class GRSController extends Controller
         $condition[] = ['fgs_oef_item_rel.master','=', $id];
         $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];  
         $condition[] = ['fgs_oef_item.coef_status','=',0];          
-        $oef_items = $this->fgs_oef_item->getItems($condition);
+        $oef_items = $this->fgs_oef_item->getAllItems($condition);
         $data = '<div class="row">
            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
@@ -301,7 +302,7 @@ class GRSController extends Controller
     public function GRSitemlist(Request $request, $grs_id)
     {
         $grs_master = fgs_grs::find($grs_id);
-        $condition[] = ['fgs_oef_item_rel.master','=', $grs_master['oef_id']];
+        $condition[] = ['fgs_oef_item_rel.master','=', $grs_master->oef_id];
         $condition[] = ['fgs_oef_item.quantity_to_allocate','!=',0];
         $condition[] = ['fgs_oef_item.coef_status','=',0];             
         $oef_items = $this->fgs_oef_item->getItems($condition);
@@ -309,7 +310,7 @@ class GRSController extends Controller
         {
             $product_batchcards = fgs_product_stock_management::select('fgs_product_stock_management.batchcard_id','batchcard_batchcard.batch_no','fgs_product_stock_management.quantity as batchcard_available_qty')
                                     ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'fgs_product_stock_management.batchcard_id')
-                                    ->where('fgs_product_stock_management.stock_location_id','=',$grs_master['stock_location1'])
+                                    ->where('fgs_product_stock_management.stock_location_id','=',$grs_master->stock_location1)
                                     ->where('fgs_product_stock_management.product_id','=',$item['product_id'])
                                     ->where('fgs_product_stock_management.quantity','!=',0)
                                     ->get();
@@ -549,6 +550,7 @@ class GRSController extends Controller
                     ->where($condition)
                     ->where('fgs_grs_item.cgrs_status','=',0)
                     ->where('fgs_grs.status','=',1)
+                    ->where('fgs_grs_item.status','=',1)
                     ->orderBy('fgs_grs_item.id','DESC')
                     ->distinct('fgs_grs_item.id')
                     ->get();
@@ -628,5 +630,221 @@ class GRSController extends Controller
             ->get();
 
         return Excel::download(new FGSgrstransactionExport($items), 'FGS-GRS-transaction' . date('d-m-Y') . '.xlsx');
+    }
+
+    public function grsItemExistInPI($grs_item_id)
+    {
+        $pi_item = fgs_pi_item::where('grs_item_id','=',$grs_item_id)->where('status','=',1)->get();
+        if(count($pi_item)>0)
+        return 1;
+        else
+        return 0;
+
+    }
+    public function grsExistInPI($grs_id)
+    {
+        $pi_item = fgs_pi_item::where('grs_id','=',$grs_id)->where('status','=',1)->get();
+        if(count($pi_item)>0)
+        return 1;
+        else
+        return 0;
+    }
+    public function GRSItemDelete($grs_item_id,Request $request)
+    {
+        $grs_item = fgs_grs_item::where('id','=',$grs_item_id)->first();
+        $grs_id = fgs_grs_item_rel::where('item','=',$grs_item_id)->first();
+        $grs_data = fgs_grs::find($grs_id->master);
+        $mma_stock_update = fgs_maa_stock_management::where('product_id','=',$grs_item->product_id)
+                                            ->where('batchcard_id','=',$grs_item->batchcard_id)
+                                            ->decrement('quantity',$grs_item->qty_to_invoice);
+        $prduct_stock_update = fgs_product_stock_management::where('product_id','=',$grs_item->product_id)
+                                                    ->where('batchcard_id','=',$grs_item->batchcard_id)
+                                                    //->where('stock_location_id','=',$grs_data->stock_location1)
+                                                    ->increment('quantity',$grs_item->qty_to_invoice);
+        $oef_item = fgs_oef_item::where('id','=',$grs_item->oef_item_id)->first();
+        $new_qty_to_allocate = $oef_item->quantity_to_allocate+$grs_item->qty_to_invoice;
+        $oef_item_update = fgs_oef_item::where('id','=',$grs_item->oef_item_id)->update(['quantity_to_allocate'=>$new_qty_to_allocate,'remaining_qty_after_cancel'=>$new_qty_to_allocate]);
+        $grs_item_update = fgs_grs_item::where('id','=',$grs_item_id)->update(['status'=>0]);
+
+        if($mma_stock_update &&  $prduct_stock_update && $grs_item_update)
+        {
+            $request->session()->flash('success', "You have successfully deleted a GRS Item !");
+            return redirect('fgs/GRS/item-list/'.$grs_id->master);
+        }
+
+
+    }
+
+    public function GRSDelete($grs_id,Request $request)
+    {
+        $grs = fgs_grs::where('id','=',$grs_id)->first();
+        $grs_items = fgs_grs_item_rel::where('master','=',$grs_id)->get();
+        if(count($grs_items)>0)
+        {
+            $request->session()->flash('error', "You can't deleted this GRS(".$grs->grs_number.").It have items !");
+        }
+        else
+        {
+            $update = $this->fgs_grs->update_data(['id','=',$grs_id],['status'=>0]);
+            $request->session()->flash('success', "You have successfully deleted a GRS(".$grs->grs_number.") !");
+        }
+        return redirect('fgs/GRS-list');
+
+    }
+
+    public function GRSEdit($grs_id,Request $request,)
+    {
+        if($request->isMethod('post'))
+        {
+            $validation['grs_id'] = ['required'];
+            $validation['grs_number'] = ['required'];
+            $validation['grs_date'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                $data['grs_number']=$request->grs_number;
+                $data['grs_date']=date('Y-m-d', strtotime($request->grs_date));
+                $update = $this->fgs_grs->update_data(['id'=>$grs_id],$data);
+                if($update)
+                $request->session()->flash('success', "You have successfully update a GRS.");
+                else
+                $request->session()->flash('error', "You have failed to update a GRS.");
+                return redirect('fgs/GRS-list');
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('fgs/GRS-list')->withErrors($validator)->withInput();
+            }
+        }
+        else
+        {
+            $grs= $this->fgs_grs->get_single_grs(['fgs_grs.id'=>$grs_id]);
+            //print_r($grs);exit;
+            return view('pages/FGS/GRS/GRS-add', compact('grs'));
+        }
+    }
+
+    public function GRSItemEdit($grs_item_id,Request $request)
+    {
+        if($request->isMethod('post'))
+        {
+            $validation['grs_id'] = ['required'];
+            $validation['batchcard'] = ['required'];
+            $validation['grs_item_id'] = ['required'];
+            $validation['batch_qty'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                
+                $grs_master = fgs_grs::find($request->grs_id);
+                $grs_item = fgs_grs_item::find($request->grs_item_id);
+                $fgs_stock_old_batch = fgs_product_stock_management::select('id as fgs_stock_id','quantity')
+                                                        ->where('product_id','=',$grs_item['product_id'])
+                                                        ->where('stock_location_id','=',$grs_master['stock_location1'])
+                                                        ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                                                        ->first();
+                /*$oef_qty_updation = $oef_item['quantity_to_allocate']- $request->batch_qty;
+                $oef_item['quantity_to_allocate'] = $oef_qty_updation;
+                $oef_item['remaining_qty_after_cancel'] = $oef_qty_updation;
+                $oef_item->save();*/
+            
+                $old_batch_stock_updation = $fgs_stock_old_batch['quantity']+$grs_item->qty_to_invoice;
+                $old_stock_mngment= fgs_product_stock_management::find($fgs_stock_old_batch['fgs_stock_id']);
+                $old_stock_mngment->quantity = $old_batch_stock_updation;
+                $old_stock_mngment->save();
+
+                $maa_stock_old_batch = fgs_maa_stock_management::select('id as maa_stock_id','quantity')
+                                        ->where('product_id','=',$grs_item['product_id'])
+                                        ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                                        ->first();
+                $old_batch_maa_stock_updation = $maa_stock_old_batch['quantity']-$grs_item->qty_to_invoice;
+                $old_batch_update = $this->fgs_maa_stock_management->update_data(['id'=>$maa_stock_old_batch['id']],['quantity'=>$old_batch_maa_stock_updation]);
+
+                $fgs_stock_new_batch = fgs_product_stock_management::select('id as fgs_stock_id','quantity')
+                                    ->where('product_id','=',$grs_item['product_id'])
+                                    ->where('stock_location_id','=',$grs_master['stock_location1'])
+                                    ->where('batchcard_id','=',$request->batchcard)
+                                    ->first();
+
+                $new_batch_stock_updation = $fgs_stock_new_batch['quantity']-$request->batch_qty;
+                $new_stock_mngment= fgs_product_stock_management::find($fgs_stock_new_batch['fgs_stock_id']);
+                $new_stock_mngment->quantity = $new_batch_stock_updation;
+                $new_stock_mngment->save();
+
+                $maa_stock_new_batch = fgs_maa_stock_management::select('id as maa_stock_id','quantity')
+                                        ->where('product_id','=',$grs_item['product_id'])
+                                        ->where('batchcard_id','=',$request->batchcard)
+                                        ->first();
+
+                if($maa_stock_new_batch)
+                {
+                    $maa_new_stock_updation = $maa_stock_new_batch['quantity']+$request->batch_qty;
+                    $update = $this->fgs_maa_stock_management->update_data(['id'=>$maa_stock_new_batch['id']],['quantity'=>$maa_new_stock_updation]);
+                }
+                else
+                {
+                    $stock['product_id']= $grs_item['product_id'];
+                    $stock['batchcard_id']= $request->batchcard;
+                    $stock['quantity']= $request->batch_qty;
+                    $data['created_at'] =date('Y-m-d H:i:s');
+                    $stock_add = $this->fgs_maa_stock_management->insert_data($stock);
+                }
+
+                $data['batchcard_id'] = $request->batchcard;
+                $data['batch_quantity'] = $request->batch_qty;
+                $data['remaining_qty_after_cancel'] = $request->batch_qty;
+                $data['qty_to_invoice'] = $request->batch_qty;
+                //$data['created_at'] =date('Y-m-d H:i:s');
+                $update = $this->fgs_grs_item->update_data(['fgs_grs_item.id'=>$request->grs_item_id],$data);
+
+                if($update)
+                {
+                    $request->session()->flash('success', "You have successfully updated a GRS Item!");
+                    return redirect('fgs/GRS/item-list/'.$request->grs_id);
+                }
+                else
+                {
+                    $request->session()->flash('error', "GRS Item updation is failed. Try again... !");
+                    return redirect('fgs/GRS/item-list/'.$request->grs_id);
+                }
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('fgs/GRS/item-list/'.$request->grs_id)->withErrors($validator)->withInput();
+            }
+        }
+        else
+        {
+            $grs_item = $this->fgs_grs_item->getSingleItem(['fgs_grs_item.id'=>$grs_item_id]);
+            $grs_id = fgs_grs_item_rel::where('item','=',$grs_item_id)->first();
+            $grs_master = fgs_grs::find($grs_id->master);
+            $grs_id = $grs_id->master;
+
+            //$oef_item = $this->fgs_oef_item->getSingleItem(['fgs_oef_item.id'=>$oef_item_id]);
+            if($grs_item)
+            {
+                $product_batchcards = fgs_product_stock_management::select('fgs_product_stock_management.batchcard_id','batchcard_batchcard.batch_no','fgs_mrn_item.id as mrn_item_id',
+                                                'fgs_product_stock_management.quantity as batchcard_available_qty','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date')
+                                                ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=', 'fgs_product_stock_management.batchcard_id')
+                                                ->leftJoin('fgs_mrn_item','fgs_mrn_item.batchcard_id','=','batchcard_batchcard.id')
+                                                ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
+                                                ->leftJoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
+                                                ->where('fgs_product_stock_management.stock_location_id','=',$grs_master['stock_location1'])
+                                                ->where('fgs_product_stock_management.product_id','=',$grs_item['product_id'])
+                                                ->where('fgs_mrn_item.product_id','=',$grs_item['product_id'])
+                                                ->where('fgs_mrn.stock_location','=', $grs_master['stock_location1'])
+                                                ->where('fgs_mrn.product_category','=',$grs_master['product_category'])
+                                                ->where('fgs_product_stock_management.quantity','!=',0)
+                                                ->orderBy('batchcard_batchcard.id','ASC')
+                                                ->get();
+                    if(count($product_batchcards)>0)
+                    {
+                        $grs_item['batchcards'] = $product_batchcards;
+                    }
+                    //print_r(json_encode($oef_item));exit;
+                    
+            }
+            return view('pages/FGS/GRS/GRS-item-add', compact('grs_id','grs_item'));
+        }
     }
 }

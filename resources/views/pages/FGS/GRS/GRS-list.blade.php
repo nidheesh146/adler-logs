@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-
+@inject('fn', 'App\Http\Controllers\Web\FGS\GRSController')
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -122,8 +122,18 @@
                                 <td>{{$master['location_name1']}}</td>
                                 <td>{{$master['location_name2']}}</td>
                                 <td>{{$master['firm_name']}}</td>
-                                <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/item-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
-								<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/GRS/pdf/'.$master["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a></td>
+                                <td>
+									<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/item-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
+									<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/GRS/pdf/'.$master["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
+									<?php $is_exist_in_pi = $fn->grsExistInPI($master['id']);?>
+									@if($is_exist_in_pi==1)
+									<a class="badge badge-primary" style="font-size: 13px;" onclick="return confirm('Cannot edit GRS . It moved to next step!');"><i class="fa fa-edit"></i> Edit</a>
+									<a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cannot delete GRS . It moved to next step!');"><i class="fa fa-trash"></i> Delete</a>
+									@else
+									<a class="badge badge-primary" style="font-size: 13px;" href="{{url('fgs/GRS-edit/'.$master['id'])}}"><i class="fa fa-edit"></i> Edit</a>
+									<a class="badge badge-danger" style="font-size: 13px;"  href="{{url('fgs/GRS-delete/'.$master['id'])}}"><i class="fa fa-trash"></i> Delete</a>
+									@endif
+								</td>
                             </tr>
                             @endforeach
 							</tbody>

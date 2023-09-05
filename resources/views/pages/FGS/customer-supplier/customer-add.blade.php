@@ -89,9 +89,18 @@
                                 <input type="text" name="city" class="form-control"  value="{{(!empty($datas)) ? $datas['city'] : ""}}" placeholder="CIty"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Zone *</label>
+                                <select name="zone"  id="zone" class="form-control">
+                                    <option value="">-- Select one ---</option>
+                                    @foreach($zones as $item)
+                                    <option value="{{$item->id}}" @if($datas != null) @if($item->id == $datas->zone) selected @endif @endif>{{$item->zone_name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>State *</label>
 
-                                <select name="state"  class="form-control">
+                                <select name="state" id="state" class="form-control">
                                     <option value="">-- Select one ---</option>
                                  @foreach ($states as $item)
                                         <option value=" {{$item->state_id}}" @if($datas != null) @if(  $item->state_id == $datas->state) selected @endif @endif>{{$item->state_name}}</option>
@@ -99,13 +108,8 @@
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Zone *</label>
-                                <select name="zone"  class="form-control">
-                                    <option value="">-- Select one ---</option>
-                                    @foreach($zones as $item)
-                                    <option value="{{$item->id}}" @if($datas != null) @if($item->id == $datas->zone) selected @endif @endif>{{$item->zone_name}}</option>
-                                    @endforeach
-                                </select>
+                                <label>Country </label>
+                                <input type="text" name="country" id="country" class="form-control"  value="{{(!empty($datas)) ? $datas->country: ""}}" placeholder="Country" > 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>PAN Number *</label>
@@ -267,6 +271,9 @@ $("#commentForm").validate({
                 sales_type: {
                     required: true,
                 },
+                zone: {
+                    required: true,
+                },
                 currency: {
                     required: true,
                 },
@@ -275,7 +282,21 @@ $("#commentForm").validate({
                 form.submit();
             }
  });
-
+ $('#zone').on('change', function() {
+    var zone = $(this).find(":selected").text();
+    $('#state').removeAttr('disabled');
+    $('#country').removeAttr('required');
+    if(zone=='Export')
+    {
+        $('#state').attr('disabled','true');
+        $('#country').attr('required','true');
+    }
+    else
+    {
+        $('#state').removeAttr('disabled');
+        $('#country').removeAttr('required');
+    }
+});
 </script>
 
 

@@ -184,7 +184,7 @@
                 <td style="text-align:center;">{{$item['quantity']}}</td> 
                 <td>Nos</td> 
                 <td style="text-align:center;">{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td style="text-align:center;">{{date('d-m-Y', strtotime($item['expiry_date']))}}</td>
+                <td style="text-align:center;">@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td>
                
             </tr>
             @endforeach
