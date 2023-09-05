@@ -787,7 +787,7 @@ class MRNController extends Controller
         // ->where('id',$id)
         // ->first();
         $item_details = DB::table('fgs_mrn_item')
-            ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
+            ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.id as product_id','product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
             ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
             ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
             ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
@@ -795,58 +795,97 @@ class MRNController extends Controller
             ->where('fgs_mrn_item.id', $id)
             ->orderBy('fgs_mrn_item.id', 'DESC')
             ->first();
+        $batchcards = batchcard::select('batchcard_batchcard.batch_no', 'batchcard_batchcard.id as batch_id', 'batchcard_batchcard.start_date', 'batchcard_batchcard.target_date', 'batchcard_batchcard.quantity')
+            ->where('batchcard_batchcard.product_id', '=', $item_details->product_id)
+            ->where('is_trade',0)
+            ->orderBy('batchcard_batchcard.id', 'asc')
+            ->get();
+        //$batchcards = fgs_product_stock_management
         // dd($item_details);
 
-        return view('pages/fgs/MRN/MRN-update-item', compact('item_details', 'id'));
+        return view('pages/fgs/MRN/MRN-update-item', compact('item_details', 'id','batchcards'));
     }
     public function update_mrn(Request $request)
     {
-        // $end = date('Y-m-d', strtotime('$request->manufacturing_date1','+5 years'));
-        // $expiry_date=($request->manufacturing_date1)->addYears(5);
+        $validation['batch_no'] = ['required'];
+        $validation['stock_qty'] = ['required'];
+        $validation['manufacturing_date'] = ['required', 'date'];
+        $validator = Validator::make($request->all(), $validation);
+        if(!$validator->errors()->all())
+        {
+            $mrn_item = fgs_mrn_item::find($request->mrn_item_id);
+            $mrn_rel = DB::table('fgs_mrn_item_rel')->where('item',$request->mrn_item_id)->first();
+            $mrn = fgs_mrn::find($mrn_rel->master);
+            $old_batch = $mrn_item->batchcard_id;
+            $old_qty = $mrn_item->quantity;
+            $product = $request->product_id;
 
-        $product = $request->product_id;
-        $batch=$request->batchcard_id;
-        //dd($batch);
-        $ps_mangaer=DB::table('fgs_product_stock_management')
-                        ->where('product_id','=',$product)
-                        ->where('batchcard_id','=',$batch)
-                        ->first();
-        
-        $sterile = DB::table('product_product')
-                    ->where('id', $product)
-                    ->first();
-
-        if ($sterile->is_sterile == 1) {
-            $end = date('Y-m-d', strtotime($request->manufacturing_date1 . '+5 years'));
-        } else {
-            $end = NULL;
+            //old batch Stock updation 
+            $old_stock = DB::table('fgs_product_stock_management')
+                                    ->where('product_id','=',$product)
+                                    ->where('batchcard_id','=',$old_batch)
+                                    ->first();
+            $old_stock_update = $old_stock->quantity - $mrn_item->quantity; 
+            $old_stock_updation = DB::table('fgs_product_stock_management')
+                                            ->where('id',$old_stock->id)
+                                            ->update(['quantity'=>$old_stock_update]);
+            
+            
+            //new batch stock updation
+            $new_stock = DB::table('fgs_product_stock_management')
+                                ->where('product_id','=',$product)
+                                ->where('batchcard_id','=',$request->batch_no)
+                                ->first();
+            if(!empty($new_stock))
+            {
+                if ($request->expiry_date != 'N.A')
+                    $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
+                else
+                    $expiry_date = '';
+                $new_stock_update = $new_stock->quantity + $request->stock_qty; 
+                $new_stock_updation = DB::table('fgs_product_stock_management')
+                                        ->where('id',$old_stock->id)
+                                        ->update([
+                                            'quantity'=>$new_stock_update,
+                                            'manufacturing_date'=>date('Y-m-d', strtotime($request->manufacturing_date)),
+                                            'expiry_date'=>$expiry_date]);
+            }
+            else
+            {
+                if ($request->expiry_date != 'N.A')
+                    $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
+                else
+                    $expiry_date = '';
+                $stock = [
+                    "product_id" => $product,
+                    "batchcard_id" => $request->batch_no,
+                    "quantity" => $request->stock_qty,
+                    "stock_location_id" =>$mrn->stock_location,
+                    'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date)),
+                    'expiry_date' => $expiry_date,
+                    //'created_at'=>date('Y-m-d'),
+                ];
+                $res = $this->fgs_product_stock_management->insert_data($stock);
+            }
+            if ($request->expiry_date != 'N.A')
+            $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
+            else
+            $expiry_date = '';
+            $data['batchcard_id']=$request->batch_no;
+            $data['quantity'] = $request->stock_qty;
+            $data['manufacturing_date'] = date('Y-m-d', strtotime($request->manufacturing_date1));
+            $data['expiry_date'] = $expiry_date;
+            $update_mrn = $this->fgs_mrn_item->update_data(['id'=>$mrn_item->id],$data);
+            if($update_mrn)
+            $request->session()->flash('success', "You have successfully updated a MRN Item !");
+            else
+            $request->session()->flash('error', "You have failed to update a MRN Item !");
+            return redirect('fgs/MRN/item-list/' . $mrn->id);
         }
-        //dd($end);
-        DB::table('fgs_mrn_item')
-            ->where('id', $request->Itemtypehidden)
-            ->update([
-                'quantity' => $request->stock_qty1,
-                'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date1)),
-                'expiry_date' => $end
-            ]);
-            DB::table('fgs_product_stock_management')
-            ->where('id', $ps_mangaer->id)
-            ->update([
-                'quantity' => $request->stock_qty1,
-                'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date1)),
-                'expiry_date' => $end
-            ]);
-        $item_details = DB::table('fgs_mrn_item')
-            ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
-            ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
-            ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
-            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
-            ->where('fgs_mrn_item.id', $request->Itemtypehidden)
-            ->orderBy('fgs_mrn_item.id', 'DESC')
-            ->first();
-        $id = $request->Itemtypehidden;
-        return view('pages/fgs/MRN/MRN-update-item', compact('item_details', 'id'));
+        else
+        {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
     }
     public function delete_mrn($id)
     {
