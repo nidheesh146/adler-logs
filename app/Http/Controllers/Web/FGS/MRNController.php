@@ -781,29 +781,36 @@ class MRNController extends Controller
         $mrn_check = fgs_mrn_item_rel::where('master', $id)->first();
         return $mrn_check;
     }
-    public function edit_mrn($id)
+    public function edit_mrn($id,Request $request)
     {
-        // $item_details=DB::table('fgs_mrn')
-        // ->where('id',$id)
-        // ->first();
-        $item_details = DB::table('fgs_mrn_item')
-            ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.id as product_id','product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
-            ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
-            ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
-            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
-            ->where('fgs_mrn_item.id', $id)
-            ->orderBy('fgs_mrn_item.id', 'DESC')
-            ->first();
-        $batchcards = batchcard::select('batchcard_batchcard.batch_no', 'batchcard_batchcard.id as batch_id', 'batchcard_batchcard.start_date', 'batchcard_batchcard.target_date', 'batchcard_batchcard.quantity')
-            ->where('batchcard_batchcard.product_id', '=', $item_details->product_id)
-            ->where('is_trade',0)
-            ->orderBy('batchcard_batchcard.id', 'asc')
-            ->get();
-        //$batchcards = fgs_product_stock_management
-        // dd($item_details);
+    
+        $grs_item = DB::table('fgs_grs_item')->where('mrn_item_id',$id)->where('status','=',1)->get();
+        if(count($grs_item)>0)
+        {
+            $request->session()->flash('error', "You can't update this MRN Item.This moved to Next step !");
+            return redirect()->back();
+        }
+        else
+        {
+            $item_details = DB::table('fgs_mrn_item')
+                ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.id as product_id','product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
+                ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+                ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+                ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+                ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+                ->where('fgs_mrn_item.id', $id)
+                ->orderBy('fgs_mrn_item.id', 'DESC')
+                ->first();
+            $batchcards = batchcard::select('batchcard_batchcard.batch_no', 'batchcard_batchcard.id as batch_id', 'batchcard_batchcard.start_date', 'batchcard_batchcard.target_date', 'batchcard_batchcard.quantity')
+                ->where('batchcard_batchcard.product_id', '=', $item_details->product_id)
+                ->where('is_trade',0)
+                ->orderBy('batchcard_batchcard.id', 'asc')
+                ->get();
+            //$batchcards = fgs_product_stock_management
+            // dd($item_details);
 
-        return view('pages/fgs/MRN/MRN-update-item', compact('item_details', 'id','batchcards'));
+            return view('pages/fgs/MRN/MRN-update-item', compact('item_details', 'id','batchcards'));
+        }
     }
     public function update_mrn(Request $request)
     {
