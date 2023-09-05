@@ -36,62 +36,6 @@
         @endforeach  
 		
 		<div class="tab-content">
-		<div class="row row-sm mg-b-20 mg-lg-b-0">
-            <div class="table-responsive" style="margin-bottom: 13px;">
-                <table class="table table-bordered mg-b-0">
-                    <tbody>
-                        <tr>
-                            <style>
-                                .select2-container .select2-selection--single {
-                                    height: 26px;
-                                    /* width: 122px; */
-                                }
-                                .select2-selection__rendered {
-                                    font-size:12px;
-                                }
-                            </style>
-                            <form autocomplete="off">
-                                <th scope="row">
-                                    <div class="row">
-                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                            <label for="exampleInputEmail1">Customer  *</label>
-                                            <select  class="form-control customer" name="customer" class="form-control">
-                                                <!-- @if(request()->get('supplier'))
-                                                <option value="{{request()->get('supplier')}}" selected>{{$edit['mac']->invoice_number}}</option>
-                                                @endif -->
-                                            </select>
-                                        </div> 
-                                        <!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                            <label for="exampleInputEmail1">Customer Biiling Address</label>
-                                            <textarea name="billing_address" class="form-control" id="billing_address" readonly></textarea>
-                                        </div> 
-                                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                            <label for="exampleInputEmail1">Customer Shipping Address</label>
-                                            <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly></textarea>
-                                        </div>  -->
-                                        <!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                            <label>PI Date *</label>
-                                            <input type="date" value="{{date('Y-m-d')}}" class="form-control pi_date" id="pi_date" name="pi_date"  placeholder="">
-                                        </div> -->
-                                        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-                                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-                                                <label style="width: 100%;">&nbsp;</label>
-                                                <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-                                                @if(count(request()->all('')) > 0)
-                                                    <a href="{{url()->current();}}" class="badge badge-pill badge-warning"
-                                                                style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-                                                @endif
-                                            </div> 
-                                        </div>
-                                    </div> 
-                                </th>
-                            </form>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        @isset($grs_items)
         <form autocomplete="off"  id="form1" method="POST">
         {{ csrf_field() }}
 		<div class="tab-pane active show " id="purchase">
@@ -102,86 +46,41 @@
                     </label>
                     <div class="form-devider"></div>
                         <div class="row">
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label for="exampleInputEmail1">PI Number </label>
+                                <input type="text" value="{{$pi['pi_number']}}" class="form-control" id=""  readonly placeholder="">
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label for="exampleInputEmail1">Customer  *</label>
-                                <input type="text" value="" class="form-control" id="customer_name"  readonly placeholder="{{$customer['firm_name']}}">
-                                <input type="hidden" class="form-control" name="customer_id"   value="{{$customer['id']}}">
+                                <input type="text" value="{{$pi->firm_name}}" class="form-control" id="customer_name"    readonly>
+                                <input type="hidden" class="form-control" name="pi_id"   value="{{$pi['id']}}">
                             </div> 
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label for="exampleInputEmail1">Customer Biiling Address</label>
-                                <textarea name="billing_address" class="form-control" id="billing_address" readonly>{{$customer['billing_address']}}</textarea>
+                                <textarea name="billing_address" class="form-control" id="billing_address" rows="4" readonly>{{$pi['billing_address']}}</textarea>
                             </div> 
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label for="exampleInputEmail1">Customer Shipping Address</label>
-                                <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly>{{$customer['shipping_address']}}</textarea>
+                                <textarea name="shipping_address"  class="form-control" id="shipping_address" rows="4" readonly>{{$pi['shipping_address']}}</textarea>
                             </div> 
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>PI Date *</label>
-                                <input type="date" value="{{date('Y-m-d')}}" class="form-control pi_date" id="pi_date" name="pi_date"  placeholder="">
+                                <input type="text" value="{{date('d-m-Y', strtotime($pi['pi_date']))}}" class="form-control pi_date" id="pi_date" name="pi_date"  placeholder="">
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <button type="submit" class="btn btn-primary btn-rounded invoice-create-btn" style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
+                                    Save 
+                                </button>
+                            </div>
+                    </div>
                 </div>
             </div>
-			<div class="table-responsive">
-				<table class="table table-bordered mg-b-0" id="example1">
-					<thead>
-						<tr>
-                            <th><input type="checkbox" class="item-select-radio  check-all"></th>
-							<th style="width:120px;">GRS Number :</th>
-							<th>SKU Code</th>
-							<th>HSN Code</th>
-                            <th>Customer</th>
-                            <th>GRS Date</th>
-                            <th>Qty</th>
-                            <th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-    					@foreach($grs_items as $item)
-                        <tr>
-                            <td><input type="checkbox" class="check_pi" name="grs_item_id[]" id="grs_item_id" supplier="{{$item['firm_name']}}" value="{{$item['id']}}"></td>
-                            <td>{{$item['grs_number']}}</td>
-                            <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['discription']}}" >{{$item['sku_code']}}</td>
-                            <td>{{$item['hsn_code']}}</td>
-                            <td>{{$item['firm_name']}}</td>
-                            <td>{{date('d-m-Y', strtotime($item['grs_date']))}}</td>
-                            <td>@if($item['current_invoice_qty']!=0)
-                                {{$item['current_invoice_qty']}} Nos
-                                @elseif($item['remaining_qty_after_cancel']==$item['qty_to_invoice'])
-                                {{$item['remaining_qty_after_cancel']}} Nos
-                                @else
-                                {{$item['qty_to_invoice']}} Nos
-                                @endif
-                            </td>
-                            <td><a href="#" data-toggle="modal"  data-target="#PIpendingModal" class="invoice-pending-model badge badge-info"   id="invoice-pending-model" grsitem="{{$item['id']}}" skucode="{{$item['sku_code']}}"  orderqty="{{$item['remaining_qty_after_cancel']}}" description="{{$item['discription']}}"   grsid="{{$item['grs_number']}}" style="font-size: 13px;" balanceQty="@if($item['current_invoice_qty']!=0)
-                                {{$item['current_invoice_qty']}} 
-                                @elseif($item['remaining_qty_after_cancel']==$item['qty_to_invoice'])
-                                {{$item['remaining_qty_after_cancel']}}
-                                @else
-                                {{$item['qty_to_invoice']}} 
-                                @endif"><i class="fas fa-plus"></i> Partial</a>
-                            </td>
-                        </tr>
-                        @endforeach
-					</tbody>
-				</table>
-				<div class="box-footer clearfix">
-                
-				</div>
-                <div class="form-devider"></div>
-                @if(count($grs_items)>0)
-                    <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <button type="submit" class="btn btn-primary btn-rounded invoice-create-btn" style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"role="status" aria-hidden="true"></span>  <i class="fas fa-save"></i>
-                                Save 
-                            </button>
-                        </div>
-                    </div>
-                @endif
-			</div>
+			
 		</div>
         </form>
-		@endif
+		
 	</div>
 </div>
 	<!-- az-content-body -->
@@ -263,6 +162,10 @@
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
 <script>
+    $(".pi_date").datepicker({
+    format: " dd-mm-yyyy",
+    autoclose:true,
+    });
   $(".customer").select2({
         placeholder: 'Choose one',
         searchInputPlaceholder: 'Search',

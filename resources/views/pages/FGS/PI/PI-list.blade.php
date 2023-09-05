@@ -156,6 +156,14 @@
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/PI/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>	
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/payment-pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Payment</a>	
+										<?php $is_exist_in_dni = $fn->piExistInDNI($item['id']);?>
+										@if($is_exist_in_dni==1)
+										<a class="badge badge-primary" style="font-size: 13px;" onclick="return confirm('Cannot edit PI . It moved to next step!');"><i class="fa fa-edit"></i> Edit</a>
+										<a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cannot delete PI . It moved to next step!');"><i class="fa fa-trash"></i> Delete</a>
+										@else
+										<a class="badge badge-primary" style="font-size: 13px;" href="{{url('fgs/PI-edit/'.$item['id'])}}"><i class="fa fa-edit"></i> Edit</a>
+										<a class="badge badge-danger" style="font-size: 13px;"  href="{{url('fgs/PI-delete/'.$item['id'])}}"><i class="fa fa-trash"></i> Delete</a>
+										@endif
 									</td>
 								</tr>
 								@endforeach

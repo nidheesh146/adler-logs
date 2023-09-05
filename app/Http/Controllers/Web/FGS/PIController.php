@@ -13,6 +13,7 @@ use App\Models\FGS\fgs_oef;
 use App\Models\FGS\fgs_grs_item_rel;
 use App\Models\FGS\fgs_grs_item;
 use App\Models\FGS\fgs_pi_item;
+use App\Models\FGS\fgs_dni_item;
 use App\Models\FGS\fgs_pi_item_rel;
 use App\Models\FGS\fgs_maa_stock_management;
 use App\Models\FGS\fgs_product_stock_management;
@@ -227,7 +228,7 @@ class PIController extends Controller
     public function PIitemlist($pi_id)
     {
         $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','product_product.sku_code','product_product.hsn_code','product_product.discription','fgs_pi_item.remaining_qty_after_cancel',
-        'batchcard_batchcard.batch_no','fgs_pi_item.batch_qty','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code')
+        'batchcard_batchcard.batch_no','fgs_pi_item.batch_qty','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi_item.id as pi_item_id')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date')
                         ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
@@ -709,5 +710,82 @@ class PIController extends Controller
             ->orderBy('fgs_pi_item.id', 'desc')
             ->get();
         return Excel::download(new FGSpitransactionExport($items), 'FGS-PI-transaction' . date('d-m-Y') . '.xlsx');
+    }
+
+    public function piExistInDNI($pi_id)
+    {
+        $dni_item = fgs_dni_item::where('pi_id','=',$pi_id)->get();
+        if(count($dni_item)>0)
+        return 1;
+        else
+        return 0;
+    }
+    public function piItemExistInDNI($pi_item_id)
+    {
+        $dni_item = fgs_dni_item::where('pi_item_id','=',$pi_item_id)->get();
+        if(count($dni_item)>0)
+        return 1;
+        else
+        return 0;
+    }
+    public function PIItemDelete($pi_item_id,Request $request)
+    {
+        $pi_item = fgs_pi_item::where('id','=',$pi_item_id)->first();
+        $grs_item = fgs_grs_item::find($pi_item->grs_item_id);
+        $update_qty = $grs_item->qty_to_invoice+$pi_item->remaining_qty_after_cancel;
+        $update_grs_item = fgs_grs_item::where('id','=',$pi_item->grs_item_id)->update(['qty_to_invoice'=>$update_qty,'remaining_qty_after_cancel'=>$update_qty]);
+        $delete = fgs_pi_item::where('id','=',$pi_item_id)->delete();
+        fgs_pi_item_rel::where('item','=',$pi_item_id)->delete();
+        if($delete)
+        $request->session()->flash('success', "You have successfully deleted a PI Item !");
+        else
+        $request->session()->flash('error', "You have failed to delete PI Item !");
+        return redirect('fgs/PI-list');
+    }
+
+    public function PIDelete($pi_id,Request $request)
+    {
+        $pi = fgs_pi::where('id','=',$pi_id)->first();
+        $dni_items = fgs_pi_item_rel::where('master','=',$pi_id)->get();
+        if(count($dni_items)>0)
+        {
+            $request->session()->flash('error', "You can't deleted this PI(".$pi->pi_number.").It have items !");
+        }
+        else
+        {
+            $update = $this->fgs_pi->update_data(['id'=>$pi_id],['status'=>0]);
+            $request->session()->flash('success', "You have successfully deleted a PI(".$pi->pi_number.") !");
+        }
+        return redirect('fgs/PI-list');
+    }
+
+    public function PIEdit($pi_id,Request $request)
+    {
+        if($request->isMethod('post'))
+        {
+            $validation['pi_id'] = ['required'];
+            $validation['pi_date'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                $pi = fgs_pi::find($pi_id);
+                $update = $this->fgs_pi->update_data(['id'=>$pi_id],['pi_date'=>date('Y-m-d',strtotime($request->pi_date))]);
+                if($update)
+                $request->session()->flash('success', "You have successfully updated a PI(".$pi->pi_number.") !");
+                else
+                $request->session()->flash('error', "You have failed updated a PI(".$pi->pi_number.") !");
+                return redirect('fgs/PI-list');
+            }
+            else
+            {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+        }
+        else
+        {
+            $pi = $this->fgs_pi->get_single_pi(['fgs_pi.id'=>$pi_id]);
+            return view('pages/FGS/PI/PI-update',compact('pi'));
+
+        }
     }
 }

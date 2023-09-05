@@ -92,7 +92,7 @@
                                             <td>@if($item['expiry_date']=='0000-00-00') NA @else {{$item['expiry_date']}} @endif</td>
                                             <td>
 												@if($item['cgrs_status']==0)
-												<span class="badge badge-primary" style="width:60px;">Active-{{$item['id']}}</span>
+												<span class="badge badge-primary" style="width:60px;">Active</span>
 												@else
 												<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
 												@endif

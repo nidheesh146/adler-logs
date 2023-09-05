@@ -634,12 +634,20 @@ class GRSController extends Controller
 
     public function grsItemExistInPI($grs_item_id)
     {
-        $pi_item = fgs_pi_item::where('grs_item_id','=',$grs_item_id)->get();
+        $pi_item = fgs_pi_item::where('grs_item_id','=',$grs_item_id)->where('status','=',1)->get();
         if(count($pi_item)>0)
         return 1;
         else
         return 0;
 
+    }
+    public function grsExistInPI($grs_id)
+    {
+        $pi_item = fgs_pi_item::where('grs_id','=',$grs_id)->where('status','=',1)->get();
+        if(count($pi_item)>0)
+        return 1;
+        else
+        return 0;
     }
     public function GRSItemDelete($grs_item_id,Request $request)
     {
@@ -665,6 +673,55 @@ class GRSController extends Controller
         }
 
 
+    }
+
+    public function GRSDelete($grs_id,Request $request)
+    {
+        $grs = fgs_grs::where('id','=',$grs_id)->first();
+        $grs_items = fgs_grs_item_rel::where('master','=',$grs_id)->get();
+        if(count($grs_items)>0)
+        {
+            $request->session()->flash('error', "You can't deleted this GRS(".$grs->grs_number.").It have items !");
+        }
+        else
+        {
+            $update = $this->fgs_grs->update_data(['id','=',$grs_id],['status'=>0]);
+            $request->session()->flash('success', "You have successfully deleted a GRS(".$grs->grs_number.") !");
+        }
+        return redirect('fgs/GRS-list');
+
+    }
+
+    public function GRSEdit($grs_id,Request $request,)
+    {
+        if($request->isMethod('post'))
+        {
+            $validation['grs_id'] = ['required'];
+            $validation['grs_number'] = ['required'];
+            $validation['grs_date'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if(!$validator->errors()->all())
+            {
+                $data['grs_number']=$request->grs_number;
+                $data['grs_date']=date('Y-m-d', strtotime($request->grs_date));
+                $update = $this->fgs_grs->update_data(['id'=>$grs_id],$data);
+                if($update)
+                $request->session()->flash('success', "You have successfully update a GRS.");
+                else
+                $request->session()->flash('error', "You have failed to update a GRS.");
+                return redirect('fgs/GRS-list');
+            }
+            if($validator->errors()->all())
+            {
+                return redirect('fgs/GRS-list')->withErrors($validator)->withInput();
+            }
+        }
+        else
+        {
+            $grs= $this->fgs_grs->get_single_grs(['fgs_grs.id'=>$grs_id]);
+            //print_r($grs);exit;
+            return view('pages/FGS/GRS/GRS-add', compact('grs'));
+        }
     }
 
     public function GRSItemEdit($grs_item_id,Request $request)

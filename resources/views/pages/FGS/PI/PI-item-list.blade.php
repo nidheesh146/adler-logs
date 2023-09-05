@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('fn', 'App\Http\Controllers\Web\FGS\PIController')
 
 <div class="az-content az-content-dashboard">
   <br>
@@ -61,6 +62,7 @@
                                     <th>Rate</th>
                                     <th>Discount</th>
                                     <th>Net Value</th>
+									<th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
@@ -77,6 +79,14 @@
                                     <td>{{$item['rate']}} {{$item['currency_code']}}</td>
                                     <td>{{$item['discount']}}%</td>
                                     <td>{{($item['rate']*$item['batch_quantity'])-(($item['batch_quantity']*$item['discount']*$item['rate'])/100)}} {{$item['currency_code']}}</td>
+									<td>
+										<?php $is_exist_in_dni = $fn->piItemExistInDNI($item['pi_item_id']); ?>
+										@if($is_exist_in_dni==1)
+										<a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cannot delete PI Item. It moved to next step!');"><i class="fa fa-trash"></i> Delete</a>
+										@else
+										<a class="badge badge-danger" style="font-size: 13px;"  href="{{url('fgs/PI-item-delete/'.$item['pi_item_id'])}}"><i class="fa fa-trash"></i> Delete</a>
+										@endif
+									</td>
 								</tr>
 								@endforeach
 							</tbody>
