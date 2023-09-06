@@ -57,7 +57,7 @@
                                                     <input type="text" readonly class="form-control" name="prdctcode" id="prdctcode" value="{{$item_details->sku_code}}">
                                                     <input type="hidden" id="min_item_id" value="{{$item_details->id}}" name="min_item_id"> 
                                                     <input type="hidden" value="{{$item_details->product_id}}" name="product_id" id="product_id">
-                                                    <input type="hidden" value="{{$item_details->batchcard_id}}" name="batchcard_id" id="batchcard_id">                                
+                                                    <!--input type="hidden" value="{{$item_details->batchcard_id}}" name="batchcard_id" id="batchcard_id"-->                                
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
                                                     style="float:left;">
@@ -73,7 +73,12 @@
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3"
                                                     style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No * </label>
-                                                    <input type="text" readonly class="form-control" name="batchno" id="batchno" value="{{$item_details->batch_no}}">                            
+                                                    <select class="form-control batch_no" name="batch_no" id="batch_no">
+                                                        <option>..select one..</option>
+                                                        @foreach($batchcards as $batchcard)
+                                                        <option value="{{$batchcard['batch_id']}}" qty="{{$batchcard['quantity']}}" @if($item_details->batch_no==$batchcard['batch_no']) selected="selected" @endif>{{$batchcard['batch_no']}}</option>
+                                                        @endforeach
+                                                    </select>                            
                                                 </div>
                                             </div>
                                             <div class="row"> 
@@ -163,7 +168,13 @@
        
 
        <script>
-
+    $('.batch_no').on('change', function (){
+        var element = $("option:selected", this); 
+        var batchqty = element.attr("qty"); 
+        $('#quantity').attr('max',batchqty);
+        $('#stk_qty').val(batchqty);
+        //alert(batchqty);
+    });
         $(document).on('change', '.min_item_qty', function (e) {
             //alert('kk');
             $("#error1").text('');

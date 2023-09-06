@@ -851,7 +851,7 @@ class MRNController extends Controller
                     $expiry_date = '';
                 $new_stock_update = $new_stock->quantity + $request->stock_qty; 
                 $new_stock_updation = DB::table('fgs_product_stock_management')
-                                        ->where('id',$old_stock->id)
+                                        ->where('id',$new_stock->id)
                                         ->update([
                                             'quantity'=>$new_stock_update,
                                             'manufacturing_date'=>date('Y-m-d', strtotime($request->manufacturing_date)),

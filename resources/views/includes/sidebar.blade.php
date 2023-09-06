@@ -108,7 +108,7 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         'COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','ProductMaster.productList','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist' ,
         'CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd','StockManagement.locationSNNTrade','GRS.GRSItemEdit','GRS.GRSEdit','PI.PIEdit',
         'StockManagement.allLocations','StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','PI.pendingPI','Fgsreport.get_data','StockManagement.batchTraceReport','DNI.netBillingReport','DeliveryNote.ChallanList',
-              'DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist'])){{'active show'}} @endif ">
+              'DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist','MIN.MINitemedit','MRN.edit_mrn'])){{'active show'}} @endif ">
 
         <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
         <ul class="nav-sub">
@@ -146,13 +146,13 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
       <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','GRS.GRSitemAdd','GRS.GRSItemEdit','GRS.GRSEdit',
               'MRN.MRNitemAdd','MRN.MRN_edit','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList',
               'CMIN.CMINitemAdd','MTQ.MTQAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd','DeliveryNote.ChallanList',
-              'DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist'])){{'active show'}} @endif">
+              'DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist','MIN.MINitemedit','MRN.edit_mrn'])){{'active show'}} @endif">
         <a href="#" class="nav-link with-sub">Inventory</a>
         <ul class="nav-sub">
-          <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd','MRN.MRN_edit'])){{'active'}} @endif ">
+          <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd','MRN.MRN_edit','MRN.edit_mrn'])){{'active'}} @endif ">
             <a href="{{url('fgs/MRN-list')}}" class="nav-sub-link">MRN</a>
           </li>
-          <li class="nav-sub-item @if(in_array($Action,['MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd'])){{'active'}} @endif ">
+          <li class="nav-sub-item @if(in_array($Action,['MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','MIN.MINitemedit'])){{'active'}} @endif ">
             <a href="{{url('fgs/MIN-list')}}" class="nav-sub-link">MIN</a>
           </li>
           <li class="nav-sub-item @if(in_array($Action,['CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd'])){{'active'}} @endif ">
