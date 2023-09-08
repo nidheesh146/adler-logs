@@ -230,102 +230,74 @@ class OEFController extends Controller
         return redirect()->back();
     }
     public function edit_oef($id)
-{
-    $oef = fgs_oef::select(
-        'fgs_oef.*',
-        'order_fulfil.order_fulfil_type',
-        'transaction_type.transaction_name',
-        'customer_supplier.id as cust_id',
-        'customer_supplier.firm_name',
-        'customer_supplier.shipping_address',
-        'customer_supplier.contact_person',
-        'customer_supplier.contact_number',
-        'fgs_product_category.category_name'
-    )
-        ->leftJoin('order_fulfil', 'order_fulfil.id', '=', 'fgs_oef.order_fulfil')
-        ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
-        ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'fgs_oef.product_category')
-        ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
-        ->where('fgs_oef.id',$id)
-        //->distinct('fgs_oef.id')
-        //->orderBy('fgs_oef.id', 'DESC')
-        ->first();
-        
-     return view('pages/FGS/OEF/OEF-edit',compact('oef'));
-}
-public function update_oef(Request $request)
-{
-    $condition=[];
-    $cust=fgs_oef::where('id',$request->id)->first();
-    $oldcust=customer_supplier::where('id',$cust->customer_id)->first();
-$newcust=customer_supplier::where('id',$request->customer)->first();
-
-
-
-    $oefitem=fgs_oef_item::select('fgs_oef_item.*')
-    ->leftjoin('fgs_oef_item_rel','fgs_oef_item.id','=','fgs_oef_item_rel.item')
-    ->where('fgs_oef_item_rel.master',$request->id)->get();
-    $customer = customer_supplier::select('customer_supplier.firm_name', 'zone.zone_name', 'state.state_name')
-            ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
-            ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
-            ->where('customer_supplier.id', '=', $request->customer)->first();
+    {
+        $oef = fgs_oef::select(
+            'fgs_oef.*',
+            'order_fulfil.order_fulfil_type',
+            'transaction_type.transaction_name',
+            'customer_supplier.id as cust_id',
+            'customer_supplier.firm_name',
+            'customer_supplier.shipping_address',
+            'customer_supplier.contact_person',
+            'customer_supplier.contact_number',
+            'fgs_product_category.category_name'
+        )
+            ->leftJoin('order_fulfil', 'order_fulfil.id', '=', 'fgs_oef.order_fulfil')
+            ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'fgs_oef.product_category')
+            ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
+            ->where('fgs_oef.id',$id)
+            //->distinct('fgs_oef.id')
+            //->orderBy('fgs_oef.id', 'DESC')
+            ->first();
             
-    foreach($oefitem as $items){
-       $itemproduct=$items['product_id'];
-
-      // $condition[] = ['product_product._id', '=', $itemproduct];
-       $data = product_product::where('id',$itemproduct)->first();
-       if ($data['gst'] != '') {
-        if ($customer['state_name'] == 'Maharashtra') {
-            $gst = $data['gst'] / 2;
-            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->first();
-        } else {
-            $gst = $data['gst'];
-            $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->first();
-        }
-        
-        fgs_oef_item::where('id',$items['id'])
-        ->update(['gst'=>$gst_data['id']]);
-    }}
-       
-    
-    
-    fgs_oef::where('id',$request->id)
-    ->update([
-        'customer_id'=>$request->customer,
-        'order_number'=>$request->order_number,
-        'order_date'=>$request->order_date,
-        'oef_date'=>$request->oef_date,
-        'due_date'=>$request->due_date,
-        'remarks'=>$request->remarks
-    ]);
-    
-
-    $request->session()->flash('success', "You have successfully updated OEF !");
-    
-    $oef = fgs_oef::select(
-        'fgs_oef.*',
-        'order_fulfil.order_fulfil_type',
-        'transaction_type.transaction_name',
-        'customer_supplier.id as cust_id',
-        'customer_supplier.firm_name',
-        'customer_supplier.shipping_address',
-        'customer_supplier.contact_person',
-        'customer_supplier.contact_number',
-        'fgs_product_category.category_name'
-    )
-        ->leftJoin('order_fulfil', 'order_fulfil.id', '=', 'fgs_oef.order_fulfil')
-        ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
-        ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'fgs_oef.product_category')
-        ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
-        ->where('fgs_oef.id',$request->id)
-        //->distinct('fgs_oef.id')
-        //->orderBy('fgs_oef.id', 'DESC')
-        ->first();
         return view('pages/FGS/OEF/OEF-edit',compact('oef'));
-
-    
-}
+    }
+    public function update_oef(Request $request)
+    {
+        $condition=[];
+        $cust=fgs_oef::where('id',$request->id)->first();
+        $oldcust=customer_supplier::where('id',$cust->customer_id)->first();
+        $newcust=customer_supplier::where('id',$request->customer_id)->first();
+        $oefitem=fgs_oef_item::select('fgs_oef_item.*')
+                        ->leftjoin('fgs_oef_item_rel','fgs_oef_item.id','=','fgs_oef_item_rel.item')
+                        ->where('fgs_oef_item_rel.master',$request->id)->get();
+        $customer = customer_supplier::select('customer_supplier.firm_name', 'zone.zone_name', 'state.state_name')
+                ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+                ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+                ->where('customer_supplier.id', '=', $request->customer_id)->first();
+        //print_r($request->customer_id);exit;
+        foreach($oefitem as $items)
+        {
+            $itemproduct=$items['product_id'];
+            // $condition[] = ['product_product._id', '=', $itemproduct];
+            $data = product_product::where('id',$itemproduct)->first();
+            if ($data['gst'] != '') {
+                if ($customer->state_name == 'Maharashtra') {
+                    $gst = $data['gst'] / 2;
+                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->first();
+                } else {
+                    $gst = $data['gst'];
+                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->first();
+                }
+                
+                fgs_oef_item::where('id',$items['id'])
+                ->update(['gst'=>$gst_data['id']]);
+            }
+        }
+        fgs_oef::where('id',$request->id)
+        ->update([
+            'customer_id'=>$request->customer_id,
+            'order_number'=>$request->order_number,
+            'order_date'=>date('Y-m-d', strtotime($request->order_date)),
+            'oef_date'=>date('Y-m-d', strtotime($request->oef_date)),
+            'due_date'=>date('Y-m-d', strtotime($request->due_date)),
+            'remarks'=>$request->remarks
+        ]);
+        $request->session()->flash('success', "You have successfully updated OEF !");
+        return redirect('fgs/OEF-list');
+        
+    }
     public function OEFproductsearch(Request $request, $oef_id)
     {
         $condition = [];
