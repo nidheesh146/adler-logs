@@ -81,7 +81,12 @@ class EXIController extends Controller
                 $dni_master=$this->fgs_dni->insert_data($data);
                 foreach($request->pi_id as $pi_id)
                 {
-                    $pi = fgs_pi_item_rel::where('master','=',$pi_id)->get();
+                    $pi = fgs_pi_item_rel::select('fgs_pi_item_rel.item')
+                            ->leftjoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
+                            ->where('fgs_pi_item.status','=',1)
+                            ->where('fgs_pi_item.cpi_status','=',0)
+                            ->where('fgs_pi_item_rel.master','=',$pi_id)
+                            ->get();
                     foreach($pi as $pi_data)
                     {
                         $item['pi_id'] = $pi_data['master'];

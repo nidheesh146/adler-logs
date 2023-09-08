@@ -87,7 +87,7 @@ class GRSController extends Controller
                 {
                     $years_combo = date('y').date('y', strtotime('+1 year'));
                 }
-                $data['grs_number'] = "GRS-".$this->year_combo_num_gen(DB::table('fgs_grs')->where('fgs_grs.grs_number', 'LIKE', 'GRS-'. $years_combo.'%')->count()); 
+                $data['grs_number'] = "GRS-".$this->year_combo_num_gen(DB::table('fgs_grs')->where('fgs_grs.grs_number', 'LIKE', 'GRS-'. $years_combo.'%')->count()+772); 
                 $data['grs_date'] = date('Y-m-d', strtotime($request->grs_date));
                 $data['oef_id']=$request->oef_number;
                 $data['customer_id'] = $request->customer;
@@ -412,14 +412,15 @@ class GRSController extends Controller
                                             ->where('fgs_mrn_item.product_id','=',$oef_item['product_id'])
                                             ->where('fgs_mrn.stock_location','=', $grs_master['stock_location1'])
                                             ->where('fgs_mrn.product_category','=',$grs_master['product_category'])
-                                            ->where('fgs_product_stock_management.quantity','!=',0)
+                                            ->where('fgs_product_stock_management.quantity','>',0)
                                             ->orderBy('batchcard_batchcard.id','ASC')
+                                            ->groupBy('fgs_product_stock_management.id')
                                             ->get();
                 if(count($product_batchcards)>0)
                 {
                     $oef_item['batchcards'] = $product_batchcards;
                 }
-                //print_r(json_encode($oef_item));exit;
+               // print_r(json_encode($product_batchcards));exit;
                 
             }
             return view('pages/FGS/GRS/GRS-item-add', compact('grs_id','oef_item'));
@@ -677,15 +678,18 @@ class GRSController extends Controller
 
     public function GRSDelete($grs_id,Request $request)
     {
+       // echo $grs_id;exit;
         $grs = fgs_grs::where('id','=',$grs_id)->first();
-        $grs_items = fgs_grs_item_rel::where('master','=',$grs_id)->get();
+        $grs_items = fgs_grs_item_rel::leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_grs_item_rel.item')
+                        ->where('fgs_grs_item.status','=',1)
+                        ->where('fgs_grs_item_rel.master','=',$grs_id)->get();
         if(count($grs_items)>0)
         {
             $request->session()->flash('error', "You can't deleted this GRS(".$grs->grs_number.").It have items !");
         }
         else
         {
-            $update = $this->fgs_grs->update_data(['id','=',$grs_id],['status'=>0]);
+            $update = $this->fgs_grs->update_data(['id'=>$grs_id],['status'=>0]);
             $request->session()->flash('success', "You have successfully deleted a GRS(".$grs->grs_number.") !");
         }
         return redirect('fgs/GRS-list');
@@ -834,8 +838,9 @@ class GRSController extends Controller
                                                 ->where('fgs_mrn_item.product_id','=',$grs_item['product_id'])
                                                 ->where('fgs_mrn.stock_location','=', $grs_master['stock_location1'])
                                                 ->where('fgs_mrn.product_category','=',$grs_master['product_category'])
-                                                ->where('fgs_product_stock_management.quantity','!=',0)
+                                                ->where('fgs_product_stock_management.quantity','>',0)
                                                 ->orderBy('batchcard_batchcard.id','ASC')
+                                                ->groupBy('fgs_product_stock_management.id')
                                                 ->get();
                     if(count($product_batchcards)>0)
                     {

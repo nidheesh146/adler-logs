@@ -30,6 +30,8 @@ class fgs_pi_item_rel extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                         ->where('fgs_grs.status','=',1)
+                        ->where('fgs_pi.status','=',1)
+                        ->where('fgs_pi_item.status','=',1)
                         ->where($condition)
                         ->orderBy('fgs_grs_item.id','DESC')
                         ->distinct('fgs_grs_item.id')

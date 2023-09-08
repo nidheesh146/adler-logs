@@ -78,6 +78,7 @@ class OEFController extends Controller
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'fgs_oef.product_category')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
             ->where($condition)
+            ->where('fgs_oef.status','=',1)
             ->distinct('fgs_oef.id')
             ->orderBy('fgs_oef.id', 'DESC')
             ->paginate(15);

@@ -29,6 +29,7 @@ class fgs_grs extends Model
             ->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
             ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
             ->where($condition)
+            ->where('fgs_grs.status','=',1)
             ->orderBy('fgs_grs.id','DESC')
             ->distinct('fgs_grs.id')
             ->paginate(15);
@@ -48,6 +49,7 @@ class fgs_grs extends Model
             
             })
             ->where($condition)
+            ->where('fgs_grs.status','=',1)
             ->orderBy('fgs_grs.id','DESC')
             ->distinct('fgs_grs.id')
             ->get();

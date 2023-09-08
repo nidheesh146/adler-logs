@@ -33,6 +33,8 @@ class fgs_oef_item extends Model
                         ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                         ->where($condition)
                         ->where('fgs_oef.status','=',1)
+                        ->where('fgs_oef_item.status','=',1)
+                        //->where('fgs_oef_item.coef_status','=',0)
                         ->orderBy('fgs_oef_item.id','asc')
                         ->distinct('fgs_oef_item.id')
                         ->paginate(15);
@@ -48,6 +50,8 @@ class fgs_oef_item extends Model
                         ->where($condition)
                         ->where('fgs_oef_item.coef_status','=',0)
                         ->where('fgs_oef.status','=',1)
+                        ->where('fgs_oef_item.status','=',1)
+                       // ->where('fgs_oef_item.coef_status','=',0)
                         ->orderBy('fgs_oef_item.id','asc')
                         ->distinct('fgs_oef_item.id')
                         ->get();
@@ -62,6 +66,8 @@ class fgs_oef_item extends Model
                         ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                         ->where($condition)
                         ->where('fgs_oef.status','=',1)
+                        ->where('fgs_oef_item.status','=',1)
+                        ->where('fgs_oef_item.coef_status','=',0)
                         ->orderBy('fgs_oef_item.id','DESC')
                         ->distinct('fgs_oef_item.id')
                         ->first();
@@ -77,6 +83,8 @@ class fgs_oef_item extends Model
                         ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                         ->where($condition)
                         ->where('fgs_oef.status','=',1)
+                        ->where('fgs_oef_item.status','=',1)
+                        ->where('fgs_oef_item.coef_status','=',0)
                         ->orderBy('fgs_oef_item.id','asc')
                         ->distinct('fgs_oef_item.id')
                         ->paginate(15);
@@ -93,6 +101,7 @@ class fgs_oef_item extends Model
                     ->leftjoin('product_product','product_product.id','=','fgs_oef_item.product_id')
                     ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                     ->where('fgs_oef.status','=',1)
+                    ->where('fgs_oef_item.status','=',1)
                     ->where('fgs_oef_item.coef_status','=',0)
                     ->where($condition)
                     ->distinct('fgs_oef_item.id')

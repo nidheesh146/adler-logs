@@ -241,6 +241,8 @@ class PIController extends Controller
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                         ->where('fgs_pi_item_rel.master','=', $pi_id)
                         ->where('fgs_grs.status','=',1)
+                        ->where('fgs_pi.status','=',1)
+                        ->where('fgs_pi_item.status','=',1)
                         ->orderBy('fgs_grs_item.id','DESC')
                         ->distinct('fgs_grs_item.id')
                         ->paginate(15);
@@ -610,6 +612,9 @@ class PIController extends Controller
                             $query->select('fgs_dni_item.pi_id')->from('fgs_dni_item');
                         
                         })->where('fgs_grs.status','=',1)
+                        ->where('fgs_pi.status','=',1)
+                        ->where('fgs_pi_item.status','=',1)
+                        ->where('fgs_pi_item.cpi_status','=',0)
                         ->orderBy('fgs_grs_item.id','DESC')
                         ->distinct('fgs_grs_item.id')
                         ->get();

@@ -97,7 +97,7 @@
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Batch Quantity Taken</label>
                             <div class="input-group mb-6">
-                                <input type="number" class="form-control" @if($grs_item['batchcard_id']) value="{{$grs_item['batch_quantity']}}"  @endif max="" min="" name="batch_qty" id="batch_qty" placeholder="" aria-describedby="unit-div2" >
+                                <input type="number" class="form-control" @if((!empty($grs_item)) && $grs_item['batchcard_id']) value="{{$grs_item['batch_quantity']}}"  @endif max="" min="" name="batch_qty" id="batch_qty" placeholder="" aria-describedby="unit-div2" >
                                 <div class="input-group-append">
                                     <span class="input-group-text unit-div" id="unit-div2">Nos</span>
                                 </div>
@@ -106,11 +106,11 @@
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Manufacturing date</label>
-                            <input type="text" class="form-control" name="manufacturing_date" @if($grs_item['batchcard_id']) value="{{date('d-m-Y', strtotime($grs_item['manufacturing_date']))}}"  @endif id="manufacturing_date" readonly>
+                            <input type="text" class="form-control" name="manufacturing_date" @if((!empty($grs_item)) && $grs_item['batchcard_id']) value="{{date('d-m-Y', strtotime($grs_item['manufacturing_date']))}}"  @endif id="manufacturing_date" readonly>
                         </div> 
                         <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="exampleInputEmail1">Expiry date</label>
-                            <input type="text" class="form-control" name="expiry_date" id="expiry_date" @if($grs_item['batchcard_id']) value="{{date('d-m-Y', strtotime($grs_item['expiry_date']))}}"  @endif  readonly >
+                            <input type="text" class="form-control" name="expiry_date" id="expiry_date" @if((!empty($grs_item)) && $grs_item['batchcard_id']) value="{{date('d-m-Y', strtotime($grs_item['expiry_date']))}}"  @endif  readonly >
                         </div>    
 				    </div>
 			    </div>
