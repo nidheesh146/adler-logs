@@ -183,7 +183,7 @@ $obj_product= new StockManagementController;
 									<td>{{$item['grs_number']}}</td>
 									<td>{{$item['grs_date']}}</td>
 									<td>{{$item['grs_qty']}}Nos</td>
-									<td>@if($item['grs_number']) {{$item['grs_qty']}}Nos @endif</td>
+									<td>@if($item['grs_number']) {{$item['grs_pending_qty']}}Nos @endif</td>
 								</tr>
 								@endif
 								@if($item['pi_number']!=null)
@@ -198,7 +198,7 @@ $obj_product= new StockManagementController;
 									<td>{{$item['pi_number']}}</td>
 									<td>{{$item['pi_date']}}</td>
 									<td>{{$item['pi_qty']}}Nos</td>
-									<td>@if($item['pi_number']) {{$item['pi_qty']}}Nos @endif</td>
+									<td>@if($item['pi_number']) 6{{$item['pi_pending_qty']}}Nos @endif</td>
 								</tr>
 								@endif
 								@if($item['cpi_number']!=null)
@@ -213,7 +213,7 @@ $obj_product= new StockManagementController;
 									<td>{{$item['cpi_number']}}</td>
 									<td>{{$item['cpi_date']}}</td>
 									<td>{{$item['cpi_qty']}}</td>
-									<td>{{$item['cpi_qty']}}</td>
+									<td>{{$item['cpi_qty']}}Nos</td>
 								</tr>
 								@endif
 								@if($item['dni_number']!=null)

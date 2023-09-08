@@ -760,7 +760,7 @@ class StockManagementController extends Controller
             $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
         }
         $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn.mrn_number','fgs_mrn.mrn_date','batchcard_batchcard.batch_no','product_product.sku_code','product_product.discription',
-        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.remaining_qty_after_cancel as grs_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as pi_qty',
+        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.batch_quantity as grs_qty','fgs_grs_item.remaining_qty_after_cancel as grs_pending_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.batch_qty as pi_qty','fgs_pi_item.remaining_qty_after_cancel as pi_pending_qty',
         'fgs_dni.dni_number','fgs_dni.dni_date','fgs_mtq_item.quantity as mtqqty','fgs_mtq.mtq_date','fgs_mtq.*','fgs_cmin_item.quantity as cminqty','fgs_cmin.*','fgs_cpi_item.quantity as cpiqty','fgs_cpi.*')
                             ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
                             ->leftJoin('fgs_mrn','fgs_mrn.id','=', 'fgs_mrn_item_rel.master')
@@ -812,7 +812,7 @@ class StockManagementController extends Controller
             $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
         }
         $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn.mrn_number','fgs_mrn.mrn_date','batchcard_batchcard.batch_no','product_product.sku_code','product_product.discription',
-        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.remaining_qty_after_cancel as grs_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as pi_qty',
+        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.batch_quantity as grs_qty','fgs_grs_item.remaining_qty_after_cancel as grs_pending_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as pi_qty',
         'fgs_dni.dni_number','fgs_dni.dni_date','fgs_mtq_item.quantity as mtqqty','fgs_mtq.mtq_date','fgs_mtq.*','fgs_cmin_item.quantity as cminqty','fgs_cmin.*','fgs_cpi_item.quantity as cpiqty','fgs_cpi.*')
                             ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
                             ->leftJoin('fgs_mrn','fgs_mrn.id','=', 'fgs_mrn_item_rel.master')
