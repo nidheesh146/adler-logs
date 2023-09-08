@@ -84,11 +84,11 @@
                             {{--<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Doc Number *</label>
                                 <input type="text" class="form-control" name="doc_no" value="" placeholder="Doc Number">
-                            </div> 
+                            </div> --}}
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Doc Date *</label>
                                 <input type="text"  class="form-control datepicker" name="doc_date" value="{{date('d-m-Y')}}">
-                            </div>--}}
+                            </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Transaction Type  *</label>
                                 <select class="form-control" name="transaction_type">

@@ -23,6 +23,7 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
     {
         $i=1;
         $data = [];
+       
         foreach($this->mrnitem as $item)
         {
             if($item->expiry_date !='0000-00-00')
@@ -47,6 +48,40 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
             else {
                 $pi_qty ='';
             }
+            if($item['min_number'])
+            {
+                $min_qty = $item['minqty'].'Nos';
+            }
+            else {
+                $min_qty ='';
+            }
+            if($item['cmin_number'])
+            {
+                $min_qty = $item['cminqty'].'Nos';
+            }
+            else {
+                $min_qty ='';
+            } if($item['dni_number'])
+            {
+                $dni_qty = $item['dni_number'].'Nos';
+            }
+            else {
+                $dni_qty ='';
+            }
+            if($item['mtq_number'])
+            {
+                $dni_qty = $item['mtq_number'].'Nos';
+            }
+            else {
+                $dni_qty ='';
+            }
+            if($item['cpi_number'])
+            {
+                $cpi_qty = $item['cpi_number'].'Nos';
+            }
+            else {
+                $cpi_qty ='';
+            }
            
             $data[] = array(
                 '#'=>$i++,
@@ -56,16 +91,127 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                 'batch_no'=>$item->batch_no,
                 'manufacture_date'=>date('d-m-Y', strtotime($item->manufacturing_date)),
                 'expiry_date'=>$expiry_date,
-                'mrn_number'=>$item->mrn_number,
-                'mrn_qty'=>$item->quantity.'Nos',
-                'grs_number'=>$item->grs_number,
-                'grs_qty'=>$grs_qty,
-                'pi_number'=>$item->pi_number,
-                'pi_qty'=>$pi_qty,
-                'dni_number'=>$item->dni_number,
-                'dni_qty'=>$pi_qty,
+                'doc_name'=>'MRN',
+                'doc_no'=>$item->mrn_number,
+                'doc_date'=>$item->mrn_date,
+                'doc_qty'=>$item->quantity.'Nos',
+                'rem_qty'=>$item->quantity.'Nos',
+                
 
             );
+            if($item->min_number!=null){
+                $data[] = array(
+                    '#'=>'',
+                    'sku_code'=>'',
+                    'hsn_code'=>'',
+                    'description'=>'',
+                    'batch_no'=>'',
+                    'manufacture_date'=>'',
+                    'expiry_date'=>'',
+                    'doc_name'=>'MIN',
+                    'doc_no'=>$item->min_number,
+                    'doc_date'=>$item->min_date,
+                    'doc_qty'=>$min_qty.'Nos',
+                    'rem_qty'=>$item->reminingmin
+                );
+            }
+            if($item->cmin_number!=null){
+                $data[] = array(
+                    '#'=>'',
+                    'sku_code'=>'',
+                    'hsn_code'=>'',
+                    'description'=>'',
+                    'batch_no'=>'',
+                    'manufacture_date'=>'',
+                    'expiry_date'=>'',
+                    'doc_name'=>'CMIN',
+                    'doc_no'=>$item->cmin_number,
+                    'doc_date'=>$item->cmin_date,
+                    'doc_qty'=>$item->cminqty.'Nos',
+                    'rem_qty'=>''
+                );
+            }
+            if($item->grs_number!=null){
+                $data[] = array(
+                    '#'=>'',
+                    'sku_code'=>'',
+                    'hsn_code'=>'',
+                    'description'=>'',
+                    'batch_no'=>'',
+                    'manufacture_date'=>'',
+                    'expiry_date'=>'',
+                    'doc_name'=>'GRS',
+                    'doc_no'=>$item->grs_number,
+                    'doc_date'=>$item->grs_date,
+                    'doc_qty'=>$grs_qty.'Nos',
+                    'rem_qty'=>$grs_qty.'Nos'
+                );
+            }
+            if($item->pi_number!=null){
+                $data[] = array(
+                    '#'=>'',
+                    'sku_code'=>'',
+                    'hsn_code'=>'',
+                    'description'=>'',
+                    'batch_no'=>'',
+                    'manufacture_date'=>'',
+                    'expiry_date'=>'',
+                    'doc_name'=>'PI',
+                    'doc_no'=>$item->pi_number,
+                    'doc_date'=>$item->pi_date,
+                    'doc_qty'=>$pi_qty.'Nos',
+                    'rem_qty'=>$pi_qty.'Nos'
+                );
+            }
+            if($item->cpi_number!=null){
+                $data[] = array(
+                    '#'=>'',
+                    'sku_code'=>'',
+                    'hsn_code'=>'',
+                    'description'=>'',
+                    'batch_no'=>'',
+                    'manufacture_date'=>'',
+                    'expiry_date'=>'',
+                    'doc_name'=>'CPI',
+                    'doc_no'=>$item->cpi_number,
+                    'doc_date'=>$item->cpi_date,
+                    'doc_qty'=>$cpi_qty.'Nos',
+                    'rem_qty'=>$cpi_qty.'Nos'
+                );
+            }
+            if($item->dni_number!=null){
+                $data[] = array(
+                    '#'=>'',
+                    'sku_code'=>'',
+                    'hsn_code'=>'',
+                    'description'=>'',
+                    'batch_no'=>'',
+                    'manufacture_date'=>'',
+                    'expiry_date'=>'',
+                    'doc_name'=>'DNI/EXI',
+                    'doc_no'=>$item->dni_number,
+                    'doc_date'=>$item->dni_date,
+                    'doc_qty'=>$pi_qty.'Nos',
+                    'rem_qty'=>$pi_qty.'Nos'
+                );
+            }
+            if($item->mtq_number!=null){
+                $data[] = array(
+                    '#'=>'',
+                    'sku_code'=>'',
+                    'hsn_code'=>'',
+                    'description'=>'',
+                    'batch_no'=>'',
+                    'manufacture_date'=>'',
+                    'expiry_date'=>'',
+                    'doc_name'=>'MTQ',
+                    'doc_no'=>$item->mtq_number,
+                    'doc_date'=>$item->mtq_date,
+                    'doc_qty'=>$item->mtqqty.'Nos',
+                    'rem_qty'=>$item->mtqqty.'Nos'
+                );
+            }
+            
         }
         return collect($data);
     }
@@ -79,14 +225,15 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
             'BATCH NO.',
             'DATE OF MFG.',
             'DATE OF EXPIRY',
-            'MRN NUMBER',
-            'MRN QTY',
-            'GRS NUMBER',
-            'GRS QTY',
-            'PI NUMBER',
-            'PI QTY',
-            'DNI/EXI NUMBER',
-            'DNI/EXI QTY',
+            'DOC NAME',
+            'DOC NO',
+            'DOC DATE',
+            'DOC QTY',
+            'REMINING QTY'
+            // 'PI NUMBER',
+            // 'PI QTY',
+            // 'DNI/EXI NUMBER',
+            // 'DNI/EXI QTY',
         ];
     }
     public function styles(Worksheet $sheet)

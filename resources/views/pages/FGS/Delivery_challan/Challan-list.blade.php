@@ -93,18 +93,25 @@
                         <table class="table table-bordered mg-b-0">
                             <thead>
                                 <tr>
-                                    <th>Sl</th>
-                                    <th>Customer</th>
-                                    <th>Address</th>
-                                    <th>Ref Number</th>
-                                    <th>Ref Date</th>
+                                    {{--<th>Sl</th>--}}
                                     <th>Doc Number</th>
                                     <th>Doc Date</th>
-                                    <th>Transaction Condition </th>
+                                    <th>Ref Number</th>
+                                    <th>Ref Date</th>
                                     <th>Product Category</th>
+                                    <th>Transaction Condition </th>
                                     <th>Transaction Type</th>
                                     <th>Stock Location1(Decrease)</th>
                                     <th>Stock Location2(Increase)</th>
+                                    <th>Customer</th>
+                                    {{--<th>Address</th>--}}
+                                    
+                                    
+                                   
+                                    
+                                    
+                                   
+                                    
 
 
                                     <th>Action</th>
@@ -116,22 +123,27 @@
                             <tbody id="prbody1">
                                 @foreach($challan_details as $item)
                                 <tr>
-                                    <td>{{$sl++}}</td>
-                                    <td>{{$item->firm_name}}</td>
-                                    <td>{{$item->shipping_address}}</td>
-                                    <td>{{$item->ref_no}}</td>
-                                    <td>{{date('d-m-Y', strtotime($item->ref_date))}}</td>
+                                    {{--<td>{{$sl++}}</td>--}}
                                     <td>{{$item->doc_no}}</td>
                                     <td>{{date('d-m-Y', strtotime($item->doc_date))}}</td>
+                                    <td>{{$item->ref_no}}</td>
+                                    <td>{{date('d-m-Y', strtotime($item->ref_date))}}</td>
+                                    <td>{{$item->category_name}}</td>
                                     @if($item->transaction_condition==1)
                                     <td>Returnable</td>
                                     @else
                                     <td>Non Returnable</td>
                                     @endif
-                                    <td>{{$item->category_name}}</td>
+                                    
                                     <td>{{$item->transaction_name}}</td>
                                     <td>AHPL Mktd</td>
                                     <td>{{$item->location_name}}</td>
+                                    <td>{{$item->firm_name}}</td>
+                                    {{--<td>{{$item->shipping_address}}</td>--}}
+                                    
+                                    
+                                    
+                                    
                                     <td>
                                     <a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/Delivery_challan/Challan-item-list/'.$item->id)}}" class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
 

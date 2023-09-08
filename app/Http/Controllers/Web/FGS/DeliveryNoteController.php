@@ -67,7 +67,7 @@ class DeliveryNoteController extends Controller
             $validation['ref_no'] = ['required'];
             $validation['ref_date'] = ['required', 'date'];
             //$validation['doc_no'] = ['required'];
-            //$validation['doc_date'] = ['required', 'date'];
+            $validation['doc_date'] = ['required', 'date'];
             $validation['transaction_condition'] = ['required'];
             $validation['product_category'] = ['required'];
             $validation['transaction_type'] = ['required'];
@@ -83,12 +83,12 @@ class DeliveryNoteController extends Controller
                 } else {
                     $years_combo = date('y') . date('y', strtotime('+1 year'));
                 }
-                //$data['oef_number'] = "OEF-" . $this->year_combo_num_gen(DB::table('fgs_oef')->where('fgs_oef.oef_number', 'LIKE', 'OEF-' . $years_combo . '%')->count());
+                $data['doc_no'] = "DC-" . $this->year_combo_num_gen(DB::table('delivery_challan')->where('delivery_challan.doc_no', 'LIKE', 'DC-' . $years_combo . '%')->count());
                 $data['customer_id'] = $request->customer;
                 $data['ref_no'] = $request->ref_no;
                 $data['ref_date'] = date('Y-m-d', strtotime($request->ref_date));
                 // $data['doc_no'] = ;
-               // $data['doc_date'] = date('Y-m-d', strtotime($request->doc_date));
+                $data['doc_date'] = date('Y-m-d', strtotime($request->doc_date));
                 $data['transaction_type'] = $request->transaction_type;
                 $data['product_category'] = $request->product_category;
                 $data['transaction_condition'] = $request->transaction_condition;
@@ -97,13 +97,13 @@ class DeliveryNoteController extends Controller
 
 
                 $add = DB::table('delivery_challan')->insertGetId($data);
-                DB::table('delivery_challan')->where('id',$add)
-                ->update(['doc_no'=>'DC-2324-'.$add]);
+                // DB::table('delivery_challan')->where('id',$add)
+                // ->update(['doc_no'=>'DC-2324-'.$add]);
                 if ($add) {
-                    $request->session()->flash('success', "You have successfully added a OEF !");
+                    $request->session()->flash('success', "You have successfully added a Challan !");
                     return redirect('fgs/Delivery_challan/Challan-list');
                 } else {
-                    $request->session()->flash('error', "OEF insertion is failed. Try again... !");
+                    $request->session()->flash('error', "Challan insertion is failed. Try again... !");
                     return redirect('pages/FGS/Delivery_challan/Challan-add');
                 }
             } else {

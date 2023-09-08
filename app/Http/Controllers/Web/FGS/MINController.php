@@ -410,8 +410,13 @@ class MINController extends Controller
         $prdct = DB::table('fgs_min_item')
             ->where('id', $min_item_id)
             ->first();
+
+            $pr_id=$prdct->product_id;
+
         $qty = DB::table('fgs_product_stock_management')
-            ->where('id', $min_id)
+        //->where('product_id', $prdct->product_id)
+            ->where('batchcard_id', $prdct->batchcard_id)
+            ->where('product_id', $pr_id)
             ->first();
 
         $fgs_qty = number_format($prdct->quantity);
@@ -420,13 +425,17 @@ class MINController extends Controller
         // $value=$fgs_qty-$qty;
 
         DB::table('fgs_product_stock_management')
-            ->where('id', $min_id)
+        ->where('batchcard_id', $prdct->batchcard_id)
+            ->where('product_id', $pr_id)
+            ->where('stock_location_id', $qty->stock_location_id)
+            //->where('id', $min_item_id)
             ->update([
-                'quantity' => $fgs_qty - $pstock_qty
+                'quantity' => $fgs_qty + $pstock_qty
             ]);
         DB::table('fgs_min_item')
-            ->where('product_id', $prdct->product_id)
-            ->where('batchcard_id', $prdct->batchcard_id)
+            // ->where('product_id', $prdct->product_id)
+            // ->where('batchcard_id', $prdct->batchcard_id)
+            ->where('id',$min_item_id)
             ->update([
                 'status' => 0
             ]);

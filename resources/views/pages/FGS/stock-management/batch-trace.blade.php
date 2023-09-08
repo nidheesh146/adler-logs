@@ -1,6 +1,10 @@
 @extends('layouts.default')
 @section('content')
 @inject('fn', 'App\Http\Controllers\Web\FGS\StockManagementController')
+@php 
+use App\Http\Controllers\Web\FGS\StockManagementController;
+$obj_product= new StockManagementController;
+@endphp
 <div class="az-content az-content-dashboard">
 	<br>
 	<div class="container">
@@ -90,13 +94,13 @@
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0">
 							<thead>
-								<tr style="text-align:center;">
+								{{--<tr style="text-align:center;">
 									<th colspan="6"></th>
 									<th colspan="2">MRN</th>
 									<th colspan="2">GRS </th>
                                     <th colspan="2">PI </th>
                                     <th colspan="2">DNI/EXI </th>
-								</tr>
+								</tr>--}}
 								<tr>
 									<th>SKU CODE</th>
 									<th>HSN CODE</th>
@@ -104,18 +108,25 @@
 									<th>BATCH NO</th>
                                     <th>DATE OF MFG.</th>
                                     <th>DATE OF EXPIRY</th>
-									<th>MRN NUMBER</th>
+									<th>DOC NAME</th>
+									<th>DOC NO</th>
+									<th>DOC DATE</th>
+									<th>DOC QTY</th>
+									<th>REMINING QTY</th>
+									{{--<th>MRN NUMBER</th>
 									<th>MRN QTY</th>
 									<th>GRS NUMBER</th>
 									<th>GRS QTY</th>
 									<th>PI NUMBER</th>
 									<th>PI QTY</th>
 									<th>DNI/EXI NUMBER</th>
-                                    <th>DNI/EXI QTY</th>
+                                    <th>DNI/EXI QTY</th>--}}
 								</tr>
 							</thead>
 							<tbody id="prbody1">
+								
 								@foreach($mrn_item as $item)
+								
 								<tr>
 									<td>{{$item['sku_code']}}</td>
 									<td>{{$item['hsn_code']}}</td>
@@ -123,14 +134,132 @@
 									<td>{{$item['batch_no']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
                                     <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td>
-                                    <td>{{$item['mrn_number']}}</td>
+                                  
+									<td>MRN</td>
+									<td>{{$item['mrn_number']}}</td>
+									<td>{{$item['mrn_date']}}</td>
+									<td>{{$item['quantity']}}Nos</td>
+									<td>{{$item['quantity']}}Nos</td>
+								</tr>
+								@if($item['min_number']!=null)
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>MIN</td>
+									<td>{{$item['min_number']}}</td>
+									<td>{{$item['min_date']}}</td>
+									<td>{{$item['minqty']}}Nos</td>
+									<td>@if($item['min_number']) {{$item['reminingmin']}}Nos @endif</td>
+								</tr>
+								@endif
+								@if($item['cmin_number']!=null)
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>MIN</td>
+									<td>{{$item['cmin_number']}}</td>
+									<td>{{$item['cmin_date']}}</td>
+									<td>{{$item['cminqty']}}Nos</td>
+									<td></td>
+								</tr>
+								@endif
+								@if($item['grs_number']!=null)
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>GRS</td>
+									<td>{{$item['grs_number']}}</td>
+									<td>{{$item['grs_date']}}</td>
+									<td>{{$item['grs_qty']}}Nos</td>
+									<td>@if($item['grs_number']) {{$item['grs_qty']}}Nos @endif</td>
+								</tr>
+								@endif
+								@if($item['pi_number']!=null)
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>PI</td>
+									<td>{{$item['pi_number']}}</td>
+									<td>{{$item['pi_date']}}</td>
+									<td>{{$item['pi_qty']}}Nos</td>
+									<td>@if($item['pi_number']) {{$item['pi_qty']}}Nos @endif</td>
+								</tr>
+								@endif
+								@if($item['cpi_number']!=null)
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>PI</td>
+									<td>{{$item['cpi_number']}}</td>
+									<td>{{$item['cpi_date']}}</td>
+									<td>{{$item['cpi_qty']}}</td>
+									<td>{{$item['cpi_qty']}}</td>
+								</tr>
+								@endif
+								@if($item['dni_number']!=null)
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>DNI/EXI</td>
+									<td>{{$item['dni_number']}}</td>
+									<td>{{$item['dni_date']}}</td>
+									<td>{{$item['pi_qty']}}Nos</td>
+									<td>@if($item['dni_number']) {{$item['pi_qty']}}Nos @endif</td>
+								</tr>
+								@endif
+								@if($item['mtq_number']!=null)
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>MTQ</td>
+									<td>{{$item['mtq_number']}}</td>
+									<td>{{$item['mtq_date']}}</td>
+									<td>@if($item['mtq_number']) {{$item['mtqqty']}}Nos @endif</td>
+									<td></td>
+								</tr>
+								@endif
+									{{--<td>mrn</td>
+									<td>
+										{{$obj_product->product_mrn($item['id'])->mrn_number}}
+										
+									</td>--}}
+									
+									{{--<td>{{$item['mrn_number']}}</td>
 									<td>{{$item['quantity']}}Nos</td>
 									<td>{{$item['grs_number']}}</td>
 									<td>@if($item['grs_number']) {{$item['grs_qty']}}Nos @endif</td>
 									<td>{{$item['pi_number']}}</td>
 									<td>@if($item['pi_number']) {{$item['pi_qty']}}Nos @endif</td>
 									<td>{{$item['dni_number']}}</td>
-									<td>@if($item['dni_number']) {{$item['pi_qty']}}Nos @endif</td>
+									<td>@if($item['dni_number']) {{$item['pi_qty']}}Nos @endif</td>--}}
 								</tr>
 								@endforeach
 							</tbody>
