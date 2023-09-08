@@ -51,6 +51,7 @@ class DNIController extends Controller
             $condition[] = ['fgs_dni.dni_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
         $dni = $this->fgs_dni->get_all_dni($condition);
+        
 
         return view('pages/FGS/DNI/DNI-list', compact('dni'));
     }
@@ -417,6 +418,22 @@ class DNIController extends Controller
             ->get();
             
             return Excel::download(new FGSdnitransactionExport($items), 'FGS-DNI-transaction' . date('d-m-Y') . '.xlsx');
+
+    }
+    public function get_oef_details($id){
+        $oef=fgs_dni::select('fgs_dni.id as dniid','fgs_oef.*')
+        ->leftJoin('fgs_dni_item_rel', 'fgs_dni_item_rel.master', '=', 'fgs_dni.id')
+        ->leftJoin('fgs_dni_item', 'fgs_dni_item.id', '=', 'fgs_dni_item_rel.item')
+        ->leftJoin('fgs_pi_item', 'fgs_pi_item.id', '=', 'fgs_dni_item.pi_item_id')
+        ->leftJoin('fgs_grs_item', 'fgs_grs_item.id', '=', 'fgs_pi_item.grs_item_id')
+        ->leftJoin('fgs_oef_item', 'fgs_oef_item.id', '=', 'fgs_grs_item.oef_item_id')
+        ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+        ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
+        ->where('fgs_dni.id',$id)
+        ->distinct('fgs_oef.oef_number')
+        ->get();
+
+        return $oef;
 
     }
 }
