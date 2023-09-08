@@ -112,7 +112,7 @@
            </p>
            Shipping Address :
            <p>{{$oef['shipping_address']}}<br/>
-           {{$oef['city']}},  {{$oef['state_name']}}
+           {{--{{$oef['city']}},  {{$oef['state_name']}}--}}
            </p>
 
         </div>
@@ -181,11 +181,11 @@
             <table style="float:left;">
                 <tr>
                     <td>Trnsctn Type</td>
-                    <td>:{{$oef['transaction_name']}} </td>
+                    <td>:&nbsp;{{$oef['transaction_name']}} </td>
                 </tr>
                 <tr>
                     <td> Sales Type:</td>
-                    <td>:{{$oef['sales_type']}}</td>
+                    <td>:&nbsp;{{$oef['sales_type']}}</td>
                 </tr>
                 <tr>
                     <td>Product Category</td>
@@ -197,7 +197,7 @@
             <table style="float:left;">
                 <tr>
                     <td>Doc  No</td>
-                    <td>: {{$oef['oef_number']}}</td>
+                    <td style="font-weight: bold;">: {{$oef['oef_number']}}</td>
                 </tr>
                 <tr>
                     <td> Doc  Date</td>
@@ -274,12 +274,24 @@
                 {{--<td>{{number_format((float)($item['rate']* $item['quantity']), 2, '.', '') }}</td>--}}
                 <td style="text-align:center;">{{$item['discount']}}</td>
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
+                @if(number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100))==0)
+                <td style="text-align:right;">-</td>
+                @else
                 <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
+                @endif
                 <td style="text-align:right;">{{number_format((float)$discount_value, 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['cgst']}}</td>
+                @if(number_format((float)(($discount_value*$item['cgst'])/100))==0)
+                <td style="text-align:right;">-</td>
+                @else
                 <td style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
+                @endif
                 <td style="text-align:center;">{{$item['sgst']}}</td>
+                @if(number_format((float)(($discount_value*$item['sgst'])/100))==0)
+                <td style="text-align:right;">-</td>
+                @else
                 <td style="text-align:right;">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
+                @endif
                 <td style="text-align:center;">{{$item['igst']}}</td>
                 <td style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
                 <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>

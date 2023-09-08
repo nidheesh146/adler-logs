@@ -61,8 +61,10 @@
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Customer  *</label>
                                 <!-- <input type="text" class="form-control" name="customer" value="{{$oef->firm_name}}" > -->
-                                <select class="form-control customer" name="customer" >{{$oef->firm_name}}
+                                <select class="form-control customer" name="Customer" >{{$oef->firm_name}}
                                 </select>
+                                <input type="hidden" name="customer_id" value="{{$oef->customer_id}}" id="customer_id">
+
 
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -105,7 +107,7 @@
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>Due Date *</label>
                                 @php $date= date('Y-m-d', strtotime('+30 days')) @endphp 
-                                <input type="text" value="{{date('d-m-Y',strtotime($oef->due_date))}}" class="form-control due_date" id="due_date" name="due_date"readonly placeholder="">
+                                <input type="text" value="@if($oef->due_date)  {{date('d-m-Y',strtotime($oef->due_date))}}  @else {{date('d-m-Y',strtotime($date))}} @endif" class="form-control due_date" id="due_date" name="due_date"readonly placeholder="">
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-8 col-xl-8">
                                 <label for="exampleInputEmail1">Remarks  </label>
@@ -227,8 +229,10 @@
         $('#Itemcode-error').remove();
         $("#billing_address").text('');
         $("#shipping_address").text('');
+        $("#customer_id").val('');
         let res = $(this).select2('data')[0];
         if (typeof(res) != "undefined") {
+            $("#customer_id").val(res.id);
             if (res.billing_address) {
                 $("#billing_address").val(res.billing_address);
             }

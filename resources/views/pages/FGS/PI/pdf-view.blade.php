@@ -282,7 +282,7 @@
              ?> 
             @foreach($items as $item)
             <tr style="border-bottom: solid black;">
-                <td style="text-align:center;">{{$i++}}</td>
+                <td style="text-align:center;">{{$i++}}-{{$item['id']}}</td>
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
                 <td>{{$item['discription']}}</td>

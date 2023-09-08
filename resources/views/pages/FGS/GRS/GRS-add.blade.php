@@ -59,7 +59,7 @@
                             
 
                         <div class="row">
-                            @if($grs)
+                            @if(!empty($grs))
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>GRS Number *</label>
                                 <input type="text"  class="form-control  grs_number" name="grs_number" value="{{$grs['grs_number']}}"placeholder="">
@@ -68,7 +68,7 @@
                             @endif
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Customer  *</label>
-                                @if($grs)
+                                @if(!empty($grs))
                                 <input type="text" class="form-control  grs_number" value="{{$grs['firm_name']}}" readonly>
                                 @else
                                 <select  class="form-control customer" name="customer">
@@ -77,15 +77,15 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Customer Biiling Address</label>
-                                <textarea name="billing_address" class="form-control" id="billing_address" readonly>@if($grs){{$grs['shipping_address']}} @endif</textarea>
+                                <textarea name="billing_address" class="form-control" id="billing_address" readonly>@if(!empty($grs)) {{$grs['shipping_address']}} @endif</textarea>
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Customer Shipping Address</label>
-                                <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly>@if($grs){{$grs['billing_address']}} @endif</textarea>
+                                <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly>@if(!empty($grs)) {{$grs['billing_address']}} @endif</textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">OEF Number *</label>
-                                @if($grs)
+                                @if(!empty($grs))
                                 <input type="text"  class="form-control" name="" value="{{$grs['oef_number']}}" readonly>
                                 @else
                                 <select class="form-control oef_number" name="oef_number">
@@ -95,7 +95,7 @@
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Product Category  *</label>
-                                @if($grs)
+                                @if(!empty($grs))
                                 <input type="text"  class="form-control" name="" value="{{$grs['category_name']}}" readonly>
                                 @else
                                 <select class="form-control" name="product_category">
@@ -108,7 +108,7 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location(Decrease) *</label>
-                                @if($grs)
+                                @if(!empty($grs))
                                 <input type="text"  class="form-control" name="" value="{{$grs['location_name1']}}" readonly>
                                 @else
                                 <select class="form-control" name="stock_location1" id="stock_location1" >
@@ -123,7 +123,7 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location(Increase) *</label>
-                                @if($grs)
+                                @if(!empty($grs))
                                 <input type="text"  class="form-control" name="" value="{{$grs['location_name2']}}" readonly>
                                 @else
                                 <select class="form-control" name="stock_location2" id="stock_location2">
@@ -138,7 +138,7 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>GRS Date *</label>
-                                <input type="text" class="form-control datepicker grs_date" name="grs_date" value="@if($grs['grs_date']) {{date('d-m-Y', strtotime($grs['grs_date']))}} @else {{date('Y-m-d')}} @endif"placeholder="">
+                                <input type="text" class="form-control datepicker grs_date" name="grs_date" value="@if((!empty($grs)) && ($grs['grs_date'])) {{date('d-m-Y', strtotime($grs['grs_date']))}} @else {{date('Y-m-d')}} @endif"placeholder="">
                             </div><!-- form-group -->
                         </div> 
                         <div class="row">

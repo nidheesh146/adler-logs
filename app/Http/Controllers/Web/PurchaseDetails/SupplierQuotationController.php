@@ -38,7 +38,7 @@ class SupplierQuotationController extends Controller
 
     public function getSupplierQuotation(Request $request) 
     {     
-           $condition = [];
+            $condition[] = ['inv_purchase_req_quotation.status', '=', 1];
             if ($request->rq_no) {
                 $condition[] = ['inv_purchase_req_quotation.rq_no', 'like', '%'.$request->rq_no.'%'];
             }

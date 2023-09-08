@@ -100,6 +100,7 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                             $cgst_value = $total_rate*$item['cgst']/100;
                             $total_gst_value = $igst_value+$cgst_value+$sgst_value;
                             $product_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+                            $order_value = $product_value*$item['order_qty'];
                         $data[]=[
                             '#'=>$i++,
                             'pr_number'=>$item['pr_no'],
@@ -117,6 +118,7 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                             'gst' =>$gst,
                             'total_gst_value'=>$total_gst_value,
                             'product_value'=>(number_format((float)($product_value), 2, '.', '')),
+                            'order_value'=>(number_format((float)($order_value), 2,'.','')),
                             'order_qty'=>$item['order_qty'],
                             'qty_to_invoice'=>$item['qty_to_invoice'],
                             'cancelled_qty' =>$item['cancelled_qty'],
@@ -248,7 +250,7 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                             $cgst_value = $total_rate*$item['cgst']/100;
                             $total_gst_value = $igst_value+$cgst_value+$sgst_value;
                             $product_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
-                        
+                            $order_value = $product_value*$item['order_qty'];
                         $data[]=[
                             '#'=>$i++,
                             'pr_number'=>$item['pr_no'],
@@ -266,6 +268,7 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
                             'gst' =>$gst,
                             'total_gst_value'=>$total_gst_value,
                             'product_value'=>(number_format((float)($product_value), 2, '.', '')),
+                            'order_value'=>(number_format((float)($order_value), 2,'.','')),
                             'order_qty'=>$item['order_qty'],
                             'qty_to_invoice'=>$item['qty_to_invoice'],
                             'cancelled_qty' =>$item['cancelled_qty'],
@@ -298,6 +301,7 @@ class PendingPurchaseRealisationExport implements  FromCollection, WithHeadings,
             'GST(%)',
             'GST Value',
             'Product Value',
+            'Order Value',
             'Order Qty',
             'Pending Qty ',
             'Cancelled qty',
