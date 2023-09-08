@@ -467,6 +467,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
 
     //Route::get('fgs/productsearch','MRNController@productsearch');
     Route::get('fgs/fetchProductBatchCards', 'MRNController@fetchProductBatchCards');
+    Route::get('fgs/fetchProductBatchCardschallan', 'MRNController@fetchProductBatchCardschallan');
+
     Route::get('fgs/MRN/add-item/{mrn_id}', 'MRNController@MRNitemAdd');
     Route::post('fgs/MRN/add-item/{mrn_id}', 'MRNController@MRNitemAdd');
     Route::get('fgs/MRN/add-item-trade/{mrn_id}', 'MRNController@MRNitemAdd');
@@ -476,6 +478,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
 
     Route::get('fgs/MRN/pdf/{mrn_id}', 'MRNController@MRNpdf');
     Route::get('fgs/fetchBatchCardQty', 'MRNController@fetchBatchCardQty');
+    Route::get('fgs/fetchBatchCardQtychallan', 'MRNController@fetchBatchCardQtychallan');
+
     //MIN
     Route::get('fgs/MIN-list', 'MINController@MINList');
     Route::get('fgs/MIN-add', 'MINController@MINAdd');
