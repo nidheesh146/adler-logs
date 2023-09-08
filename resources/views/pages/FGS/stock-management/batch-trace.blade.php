@@ -139,9 +139,9 @@ $obj_product= new StockManagementController;
 									<td>{{$item['mrn_number']}}</td>
 									<td>{{$item['mrn_date']}}</td>
 									<td>{{$item['quantity']}}Nos</td>
-									<td>{{$item['quantity']}}Nos</td>
+									<td>{{$obj_product->product_qty($item['mrnprd'],$item['batchcard_id'],$item['mrn_stklocation'])}}Nos</td>
 								</tr>
-								@if($item['min_number']!=null)
+								@if($item['min_number'] != null)
 								<tr>
 									<td></td>
 									<td></td>
@@ -153,7 +153,7 @@ $obj_product= new StockManagementController;
 									<td>{{$item['min_number']}}</td>
 									<td>{{$item['min_date']}}</td>
 									<td>{{$item['minqty']}}Nos</td>
-									<td>@if($item['min_number']) {{$item['reminingmin']}}Nos @endif</td>
+									<td>{{$obj_product->product_qty($item['minpr'],$item['minbat'],$item['min_stkloc'])}}Nos</td>
 								</tr>
 								@endif
 								@if($item['cmin_number']!=null)
@@ -168,7 +168,8 @@ $obj_product= new StockManagementController;
 									<td>{{$item['cmin_number']}}</td>
 									<td>{{$item['cmin_date']}}</td>
 									<td>{{$item['cminqty']}}Nos</td>
-									<td></td>
+									<td>{{$obj_product->product_qty($item['cminprd'],$item['cminbtch'],$item['cminstk'])}}</td>
+
 								</tr>
 								@endif
 								@if($item['grs_number']!=null)
@@ -183,7 +184,7 @@ $obj_product= new StockManagementController;
 									<td>{{$item['grs_number']}}</td>
 									<td>{{$item['grs_date']}}</td>
 									<td>{{$item['grs_qty']}}Nos</td>
-									<td>@if($item['grs_number']) {{$item['grs_qty']}}Nos @endif</td>
+									<td> {{$item['grsremining']}}Nos</td>
 								</tr>
 								@endif
 								@if($item['pi_number']!=null)
@@ -198,7 +199,7 @@ $obj_product= new StockManagementController;
 									<td>{{$item['pi_number']}}</td>
 									<td>{{$item['pi_date']}}</td>
 									<td>{{$item['pi_qty']}}Nos</td>
-									<td>@if($item['pi_number']) {{$item['pi_qty']}}Nos @endif</td>
+									<td> {{$item['piremining']}}Nos</td>
 								</tr>
 								@endif
 								@if($item['cpi_number']!=null)
@@ -213,7 +214,7 @@ $obj_product= new StockManagementController;
 									<td>{{$item['cpi_number']}}</td>
 									<td>{{$item['cpi_date']}}</td>
 									<td>{{$item['cpi_qty']}}</td>
-									<td>{{$item['cpi_qty']}}</td>
+									<td>{{$item['piremining']}}</td>
 								</tr>
 								@endif
 								@if($item['dni_number']!=null)
@@ -228,10 +229,10 @@ $obj_product= new StockManagementController;
 									<td>{{$item['dni_number']}}</td>
 									<td>{{$item['dni_date']}}</td>
 									<td>{{$item['pi_qty']}}Nos</td>
-									<td>@if($item['dni_number']) {{$item['pi_qty']}}Nos @endif</td>
+									<td> {{$item['piremining']}}Nos</td>
 								</tr>
 								@endif
-								@if($item['mtq_number']!=null)
+								{{--@if($item['mtq_number']!=null)
 								<tr>
 									<td></td>
 									<td></td>
@@ -245,7 +246,7 @@ $obj_product= new StockManagementController;
 									<td>@if($item['mtq_number']) {{$item['mtqqty']}}Nos @endif</td>
 									<td></td>
 								</tr>
-								@endif
+								@endif--}}
 									{{--<td>mrn</td>
 									<td>
 										{{$obj_product->product_mrn($item['id'])->mrn_number}}
