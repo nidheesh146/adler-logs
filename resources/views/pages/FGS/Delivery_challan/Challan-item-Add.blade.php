@@ -357,7 +357,7 @@
         $("#stock_qty" + select_id + "").attr('max', '');
         $("#stock_qty" + select_id + "-error").text('');
         $("#stock_qty" + select_id + "").removeClass("error");
-        $.get("{{ url('fgs/fetchBatchCardQty') }}?batch_id=" + batch_id, function(data) {
+        $.get("{{ url('fgs/fetchBatchCardQtychallan') }}?batch_id=" + batch_id, function(data) {
             $("#stock_qty" + select_id + "").val(data);
             $("#stock_qty" + select_id + "").attr('max', data);
             $("#stock_qty" + select_id + "").attr('min', 0);
@@ -477,12 +477,12 @@
                 });
                 $("#manufacturing_date" + select_id + "").datepicker("setDate", new Date());
                 $("#manufacturing_date" + select_id + "").datepicker('setEndDate', new Date());
-                $.get("{{ url('fgs/fetchProductBatchCards') }}?product_id=" + res.id, function(data) {
+                $.get("{{ url('fgs/fetchProductBatchCardschallan') }}?product_id=" + res.id, function(data) {
                     $(".batch_no" + select_id + "").find('option').remove();
                     if (data.length > 0) {
                         $(".batch_no" + select_id + "").append('<option>..Select One..</option>')
                         $.each(data, function(index, item) {
-                            $(".batch_no" + select_id + "").append($("<option qty=" + item.quantity + " value=" + item.batch_id + ">" + item.batch_no + "</option>"));
+                            $(".batch_no" + select_id + "").append($("<option qty=" + item.stqty + " value=" + item.batch_id + ">" + item.batch_no + "</option>"));
                         });
                     } else {
                         alert('Out of stock...');
@@ -493,11 +493,11 @@
 
     }
 </script>
-<!-- <script>
+<script>
     $(document).ready(function() {
         $('form').submit(function() {
             $(this).find(':submit').prop('disabled', true);
         });
     });
-</script> -->
+</script>
 @stop

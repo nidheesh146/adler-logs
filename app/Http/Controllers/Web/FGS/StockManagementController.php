@@ -12,6 +12,7 @@ use App\Models\FGS\product_product;
 use App\Models\FGS\fgs_product_category;
 use App\Models\FGS\fgs_mrn_item;
 use App\Exports\StockLocationExport;
+//use App\Models\FGS\batchcard_batchcard;
 use Validator;
 use DB;
 use App\Exports\BatchTraceExport;
@@ -759,10 +760,13 @@ class StockManagementController extends Controller
         {
             $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
         }
-        $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn.mrn_number','fgs_mrn.mrn_date','batchcard_batchcard.batch_no','product_product.sku_code','product_product.discription',
-        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.batch_quantity as grs_qty','fgs_grs_item.remaining_qty_after_cancel as grs_pending_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.batch_qty as pi_qty','fgs_pi_item.remaining_qty_after_cancel as pi_pending_qty',
-        'fgs_dni.dni_number','fgs_dni.dni_date','fgs_mtq_item.quantity as mtqqty','fgs_mtq.mtq_date','fgs_mtq.*','fgs_cmin_item.quantity as cminqty','fgs_cmin.*','fgs_cpi_item.quantity as cpiqty','fgs_cpi.*')
-                            ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
+        $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn_item.product_id as mrnprd','fgs_mrn.mrn_number','fgs_mrn.mrn_date','fgs_mrn.stock_location as mrn_stklocation','batchcard_batchcard.batch_no','product_product.sku_code','product_product.discription',
+        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.remaining_qty_after_cancel as grsremining','fgs_grs_item.batch_quantity as grs_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as piremining','fgs_pi_item.batch_qty as pi_qty',
+        'fgs_dni.dni_number','fgs_dni.dni_date','fgs_min.min_number','fgs_min.min_date','fgs_min_item.quantity as minqty','fgs_min.stock_location as min_stkloc','fgs_min_item.product_id as minpr','fgs_min_item.batchcard_id as minbat'
+        ,'fgs_mtq_item.quantity as mtqqty','fgs_mtq.mtq_date','fgs_mtq.mtq_number','fgs_cmin.cmin_number','fgs_cmin.stock_location as cminstk','fgs_cmin_item.quantity as cminqty','fgs_cmin_item.batchcard_id as cminbtch','fgs_cmin_item.product_id as cminprd',
+        'fgs_cmin_item.product_id as cminprd','fgs_cmin.cmin_number','fgs_cpi_item.quantity as cpiqty','fgs_cpi.cpi_number','fgs_cpi_item.batchcard_id as cpibatchid','fgs_cpi_item.product_id')
+                            
+        ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
                             ->leftJoin('fgs_mrn','fgs_mrn.id','=', 'fgs_mrn_item_rel.master')
                             ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                             ->leftJoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
@@ -796,6 +800,7 @@ class StockManagementController extends Controller
                             ->where($condition)
                             ->distinct('fgs_mrn_item.id')
                             ->paginate(15);
+                             //dd($mrn_item);
         
         return view('pages/FGS/stock-management/batch-trace',compact('mrn_item'));
     }
@@ -811,10 +816,13 @@ class StockManagementController extends Controller
         {
             $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
         }
-        $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn.mrn_number','fgs_mrn.mrn_date','batchcard_batchcard.batch_no','product_product.sku_code','product_product.discription',
-        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.batch_quantity as grs_qty','fgs_grs_item.remaining_qty_after_cancel as grs_pending_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as pi_qty',
-        'fgs_dni.dni_number','fgs_dni.dni_date','fgs_mtq_item.quantity as mtqqty','fgs_mtq.mtq_date','fgs_mtq.*','fgs_cmin_item.quantity as cminqty','fgs_cmin.*','fgs_cpi_item.quantity as cpiqty','fgs_cpi.*')
-                            ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
+        $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn_item.product_id as mrnprd','fgs_mrn.mrn_number','fgs_mrn.mrn_date','fgs_mrn.stock_location as mrn_stklocation','batchcard_batchcard.batch_no','product_product.sku_code','product_product.discription',
+        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.remaining_qty_after_cancel as grsremining','fgs_grs_item.batch_quantity as grs_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as piremining','fgs_pi_item.batch_qty as pi_qty',
+        'fgs_dni.dni_number','fgs_dni.dni_date','fgs_min.min_number','fgs_min.min_date','fgs_min_item.quantity as minqty','fgs_min.stock_location as min_stkloc','fgs_min_item.product_id as minpr','fgs_min_item.batchcard_id as minbat'
+        ,'fgs_mtq_item.quantity as mtqqty','fgs_mtq.mtq_date','fgs_mtq.mtq_number','fgs_cmin.cmin_number','fgs_cmin.stock_location as cminstk','fgs_cmin_item.quantity as cminqty','fgs_cmin_item.batchcard_id as cminbtch','fgs_cmin_item.product_id as cminprd',
+        'fgs_cmin_item.product_id as cminprd','fgs_cmin.cmin_number','fgs_cpi_item.quantity as cpiqty','fgs_cpi.cpi_number','fgs_cpi_item.batchcard_id as cpibatchid','fgs_cpi_item.product_id')
+                            
+        ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
                             ->leftJoin('fgs_mrn','fgs_mrn.id','=', 'fgs_mrn_item_rel.master')
                             ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                             ->leftJoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
@@ -850,35 +858,24 @@ class StockManagementController extends Controller
                             ->get();
              return Excel::download(new BatchTraceExport($mrn_item), 'fgs-batchtrace-report' . date('d-m-Y') . '.xlsx');
     }
-    // public function product_mrn($id)
-    // {
-    //     // $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn.mrn_number')
-    //     // ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
-    //     // ->leftJoin('fgs_mrn','fgs_mrn.id','=', 'fgs_mrn_item_rel.master')
-    //     // ->where('fgs_mrn_item.product_id',$id)
-    //     // ->distinct('fgs_mrn_item.id')
-    //     // ->first();
-    //     $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn_item.id as mrn_item_id','fgs_mrn.*','batchcard_batchcard.batch_no','product_product.sku_code','product_product.discription',
-    //     'product_product.hsn_code')
-    //                         ->leftJoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
-    //                         ->leftJoin('fgs_mrn','fgs_mrn.id','=', 'fgs_mrn_item_rel.master')
-    //                         ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
-    //                         ->leftJoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
-    //                         // ->leftJoin('fgs_grs_item','fgs_grs_item.mrn_item_id','=','fgs_mrn_item.id')
-    //                         // ->leftJoin('fgs_grs_item_rel','fgs_grs_item_rel.item','=','fgs_grs_item.id')
-    //                         // ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_grs_item_rel.master')
-    //                         // ->leftJoin('fgs_pi_item','fgs_pi_item.mrn_item_id','=','fgs_mrn_item.id')
-    //                         // ->leftJoin('fgs_pi_item_rel','fgs_pi_item_rel.item','=','fgs_pi_item.id')
-    //                         // ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
-    //                         // ->leftJoin('fgs_dni_item','fgs_dni_item.pi_item_id','=','fgs_pi_item.id')
-    //                         // ->leftJoin('fgs_dni_item_rel','fgs_dni_item_rel.item','=','fgs_dni_item.id')
-    //                         // ->leftJoin('fgs_dni','fgs_dni.id','=','fgs_dni_item_rel.master')
-    //                         ->where('fgs_mrn.status','=',1)
-    //                         ->where('fgs_mrn_item.id',$id)
-                            
-    //                         ->first();
-    //     return $mrn_item;
-    // }
+    public function product_qty($pr_id,$batch_id,$loc_id)
+    {
+        $stk_qty=fgs_product_stock_management::where('product_id',$pr_id)
+        ->where('batchcard_id',$batch_id)
+        ->where('stock_location_id',$loc_id)
+        ->pluck('quantity')[0];
+        return $stk_qty;
+    
+    }
+    public function product_btch($pr_id,$batch_id,$loc_id)
+    {
+        $stk_qty=DB::table('batchcard_batchcard')
+        ->where('id',$batch_id)
+       // ->where('stock_location_id',$loc_id)
+        ->pluck('quantity');
+        return $stk_qty;
+    
+    }
     // public function product_grs($id)
     // {
         

@@ -10,6 +10,8 @@ use PDF;
 use App\Models\FGS\transaction_type;
 use App\Models\FGS\fgs_product_category;
 use App\Models\FGS\product_stock_location;
+use App\Models\FGS\fgs_product_stock_management;
+
 use App\Models\PurchaseDetails\inv_supplier;
 
 
@@ -144,16 +146,11 @@ class DeliveryNoteController extends Controller
             $validator = Validator::make($request->all(), $validation);
             //  dd($request->batch_id);
             if (!$validator->errors()->all()) {
-                //$mrn_info = fgs_mrn::find($request->mrn_id);
-                // if(!empty($request->batch_id)){
-                //     $batch_card_id= DB::table('batchcard_batchcard')
-                //     ->insertGetId([
-                //     "batch_no"=>$request->batch_id,
-                //     "quantity"=>$request->qty,
-                //     "is_trade"=>1
-                //     ]);
-                // }
-
+               // $challan_info = DB::table('delivery_challan')->where('id',$request->$id)->first();
+              
+                $stkloc2=$product_cat->stock_location_Increase;
+                $stkloc1=$product_cat->stock_location_decrease;
+                
                 foreach ($request->moreItems as $key => $value) {
                     // if ($product_cat->product_category == 3) {
                     //     $batch_card_id = DB::table('batchcard_batchcard')
@@ -189,9 +186,9 @@ class DeliveryNoteController extends Controller
                     "expiry_date" => $expiry_date,
                     "created_at" => date('Y-m-d H:i:s')
                 ];
-                $mrn_data = [
-                    'remarks' => $request->remarks
-                ];
+                // $data = [
+                //     'remarks' => $request->remarks
+                // ];
                 // $stock = [
                 //     "product_id" => $value['product'],
                 //     // "batchcard_id" => $value['batch_no'],
@@ -202,11 +199,52 @@ class DeliveryNoteController extends Controller
                 //     "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
                 //     "expiry_date" => $expiry_date,
                 // ];
+                $stk2=fgs_product_stock_management::where('product_id',$value['product'])
+                ->where('batchcard_id',$batch_card_id)
+                ->where('stock_location_id',$stkloc2)->first();
+               
+                $stk1=fgs_product_stock_management::where('product_id',$value['product'])
+                ->where('batchcard_id',$batch_card_id)
+                ->where('stock_location_id',$stkloc1)->first();
+                
                 $item_id = DB::table('delivery_challan_item')->insertGetId($data);
+
                 DB::table('delivery_challan_item_rel')->insert([
                     'master' => $id,
                     'item' => $item_id
                 ]);
+                
+            if(!empty($stk2)){
+                $q=$stk2->quantity+$qty;
+                
+                fgs_product_stock_management::where('id',$stk2->id)
+                ->update(['quantity'=>$q]);
+            }else{
+                fgs_product_stock_management::insert([
+                    'batchcard_id'=>$batch_card_id,
+                    'product_id'=>$value['product'],
+                    'quantity'=>$qty,
+                    'stock_location_id'=>$stkloc2,
+                    'manufacturing_date'=>date('Y-m-d', strtotime($value['manufacturing_date'])),
+                    'expiry_date'=>$expiry_date
+                ]);
+            }
+           
+            if($stk1){
+                $q=$stk1->quantity-$qty;
+                
+                fgs_product_stock_management::where('id',$stk1->id)
+                ->update(['quantity'=>$q]);
+            }else{
+                fgs_product_stock_management::insert([
+                    'batchcard_id'=>$batch_card_id,
+                    'product_id'=>$value['product'],
+                    'quantity'=>$qty,
+                    'stock_location_id'=>$stkloc2,
+                    'manufacturing_date'=>date('Y-m-d', strtotime($value['manufacturing_date'])),
+                    'expiry_date'=>$expiry_date
+                ]);
+            }
                 //$this->fgs_mrn_item->insert_data($data, $request->mrn_id);
                 // $this->fgs_mrn->update_data(['id' => $request->mrn_id], $mrn_data);
                 // $this->fgs_product_stock_management->insert_data($stock);

@@ -8,16 +8,20 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
-use App\Http\Controllers\Web\FGS\FgsreportController;
+use App\Models\FGS\fgs_product_stock_management;
+
+
 
 class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithEvents
 {
     
     private $mrnitem;
+   
 
     public function __construct($mrnitem) 
     {
         $this->mrnitem = $mrnitem;
+       
     }
     public function collection()
     {
@@ -26,6 +30,14 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
        
         foreach($this->mrnitem as $item)
         {
+            if($item['mrn_number'])
+            {
+                $mrnremining_qty=fgs_product_stock_management::where('product_id',$item['mrnprd'])
+                ->where('batchcard_id',$item['batchcard_id'])
+                ->where('stock_location_id',$item['mrn_stklocation'])
+                ->pluck('quantity')[0];
+
+            }
             if($item->expiry_date !='0000-00-00')
             {
                 $expiry_date = date('d-m-Y', strtotime($item->expiry_date));
@@ -50,18 +62,26 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
             }
             if($item['min_number'])
             {
-                $min_qty = $item['minqty'].'Nos';
-            }
-            else {
-                $min_qty ='';
+               
+                $minremining_qty=fgs_product_stock_management::where('product_id',$item['minpr'])
+                ->where('batchcard_id',$item['minbat'])
+                ->where('stock_location_id',$item['min_stkloc'])
+                ->pluck('quantity')[0];
+                
             }
             if($item['cmin_number'])
             {
-                $min_qty = $item['cminqty'].'Nos';
+                $min_qty = $item['minqty'].'Nos';
+                $cminremining_qty=fgs_product_stock_management::where('product_id',$item['cminprd'])
+                ->where('batchcard_id',$item['cminbtch'])
+                ->where('stock_location_id',$item['cminstk'])
+                ->pluck('quantity')[0];
+                
             }
             else {
                 $min_qty ='';
-            } if($item['dni_number'])
+            }
+            if($item['dni_number'])
             {
                 $dni_qty = $item['dni_number'].'Nos';
             }
@@ -95,7 +115,7 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                 'doc_no'=>$item->mrn_number,
                 'doc_date'=>$item->mrn_date,
                 'doc_qty'=>$item->quantity.'Nos',
-                'rem_qty'=>$item->quantity.'Nos',
+                'rem_qty'=>$mrnremining_qty.'Nos'
                 
 
             );
@@ -111,8 +131,8 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_name'=>'MIN',
                     'doc_no'=>$item->min_number,
                     'doc_date'=>$item->min_date,
-                    'doc_qty'=>$min_qty.'Nos',
-                    'rem_qty'=>$item->reminingmin
+                    'doc_qty'=>$item->minqty.'Nos',
+                    'rem_qty'=>$minremining_qty.'Nos'
                 );
             }
             if($item->cmin_number!=null){
@@ -127,8 +147,8 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_name'=>'CMIN',
                     'doc_no'=>$item->cmin_number,
                     'doc_date'=>$item->cmin_date,
-                    'doc_qty'=>$item->cminqty.'Nos',
-                    'rem_qty'=>''
+                    'doc_qty'=>$item->minqty.'Nos',
+                    'rem_qty'=>$cminremining_qty.'Nos'
                 );
             }
             if($item->grs_number!=null){
@@ -144,7 +164,7 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_no'=>$item->grs_number,
                     'doc_date'=>$item->grs_date,
                     'doc_qty'=>$grs_qty.'Nos',
-                    'rem_qty'=>$grs_qty.'Nos'
+                    'rem_qty'=>$item->grsremining.'Nos'
                 );
             }
             if($item->pi_number!=null){
@@ -160,7 +180,7 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_no'=>$item->pi_number,
                     'doc_date'=>$item->pi_date,
                     'doc_qty'=>$pi_qty.'Nos',
-                    'rem_qty'=>$pi_qty.'Nos'
+                    'rem_qty'=>$item->piremining.'Nos'
                 );
             }
             if($item->cpi_number!=null){
@@ -176,7 +196,7 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_no'=>$item->cpi_number,
                     'doc_date'=>$item->cpi_date,
                     'doc_qty'=>$cpi_qty.'Nos',
-                    'rem_qty'=>$cpi_qty.'Nos'
+                    'rem_qty'=>$item->piremining.'Nos'
                 );
             }
             if($item->dni_number!=null){
@@ -192,25 +212,25 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_no'=>$item->dni_number,
                     'doc_date'=>$item->dni_date,
                     'doc_qty'=>$pi_qty.'Nos',
-                    'rem_qty'=>$pi_qty.'Nos'
+                    'rem_qty'=>$item->piremining.'Nos'
                 );
             }
-            if($item->mtq_number!=null){
-                $data[] = array(
-                    '#'=>'',
-                    'sku_code'=>'',
-                    'hsn_code'=>'',
-                    'description'=>'',
-                    'batch_no'=>'',
-                    'manufacture_date'=>'',
-                    'expiry_date'=>'',
-                    'doc_name'=>'MTQ',
-                    'doc_no'=>$item->mtq_number,
-                    'doc_date'=>$item->mtq_date,
-                    'doc_qty'=>$item->mtqqty.'Nos',
-                    'rem_qty'=>$item->mtqqty.'Nos'
-                );
-            }
+            // if($item->mtq_number!=null){
+            //     $data[] = array(
+            //         '#'=>'',
+            //         'sku_code'=>'',
+            //         'hsn_code'=>'',
+            //         'description'=>'',
+            //         'batch_no'=>'',
+            //         'manufacture_date'=>'',
+            //         'expiry_date'=>'',
+            //         'doc_name'=>'MTQ',
+            //         'doc_no'=>$item->mtq_number,
+            //         'doc_date'=>$item->mtq_date,
+            //         'doc_qty'=>$item->mtqqty.'Nos',
+            //         'rem_qty'=>$item->mtqqty.'Nos'
+            //     );
+            // }
             
         }
         return collect($data);
