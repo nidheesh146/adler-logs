@@ -37,6 +37,7 @@ class DNIController extends Controller
     public function DNIList(Request $request)
     {
         $condition =['fgs_dni.dni_exi'=>'DNI'];
+        $condition =['fgs_dni.status'=>1];
         if($request->dni_number)
         {
             $condition[] = ['fgs_dni.dni_number','like', '%' . $request->dni_number . '%'];

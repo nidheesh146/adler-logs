@@ -85,9 +85,16 @@ class fgs_grs extends Model
     }
     function find_grs_num_for_cgrs($condition)
     {
-        return $this->select(['fgs_grs.grs_number as text','fgs_grs.id'])->where($condition)
-        ->where('fgs_grs.status','=',1)
+        return $this->select(['fgs_grs.grs_number as text','fgs_grs.id'])
+        ->leftJoin('fgs_grs_item_rel','fgs_grs_item_rel.master','=','fgs_grs.id')
+        ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_grs_item_rel.item')
         ->where($condition)
+        ->where('fgs_grs_item.qty_to_invoice','!=',0)
+        ->where('fgs_grs.status','=',1)
+        ->where('fgs_grs_item.status','=',1)
+        ->where('fgs_grs_item.cgrs_status','=',0)
+        ->where($condition)
+        ->distinct('fgs_grs.id')
         ->get();
     }
     function get_master_data($condition){

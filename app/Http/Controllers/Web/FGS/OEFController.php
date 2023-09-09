@@ -210,7 +210,11 @@ class OEFController extends Controller
     }
     public function check_item($id)
     {
-        $oef_item = fgs_oef_item_rel::where('master', $id)->first();
+        $oef_item = fgs_oef_item_rel::select('fgs_oef_item_rel.item')
+        ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_oef_item_rel.item')
+        ->where('fgs_oef_item.status','=',1)
+        ->where('fgs_oef_item.coef_status','=',0)
+        ->where('fgs_oef_item_rel.master', $id)->first();
         return $oef_item;
     }
     public function OEFDelete($id)

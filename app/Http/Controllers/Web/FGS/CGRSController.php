@@ -222,7 +222,7 @@ class CGRSController extends Controller
       {
         $grs = $this->fgs_grs->get_master_data(['fgs_grs.id' => $id]);
        //return $grs;
-        $grs_item = $this->fgs_grs_item->get_grs_item(['fgs_grs_item_rel.master' => $id]);
+        $grs_item = $this->fgs_grs_item->get_grs_item_for_cgrs(['fgs_grs_item_rel.master' => $id]);
         
                     
 
