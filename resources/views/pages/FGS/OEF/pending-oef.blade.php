@@ -95,44 +95,57 @@
 						<table class="table table-bordered mg-b-0">
 							<thead>
 								<tr>
-									<th>OEF Number</th>
-									<th>OEF date</th>
-									<th>Order number</th>
-									<th>Order date</th>
-									<th>Order Fulfil</th>
-									<th>Transaction Type</th>
-									<th>Due Date</th>
-
-									<th>Customer info</th>
-									<th>Action</th>
+									<th>Doc Date</th>
+									<th>Doc No</th>
+									<th>Customer</th>
+									<th>Order No</th>
+									<th>Order Date</th>
+									<th>SKU Code</th>
+									<th>Description</th>
+									<th>Category</th>
+									<th>Pending Qty</th>
+									<th>Pending Value</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-								@foreach($oef as $item)
+								@foreach($oef_items as $item)
+								<?php
+									$rate_aftr_discount = $item['rate']-($item['rate']*$item['discount'])/100;
+									$value = $item['order_qty']*$rate_aftr_discount;
+									if($item['expiry_control']==1)
+									$expiry_control = 'Yes';
+									else
+									$expiry_control = 'No';
+									if($item->mrp)
+									{
+										$total_rate = $item['quantity_to_allocate']*$item['mrp'];
+										$discount_value = $total_rate*$item['discount']/100;
+										$discounted_value = $total_rate-$discount_value;
+										$igst_value = $total_rate*$item['igst']/100;
+										$sgst_value = $total_rate*$item['sgst']/100;
+										$cgst_value = $total_rate*$item['cgst']/100;
+										$total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+										
+									}
+								?>
 								<tr>
 
-									<td>{{$item['oef_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['oef_date']))}}</td>
+									<td>{{$item['oef_number']}}</td>
+									<td>{{$item['firm_name']}}</td>
 									<td>{{$item['order_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
-									<td>{{$item['order_fulfil_type']}}</td>
-									<td>{{$item['transaction_name']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['due_date']))}}</td>
-
-									<td>{{$item['firm_name']}}<br />
-										Contact Person:{{$item['contact_person']}}<br />
-										Contact Number:{{$item['contact_number']}}<br />
-									</td>
-									<td>
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/OEF/item-list/'.$item["id"])}}" class="dropdown-item"><i class="fas fa-eye"></i> Item</a><br />
-										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/OEF/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
-									</td>
+									<td>{{$item['sku_code']}}</td>
+									<td>{{$item['discription']}}</td>
+									<td>{{$item['category_name']}}</td>
+									<td>{{$item['quantity_to_allocate']}} Nos</td>
+									<td>{{(number_format((float)($total_value), 2, '.', ''))}}</td>
 								</tr>
 								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							{{ $oef->appends(request()->input())->links() }}
+							{{ $oef_items->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>

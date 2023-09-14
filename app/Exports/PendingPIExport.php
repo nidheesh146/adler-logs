@@ -26,26 +26,32 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
             $expiry = 'NA'; 
             else 
             $expiry = date('d-m-Y',strtotime($item['expiry_date']));
+            if($item->rate)
+            {
+                $total_rate = $item['pi_qty_balance']*$item['rate'];
+                $discount_value = $total_rate*$item['discount']/100;
+                $discounted_value = $total_rate-$discount_value;
+                $igst_value = $total_rate*$item['igst']/100;
+                $sgst_value = $total_rate*$item['sgst']/100;
+                $cgst_value = $total_rate*$item['cgst']/100;
+                $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+                
+            }
             $data[]= array(
-                '#'=>$i++,
-                'pi_number'=>$item['pi_number'],
-                'grs_number'=>$item['grs_number'],
-                'grs_date'=>date('d-m-Y',strtotime($item['grs_date'])),
-                'oef_number'=>$item['oef_number'],
-                'oef_date'=>date('d-m-Y',strtotime($item['oef_date'])),
-                'order_number'=>$item['order_number'],
-                'order_date'=>date('d-m-Y',strtotime($item['order_date'])),
-                'sku_code'=>$item['sku_code'],
-                'hsn_code'=>$item['hsn_code'],
-                'discription'=>$item['discription'],
-                'batch_quantity'=>$item['batch_qty'],
-                'outstanding_quantity'=>$item['remaining_qty_after_cancel'],
-                'unit'=>'Nos',
-                'manufacturing_date'=>date('d-m-Y',strtotime($item['manufacturing_date'])),
-                'expiry_date'=>$expiry,
-                'customer'=>$item['firm_name'],
-                //'customer'=>$item['firm_name'],
-                'WEF'=>date('d-m-Y',strtotime($item['pi_created_at'])),
+                '#' => $i++,
+                'Doc_Date' => date('d-m-Y', strtotime($item['pi_date'])),
+                'Doc_No' => $item['pi_number'],
+                'Customer_Name' => $item['firm_name'],
+                'Order_No' => $item['order_number'],
+                'Order_Date' => date('d-m-Y', strtotime($item['order_date'])),
+                'Item_Code' => $item['sku_code'],
+                'Item_Description' => $item['discription'],
+                'Category'=>$item['category_name'],
+                'Pending_Qty' => $item['pi_qty_balance'],
+                // 'rate' => $pi['mrp'],
+                // 'discount' =>$pi['discount'],
+                // 'gst' =>"IGST:".$pi['igst'].", SGST:".$pi['sgst'].", CGST:".$pi['cgst'],
+                'pending_value'=>(number_format((float)($total_value), 2, '.', '')),
             );
         }
         return collect($data);
@@ -54,23 +60,19 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
     {
         return [
             '#',
-            'PI Number',
-            'GRS Number',
-            'GRS Date',
-            'OEF Number',
-            'OEF Date',
-            'Order Number',
+            'Doc Date',
+            'Doc No',
+            'Customer Name',
+            'Order No',
             'Order Date',
-            'Product Sku Code',
-            'HSNCode',
-            'Description',
-            'Quantity',
-            'Outstanding Quantity',
-            'Unit',
-            'Manufacturing date',
-            'Expiry date',
-            'Customer',
-            'WEF',
+            'Item Code',
+            'Item Description',
+            'Category',
+            'Pending Qty',
+            // 'Rate',
+            // 'Discount(%)',
+            // 'GST(%)',
+            'Pending Value',
         ];
     }
     public function styles(Worksheet $sheet)
@@ -89,14 +91,14 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
                 $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(5);
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(18);
                 $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(20);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(25);
                 $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(50);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(12);
                 $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(10);

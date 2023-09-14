@@ -141,7 +141,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                           
+                        </div>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                 <button type="submit"  class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"

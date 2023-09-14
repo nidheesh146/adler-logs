@@ -23,33 +23,45 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
     {
         if($this->request=='null')
         {
-            $items = fgs_oef_item::select('fgs_oef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','product_price_master.mrp',
-            'fgs_oef.oef_number','fgs_oef.due_date','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
-            'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.city','customer_supplier.sales_type','customer_supplier.city',
-            'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3',
-            'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id')
-                            ->leftjoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
-                            ->leftjoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
-                            ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
-                            ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
-                            ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
-                            ->leftJoin('zone','zone.id','=','customer_supplier.zone')
-                            ->leftJoin('state','state.state_id','=','customer_supplier.state')
-                            ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
-                            ->leftjoin('product_product','product_product.id','=','fgs_oef_item.product_id')
-                            ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
-                            ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
-                            //->where($condition)
-                            ->whereNotIn('fgs_oef.id',function($query) {
-
-                                $query->select('fgs_grs.oef_id')->from('fgs_grs')->where('fgs_grs.status','=',1);
-                            
-                            })->where('fgs_oef.status','=',1)
-                            ->where('fgs_oef_item.coef_status','=',0)
-                            ->orderBy('fgs_oef_item.id','DESC')
-                            ->distinct('fgs_oef_item.id')
-                            ->get();
-
+            $items = fgs_oef_item::select(
+                'fgs_oef.*',
+                'product_product.*',
+                'customer_supplier.firm_name',
+                'customer_supplier.shipping_address',
+                'customer_supplier.contact_person',
+                'customer_supplier.contact_number',
+                //'product_price_master.mrp',
+                'fgs_oef_item.remaining_qty_after_cancel',
+                'fgs_oef_item.quantity_to_allocate',
+                'fgs_product_category.category_name',
+                'fgs_oef_item.rate as mrp',
+                'fgs_oef_item.discount',
+                'inventory_gst.igst',
+                'inventory_gst.cgst',
+                'inventory_gst.sgst',
+                
+            )
+                ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+                ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
+                ->leftJoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
+                ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
+                ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
+                ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+                ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+                ->where('fgs_oef.status', '=', 1)
+                // ->whereNotIn('fgs_oef_item.id', function ($query) {
+    
+                //     $query->select('fgs_grs_item.oef_item_id')->from('fgs_grs_item');
+                // })
+                ->where('fgs_oef.status', '=', 1)
+                ->where('fgs_oef_item.status', '=', 1)
+                ->where('fgs_oef_item.quantity_to_allocate', '!=', 0)
+                ->where('fgs_oef_item.remaining_qty_after_cancel', '!=', 0)
+                ->where('fgs_oef_item.coef_status', '=', 0)
+                //->where($condition)
+                ->distinct('fgs_oef.id')
+                ->orderBy('fgs_oef.id', 'DESC')
+                ->get();
         }
         else
         {
@@ -67,33 +79,45 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
                 $condition[] = ['fgs_oef.oef_date', '>=', date('Y-m-d', strtotime('01-' . $this->request->from))];
                 $condition[] = ['fgs_oef.oef_date', '<=', date('Y-m-t', strtotime('01-' . $this->request->from))];
             }
-            $items = fgs_oef_item::select('fgs_oef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','product_price_master.mrp',
-            'fgs_oef.oef_number','fgs_oef.due_date','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
-            'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.city','customer_supplier.sales_type','customer_supplier.city',
-            'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3',
-            'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id')
-                            ->leftjoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
-                            ->leftjoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
-                            ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
-                            ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
-                            ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
-                            ->leftJoin('zone','zone.id','=','customer_supplier.zone')
-                            ->leftJoin('state','state.state_id','=','customer_supplier.state')
-                            ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
-                            ->leftjoin('product_product','product_product.id','=','fgs_oef_item.product_id')
-                            ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
-                            ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
-                            ->whereNotIn('fgs_oef.id',function($query) {
-
-                                $query->select('fgs_grs.oef_id')->from('fgs_grs')->where('fgs_grs.status','=',1);
-                            
-                            })->where($condition)
-                            ->where('fgs_oef.status','=',1)
-                            ->where('fgs_oef_item.coef_status','=',0)
-                            ->orderBy('fgs_oef_item.id','DESC')
-                            ->distinct('fgs_oef_item.id')
-                            ->get();
-
+            $items = fgs_oef_item::select(
+                'fgs_oef.*',
+                'product_product.*',
+                'customer_supplier.firm_name',
+                'customer_supplier.shipping_address',
+                'customer_supplier.contact_person',
+                'customer_supplier.contact_number',
+                //'product_price_master.mrp',
+                'fgs_oef_item.remaining_qty_after_cancel',
+                'fgs_oef_item.quantity_to_allocate',
+                'fgs_product_category.category_name',
+                'fgs_oef_item.rate as mrp',
+                'fgs_oef_item.discount',
+                'inventory_gst.igst',
+                'inventory_gst.cgst',
+                'inventory_gst.sgst',
+                
+            )
+                ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+                ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
+                ->leftJoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
+                ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
+                ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
+                ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+                ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+                ->where('fgs_oef.status', '=', 1)
+                // ->whereNotIn('fgs_oef_item.id', function ($query) {
+    
+                //     $query->select('fgs_grs_item.oef_item_id')->from('fgs_grs_item');
+                // })
+                ->where('fgs_oef.status', '=', 1)
+                ->where('fgs_oef_item.status', '=', 1)
+                ->where('fgs_oef_item.quantity_to_allocate', '!=', 0)
+                ->where('fgs_oef_item.remaining_qty_after_cancel', '!=', 0)
+                ->where('fgs_oef_item.coef_status', '=', 0)
+                ->where($condition)
+                ->distinct('fgs_oef.id')
+                ->orderBy('fgs_oef.id', 'DESC')
+                ->get();
         }
         $i=1;
         $data = [];
@@ -106,9 +130,9 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
             $expiry_control = 'Yes';
             else
             $expiry_control = 'No';
-            if($item->rate)
+            if($item->mrp)
             {
-                $total_rate = $item['remaining_qty_after_cancel']*$item['rate'];
+                $total_rate = $item['quantity_to_allocate']*$item['mrp'];
                 $discount_value = $total_rate*$item['discount']/100;
                 $discounted_value = $total_rate-$discount_value;
                 $igst_value = $total_rate*$item['igst']/100;
@@ -118,30 +142,20 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
                 
             }
             $data[]= array(
-                '#'=>$i++,
-                'oef_number'=>$item['oef_number'],
-                'sku_code'=>$item['sku_code'],
-                'hsn_code'=>$item['hsn_code'],
-                'discription'=>$item['discription'],
-                'quantity'=>$item['quantity'],
-                'outstanding_quantity'=>$item['remaining_qty_after_cancel'],
-                'rate'=>$item['rate'],
-                'discount'=>$item['discount'],
-                'gst' =>"IGST:".$item['igst'].", SGST:".$item['sgst'].", CGST:".$item['cgst'],
-                'value'=>(number_format((float)($total_value), 2, '.', '')),
-                'oef_date'=>date('d-m-Y',strtotime($item['oef_date'])),
-                'order_number'=>$item['order_number'],
-                'order_date'=>date('d-m-Y',strtotime($item['order_date'])),
-                'order_fulfil_type'=>$item['order_fulfil_type'],
-                'transaction_name'=>$item['transaction_name'],
-                'order_date'=>date('d-m-Y',strtotime($item['order_date'])),
-                'transaction_name'=>$item['transaction_name'],
-                'due_date'=>date('d-m-Y',strtotime($item['due_date'])),
-                'firm_name'=>$item['firm_name'],
-                'city'=>$item['city'],
-                'zone'=>$item['zone_name'],
-                'state'=>$item['state_name'],
-                'created_at'=>date('d-m-Y',strtotime($item['created_at'])),
+                '#' => $i++,
+                'Doc_Date' => date('d-m-Y', strtotime($item['oef_date'])),
+                'Doc_No' => $item['oef_number'],
+                'Customer_Name' => $item['firm_name'],
+                'Order_No' => $item['order_number'],
+                'Order_Date' => date('d-m-Y', strtotime($item['order_date'])),
+                'Item_Code' => $item['sku_code'],
+                'Item_Description' => $item['discription'],
+                'Category'=>$item['category_name'],
+                'Pending_Qty'=> $item['quantity_to_allocate'],
+                // 'rate' => $oef['mrp'],
+                // 'discount' =>$oef['discount'],
+                // 'gst' =>"IGST:".$oef['igst'].", SGST:".$oef['sgst'].", CGST:".$oef['cgst'],
+                'value'=>(number_format((float)($total_value), 2, '.', ''))
 
 
             );
@@ -152,28 +166,19 @@ class PendingOEFExport implements FromCollection, WithHeadings, WithStyles,WithE
     {
         return [
             '#',
-            'OEF Number',
-            'Product Sku Code',
-            'HSNCode',
-            'Description',
-            'Quantity',
-            'Outstanding Quantity',
-            'Rate',
-            'Discount(%)',
-            'GST(%)',
-            'Value',
-            'OEF Date',
-            'Order Number',
+            'Doc Date',
+            'Doc No',
+            'Customer Name',
+            'Order No',
             'Order Date',
-            'Order Fulfil',
-            'Transaction Type',
-            'Due Date',
-            'Customer',
-            'City',
-            'Zone',
-            'State',
-            //'Created By',
-            'WEF',
+            'Item Code',
+            'Item Description',
+            'Category',
+            'Pending Qty',
+            // 'Rate',
+            // 'Discount(%)',
+            // 'GST(%)',
+            'Pending Value',
         ];
     }
     public function styles(Worksheet $sheet)

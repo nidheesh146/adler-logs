@@ -69,7 +69,7 @@
                                                     <textarea type="text" readonly class="form-control" id="Itemdescription1" name="Description" placeholder="Description"></textarea>
                                                 </div>
                                                 <input type="hidden" id="is_sterile1" value="">
-                                                {{--@if($product_cat->product_category==3)--}}
+                                                {{--@if($delivery_challan->product_category==3)--}}
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label for="exampleInputEmail1">Batch No* </label>
                                                     <input type="text" class="form-control" name="moreItems[0][batch_no]" placeholder="Batch No">
@@ -127,7 +127,7 @@
 
                             </table>
                             <div class=" col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <input type="hidden" value="{{$product_cat->product_category}}" id="product_cat" name="product_cat">
+                                <input type="hidden" value="{{$delivery_challan->product_category}}" id="product_cat" name="product_cat">
                                 <button type="button" name="add" id="add" class="btn btn-success btn-xs" style="height:38px;float:right;margin-right:19px;">
                                     <i class="fas fa-plus"></i></button>
                             </div>

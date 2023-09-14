@@ -53,20 +53,20 @@
 											<div class="row filter_search" style="margin-left: 0px;">
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
 
-												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>OEF No :</label>
-														<input type="text" value="{{request()->get('oef_no')}}" name="oef_no" id="oef_no" class="form-control" placeholder="OEF NO">
-													</div><!-- form-group -->
-
-
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">GRS No:</label>
-														<input type="text" value="{{request()->get('grs_no')}}" name="grs_no" id="grs_no" class="form-control" placeholder="GRS NO">
-													</div>
-
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label style="font-size: 12px;">PI No:</label>
 														<input type="text" value="{{request()->get('pi_no')}}" id="pi_no" class="form-control" name="pi_no" placeholder="PI NO">
+													</div>
+
+
+													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Order No:</label>
+														<input type="text" value="{{request()->get('order_no')}}" name="order_no" id="order_no" class="form-control" placeholder="Order NO">
+													</div>
+
+													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+														<label style="font-size: 12px;">PI Month</label>
+														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
 
 												</div>
@@ -95,47 +95,55 @@
 						<table class="table table-bordered mg-b-0">
 							<thead>
 								<tr>
-									<th>PI Number</th>
-									<th>PI Date</th>
-									<th>GRS Number</th>
-									<th>GRS Date</th>
-									<th>OEF Number</th>
-									<th>OEF Date</th>
-									<th>Order Number</th>
-									<th>Order Date</th>
+									<th>Doc Date</th>
+									<th>Doc No</th>
 									<th>Customer</th>
-									<!-- <th>Shipping Address</th>
-									<th>Billing Address</th> -->
-									<th>Action</th>
+									<th>Order No</th>
+									<th>Order Date</th>
+									<th>SKU Code</th>
+									<th>Description</th>
+									<th>Category</th>
+									<th>Pending Qty</th>
+									<th>Pending Value</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-								@foreach($pi as $item)
+								@foreach($pi_items as $item)
+								<?php
+								if($item['expiry_date']=='0000-00-00') 
+								$expiry = 'NA'; 
+								else 
+								$expiry = date('d-m-Y',strtotime($item['expiry_date']));
+								if($item->rate)
+								{
+									$total_rate = $item['batch_qty']*$item['rate'];
+									$discount_value = $total_rate*$item['discount']/100;
+									$discounted_value = $total_rate-$discount_value;
+									$igst_value = $total_rate*$item['igst']/100;
+									$sgst_value = $total_rate*$item['sgst']/100;
+									$cgst_value = $total_rate*$item['cgst']/100;
+									$total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+									
+								}
+								?>
 								<tr>
-
-									<td>{{$item['pi_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['pi_date']))}}</td>
-									<td>{{$item['grs_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['grs_date']))}}</td>
-									<td>{{$item['oef_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['oef_date']))}}</td>
+									<td>{{$item['pi_number']}}</td>
+									<td>{{$item['firm_name']}}</td>
 									<td>{{$item['order_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
-									<td>{{$item['firm_name']}}<br />
-										{{--Contact Person:{{$item['contact_person']}}<br />
-										Contact Number:{{$item['contact_number']}}<br />--}}
-									</td>
-									<td>
-										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/PI/item-list/'.$item["id"])}}" class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
-										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
-										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/payment-pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Payment</a>
-									</td>
+									<td>{{$item['sku_code']}}</td>
+									<td>{{$item['discription']}}</td>
+									<td>{{$item['category_name']}}</td>
+									
+									<td>{{$item['batch_qty']}} Nos</td>
+									<td>{{(number_format((float)($total_value), 2, '.', ''))}}</td>
 								</tr>
 								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							{{ $pi->appends(request()->input())->links() }}
+							{{ $pi_items->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>
@@ -170,10 +178,10 @@
 		$('#prbody2').show();
 	});
 	$('.search-btn').on("click", function(e) {
-		var oef_no = $('#oef_no').val();
-		var grs_no = $('#grs_no').val();
+		var order_no = $('#order_no').val();
+		var pi_date = $('#pi_date').val();
 		var pi_no = $('#pi_no').val();
-		if (!oef_no & !grs_no & !pi_no) {
+		if (!order_no & !pi_date & !pi_no) {
 			e.preventDefault();
 		}
 	});

@@ -32,12 +32,12 @@
         .col21{
             margin-top:-25px;
             float:left; 
-            width:30%;
+            width:50%;
         }
         .col22{
             margin-top:-25px;
             float:left;
-            width:30%;
+            width:50%;
         }
         .col23{
             margin-left:120px;
@@ -100,12 +100,13 @@
      <div class="row1" style="height:110px;width:100%;">
     
         <div class="col10">
-            <span style="color:#1434A4;font-weight:bold;font-size: 18px;text-align: right; float: right !important; "><strong>ADLER HEALTHCARE PVT. LTD.</strong></span>
+            <span style="color:#1434A4;font-weight:bold;font-size: 18px;text-align: right; float: right !important; ">
+                <strong>ADLER HEALTHCARE PVT. LTD.</strong></span>
         </div>
         
     </div>
             
-    <div style="display:block;height: 8px;width:90%; border-bottom: solid black;margin-bottom:40px;margin-top:-50px;">
+    <div style="display:block;height: 8px;width:90%; border-bottom: solid black;margin-bottom:60px;margin-top:-50px;">
         <span style="float:right;font-weight:bold;font-size: 22px; background-color: #f4f5f8; padding: 0 4px;margin-top:-12px;position: absolute;margin-right:-80px">
         Material Receipt Notes (MRN)<!--Padding is optional-->
         </span>
@@ -123,11 +124,29 @@
                     <td>Supplier Doc Date</td>
                     <td>: {{date('d-m-Y', strtotime($mrn['supplier_doc_date']))}}</td>
                 </tr>
+                @if($mrn['supplier']==1)
+                <tr>
+                    <td>Supplier</td>
+                    <td>: ADLER HEALTHCARE PVT. LTD.</td>
+                </tr>
+                <tr>
+                    <td>Supplier Address</td>
+                    <td>: MIDC Sadavali, Devrukh, Tal. Sangameshwar – 415 804</td>
+                </tr>
+                @elseif($mrn['supplier']==2)
+                <tr>
+                    <td>Supplier</td>
+                    <td>: SMITH & NEPHEW HEALTHCARE PVT. LTD.</td>
+                </tr>
+                <tr>
+                    <td>Supplier Address</td>
+                    <td>: Andheri (East), Mumbai – 400 059</td>
+                </tr>
+                @endif
             </table>
         </div>
+        
         <div class="col22">
-        </div>
-        <div class="col23">
             <table style="float:left;">
                 <tr>
                     <td>Doc  No</td>
@@ -207,7 +226,7 @@
         <div class="col41">
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>
-              
+                {{$mrn['remarks']}}
 
             </div>
             

@@ -62,7 +62,7 @@
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label> Description *</label>
-                                <textarea type="text" class="form-control" name="description" id="description" placeholder="Description" ></textarea>
+                                <textarea type="text" class="form-control" name="description" id="description" placeholder="Description" >{{(!empty($datas)) ? $datas['discription']: ""}}</textarea>
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>HSN Code *</label>
@@ -71,6 +71,16 @@
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>GS1 Code</label>
                                 <input type="text" value="{{(!empty($datas)) ? $datas['gs1_code']: ""}}" class="form-control" name="gs1_code" id="gs1_code" placeholder="GS1 Code" >
+                            </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label>Product Category *</label>
+                                <select class="form-control" name="product_category">
+                                    <option>..select one..</option>
+                                    @foreach($data['product_category'] as $category)
+                                    <option value="{{$category->id}}"
+                                     @if($datas != null)  @if($datas->product_category_id == $category->id) selected @endif @endif>{{$category->category_name}}</option>
+                                    @endforeach
+                                </select> 
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Product group *</label>
@@ -111,7 +121,7 @@
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Pack Size </label>
-                                <input type="text" value="{{(!empty($datas)) ? $datas['pack_size']: ""}}" class="form-control " name="pack_size" placeholder="Pack Size " >
+                                <input type="text" value="{{(!empty($datas)) ? $datas['quantity_per_pack']: ""}}" class="form-control " name="pack_size" placeholder="Pack Size " >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Min Level </label>
@@ -125,8 +135,8 @@
                                 <label>Sterile/ Non-Sterile</label>
                                 <select class="form-control" name="sterile_nonsterile" >
                                     <option>..select one..</option>
-                                    <option value="1">Sterile</option>
-                                    <option value="0">Non-Sterile</option>
+                                    <option value="1" @if(!empty($datas) && $datas['is_sterile'] == '1' ) selected   @endif>Sterile</option>
+                                    <option value="0" @if(!empty($datas) && $datas['is_sterile'] == '0' ) selected   @endif>Non-Sterile</option>
                                 </select> 
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -143,11 +153,11 @@
                             <!-- <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Conversion rate (INR) *</label>
                                 <input type="text" class="form-control" value="" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
-                            </div>
+                            </div>-->
                             <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                <label>Value in INR </label>
-                                <input type="text" readonly class="form-control" value="" name="value_inr" id="value_inr" placeholder="Value in INR">
-                            </div> -->
+                                <label>GST </label>
+                                <input type="text"  class="form-control" value="{{(!empty($datas)) ? $datas['gst']: ""}}" name="gst" id="gst" placeholder="GST">
+                            </div> 
                         </div> 
                       
 

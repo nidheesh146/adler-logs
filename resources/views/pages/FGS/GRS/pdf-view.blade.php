@@ -259,8 +259,8 @@
         <div class="col41">
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>
-                @if($grs['remarks'])
-                {{$grs['remarks']}}
+                @if($grs['oef_remarks'])
+                {{$grs['oef_remarks']}}
                 @endif
             </div>
             

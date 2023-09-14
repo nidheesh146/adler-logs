@@ -70,6 +70,16 @@ class product extends Model
                     ->get()->toArray();
         
     }
+    function get_product_info_fgs($data,$condition){
+        return $this->select(['product_product.id','product_product.sku_code as text','product_product.discription','product_productgroup.group_name','product_product.hsn_code',
+        'product_product.is_sterile','product_product.process_sheet_no','fgs_product_category.category_name'])
+                    ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
+                    ->leftjoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                    ->where('product_product.sku_code','like','%'.$data.'%')
+                    ->where($condition)
+                    ->get()->toArray();
+        
+    }
 
     // function get_product_info_trade($data){
     //     return $this->select(['product_product.id','product_product.sku_code as text','product_product.discription','product_productgroup.group_name','product_product.hsn_code','product_product.is_sterile','product_product.process_sheet_no'])

@@ -33,7 +33,7 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
             }
             if($oef->mrp)
             {
-                $total_rate = $oef['remaining_qty_after_cancel']*$oef['mrp'];
+                $total_rate = $oef['quantity_to_allocate']*$oef['mrp'];
                 $discount_value = $total_rate*$oef['discount']/100;
                 $discounted_value = $total_rate-$discount_value;
                 $igst_value = $total_rate*$oef['igst']/100;
@@ -48,15 +48,15 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 'Doc_No' => $oef['oef_number'],
                 'Customer_Name' => $oef['firm_name'],
                 'Order_No' => $oef['order_number'],
-                'Order_Date' => $oef['order_date'],
+                'Order_Date' => date('d-m-Y', strtotime($oef['order_date'])),
                 'Item_Code' => $oef['sku_code'],
                 'Item_Description' => $oef['discription'],
                 'Category'=>$oef['category_name'],
-                'Pending_Qty'=> $oef['remaining_qty_after_cancel'],
-                'Total_Pending_Value' => $oef['mrp'],
-                'discount' =>$oef['discount'],
-                'gst' =>"IGST:".$oef['igst'].", SGST:".$oef['sgst'].", CGST:".$oef['cgst'],
-                'value'=>(number_format((float)($total_value), 2, '.', '')),
+                'Pending_Qty'=> $oef['quantity_to_allocate'],
+                // 'rate' => $oef['mrp'],
+                // 'discount' =>$oef['discount'],
+                // 'gst' =>"IGST:".$oef['igst'].", SGST:".$oef['sgst'].", CGST:".$oef['cgst'],
+                'value'=>(number_format((float)($total_value), 2, '.', ''))
 
             );
         }
@@ -82,16 +82,16 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 'Doc_Date' => $grs_date,
                 'Doc_No' => $grs['grs_number'],
                 'Customer_Name' => $grs['firm_name'],
-                'Order_No' => "",
-                'Order_Date' => "",
+                'Order_No' => $grs['order_number'],
+                'Order_Date' =>date('d-m-Y', strtotime($grs['order_date'])),
                 'Item_Code' => $grs['sku_code'],
                 'Item_Description' => $grs['discription'],
                 'Category'=>$grs['category_name'],
                 'Pending_Qty' => $grs['remaining_qty_after_cancel'],
-                'Total_Pending_Value' => $grs['mrp'],
-                'discount' =>$grs['discount'],
-                'gst' =>"IGST:".$grs['igst'].", SGST:".$grs['sgst'].", CGST:".$grs['cgst'],
-                'value'=>(number_format((float)($total_value), 2, '.', '')),
+                // 'rate' => $grs['mrp'],
+                // 'discount' =>$grs['discount'],
+                // 'gst' =>"IGST:".$grs['igst'].", SGST:".$grs['sgst'].", CGST:".$grs['cgst'],
+                'value'=>(number_format((float)($total_rate), 2, '.', '')),
 
 
             );
@@ -102,9 +102,9 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
             } else {
                 $pi_date = '';
             }
-            if($pi->mrp)
+            if($pi->rate)
             {
-                $total_rate = $pi['remaining_qty_after_cancel']*$pi['mrp'];
+                $total_rate = $pi['pi_qty_balance']*$pi['rate'];
                 $discount_value = $total_rate*$pi['discount']/100;
                 $discounted_value = $total_rate-$discount_value;
                 $igst_value = $total_rate*$pi['igst']/100;
@@ -121,16 +121,16 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 'Doc_Date' => $pi_date,
                 'Doc_No' => $pi['pi_number'],
                 'Customer_Name' => $pi['firm_name'],
-                'Order_No' => "",
-                'Order_Date' => "",
+                'Order_No' => $pi['order_number'],
+                'Order_Date' => date('d-m-Y', strtotime($pi['order_date'])),
                 'Item_Code' => $pi['sku_code'],
                 'Item_Description' => $pi['discription'],
                 'Category'=>$pi['category_name'],
-                'Pending_Qty' => $pi['remaining_qty_after_cancel'],
-                'Total_Pending_Value' => $pi['mrp'],
-                'discount' =>$pi['discount'],
-                'gst' =>"IGST:".$pi['igst'].", SGST:".$pi['sgst'].", CGST:".$pi['cgst'],
-                'value'=>(number_format((float)($total_value), 2, '.', '')),
+                'Pending_Qty' => $pi['pi_qty_balance'],
+                // 'rate' => $pi['mrp'],
+                // 'discount' =>$pi['discount'],
+                // 'gst' =>"IGST:".$pi['igst'].", SGST:".$pi['sgst'].", CGST:".$pi['cgst'],
+                'pending_value'=>(number_format((float)($total_value), 2, '.', '')),
 
             );
         }
@@ -151,10 +151,10 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
             'Item Description',
             'Category',
             'Pending Qty',
-            'Rate',
-            'Discount(%)',
-            'GST(%)',
-            'Value',
+            // 'Rate',
+            // 'Discount(%)',
+            // 'GST(%)',
+            'Pending Value',
         ];
     }
     public function styles(Worksheet $sheet)

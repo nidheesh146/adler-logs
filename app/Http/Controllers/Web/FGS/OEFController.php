@@ -575,18 +575,46 @@ class OEFController extends Controller
             $condition[] = ['fgs_oef.oef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
             $condition[] = ['fgs_oef.oef_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
-        $oef = fgs_oef::select('fgs_oef.*', 'order_fulfil.order_fulfil_type', 'transaction_type.transaction_name', 'customer_supplier.firm_name', 'customer_supplier.shipping_address', 'customer_supplier.contact_person', 'customer_supplier.contact_number')
-            ->leftJoin('order_fulfil', 'order_fulfil.id', '=', 'fgs_oef.order_fulfil')
-            ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
+        $oef_items = fgs_oef_item::select(
+            'fgs_oef.*',
+            'product_product.*',
+            'customer_supplier.firm_name',
+            'customer_supplier.shipping_address',
+            'customer_supplier.contact_person',
+            'customer_supplier.contact_number',
+            //'product_price_master.mrp',
+            'fgs_oef_item.remaining_qty_after_cancel',
+            'fgs_oef_item.quantity_to_allocate',
+            'fgs_product_category.category_name',
+            'fgs_oef_item.rate as mrp',
+            'fgs_oef_item.discount',
+            'inventory_gst.igst',
+            'inventory_gst.cgst',
+            'inventory_gst.sgst',
+            
+        )
+            ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+            ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
+            ->leftJoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
+            ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
-            ->whereNotIn('fgs_oef.id', function ($query) {
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+            ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+            ->where('fgs_oef.status', '=', 1)
+            // ->whereNotIn('fgs_oef_item.id', function ($query) {
 
-                $query->select('fgs_grs.oef_id')->from('fgs_grs')->where('fgs_grs.status', '=', 1);
-            })->where('fgs_oef.status', '=', 1)
+            //     $query->select('fgs_grs_item.oef_item_id')->from('fgs_grs_item');
+            // })
+            ->where('fgs_oef.status', '=', 1)
+            ->where('fgs_oef_item.status', '=', 1)
+            ->where('fgs_oef_item.quantity_to_allocate', '!=', 0)
+            ->where('fgs_oef_item.remaining_qty_after_cancel', '!=', 0)
+            ->where('fgs_oef_item.coef_status', '=', 0)
             ->where($condition)
             ->distinct('fgs_oef.id')
+            ->orderBy('fgs_oef.id', 'DESC')
             ->paginate(15);
-        return view('pages/FGS/OEF/pending-oef', compact('oef'));
+        return view('pages/FGS/OEF/pending-oef', compact('oef_items'));
     }
     public function pendingOEFExport(Request $request)
     {

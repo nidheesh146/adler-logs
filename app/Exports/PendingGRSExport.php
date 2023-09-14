@@ -39,28 +39,20 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
                 
             }
             $data[]= array(
-                '#'=>$i++,
-                'grs_number'=>$item['grs_number'],
-                'grs_date'=>date('d-m-Y',strtotime($item['grs_date'])),
-                'oef_number'=>$item['oef_number'],
-                'oef_date'=>date('d-m-Y',strtotime($item['oef_date'])),
-                'order_number'=>$item['order_number'],
-                'order_date'=>date('d-m-Y',strtotime($item['order_date'])),
-                'sku_code'=>$item['sku_code'],
-                'hsn_code'=>$item['hsn_code'],
-                'discription'=>$item['discription'],
-                'batch_quantity'=>$item['batch_quantity'],
-                'outstanding_quantity'=>$item['remaining_qty_after_cancel'],
-                'unit'=>'Nos',
-                'rate'=>$item['rate'],
-                'discount'=>$item['discount'],
-                'gst' =>"IGST:".$item['igst'].", SGST:".$item['sgst'].", CGST:".$item['cgst'],
-                'value'=>(number_format((float)($total_value), 2, '.', '')),
-                'manufacturing_date'=>date('d-m-Y',strtotime($item['manufacturing_date'])),
-                'expiry_date'=>$expiry,
-                'customer'=>$item['firm_name'],
-                //'customer'=>$item['firm_name'],
-                'WEF'=>date('d-m-Y',strtotime($item['grs_created_at'])),
+                '#' => $i++,
+                'Doc_Date' =>date('d-m-Y', strtotime($item['grs_date'])),
+                'Doc_No' => $item['grs_number'],
+                'Customer_Name' => $item['firm_name'],
+                'Order_No' => $item['order_number'],
+                'Order_Date' =>date('d-m-Y', strtotime($item['order_date'])),
+                'Item_Code' => $item['sku_code'],
+                'Item_Description' => $item['discription'],
+                'Category'=>$item['category_name'],
+                'Pending_Qty' => $item['remaining_qty_after_cancel'],
+                // 'rate' => $grs['mrp'],
+                // 'discount' =>$grs['discount'],
+                // 'gst' =>"IGST:".$grs['igst'].", SGST:".$grs['sgst'].", CGST:".$grs['cgst'],
+                'value'=>(number_format((float)($total_rate), 2, '.', '')),
             );
         }
         return collect($data);
@@ -69,26 +61,19 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
         {
         return [
             '#',
-            'GRS Number',
-            'GRS Date',
-            'OEF Number',
-            'OEF Date',
-            'Order Number',
+            'Doc Date',
+            'Doc No',
+            'Customer Name',
+            'Order No',
             'Order Date',
-            'Product Sku Code',
-            'HSNCode',
-            'Description',
-            'Quantity',
-            'Outstanding Quantity',
-            'Unit',
-            'Rate',
-            'Discount',
-            'GST',
-            'Value',
-            'Manufacturing date',
-            'Expiry date',
-            'Customer',
-            'WEF',
+            'Item Code',
+            'Item Description',
+            'Category',
+            'Pending Qty',
+            // 'Rate',
+            // 'Discount(%)',
+            // 'GST(%)',
+            'Pending Value',
         ];
     }
     public function styles(Worksheet $sheet)
@@ -107,13 +92,13 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
                 $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(5);
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(18);
                 $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(30);
                 $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(30);
                 $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(50);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(12);
                 $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(12);
                 $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);

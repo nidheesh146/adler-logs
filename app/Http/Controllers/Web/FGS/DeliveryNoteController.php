@@ -118,38 +118,63 @@ class DeliveryNoteController extends Controller
             return view('pages/FGS/Delivery_challan/Challan-add', compact('transaction_type', 'category', 'data'));
         }
     }
-    public function ChallanItemAdd(Request $request, $id)
+    public function fetchStockProductBatchCardschallan(Request $request)
+    {
+        $dc = DB::table('delivery_challan')->where('id','=',$request->dc_id)->first();
+        $batchcards = fgs_product_stock_management::select('batchcard_batchcard.batch_no', 'fgs_product_stock_management.quantity', 'batchcard_batchcard.id as batch_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_product_stock_management.batchcard_id')
+            ->where('fgs_product_stock_management.product_id', '=', $request->product_id)
+            ->where('fgs_product_stock_management.stock_location_id', '=', $dc->stock_location_decrease)
+            ->where('fgs_product_stock_management.quantity', '!=', 0)
+            ->orderBy('batchcard_batchcard.id', 'DESC')
+            ->get();
+        return $batchcards;
+    }
+    public function productsearch(Request $request)
+    {
+        if(!$request->q){
+            return response()->json(['message'=>'Product is not valid'], 500); 
+        }
+        $condition =[];
+            $data =  $this->product->get_product_info_fgs(strtoupper($request->q));   
+        
+        if(!empty( $data)){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'Product is not exist'], 500); 
+        }
+    }
+    public function fetchBatchCardQtychallan(Request $request)
+    {
+        $dc = DB::table('delivery_challan')->where('id','=',$request->dc_id)->first();
+        $data = fgs_product_stock_management::where('batchcard_id', '=', $request->batch_id)
+                        ->where('stock_location_id','=',$dc->stock_location_decrease)
+                        ->first();
+        return $data;
+    }
+    public function ChallanItemAdd(Request $request, $dc_id)
     {
 
-        $product_cat = DB::table('delivery_challan')
-            ->where('id', $id)
+        $delivery_challan = DB::table('delivery_challan')
+            ->where('id', $dc_id)
             ->first();
 
         if ($request->isMethod('post')) {
-            if ($product_cat->product_category == 3) {
+            if ($delivery_challan->product_category == 3) {
                 $validation['moreItems.*.product'] = ['required'];
                 $validation['moreItems.*.batch_no'] = ['required'];
-                // $validation['batch_id.*'] = ['required'];
-                // $validation['qty'] = ['required'];
-                //$validation['moreItems.*.qty'] = ['required'];
                 $validation['moreItems.*.manufacturing_date'] = ['required', 'date'];
             } else {
                 $validation['moreItems.*.product'] = ['required'];
                 $validation['moreItems.*.batch_no'] = ['required'];
-                // $validation['batch_id'] = ['required'];
-                // $validation['qty'] = ['required'];
                 $validation['moreItems.*.qty'] = ['required'];
                 $validation['moreItems.*.manufacturing_date'] = ['required', 'date'];
             }
-            // dd($request->moreItems['batch_no']);
-            //$validation['moreItems.*.expiry_date'] = ['required','date'];
             $validator = Validator::make($request->all(), $validation);
-            //  dd($request->batch_id);
             if (!$validator->errors()->all()) {
-               // $challan_info = DB::table('delivery_challan')->where('id',$request->$id)->first();
               
-                $stkloc2=$product_cat->stock_location_Increase;
-                $stkloc1=$product_cat->stock_location_decrease;
+                $stkloc2=$delivery_challan->stock_location_Increase;
+                $stkloc1=$delivery_challan->stock_location_decrease;
                 
                 foreach ($request->moreItems as $key => $value) {
                     // if ($product_cat->product_category == 3) {
@@ -210,7 +235,7 @@ class DeliveryNoteController extends Controller
                 $item_id = DB::table('delivery_challan_item')->insertGetId($data);
 
                 DB::table('delivery_challan_item_rel')->insert([
-                    'master' => $id,
+                    'master' => $dc_id,
                     'item' => $item_id
                 ]);
                 
@@ -250,12 +275,13 @@ class DeliveryNoteController extends Controller
                 // $this->fgs_product_stock_management->insert_data($stock);
             }
             $request->session()->flash('success', "You have successfully added a MRN item !");
+            return redirect('fgs/Delivery_challan/Challan-item-list/'.$dc_id);
         }
-        if ($product_cat->product_category == 3) {
-            return view('pages/FGS/Delivery_challan/Challan-item-add-trade', compact('product_cat'));
-        } else {
-            return view('pages/FGS/Delivery_challan/Challan-item-Add', compact('product_cat'));
-        }
+        //if ($delivery_challan->product_category == 3) {
+            //return view('pages/FGS/Delivery_challan/Challan-item-add-trade', compact('delivery_challan','dc_id'));
+        //} else {
+            return view('pages/FGS/Delivery_challan/Challan-item-Add', compact('delivery_challan','dc_id'));
+        //}
 
         // return view('pages/FGS/Delivery_challan/Challan-item-add-trade');
 

@@ -115,7 +115,7 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                 'doc_no'=>$item->mrn_number,
                 'doc_date'=>$item->mrn_date,
                 'doc_qty'=>$item->quantity.'Nos',
-                'rem_qty'=>$mrnremining_qty.'Nos'
+                'rem_qty'=>$item->quantity.'Nos'
                 
 
             );
@@ -132,7 +132,7 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_no'=>$item->min_number,
                     'doc_date'=>$item->min_date,
                     'doc_qty'=>$item->minqty.'Nos',
-                    'rem_qty'=>$minremining_qty.'Nos'
+                    'rem_qty'=>$item->reminingmin.'Nos'
                 );
             }
             if($item->cmin_number!=null){
@@ -147,8 +147,8 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_name'=>'CMIN',
                     'doc_no'=>$item->cmin_number,
                     'doc_date'=>$item->cmin_date,
-                    'doc_qty'=>$item->minqty.'Nos',
-                    'rem_qty'=>$cminremining_qty.'Nos'
+                    'doc_qty'=>$item->cminqty.'Nos',
+                    'rem_qty'=>'0 Nos'
                 );
             }
             if($item->grs_number!=null){
@@ -163,8 +163,8 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_name'=>'GRS',
                     'doc_no'=>$item->grs_number,
                     'doc_date'=>$item->grs_date,
-                    'doc_qty'=>$grs_qty.'Nos',
-                    'rem_qty'=>$item->grsremining.'Nos'
+                    'doc_qty'=>$item->grs_qty.'Nos',
+                    'rem_qty'=>$item->grsremaining.'Nos'
                 );
             }
             if($item->pi_number!=null){
@@ -179,8 +179,8 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_name'=>'PI',
                     'doc_no'=>$item->pi_number,
                     'doc_date'=>$item->pi_date,
-                    'doc_qty'=>$pi_qty.'Nos',
-                    'rem_qty'=>$item->piremining.'Nos'
+                    'doc_qty'=>$item->pi_qty.'Nos',
+                    'rem_qty'=>'0 Nos'
                 );
             }
             if($item->cpi_number!=null){
@@ -195,8 +195,8 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_name'=>'CPI',
                     'doc_no'=>$item->cpi_number,
                     'doc_date'=>$item->cpi_date,
-                    'doc_qty'=>$cpi_qty.'Nos',
-                    'rem_qty'=>$item->piremining.'Nos'
+                    'doc_qty'=>$item->cpi_qty.'Nos',
+                    'rem_qty'=>$item->cpi_qty.'Nos'
                 );
             }
             if($item->dni_number!=null){
@@ -211,8 +211,8 @@ class BatchTraceExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'doc_name'=>'DNI/EXI',
                     'doc_no'=>$item->dni_number,
                     'doc_date'=>$item->dni_date,
-                    'doc_qty'=>$pi_qty.'Nos',
-                    'rem_qty'=>$item->piremining.'Nos'
+                    'doc_qty'=>$item->pi_qty.'Nos',
+                    'rem_qty'=>'0 Nos'
                 );
             }
             // if($item->mtq_number!=null){

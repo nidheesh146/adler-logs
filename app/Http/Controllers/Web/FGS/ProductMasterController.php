@@ -60,6 +60,7 @@ class ProductMasterController extends Controller
                 $data['discription'] = $request->description;
                 $data['hsn_code'] = $request->hsn_code;
                 $data['gs1_code'] = $request->gs1_code;
+                $data['product_category_id'] = $request->product_category;
                 $data['product_group1_id'] = $request->product_group;
                 $data['product_type_id'] = $request->product_type;
                 $data['product_oem_id'] = $request->product_oem;
@@ -69,6 +70,7 @@ class ProductMasterController extends Controller
                 $data['is_sterile'] = $request->sterile_nonsterile;
                 $data['quantity_per_pack'] = $request->pack_size;
                 $data['item_type'] = 'FINISHED GOODS';
+                $data['gst'] = $request->gst;
                 $data['created_by_id']= config('user')['user_id'];
                 $data['is_active']=1;
                 $data['created'] =date('Y-m-d H:i:s');
@@ -79,8 +81,8 @@ class ProductMasterController extends Controller
                          
                         $data['updated'] = date('Y-m-d H:i:s');
                         $this->product->update_data(['id'=>$request->id],$data);
-                        $request->session()->flash('success',"You have successfully updated a customer !");
-                        return redirect("fgs/product-master");
+                        $request->session()->flash('success',"You have successfully updated a product !");
+                        return redirect("fgs/product-master/list");
                     
                 }
                 else
@@ -93,6 +95,7 @@ class ProductMasterController extends Controller
                         $data['product_group1_id'] = $request->product_group;
                         $data['product_type_id'] = $request->product_type;
                         $data['product_oem_id'] = $request->product_oem;
+                        $data['product_category_id'] = $request->product_category;
                         $data['brand_details_id'] = $request->product_brand;
                         $data['minimum_stock'] = $request->min_level;
                         $data['maximum_stock'] = $request->max_level;
@@ -130,6 +133,7 @@ class ProductMasterController extends Controller
                 $data['product_productbrand'] = DB::table('product_productbrand')->get();
                 $data['product_productfamily']= DB::table('product_productfamily')->where('is_active','=',1)->get();
                 $data['product_productgroup'] = DB::table('product_productgroup')->get();
+                $data['product_category'] = DB::table('fgs_product_category')->get();
                 return view('pages/FGS/product-master/product-add', compact('data','datas'));
             }
         
@@ -143,6 +147,7 @@ class ProductMasterController extends Controller
                 $data['product_productbrand'] = DB::table('product_productbrand')->get();
                 $data['product_productfamily']= DB::table('product_productfamily')->where('is_active','=',1)->get();
                 $data['product_productgroup'] = DB::table('product_productgroup')->get();
+                $data['product_category'] = DB::table('fgs_product_category')->get();
                 return view('pages/FGS/product-master/product-add', compact('data','datas'));
             }
         }

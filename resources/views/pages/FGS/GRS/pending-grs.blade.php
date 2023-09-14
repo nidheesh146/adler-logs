@@ -60,8 +60,8 @@
 
 
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">OEF No</label>
-														<input type="text" value="{{request()->get('oef_no')}}" name="oef_no" id="oef_no" class="form-control" placeholder="OEF NO">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Order No</label>
+														<input type="text" value="{{request()->get('order_no')}}" name="order_no" id="order_no" class="form-control" placeholder="Order NO">
 													</div>
 
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -94,39 +94,54 @@
 						<table class="table table-bordered mg-b-0">
 							<thead>
 								<tr>
-									<th>GRS Number</th>
-									<th>GRS date</th>
-									<th>OEF Number</th>
-									<th>Order Number</th>
-									<th>Order date</th>
+									<th>Doc Date</th>
+									<th>Doc No</th>
 									<th>Customer</th>
-									<th>Product category</th>
-									<th>Stock Location(Decrease)</th>
-									<th>Stock Location(Increase)</th>
-									<th>Action</th>
+									<th>Order No</th>
+									<th>Order Date</th>
+									<th>SKU Code</th>
+									<th>Description</th>
+									<th>Category</th>
+									<th>Pending Qty</th>
+									<th>Pending Value</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-								@foreach($grs as $master)
+								@foreach($grs_items as $item)
+								<?php
+								if($item['expiry_date']=='0000-00-00') 
+								$expiry = 'NA'; 
+								else 
+								$expiry = date('d-m-Y',strtotime($item['expiry_date']));
+								if($item->rate)
+								{
+									$total_rate = $item['remaining_qty_after_cancel']*$item['rate'];
+									$discount_value = $total_rate*$item['discount']/100;
+									$discounted_value = $total_rate-$discount_value;
+									$igst_value = $total_rate*$item['igst']/100;
+									$sgst_value = $total_rate*$item['sgst']/100;
+									$cgst_value = $total_rate*$item['cgst']/100;
+									$total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+									
+								}
+								?>
 								<tr>
-									<td>{{$master['grs_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($master['grs_date']))}}</td>
-									<td>{{date('d-m-Y', strtotime($master['order_date']))}}</td>
-									<td>{{$master['order_number']}}</td>
-									<td>{{$master['oef_number']}}</td>
-									<td>{{$master['category_name']}}</td>
-									<td>{{$master['location_name1']}}</td>
-									<td>{{$master['location_name2']}}</td>
-									<td>{{$master['firm_name']}}</td>
-									<td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/item-list/'.$master["id"])}}" class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
-										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/GRS/pdf/'.$master["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
-									</td>
+									<td>{{date('d-m-Y', strtotime($item['grs_date']))}}</td>
+									<td>{{$item['grs_number']}}</td>
+									<td>{{$item['firm_name']}}</td>
+									<td>{{$item['order_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
+									<td>{{$item['sku_code']}}</td>
+									<td>{{$item['discription']}}</td>
+									<td>{{$item['category_name']}}</td>
+									<td>{{$item['remaining_qty_after_cancel']}} Nos</td>
+									<td>{{(number_format((float)($total_rate), 2, '.', ''))}}</td>
 								</tr>
 								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							{{ $grs->appends(request()->input())->links() }}
+							{{ $grs_items->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>
@@ -162,9 +177,9 @@
 	});
 	$('.search-btn').on("click", function(e) {
 		var grs_no = $('#grs_no').val();
-		var oef_no = $('#oef_no').val();
+		var order_no = $('#order_no').val();
 		var from = $('#from').val();
-		if (!grs_no & !oef_no & !from) {
+		if (!grs_no & !order_no & !from) {
 			e.preventDefault();
 		}
 	});

@@ -761,7 +761,7 @@ class StockManagementController extends Controller
             $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
         }
         $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn_item.product_id as mrnprd','fgs_mrn.mrn_number','fgs_mrn.mrn_date','fgs_mrn.stock_location as mrn_stklocation','batchcard_batchcard.batch_no','product_product.sku_code','product_product.discription',
-        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.remaining_qty_after_cancel as grsremining','fgs_grs_item.batch_quantity as grs_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as piremining','fgs_pi_item.batch_qty as pi_qty',
+        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.remaining_qty_after_cancel as grsremaining','fgs_grs_item.batch_quantity as grs_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as piremaining','fgs_pi_item.batch_qty as pi_qty',
         'fgs_dni.dni_number','fgs_dni.dni_date','fgs_min.min_number','fgs_min.min_date','fgs_min_item.quantity as minqty','fgs_min.stock_location as min_stkloc','fgs_min_item.product_id as minpr','fgs_min_item.batchcard_id as minbat'
         ,'fgs_mtq_item.quantity as mtqqty','fgs_mtq.mtq_date','fgs_mtq.mtq_number','fgs_cmin.cmin_number','fgs_cmin.stock_location as cminstk','fgs_cmin_item.quantity as cminqty','fgs_cmin_item.batchcard_id as cminbtch','fgs_cmin_item.product_id as cminprd',
         'fgs_cmin_item.product_id as cminprd','fgs_cmin.cmin_number','fgs_cpi_item.quantity as cpiqty','fgs_cpi.cpi_number','fgs_cpi_item.batchcard_id as cpibatchid','fgs_cpi_item.product_id')
@@ -817,7 +817,7 @@ class StockManagementController extends Controller
             $condition[] = ['batchcard_batchcard.batch_no','like', '%' . $request->batch_no . '%'];
         }
         $mrn_item = fgs_mrn_item::select('fgs_mrn_item.*','fgs_mrn_item.product_id as mrnprd','fgs_mrn.mrn_number','fgs_mrn.mrn_date','fgs_mrn.stock_location as mrn_stklocation','batchcard_batchcard.batch_no','product_product.sku_code','product_product.discription',
-        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.remaining_qty_after_cancel as grsremining','fgs_grs_item.batch_quantity as grs_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as piremining','fgs_pi_item.batch_qty as pi_qty',
+        'product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date','fgs_grs_item.remaining_qty_after_cancel as grsremaining','fgs_grs_item.batch_quantity as grs_qty','fgs_pi.pi_number','fgs_pi.pi_date','fgs_pi_item.remaining_qty_after_cancel as piremaining','fgs_pi_item.batch_qty as pi_qty',
         'fgs_dni.dni_number','fgs_dni.dni_date','fgs_min.min_number','fgs_min.min_date','fgs_min_item.quantity as minqty','fgs_min.stock_location as min_stkloc','fgs_min_item.product_id as minpr','fgs_min_item.batchcard_id as minbat'
         ,'fgs_mtq_item.quantity as mtqqty','fgs_mtq.mtq_date','fgs_mtq.mtq_number','fgs_cmin.cmin_number','fgs_cmin.stock_location as cminstk','fgs_cmin_item.quantity as cminqty','fgs_cmin_item.batchcard_id as cminbtch','fgs_cmin_item.product_id as cminprd',
         'fgs_cmin_item.product_id as cminprd','fgs_cmin.cmin_number','fgs_cpi_item.quantity as cpiqty','fgs_cpi.cpi_number','fgs_cpi_item.batchcard_id as cpibatchid','fgs_cpi_item.product_id')
@@ -853,8 +853,12 @@ class StockManagementController extends Controller
                             ->leftJoin('fgs_cpi','fgs_cpi.id','=','fgs_cpi_item_rel.master')
 
                             ->where('fgs_mrn.status','=',1)
+                            ->where('fgs_grs.status','=',1)
+                            ->where('fgs_pi.status','=',1)
+                            ->where('fgs_dni.status','=',1)
                             ->where($condition)
                             ->distinct('fgs_mrn_item.id')
+                            //->paginate(15);
                             ->get();
              return Excel::download(new BatchTraceExport($mrn_item), 'fgs-batchtrace-report' . date('d-m-Y') . '.xlsx');
     }

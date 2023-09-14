@@ -781,7 +781,7 @@ class MRNController extends Controller
         $mrn_check = fgs_mrn_item_rel::where('master', $id)->first();
         return $mrn_check;
     }
-    public function edit_mrn($id,Request $request)
+    public function edit_mrn_item($id,Request $request)
     {
     
         $grs_item = DB::table('fgs_grs_item')->where('mrn_item_id',$id)->where('status','=',1)->get();
@@ -812,7 +812,7 @@ class MRNController extends Controller
             return view('pages/fgs/MRN/MRN-update-item', compact('item_details', 'id','batchcards'));
         }
     }
-    public function update_mrn(Request $request)
+    public function update_mrn_item(Request $request)
     {
         $validation['batch_no'] = ['required'];
         $validation['stock_qty'] = ['required'];
@@ -894,35 +894,43 @@ class MRNController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
     }
-    public function delete_mrn($id)
+    public function delete_mrn_item($mrn_item_id,Request $request)
     {
-        $prdct=DB::table('fgs_mrn_item')
-        ->where('id',$id) 
-        ->first();
-        $qty=DB::table('fgs_product_stock_management')
-        ->where('id',$id)
-        ->first();
-
-$fgs_qty=number_format($prdct->quantity);
-$pstock_qty=number_format($qty->quantity);
-//dd($fgs_qty-$pstock_qty);
-// $value=$fgs_qty-$qty;
-
-        DB::table('fgs_product_stock_management')
-        ->where('id',$id)
-        ->update([
-            'quantity'=>$fgs_qty-$pstock_qty
-        ]);
-        DB::table('fgs_mrn_item')
-        ->where('product_id',$prdct->product_id)
-        ->where('batchcard_id',$prdct->batchcard_id)
-        ->update([
-            'status'=>0
-        ]);
-        //$mrn_id=$id;
-        return redirect()->back();
-        // $items = $this->MRNitemlist($mrn_id);
-        // return view('pages/FGS/MRN/MRN-item-list',compact('mrn_id','items'));
+        $grs_item = DB::table('fgs_grs_item')->where('mrn_item_id','=',$mrn_item_id)->where('status',1)->get();
+        if(count($grs_item)>0)
+        {
+            $request->session()->flash('error', "You can't delete this MRN Item,It moved to next step !");
+            return redirect()->back();
+        }
+        else
+        {
+            $mrn_item=DB::table('fgs_mrn_item')
+                        ->where('id',$mrn_item_id) 
+                        ->first();
+            $stock=DB::table('fgs_product_stock_management')
+                            ->where('product_id',$mrn_item->product_id)
+                            ->where('batchcard_id',$mrn_item->batchcard_id)
+                            ->where('quantity','!=',0)
+                            ->first();
+            $fgs_qty=number_format($mrn_item->quantity);
+            $pstock_qty=number_format($stock->quantity);
+            $update_stock =  DB::table('fgs_product_stock_management')
+                                ->where('id',$stock->id)
+                                ->update([
+                                    'quantity'=>$fgs_qty-$pstock_qty
+                                ]);
+            $mrn_item_update =  DB::table('fgs_mrn_item')
+                                ->where('id',$mrn_item->id)
+                                ->update([
+                                    'status'=>0
+                                ]);
+            if($mrn_item_update && $update_stock)
+            $request->session()->flash('success', "You have successfully deleted a MRN Item !");
+            else
+            $request->session()->flash('error', "You have failed to delete a MRN Item !");
+            return redirect()->back();
+        }
+        
     }
     public function mrn_transaction(Request $request)
     {

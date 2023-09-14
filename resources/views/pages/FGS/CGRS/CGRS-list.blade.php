@@ -95,23 +95,27 @@
 							<thead>
 								<tr>
 									<th>CGRS Number</th>
+									<th>GRS Number</th>
 									<th>CGRS date</th>
 									<th>Stock Location1(Decrease)</th>
 									<th>Stock Location2(Increase)</th>
-                  <th>Action</th>
+                  					<th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
 							@foreach($cgrs as $master)
-               <tr>
-                <td>{{$master['cgrs_number']}}</td>
-								<td>{{date('d-m-Y', strtotime($master['cgrs_date']))}}</td>
-								<td>{{$master['location_name1']}}</td>
-                <td>{{$master['location_name2']}}</td>
-                <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/CGRS/items-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
-								<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/CGRS/pdf/'.$master["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a></td>
-               </tr>
-               @endforeach
+               					<tr>
+									<td>{{$master['cgrs_number']}}</td>
+									<td>{{$master['grs_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($master['cgrs_date']))}}</td>
+									<td>{{$master['location_name1']}}</td>
+									<td>{{$master['location_name2']}}</td>
+									<td>
+										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/CGRS/items-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
+										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/CGRS/pdf/'.$master["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
+									</td>
+               					</tr>
+               				@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">

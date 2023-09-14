@@ -366,7 +366,7 @@ class ProductController extends Controller
     function identify_id($data,$type)
     {
         if($type=='product group'){
-           $id =  DB::table('product_productgroup')->where('group_name',$data)->first()->id;
+           $id =  DB::table('product_productgroup')->where('group_name','=',$data)->first()->id;
            return $id;  
         }
         if($type=='product brand'){

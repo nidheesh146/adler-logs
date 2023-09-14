@@ -144,7 +144,7 @@ class PIController extends Controller
                     $item['created_at'] =  date('Y-m-d H:i:s');
                     if($grs_item['current_invoice_qty']==0)
                     {
-                        $item['batch_qty']= $grs_item['qty_to_invoice'];
+                        $item['batch_qty']= $grs_item['remaining_qty_after_cancel'];
                         $item['remaining_qty_after_cancel'] =$grs_item['qty_to_invoice'];
                     }
                     else
@@ -349,35 +349,49 @@ class PIController extends Controller
     public function pendingPI(Request $request)
     {
         $condition = [];
-        if($request->oef_no)
+        if($request->order_no)
         {
-            $condition[] = ['fgs_oef.oef_number','like', '%' . $request->oef_no . '%'];
+            $condition[] = ['fgs_oef.order_number','like', '%' . $request->order_no . '%'];
         }
-        if($request->grs_no)
+        if($request->from)
         {
-            $condition[] = ['fgs_grs.grs_number','like', '%' . $request->grs_no . '%'];
+            $condition[] = ['fgs_pi.pi_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_pi.pi_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
         if($request->pi_no)
         {
             $condition[] = ['fgs_pi.pi_number','like', '%' . $request->pi_no . '%'];
         }
-        $pi = fgs_pi::select('fgs_pi.*','customer_supplier.firm_name','customer_supplier.shipping_address','customer_supplier.billing_address',
-                    'customer_supplier.contact_person','customer_supplier.contact_number','fgs_oef.order_number','fgs_oef.order_date','fgs_grs.grs_number','fgs_grs.grs_date',
-                    'fgs_oef.oef_number','fgs_oef.oef_date')
-                            ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
-                            ->leftJoin('fgs_pi_item_rel','fgs_pi_item_rel.master','=','fgs_pi.id')
-                            ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
-                            ->leftJoin('fgs_grs','fgs_grs.id','fgs_pi_item.grs_id')
-                            ->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')
-                            ->where($condition)
-                            ->whereNotIn('fgs_pi.id',function($query) {
+        $pi_items = fgs_pi_item_rel::select('fgs_grs.grs_number','fgs_grs.grs_date','product_product.sku_code','product_product.hsn_code','product_product.discription',
+        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number','fgs_pi.pi_date',
+        'fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_date','fgs_oef.order_number','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_pi_item.batch_qty',
+        'fgs_pi_item.remaining_qty_after_cancel','fgs_pi.created_at as pi_created_at','customer_supplier.firm_name','fgs_product_category.category_name')
+                        ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
+                        ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
+                        ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
+                        ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
+                        ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
+                        ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
+                        ->leftJoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_grs_item.mrn_item_id')
+                        ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
+                        ->leftJoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
+                        ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
+                        ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
+                        ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
+                        ->where($condition)
+                        ->whereNotIn('fgs_pi.id',function($query) {
 
-                                $query->select('fgs_dni_item.pi_id')->from('fgs_dni_item');
-                            
-                            })->where('fgs_pi.status','=',1)
-                            ->distinct('fgs_pi.id')
-                            ->paginate(15);
-        return view('pages/FGS/PI/pending-pi',compact('pi'));
+                            $query->select('fgs_dni_item.pi_id')->from('fgs_dni_item');
+                        
+                        })->where('fgs_grs.status','=',1)
+                        ->where('fgs_pi.status','=',1)
+                        ->where('fgs_pi_item.status','=',1)
+                        ->where('fgs_pi_item.cpi_status','=',0)
+                        ->orderBy('fgs_grs_item.id','DESC')
+                        ->distinct('fgs_grs_item.id')
+                        ->paginate(15);
+        return view('pages/FGS/PI/pending-pi',compact('pi_items'));
     }
 
     public function getIndianCurrencyInt(int $number)
@@ -561,13 +575,14 @@ class PIController extends Controller
     public function pendingPIExport(Request $request)
     {
         $condition = [];
-        if($request->oef_no)
+        if($request->order_no)
         {
-            $condition[] = ['fgs_oef.oef_number','like', '%' . $request->oef_no . '%'];
+            $condition[] = ['fgs_oef.order_number','like', '%' . $request->order_no . '%'];
         }
-        if($request->grs_no)
+        if($request->from)
         {
-            $condition[] = ['fgs_grs.grs_number','like', '%' . $request->grs_no . '%'];
+            $condition[] = ['fgs_pi.pi_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_pi.pi_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
         if($request->pi_no)
         {
@@ -745,7 +760,8 @@ class PIController extends Controller
         $request->session()->flash('success', "You have successfully deleted a PI Item !");
         else
         $request->session()->flash('error', "You have failed to delete PI Item !");
-        return redirect('fgs/PI-list');
+        //return redirect('fgs/PI-list');
+        return redirect()->back();
     }
 
     public function PIDelete($pi_id,Request $request)

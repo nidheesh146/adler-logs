@@ -459,15 +459,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/MRN/item-list/{mrn_id}', 'MRNController@MRNitemlist');
     Route::get('fgs/fetchMRNInfo', 'MRNController@fetchMRNInfo');
     Route::post('fgs/MRN/item-upload', 'MRNController@MRNUpload');
-    Route::get('fgs/MRN-item-edit/{id?}', 'MRNController@edit_mrn');
-    Route::post('fgs/MRN-item-update', 'MRNController@update_mrn');
-    Route::get('fgs/MRN-item-delete/{id?}', 'MRNController@delete_mrn');
+    Route::get('fgs/MRN-item-edit/{id?}', 'MRNController@edit_mrn_item');
+    Route::post('fgs/MRN-item-update', 'MRNController@update_mrn_item');
+    Route::get('fgs/MRN-item-delete/{id?}', 'MRNController@delete_mrn_item');
 
 
 
     //Route::get('fgs/productsearch','MRNController@productsearch');
     Route::get('fgs/fetchProductBatchCards', 'MRNController@fetchProductBatchCards');
-    Route::get('fgs/fetchProductBatchCardschallan', 'MRNController@fetchProductBatchCardschallan');
 
     Route::get('fgs/MRN/add-item/{mrn_id}', 'MRNController@MRNitemAdd');
     Route::post('fgs/MRN/add-item/{mrn_id}', 'MRNController@MRNitemAdd');
@@ -478,7 +477,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
 
     Route::get('fgs/MRN/pdf/{mrn_id}', 'MRNController@MRNpdf');
     Route::get('fgs/fetchBatchCardQty', 'MRNController@fetchBatchCardQty');
-    Route::get('fgs/fetchBatchCardQtychallan', 'MRNController@fetchBatchCardQtychallan');
+    
 
     //MIN
     Route::get('fgs/MIN-list', 'MINController@MINList');
@@ -547,7 +546,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::post('fgs/Delivery_challan/Challan-add-trade-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
     Route::get('fgs/Delivery_challan/Challan-item-list/{id}', 'DeliveryNoteController@Challanitemlist');
     Route::get('fgs/Delivery_challan/Delivery_Challan_pdf/{id}', 'DeliveryNoteController@challanpdf');
-
+    Route::get('fgs/fetchStockProductBatchCardschallan', 'DeliveryNoteController@fetchStockProductBatchCardschallan');
+    Route::get('fgs/fetchBatchCardQtychallan', 'DeliveryNoteController@fetchBatchCardQtychallan');
+    Route::get('fgs/Delivery_challan/productsearch', 'DeliveryNoteController@productsearch');
     //OEF
     Route::get('fgs/OEF-list', 'OEFController@OEFList');
     Route::get('fgs/OEF-add', 'OEFController@OEFAdd');

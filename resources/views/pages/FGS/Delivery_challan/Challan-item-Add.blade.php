@@ -47,7 +47,7 @@
 
                             <table class="table table-bordered">
                                 <tbody id="dynamic_field">
-
+                                <input type="hidden" id="dc_id" value="{{$dc_id}}" name="dc_id">
                                     <tr id="row1" rel="1">
                                         <td>
                                             <div class="row">
@@ -107,12 +107,12 @@
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Date of Mfg. * </label>
-                                                    <input type="text" class="form-control datepicker manufacturing_date" name="moreItems[0][manufacturing_date]" value="{{date('d-m-Y')}}" id="manufacturing_date1" placeholder="Date of Mfg.">
+                                                    <input type="text" class="form-control datepicker manufacturing_date" name="moreItems[0][manufacturing_date]" value="{{date('d-m-Y')}}" id="manufacturing_date1" placeholder="Date of Mfg." readonly>
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
                                                     <label>Date of Expiry * </label>
                                                     @php $date= date('Y-m-d', strtotime('+5 years')) @endphp
-                                                    <input type="text" class="form-control datepicker expiry_date" name="moreItems[0][expiry_date]" value="{{date('d-m-Y', strtotime($date .' -2 day'))}}" id="expiry_date1" placeholder="Date of Expiry">
+                                                    <input type="text" class="form-control datepicker expiry_date" name="moreItems[0][expiry_date]" value="{{date('d-m-Y', strtotime($date .' -2 day'))}}" id="expiry_date1" placeholder="Date of Expiry" readonly>
                                                 </div>
                                                 <!-- <button type="button" name="add" id="add" class="btn btn-success"
                                                     style="height:38px;margin-top:28px;"><i
@@ -215,57 +215,6 @@
 
         $('#add').click(function() {
             i++;
-            // const myInput = document.getElementById("product_cat");
-            // const inputValue = myInput.value;
-            // if(inputValue==3){
-            //     $('#dynamic_field').append(`
-            //       <tr id="row${i}" rel="${i}">
-            //       <td>
-            //         <div class="row">
-            //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-            //                 <label for="exampleInputEmail1">Product code * </label>
-            //                 <select class="form-control product item_code${i}" id="${i}" name="moreItems[${i}][product]" id="product">
-            //                 </select>                        
-            //             </div>
-            //             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
-            //                 <label>HSN Code * </label>
-            //                 <input type="text" readonly class="form-control" name="hsncode" id="hsncode${i}" placeholder="HSN Code">
-            //                 <input type="hidden" value="{{ !empty($datas) ? $datas['item']['item_type_id'] : '' }}" name="Itemtypehidden" id="Itemtypehidden">
-            //             </div><!-- form-group -->
-            //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-            //                 <label>Description * </label>
-            //                 <textarea type="text" readonly class="form-control" id="Itemdescription${i}"name="Description" placeholder="Description"></textarea>
-            //             </div>
-            //             <input type="hidden" id="is_sterile${i}" value="">
-
-            //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-            //                 <label for="exampleInputEmail1">Batch No* </label>
-            //                 <input type="text"  class="form-control" name="moreItems[${i}][batch_no]"  placeholder="Batch No">
-            //             </div>
-
-            //         </div>
-            //         <div class="row"> 
-            //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-            //                 <label>Quantity * </label>
-            //                 <input type="number"  class="form-control" name="moreItems[${i}][qty]" id="stock_qty${i}" placeholder="Quantity">
-            //             </div>
-            //             <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
-            //                 <label>UOM </label>
-            //                 <input type="text"  class="form-control" readonly name="moreItems[${i}][uom]" id="uom${i}" placeholder="NOS">
-            //             </div>
-            //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-            //                 <label>Date of Mfg. * </label>
-            //                 <input type="text"  class="form-control datepicker manufacturing_date" name="moreItems[${i}][manufacturing_date]" id="manufacturing_date${i}" value="">
-            //             </div>
-            //             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
-            //                 <label>Date of Expiry * </label>
-            //                 <input type="text"  class="form-control datepicker expiry_date" name="moreItems[${i}][expiry_date]" id="expiry_date${i}" value="">
-            //             </div>
-            //             <button name="remove" id="${i}" class="btn btn-danger btn_remove" style="height:38px;margin-top:28px;">X</button>
-            //         </div>
-            //     </td>                        
-            // </tr>`);
-            // }else{
             $('#dynamic_field').append(`
                       <tr id="row${i}" rel="${i}">
                       <td>
@@ -352,15 +301,22 @@
     $(document).on('change', '.batch_number', function(e) {
         // const inputValue = myInput.value; 
         var batch_id = $(this).val();
+        var dc_id = $('#dc_id').val();
         var select_id = $(this).attr("index");
         $("#stock_qty" + select_id + "").val('');
         $("#stock_qty" + select_id + "").attr('max', '');
         $("#stock_qty" + select_id + "-error").text('');
         $("#stock_qty" + select_id + "").removeClass("error");
-        $.get("{{ url('fgs/fetchBatchCardQtychallan') }}?batch_id=" + batch_id, function(data) {
-            $("#stock_qty" + select_id + "").val(data);
-            $("#stock_qty" + select_id + "").attr('max', data);
-            $("#stock_qty" + select_id + "").attr('min', 0);
+        $.get("{{ url('fgs/fetchBatchCardQtychallan') }}?batch_id=" + batch_id+"&dc_id="+dc_id, function(data) {
+            $("#stock_qty"+select_id+"").val(data['quantity']);
+                $("#qty"+select_id+"").val(data['quantity']);
+                $("#stock_qty"+select_id+"").attr('max',data['quantity']);
+                $("#stock_qty"+select_id+"").attr('min',0);
+                $("#manufacturing_date"+select_id+"").val(data['manufacturing_date']);
+                if(data['expiry_date']=='0000-00-00')
+                $("#expiry_date"+select_id+"").val('N.A');
+                else
+                $("#expiry_date"+select_id+"").val(data['expiry_date']);
         });
 
         // do something 
@@ -477,7 +433,8 @@
                 });
                 $("#manufacturing_date" + select_id + "").datepicker("setDate", new Date());
                 $("#manufacturing_date" + select_id + "").datepicker('setEndDate', new Date());
-                $.get("{{ url('fgs/fetchProductBatchCardschallan') }}?product_id=" + res.id, function(data) {
+                var dc_id = $('#dc_id').val();
+                $.get("{{ url('fgs/fetchStockProductBatchCardschallan') }}?product_id=" + res.id+'&dc_id='+dc_id, function(data) {
                     $(".batch_no" + select_id + "").find('option').remove();
                     if (data.length > 0) {
                         $(".batch_no" + select_id + "").append('<option>..Select One..</option>')

@@ -143,7 +143,9 @@ class BackorderReportController extends Controller
                 'customer_supplier.contact_number',
                 //'product_price_master.mrp',
                 'fgs_grs_item.remaining_qty_after_cancel',
-                'fgs_oef_item.rate as mrp'
+                'fgs_oef_item.rate as mrp',
+                'fgs_oef.order_date',
+                'fgs_oef.order_number'
                 
             )
                 ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
@@ -152,6 +154,8 @@ class BackorderReportController extends Controller
                // ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
                 ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_grs.customer_id')
                 ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
+                ->leftJoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
+                ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
                 ->where('fgs_grs.status', '=', 1)
                 ->whereNotIn('fgs_grs_item.id', function ($query) {
 
@@ -170,7 +174,7 @@ class BackorderReportController extends Controller
                 //->paginate(15);
 
                 $data_pi = fgs_pi_item_rel::select('fgs_grs.grs_number','fgs_grs.grs_date','product_product.sku_code','product_product.hsn_code','product_product.discription',
-        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number',
+        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number','fgs_pi.pi_date',
         'fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_date','fgs_oef.order_number','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_pi_item.batch_qty',
         'fgs_pi_item.remaining_qty_after_cancel','fgs_pi.created_at as pi_created_at','customer_supplier.firm_name')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
@@ -261,6 +265,7 @@ class BackorderReportController extends Controller
             'customer_supplier.contact_number',
             //'product_price_master.mrp',
             'fgs_oef_item.remaining_qty_after_cancel',
+            'fgs_oef_item.quantity_to_allocate',
             'fgs_product_category.category_name',
             'fgs_oef_item.rate as mrp',
             'fgs_oef_item.discount',
@@ -277,12 +282,14 @@ class BackorderReportController extends Controller
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
             ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
             ->where('fgs_oef.status', '=', 1)
-            ->whereNotIn('fgs_oef_item.id', function ($query) {
+            // ->whereNotIn('fgs_oef_item.id', function ($query) {
 
-                $query->select('fgs_grs_item.oef_item_id')->from('fgs_grs_item');
-            })
+            //     $query->select('fgs_grs_item.oef_item_id')->from('fgs_grs_item');
+            // })
             ->where('fgs_oef.status', '=', 1)
             ->where('fgs_oef_item.status', '=', 1)
+            ->where('fgs_oef_item.quantity_to_allocate', '!=', 0)
+            ->where('fgs_oef_item.remaining_qty_after_cancel', '!=', 0)
             ->where('fgs_oef_item.coef_status', '=', 0)
             ->where($condition1)
             ->distinct('fgs_oef.id')
@@ -303,6 +310,8 @@ class BackorderReportController extends Controller
                 'inventory_gst.igst',
                 'inventory_gst.cgst',
                 'inventory_gst.sgst',
+                'fgs_oef.order_number',
+                'fgs_oef.order_date'
                 
             )
                 ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
@@ -311,13 +320,15 @@ class BackorderReportController extends Controller
                 ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
                 ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_grs.customer_id')
                 ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
+                ->leftJoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
+                ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
                 ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                 ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
                 ->where('fgs_grs.status', '=', 1)
-                ->whereNotIn('fgs_grs_item.id', function ($query) {
+                // ->whereNotIn('fgs_grs_item.id', function ($query) {
 
-                    $query->select('fgs_pi_item.grs_item_id')->from('fgs_pi_item');
-                })
+                //     $query->select('fgs_pi_item.grs_item_id')->from('fgs_pi_item');
+                // })
                 //->where('fgs_oef.status','=',1)
                 ->where($condition2)
                 ->where('fgs_grs.status','=',1)
@@ -325,14 +336,17 @@ class BackorderReportController extends Controller
                 ->where('fgs_oef_item.status', '=', 1)
                 ->where('fgs_oef_item.coef_status', '=', 0)
                 ->where('fgs_grs_item.cgrs_status', '=', 0)
+                ->where('fgs_grs_item.qty_to_invoice','!=',0)
+                ->where('fgs_grs_item.remaining_qty_after_cancel','!=',0)
                 ->distinct('fgs_grs.id')
                 ->orderBy('fgs_grs.id', 'DESC')
                 ->get();
 
                 $data_pi = fgs_pi_item_rel::select('fgs_grs.grs_number','fgs_grs.grs_date','product_product.sku_code','product_product.hsn_code','product_product.discription',
-        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number',
+        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number','fgs_pi.pi_date',
         'fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_date','fgs_oef.order_number','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_pi_item.batch_qty',
-        'fgs_pi_item.remaining_qty_after_cancel','fgs_pi.created_at as pi_created_at','customer_supplier.firm_name')
+        'fgs_pi_item.batch_qty as pi_qty','fgs_pi.created_at as pi_created_at','customer_supplier.firm_name','fgs_product_category.category_name',
+        'fgs_pi_item.remaining_qty_after_cancel as pi_qty_balance','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
                         ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
@@ -345,6 +359,8 @@ class BackorderReportController extends Controller
                         ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
                         ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
+                        ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+                        ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                         //->where('fgs_pi_item_rel.master','=', $items['pi_id'])
                         ->where($condition3)
                         ->whereNotIn('fgs_pi.id',function($query) {
@@ -354,6 +370,7 @@ class BackorderReportController extends Controller
                         })->where('fgs_grs.status','=',1)
                         ->where('fgs_pi.status','=',1)
                         ->where('fgs_pi_item.status','=',1)
+                        ->where('fgs_pi_item.batch_qty','!=',0)
                         ->where('fgs_pi_item.cpi_status','=',0)
                         ->orderBy('fgs_grs_item.id','DESC')
                         ->distinct('fgs_grs_item.id')

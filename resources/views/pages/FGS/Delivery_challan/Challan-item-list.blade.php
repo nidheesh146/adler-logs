@@ -14,15 +14,15 @@
 			<h4 class="az-content-title" style="font-size: 20px;">
             Challan Item 
               <div class="right-button">
-				@if($product_cat->product_category==3)
+				{{--@if($product_cat->product_category==3)
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/Delivery_challan/Challan-add-trade-item/'.$id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
 				Challan Item 
 				</button>
-				@else
+				@else--}}
 				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/Delivery_challan/Challan-add-item/'.$id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
 				Challan Item 
 				</button>
-				@endif
+				{{--@endif--}}
 				{{--<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" mrnid="" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>--}}
               <div>  
 				

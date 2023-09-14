@@ -707,7 +707,7 @@ class StockController extends Controller
     //     else
     //     return 0;
 
-    $batchmaterials_in_sip_item = inv_stock_to_production_item::pluck('batchcard_material_id')->toArray();
+    $batchmaterials_in_sip_item = inv_stock_to_production_item::where('material_id','=',$request->item_id)->pluck('batchcard_material_id')->toArray();
         $arr=array_filter($batchmaterials_in_sip_item);
        // ->whereNotIn('batchcard_materials.id',$batchmaterials_in_sip_item)
        
