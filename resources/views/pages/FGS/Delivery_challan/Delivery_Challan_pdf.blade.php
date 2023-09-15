@@ -120,7 +120,7 @@
                             <td>{{$data->sku_code}}</td>
                             <td>{{$data->discription}}</td>
                             <td>{{$data->batch_no}}</td>
-                            <td>{{$data->quantity}}</td>
+                            <td>{{$data->batch_qty}}</td>
                             <td>{{$data->manufacturing_date}}</td>
                             <td>{{$data->expiry_date}}</td>
                         </tr>

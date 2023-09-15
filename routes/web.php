@@ -540,11 +540,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/Delivery_challan/Challan-list', 'DeliveryNoteController@ChallanList');
     Route::get('fgs/Delivery_challan/Challan-add', 'DeliveryNoteController@ChallanAdd');
     Route::post('fgs/Delivery_challan/Challan-add', 'DeliveryNoteController@ChallanAdd');
-    Route::get('fgs/Delivery_challan/Challan-add-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
-    Route::post('fgs/Delivery_challan/Challan-add-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
-    Route::get('fgs/Delivery_challan/Challan-add-trade-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
-    Route::post('fgs/Delivery_challan/Challan-add-trade-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
+    //Route::get('fgs/Delivery_challan/Challan-add-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
+    //Route::post('fgs/Delivery_challan/Challan-add-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
+   // Route::get('fgs/Delivery_challan/Challan-add-trade-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
+    //Route::post('fgs/Delivery_challan/Challan-add-trade-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
     Route::get('fgs/Delivery_challan/Challan-item-list/{id}', 'DeliveryNoteController@Challanitemlist');
+    Route::get('fgs/Delivery_challan/{grs_id}/add-item/{oef_item_id}', 'DeliveryNoteController@ChallanitemAdd');
+    Route::post('fgs/Delivery_challan/{grs_id}/add-item/{oef_item_id}', 'DeliveryNoteController@ChallanitemAdd');
+
     Route::get('fgs/Delivery_challan/Delivery_Challan_pdf/{id}', 'DeliveryNoteController@challanpdf');
     Route::get('fgs/fetchStockProductBatchCardschallan', 'DeliveryNoteController@fetchStockProductBatchCardschallan');
     Route::get('fgs/fetchBatchCardQtychallan', 'DeliveryNoteController@fetchBatchCardQtychallan');

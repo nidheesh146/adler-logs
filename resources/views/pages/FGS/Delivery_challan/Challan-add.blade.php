@@ -71,7 +71,12 @@
                                 <label for="exampleInputEmail1">Zone</label>
                                 <textarea name="billing_address" class="form-control" id="zone" readonly></textarea>
                             </div> 
-                            
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">OEF Number *</label>
+                                <select class="form-control oef_number" name="oef_number">
+                                <option value="">Select One</option>
+                                </select>
+                            </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Ref Number *</label>
                                 <input type="text" class="form-control" name="ref_no" value="" placeholder="Ref Number">
@@ -92,21 +97,10 @@
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Transaction Type  *</label>
                                 <select class="form-control" name="transaction_type">
-                                    <!-- <option>Select one...</option> -->
+                                    <option>Select one...</option> 
                                     @foreach($transaction_type as $type)
                                     <option value="{{$type['id']}}">{{$type['transaction_name']}}</option>
                                     @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Transaction Condition  *</label>
-                                <select class="form-control" name="transaction_condition">
-                                    <!-- <option>Select one...</option> -->
-                                    
-                                    <option value="1">Returnable</option>
-                                    <option value="2">NON Returnable</option>
-
-                                    
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -123,11 +117,10 @@
                                 <select class="form-control" name="stock_location1" id="stock_location1" >
                                     <option value="">Select one...</option>
                                     @foreach($data['locations'] as $loc)
-                                    @if($loc['location_name']=='AHPL Mktd ')
+                                    @if($loc['location_name']!='Consignment' && $loc['location_name']!='Loaner' && $loc['location_name']!='Replacement' && $loc['location_name']!='Demo' && $loc['location_name']!='Samples' && $loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine')
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
                                     @endif 
                                     @endforeach
-                                   
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -135,12 +128,24 @@
                                 <select class="form-control" name="stock_location2" id="stock_location2">
                                      <option value="">Select one...</option> 
                                      @foreach($data['locations'] as $loc)
-                                    @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')
+                                    @if($loc['id']!="1" && $loc['id']!="2" && $loc['id']!="3" && $loc['id']!="4" && $loc['id']!='5' && $loc['id']!='6' && $loc['id']!='7' && $loc['id']!='10' && $loc['id']!='11')
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
                                     @endif 
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Transaction Condition  *</label>
+                                <select class="form-control" name="transaction_condition">
+                                    <!-- <option>Select one...</option> -->
+                                    
+                                    <option value="1">Returnable</option>
+                                    <option value="2">NON Returnable</option>
+
+                                    
+                                </select>
+                            </div>
+                            
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -195,6 +200,9 @@
                     required: true,
                 },
                 ref_no: {
+                    required: true,
+                },
+                oef_number: {
                     required: true,
                 },
                 ref_date: {

@@ -1,34 +1,22 @@
 @extends('layouts.default')
 @section('content')
-
+@inject('fn', 'App\Http\Controllers\Web\FGS\GRSController')
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Delivery challan</span>
+				 <span>Delivery Challan Item List</span>
 				 <span><a href="">
-				 Challan Item
+                 Delivery Challan Item List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
-            Challan Item 
+            Delivery Challan Item List
               <div class="right-button">
-				{{--@if($product_cat->product_category==3)
-                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/Delivery_challan/Challan-add-trade-item/'.$id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-				Challan Item 
-				</button>
-				@else--}}
-				<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/Delivery_challan/Challan-add-item/'.$id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> 
-				Challan Item 
-				</button>
-				{{--@endif--}}
-				{{--<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" mrnid="" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>--}}
               <div>  
-				
-              </div>
-          </div>
-        </h4>	
+            </h4>	
+            <div class="form-devider"></div>
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -58,38 +46,7 @@
 										}
 									</style>
 									<form autocomplete="off">
-										<th scope="row">
-											<div class="row filter_search" style="margin-left: 0px;">
-												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
-								
-													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
-														<label>Product :</label>
-														<input type="text" value="{{request()->get('product')}}" name="product" id="product" class="form-control" placeholder="PRODUCT">
-													</div><!-- form-group -->
-													
-													
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Batch No</label>
-														<input type="text" value="{{request()->get('batchnumber')}}" name="batchnumber" id="batchnumber" class="form-control" placeholder="BATCH NO">
-													</div>
-													
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">Manufacturing Month</label>
-														<input type="text" value="{{request()->get('manufaturing_from')}}" id="manufaturing_from" class="form-control datepicker" name="manufaturing_from" placeholder="Month(MM-YYYY)">
-													</div>
-												</div>
-												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
-													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
-														<label style="width: 100%;">&nbsp;</label>
-														<button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
-														@if(count(request()->all('')) > 2)
-															<a href="{{url()->current()}}" class="badge badge-pill badge-warning"
-															style="margin-top:-2px;"><i class="fas fa-sync"></i> Reset</a>
-														@endif
-													</div> 
-												</div>
-											</div>
-										</th>
+										
 									</form>
 								</tr>
 								</tbody>
@@ -100,98 +57,115 @@
 			
 					<div class="tab-pane  active  show " id="purchase"> 
 					
-					<div class="table-responsive">
-						<table class="table table-bordered mg-b-0" >
-							<thead>
-								<tr>
-									<th>Product</th>
-                                    <th>HSN Code</th>
-									<th>Description</th>
-									<th>Batch No.</th>
-									<th>Qty.</th>
-									<th>UOM</th>
-                                    <th>Date of Mfg.</th>
-                                    <th>Date of Expiry</th>
-									
-								</tr>
-							</thead>
-							
-							<tbody id="prbody1">
-								<?php $qty=0; ?>
-								<tbody id="prbody1">
-								@foreach($items as $item)
-								<tr>
-
-								<td>{{$item->sku_code}}</td>
-                                    <td>{{$item->hsn_code}}</td>
-									<td>{{$item->discription}}</td>
-									<td>{{$item->batch_no}}</td>
-									<td>{{$item->quantity}}</td>
-									<td>Nos</td>
-                                    <td width="10%">{{date('d-m-Y', strtotime($item->manufacturing_date))}}</td>
-                                    <td width="10%">@if($item->expiry_date!='0000-00-00') {{date('d-m-Y', strtotime($item->expiry_date))}} @else NA  @endif</td>
-									
-									
-
-									
-								</tr>
-								@endforeach
-							</tbody>
-								
-							</tbody>
-						</table>
-						<div class="box-footer clearfix">
-						{{-- $items->appends(request()->input())->links() --}}
-						</div>
-					</div>
+						<div class="table-responsive">
+							<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+							<i class='fas fa-hand-point-right'></i> Delivery Challan Items
+							</label>
+							<table class="table table-bordered mg-b-0" >
+                            	<thead>
+                                	<tr>
+											<th>Product</th>
+                                            <th>Description</th>
+                                            <th>HSN Code</th>
+                                            <th>Batchcard</th>
+                                            <th>Batch Quantity </th>
+                                            <th>Manufacturing Date</th>
+                                            <th>Expiry Date</th>
+                                            <th>Status</th>
+                                        </tr>                                                
+                                </thead>
+                                <tbody id="prbody1">
+                                @if(count($dc_items)>0)
+                                    @foreach($dc_items as $item)
+                                        <tr>
+                                            <input type="hidden" id="dc_id" value="{{$dc_id}}" name="dc_id">
+                                                    <!-- <td><input type="checkbox" name="oef_item_id[]" value="{{$item['id']}}"></td> -->
+                                            <td>{{$item['sku_code']}}</td>
+                                            <td>{{$item['discription']}}</td>
+                                            <td>{{$item['hsn_code']}} </td>
+                                            <td>{{$item['batch_no']}} </td>
+                                            <td>{{$item['batch_quantity']}} Nos</td>
+                                            <td>{{$item['manufacturing_date']}}</td>
+                                            <td>@if($item['expiry_date']=='0000-00-00') NA @else {{$item['expiry_date']}} @endif</td>
+                                            <td>
+												@if($item['cdc_status']==0)
+												<span class="badge badge-primary" style="width:60px;">Active</span>
+												@else
+												<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
+												@endif
+											</td> 
+											{{--<td>
+												<?php $is_exist_in_pi = $fn->grsItemExistInPI($item['id']);?>
+												@if($is_exist_in_pi==1)
+												<a class="badge badge-primary" style="font-size: 13px;" onclick="return confirm('Cannot edit GRS Item. It moved to next step!');"><i class="fa fa-edit"></i> Edit</a>
+												<a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cannot delete GRS Item. It moved to next step!');"><i class="fa fa-trash"></i> Delete</a>
+												@else
+												<a class="badge badge-primary" style="font-size: 13px;" href="{{url('fgs/GRS-item-edit/'.$item['id'])}}"><i class="fa fa-edit"></i> Edit</a>
+												<a class="badge badge-danger" style="font-size: 13px;"  href="{{url('fgs/GRS-item-delete/'.$item['id'])}}"><i class="fa fa-trash"></i> Delete</a>
+												@endif
+											</td>--}}
+                                        </tr>
+                                    @endforeach
+									@else
+									<tr>
+										<td colspan="9" ><center>No data Found...</center></td>
+                                    </tr>
+									@endif
+                                
+                                </tbody>
+                            </table>
+                            <div class="box-footer clearfix">
+                                 {{$dc_items->appends(request()->input())->links()}} 
+                            </div>
+                        </div>
+						<br/>
+						<div class="form-devider"></div>
+						<div class="table-responsive">
+							<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+							<i class='fas fa-hand-point-right'></i> Unreserved OEF Items
+							</label>
+							<table class="table table-bordered mg-b-0" >
+                            	<thead>
+                                	<tr>
+                                            <th>Product</th>
+                                            <th>Description</th>
+                                            <th>Actual Quantity</th>
+                                            <th>Unreserved Quantity</th>
+                                            <th>Rate</th>
+                                            <th>Discount</th>
+                                            <th>GST</th>
+											<th>Action</th>
+                                        </tr>                                                
+                                </thead>
+                                <tbody id="prbody1">
+									@if(count($oef_items)>0)
+                                    @foreach($oef_items as $item)
+                                        <tr>
+                                            <td>{{$item['sku_code']}}</td>
+                                            <td>{{$item['discription']}}</td>
+                                            <td>{{$item['quantity']}} Nos</td>
+                                            <td>{{$item['quantity_to_allocate']}} Nos</td>
+                                            <td>{{$item['rate']}}</td>
+                                            <td>{{$item['discount']}}%</td>
+                                            <td>IGST:{{$item['igst']}}%<br/>
+                                                        CGST:{{$item['cgst']}}%<br/>
+                                                        SGST:{{$item['sgst']}}%
+                                            </td>
+											<td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/Delivery_challan/'.$dc_id.'/add-item/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-plus"></i>  Challan Item</a></td>
+                                        </tr>
+                                    @endforeach
+									@endif
+                                </tbody>
+                            </table>
+                            <div class="box-footer clearfix">
+                                {{ $oef_items->appends(request()->input())->links() }}
+                            </div>
+                        </div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- az-content-body -->
-	<div class="modal fade" id="uploadModal" role="dialog">
-		<div class="modal-dialog modal-xs">
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header" style="display: block;">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Upload  MRN Items<span id="mrn_number"></span></h4>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
-							<form method="POST" id="commentForm" action="{{url('fgs/MRN/item-upload')}}" novalidate="novalidate" enctype='multipart/form-data'>
-								{{ csrf_field() }}
-								<div class="row">
-									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-										<label for="exampleInputEmail1">Product Category</label>
-										<input type="text" required class="form-control" name="product_category" id="product_category">
-										<input type="hidden" name="mrn_id" id="mrn_id" value="">
-									</div>
-									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-										<label for="exampleInputEmail1">Stock Location</label>
-										<input type="text" required class="form-control" name="stock_location" id="stock_location">
-									</div>
-									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-										<label for="exampleInputEmail1">Select File*</label>
-										<input type="file" required class="form-control file" name="file" id="file">
-										<a href="{{ asset('uploads/FGS_mrn_item_sample.xlsx') }}" target="_blank" style="float: right; font-size: 10px;"> Download Template</a>
-									</div>
-								</div>
-								<div class="row">
-									<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-										<button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
-											Save
-										</button>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div> <!-- model -->
 </div>
 
 <script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -215,36 +189,20 @@
         // startDate: date,
         autoclose:true
     });
-	
+	$('#prbody1').show();
+	$('#prbody2').show();
   });
-  
+  	
 	$('.search-btn').on( "click", function(e)  {
-		var product = $('#pr_no').val();
-		var batchnumber = $('#batchnumber').val();
-		var manufaturing_from = $('#manufaturing_from').val();
-		if(!pr_no  & !department & !from)
+		var supplier_doc_number = $('#supplier_doc_number').val();
+		var mrn_no = $('#mrn_no').val();
+		var from = $('#from').val();
+		if(!mrn_no  & !supplier_doc_number & !from)
 		{
 			e.preventDefault();
 		}
 	});
-	$(".item-upload").on("click", function() {
-		var mrn_number = $(this).data('MRNNumber');
-		var mrn_id = $(this).attr('mrnid');
-		$('#mrn_id').val(mrn_id);
-		$.get("{{ url('fgs/fetchMRNInfo') }}?mrn_id="+mrn_id,function(data)
-        {
-			$('#mrn_number').html(' (' + data.mrn_number + ')');
-			$('#product_category').val(data.category_name);
-			$('#stock_location').val(data.location_name);
-		});
-	});
 </script>
-<script>
-    $(document).ready(function() {
-        $('form').submit(function() {
-            $(this).find(':submit').prop('disabled', true);
-        });
-    });
-</script>
+
 
 @stop
