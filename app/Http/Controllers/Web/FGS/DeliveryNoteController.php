@@ -557,7 +557,7 @@ class DeliveryNoteController extends Controller
         }
 
         //$title ="Location1 - Stock";
-        // $location = 'location1';
+         $location = 'loaner';
         //  $condition[] = ['product_stock_location.location_name','like', '%' . 'Loaner' . '%'];
         $condition[] = ['dc_transfer_stock.stock_location_id', '=', 9];
 
@@ -584,7 +584,7 @@ class DeliveryNoteController extends Controller
         }
 
         //$title ="Location1 - Stock";
-        $location = 'loaner';
+        $location = 'replacement';
         //  $condition[] = ['product_stock_location.location_name','like', '%' . 'replacement' . '%'];
         $condition[] = ['dc_transfer_stock.stock_location_id', '=', 12];
 
