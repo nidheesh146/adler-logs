@@ -547,6 +547,28 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/Delivery_challan/Challan-item-list/{id}', 'DeliveryNoteController@Challanitemlist');
     Route::get('fgs/Delivery_challan/{grs_id}/add-item/{oef_item_id}', 'DeliveryNoteController@ChallanitemAdd');
     Route::post('fgs/Delivery_challan/{grs_id}/add-item/{oef_item_id}', 'DeliveryNoteController@ChallanitemAdd');
+    Route::get('fgs/Delivery_challan/Challan-stock-all-location', 'DeliveryNoteController@dc_transfer_stock');
+    Route::post('fgs/Delivery_challan/Challan-stock-all-location', 'DeliveryNoteController@dc_transfer_stock');
+    Route::get('fgs/Delivery_challan/Challan-stock-consignment', 'DeliveryNoteController@dc_transfer_stock_consignment');
+    Route::post('fgs/Delivery_challan/Challan-stock-consignment', 'DeliveryNoteController@dc_transfer_stock_consignment');
+    Route::get('fgs/Delivery_challan/Challan-stock-loaner', 'DeliveryNoteController@dc_transfer_stock_consignment');
+    Route::post('fgs/Delivery_challan/Challan-stock-loaner', 'DeliveryNoteController@dc_transfer_stock_consignment');
+    Route::get('fgs/Delivery_challan/Challan-stock-replacement', 'DeliveryNoteController@dc_transfer_stock_replacement');
+    Route::post('fgs/Delivery_challan/Challan-stock-replacement', 'DeliveryNoteController@dc_transfer_stock_replacement');
+    Route::get('fgs/Delivery_challan/Challan-stock-demo', 'DeliveryNoteController@dc_transfer_stock_demo');
+    Route::post('fgs/Delivery_challan/Challan-stock-demo', 'DeliveryNoteController@dc_transfer_stock_demo');
+    Route::get('fgs/Delivery_challan/Challan-stock-samples', 'DeliveryNoteController@dc_transfer_stock_samples');
+    Route::post('fgs/Delivery_challan/Challan-stock-samples', 'DeliveryNoteController@dc_transfer_stock_samples');
+
+    Route::get('fgs/Delivery_challan/Challan-stock-all-export', 'DeliveryNoteController@dc_transfer_stock_export');
+    Route::get('fgs/Delivery_challan/Challan-stock-export/{value}', 'DeliveryNoteController@dc_transfer_stock_export1');
+
+
+
+
+
+
+    
 
     Route::get('fgs/Delivery_challan/Delivery_Challan_pdf/{id}', 'DeliveryNoteController@challanpdf');
     Route::get('fgs/fetchStockProductBatchCardschallan', 'DeliveryNoteController@fetchStockProductBatchCardschallan');
