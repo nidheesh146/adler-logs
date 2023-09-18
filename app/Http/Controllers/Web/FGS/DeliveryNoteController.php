@@ -473,13 +473,16 @@ class DeliveryNoteController extends Controller
             'customer_supplier.shipping_address',
             'fgs_product_category.category_name',
             'product_stock_location.location_name',
-            'zone.zone_name'
+            'zone.zone_name',
+            'fgs_oef.oef_number',
+            'fgs_oef.oef_date'
         )
             ->leftJoin('transaction_type', 'transaction_type.id', '=', 'delivery_challan.transaction_type')
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'delivery_challan.product_category')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'delivery_challan.customer_id')
             ->leftjoin('zone','zone.id','=','customer_supplier.zone')
             ->leftjoin('product_stock_location', 'product_stock_location.id', '=', 'delivery_challan.stock_location_Increase')
+            ->leftjoin('fgs_oef','fgs_oef.id','=','delivery_challan.oef_id')
         ->where('delivery_challan.id',$dc_id)->first();
 
         $condition1[] = ['delivery_challan_item_rel.master','=', $dc_id];

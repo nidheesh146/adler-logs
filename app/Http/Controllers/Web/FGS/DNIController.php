@@ -103,9 +103,9 @@ class DNIController extends Controller
                         }
                         $pi_item = fgs_pi_item::where('id','=',$pi_data['item'])->first();
                         $grs_item = fgs_grs_item::where('id','=',$pi_item['grs_item_id'])->first();
-                        $maa_stock =  fgs_maa_stock_management::where('pi_item_id',$pi_item['id'])->first();
-                        $stock['quantity'] =0;
-                        $maa_stock_management = $this->fgs_maa_stock_management->update_data(['pi_item_id'=>$pi_item['id']],$stock);
+                        $maa_stock =  fgs_maa_stock_management::where('product_id',$pi_item['product_id'])->where('batchcard_id',$pi_item['batch_id'])->first();
+                        $stock['quantity'] =$maa_stock['quantity']-$pi_item['remaining_qty_after_cancel'];
+                        $maa_stock_management = $this->fgs_maa_stock_management->update_data(['id'=>$maa_stock['id']],$stock);
                         //$maa_stock=$this->fgs_maa_stock_management->insert_data($stock);
 
                     }
@@ -131,7 +131,29 @@ class DNIController extends Controller
             return view('pages/FGS/DNI/DNI-add');
         }
     }
-
+    public function DNIDelete(Request $request,$id)
+    {
+        $pi_item_ids = DB::table('fgs_dni_item')->select('fgs_dni_item.pi_item_id')
+                ->join('fgs_dni_item_rel','fgs_dni_item_rel.item','=','fgs_dni_item.id')
+                ->where('fgs_dni_item_rel.master','=',$id)->get();
+        foreach($pi_item_ids as $pi_item_id)
+        {
+            $pi_item = fgs_pi_item::where('id','=',$pi_item_id['pi_item_id'])->first();
+            $maa_stock =  fgs_maa_stock_management::where('product_id',$pi_item['product_id'])->where('batchcard_id',$pi_item['batch_id'])->first();
+            $stock['quantity'] =$maa_stock['quantity']+$pi_item['remaining_qty_after_cancel'];
+            $maa_stock_management = $this->fgs_maa_stock_management->update_data(['id'=>$maa_stock['id']],$stock);
+        }
+            DB::table('fgs_dni_item') 
+                    ->join('fgs_dni_item_rel','fgs_dni_item_rel.item','=','fgs_dni_item.id')
+                    ->where('fgs_dni_item_rel.master','=',$id)
+                    ->delete();
+            DB::table('fgs_dni_item_rel')
+                    ->where('fgs_dni_item_rel.master','=',$id)
+                    ->delete();
+            fgs_dni::where('id', '=',$id)->delete();
+            session()->flash('success', "You have  successfully deleted DNI !");
+            return redirect()->back();
+    }
 
     public function fetchPI(Request $request)
     {
@@ -158,7 +180,16 @@ class DNIController extends Controller
                         <td>';
                 foreach($grs_numbers as $grs)
                 {
-                    $data .= $grs->grs_number.'<br>';
+                    $grs_nos[]=$grs->grs_number;
+                   // $data .= $grs->grs_number.'<br>';
+                }
+                $grs_no_arr=array_values(array_unique($grs_nos));
+                for($x = 0; $x <count($grs_no_arr); $x++) 
+                {
+                    //echo $grs_no_arr[$x]; 
+                    $data .= $grs_no_arr[$x].'<br>';
+                   // $category = $category_name_arr[$x];
+                    //echo "  ";
                 }
                 $data.='</td>
                         <td>'.date('d-m-Y', strtotime($pi->pi_date)).'</td>

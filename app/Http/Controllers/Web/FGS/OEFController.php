@@ -220,17 +220,25 @@ class OEFController extends Controller
     public function OEFDelete($id)
     {
 
-        fgs_oef::where('id', $id)
-            ->update([
-                'status' => 0
-            ]);
+        // fgs_oef::where('id', $id)
+        //     ->update([
+        //         'status' => 0
+        //     ]);
         // fgs_oef_item::leftjoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
         // ->leftjoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
         // ->where('fgs_oef.id',$id)
         // ->update([
         //     'fgs_oef_item.status'=>0
         // ]);
-        session()->flash('success', "You have  deleted OEF !");
+        DB::table('fgs_oef_item') 
+                ->join('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
+                ->where('fgs_oef_item_rel.master','=',$id)
+                ->delete();
+        DB::table('fgs_oef_item_rel')
+                ->where('fgs_oef_item_rel.master','=',$id)
+                ->delete();
+        fgs_oef::where('id', '=',$id)->delete();
+        session()->flash('success', "You have successfully deleted OEF !");
         return redirect()->back();
     }
     public function edit_oef($id)
@@ -422,41 +430,24 @@ class OEFController extends Controller
             return view('pages/FGS/OEF/OEF-item-add', compact('data', 'oef_id'));
         }
     }
-    public function oef_grs($id)
+    public function oef_grs($oef_item_id)
     {
-        $oef_items = fgs_grs_item::where('oef_item_id', $id)->first();
+        $oef_items = fgs_grs_item::where('oef_item_id', $oef_item_id)->first();
         return $oef_items;
     }
-    public function delete_oef_item($id)
+    public function delete_oef_item($id,Request $request)
     {
         $prdct = DB::table('fgs_oef_item')
             ->where('id', $id)
             ->first();
-        $qty = DB::table('fgs_product_stock_management')
-            ->where('id', $id)
-            ->first();
-
-        $fgs_qty = number_format($prdct->quantity);
-        $pstock_qty = number_format($qty->quantity);
-        //dd($fgs_qty-$pstock_qty);
-        // $value=$fgs_qty-$qty;
-
-        DB::table('fgs_product_stock_management')
-            ->where('id', $id)
-            ->update([
-                'quantity' => $fgs_qty + $pstock_qty
-            ]);
         DB::table('fgs_oef_item')
             ->where('id', $id)
-            ->where('product_id', $prdct->product_id)
-            //->where('batchcard_id', $prdct->batchcard_id)
             ->update([
                 'status' => 0
             ]);
-        //$mrn_id=$id;
+        $request->session()->flash('success',  "OEF Item Successfully Deleted.");
         return redirect()->back();
-        // $items = $this->MRNitemlist($mrn_id);
-        // return view('pages/FGS/MRN/MRN-item-list',compact('mrn_id','items'));
+        
     }
     public function edit_oef_item($id)
     {
