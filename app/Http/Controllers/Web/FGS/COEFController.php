@@ -187,7 +187,12 @@ class COEFController extends Controller
       {
         $oef = $this->fgs_oef->get_master_data(['fgs_oef.id' => $id]);
        //return $invoice;
-        $oef_item = $this->fgs_oef_item->get_oef_item(['fgs_oef_item_rel.master' => $id]);
+       $condition[] = ['fgs_oef_item_rel.master','=', $id];
+       $condition[] = ['fgs_oef_item.quantity_to_allocate','!=', 0];
+       $condition[] = ['fgs_oef_item.remaining_qty_after_cancel','!=', 0];
+        $oef_item = $this->fgs_oef_item->get_oef_item($condition);
+        if(count($oef_item)>0)
+        {
         $data = '
 
         <div class="row" >
@@ -279,9 +284,9 @@ class COEFController extends Controller
                             </button>
                 </div>
         </div>
-             
              ';
         return $data;
+        }
     }
    
     public function COEFItemList(Request $request, $coef_id)

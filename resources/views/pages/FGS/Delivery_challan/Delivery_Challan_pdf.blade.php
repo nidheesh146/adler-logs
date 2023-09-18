@@ -61,7 +61,8 @@
                             <td style="width: 15%;">{{$data->doc_no}}</td>
                         </tr>
                         <tr>
-                            <td style=""></td>
+                            <td style="">
+                            </td>
                             <td colspan="2" rowspan="2">{{$data->shipping_address}}</td>
 
                             <td style="font-weight: bold;">Doc Date :</td>
@@ -69,7 +70,9 @@
                         </tr>
                         <tr>
                             <td></td>
-                            <td colspan="2"></td>
+                            <td colspan="2">OEF No.:{{$data->oef_number}}<br/>
+                                OEF. Date:{{date('d-m-Y',strtotime($data->oef_date))}}
+                            </td>
                             <td style="font-weight: bold;">Trnsctn Type:</td>
                             <td>{{$data->transaction_name}}</td>
                         </tr>
@@ -121,8 +124,8 @@
                             <td>{{$data->discription}}</td>
                             <td>{{$data->batch_no}}</td>
                             <td>{{$data->batch_qty}}</td>
-                            <td>{{$data->manufacturing_date}}</td>
-                            <td>{{$data->expiry_date}}</td>
+                            <td>{{date('d-m-Y',strtotime($data->manufacturing_date))}}</td>
+                            <td>@if($data->expiry_date!='0000-00-00') {{date('d-m-Y',strtotime($data->expiry_date))}} @else N.A @endif</td>
                         </tr>
                         @endforeach
                         <tr>

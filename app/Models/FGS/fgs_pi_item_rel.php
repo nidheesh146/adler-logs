@@ -34,7 +34,7 @@ class fgs_pi_item_rel extends Model
                         ->where('fgs_pi_item.status','=',1)
                         ->where($condition)
                         ->orderBy('fgs_grs_item.id','DESC')
-                        ->distinct('fgs_grs_item.id')
+                        //->distinct('fgs_grs_item.id')
                         ->get();
     }
 }

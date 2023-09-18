@@ -131,7 +131,7 @@ $obj_oef=new OEFController;
 									</td>
 									<td>
 										@if(!empty($obj_oef->oef_grs($item['id'])))
-										<a class="badge badge-info" style="font-size: 13px;" onclick="return confirm('Cant edit. Item uder GRS!');" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+										<a class="badge badge-info" style="font-size: 13px;" onclick="return confirm('Cant edit. Item under GRS!');" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
 										@else
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/OEF-item-edit/'.$item['id'])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
 										@endif

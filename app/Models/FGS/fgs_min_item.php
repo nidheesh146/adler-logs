@@ -44,6 +44,7 @@ class fgs_min_item extends Model
                         ->leftjoin('product_product','product_product.id','=','fgs_min_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_min_item.batchcard_id')
                         ->where('fgs_min_item.cmin_status','=',0)
+                        ->where('fgs_min_item.status','=',1)
                         ->where($condition)
                     ->orderBy('fgs_min_item.id','ASC')
                     ->get();

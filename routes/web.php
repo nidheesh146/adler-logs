@@ -675,6 +675,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/DNI/pdf/{grs_id}', 'DNIController@DNIpdf');
     Route::get('fgs/net-billing-report', 'DNIController@netBillingReport');
     Route::get('fgs/net-billing-report/excel-export', 'DNIController@netBillingExport');
+    Route::get('fgs/DNI-delete/{dni_id}','DNIController@DNIDelete');
 
     //EXI
     Route::get('fgs/EXI-list', 'EXIController@EXIList');
@@ -683,6 +684,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/EXI/item-list/{exi_id}', 'EXIController@EXIitemlist');
     Route::get('fgs/EXI/fetchPI', 'EXIController@fetchPI');
     Route::get('fgs/EXI/pdf/{grs_id}', 'EXIController@EXIpdf');
+    Route::get('fgs/EXI-delete/{dni_id}','EXIController@EXIDelete');
 
     //stock-management
     Route::get('fgs/stock-management/all-locations', 'StockManagementController@allLocations');

@@ -267,15 +267,27 @@ class MRNController extends Controller
                 // }
                
                 foreach ($request->moreItems as $key => $value) {
-                    if($product_cat->product_category==3){
-                        $batch_card_id= DB::table('batchcard_batchcard')
-                        ->insertGetId([
-                        "batch_no"=>$value['batch_no'],
-                        "quantity"=>$value['qty'],
-                        "is_trade"=>1
-                        ]);
+                    if($product_cat->product_category==3)
+                    {
+                        $batchcard_exist = DB::table('batchcard_batchcard')->where('batch_no','=',$value['batch_no'])->where('is_trade','=',1)->first();
+                        if(!empty($batchcard_exist))
+                        {
+                            $batch_card_id = $batchcard_exist->id;
+                            $qty=$value['qty'];
+                        }
+                        else
+                        {
+                            $batch_card_id= DB::table('batchcard_batchcard')
+                            ->insertGetId([
+                            "batch_no"=>$value['batch_no'],
+                            "quantity"=>$value['qty'],
+                            "is_trade"=>1
+                            ]);
+                        }
                         $qty=$value['qty'];
-                    }else{
+                    }
+                    else
+                    {
                         $batch_card_id=$value['batch_no']; 
                         $qty=$value['qty'];
 
@@ -305,19 +317,29 @@ class MRNController extends Controller
                     $mrn_data = [
                         'remarks' => $request->remarks
                     ];
-                    $stock = [
-                        "product_id" => $value['product'],
-                       // "batchcard_id" => $value['batch_no'],
-                       "batchcard_id" =>$batch_card_id,
-                        "quantity" => $qty,
-                        "stock_location_id" => $mrn_info['stock_location'],
-                        "quantity" => $qty,
-                        "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
-                        "expiry_date" => $expiry_date,
-                    ];
+                    $prdct_stock = fgs_product_stock_management::where('product_id',$value['product'])->where('batchcard_id',$batch_card_id)->where('stock_location_id',$mrn_info->location_id)->first();
+                    if(!empty($prdct_stock))
+                    {
+                        $new_stock = $prdct_stock->quantity+$excelsheet[2];
+                        $res[] = $this->fgs_product_stock_management->update_data(['id'=>$prdct_stock->id],['quantity'=>$new_stock]);
+                    }
+                    else
+                    {
+                        $stock = [
+                            "product_id" => $value['product'],
+                        // "batchcard_id" => $value['batch_no'],
+                        "batchcard_id" =>$batch_card_id,
+                            "quantity" => $qty,
+                            "stock_location_id" => $mrn_info['stock_location'],
+                            "quantity" => $qty,
+                            "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
+                            "expiry_date" => $expiry_date,
+                        ];
+                        $this->fgs_product_stock_management->insert_data($stock);
+                    }
                     $this->fgs_mrn_item->insert_data($data, $request->mrn_id);
                     $this->fgs_mrn->update_data(['id' => $request->mrn_id], $mrn_data);
-                    $this->fgs_product_stock_management->insert_data($stock);
+                    
                   
                 }
                 $request->session()->flash('success', "You have successfully added a MRN item !");
@@ -420,16 +442,25 @@ class MRNController extends Controller
                         $item['expiry_date'] = ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' ';
                         $item['created_at'] = date('Y-m-d H:i:s');
                         $this->fgs_mrn_item->insert_data($item, $mrn_id);
-                        $stock = [
-                            "product_id" => $product_id,
-                            "batchcard_id" => $batchcard_id,
-                            "quantity" => $excelsheet[2],
-                            "stock_location_id" => $mrn->location_id,
-                            'manufacturing_date' => ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
-                            'expiry_date' => ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' '
-                        ];
-                        $res[]=$this->fgs_product_stock_management->insert_data($stock);
-                        // $res[]=DB::table('production_stock_management')->insert($data);
+                        $prdct_stock = fgs_product_stock_management::where('product_id',$product_id)->where('batchcard_id',$batchcard_id)->where('stock_location_id',$mrn->location_id)->first();
+                        if(!empty($prdct_stock))
+                        {
+                            $new_stock = $prdct_stock->quantity+$excelsheet[2];
+                            $res[] = $this->fgs_product_stock_management->update_data(['id'=>$prdct_stock->id],['quantity'=>$new_stock]);
+                        }
+                        else
+                        {
+                            $stock = [
+                                "product_id" => $product_id,
+                                "batchcard_id" => $batchcard_id,
+                                "quantity" => $excelsheet[2],
+                                "stock_location_id" => $mrn->location_id,
+                                'manufacturing_date' => ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
+                                'expiry_date' => ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' '
+                            ];
+                            $res[]=$this->fgs_product_stock_management->insert_data($stock);
+                            // $res[]=DB::table('production_stock_management')->insert($data);
+                        }
                     } 
                     else 
                     {
@@ -443,13 +474,24 @@ class MRNController extends Controller
                     $product_id = product::where('sku_code', '=', $excelsheet[0])->pluck('id')->first();
                     if($product_id)
                     {
-                        $batchcard_id= DB::table('batchcard_batchcard')
+                        $batchcard_exist = DB::table('batchcard_batchcard')->where('batch_no','=',$excelsheet[1])
+                                            ->where('is_trade','=',1)
+                                            ->where('product_id','=',$product_id)
+                                            ->first();
+                        if(!empty($batchcard_exist))
+                        {
+                            $batchcard_id = $batchcard_exist->id;
+                        }
+                        else
+                        {
+                            $batchcard_id= DB::table('batchcard_batchcard')
                                             ->insertGetId([
                                                 "batch_no"=>$excelsheet[1],
                                                 "quantity"=>$excelsheet[2],
                                                 'product_id'=>$product_id,
                                                 "is_trade"=>1
                                             ]);
+                        }
                         $qty=$excelsheet[2];
                         $item['product_id'] = $product_id;
                         $item['batchcard_id'] = $batchcard_id;
@@ -458,15 +500,24 @@ class MRNController extends Controller
                         $item['expiry_date'] = ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' ';
                         $item['created_at'] = date('Y-m-d H:i:s');
                         $this->fgs_mrn_item->insert_data($item, $mrn_id);
-                        $stock = [
-                            "product_id" => $product_id,
-                            "batchcard_id" => $batchcard_id,
-                            "quantity" => $excelsheet[2],
-                            "stock_location_id" => $mrn->location_id,
-                            'manufacturing_date' => ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
-                            'expiry_date' => ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' '
-                        ];
-                        $res[] = $this->fgs_product_stock_management->insert_data($stock);
+                        $prdct_stock = fgs_product_stock_management::where('product_id',$product_id)->where('batchcard_id',$batchcard_id)->where('stock_location_id',$mrn->location_id)->first();
+                        if(!empty($prdct_stock))
+                        {
+                            $new_stock = $prdct_stock->quantity+$excelsheet[2];
+                            $res[] = $this->fgs_product_stock_management->update_data(['id'=>$prdct_stock->id],['quantity'=>$new_stock]);
+                        }
+                        else
+                        {
+                            $stock = [
+                                "product_id" => $product_id,
+                                "batchcard_id" => $batchcard_id,
+                                "quantity" => $excelsheet[2],
+                                "stock_location_id" => $mrn->location_id,
+                                'manufacturing_date' => ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
+                                'expiry_date' => ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' '
+                            ];
+                            $res[] = $this->fgs_product_stock_management->insert_data($stock);
+                        }
                     }
                     else
                     {
@@ -792,20 +843,46 @@ class MRNController extends Controller
         }
         else
         {
-            $item_details = DB::table('fgs_mrn_item')
-                ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.id as product_id','product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
-                ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
-                ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
-                ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
-                ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
-                ->where('fgs_mrn_item.id', $id)
-                ->orderBy('fgs_mrn_item.id', 'DESC')
-                ->first();
-            $batchcards = batchcard::select('batchcard_batchcard.batch_no', 'batchcard_batchcard.id as batch_id', 'batchcard_batchcard.start_date', 'batchcard_batchcard.target_date', 'batchcard_batchcard.quantity')
-                ->where('batchcard_batchcard.product_id', '=', $item_details->product_id)
-                ->where('is_trade',0)
-                ->orderBy('batchcard_batchcard.id', 'asc')
-                ->get();
+            $mrn_id = DB::table('fgs_mrn_item_rel')->where('item','=',$id)->first();
+            $mrn = fgs_mrn::select('product_stock_location.location_name')
+                        ->leftJoin('product_stock_location', 'product_stock_location.id', 'fgs_mrn.stock_location')
+                        ->where('fgs_mrn.id',$mrn_id->master)
+                        ->first();
+            if($mrn->location_name!='SNN Trade')
+            {
+                    $item_details = DB::table('fgs_mrn_item')
+                        ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.id as product_id','product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
+                        ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+                        ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+                        ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+                        ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+                        ->where('fgs_mrn_item.id', $id)
+                        ->orderBy('fgs_mrn_item.id', 'DESC')
+                        ->first();
+                    $batchcards = batchcard::select('batchcard_batchcard.batch_no', 'batchcard_batchcard.id as batch_id', 'batchcard_batchcard.start_date', 'batchcard_batchcard.target_date', 'batchcard_batchcard.quantity')
+                        ->where('batchcard_batchcard.product_id', '=', $item_details->product_id)
+                        ->where('is_trade',0)
+                        ->orderBy('batchcard_batchcard.id', 'asc')
+                        ->get();
+            }
+            else
+            {
+                $item_details = DB::table('fgs_mrn_item')
+                        ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.id as product_id','product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
+                        ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+                        ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+                        ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+                        ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+                        ->where('fgs_mrn_item.id', $id)
+                        ->orderBy('fgs_mrn_item.id', 'DESC')
+                        ->first();
+                $batchcards = batchcard::select('batchcard_batchcard.batch_no', 'batchcard_batchcard.id as batch_id', 'batchcard_batchcard.start_date', 'batchcard_batchcard.target_date', 'batchcard_batchcard.quantity')
+                        ->where('batchcard_batchcard.id', '=', $item_details->batchcard_id)
+                        //->where('is_trade',0)
+                        ->orderBy('batchcard_batchcard.id', 'asc')
+                        ->get();
+               // print_r($batchcards);exit;
+            }
             //$batchcards = fgs_product_stock_management
             // dd($item_details);
 
@@ -880,7 +957,7 @@ class MRNController extends Controller
             $expiry_date = '';
             $data['batchcard_id']=$request->batch_no;
             $data['quantity'] = $request->stock_qty;
-            $data['manufacturing_date'] = date('Y-m-d', strtotime($request->manufacturing_date1));
+            $data['manufacturing_date'] = date('Y-m-d', strtotime($request->manufacturing_date));
             $data['expiry_date'] = $expiry_date;
             $update_mrn = $this->fgs_mrn_item->update_data(['id'=>$mrn_item->id],$data);
             if($update_mrn)
