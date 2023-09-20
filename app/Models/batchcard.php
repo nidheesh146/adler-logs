@@ -72,13 +72,23 @@ class batchcard extends Model
     {
         return $this->select('batchcard_batchcard.id','batchcard_batchcard.batch_no')
             ->where($condition)
+           // ->where('batchcard_batchcard.is_trade','=',0)
+            ->orderBy('batchcard_batchcard.id', 'desc')
+            ->get()->toArray();
+    }
+    function get_batchcards($condition)
+    {
+        return $this->select('batchcard_batchcard.id','batchcard_batchcard.batch_no as text','product_product.sku_code','product_product.discription','batchcard_batchcard.quantity','product_product.id as product_id')
+            ->where($condition)
+            ->where('batchcard_batchcard.is_trade','=',0)
             ->orderBy('batchcard_batchcard.id', 'desc')
             ->get()->toArray();
     }
 
+
     function get_batchcard($condition)
     {
-        return $this->select(['batchcard_batchcard.id','batchcard_batchcard.batch_no','batchcard_batchcard.quantity','batchcard_batchcard.input_material',
+        return $this->select(['batchcard_batchcard.id','batchcard_batchcard.batch_no as text','batchcard_batchcard.quantity','batchcard_batchcard.input_material','product_product.sku_code','product_product.discription',
         'inventory_rawmaterial.item_code','product_product.discription','inv_unit.unit_name','product_product.sku_code','inventory_rawmaterial.id as rawmaterial_id','batchcard_batchcard.is_assemble'])
         ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','batchcard_batchcard.input_material')
         //->leftjoin('product_product', 'product_product.id','=','batchcard_batchcard.product_id')

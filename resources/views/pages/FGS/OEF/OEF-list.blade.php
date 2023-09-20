@@ -103,13 +103,13 @@ $obj_oef=new OEFController;
 								<tr>
 									<th>OEF Number</th>
 									<th>OEF date</th>
+									<th>Customer info</th>
 									<th>Order number</th>
 									<th>Order date</th>
-									<th>Order Fulfil</th>
+									{{--<th>Order Fulfil</th>--}}
 									<th>Transaction Type</th>
 									<th>Product Category</th>
-									<th>Due Date</th>
-									<th>Customer info</th>
+									{{--<th>Due Date</th>--}}
 									<th>Action</th>
 									<th></th>
 								</tr>
@@ -120,17 +120,18 @@ $obj_oef=new OEFController;
 
 									<td>{{$item['oef_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['oef_date']))}}</td>
-									<td>{{$item['order_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
-									<td>{{$item['order_fulfil_type']}}</td>
-									<td>{{$item['transaction_name']}}</td>
-									<td>{{$item['category_name']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['due_date']))}}</td>
-
 									<td>{{$item['firm_name']}}<br />
 										Contact Person:{{$item['contact_person']}}<br />
 										Contact Number:{{$item['contact_number']}}<br />
 									</td>
+									<td>{{$item['order_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>
+									{{--<td>{{$item['order_fulfil_type']}}</td>--}}
+									<td>{{$item['transaction_name']}}</td>
+									<td>{{$item['category_name']}}</td>
+									{{--<td>{{date('d-m-Y', strtotime($item['due_date']))}}</td>--}}
+
+									
 									<td>
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/OEF/item-list/'.$item["id"])}}" class="dropdown-item"><i class="fas fa-eye"></i> Item</a><br />
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/OEF/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>

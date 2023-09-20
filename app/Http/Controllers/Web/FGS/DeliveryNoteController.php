@@ -61,12 +61,14 @@ class DeliveryNoteController extends Controller
             'customer_supplier.firm_name',
             'customer_supplier.shipping_address',
             'fgs_product_category.category_name',
-            'product_stock_location.location_name'
+            'product_stock_location.location_name as location_decrease',
+            'stock_location.location_name as location_increase'
         )
             ->leftJoin('transaction_type', 'transaction_type.id', '=', 'delivery_challan.transaction_type')
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'delivery_challan.product_category')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'delivery_challan.customer_id')
-            ->leftjoin('product_stock_location', 'product_stock_location.id', '=', 'delivery_challan.stock_location_Increase')
+            ->leftjoin('product_stock_location', 'product_stock_location.id', '=', 'delivery_challan.stock_location_decrease')
+            ->leftJoin('product_stock_location as stock_location','stock_location.id','delivery_challan.stock_location_increase')
             ->where($condition)
             ->distinct('delivery_challan.id')
             ->orderBy('delivery_challan.id', 'DESC')
@@ -244,6 +246,7 @@ class DeliveryNoteController extends Controller
                     ->orderBy('batchcard_batchcard.id', 'ASC')
                     ->groupBy('fgs_product_stock_management.id')
                     ->get();
+                //print_r($product_batchcards);exit;
                 if (count($product_batchcards) > 0) {
                     $oef_item['batchcards'] = $product_batchcards;
                 }

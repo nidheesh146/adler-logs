@@ -107,7 +107,7 @@ class BatchCardController extends Controller
     }
     public function getInputMaterial(Request $request)
     {
-        //echo $request->batch_id;exit;
+        //return $request->batch_id;exit;
         $input_materials = product_input_material::select('product_input_material.id','material_option1.item_code as item1','material_option1.id as item1_id','material_option2.item_code as item2','material_option2.id as item2_id',
         'material_option3.item_code as item3','material_option3.id as item3_id')
                                 ->leftJoin('inventory_rawmaterial as material_option1','material_option1.id','=','product_input_material.item_id1')
@@ -121,7 +121,7 @@ class BatchCardController extends Controller
                     <th>Sl No.</th>
                     <th>Option1</th>
                     <th>Option2</th>
-                    <th>Option3
+                    <th>Option3</th>
                 </tr>';
         foreach($input_materials as $material)
         {
@@ -133,8 +133,8 @@ class BatchCardController extends Controller
                 $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
                                                     ->where('item_id','=',$material['item1_id'])
                                                     ->get();
-                if($batch_input_material)
-                $data.='<th><input type="radio" class="item-select-radio" checked name="material" value="0">&nbsp; Assembly</th>';
+                if(count($batch_input_material)>0)
+                $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" class="item-select-radio" checked name="material" value="0">&nbsp; Assembly</th>';
                 else
                 $data.='<th><input type="radio" class="item-select-radio"  name="material" value="0">&nbsp; Assembly</th>';
             }
@@ -143,8 +143,8 @@ class BatchCardController extends Controller
                 $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
                                                     ->where('item_id','=',$material['item1_id'])
                                                     ->get();
-                if($batch_input_material)                                   
-                $data.='<th><input type="radio" class="item-select-radio" checked name="material" value="'.$material['item1_id'].'">&nbsp; '.$material['item1'].'</th>';
+                if(count($batch_input_material)>0)                                 
+                $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" class="item-select-radio" checked name="material" value="'.$material['item1_id'].'">&nbsp; '.$material['item1'].'</th>';
                 else
                 $data.='<th><input type="radio" class="item-select-radio"  name="material" value="'.$material['item1_id'].'">&nbsp; '.$material['item1'].'</th>';
             }
@@ -156,8 +156,8 @@ class BatchCardController extends Controller
                                                     ->where('item_id','=',$material['item2_id'])
                                                     ->get();
                     //$data.='<th><input type="radio" class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
-                    if($batch_input_material)
-                    $data.='<th><input type="radio" class="item-select-radio" checked name="material" value="0">&nbsp; Assembly</th>';
+                    if(count($batch_input_material)>0)
+                    $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" class="item-select-radio" checked name="material" value="0">&nbsp; Assembly</th>';
                     else
                     $data.='<th><input type="radio" class="item-select-radio"  name="material" value="0">&nbsp; Assembly</th>';
                 }
@@ -166,8 +166,8 @@ class BatchCardController extends Controller
                     $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
                                                     ->where('item_id','=',$material['item2_id'])
                                                     ->get();
-                    if($batch_input_material)
-                    $data.='<th><input type="radio" class="item-select-radio" checked name="material" value="'.$material['item2_id'].'">&nbsp; '.$material['item2'].'</th>';
+                    if(count($batch_input_material)>0)
+                    $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" class="item-select-radio" checked name="material" value="'.$material['item2_id'].'">&nbsp; '.$material['item2'].'</th>';
                     else
                     $data.='<th><input type="radio" class="item-select-radio"  name="material" value="'.$material['item2_id'].'">&nbsp; '.$material['item2'].'</th>';
                 }
@@ -183,8 +183,8 @@ class BatchCardController extends Controller
                     $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
                                                     ->where('item_id','=',$material['item3_id'])
                                                     ->get();
-                    if($batch_input_material)
-                    $data.='<th><input type="radio" checked class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
+                    if(count($batch_input_material)>0)
+                    $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" checked class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
                     else
                     $data.='<th><input type="radio" class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
                 }
@@ -193,8 +193,8 @@ class BatchCardController extends Controller
                     $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
                                                     ->where('item_id','=',$material['item3_id'])
                                                     ->get();
-                    if($batch_input_material)
-                    $data.='<th><input type="radio" class="item-select-radio" checked name="material" value="'.$material['item3_id'].'">&nbsp; '.$material['item3'].'</th>';
+                    if(count($batch_input_material)>0)
+                    $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" class="item-select-radio" checked name="material" value="'.$material['item3_id'].'">&nbsp; '.$material['item3'].'</th>';
                     else
                     $data.='<th><input type="radio" class="item-select-radio" name="material" value="'.$material['item3_id'].'">&nbsp; '.$material['item3'].'</th>';
                 }
@@ -210,12 +210,12 @@ class BatchCardController extends Controller
     public function addInputMaterial(Request $request)
     {
         //echo $request->material;exit;
-        $batch_material = batchcard_material::where('batchcard_id','=',$request->batch_id)->where('product_inputmaterial_id','=',$request->product_inputmaterial_id)->first();
+        $batch_material = batchcard_material::where('batchcard_id','=',$request->batch_id)->where('id','=',$request->batch_input_material_id)->first();
         if($batch_material)
         {
             $data = [
                 'batchcard_id'=>$request->batch_id,
-                'product_inputmaterial_id'=>$request->product_inputmaterial_id,
+                //'product_inputmaterial_id'=>$request->product_inputmaterial_id,
                 'item_id'=>$request->material,
                 'quantity'=>0,
             ];

@@ -100,24 +100,23 @@
 								<tr>
 									<th>COEF Number</th>
 									<th>COEF date</th>
-                   <th>Remarks</th>              
-								
-									
-                                  
-									
+                   					<th>Customer</th>              
+									<th>OEF Number</th>  
+									<th>Order Number</th>  
+									<th>Order Date</th>  
                                     <th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
 							@foreach($coef as $item)
                                 <tr>
-									
 									<td>{{$item['coef_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['coef_date']))}}</td>
-                  <td>{{$item['remarks']}}</td>
-                                    
-									
-                  <td>
+                  					<td>{{$item['firm_name']}}</td>	
+									<td>{{$item['oef_number']}}</td>
+									<td>{{$item['order_number']}}</td>	
+									<td>{{date('d-m-Y', strtotime($item['order_date']))}}</td>				
+                  					<td>
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/COEF/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a><br/>
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/COEF/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
 								 	</td>

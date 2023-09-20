@@ -54,8 +54,9 @@ class COEFController extends Controller
             $condition[] = ['fgs_coef.coef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
             $condition[] = ['fgs_coef.coef_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
-        $coef = fgs_coef::select('fgs_coef.*')
-                 ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_coef.oef_id')
+        $coef = fgs_coef::select('fgs_coef.*','fgs_oef.oef_number','fgs_oef.order_number','fgs_oef.order_date','customer_supplier.firm_name')
+                        ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_coef.oef_id')
+                        ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
                         ->where($condition)
                         ->distinct('fgs_coef.id')
                         ->orderBy('fgs_coef.id','DESC')

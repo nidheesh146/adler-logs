@@ -260,6 +260,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
     Route::get('inventory/transaction-slip/add', 'StockController@transactionSlipAdd');
     Route::post('inventory/transaction-slip/add', 'StockController@transactionSlipAdd');
     Route::get('inventory/lotnumbersearch', 'StockController@lotnumbersearch');
+    Route::get('inventory/reset-batchcard-material','StockController@resetBatchInputMaterial');
+    Route::get('stock/getbatchcard','StockController@getbatchcard');
+    Route::get('stock/product_input_material','StockController@productInputMaterial');
+    Route::post('stock/product_input_material','StockController@productInputMaterial');
 
 
     // Route::get('inventory/stock/item-mac-info','StockController@itemMacDetails');

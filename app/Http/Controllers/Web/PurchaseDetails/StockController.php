@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\batchcard;
 use App\Models\work_centre;
 use App\Models\assembly_batchcards;
+use App\Models\product_input_material;
 use App\Models\batchcard_material;
 use App\Models\PurchaseDetails\inv_lot_allocation;
 use App\Models\PurchaseDetails\inv_miq_item;
@@ -2052,6 +2053,165 @@ class StockController extends Controller
         }else{
             return response()->json(['message'=>'Lot Number is not valid'], 500); 
         }
+    }
+
+    public function resetBatchInputMaterial()
+    {
+        return view('pages.inventory.stock.reset-batchcard-input-material');    
+    }
+    public function getbatchcard(Request $request)
+    {
+        if(!$request->q){
+            return response()->json(['message'=>'Batchcard is not valid'], 500); 
+        }
+        $condition[] = ['batchcard_batchcard.batch_no','like','%'.strtoupper($request->q).'%'];
+        $data = $this->batchcard->get_batchcards($condition);
+       // $data  = $this->inventory_rawmaterial->getItems($condition);
+        if(!empty( $data)){
+            return response()->json( $data, 200); 
+        }else{
+            return response()->json(['message'=>'Batchcard is not valid'], 500); 
+        }
+    }
+    public function productInputMaterial(Request $request)
+    {
+        if($request->isMethod('post'))
+        {
+            $batch_material = batchcard_material::where('batchcard_id','=',$request->batch_id)->where('id','=',$request->batch_input_material_id)->first();
+            if(!empty($batch_material))
+            {
+                $data = [
+                    'batchcard_id'=>$request->batch_id,
+                    //'product_inputmaterial_id'=>$request->product_inputmaterial_id,
+                    'item_id'=>$request->material,
+                    'quantity'=>0,
+                ];
+                $update = $this->batchcard_material->update_data(['id'=>$batch_material['id']],$data);
+                if($update)
+                $request->session()->flash('success',  "You have successfully updated a batchcard input material !");
+                else
+                $request->session()->flash('error',  "You have failed updation of batchcard input material !");
+            }
+            else
+            {
+                $data = [
+                    'batchcard_id'=>$request->batch_id,
+                    'product_inputmaterial_id'=>$request->product_inputmaterial_id,
+                    'item_id'=>$request->material,
+                    'quantity'=>0,
+                ];
+                $add = $this->batchcard_material->insert_data($data);
+                if($add)
+                $request->session()->flash('success',  "You have successfully inserted a batchcard input material !");
+                else
+                $request->session()->flash('error',  "You have failed insertion of batchcard input material !");
+            }
+            return redirect()->back();
+        }
+        else
+        {
+            $input_materials = product_input_material::select('product_input_material.id','material_option1.item_code as item1','material_option1.id as item1_id','material_option2.item_code as item2','material_option2.id as item2_id',
+            'material_option3.item_code as item3','material_option3.id as item3_id')
+                                    ->leftJoin('inventory_rawmaterial as material_option1','material_option1.id','=','product_input_material.item_id1')
+                                    ->leftJoin('inventory_rawmaterial as material_option2','material_option2.id','=','product_input_material.item_id2')
+                                    ->leftJoin('inventory_rawmaterial as material_option3','material_option3.id','=','product_input_material.item_id3')
+                                    ->where('product_input_material.product_id','=',$request->product_id)
+                                    ->get();
+            //return $input_materials;
+            $i=1;
+            $data = '<tr>
+                        <th>Sl No.</th>
+                        <th>Option1</th>
+                        <th>Option2</th>
+                        <th>Option3
+                    </tr>';
+            foreach($input_materials as $material)
+            {
+                $data .= '<tr>
+                            <th>'.$i++.'
+                            <input type="hidden" name="product_inputmaterial_id" value="'.$material['id'].'"></th></th>';
+                if($material['item1_id']==0)
+                {
+                    $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
+                                                        ->where('item_id','=',$material['item1_id'])
+                                                        ->get();
+                    if(count($batch_input_material)>0)
+                    {
+                    $data.='<input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><th><input type="radio" class="item-select-radio" checked name="material" value="0">&nbsp; Assembly</th>';
+                    }
+                    else
+                    $data.='<th><input type="radio" class="item-select-radio"  name="material" value="0">&nbsp; Assembly</th>';
+                }
+                else
+                {
+                    $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
+                                                        ->where('item_id','=',$material['item1_id'])
+                                                        ->get();
+                    if(count($batch_input_material)>0)                                   
+                    $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" class="item-select-radio" checked name="material" value="'.$material['item1_id'].'">&nbsp; '.$material['item1'].'</th>';
+                    else
+                    $data.='<th><input type="radio" class="item-select-radio"  name="material" value="'.$material['item1_id'].'">&nbsp; '.$material['item1'].'</th>';
+                }
+                if($material['item2_id']!=NULL ) 
+                {
+                    if($material['item2_id']==0)
+                    {
+                        $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
+                                                        ->where('item_id','=',$material['item2_id'])
+                                                        ->get();
+                        //$data.='<th><input type="radio" class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
+                        if(count($batch_input_material)>0)
+                        $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" class="item-select-radio" checked name="material" value="0">&nbsp; Assembly</th>';
+                        else
+                        $data.='<th><input type="radio" class="item-select-radio"  name="material" value="0">&nbsp; Assembly</th>';
+                    }
+                    else
+                    {
+                        $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
+                                                        ->where('item_id','=',$material['item2_id'])
+                                                        ->get();
+                        if(count($batch_input_material)>0)
+                        $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" class="item-select-radio" checked name="material" value="'.$material['item2_id'].'">&nbsp; '.$material['item2'].'</th>';
+                        else
+                        $data.='<th><input type="radio" class="item-select-radio"  name="material" value="'.$material['item2_id'].'">&nbsp; '.$material['item2'].'</th>';
+                    }
+                }
+                else
+                {
+                    $data.='<th></th>';
+                }
+                if($material['item3_id']!=NULL ) 
+                {
+                    if($material['item3_id']==0)
+                    {
+                        $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
+                                                        ->where('item_id','=',$material['item3_id'])
+                                                        ->get();
+                        if(count($batch_input_material)>0)
+                        $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" checked class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
+                        else
+                        $data.='<th><input type="radio" class="item-select-radio" name="material" value="0">&nbsp; Assembly</th>';
+                    }
+                    else
+                    {
+                        $batch_input_material = batchcard_material::where('batchcard_id','=',$request->batch_id)
+                                                        ->where('item_id','=',$material['item3_id'])
+                                                        ->get();
+                        if(count($batch_input_material)>0)
+                        $data.='<th><input type="hidden"  name="batch_input_material_id" value="'.$batch_input_material[0]['id'].'" ><input type="radio" class="item-select-radio" checked name="material" value="'.$material['item3_id'].'">&nbsp; '.$material['item3'].'</th>';
+                        else
+                        $data.='<th><input type="radio" class="item-select-radio" name="material" value="'.$material['item3_id'].'">&nbsp; '.$material['item3'].'</th>';
+                    }
+                }
+                else
+                {
+                    $data.='<th></th>';
+                }
+
+            }
+            return $data;
+        }
+        
     }
     
 

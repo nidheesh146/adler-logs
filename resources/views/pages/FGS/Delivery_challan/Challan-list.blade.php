@@ -136,8 +136,8 @@
                                     @endif
                                     
                                     <td>{{$item->transaction_name}}</td>
-                                    <td>AHPL Mktd</td>
-                                    <td>{{$item->location_name}}</td>
+                                    <td>{{$item->location_decrease}}</td>
+                                    <td>{{$item->location_increase}}</td>
                                     <td>{{$item->firm_name}}</td>
                                     {{--<td>{{$item->shipping_address}}</td>--}}
                                     
