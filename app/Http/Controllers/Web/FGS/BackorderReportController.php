@@ -272,6 +272,9 @@ class BackorderReportController extends Controller
             'inventory_gst.igst',
             'inventory_gst.cgst',
             'inventory_gst.sgst',
+            'zone.zone_name',
+            'state.state_name',
+            'customer_supplier.city'
             
         )
             ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
@@ -281,6 +284,8 @@ class BackorderReportController extends Controller
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
             ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+            ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+            ->leftJoin('state','state.state_id','=','customer_supplier.state')
             ->where('fgs_oef.status', '=', 1)
             // ->whereNotIn('fgs_oef_item.id', function ($query) {
 
@@ -311,7 +316,10 @@ class BackorderReportController extends Controller
                 'inventory_gst.cgst',
                 'inventory_gst.sgst',
                 'fgs_oef.order_number',
-                'fgs_oef.order_date'
+                'fgs_oef.order_date',
+                'zone.zone_name',
+                'state.state_name',
+                'customer_supplier.city'
                 
             )
                 ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
@@ -324,6 +332,8 @@ class BackorderReportController extends Controller
                 ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
                 ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                 ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+                ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+                ->leftJoin('state','state.state_id','=','customer_supplier.state')
                 ->where('fgs_grs.status', '=', 1)
                 // ->whereNotIn('fgs_grs_item.id', function ($query) {
 
@@ -346,7 +356,8 @@ class BackorderReportController extends Controller
         'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number','fgs_pi.pi_date',
         'fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_date','fgs_oef.order_number','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_pi_item.batch_qty',
         'fgs_pi_item.batch_qty as pi_qty','fgs_pi.created_at as pi_created_at','customer_supplier.firm_name','fgs_product_category.category_name',
-        'fgs_pi_item.remaining_qty_after_cancel as pi_qty_balance','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst')
+        'fgs_pi_item.remaining_qty_after_cancel as pi_qty_balance','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst', 'zone.zone_name',
+        'state.state_name','customer_supplier.city')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
                         ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
@@ -361,6 +372,8 @@ class BackorderReportController extends Controller
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
                         ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
                         ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+                        ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+                        ->leftJoin('state','state.state_id','=','customer_supplier.state')
                         //->where('fgs_pi_item_rel.master','=', $items['pi_id'])
                         ->where($condition3)
                         ->whereNotIn('fgs_pi.id',function($query) {

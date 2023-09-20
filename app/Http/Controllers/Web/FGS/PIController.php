@@ -605,9 +605,11 @@ class PIController extends Controller
         //                     ->distinct('fgs_pi.id')
         //                     ->paginate(15);
         $pi_data = fgs_pi_item_rel::select('fgs_grs.grs_number','fgs_grs.grs_date','product_product.sku_code','product_product.hsn_code','product_product.discription',
-        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number',
+        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number','fgs_pi.pi_date',
         'fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_date','fgs_oef.order_number','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_pi_item.batch_qty',
-        'fgs_pi_item.remaining_qty_after_cancel','fgs_pi.created_at as pi_created_at','customer_supplier.firm_name')
+        'fgs_pi_item.batch_qty as pi_qty','fgs_pi.created_at as pi_created_at','customer_supplier.firm_name','fgs_product_category.category_name',
+        'fgs_pi_item.remaining_qty_after_cancel as pi_qty_balance','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst', 'zone.zone_name',
+        'state.state_name','customer_supplier.city')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
                         ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
                         ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
@@ -620,6 +622,10 @@ class PIController extends Controller
                         ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
                         ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
+                        ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+                        ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+                        ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+                        ->leftJoin('state','state.state_id','=','customer_supplier.state')
                         //->where('fgs_pi_item_rel.master','=', $items['pi_id'])
                         ->where($condition)
                         ->whereNotIn('fgs_pi.id',function($query) {
@@ -629,6 +635,7 @@ class PIController extends Controller
                         })->where('fgs_grs.status','=',1)
                         ->where('fgs_pi.status','=',1)
                         ->where('fgs_pi_item.status','=',1)
+                        ->where('fgs_pi_item.batch_qty','!=',0)
                         ->where('fgs_pi_item.cpi_status','=',0)
                         ->orderBy('fgs_grs_item.id','DESC')
                         ->distinct('fgs_grs_item.id')

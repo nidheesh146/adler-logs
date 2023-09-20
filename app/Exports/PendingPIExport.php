@@ -42,6 +42,9 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
                 'Doc_Date' => date('d-m-Y', strtotime($item['pi_date'])),
                 'Doc_No' => $item['pi_number'],
                 'Customer_Name' => $item['firm_name'],
+                'Zone'=>$item['zone_name'],
+                'State'=>$item['state_name'],
+                'city'=>$item['city'],
                 'Order_No' => $item['order_number'],
                 'Order_Date' => date('d-m-Y', strtotime($item['order_date'])),
                 'Item_Code' => $item['sku_code'],
@@ -63,6 +66,9 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
             'Doc Date',
             'Doc No',
             'Customer Name',
+            'Zone',
+            'State',
+            'City',
             'Order No',
             'Order Date',
             'Item Code',
@@ -91,26 +97,18 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
                 $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(5);
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(18);
                 $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(35);
                 $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(20);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(25);
-                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(12);
-                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(18);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(30);
+                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(10);
-                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(25);
-                $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(30);
-                $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('S')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('T')->setWidth(40);
-                $event->sheet->getDelegate()->getColumnDimension('U')->setWidth(40);
-                $event->sheet->getDelegate()->getColumnDimension('V')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('W')->setWidth(15);
+                
                 
                 // $cellRange = 'F1:F20000';
                 // $event->sheet->getDelegate()->getStyle($cellRange)->getAlignment()->setWrapText(true);
