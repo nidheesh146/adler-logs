@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 @inject('fn', 'App\Http\Controllers\Web\FGS\StockManagementController')
-@php 
+@php
 use App\Http\Controllers\Web\FGS\StockManagementController;
 $obj_product= new StockManagementController;
 @endphp
@@ -12,10 +12,10 @@ $obj_product= new StockManagementController;
 			<div class="az-content-breadcrumb">
 				<span>BATCH TRACE REPORT</span>
 				<span><a href="">
-						
+
 					</a></span>
 			</div>
-			
+
 			<br><br>
 			<h4 class="az-content-title" style="font-size: 20px;">
 				Batch Trace Report
@@ -78,7 +78,7 @@ $obj_product= new StockManagementController;
 													</div>
 
 												</div>
-												
+
 											</div>
 										</th>
 									</form>
@@ -106,8 +106,8 @@ $obj_product= new StockManagementController;
 									<th>HSN CODE</th>
 									<th>DESCRIPTION</th>
 									<th>BATCH NO</th>
-                                    <th>DATE OF MFG.</th>
-                                    <th>DATE OF EXPIRY</th>
+									<th>DATE OF MFG.</th>
+									<th>DATE OF EXPIRY</th>
 									<th>DOC NAME</th>
 									<th>DOC NO</th>
 									<th>DOC DATE</th>
@@ -124,17 +124,17 @@ $obj_product= new StockManagementController;
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-								
+
 								@foreach($mrn_item as $item)
-								
+
 								<tr>
 									<td>{{$item['sku_code']}}</td>
 									<td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
 									<td>{{$item['batch_no']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td>
-                                  
+									<td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
+
 									<td>MRN</td>
 									<td>{{$item['mrn_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['mrn_date']))}}</td>
@@ -142,6 +142,7 @@ $obj_product= new StockManagementController;
 									<td>{{$item['quantity']}} Nos</td>
 								</tr>
 								@if($item['min_number']!=null)
+								@foreach($obj_product->product_min($item['id']) as $min)
 								<tr>
 									<td></td>
 									<td></td>
@@ -150,13 +151,15 @@ $obj_product= new StockManagementController;
 									<td></td>
 									<td></td>
 									<td>MIN</td>
-									<td>{{$item['min_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['min_date']))}}</td>
-									<td>{{$item['minqty']}} Nos</td>
-									<td>@if($item['min_number']) {{$item['reminingmin']}} Nos @endif</td>
+									<td>{{$min['min_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($min['min_date']))}}</td>
+									<td>{{$min['minqty']}} Nos</td>
+									<td>@if($min['min_number']) {{$min['reminingmin']}} Nos @endif</td>
 								</tr>
+								@endforeach
 								@endif
 								@if($item['cmin_number']!=null)
+								@foreach($obj_product->product_cmin($item['id']) as $cmin)
 								<tr>
 									<td></td>
 									<td></td>
@@ -165,13 +168,21 @@ $obj_product= new StockManagementController;
 									<td></td>
 									<td></td>
 									<td>CMIN</td>
-									<td>{{$item['cmin_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['cmin_date']))}}</td>
-									<td>{{$item['cminqty']}} Nos</td>
+									<td>{{$cmin['cmin_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($cmin['cmin_date']))}}</td>
+									<td>{{$cmin['cminqty']}} Nos</td>
 									<td></td>
 								</tr>
+								@endforeach
 								@endif
+								@php
+								$grsqty=$item['quantity'];
+								@endphp
 								@if($item['grs_number']!=null)
+								@foreach($obj_product->product_grs($item['id']) as $grs)
+								@php
+								$grsqty=$grsqty-$grs['grs_qty'];
+								@endphp
 								<tr>
 									<td></td>
 									<td></td>
@@ -180,13 +191,16 @@ $obj_product= new StockManagementController;
 									<td></td>
 									<td></td>
 									<td>GRS</td>
-									<td>{{$item['grs_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['grs_date']))}}</td>
-									<td>{{$item['grs_qty']}} Nos</td>
-									<td>@if($item['grs_number']) {{$item['grsremaining']}} Nos @endif</td>
+									<td>{{$grs['grs_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($grs['grs_date']))}}</td>
+									<td>{{$grs['grs_qty']}} Nos</td>
+									<td>@if($grs['grs_number']) {{$grsqty}} Nos @endif</td>
 								</tr>
+								@endforeach
 								@endif
 								@if($item['pi_number']!=null)
+								@foreach($obj_product->product_pi($item['id']) as $pi)
+
 								<tr>
 									<td></td>
 									<td></td>
@@ -195,13 +209,16 @@ $obj_product= new StockManagementController;
 									<td></td>
 									<td></td>
 									<td>PI</td>
-									<td>{{$item['pi_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['pi_date']))}}</td>
-									<td>{{$item['pi_qty']}}Nos</td>
-									<td>@if($item['pi_number']) @if($item['dni_number']!=null) 0 Nos @endif  @endif</td>
+									<td>{{$pi['pi_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($pi['pi_date']))}}</td>
+									<td>{{$pi['pi_qty']}}Nos</td>
+									<td>@if($pi['pi_number']) @if($pi['dni_number']!=null) 0 Nos @endif @endif</td>
 								</tr>
+								@endforeach
 								@endif
 								@if($item['cpi_number']!=null)
+								@foreach($obj_product->product_cpi($item['id']) as $cpi)
+
 								<tr>
 									<td></td>
 									<td></td>
@@ -210,13 +227,16 @@ $obj_product= new StockManagementController;
 									<td></td>
 									<td></td>
 									<td>CPI</td>
-									<td>{{$item['cpi_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['cpi_date']))}}</td>
-									<td>{{$item['cpi_qty']}}</td>
-									<td>{{$item['cpi_qty']}}Nos</td>
+									<td>{{$cpi['cpi_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($cpi['cpi_date']))}}</td>
+									<td>{{$cpi['cpi_qty']}}</td>
+									<td>{{$cpi['cpi_qty']}}Nos</td>
 								</tr>
+								@endforeach
 								@endif
 								@if($item['dni_number']!=null)
+								@foreach($obj_product->product_dni($item['id']) as $dni)
+
 								<tr>
 									<td></td>
 									<td></td>
@@ -225,13 +245,16 @@ $obj_product= new StockManagementController;
 									<td></td>
 									<td></td>
 									<td>DNI/EXI</td>
-									<td>{{$item['dni_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['dni_date']))}}</td>
-									<td>{{$item['pi_qty']}}Nos</td>
-									<td>@if($item['dni_number']) 0 Nos @endif</td>
+									<td>{{$dni['dni_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($dni['dni_date']))}}</td>
+									<td>{{$dni['pi_qty']}}Nos</td>
+									<td>@if($dni['dni_number']) 0 Nos @endif</td>
 								</tr>
+								@endforeach
 								@endif
 								@if($item['mtq_number']!=null)
+								@foreach($obj_product->product_mtq($item['id']) as $mtq)
+
 								<tr>
 									<td></td>
 									<td></td>
@@ -240,32 +263,33 @@ $obj_product= new StockManagementController;
 									<td></td>
 									<td></td>
 									<td>MTQ</td>
-									<td>{{$item['mtq_number']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['mtq_date']))}}</td>
-									<td>@if($item['mtq_number']) {{$item['mtqqty']}}Nos @endif</td>
+									<td>{{$mtq['mtq_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($mtq['mtq_date']))}}</td>
+									<td>@if($mtq['mtq_number']) {{$mtq['mtqqty']}}Nos @endif</td>
 									<td></td>
 								</tr>
+								@endforeach
 								@endif
-									{{--<td>mrn</td>
+								{{--<td>mrn</td>
 									<td>
 										{{$obj_product->product_mrn($item['id'])->mrn_number}}
-										
-									</td>--}}
-									
-									{{--<td>{{$item['mrn_number']}}</td>
-									<td>{{$item['quantity']}}Nos</td>
-									<td>{{$item['grs_number']}}</td>
-									<td>@if($item['grs_number']) {{$item['grs_qty']}}Nos @endif</td>
-									<td>{{$item['pi_number']}}</td>
-									<td>@if($item['pi_number']) {{$item['pi_qty']}}Nos @endif</td>
-									<td>{{$item['dni_number']}}</td>
-									<td>@if($item['dni_number']) {{$item['pi_qty']}}Nos @endif</td>--}}
-								</tr>
-								@endforeach
+
+								</td>--}}
+
+								{{--<td>{{$item['mrn_number']}}</td>
+								<td>{{$item['quantity']}}Nos</td>
+								<td>{{$item['grs_number']}}</td>
+								<td>@if($item['grs_number']) {{$item['grs_qty']}}Nos @endif</td>
+								<td>{{$item['pi_number']}}</td>
+								<td>@if($item['pi_number']) {{$item['pi_qty']}}Nos @endif</td>
+								<td>{{$item['dni_number']}}</td>
+								<td>@if($item['dni_number']) {{$item['pi_qty']}}Nos @endif</td>--}}
+							
+							@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-						{{ $mrn_item->appends(request()->input())->links() }}
+							{{ $mrn_item->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>
