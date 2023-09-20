@@ -542,7 +542,7 @@ class GRSController extends Controller
         $grs_data =fgs_grs_item::select('fgs_grs_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_grs.grs_number','fgs_grs.grs_date',
         'batchcard_batchcard.batch_no','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_product_category.category_name','product_stock_location.location_name as location_name1',
         'stock_location.location_name as location_name2','fgs_oef.oef_number','fgs_oef.oef_date','customer_supplier.firm_name', 'fgs_oef.order_number','fgs_oef.order_date','fgs_grs.created_at as grs_created_at',
-        'fgs_oef_item.rate','fgs_oef_item.discount','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst')
+        'fgs_oef_item.rate','fgs_oef_item.discount','inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','zone.zone_name','state.state_name','customer_supplier.city')
                     ->leftjoin('fgs_grs_item_rel','fgs_grs_item_rel.item','=', 'fgs_grs_item.id')
                     ->leftjoin('fgs_grs','fgs_grs.id','=','fgs_grs_item_rel.master')
                     ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
@@ -555,15 +555,21 @@ class GRSController extends Controller
                     ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
                     ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                     ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
-                    ->whereNotIn('fgs_grs.id',function($query) {
+                    ->leftJoin('zone','zone.id','=','customer_supplier.zone')
+                    ->leftJoin('state','state.state_id','=','customer_supplier.state')
+                    /*->whereNotIn('fgs_grs.id',function($query) {
 
                         $query->select('fgs_pi_item.grs_id')->from('fgs_pi_item');
                     
-                    })
+                    })*/
                     ->where($condition)
-                    ->where('fgs_grs_item.cgrs_status','=',0)
                     ->where('fgs_grs.status','=',1)
                     ->where('fgs_grs_item.status','=',1)
+                    ->where('fgs_oef_item.status', '=', 1)
+                    ->where('fgs_oef_item.coef_status', '=', 0)
+                    ->where('fgs_grs_item.cgrs_status', '=', 0)
+                    ->where('fgs_grs_item.qty_to_invoice','!=',0)
+                    ->where('fgs_grs_item.remaining_qty_after_cancel','!=',0)
                     ->orderBy('fgs_grs_item.id','DESC')
                     ->distinct('fgs_grs_item.id')
                     ->get();
