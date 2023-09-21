@@ -404,6 +404,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web', 'middleware' => ['RoleP
     Route::post('product/location/{id?}', 'ProductController@locationList');
     Route::get('product/Product-add/{id?}', 'ProductController@productAdd');
     Route::post('product/Product-add/{id?}', 'ProductController@productAdd');
+    Route::get('product/Product-image/{id}', 'ProductController@get_image');
+
 
     Route::get('product/Product-add-group', 'ProductController@productAddGroup');
     Route::post('product/Product-addgroup', 'ProductController@productAddingGroup');
