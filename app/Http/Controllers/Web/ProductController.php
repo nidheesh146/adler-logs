@@ -109,18 +109,33 @@ class ProductController extends Controller
         if ($request->isMethod('post')) 
         {
              $validation['sku_code'] = ['required'];
+             $validation['pimage'] = ['image', 'mimes:jpeg,png,jpg'];
             //  $validation['product_family_id'] = ['required'];
             //  $validation['product_group_id'] = ['required'];
             //  $validation['brand_details_id'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
-            if(!$validator->errors()->all()) 
-            {
-             if ($request->hasFile('image')) {
-              $image  = $request->file('image');
-              $image_fileName = $request->file('image')->getClientOriginalName(); 
-              $image->move(public_path('uploads/process_sheets'), $image_fileName);
+            if ($request->pimage) {
+               
+                $imageFile = $request->file('pimage');
+                
+                // Check if the uploaded file is not empty
+                if ($imageFile->isValid()) {
+                    $imageName = $request->sku_code . '.' . $imageFile->getClientOriginalExtension();
+            
+                    $imageFile->move(public_path('img/productimg'), $imageName);
+              
+            
+            // if(!$validator->errors()->all()) 
+            // {
+            //  if ($request->hasFile('image')) {
+            // //   $image  = $request->file('image');
+            // //   $image_fileName = $request->file('image')->getClientOriginalName(); 
+            // //   $image->move(public_path('uploads/product_img'), $image_fileName);
+            // $imageName = $request->sku_code.'.'.$request->pimage->getClientOriginalExtension();  
+            // $request->pimage->move(public_path('img/productimg'), $imageName);
+            //$datas = $imageName;
              }else{
-             $image_fileName =Null;
+             $imageName =Null;
              } 
                 $data['sku_code'] = $request->sku_code;
                 $data['sku_name'] = $request->sku_name;
@@ -169,6 +184,8 @@ class ProductController extends Controller
                 $data['brand'] = $request->brand;
                 $data['is_active'] = 1;
                 $data['process_sheet_no'] = $request->process_sheet_no;
+                $data['drawing_image'] = $imageName;
+
                // $data['process_sheet_pdf'] = $image_fileName;
 
                 if($request->id){ 
@@ -1077,5 +1094,10 @@ class ProductController extends Controller
             return 1;
         else
             return 0;
+    }
+    public function get_image($id)
+    {
+        $product_image=product_product::where('id',$id)->first();
+        return view ('pages/product/product-image',compact('product_image'));
     }
 }
