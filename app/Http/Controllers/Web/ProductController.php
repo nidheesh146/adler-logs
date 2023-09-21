@@ -122,7 +122,7 @@ class ProductController extends Controller
                 if ($imageFile->isValid()) {
                     $imageName = $request->sku_code . '.' . $imageFile->getClientOriginalExtension();
             
-                    $imageFile->move(public_path('img/productimg'), $imageName);
+                    $imageFile->move(public_path('img/label_image'), $imageName);
               
             
             // if(!$validator->errors()->all()) 
@@ -184,7 +184,7 @@ class ProductController extends Controller
                 $data['brand'] = $request->brand;
                 $data['is_active'] = 1;
                 $data['process_sheet_no'] = $request->process_sheet_no;
-                $data['drawing_image'] = $imageName;
+                $data['label_image'] = 'label_image/'.$imageName;
 
                // $data['process_sheet_pdf'] = $image_fileName;
 

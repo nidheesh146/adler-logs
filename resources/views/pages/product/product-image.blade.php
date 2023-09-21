@@ -1,6 +1,6 @@
 <div style="text-align: center; margin: 50px;" >
-@if($product_image->drawing_image)
-<img  src="{{url('img/productimg/'.$product_image->drawing_image)}}" alt="">
+@if($product_image->label_image)
+<img  src="{{url('img/'.$product_image->label_image)}}" alt="image">
 @else
 <h4 style="color: orange;">Images Not Uploaded..</h4>
 @endif
