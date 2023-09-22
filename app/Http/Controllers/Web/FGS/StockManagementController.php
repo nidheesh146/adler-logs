@@ -859,7 +859,9 @@ class StockManagementController extends Controller
             'fgs_cpi_item.quantity as cpiqty',
             'fgs_cpi.cpi_number',
             'fgs_cpi_item.batchcard_id as cpibatchid',
-            'fgs_cpi_item.product_id as cpiprd'
+            'fgs_cpi_item.product_id as cpiprd',
+            'fgs_cgrs.cgrs_number',
+            'fgs_cgrs_item.batch_quantity as cgrsqty'
         )
 
             ->leftJoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
@@ -888,13 +890,20 @@ class StockManagementController extends Controller
             ->leftJoin('fgs_mtq_item_rel', 'fgs_mtq_item_rel.item', '=', 'fgs_mtq_item.id')
             ->leftJoin('fgs_mtq', 'fgs_mtq.id', '=', 'fgs_mtq_item_rel.master')
 
-            ->leftjoin('fgs_cmin_item', 'fgs_cmin_item.batchcard_id', 'batchcard_batchcard.id')
-            ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
-            ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
+            // ->leftjoin('fgs_cmin_item', 'fgs_cmin_item.batchcard_id', 'batchcard_batchcard.id')
+            // ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
+            // ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
+            ->leftJoin('fgs_cmin', 'fgs_cmin.min_id', '=','fgs_min.id')
+            ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.master', '=', 'fgs_cmin.id')
+            ->leftJoin('fgs_cmin_item', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
 
             ->leftjoin('fgs_cpi_item', 'fgs_cpi_item.batchcard_id', 'batchcard_batchcard.id')
             ->leftJoin('fgs_cpi_item_rel', 'fgs_cpi_item_rel.item', '=', 'fgs_cpi_item.id')
             ->leftJoin('fgs_cpi', 'fgs_cpi.id', '=', 'fgs_cpi_item_rel.master')
+
+            ->leftJoin('fgs_cgrs', 'fgs_cgrs.grs_id', '=','fgs_grs.id')
+            ->leftJoin('fgs_cgrs_item_rel', 'fgs_cgrs_item_rel.master', '=', 'fgs_cgrs.id')
+            ->leftJoin('fgs_cgrs_item', 'fgs_cgrs_item_rel.item', '=', 'fgs_cgrs_item.id')
 
             ->where('fgs_mrn.status',1)
             //->where('fgs_mrn_item.status',1)
@@ -957,7 +966,9 @@ class StockManagementController extends Controller
             'fgs_cpi_item.quantity as cpiqty',
             'fgs_cpi.cpi_number',
             'fgs_cpi_item.batchcard_id as cpibatchid',
-            'fgs_cpi_item.product_id as cpiprd'
+            'fgs_cpi_item.product_id as cpiprd',
+            'fgs_cgrs.cgrs_number',
+            'fgs_cgrs_item.batch_quantity as cgrsqty'
         )
 
             ->leftJoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
@@ -982,13 +993,20 @@ class StockManagementController extends Controller
             ->leftJoin('fgs_mtq_item_rel', 'fgs_mtq_item_rel.item', '=', 'fgs_mtq_item.id')
             ->leftJoin('fgs_mtq', 'fgs_mtq.id', '=', 'fgs_mtq_item_rel.master')
 
-            ->leftjoin('fgs_cmin_item', 'fgs_cmin_item.batchcard_id', 'batchcard_batchcard.id')
-            ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
-            ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
+            // ->leftjoin('fgs_cmin_item', 'fgs_cmin_item.batchcard_id', 'batchcard_batchcard.id')
+            // ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
+            // ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
+            ->leftJoin('fgs_cmin', 'fgs_cmin.min_id', '=','fgs_min.id')
+            ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.master', '=', 'fgs_cmin.id')
+            ->leftJoin('fgs_cmin_item', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
 
             ->leftjoin('fgs_cpi_item', 'fgs_cpi_item.batchcard_id', 'batchcard_batchcard.id')
             ->leftJoin('fgs_cpi_item_rel', 'fgs_cpi_item_rel.item', '=', 'fgs_cpi_item.id')
             ->leftJoin('fgs_cpi', 'fgs_cpi.id', '=', 'fgs_cpi_item_rel.master')
+
+            ->leftJoin('fgs_cgrs', 'fgs_cgrs.grs_id', '=','fgs_grs.id')
+            ->leftJoin('fgs_cgrs_item_rel', 'fgs_cgrs_item_rel.master', '=', 'fgs_cgrs.id')
+            ->leftJoin('fgs_cgrs_item', 'fgs_cgrs_item_rel.item', '=', 'fgs_cgrs_item.id')
 
             ->where('fgs_mrn.status', '=', 1)
             ->where('fgs_grs.status', '=', 1)
@@ -1020,9 +1038,10 @@ class StockManagementController extends Controller
                 'doc_qty' => $item->quantity . 'Nos',
                 'rem_qty' => $item->quantity . 'Nos',
             ];
-            
+            $minqtyrem=$item['quantity'];
             if($item['min_number']!=null){
                 foreach ($this->product_min($item['id']) as $min) {
+                    $minqtyrem=$minqtyrem-$min['minqty'];
                     $trace[] = [
                         '#' => '',
                         'sku_code' => '',
@@ -1035,12 +1054,15 @@ class StockManagementController extends Controller
                         'doc_no' => $min->min_number,
                         'doc_date' => $min->min_date,
                         'doc_qty' => $min->minqty . 'Nos',
-                        'rem_qty' => $min->reminingmin . 'Nos'
+                        'rem_qty' => $minqtyrem . 'Nos'
                     ];
                 }   
             }
+            $cminqtyre=$minqtyrem;
             if($item['cmin_number']!=null){
                 foreach ($this->product_cmin($item['id']) as $cmin) {
+                    $cminqtyre=$cminqtyre+$cmin['cminqty'];
+
                     $trace[] = [
                         '#' => '',
                         'sku_code' => '',
@@ -1053,7 +1075,7 @@ class StockManagementController extends Controller
                         'doc_no' => $cmin->cmin_number,
                         'doc_date' => $cmin->cmin_date,
                         'doc_qty' => $cmin->cminqty . 'Nos',
-                        'rem_qty' => '0 Nos'
+                        'rem_qty' => $cminqtyre.'0 Nos'
                     ];
                 }   
             }
@@ -1063,7 +1085,6 @@ class StockManagementController extends Controller
                 foreach ($this->product_grs($item['id']) as $grs) {
                     
 								$grsqty=$grsqty-$grs['grs_qty'];
-								
                     $trace[] = [
                         '#' => '',
                         'sku_code' => '',
@@ -1077,6 +1098,30 @@ class StockManagementController extends Controller
                         'doc_date' => $grs->grs_date,
                         'doc_qty' => $grs->grs_qty . 'Nos',
                         'rem_qty' => $grsqty . 'Nos',
+                    ];
+                }   
+            }
+            $cgrsqty=$grsqty;
+            if($item['cgrs_number']!=null){
+
+                foreach ($this->product_cgrs($item['id']) as $cgrs) {
+                    
+                    $cgrsqty=$cgrsqty+$cgrs['cgrs_qty'];
+
+								
+                    $trace[] = [
+                        '#' => '',
+                        'sku_code' => '',
+                        'hsn_code' => '',
+                        'description' => '',
+                        'batch_no' => '',
+                        'manufacture_date' => '',
+                        'expiry_date' => '',
+                        'doc_name' => 'GRS',
+                        'doc_no' => $cgrs->cgrs_number,
+                        'doc_date' => $cgrs->cgrs_date,
+                        'doc_qty' => $cgrs->cgrs_qty . 'Nos',
+                        'rem_qty' => $cgrsqty . 'Nos',
                     ];
                 }   
             }
@@ -1171,12 +1216,36 @@ class StockManagementController extends Controller
             ->leftJoin('fgs_grs_item', 'fgs_grs_item.mrn_item_id', '=', 'fgs_mrn_item.id')
             ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
             ->leftJoin('fgs_grs', 'fgs_grs.id', '=', 'fgs_grs_item_rel.master')
-            ->where('fgs_grs_item.cgrs_status', '=', 0)
+            //->where('fgs_grs_item.cgrs_status', '=', 1)
             ->where('fgs_grs_item.status','=',1)
             ->where('fgs_mrn_item.id', $id)
             ->distinct('fgs_mrn.id')
             ->get();
         return $grs_item;
+    }
+    public function product_cgrs($id)
+    {
+
+        $cgrs_item = fgs_mrn_item::select('fgs_cgrs.cgrs_number', 'fgs_cgrs.cgrs_date', 'fgs_grs_item.batch_quantity as cgrs_qty')
+            ->leftJoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+            ->leftJoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+            // ->leftJoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+            // ->leftJoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftJoin('fgs_grs_item', 'fgs_grs_item.mrn_item_id', '=', 'fgs_mrn_item.id')
+            ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
+            ->leftJoin('fgs_grs', 'fgs_grs.id', '=', 'fgs_grs_item_rel.master')
+
+            ->leftJoin('fgs_cgrs', 'fgs_cgrs.grs_id', '=','fgs_grs.id')
+            ->leftJoin('fgs_cgrs_item_rel', 'fgs_cgrs_item_rel.master', '=', 'fgs_cgrs.id')
+            ->leftJoin('fgs_cgrs_item', 'fgs_cgrs_item_rel.item', '=', 'fgs_cgrs_item.id')
+
+            ->where('fgs_grs_item.cgrs_status', '=', 1)
+            ->where('fgs_grs_item.status','=',1)
+            ->where('fgs_cgrs.status','=',1)
+            ->where('fgs_mrn_item.id', $id)
+            ->distinct('fgs_mrn.id')
+            ->get();
+        return $cgrs_item;
     }
     public function product_min($id)
     {
@@ -1212,9 +1281,17 @@ class StockManagementController extends Controller
             ->leftJoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
             ->leftJoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
             ->leftJoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
-            ->leftjoin('fgs_cmin_item', 'fgs_cmin_item.batchcard_id', 'batchcard_batchcard.id')
-            ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
-            ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
+            // ->leftjoin('fgs_cmin_item', 'fgs_cmin_item.batchcard_id', 'batchcard_batchcard.id')
+            // ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
+            // ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
+            
+            ->leftjoin('fgs_min_item', 'fgs_min_item.batchcard_id', 'batchcard_batchcard.id')
+            ->leftJoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
+            ->leftJoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
+
+            ->leftJoin('fgs_cmin', 'fgs_cmin.min_id', '=','fgs_min.id')
+            ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.master', '=', 'fgs_cmin.id')
+            ->leftJoin('fgs_cmin_item', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
             ->where('fgs_mrn.status', '=', 1)
             //->where('fgs_min.status', '=', 1)
             ->where('fgs_mrn_item.id', $id)

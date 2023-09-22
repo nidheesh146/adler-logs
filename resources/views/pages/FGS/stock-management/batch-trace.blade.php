@@ -141,8 +141,14 @@ $obj_product= new StockManagementController;
 									<td>{{$item['quantity']}} Nos</td>
 									<td>{{$item['quantity']}} Nos</td>
 								</tr>
+								@php 
+								$minqtyrem=$item['quantity'];
+								@endphp
 								@if($item['min_number']!=null)
 								@foreach($obj_product->product_min($item['id']) as $min)
+								@php 
+								$minqtyrem=$minqtyrem-$min['minqty'];
+								@endphp
 								<tr>
 									<td></td>
 									<td></td>
@@ -154,12 +160,21 @@ $obj_product= new StockManagementController;
 									<td>{{$min['min_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($min['min_date']))}}</td>
 									<td>{{$min['minqty']}} Nos</td>
-									<td>@if($min['min_number']) {{$min['reminingmin']}} Nos @endif</td>
+									<td>@if($min['min_number']) {{$minqtyrem}}  Nos @endif</td>
 								</tr>
 								@endforeach
 								@endif
+								
+								@php 
+								$cminqtyre=$minqtyrem;
+								@endphp
+								
 								@if($item['cmin_number']!=null)
 								@foreach($obj_product->product_cmin($item['id']) as $cmin)
+								@php 
+								$cminqtyre=$cminqtyre+$cmin['cminqty'];
+								
+								@endphp
 								<tr>
 									<td></td>
 									<td></td>
@@ -171,7 +186,11 @@ $obj_product= new StockManagementController;
 									<td>{{$cmin['cmin_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($cmin['cmin_date']))}}</td>
 									<td>{{$cmin['cminqty']}} Nos</td>
-									<td></td>
+									<td>@if($cmin['cmin_number']) {{$cminqtyre}}  Nos @endif </td>
+									@php 
+								
+								
+								@endphp
 								</tr>
 								@endforeach
 								@endif
@@ -198,6 +217,31 @@ $obj_product= new StockManagementController;
 								</tr>
 								@endforeach
 								@endif
+
+								@php 
+								$cgrsqty=$grsqty;
+								@endphp
+								@if($item['cgrs_number']!=null)
+								@foreach($obj_product->product_cgrs($item['id']) as $cgrs)
+								@php
+								$cgrsqty=$cgrsqty+$cgrs['cgrs_qty'];
+								@endphp
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>CGRS</td>
+									<td>{{$cgrs['cgrs_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($cgrs['cgrs_date']))}}</td>
+									<td>{{$cgrs['cgrs_qty']}} Nos</td>
+									<td>@if($cgrs['cgrs_number']) {{$cgrsqty}} Nos @endif</td>
+								</tr>
+								@endforeach
+								@endif
+
 								@if($item['pi_number']!=null)
 								@foreach($obj_product->product_pi($item['id']) as $pi)
 

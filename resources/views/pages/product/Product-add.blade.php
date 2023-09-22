@@ -367,9 +367,13 @@ $obj_product=new ProductController();
                                 <label>Process Sheet No</label>
                                 <input type="text" name="process_sheet_no" class="form-control" value="{{(!empty($data)) ? $data['process_sheet_no']: ""}}" placeholder="Process Sheet No">
                             </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label>Image Upload</label>
+                                <input type="file" name="pimage" id="pimage" style="width:60%;max-width: 535px; border: 1px solid #1b273d;" />
+                            </div>
                            {{-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Process Sheet Upload</label>
-                                <input type="file" name="image" style="width:60%;max-width: 535px; border: 1px solid #1b273d;" />
+                                <input type="file" name="pimage"  style="width:60%;max-width: 535px; border: 1px solid #1b273d;" />
                             </div>--}}
                         </div>
 
@@ -439,6 +443,9 @@ $obj_product=new ProductController();
             transfer_price: {
                 required: true,
             },
+            pimage:{
+                extension: "jpeg|png|jpg",
+            }
 
         },
         submitHandler: function(form) {
