@@ -317,10 +317,10 @@ class MRNController extends Controller
                     $mrn_data = [
                         'remarks' => $request->remarks
                     ];
-                    $prdct_stock = fgs_product_stock_management::where('product_id',$value['product'])->where('batchcard_id',$batch_card_id)->where('stock_location_id',$mrn_info->location_id)->first();
+                    $prdct_stock = fgs_product_stock_management::where('product_id',$value['product'])->where('batchcard_id',$batch_card_id)->where('stock_location_id',$mrn_info->stock_location)->first();
                     if(!empty($prdct_stock))
                     {
-                        $new_stock = $prdct_stock->quantity+$excelsheet[2];
+                        $new_stock = $prdct_stock->quantity+ $qty;
                         $res[] = $this->fgs_product_stock_management->update_data(['id'=>$prdct_stock->id],['quantity'=>$new_stock]);
                     }
                     else
@@ -442,7 +442,7 @@ class MRNController extends Controller
                         $item['expiry_date'] = ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' ';
                         $item['created_at'] = date('Y-m-d H:i:s');
                         $this->fgs_mrn_item->insert_data($item, $mrn_id);
-                        $prdct_stock = fgs_product_stock_management::where('product_id',$product_id)->where('batchcard_id',$batchcard_id)->where('stock_location_id',$mrn->location_id)->first();
+                        $prdct_stock = fgs_product_stock_management::where('product_id',$product_id)->where('batchcard_id',$batchcard_id)->where('stock_location_id',$mrn->stock_location)->first();
                         if(!empty($prdct_stock))
                         {
                             $new_stock = $prdct_stock->quantity+$excelsheet[2];

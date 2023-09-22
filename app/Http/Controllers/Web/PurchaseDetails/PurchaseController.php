@@ -133,7 +133,7 @@ class PurchaseController extends Controller
                                                                                             ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
                             } else {
                                 $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
-                                                                    ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count(),2);
+                                ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count()+1,2);
                             }
                             $data['type'] ="PO";
                         } 
@@ -244,11 +244,11 @@ class PurchaseController extends Controller
                             }
                             else if ($item_type == "Direct Items") {
                                 $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
-                                                            ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
+                                ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
                                 //$data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
                             } else {
                                 $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
-                                                                    ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count(),2);
+                                ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count()+1,2);
                                 //$data['po_number'] = "POI3-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
                             }
                             $data['type'] ="PO";
@@ -315,6 +315,7 @@ class PurchaseController extends Controller
             if (!$validator->errors()->all()) {
                 $data['delivery_schedule'] = $request->delivery_schedule;
                 $data['order_qty'] = $request->quantity;
+                $data['qty_to_invoice'] = $request->quantity;
                 $data['rate'] = $request->rate;
                 $data['discount'] = $request->discount;
                 $data['gst']  = $request->gst;
@@ -413,7 +414,7 @@ class PurchaseController extends Controller
                                 $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $request->po_id]);
                                 $message = new OrderCancellation($po_master);
                                 $message->attachData($pdf->output(), "cancellation-report.pdf");
-                                Mail::to('komal.murali@gmail.com')->send($message);
+                                Mail::to('Nayan.Dhane@adler-healthcare.com')->cc(['Nayan.Dhane@adler-healthcare.com'])->send($message);
                                 
                             }
                             if($request->order_type=='wo')
@@ -626,7 +627,7 @@ class PurchaseController extends Controller
         $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $po_id]);
         $message = new OrderCancellation($po_master);
         $message->attachData($pdf->output(), "cancellation-report.pdf");
-        Mail::to('shilma33@gmail.com')->send($message);
+        Mail::to('Nayan.Dhane@adler-healthcare.com')->cc(['Nayan.Dhane@adler-healthcare.com'])->send($message);
     }
 
     public function order_approved_mail_with_report($po_id)
@@ -646,7 +647,7 @@ class PurchaseController extends Controller
         $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $po_id]);
         $message = new OrderApproved($po_master);
         $message->attachData($pdf->output(), "order-report.pdf");
-        Mail::to('shilma33@gmail.com')->cc(['shilma33@gmail.com'])->send($message);
+        Mail::to('Nayan.Dhane@adler-healthcare.com')->cc(['Nayan.Dhane@adler-healthcare.com'])->send($message);
     }
 
     public function find_rq_number(Request $request)
@@ -1418,7 +1419,7 @@ class PurchaseController extends Controller
         $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $data['final_purchase']['po_id']]);
         $message = new PartialOrderCancellation($po_master);
         $message->attachData($pdf->output(), "partial-order-cancellation-report.pdf");
-        Mail::to('shilma33@gmail.com')->send($message);
+        Mail::to('Nayan.Dhane@adler-healthcare.com')->cc(['Nayan.Dhane@adler-healthcare.com'])->send($message);
         if(count( $success)==$item_count)
         {
         //$request->session()->flash('success', "");
@@ -1501,11 +1502,11 @@ class PurchaseController extends Controller
                 // $count = DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
                 // ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count();
                 // echo $count;exit;
-                $data['po_number'] = "POI2-" .$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
-                                         ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
+                $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
+                                                                                            ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
             } else {
                 $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
-                                                    ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count(),2);
+                ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count()+1,2);
             }
             $data['type'] ="PO";
         }
@@ -1600,7 +1601,7 @@ class PurchaseController extends Controller
                     <td>
                         <div class="input-group">
                             <input type="hidden" value="'.$item['id'].'" name="item'. $i.'">
-                            <input type="text" class="order-qty " id="order-qty" name="qty'. $i.'" value="'.$item['order_qty'].'" aria-describedby="unit-div">
+                            <input type="text" class="order-qty " id="order-qty" name="qty'. $i.'" value="'.$item['order_qty'].'" aria-describedby="unit-div" readonly>
                             <div class="input-group-append">
                                 <span class="input-group-text unit-div" id="unit-div">'.$item['unit_name'] .'</span>
                             </div>

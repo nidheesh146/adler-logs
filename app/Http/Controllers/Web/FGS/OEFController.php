@@ -728,21 +728,18 @@ class OEFController extends Controller
                         $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->first();
                     }
                 } else {
-                    echo "yes";
+                    //echo "yes";
                     $gst_data = inventory_gst::select('inventory_gst.*')
                         ->where('inventory_gst.sgst', '=', 0)
                         ->where('inventory_gst.igst', '=', 0)
                         ->where('inventory_gst.cgst', '=', 0)
                         ->first();
                 }
-                exit;
                 if ($data->mrp == null) {
                     $rate = 0;
                 } else {
                     $rate = $data->mrp;
                 }
-                print_r($gst_data);
-                exit;
                 if ($product) {
                     $item = [
                         'product_id' => $product->id,
