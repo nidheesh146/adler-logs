@@ -38,6 +38,10 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
                 $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
                 
             }
+            else
+            {
+                $total_value = 0;
+            }
             $data[]= array(
                 '#' => $i++,
                 'Doc_Date' =>date('d-m-Y', strtotime($item['grs_date'])),

@@ -106,7 +106,7 @@
 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location *</label>
-                                <select class="form-control" name="stock_location" id="stock_location">
+                                <select class="form-control" name="stock_location" id="stock_location" @if(!empty($mrn)) readonly @endif>
                                     <option>Select one...</option>
                                     @foreach($locations as $loc)
                                     @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')

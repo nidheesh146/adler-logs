@@ -125,6 +125,10 @@
 									$total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
 									
 								}
+								else
+									{
+										$total_value =0;
+									}
 								?>
 								<tr>
 									<td>{{date('d-m-Y', strtotime($item['pi_date']))}}</td>

@@ -127,6 +127,10 @@
 										$total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
 										
 									}
+									else
+									{
+										$total_value =0;
+									}
 								?>
 								<tr>
 

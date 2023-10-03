@@ -76,11 +76,11 @@
                                 <td>{{$item['rate']}}</td>
                                 <td>{{$item['discount']}}</td>
                                 <td>
-                                    @if(!$item['lot_id']) 
+                                   {{-- @if(!$item['lot_id']) --}}
                                     <a class="badge badge-info lot-add" style="font-size: 13px;" href="#" data-invoiceitem="{{$item['id']}}" data-toggle="modal" data-target="#myModal"><i class="fas fa-plus"></i> LOT Number</a>                                    
-                                    @else
+                                    {{--@else
                                     - 
-                                    @endif
+                                    @endif--}}
                                 </td>
                             </tr>
                             @endforeach

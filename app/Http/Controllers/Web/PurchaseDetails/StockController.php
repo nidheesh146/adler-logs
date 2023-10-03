@@ -722,7 +722,8 @@ class StockController extends Controller
                 ->where('batchcard_batchcard.is_alloted','=',0)
                 ->where('batchcard_batchcard.is_trade','=',0)
                 ->where('batchcard_materials.item_id','=',$request->item_id)
-                ->orderBy('batchcard_batchcard.batch_no','ASC')
+                //->orderBy('batchcard_batchcard.batch_no','ASC')
+                ->orderBy('batchcard_batchcard.id','DESC')
                 ->get();
         
        /* $lotcards = inv_lot_allocation::select('inv_lot_allocation.id as lot_id','inv_lot_allocation.lot_number','inv_mac_item.available_qty','inv_mac_item.accepted_quantity',
@@ -1976,7 +1977,7 @@ class StockController extends Controller
                                         ->leftJoin('work_centre','work_centre.id','=','inv_transaction_slip.work_centre')
                                         ->where($condition)
                                         ->distinct('inv_transaction_slip.id')
-                                        ->orderBy('inv_transaction_slip.id')
+                                        ->orderBy('inv_transaction_slip.id','DESC')
                                         ->paginate(10);
         return view('pages.inventory.stock.transaction-slip',compact('data'));
     }

@@ -41,6 +41,10 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 $cgst_value = $total_rate*$oef['cgst']/100;
                 $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
             }
+            else
+            {
+                $total_value = 0;
+            }
 
             $data[] = array(
                 '#' => $i++,
@@ -78,6 +82,10 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 $sgst_value = $total_rate*$grs['sgst']/100;
                 $cgst_value = $total_rate*$grs['cgst']/100;
                 $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
+            }
+            else
+            {
+                $total_value = 0;
             }
 
             $data[] = array(
@@ -118,6 +126,10 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 $cgst_value = $total_rate*$pi['cgst']/100;
                 $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
                 
+            }
+            else
+            {
+                $total_value = 0;
             }
         
 

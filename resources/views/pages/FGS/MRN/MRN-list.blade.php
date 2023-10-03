@@ -125,8 +125,8 @@ $obj_mrn=new MRNController;
 									<td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MRN/item-list/'.$item["id"])}}" class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/MRN/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
 									</td>
-
-									@if(!empty($obj_mrn->check_item($item["id"])))
+									<?php $mrn_items = $obj_mrn->check_item($item["id"]); ?>
+									@if(count($mrn_items)!=0)
 									<td> 
 									<a class="badge badge-primary" style="font-size: 13px;" href="{{url('fgs/MRN-edit/'.$item['id'])}}"><i class="fa fa-edit"></i> Edit</a>
 										<a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cant Delete.MRN have items!');"><i class="fa fa-trash"></i> Delete</a>

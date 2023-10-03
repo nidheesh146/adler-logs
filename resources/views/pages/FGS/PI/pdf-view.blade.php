@@ -7,6 +7,7 @@
 </head>
 <body>
 @inject('fn', 'App\Http\Controllers\Web\FGS\OEFController')
+@inject('function', 'App\Http\Controllers\Web\FGS\PIController')
     <style>
         .col1,.col3{
             float:left;
@@ -155,12 +156,39 @@
                 <tr>
                     
                     <td >GRS No.</td>
-                    <td>: {{$pi['grs_number']}}</td>
+                    <td>: 
+                        @foreach($items as $item)
+                            <?php $ar[]=$item['grs_number']; ?>
+                            {{--$item['grs_number']--}} 
+                        @endforeach
+                        
+                        <?php
+                        $arr_grs=array_values(array_unique($ar));
+                        for($x = 0; $x <count($arr_grs); $x++) {
+                        echo $arr_grs[$x];
+                        echo " ";
+                        }
+                        ?>
+                    </td>
                    
                 </tr>
                 <tr>
                     <td>GRS Date</td>
-                    <td>: {{date('d-m-Y', strtotime($pi['grs_date']))}} </td>
+                    <td>: 
+                        @foreach($items as $item)
+                            <?php $grs_date[]=date('d-m-Y', strtotime($item['grs_date'])); ?>
+                            {{--date('d-m-Y', strtotime($item['grs_date']))--}} 
+                        @endforeach
+        
+                        <?php
+                        $arr_date=array_values(array_unique($grs_date));
+                        for($x = 0; $x <count($arr_date); $x++) 
+                        {
+                         echo $arr_date[$x]; 
+                         echo "  ";
+                        }
+                        ?>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -168,11 +196,37 @@
             <table style="float:left;">
                 <tr>
                     <td>OEF No.</td>
-                    <td>: {{$pi['oef_number']}} </td>
+                    <td>: 
+                        @foreach($items as $item)
+                            <?php $ar_oef[]=$item['oef_number']; ?>
+                        @endforeach
+                        
+                        <?php
+                        $arr_oef=array_values(array_unique($ar_oef));
+                        for($x = 0; $x <count($arr_oef); $x++) {
+                        echo $arr_oef[$x];
+                        echo " ";
+                        }
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td> OEF Date</td>
-                    <td>: {{date('d-m-Y', strtotime($pi['oef_date']))}}</td>
+                    <td>: 
+                        @foreach($items as $item)
+                            <?php $oef_date[]=date('d-m-Y', strtotime($item['oef_date'])); ?>
+                            {{--date('d-m-Y', strtotime($item['grs_date']))--}} 
+                        @endforeach
+        
+                        <?php
+                        $oef_date=array_values(array_unique($oef_date));
+                        for($x = 0; $x <count($oef_date); $x++) 
+                        {
+                         echo $oef_date[$x]; 
+                         echo "  ";
+                        }
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td> Product Category</td>
@@ -184,11 +238,37 @@
             <table style="float:left;">
                 <tr>
                     <td>Order No.</td>
-                    <td>: {{$pi['order_number']}} </td>
+                    <td>: 
+                        @foreach($items as $item)
+                            <?php $ar_order[]=$item['order_number']; ?>
+                        @endforeach
+                        
+                        <?php
+                        $arr_order=array_values(array_unique($ar_order));
+                        for($x = 0; $x <count($arr_order); $x++) {
+                        echo $arr_order[$x];
+                        echo " ";
+                        }
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td> Order Date</td>
-                    <td>: {{date('d-m-Y', strtotime($pi['order_date']))}}</td>
+                    <td>: 
+                        @foreach($items as $item)
+                            <?php $order_date[]=date('d-m-Y', strtotime($item['order_date'])); ?>
+                            {{--date('d-m-Y', strtotime($item['grs_date']))--}} 
+                        @endforeach
+        
+                        <?php
+                        $orderdate=array_values(array_unique($order_date));
+                        for($x = 0; $x <count($orderdate); $x++) 
+                        {
+                         echo $orderdate[$x]; 
+                         echo "  ";
+                        }
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td>Order Fulfil</td>

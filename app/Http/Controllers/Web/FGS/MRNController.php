@@ -54,6 +54,7 @@ class MRNController extends Controller
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'fgs_mrn.product_category')
             ->leftJoin('product_stock_location', 'product_stock_location.id', 'fgs_mrn.stock_location')
             ->where($condition)
+            ->where('fgs_mrn.status',1)
             ->orderBy('fgs_mrn.id', 'DESC')
             ->paginate(15);
         return view('pages/FGS/MRN/MRN-list', compact('mrn'));
@@ -829,7 +830,9 @@ class MRNController extends Controller
     }
     public function check_item($id)
     {
-        $mrn_check = fgs_mrn_item_rel::where('master', $id)->first();
+        $mrn_check = fgs_mrn_item_rel::leftJoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_mrn_item_rel.item')
+                            ->where('fgs_mrn_item.status','=',1)
+                            ->where('fgs_mrn_item_rel.master', $id)->get();
         return $mrn_check;
     }
     public function edit_mrn_item($id,Request $request)

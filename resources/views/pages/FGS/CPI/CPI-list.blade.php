@@ -6,9 +6,9 @@
 	<div class="container">
 		<div class="az-content-body">
 			<div class="az-content-breadcrumb"> 
-				 <span>Cancellation Proforma Invoice(PI)</span>
+				 <span>Cancellation Proforma Invoice(CPI)</span>
 				 <span><a href="">
-				 	PI  List
+				 	CPI  List
 				</a></span>
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">
@@ -67,7 +67,7 @@
 													</div>
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">PI Month</label>
+														<label  style="font-size: 12px;">CPI Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
 			
@@ -100,7 +100,9 @@
 								<tr>
 									<th>CPI Number</th>
                                     <th>CPI Date</th>
-								
+									<th>Customer</th>
+									<th>PI Number</th>
+									<th>PI Date</th>
                                     <th>Action</th>
 								</tr>
 							</thead>
@@ -110,6 +112,9 @@
 									
 									<td>{{$item['cpi_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['cpi_date']))}}</td>
+									<td>{{$item['firm_name']}}</td>
+									<td>{{$item['pi_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['pi_date']))}}</td>
 									 <td>
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/CPI/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/CPI/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>	

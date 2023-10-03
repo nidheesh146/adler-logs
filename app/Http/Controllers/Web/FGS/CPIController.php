@@ -50,7 +50,9 @@ class CPIController extends Controller
             $condition[] = ['fgs_cpi.cpi_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
             $condition[] = ['fgs_cpi.cpi_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
-        $cpi = fgs_cpi::select('fgs_cpi.*')
+        $cpi = fgs_cpi::select('fgs_cpi.*','fgs_pi.pi_number','fgs_pi.pi_date','customer_supplier.firm_name')
+                ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_cpi.pi_id')
+                ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_cpi.customer_id')
                 ->where($condition)
                 ->distinct('fgs_cpi.id')
                 ->paginate(15);

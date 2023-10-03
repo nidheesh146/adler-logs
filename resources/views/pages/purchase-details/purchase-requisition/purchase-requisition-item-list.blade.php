@@ -29,10 +29,10 @@ $obj_req= new InventoryController;
 					@if(in_array('purchase_details.requisition_item_add',config('permission')))
 					@if(request()->pr_id)
 						<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Purchase Requisition Details</button>
-						<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" data-prId="{{request()->pr_id}}" data-type="Purchase" data-master="{{$data["master"]['pr_no']}}" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>
+						<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#"prid="{{request()->pr_id}}" data-type="Purchase" data-master="{{$data["master"]['pr_no']}}" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>
 					@else
 						<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/add-purchase-reqisition-item?sr_id='.request()->sr_id)}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Service Requisition Details</button>
-						<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" data-prId="{{request()->sr_id}}" data-type="Service" data-master="{{$data["master"]['pr_no']}}" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>
+						<button style="float: right;font-size: 14px;" class="badge badge-pill badge-info item-upload" style="font-size: 13px;" href="#" prid="{{request()->sr_id}}" data-type="Service" data-master="{{$data["master"]['pr_no']}}" data-toggle="modal" data-target="#uploadModal"><i class="fas fa-plus"></i> Upload</a>
 					@endif
 					@endif
 						<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/purchase-reqisition-item/excel-export?pr_id='.request()->pr_id)}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
@@ -241,7 +241,7 @@ $obj_req= new InventoryController;
 										<label for="exampleInputEmail1">Select File*</label>
 										<input type="file" required class="form-control file" name="file" id="file">
 										<a href="{{ asset('uploads/purchase_requisition_items_sample.xlsx') }}" target="_blank" style="float: right; font-size: 10px;"> Download Template</a>
-										<input type="hidden" name="pr_id" id="pr_id" value="">
+										<input type="text" name="pr_id" id="prid" value="">
 									</div>
 								</div>
 								<div class="row">
@@ -350,8 +350,8 @@ $obj_req= new InventoryController;
 		$('#type').html(type);
 		var pr_master = $(this).data('master');
 		$('#pr_master').html(' (' + pr_master + ')');
-		var pr_id = $(this).data('prid');
-		$('#pr_id').val(pr_id);
+		var pr_id = $(this).attr('prid');
+		$('#prid').val(pr_id);
 	});
 	$(".item-delete").on("click", function() {
 		var type = $(this).attr('type');

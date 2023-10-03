@@ -89,7 +89,7 @@
                                             <div class="row"> 
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                                     <label>Rate* </label>
-                                                    <input type="text"  class="form-control" name="moreItems[0][rate]" id="rate1" placeholder="Rate" readonly>
+                                                    <input type="text"  class="form-control" name="moreItems[0][rate]" id="rate1" placeholder="Rate">
                                                 </div>
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2"
                                                     style="float:left;">

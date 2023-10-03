@@ -524,6 +524,7 @@ class InventoryController extends Controller
         $file = $request->file('file');
         if ($file) {
             $pr_id = $request->pr_id;
+           // echo $pr_id;exit;
             $ExcelOBJ = new \stdClass();
 
             $path = storage_path().'/app/'.$request->file('file')->store('temp');
@@ -577,7 +578,7 @@ class InventoryController extends Controller
             $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
             $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
             $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
-           // print_r(json_encode($ExcelOBJ->worksheet));exit;
+           //print_r(json_encode($ExcelOBJ->worksheet));exit;
             $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
             $ExcelOBJ->date_created = date('Y-m-d H:i:s');
             $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
@@ -609,6 +610,10 @@ class InventoryController extends Controller
                     $this->inv_purchase_req_item->insert_data($data,$pr_id);
                     //$res = DB::table('batchcard_batchcard')->insert($data);
                 }
+                else
+                {
+                    $item[] = $excelsheet[0];
+                }
                     
             }
             // if( count($data) > 0){
@@ -616,6 +621,7 @@ class InventoryController extends Controller
             // }   
         }
         return $data;
+
     
             
     }

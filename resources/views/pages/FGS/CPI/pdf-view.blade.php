@@ -32,23 +32,28 @@
         .col21{
             margin-top:-25px;
             float:left; 
-            width:25%;
+            width:20%;
         }
         .col22{
             margin-top:-25px;
             float:left;
-            width:25%;
+            width:20%;
         }
         .col23{
             margin-left:120px;
             margin-top:-25px;
             float:left;
-            width:25%;
+            width:20%;
         }
         .col24{
             margin-top:-25px;
+            float:left;
+            width:20%;
+        }
+        .col25{
+            margin-top:-25px;
             float:right;
-            width:25%;
+            width:20%;
         }
          .row2{
             display:block;
@@ -189,7 +194,7 @@
             </table>
         </div>
         <div class="col24">
-            <table style="float:left;">
+            <table style="float:left;margin-left:180px;">
                 <tr>
                     <td>Trnsctn Type</td>
                     <td>:{{$cpi['transaction_name']}} </td>
@@ -198,9 +203,18 @@
                     <td> Sales Type:</td>
                     <td>:{{$cpi['sales_type']}}</td>
                 </tr>
+                
+            </table>
+        </div>
+        <div class="col25">
+            <table style="float:right;">
                 <tr>
-                    <!-- <td>Department</td>
-                    <td>: </td> -->
+                     <td>Doc No.</td>
+                    <td>:{{$cpi['cpi_number']}} </td> 
+                </tr>
+                <tr>
+                     <td>Doc Date.</td>
+                    <td>:{{date('d-m-Y', strtotime($cpi['cpi_date']))}} </td> 
                 </tr>
             </table>
         </div>
@@ -352,7 +366,7 @@
             <div class="" style="height:50px;">
             @if($cpi['payment_terms'])
             <div class="row6" style="font-size:10px;display:block; font-weight:bold" >
-                <?= nl2br($oef['payment_terms']);?>
+                <?= nl2br($cpi['payment_terms']);?>
             </div>
             @endif
             </div>

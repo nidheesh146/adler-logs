@@ -187,9 +187,30 @@
             text-align: center;
         }
     </style>
+     <?php $i=1;
+            $total = 0;
+            $total_discount = 0;
+            $total_igst = 0;
+            $total_cgst = 0;
+            $total_sgst = 0;
+            $qsum = 0;
+            $rsum = 0;
+            $tsum = 0;
+            $isum = 0;
+            $totalsum = 0;
+    ?> 
     @foreach($items as $item)
 
     <?php
+    $discount_value = ($item['rate']* $item['remaining_qty_after_cancel'])-(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100);
+    $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);
+    $total =$total+ $item['rate']* $item['remaining_qty_after_cancel'];
+    $total_discount = $total_discount+($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100;
+    $total_igst = $total_igst+($discount_value*$item['igst'])/100;
+    $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
+    $total_cgst = $total_cgst+($discount_value* $item['remaining_qty_after_cancel']*$item['cgst'])/100;
+    $totalsum = $totalsum+$total_amount;
+
     $discount_value = ($item['rate'] * $item['quantity']) - (($item['rate'] * $item['quantity'] * $item['discount']) / 100);
     $total_amount = $discount_value + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['igst']) / 100);
 
@@ -202,9 +223,9 @@
                 <th rowspan="2">
                     Your Order Date
                 </th>
-                <th rowspan="2">Our Inv No.</th>
-                <th rowspan="2">Our Inv.Date</th>
-                <th rowspan="2">Inv. Value</th>
+                <th rowspan="2">PI No.</th>
+                <th rowspan="2">PI Date</th>
+                <th rowspan="2">PI Value</th>
 
             </tr><br>
 
@@ -214,7 +235,7 @@
                 <td>{{$pi['order_date']}}</td>
                 <td>{{$pi['pi_number']}}</td>
                 <td>{{$pi['pi_date']}}</td>
-                <td>{{number_format($total_amount)}}</td>
+                <td>{{(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))}}</td>
 
 
             </tr>
@@ -225,7 +246,7 @@
     <div class="row3" style="font-size:12px; ">
 
     <span>
-        You are requested to deposit the payment of Rs. {{round(number_format((float)($total_amount), 2, '.', ''))}} (In Words:  Rs. <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total_amount), 2, '.', '')))) ?>  Only ) in our bank account, which details are given below and confirm to us by return mail to enabling us to dispatch your shipment immediately.
+        You are requested to deposit the payment of Rs. {{(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))}} (In Words:  Rs. <?php echo( $fn->getIndianCurrencyInt((round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))))) ?>  Only ) in our bank account, which details are given below and confirm to us by return mail to enabling us to dispatch your shipment immediately.
         </span>
         <br><br>
         <b>Company's Bank Details:-</b><br>

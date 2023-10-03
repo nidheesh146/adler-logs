@@ -140,7 +140,7 @@
 							<td>
 								<!-- <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-add/'.$item->id)}}">-->
 								<a href="" data-toggle="modal"  data-target="#invoiceAddModal" class="invoice-add-model badge badge-info"   id="invoice-add-model" po="{{$item['po_number']}}" invoiceId="{{$item['id']}}" invoiceNo="{{$item['invoice_number']}}" invoiceDate="{{date('d-m-Y',strtotime($item->invoice_date)) }}" transactionDate="{{date('d-m-Y',strtotime($item->created_at)) }}"  poId="{{$item['po_master_id']}}" style="font-size: 13px;"><i class="fas fa-edit"></i> Edit</a> 
-							<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-delete/'.$item->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+							{{--<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-delete/'.$item->id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>--}}
 								
 							</td>
 						</tr>

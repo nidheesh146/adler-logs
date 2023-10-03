@@ -190,10 +190,15 @@
         @foreach($items as $item)
         <tr>
             <?php $pos=$fn->getPO_for_merged_si_item($item['supplier_invoice_item_id']); ?>
+            <?php $split_po = $fn->getPO_for_merged_si_item($item['splited_invoice_item_id']); ?>
             <td>{{$i++}}</td>
             <td>{{$item['item_code']}}</td>
             <td>{{$item['item_description']}}</td>
-            <td>@if(!$item['po_number']) 
+            <td>@if($item['is_splited_item']==1 & !$item['po_number'])
+                    @foreach($split_po as $po)
+                        {{$po['order_qty']+$po['cancelled_qty']}} {{$item['unit_name']}}<br/>
+                    @endforeach
+                @elseif(!$item['po_number']) 
                     @foreach($pos as $po)
                         {{$po['order_qty']+$po['cancelled_qty']}} {{$item['unit_name']}}<br/>
                      @endforeach
@@ -207,7 +212,11 @@
             <td>{{$item['conversion_rate']}}</td>
             @endif
             <td>{{$item['rate']}}</td>
-            <td>@if(!$item['po_number'])
+            <td>@if($item['is_splited_item']==1&&!$item['po_number'])
+                    @foreach($split_po as $po)
+                        {{$po['po_number']}}<br/>
+                    @endforeach
+                @elseif(!$item['po_number'])
                     @foreach($pos as $po)
                         {{$po['po_number']}}<br/>
                     @endforeach
@@ -216,7 +225,11 @@
                 @endif
             </td>
             <td>
-                @if(!$item['po_number'])
+                @if($item['is_splited_item']==1 && !$item['po_number'])
+                    @foreach($split_po as $po)
+                    {{date('d-m-Y', strtotime($po['po_date']))}}<br/>
+                    @endforeach
+                @elseif(!$item['po_number'])
                     @foreach($pos as $po)
                     {{date('d-m-Y', strtotime($po['po_date']))}}<br/>
                     @endforeach

@@ -75,14 +75,14 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
 
 
       <li class="nav-item @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','LotAllocation.addLotAllocation','LotAllocation.lotAllocation','MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MAC.MACAddItemInfo','MAC.MAClist','MAC.MACAdd','MRR.receiptReport',
-        'MRD.RMRNAddItemInfo','MRR.addMRR','Stock.viewItems','Inventoryreport.get_data','Stock.stockReport','Stock.transactionSlip','Stock.transactionSlipAdd',
+        'MRD.RMRNAddItemInfo','MRR.addMRR','Stock.viewItems','Inventoryreport.get_data','Stock.stockReport','Stock.transactionSlip','Stock.transactionSlipAdd','Purchase.SplitInvoiceItem',
         'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.RMRNlist','MRD.RMRNAdd','Stock.StockToProduction','Stock.StockToProductionAdd','MAC.WOAAdd','MRD.WORAdd','Stock.resetBatchInputMaterial',
         'Stock.StockFromProduction','Stock.StockFromProductionAdd','Stock.StockTransfer','Stock.StockTransferAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview','MIQ.LiveQuarantineReport','FGSTransfer.fgsTransfer','FGSTransfer.fgsTransferList','FGSTransfer.fgsTransferAdd'])){{'active show'}} @endif ">
         <a href="#" class="nav-link with-sub">
           <i class="fas fa-boxes" style="font-size:19px"></i>Inventory</a>
 
         <ul class="nav-sub">
-          <li class="nav-sub-item  @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit'])){{'active'}} @endif "><a href="{{url('inventory/supplier-invoice')}}" class="nav-sub-link">Supplier Invoice</a></li>
+          <li class="nav-sub-item  @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','Purchase.SplitInvoiceItem'])){{'active'}} @endif "><a href="{{url('inventory/supplier-invoice')}}" class="nav-sub-link">Supplier Invoice</a></li>
           <li class="nav-sub-item  @if(in_array($Action,['LotAllocation.addLotAllocation','LotAllocation.lotAllocation'])){{'active'}} @endif "><a href="{{url('inventory/lot-allocation-list')}}" class="nav-sub-link">LOT Number Allocation</a></li>
           <li class="nav-sub-item  @if(in_array($Action,['MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MIQ.MIQAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/MIQ')}}" class="nav-sub-link">MIQ</a></li>
           <li class="nav-sub-item  @if(in_array($Action,['MIQ.LiveQuarantineReport'])){{'active'}} @endif "><a href="{{url('inventory/MIQ/QuarantineReport')}}" class="nav-sub-link"> Quarantine Report</a></li>
@@ -114,10 +114,10 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
         <ul class="nav-sub">
           <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
-            <a href="{{url('fgs/customer-supplier')}}" class="nav-sub-link">Customer-Supplier</a>
+            <a href="{{url('fgs/customer-supplier')}}" class="nav-sub-link">FGS Customer-Supplier</a>
           </li>
           <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
-            <a href="{{url('fgs/price-master/list')}}" class="nav-sub-link">Price Master</a>
+            <a href="{{url('fgs/price-master/list')}}" class="nav-sub-link">FGS Price Master</a>
           </li>
 
           <li class="nav-sub-item @if(in_array($Action,['ProductMaster.productAdd','ProductMaster.productList'])){{'active'}} @endif ">
@@ -125,24 +125,24 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
           </li>
           {{--
             <li class="nav-sub-item @if(in_array($Action,['StockManagement.productionStockAdd','StockManagement.productionStockList'])){{'active'}} @endif ">
-          <a href="{{url('fgs/production-stock/list')}}" class="nav-sub-link">Production Stock</a>
+          <a href="{{url('fgs/production-stock/list')}}" class="nav-sub-link">FGS Production Stock</a>
       </li>
       --}}
       <li class="nav-sub-item @if(in_array($Action,['StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','StockManagement.allLocations',
             'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','StockManagement.locationSNNTrade'])){{'active'}} @endif ">
-        <a href="{{url('fgs/stock-management/all-locations')}}" class="nav-sub-link">Stock Management</a>
+        <a href="{{url('fgs/stock-management/all-locations')}}" class="nav-sub-link">FGS Stock Management</a>
       </li>
       <li class="nav-sub-item @if(in_array($Action,['BackorderReport.get_data','GRS.pendingGRS','PI.pendingPI','OEF.pendingOEF'])){{'active'}} @endif ">
-        <a href="{{url('fgs/back-ordr-report')}}" class="nav-sub-link">Back order Report</a>
+        <a href="{{url('fgs/back-ordr-report')}}" class="nav-sub-link">FGS Back order Report</a>
       </li>
       <li class="nav-sub-item  @if(in_array($Action,['Fgsreport.get_data'])){{'active'}} @endif">
         <a href="{{url('fgs/fgs-report')}}" class="nav-sub-link">FGS Transaction Report</a>
       </li>
       <li class="nav-sub-item  @if(in_array($Action,['StockManagement.batchTraceReport'])){{'active'}} @endif">
-        <a href="{{url('fgs/batch-trace-report')}}" class="nav-sub-link">Batch Trace Report</a>
+        <a href="{{url('fgs/batch-trace-report')}}" class="nav-sub-link">FGS Batch Trace Report</a>
       </li>
       <li class="nav-sub-item  @if(in_array($Action,['DNI.netBillingReport'])){{'active'}} @endif">
-        <a href="{{url('fgs/net-billing-report')}}" class="nav-sub-link">Net Billing Report</a>
+        <a href="{{url('fgs/net-billing-report')}}" class="nav-sub-link">FGS Net Billing Report</a>
       </li>
       <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','GRS.GRSitemAdd','GRS.GRSItemEdit','GRS.GRSEdit',
               'MRN.MRNitemAdd','MRN.MRN_edit','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList',
@@ -230,9 +230,9 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
           <a href="{{url('batchcard/batchcard-add')}}" class="nav-sub-link">Batch Card Add</a>
         </li>
-        <!-- <li class="nav-sub-item @if(in_array($Action,['BatchCard.requestList'])){{'active'}} @endif ">
-            <a href="{{url('batchcard/request-list')}}"  class="nav-sub-link">Quantity Updation Requests </a>
-            </li> -->
+        <li class="nav-sub-item @if(in_array($Action,['BatchCard.requestList'])){{'active'}} @endif ">
+            <a href="{{url('batchcard/trackItemcode')}}"  class="nav-sub-link">Requistion-Batchcard </a>
+        </li>
       </ul>
     </li>
 

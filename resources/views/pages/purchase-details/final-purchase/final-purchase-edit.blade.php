@@ -9,26 +9,26 @@
         <div class="az-content-breadcrumb"> 
         <span> <a href="{{url("inventory/final-purchase?order_type=".request()->get('order_type'))}}">     
      @if(empty($data['master_data']))
-          @if(request()->get('order_type')=='wo') Work @else Final Purchase @endif Order
+      @if(str_starts_with($data['master_data']->po_number , 'WO') ) Work @else Final Purchase @endif Order
       @else 
-          @if($data['master_data']->type == "PO") Final Purchase @else Work @endif Order
+      @if(str_starts_with($data['master_data']->po_number , 'PO') ) Final Purchase @else Work @endif Order
       @endif
     
     </a></span>
         <span>  
           @if(empty($data['master_data']))
-          Add @if(request()->get('order_type')=='wo') work @else final purchase @endif order
+          Add @if(str_starts_with($data['master_data']->po_number , 'WO') ) work @else final purchase @endif order
      @else 
-         Edit  @if($data['master_data']->type == "PO") final purchase @else work @endif order
+         Edit  @if(str_starts_with($data['master_data']->po_number , 'PO') ) final purchase @else work @endif order
      @endif
    
             </span>
             </div>
           <h4 class="az-content-title" style="font-size: 20px;">
             @if(empty($data['master_data']))
-            Add @if(request()->get('order_type')=='wo') work @else final purchase @endif order
+            Add @if(str_starts_with($data['master_data']->po_number , 'WO') ) work @else final purchase @endif order
        @else 
-           Edit  @if($data['master_data']->type == "PO") final purchase @else work @endif order
+           Edit  @if(str_starts_with($data['master_data']->po_number , 'PO') ) final purchase @else work @endif order
        @endif
     
             {{(!empty($data['master_data'])) ? '( '.$data['master_data']->po_number.' )' : ''}}	 
@@ -46,14 +46,20 @@
        <i class="icon fa fa-check"></i> {{ Session::get('success') }}
    </div>
    @endif
+   @if (Session::get('error'))
+   <div class="alert alert-danger " style="width: 100%;">
+       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+       <i class="icon fa fa-check"></i> {{ Session::get('error') }}
+   </div>
+   @endif
                               
     <div class="row">
         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
             <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
               @if(empty($data['master_data']))
-                Add @if(request()->get('order_type')=='wo') work @else final purchase @endif order
+                Add @if(str_starts_with($data['master_data']->po_number , 'WO') ) work @else final purchase @endif order
            @else 
-               Edit  @if($data['master_data']->type == "PO") final purchase @else work @endif order
+               Edit  @if(str_starts_with($data['master_data']->po_number , 'PO') ) final purchase @else work @endif order
            @endif
          
             </label>

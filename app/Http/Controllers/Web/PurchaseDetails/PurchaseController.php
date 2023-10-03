@@ -124,16 +124,20 @@ class PurchaseController extends Controller
                             $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
                             //$supplier_type =  $this->inv_supplier->get_supplier(['id'=>$ByItemSupplier->supplier_id])->supplier_type;
                             $item_type = $this->check_item_type($request->rq_master_id,$ByItemSupplier->supplier_id);
-                            if ($item_type == "Finished Goods") {
+                            $item_type2 = $this->check_item_type2($request->rq_master_id,$ByItemSupplier->supplier_id);
+                            if ($item_type2 == "Finished Goods") {
                                 $data['po_number'] = "POI1-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI1-'.$years_combo.'%')
                                                                                             ->Orwhere('po_number','like','%POC1-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
                             }
-                            else if ($item_type == "Direct Items") {
-                                $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
-                                                                                            ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
-                            } else {
-                                $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
-                                ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count()+1,2);
+                            else
+                            {
+                                if ($item_type == "Direct Items") {
+                                    $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
+                                                                                                ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
+                                } else {
+                                    $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
+                                    ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count()+2,2);
+                                }
                             }
                             $data['type'] ="PO";
                         } 
@@ -238,18 +242,22 @@ class PurchaseController extends Controller
                         if ($type == "PR") {
                             $supplier_type = $this->check_supplier_type($ByItemSupplier->supplier_id);
                             $item_type = $this->check_item_type($quotation_id,$ByItemSupplier->supplier_id);
-                            if ($item_type == "Finished Goods") {
+                            $item_type2 = $this->check_item_type2($quotation_id,$ByItemSupplier->supplier_id);
+                            if ($item_type2 == "Finished Goods") {
                                 $data['po_number'] = "POI1-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI1-'.$years_combo.'%')
                                                             ->Orwhere('po_number','like','%POC1-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
                             }
-                            else if ($item_type == "Direct Items") {
-                                $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
-                                ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
-                                //$data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
-                            } else {
-                                $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
-                                ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count()+1,2);
-                                //$data['po_number'] = "POI3-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
+                            else 
+                            {
+                                if ($item_type == "Direct Items") {
+                                    $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
+                                    ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
+                                    //$data['po_number'] = "POI2-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('type', '=', 'PO')->count(),1);
+                                } else {
+                                    $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
+                                    ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count()+1,2);
+                                    //$data['po_number'] = "POI3-" . $this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%ID%')->where('type', '=', 'PO')->count(),2);
+                                }
                             }
                             $data['type'] ="PO";
                         } else {
@@ -300,40 +308,61 @@ class PurchaseController extends Controller
         return $type;
 
     }
+    public function check_item_type2($rq_master_id, $supplier_id){
+        $item_id = inv_purchase_req_quotation_item_supp_rel::where('inv_purchase_req_quotation_item_supp_rel.quotation_id','=',$rq_master_id)
+                                                    ->where('inv_purchase_req_quotation_item_supp_rel.supplier_id','=',$supplier_id)
+                                                    ->where('selected_item','=',1)
+                                                    ->pluck('item_id')
+                                                    ->first();
+        $item_code = inv_purchase_req_item::where('requisition_item_id','=',$item_id)->pluck('item_code')->first();
+        $type = inventory_rawmaterial::leftjoin('inv_item_type_2','inv_item_type_2.id','=','inventory_rawmaterial.item_type_id_2')
+                                    ->where('inventory_rawmaterial.id','=',$item_code)->pluck('type_name')->first();
+        return $type;
+
+    }
 
     public function Edit_PO_item(Request $request, $id)
     {
-
-        if ($request->isMethod('post')) {
-            $validation['quantity'] = ['required'];
-            $validation['rate'] = ['required'];
-            $validation['discount'] = ['required'];
-           // $validation['gst'] = ['required'];
-            // $validation['delivery_schedule'] = ['required', 'date'];
-            // $validation['specification'] = ['required'];
-            $validator = Validator::make($request->all(), $validation);
-            if (!$validator->errors()->all()) {
-                $data['delivery_schedule'] = $request->delivery_schedule;
-                $data['order_qty'] = $request->quantity;
-                $data['qty_to_invoice'] = $request->quantity;
-                $data['rate'] = $request->rate;
-                $data['discount'] = $request->discount;
-                $data['gst']  = $request->gst;
-                $data['Specification'] = $request->specification;
-                $POitem = $this->inv_final_purchase_order_item->updatedata(['id' => $id], $data);
-                $po_master =inv_final_purchase_order_rel::where('item','=', $id)->pluck('master')->first();
-                $master_data['status'] = 4;
-                $po_update = $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$po_master],$master_data);
-                $request->session()->flash('success', "You have successfully edited a  purchase order item!");
-                return redirect("inventory/final-purchase-item-edit/" . $id);
-            }
-            if ($validator->errors()->all()) {
-                return redirect("inventory/final-purchase-item-edit/" . $id)->withErrors($validator)->withInput();
-            }
+        $invoice_item = inv_supplier_invoice_item::where('po_item_id','=',$id)->get();
+        if(count($invoice_item)>0)
+        {
+            $po_master =inv_final_purchase_order_rel::where('item','=', $id)->pluck('master')->first();
+            $request->session()->flash('error', "You cannot  edit this  purchase order item.This item moved to invoice !");
+            return redirect()->back();
         }
-        $data = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id' => $id]);
-        $gst = $this->inventory_gst->get_gst();
-        return view('pages.purchase-details.final-purchase.final-purchase-item-edit', compact('data','gst'));
+        else
+        {
+            if ($request->isMethod('post')) {
+                $validation['quantity'] = ['required'];
+                $validation['rate'] = ['required'];
+                $validation['discount'] = ['required'];
+            // $validation['gst'] = ['required'];
+                // $validation['delivery_schedule'] = ['required', 'date'];
+                // $validation['specification'] = ['required'];
+                $validator = Validator::make($request->all(), $validation);
+                if (!$validator->errors()->all()) {
+                    $data['delivery_schedule'] = $request->delivery_schedule;
+                    $data['order_qty'] = $request->quantity;
+                    $data['qty_to_invoice'] = $request->quantity;
+                    $data['rate'] = $request->rate;
+                    $data['discount'] = $request->discount;
+                    $data['gst']  = $request->gst;
+                    $data['Specification'] = $request->specification;
+                    $POitem = $this->inv_final_purchase_order_item->updatedata(['id' => $id], $data);
+                    $po_master =inv_final_purchase_order_rel::where('item','=', $id)->pluck('master')->first();
+                    $master_data['status'] = 4;
+                    $po_update = $this->inv_final_purchase_order_master->updatedata(['inv_final_purchase_order_master.id'=>$po_master],$master_data);
+                    $request->session()->flash('success', "You have successfully edited a  purchase order item!");
+                    return redirect("inventory/final-purchase-item-edit/" . $id);
+                }
+                if ($validator->errors()->all()) {
+                    return redirect("inventory/final-purchase-item-edit/" . $id)->withErrors($validator)->withInput();
+                }
+            }
+            $data = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id' => $id]);
+            $gst = $this->inventory_gst->get_gst();
+            return view('pages.purchase-details.final-purchase.final-purchase-item-edit', compact('data','gst'));
+        }
 
     }
 
@@ -414,7 +443,7 @@ class PurchaseController extends Controller
                                 $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $request->po_id]);
                                 $message = new OrderCancellation($po_master);
                                 $message->attachData($pdf->output(), "cancellation-report.pdf");
-                                Mail::to('Nayan.Dhane@adler-healthcare.com')->cc(['Nayan.Dhane@adler-healthcare.com'])->send($message);
+                                Mail::to('shilma33@gmail.com')->cc(['shilma33@gmail.com'])->send($message);
                                 
                             }
                             if($request->order_type=='wo')
@@ -627,7 +656,7 @@ class PurchaseController extends Controller
         $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $po_id]);
         $message = new OrderCancellation($po_master);
         $message->attachData($pdf->output(), "cancellation-report.pdf");
-        Mail::to('Nayan.Dhane@adler-healthcare.com')->cc(['Nayan.Dhane@adler-healthcare.com'])->send($message);
+        Mail::to('shilma33@gmail.com')->cc(['shilma33@gmail.com'])->send($message);
     }
 
     public function order_approved_mail_with_report($po_id)
@@ -647,7 +676,7 @@ class PurchaseController extends Controller
         $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $po_id]);
         $message = new OrderApproved($po_master);
         $message->attachData($pdf->output(), "order-report.pdf");
-        Mail::to('Nayan.Dhane@adler-healthcare.com')->cc(['Nayan.Dhane@adler-healthcare.com'])->send($message);
+        Mail::to('shilma33@gmail.com')->cc(['shilma33@gmail.com'])->send($message);
     }
 
     public function find_rq_number(Request $request)
@@ -1386,6 +1415,7 @@ class PurchaseController extends Controller
         {
             $purchase_item = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id' => $_POST['purchase_item_id'.$i]]);
             $tot_qty = $_POST['cancel_qty'.$i]+ $_POST['qty'.$i];
+           // print_r($purchase_item);exit;
             // if($tot_qty!=$purchase_item['order_qty'])
             // {
             //     $request->session()->flash('error', "Accepted and cancelled quantity is not matching.. !");
@@ -1394,10 +1424,14 @@ class PurchaseController extends Controller
             //     else
             //     return redirect('inventory/final-purchase/cancellation');
             // }
-            $datas['cancelled_qty'] = $_POST['cancel_qty'.$i];
+            $updated_qty = $purchase_item['order_qty']-$_POST['cancel_qty'.$i];
+            $update_data['order_qty'] = $updated_qty;
+            $update_data['qty_to_invoice'] = $updated_qty;
+            $datas['cancelled_qty'] = $purchase_item['cancelled_qty']+$_POST['cancel_qty'.$i];
                 $success[] = $this->inv_final_purchase_order_item->updatedata(['id' => $_POST['purchase_item_id'.$i]], $datas);
-                $ys[]= inv_final_purchase_order_item::where('id','=',$_POST['purchase_item_id'.$i])->decrement('order_qty',$_POST['cancel_qty'.$i]);
-                $ys1[]= inv_final_purchase_order_item::where('id','=',$_POST['purchase_item_id'.$i])->decrement('qty_to_invoice',$_POST['cancel_qty'.$i]);
+                //$ys[]= inv_final_purchase_order_item::where('id','=',$_POST['purchase_item_id'.$i])->decrement('order_qty',$_POST['cancel_qty'.$i]);
+                //$ys1[]= inv_final_purchase_order_item::where('id','=',$_POST['purchase_item_id'.$i])->decrement('qty_to_invoice',$_POST['cancel_qty'.$i]);
+                $ys[] = $this->inv_final_purchase_order_item->updatedata(['id' => $_POST['purchase_item_id'.$i]], $update_data);
                 $item = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id' => $_POST['purchase_item_id'.$i]]);
                 $item['cancelledQty'] = $_POST['cancel_qty'.$i];
                 $items_data[] = $item;
@@ -1419,7 +1453,7 @@ class PurchaseController extends Controller
         $po_master = $this->inv_final_purchase_order_master->find_po_data(['inv_final_purchase_order_master.id' => $data['final_purchase']['po_id']]);
         $message = new PartialOrderCancellation($po_master);
         $message->attachData($pdf->output(), "partial-order-cancellation-report.pdf");
-        Mail::to('Nayan.Dhane@adler-healthcare.com')->cc(['Nayan.Dhane@adler-healthcare.com'])->send($message);
+        Mail::to('shilma33@gmail.com')->cc(['shilma33@gmail.com'])->send($message);
         if(count( $success)==$item_count)
         {
         //$request->session()->flash('success', "");
@@ -1490,23 +1524,27 @@ class PurchaseController extends Controller
         $master = $this->inv_final_purchase_order_master->get_master_details(['inv_final_purchase_order_master.id' => $po_id]);
         $item = $this->inv_final_purchase_order_item->get_purchase_order_single_item(['inv_final_purchase_order_item.id' => $item_id]);
         $item_type = $this->check_item_type($master['rq_master_id'],$master['supplier_id']);
+        $item_type2 = $this->check_item_type2($master['rq_master_id'],$master['supplier_id']);
         if($master['type']=='PO')
         {
-            if ($item_type == "Finished Goods") 
+            if ($item_type2 == "Finished Goods") 
             {
                 $data['po_number'] = "POI1-" .$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
                                          ->Orwhere('po_number','like','%POC1-'.$years_combo.'%')->where('type', '=', 'PO')->count(),1);
             }
-            else if ($item_type == "Direct Items") 
+            else 
             {
-                // $count = DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
-                // ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count();
-                // echo $count;exit;
-                $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
-                                                                                            ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
-            } else {
-                $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
-                ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count()+1,2);
+                if ($item_type == "Direct Items") 
+                {
+                    // $count = DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
+                    // ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count();
+                    // echo $count;exit;
+                    $data['po_number'] = "POI2-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI2-'.$years_combo.'%')
+                                                                                                ->Orwhere('po_number','like','%POC2-'.$years_combo.'%')->where('type', '=', 'PO')->count()+1,1);
+                } else {
+                    $data['po_number'] = "POI3-".$this->po_num_gen(DB::table('inv_final_purchase_order_master')->where('po_number','like','%POI3-'.$years_combo.'ID%')
+                    ->Orwhere('po_number','like','%POC3-'.$years_combo.'ID%')->where('type', '=', 'PO')->count()+1,2);
+                }
             }
             $data['type'] ="PO";
         }
@@ -1577,6 +1615,7 @@ class PurchaseController extends Controller
                 <th colspan="2">IGST</th>
                 <th colspan="2">SGST</th>
                 <th colspan="2">CGST</th>
+                <th>#</th>
            </tr>
            <tr>
                 <th>%</th>
@@ -1587,6 +1626,7 @@ class PurchaseController extends Controller
                 <th>Value</th>
                 <th>%</th>
                 <th>Value</th>
+                <th></th>
             </tr>';
             $total = 0;
             $total_discount = 0;
@@ -1618,13 +1658,78 @@ class PurchaseController extends Controller
                     <td>'.$item['sgst'].'</td>
                     <td>'.number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '').'</td>
                     <td>'.$item['cgst'].'</td>
-                    <td>'.number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '').'</td>
-                    </tr>';
+                    <td>'.number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '').'</td>';
+                    if($item['type_name']=='Direct Items')
+            $data .='<td><a class="badge badge-danger" style="font-size: 13px;" href="../inventory/supplier-invoice-item-split/'.$item['id'].'" ><i class="fa fa-cut"></i> Split</a></td></tr>';
+                    else
+            $data .='<td></td></tr>';
                     $i++;
         } 
         $data .='</table></div>';
         return $data;
 
+    }
+
+    public function SplitInvoiceItem($item_id,Request $request)
+    {
+        if($request->isMethod('post')) 
+        {
+            $invoice_item = inv_supplier_invoice_item::find($request->item_id);
+        //print_r($invoice_item);exit;
+            $invoice_rel = DB::table('inv_supplier_invoice_rel')->where('item','=',$request->item_id)->first();
+            $master = $invoice_rel->master;
+            if($invoice_item->po_master_id!=NULL)
+            {
+                $data['order_qty'] = $request->split_qty;
+                $data['rate'] = $invoice_item->rate;
+                $data['discount'] = $invoice_item->discount;
+                $data['specification'] = $invoice_item->specification;
+                $data['gst'] = $invoice_item->gst;
+                $data['item_id'] = $invoice_item->item_id;
+                $data['status'] = $invoice_item->status;
+                $data['po_master_id'] = $invoice_item->po_master_id;
+                $data['po_item_id'] = $invoice_item->po_item_id;
+                $data['is_merged'] = $invoice_item->is_merged;
+                $data['merged_invoice_item'] = $invoice_item->merged_invoice_item;
+                $data['is_splited_item'] = 1;
+                $data['splited_invoice_item_id'] = $request->item_id;
+                $updated_qty = $invoice_item->order_qty - $request->split_qty;
+                $update = $this->inv_supplier_invoice_item->updatedata(['id'=>$request->item_id],['order_qty'=>$updated_qty]);
+                $new_invoice_item_id = DB::table('inv_supplier_invoice_item')->insertGetId($data);
+                DB::table('inv_supplier_invoice_rel')->insertGetId(['master'=>$master,'item'=>$new_invoice_item_id]);
+            }
+            else
+            {
+                $data['order_qty'] = $request->split_qty;
+                $data['rate'] = $invoice_item->rate;
+                $data['discount'] = $invoice_item->discount;
+                $data['specification'] = $invoice_item->specification;
+                $data['gst'] = $invoice_item->gst;
+                $data['item_id'] = $invoice_item->item_id;
+                $data['status'] = $invoice_item->status;
+                $data['po_master_id'] = $invoice_item->po_master_id;
+                $data['po_item_id'] = $invoice_item->po_item_id;
+                $data['is_merged'] = $invoice_item->is_merged;
+                $data['merged_invoice_item'] = $invoice_item->merged_invoice_item;
+                $data['is_splited_item'] = 1;
+                $data['splited_invoice_item_id'] = $request->item_id;
+                $updated_qty = $invoice_item->order_qty - $request->split_qty;
+                $update = $this->inv_supplier_invoice_item->updatedata(['id'=>$request->item_id],['order_qty'=>$updated_qty]);
+                $new_invoice_item_id = DB::table('inv_supplier_invoice_item')->insertGetId($data);
+                DB::table('inv_supplier_invoice_rel')->insertGetId(['master'=>$master,'item'=>$new_invoice_item_id]);
+            }
+            if($new_invoice_item_id)
+            $request->session()->flash('success', "Invoice Item spliting successfull.");
+            else
+            $request->session()->flash('error', "Invoice Item spliting is failed. Try again... !");
+            return redirect('inventory/supplier-invoice');
+
+        }
+        else
+        {
+            $item = $this->inv_supplier_invoice_item->get_single_supplier_invoice_item(['inv_supplier_invoice_item.id'=>$item_id]);
+            return view('pages/purchase-details/supplier-invoice/supplier-invoice-item-split', compact('item'));
+        }
     }
 
     public function supplierInvoiceExport(Request $request)

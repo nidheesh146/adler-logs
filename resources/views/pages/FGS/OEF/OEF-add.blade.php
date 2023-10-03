@@ -101,7 +101,7 @@
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Product Category *</label>
                                 <select class="form-control" name="product_category">
-                                    <option>Select one...</option>
+                                    <option value="">Select one...</option>
                                     @foreach($category as $cate)
                                     <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
                                     @endforeach
@@ -204,17 +204,24 @@
 
     $("#commentForm").validate({
         rules: {
-            Requestor: {
+            customer: {
                 required: true,
             },
-            Department: {
+            order_number: {
                 required: true,
             },
-            Date: {
+            order_date: {
                 required: true,
             },
-
-
+            order_fulfil: {
+                required: true,
+            },
+            transaction_type: {
+                required: true,
+            },
+            product_category: {
+                required: true,
+            },
         },
         submitHandler: function(form) {
             $('.spinner-button').show();

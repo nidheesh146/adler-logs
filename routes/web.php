@@ -142,6 +142,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
     Route::get('inventory/getInvoiceData', 'PurchaseController@getInvoiceData');
     Route::post('inventory/partial-supplier-invoice', 'PurchaseController@PartialSupplierInvoice');
     Route::get('inventory/supplier-invoice/excel-export', 'PurchaseController@supplierInvoiceExport');
+    Route::get('inventory/supplier-invoice-item-split/{item_id}','PurchaseController@SplitInvoiceItem');
+    Route::post('inventory/supplier-invoice-item-split/{item_id}','PurchaseController@SplitInvoiceItem');
     //lot allocation
     Route::get('inventory/lot-allocation-list', 'LotAllocationController@lotAllocation');
     Route::get('inventory/lot-allocation-add', 'LotAllocationController@addLotAllocation');
@@ -348,6 +350,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web', 'middleware' => ['RoleP
     Route::get('batchcard/batchcard-list/{batch_id}/report', 'BatchCardController@BatchCardpdf');
     Route::get('batchcard/get-InputMaterial', 'BatchCardController@getInputMaterial');
     Route::post('batchcard/add-input-material', 'BatchCardController@addInputMaterial');
+    Route::get('batchcard/track-pr-item','TrackController@trackPrItem');
     //Label card
     Route::get('label/snn-mrp-label', 'LabelController@snnMRPLabel');
     Route::post('label/snn-mrp-label', 'LabelController@generateSNNMRPLabel');
