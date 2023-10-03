@@ -322,6 +322,11 @@ $obj_req= new InventoryController;
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js"> </script>
 
 <script>
+	$(document).ready(function() {
+        $('form').submit(function() {
+            $(this).find(':submit').prop('disabled', true);
+        });
+    });
 	$(function() {
 		'use strict'
 

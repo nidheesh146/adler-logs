@@ -204,6 +204,11 @@
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 
 <script>
+	$(document).ready(function() {
+        $('form').submit(function() {
+            $(this).find(':submit').prop('disabled', true);
+        });
+    });
   $(function(){
     'use strict'
 	var date = new Date();

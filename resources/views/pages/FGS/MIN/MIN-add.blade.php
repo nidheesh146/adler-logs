@@ -140,6 +140,11 @@
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
 
 <script>
+    $(document).ready(function() {
+            $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
+            });
+    });
   $(function(){
     'use strict'
 

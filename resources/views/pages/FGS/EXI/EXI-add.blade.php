@@ -152,39 +152,13 @@
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
 
 <script>
-  
-
-    
-        $('.oef_date').on('change',function()
-        {
-            var oef_date = new Date($(this).val());
-            var date  = new Date(oef_date.setDate(oef_date.getDate()+30));
-            var aftr_30_days = ( ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
-            $('#due_date').val(aftr_30_days);
+  $(document).ready(function() {
+        $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
         });
-    
-    
-              
+    });
 
-    $("#commentForm").validate({
-            rules: {
-                Requestor: {
-                    required: true,
-                },
-                Department: {
-                    required: true,
-                },
-                Date: {
-                    required: true,
-                },
-                
-                
-            },
-            submitHandler: function(form) {
-                $('.spinner-button').show();
-                form.submit();
-            }
-        });
+
   $(".customer").select2({
         placeholder: 'Choose one',
         searchInputPlaceholder: 'Search',

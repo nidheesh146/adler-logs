@@ -168,6 +168,11 @@
        
 
        <script>
+        $(document).ready(function() {
+            $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
+            });
+        });
     $('.batch_no').on('change', function (){
         var element = $("option:selected", this); 
         var batchqty = element.attr("qty"); 

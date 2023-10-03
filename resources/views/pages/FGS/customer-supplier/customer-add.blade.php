@@ -214,6 +214,11 @@
   <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
   <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 <script>
+    $(document).ready(function() {
+            $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
+            });
+        });
 autosize();
 function autosize(){
     var text = $('.autosize');

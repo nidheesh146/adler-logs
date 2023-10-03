@@ -107,6 +107,11 @@
     <script src="<?= url('') ?>/js/jquery.validate.js"></script>
     <script src="<?= url('') ?>/js/additional-methods.js"></script>
     <script>
+        $(document).ready(function() {
+            $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
+            });
+        });
       $(function(){
         'use strict'
 
