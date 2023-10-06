@@ -190,24 +190,27 @@ class DeliveryNoteController extends Controller
                 $stock_mngment = fgs_product_stock_management::find($fgs_stock['fgs_stock_id']);
                 $stock_mngment->quantity = $stock_updation;
                 $stock_mngment->save();
-                $dc_stock = dc_transfer_stock::select('id as dc_stock_id', 'quantity')
-                    ->where('product_id', '=', $oef_item['product_id'])
-                    ->where('batchcard_id', '=', $request->batchcard)
-                    ->where('stock_location_id', '=', $dc_master->stock_location_increase)
-                    ->first();
-                //print_r($dc_master);exit;
-                if ($dc_stock) {
-                    $dc_stock_updation = $dc_stock['quantity'] + $request->batch_qty;
-                    $update = $this->dc_transfer_stock->update_data(['id' => $dc_stock['dc_stock_id']], ['quantity' => $dc_stock_updation]);
-                } else {
-                    $stock['product_id'] = $oef_item['product_id'];
-                    $stock['batchcard_id'] = $request->batchcard;
-                    $stock['stock_location_id'] = $dc_master->stock_location_increase;
-                    $stock['quantity'] = $request->batch_qty;
-                    $stock['manufacturing_date'] = date('Y-m-d', strtotime($mrn_item['manufacturing_date']));
-                    $stock['expiry_date'] = date('Y-m-d', strtotime($mrn_item['expiry_date']));
-                    $stock['created_at'] = date('Y-m-d H:i:s');
-                    $stock_add = $this->dc_transfer_stock->insert_data($stock);
+                if($dc_master->transaction_condition!=2)
+                {
+                    $dc_stock = dc_transfer_stock::select('id as dc_stock_id', 'quantity')
+                        ->where('product_id', '=', $oef_item['product_id'])
+                        ->where('batchcard_id', '=', $request->batchcard)
+                        ->where('stock_location_id', '=', $dc_master->stock_location_increase)
+                        ->first();
+                    //print_r($dc_master);exit;
+                    if ($dc_stock) {
+                        $dc_stock_updation = $dc_stock['quantity'] + $request->batch_qty;
+                        $update = $this->dc_transfer_stock->update_data(['id' => $dc_stock['dc_stock_id']], ['quantity' => $dc_stock_updation]);
+                    } else {
+                        $stock['product_id'] = $oef_item['product_id'];
+                        $stock['batchcard_id'] = $request->batchcard;
+                        $stock['stock_location_id'] = $dc_master->stock_location_increase;
+                        $stock['quantity'] = $request->batch_qty;
+                        $stock['manufacturing_date'] = date('Y-m-d', strtotime($mrn_item['manufacturing_date']));
+                        $stock['expiry_date'] = date('Y-m-d', strtotime($mrn_item['expiry_date']));
+                        $stock['created_at'] = date('Y-m-d H:i:s');
+                        $stock_add = $this->dc_transfer_stock->insert_data($stock);
+                    }
                 }
 
                 if ($add) {
@@ -241,7 +244,7 @@ class DeliveryNoteController extends Controller
                     ->where('fgs_product_stock_management.product_id', '=', $oef_item['product_id'])
                     ->where('fgs_mrn_item.product_id', '=', $oef_item['product_id'])
                     ->where('fgs_mrn.stock_location', '=', $dc_master->stock_location_decrease)
-                    ->where('fgs_mrn.product_category', '=', $dc_master['product_category'])
+                    //->where('fgs_mrn.product_category', '=', $dc_master['product_category'])
                     ->where('fgs_product_stock_management.quantity', '>', 0)
                     ->orderBy('batchcard_batchcard.id', 'ASC')
                     ->groupBy('fgs_product_stock_management.id')
@@ -464,7 +467,8 @@ class DeliveryNoteController extends Controller
             'customer_supplier.firm_name',
             'customer_supplier.shipping_address',
             'fgs_product_category.category_name',
-            'product_stock_location.location_name',
+            'product_stock_location.location_name as location_decrease',
+            'stock_location.location_name as location_increase',
             'zone.zone_name',
             'fgs_oef.oef_number',
             'fgs_oef.oef_date'
@@ -473,7 +477,8 @@ class DeliveryNoteController extends Controller
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'delivery_challan.product_category')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'delivery_challan.customer_id')
             ->leftjoin('zone', 'zone.id', '=', 'customer_supplier.zone')
-            ->leftjoin('product_stock_location', 'product_stock_location.id', '=', 'delivery_challan.stock_location_Increase')
+            ->leftjoin('product_stock_location', 'product_stock_location.id', '=', 'delivery_challan.stock_location_decrease')
+            ->leftJoin('product_stock_location as stock_location','stock_location.id','delivery_challan.stock_location_increase')
             ->leftjoin('fgs_oef','fgs_oef.id','=','delivery_challan.oef_id')
         ->where('delivery_challan.id',$dc_id)->first();
 

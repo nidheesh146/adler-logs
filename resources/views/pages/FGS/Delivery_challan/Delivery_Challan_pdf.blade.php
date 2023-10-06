@@ -88,13 +88,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="3" style="font-weight: bold;">Stock Location (Decrese): <span>AHPL Mktd.</span></td>
+                            <td colspan="3" style="font-weight: bold;">Stock Location (Decrese): <span>{{$data->location_decrease}}</span></td>
                             <td colspan="2"></td>
                             <td style="font-weight: bold;">Product Category:</td>
                             <td>{{$data->category_name}}</td>
                         </tr>
                         <tr>
-                            <td colspan="3" style="font-weight: bold;">Stock Location (Increase): <span>{{$data->location_name}}</span></td>
+                            <td colspan="3" style="font-weight: bold;">Stock Location (Increase): <span>@if($data->location_increase) {{$data->location_increase}} @else N.A @endif</span></td>
                             <td colspan="4"></td>
 
                         </tr>

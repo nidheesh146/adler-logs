@@ -426,8 +426,8 @@ class RowMaterialController extends Controller
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
             $no_column = 15;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
-            // echo $sheet1_column_count;
-            // exit;
+            //  echo $sheet1_column_count;
+            //  exit;
             
             if($sheet1_column_count == $no_column)
             {
@@ -491,7 +491,8 @@ class RowMaterialController extends Controller
                 //         ]);
                 // }
                  $supplier_id = DB::table('inv_supplier')->where('vendor_id','=' ,$excelsheet[6])->pluck('id')->first();
-                $gst = DB::table('inventory_gst')->where('cgst',trim($excelsheet[9],"%")*100)->where('sgst',trim($excelsheet[10],"%")*100)->where('igst',trim($excelsheet[11],"%")*100)->pluck('id')->first();
+                //$gst = DB::table('inventory_gst')->where('cgst',trim($excelsheet[9],"%")*100)->where('sgst',trim($excelsheet[10],"%")*100)->where('igst',trim($excelsheet[11],"%")*100)->pluck('id')->first();
+                $gst = DB::table('inventory_gst')->where('cgst',$excelsheet[9])->where('sgst',$excelsheet[10])->where('igst',$excelsheet[11])->pluck('id')->first();
                 $inv_supplier_itemrate =  DB::table('inv_supplier_itemrate')->select(['*'])->where('item_id', $item_id)->where('supplier_id', $supplier_id)->first();
                 $currency = DB::table('currency_exchange_rate')->where('currency_code',$excelsheet[12])->pluck('currency_id')->first();
                 if(!($inv_supplier_itemrate))
@@ -500,16 +501,18 @@ class RowMaterialController extends Controller
                             'supplier_id' =>$supplier_id,
                             'item_id' =>$item_id,
                             'rate'=>$excelsheet[7],
-                            'discount'=>trim($excelsheet[8],"%"),
+                            //'discount'=>trim($excelsheet[8],"%"),
+                            'discount'=>$excelsheet[8]*100, 
                             'gst'=>$gst,
                             'currency'=>$currency,
                             'is_active'=>1,
                             'created_at'=>date('Y-m-d H:i:s'),
                             'updated_at'=>date('Y-m-d H:i:s'),
                             'delivery_within' => 30,
-                            'rate_expiry_startdate'=>($excelsheet[13]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[13]))->format('Y-m-d')) : NULL,
-                            'rate_expiry_enddate'=>($excelsheet[14]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[14]))->format('Y-m-d')) : NULL,
-
+                            //'rate_expiry_startdate'=>($excelsheet[13]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[13]))->format('Y-m-d')) : NULL,
+                           // 'rate_expiry_enddate'=>($excelsheet[14]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[14]))->format('Y-m-d')) : NULL,
+                           'rate_expiry_startdate'=>date('Y-m-d',strtotime('01-01-2023')),
+                           'rate_expiry_enddate'=>date('Y-m-d',strtotime('31-03-2024'))
                     ];
                     $res[] = DB::table('inv_supplier_itemrate')->insert($data);
                }
@@ -528,14 +531,16 @@ class RowMaterialController extends Controller
                         'created_at'=>date('Y-m-d H:i:s'),
                         'updated_at'=>date('Y-m-d H:i:s'),
                         'delivery_within' => 30,
-                        'rate_expiry_startdate'=>($excelsheet[13]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[13]))->format('Y-m-d')) : NULL,
-                        'rate_expiry_enddate'=>($excelsheet[14]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[14]))->format('Y-m-d')) : NULL,
+                        //'rate_expiry_startdate'=>($excelsheet[13]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[13]))->format('Y-m-d')) : NULL,
+                        //'rate_expiry_enddate'=>($excelsheet[14]!="") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[14]))->format('Y-m-d')) : NULL,
+                        'rate_expiry_startdate'=>date('Y-m-d',strtotime('01-01-2023')),
+                        'rate_expiry_enddate'=>date('Y-m-d',strtotime('31-03-2024'))
 
                     ];
                     //print_r(json_encode($data));exit;
                     $res[] = DB::table('inv_supplier_itemrate')->where('id','=',$inv_supplier_itemrate->id)->update($data);
                     // $res[] = inv_supplier_itemrate::where('inv_supplier_itemrate.id','=',$inv_supplier_itemrate->id)
-                    //                                 ->update([
+                    //                                 ->update(['
                     //                                     'rate'=>$excelsheet[7],
                     //                                     'discount'=>trim($excelsheet[8],"%"),
                     //                                     'gst'=>$gst,

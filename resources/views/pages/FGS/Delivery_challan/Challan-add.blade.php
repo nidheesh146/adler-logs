@@ -96,7 +96,7 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Transaction Type  *</label>
-                                <select class="form-control" name="transaction_type">
+                                <select class="form-control" name="transaction_type" onchange="myFunction()" id="transaction_type">
                                     <option>Select one...</option> 
                                     @foreach($transaction_type as $type)
                                     <option value="{{$type['id']}}">{{$type['transaction_name']}}</option>
@@ -110,6 +110,17 @@
                                     @foreach($category as $cate)
                                     <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
                                     @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Transaction Condition  *</label>
+                                <select class="form-control" name="transaction_condition" id="transaction_condition" onchange="myFunction()">
+                                    <!-- <option>Select one...</option> -->
+                                    
+                                    <option value="1">Returnable</option>
+                                    <option value="2">NON Returnable</option>
+
+                                    
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -132,19 +143,10 @@
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
                                     @endif 
                                     @endforeach
+                                    <option value="0">N.A</option>
                                 </select>
                             </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Transaction Condition  *</label>
-                                <select class="form-control" name="transaction_condition">
-                                    <!-- <option>Select one...</option> -->
-                                    
-                                    <option value="1">Returnable</option>
-                                    <option value="2">NON Returnable</option>
-
-                                    
-                                </select>
-                            </div>
+                            
                             
                         </div>
                         <div class="row">
@@ -315,7 +317,105 @@
     });
 
   });
- 
+
+  function myFunction() {
+
+    var x = document.getElementById("transaction_type").value;
+    var y = document.getElementById("transaction_condition").value;
+    if (x == 2 && y == 2) {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='0']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    } 
+    else if(x == 2 && y == 1)
+    {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='13']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    }
+
+    if (x == 3 && y == 2) {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='0']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    } 
+    else if(x == 3 && y == 1)
+    {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='9']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    }
+
+    if (x == 4 && y == 2) {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='0']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    } 
+    else if(x == 4 && y == 1)
+    {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='14']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    }
+
+    if (x == 5 && y == 2) {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='0']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    } 
+    else if(x == 5 && y == 1)
+    {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='12']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    }
+
+    if (x == 6 && y == 2) {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='0']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    } 
+    else if(x == 6 && y == 1)
+    {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='8']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    }
+    if (x == 1 && y == 2) {
+        var optionToDisplay = document.querySelector("#stock_location2 option[value='0']");
+        if (optionToDisplay) {
+            optionToDisplay.selected = true;
+        }
+    } 
+    else if(x == 1 && y == 1)
+    {
+        var optionToDisplay1 = document.querySelector("#stock_location2 option[value='0']");
+        var optionToDisplay2 = document.querySelector("#stock_location2 option[value='8']");
+        var optionToDisplay3 = document.querySelector("#stock_location2 option[value='12']");
+        var optionToDisplay4 = document.querySelector("#stock_location2 option[value='14']");
+        var optionToDisplay5 = document.querySelector("#stock_location2 option[value='9']");
+        var optionToDisplay6 = document.querySelector("#stock_location2 option[value='13']");
+        if (optionToDisplay) {
+            optionToDisplay1.selected = false;
+            optionToDisplay2.selected = false;
+            optionToDisplay3.selected = false;
+            optionToDisplay4.selected = false;
+            optionToDisplay5.selected = false;
+            optionToDisplay6.selected = false;
+        }
+    }
+
+} 
 </script>
 
 
