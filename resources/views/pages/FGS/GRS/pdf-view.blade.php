@@ -50,7 +50,7 @@
             display:block;
             font-size:11px;
             height:120px;
-            border-bottom:solid 0.5px black;
+            /* border-bottom:solid 0.5px black; */
         }
         .row3, .row4{
             display:block;
@@ -63,6 +63,8 @@
         .row3 table{
             width:100%;
             font-size:10px;
+            border-collapse: collapse;
+
         }
         .row4{
             font-size:10px;
@@ -101,7 +103,7 @@
         <div class="col1">
             To<br/>
             <strong>{{$grs['firm_name']}}</strong>
-            <p>{{$grs['billing_address']}}<br/>
+            <p>@if($grs['billing_address']){{$grs['billing_address']}} @else $grs['dummy_billing_address'] @endif<br/>
             {{$grs['city']}}, {{$grs['state_name']}}<br/>
             Cell No : {{ $grs['contact_number'] }}<br/>
             <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$grs['email']}}<br/><span>
@@ -121,7 +123,7 @@
            </p>
         </div>
         <div class="col4" style="float:right;">
-            <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
+        <img src="data:img/logo.png;base64,<?php echo base64_encode(file_get_contents('img/logo.png')); ?>"style="width:80px;" />
         </div>
     </div><br/>
             
@@ -151,6 +153,10 @@
                     <td>Order Date</td>
                     <td>: {{date('d-m-Y', strtotime($grs['order_date']))}}</td>
                 </tr>
+                <tr>
+                    <td>Stck Lctn (Increase)</td>
+                    <td>: {{$grs['location_name2']}}</td> 
+                </tr>
             </table>
         </div>
         <div class="col22">
@@ -171,6 +177,10 @@
                     <td>Trnsctn Type</td>
                     <td>: {{$grs['transaction_name']}} </td>
                 </tr>
+                <tr>
+                    <td>Stck Lctn (Decrease)</td>
+                    <td>: {{$grs['location_name1']}}</td> 
+                </tr>
             </table>
         </div>
         <div class="col23">
@@ -184,17 +194,21 @@
                     <td>: {{date('d-m-Y', strtotime($grs['grs_date']))}}</td>
                 </tr>
                 <tr>
-                    <td> Product Category</td>
+                    <td> Business Category</td>
                     <td>:{{$grs['category_name']}}</td>
                 </tr>
                 <tr>
+                    <td> Product Category</td>
+                    <td>:{{$grs['new_category_name']}}</td>
+                </tr>
+                <!-- <tr>
                     <td>Stck Lctn (Decrease)</td>
                     <td>: {{$grs['location_name1']}}</td> 
                 </tr>
                 <tr>
                     <td>Stck Lctn (Increase)</td>
                     <td>: {{$grs['location_name2']}}</td> 
-                </tr>
+                </tr> -->
             </table>
         </div>
     <br/>    
@@ -234,7 +248,13 @@
                 <td style="text-align:center;">{{$item['batch_quantity']}}</td> 
                 <td>Nos</td> 
                 <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else N.A @endif</td>
+                <td>
+    @if($item['expiry_date'] != '0000-00-00' && $item['expiry_date'] >= '1990-01-01') 
+        {{ date('d-m-Y', strtotime($item['expiry_date'])) }} 
+    @else 
+        N.A 
+    @endif
+</td>
             </tr>
             <?php
                 $qsum = $qsum+$item['batch_quantity'];
@@ -255,12 +275,12 @@
         </table>
     </div>
     <br/>
-    <div class="row4" style="border-bottom:solid 1px black;height:170px;">
+    <div class="row4" style="height:170px;">
         <div class="col41">
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>
                 @if($grs['oef_remarks'])
-                {{$grs['oef_remarks']}}
+                <?= nl2br($grs['oef_remarks']);?>
                 @endif
             </div>
             
@@ -272,11 +292,34 @@
        
     </div>
    
-    <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
+    <!-- <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     
-    </div>
+    </div> -->
     
-     
+    <script type="text/php">
+
+    if (isset($pdf)) {
+    $xPage = 545; // X-axis for "Page", positioned on the right side
+    $yPage = 810; // Y-axis horizontal position
+
+    $textPage = "Page {PAGE_NUM} of {PAGE_COUNT}"; // "Page" message
+
+    $font = $fontMetrics->get_font("helvetica");
+    $size = 7;
+    $color = array(0, 0, 0);
+
+
+    $pdf->page_text($xPage, $yPage, $textPage, $font, $size, $color); // "Page" on the right
+    $pageNumber = $pdf->get_page_number();
+    // Check if it's not the first page
+    if (var_dump($pageNumber) != 1) {
+        $xDoc = 530;  // X-axis for "Doc", positioned on the left side
+        $yDoc = 15; // Y-axis horizontal position
+        $textDoc = "{{$grs['grs_number']}}"; // "Doc" message
+        $pdf->page_text($xDoc, $yDoc, $textDoc, $font, $size, $color); // "Doc" on the left
+    }
+}
+</script>
    
 </body>
 </html>

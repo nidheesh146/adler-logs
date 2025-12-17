@@ -58,17 +58,22 @@ class inv_purchase_req_item extends Model
                               'inv_purchase_req_master.pr_no','inv_purchase_req_master.PR_SR','inv_item_type.type_name','inventory_rawmaterial.item_type_id','inventory_rawmaterial.short_description'])
                      ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
                      ->leftjoin('inv_purchase_req_item_approve','inv_purchase_req_item_approve.pr_item_id', '=', 'inv_purchase_req_item.requisition_item_id')
- 
                      ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
                      ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                      ->leftjoin('inv_item_type','inv_item_type.id', '=', 'inventory_rawmaterial.item_type_id')
                      ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                      ->leftjoin('user','inv_purchase_req_master.requestor_id','=','user.user_id')
-                     ->whereNotIn('inv_purchase_req_item.requisition_item_id',function($query) {
+                     ->leftjoin('inv_purchase_req_quotation_item_supp_rel', 'inv_purchase_req_quotation_item_supp_rel.item_id', '=', 'inv_purchase_req_item.requisition_item_id')
+                    //   ->whereNotIn('inv_purchase_req_item.requisition_item_id',function($query) {
  
-                         $query->select('inv_purchase_req_quotation_item_supp_rel.item_id')->from('inv_purchase_req_quotation_item_supp_rel');
+                    //      $query->select('inv_purchase_req_quotation_item_supp_rel.item_id')->from('inv_purchase_req_quotation_item_supp_rel');
                      
-                     })
+                    //  })
+                    ->where('inv_purchase_req_quotation_item_supp_rel.status', 0)
+                    ->orwhereNotIn('requisition_item_id', function ($query) {
+                        $query->select('item_id')
+                        ->from('inv_purchase_req_quotation_item_supp_rel');
+                    })
                      ->where($condition)
                      ->where('inv_purchase_req_item_approve.status','=',1)
                      ->groupBy('inv_purchase_req_item.requisition_item_id')
@@ -76,35 +81,58 @@ class inv_purchase_req_item extends Model
                      //->paginate(10);
                      ->get();
      }
-    function getdataFixedItems($condition){
-        return  $this->select(['inv_purchase_req_item.requisition_item_id','inv_purchase_req_item.actual_order_qty','inv_unit.unit_name','user.f_name','user.l_name',
+     function getqdata($condition){
+        return  $this->select(['inv_purchase_req_item.requisition_item_id','inv_purchase_req_item.actual_order_qty','inv_unit.unit_name', 'user.f_name','user.l_name',
                               'inv_purchase_req_item_approve.created_user','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_purchase_req_item_approve.approved_qty',
-                              'inv_purchase_req_master.pr_no','inv_purchase_req_master.PR_SR','inv_item_type.type_name','inventory_rawmaterial.item_type_id',
-                              'inventory_rawmaterial.short_description','inv_supplier.vendor_name'])
+                              'inv_purchase_req_master.pr_no','inv_purchase_req_master.PR_SR','inv_item_type.type_name','inventory_rawmaterial.item_type_id','inventory_rawmaterial.short_description'])
                      ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_purchase_req_item.requisition_item_id')
                      ->leftjoin('inv_purchase_req_item_approve','inv_purchase_req_item_approve.pr_item_id', '=', 'inv_purchase_req_item.requisition_item_id')
- 
                      ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
                      ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                      ->leftjoin('inv_item_type','inv_item_type.id', '=', 'inventory_rawmaterial.item_type_id')
                      ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
-                     ->leftjoin('inv_supplier_itemrate','inv_supplier_itemrate.item_id','=','inv_purchase_req_item.Item_code')
-                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_itemrate.supplier_id')
                      ->leftjoin('user','inv_purchase_req_master.requestor_id','=','user.user_id')
-                     ->whereNotIn('inv_purchase_req_item.requisition_item_id',function($query) {
- 
-                         $query->select('inv_purchase_req_quotation_item_supp_rel.item_id')->from('inv_purchase_req_quotation_item_supp_rel');
-                     
-                     })
-                     ->whereIn('inv_purchase_req_item.Item_code',function($query){
-                        $query->select('inv_supplier_itemrate.item_id')->from('inv_supplier_itemrate');
-                     })
+                     ->leftjoin('inv_purchase_req_quotation_item_supp_rel', 'inv_purchase_req_quotation_item_supp_rel.item_id', '=', 'inv_purchase_req_item.requisition_item_id')
                      ->where($condition)
                      ->where('inv_purchase_req_item_approve.status','=',1)
                      ->groupBy('inv_purchase_req_item.requisition_item_id')
                      ->orderby('inv_purchase_req_item.requisition_item_id','desc')
-                     ->paginate(10);
+                    // ->paginate(50);
+                     ->get();
      }
+    function getdataFixedItems($condition)
+    {
+        return  $this->select([
+            'inv_purchase_req_item.requisition_item_id', 'inv_purchase_req_item.actual_order_qty', 'inv_unit.unit_name', 'user.f_name', 'user.l_name',
+            'inv_purchase_req_item_approve.created_user', 'inventory_rawmaterial.item_code', 'inventory_rawmaterial.hsn_code', 'inv_purchase_req_item_approve.approved_qty',
+            'inv_purchase_req_master.pr_no', 'inv_purchase_req_master.PR_SR', 'inv_item_type.type_name', 'inventory_rawmaterial.item_type_id',
+            'inventory_rawmaterial.short_description', 'inv_supplier.vendor_name','inv_purchase_req_master.master_id as pr_master_id'
+        ])
+            ->leftjoin('inv_purchase_req_master_item_rel', 'inv_purchase_req_master_item_rel.item', '=', 'inv_purchase_req_item.requisition_item_id')
+            ->leftjoin('inv_purchase_req_item_approve', 'inv_purchase_req_item_approve.pr_item_id', '=', 'inv_purchase_req_item.requisition_item_id')
+
+            ->leftjoin('inv_purchase_req_master', 'inv_purchase_req_master.master_id', '=', 'inv_purchase_req_master_item_rel.master')
+            ->leftjoin('inventory_rawmaterial', 'inventory_rawmaterial.id', '=', 'inv_purchase_req_item.Item_code')
+            ->leftjoin('inv_item_type', 'inv_item_type.id', '=', 'inventory_rawmaterial.item_type_id')
+            ->leftjoin('inv_unit', 'inv_unit.id', '=', 'inventory_rawmaterial.issue_unit_id')
+            ->leftjoin('inv_supplier_itemrate', 'inv_supplier_itemrate.item_id', '=', 'inv_purchase_req_item.Item_code')
+            ->leftjoin('inv_supplier', 'inv_supplier.id', '=', 'inv_supplier_itemrate.supplier_id')
+            ->leftjoin('user', 'inv_purchase_req_master.requestor_id', '=', 'user.user_id')
+            ->whereIn('inv_purchase_req_item.Item_code', function ($query) {
+                $query->select('inv_supplier_itemrate.item_id')->from('inv_supplier_itemrate');
+            })
+           // ->where('inv_purchase_req_quotation_item_supp_rel.status', 0)
+        //   ->whereNotIn('requisition_item_id', function ($query) {
+        //                 $query->select('item_id')
+        //                 ->from('inv_purchase_req_quotation_item_supp_rel');
+        //             })
+            ->where($condition)
+            //->where('inv_purchase_req_master.master_id','=',2268)
+            ->where('inv_purchase_req_item_approve.status', '=', 1)
+            ->groupBy('inv_purchase_req_item.requisition_item_id')
+            ->orderby('inv_purchase_req_item.requisition_item_id', 'desc')
+            ->paginate(10);
+    }
 
     function getItemdata($condition){
        return  $this->select(['inv_purchase_req_item.requisition_item_id','inv_purchase_req_item.actual_order_qty','inv_item_type.type_name',
@@ -141,7 +169,7 @@ class inv_purchase_req_item extends Model
                                 ->groupBy('inv_purchase_req_item.requisition_item_id')
                                 ->where('inv_purchase_req_item_approve.status','!=',2)
                                 ->orderby('inv_purchase_req_item.requisition_item_id','desc')
-                                ->paginate(10);
+                                ->paginate(100);
      }
 
      

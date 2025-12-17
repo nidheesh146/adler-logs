@@ -35,7 +35,7 @@ class EXIController extends Controller
     }
     public function EXIList(Request $request)
     {
-        $condition =['fgs_dni.dni_exi'=>'EXI'];
+        $condition[] =['fgs_dni.dni_exi','=','EXI'];
         if($request->dni_number)
         {
             $condition[] = ['fgs_dni.dni_number','like', '%' . $request->exi_number . '%'];
@@ -71,6 +71,7 @@ class EXIController extends Controller
                 {
                     $years_combo = date('y').date('y', strtotime('+1 year'));
                 }
+                // $data['dni_number'] = "EXI-".$this->year_combo_num_gen(DB::table('fgs_dni')->where('fgs_dni.dni_number', 'LIKE', 'EXI-'.$years_combo.'%')->count()+1); 
                 $data['dni_number'] = "EXI-".$this->year_combo_num_gen(DB::table('fgs_dni')->where('fgs_dni.dni_number', 'LIKE', 'EXI-'.$years_combo.'%')->count()); 
                 $data['dni_date'] = date('Y-m-d',strtotime($request->exi_date));
                 $data['customer_id'] =$request->customer;
@@ -89,8 +90,14 @@ class EXIController extends Controller
                             ->get();
                     foreach($pi as $pi_data)
                     {
-                        $item['pi_id'] = $pi_data['master'];
+                        $pi_item = fgs_pi_item::where('id','=',$pi_data['item'])->first();
+                        $item['pi_id'] = $pi_id;
                         $item['pi_item_id'] = $pi_data['item'];
+                        $item['product_id'] = $pi_item['product_id'];
+                        $item['batchcard_id'] = $pi_item['batchcard_id'];
+                        $item['quantity'] = $pi_item['remaining_qty_after_cancel'];
+                        $item['remaining_qty_after_srn'] = $pi_item['remaining_qty_after_cancel'];
+                        $item['mrn_item_id'] = $pi_item['mrn_item_id'];
                         $item['created_at'] =  date('Y-m-d H:i:s');
                         $dni_item=$this->fgs_dni_item->insert_data($item);
                         if($dni_item && $dni_master ){
@@ -98,11 +105,12 @@ class EXIController extends Controller
                         }
                         $pi_item = fgs_pi_item::where('id','=',$pi_data['item'])->first();
                         $grs_item = fgs_grs_item::where('id','=',$pi_item['grs_item_id'])->first();
-                        $maa_stock =  fgs_maa_stock_management::where('pi_item_id',$pi_item['id'])->first();
-                        $stock['quantity'] =0;
-                        $maa_stock_management = $this->fgs_maa_stock_management->update_data(['pi_item_id'=>$pi_item['id']],$stock);
-                        //$maa_stock=$this->fgs_maa_stock_management->insert_data($stock);
-
+                        $maa_stock =  fgs_maa_stock_management::where('product_id',$pi_item['product_id'])->where('batchcard_id',$pi_item['batch_id'])->first();
+                        if($maa_stock)
+                        {
+                        $stock['quantity'] =$maa_stock['quantity']-$pi_item['remaining_qty_after_cancel'];
+                        $maa_stock_management = $this->fgs_maa_stock_management->update_data(['id'=>$maa_stock['id']],$stock);
+                        }
                     }
                 }
                 if($dni_master)
@@ -180,79 +188,111 @@ class EXIController extends Controller
 
     public function EXIitemlist($exi_id)
     {
-        $dni_items = fgs_dni_item_rel::select('fgs_dni_item.pi_id','fgs_pi.pi_number','fgs_pi.pi_date')
+        $dni_items = DB::table('fgs_dni_item_rel')->select('fgs_dni_item_rel.item as dni_item_id','fgs_dni_item.pi_id','batchcard_batchcard.batch_no',
+        'fgs_item_master.sku_code','fgs_item_master.hsn_code','fgs_item_master.discription','fgs_grs.grs_number','fgs_oef_item.rate','fgs_oef_item.discount',
+        'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_dni_item.quantity','currency_exchange_rate.currency_code','fgs_pi.pi_number')
                             ->leftJoin('fgs_dni_item','fgs_dni_item.id','fgs_dni_item_rel.item')
                             ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_dni_item.pi_id')
-                            ->where('master','=',$exi_id)->get();
-        foreach($dni_items as $items)
-        {
-            $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','product_product.sku_code','product_product.hsn_code','product_product.discription',
-            'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number')
-                            ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
-                            ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
-                            ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
-                            ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
-                            ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
+                            ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_dni_item.product_id')
+                            ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_dni_item.batchcard_id')
+                            ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_dni_item.pi_item_id')
                             ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
                             ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
-                            ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
-                            ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
-                            ->where('fgs_pi_item_rel.master','=', $items['pi_id'])
-                            ->where('fgs_grs.status','=',1)
-                            ->orderBy('fgs_grs_item.id','DESC')
-                            ->distinct('fgs_grs_item.id')
-                            ->get();
-            $items['pi_item'] = $pi_item;
-        }
+                            ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
+                            ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
+                            ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
+                            ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
+                            ->where('fgs_dni_item_rel.master','=',$exi_id)
+                            //->distinct('fgs_dni_item_rel.id')
+                            ->paginate(15);
        // print_r(json_encode($dni_items));exit;
         return view('pages/FGS/EXI/EXI-item-list',compact('dni_items'));
     }
 
     public function EXIpdf($dni_id)
-    {
-        $data['dni'] = $this->fgs_dni->get_single_dni(['fgs_dni.id' => $dni_id]);
-        $data['dni_items'] = fgs_dni_item_rel::select('fgs_dni_item.pi_id','fgs_pi.pi_number','fgs_pi.pi_date')
-                            ->leftJoin('fgs_dni_item','fgs_dni_item.id','fgs_dni_item_rel.item')
-                            ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_dni_item.pi_id')
-                            ->where('master','=',$dni_id)
-                            ->distinct('fgs_dni_item_rel.id')
-                            ->get();
-        foreach($data['dni_items'] as $items)
-        {
-            $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','fgs_grs.grs_date','product_product.sku_code','product_product.hsn_code','product_product.discription',
-            'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity as quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_pi.pi_number',
-            'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date',
-            'order_fulfil.order_fulfil_type','transaction_type.transaction_name','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_product_category.category_name','product_price_master.mrp')
-                            ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
-                            ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
-                            ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_pi.customer_id')
-                            ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
-                            ->leftJoin('fgs_grs','fgs_grs.id','=','fgs_pi_item.grs_id')
-                            ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
-                            ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
-                            ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
-                            ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_grs.oef_id')
-                            ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
-                            ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
-                            ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
-                            ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
-                            ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
-                            ->leftjoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_pi_item.mrn_item_id')
-                            ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
-                            ->where('fgs_pi_item_rel.master','=', $items['pi_id'])
-                            ->orderBy('fgs_pi_item.id','DESC')
-                            ->distinct('fgs_pi_item.id')
-                            ->get();
-            $items['pi_item'] = $pi_item;
-        }
-        //print_r(json_encode($data['dni_items']));exit;
-        //$data['items'] = $this->fgs_dni_item_rel->getAllItems(['fgs_dni_item_rel.master' => $dni_id]);
-        $pdf = PDF::loadView('pages.FGS.EXI.pdf-view', $data);
-        $pdf->set_paper('A4', 'landscape');
-        $file_name = "EXI" . $data['dni']['dni_number'] . "_" . $data['dni']['dni_date'];
-        return $pdf->stream($file_name . '.pdf');
+{
+    // Fetching the single DNI details
+    $data['dni'] = $this->fgs_dni->get_single_dni(['fgs_dni.id' => $dni_id]);
+
+    // Fetching the DNI items with necessary joins
+    $data['dni_items'] = fgs_dni_item_rel::select(
+        'fgs_dni_item.pi_id',
+        'fgs_pi.pi_number',
+        'fgs_pi.pi_date',
+        'fgs_dni_item.pi_item_id'
+    )
+        ->leftJoin('fgs_dni_item', 'fgs_dni_item.id', '=', 'fgs_dni_item_rel.item')
+        ->leftJoin('fgs_pi', 'fgs_pi.id', '=', 'fgs_dni_item.pi_id')
+        ->where('master', '=', $dni_id)
+        ->distinct('fgs_dni_item_rel.id')
+        ->get();
+
+    // Looping through DNI items to fetch related PI items
+    foreach ($data['dni_items'] as $items) {
+        $pi_item = fgs_pi_item_rel::select(
+            'fgs_grs.grs_number',
+            'fgs_grs.grs_date',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.hsn_code',
+            'fgs_item_master.discription',
+            'batchcard_batchcard.batch_no',
+            'fgs_grs_item.batch_quantity as quantity',
+            'fgs_oef_item.rate',
+            'fgs_oef_item.discount',
+            'currency_exchange_rate.currency_code',
+            'fgs_pi.pi_number',
+            'inventory_gst.igst',
+            'inventory_gst.cgst',
+            'inventory_gst.sgst',
+            'inventory_gst.id as gst_id',
+            'fgs_oef.oef_number',
+            'fgs_oef.oef_date',
+            'fgs_oef.order_number',
+            'fgs_oef.order_date',
+            'order_fulfil.order_fulfil_type',
+            'transaction_type.transaction_name',
+            'fgs_mrn_item.manufacturing_date',
+            'fgs_mrn_item.expiry_date',
+            'fgs_product_category.category_name', // Original category name
+            'fgs_product_category_new.category_name as new_category', // New category name
+            'fgs_pi_item.remaining_qty_after_cancel',
+            'product_price_master.mrp',
+            'fgs_oef.remarks as oef_remarks'
+        )
+            ->leftJoin('fgs_pi_item', 'fgs_pi_item.id', '=', 'fgs_pi_item_rel.item')
+            ->leftJoin('fgs_pi', 'fgs_pi.id', '=', 'fgs_pi_item_rel.master')
+            ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_pi.customer_id')
+            ->leftJoin('currency_exchange_rate', 'currency_exchange_rate.currency_id', '=', 'customer_supplier.currency')
+            ->leftJoin('fgs_grs', 'fgs_grs.id', '=', 'fgs_pi_item.grs_id')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_grs.product_category') // Join for original category
+            ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', '=', 'fgs_grs.new_product_category') // Join for new category
+            ->leftJoin('fgs_grs_item', 'fgs_grs_item.id', '=', 'fgs_pi_item.grs_item_id')
+            ->leftJoin('fgs_oef_item', 'fgs_oef_item.id', '=', 'fgs_grs_item.oef_item_id')
+            ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_grs.oef_id')
+            ->leftJoin('order_fulfil', 'order_fulfil.id', '=', 'fgs_oef.order_fulfil')
+            ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
+            ->leftJoin('inventory_gst', 'inventory_gst.id', '=', 'fgs_oef_item.gst')
+            ->leftJoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_grs_item.product_id')
+            ->leftJoin('product_price_master', 'product_price_master.product_id', '=', 'fgs_item_master.id')
+            ->leftJoin('fgs_mrn_item', 'fgs_mrn_item.id', '=', 'fgs_pi_item.mrn_item_id')
+            ->leftJoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_pi_item.batchcard_id')
+            ->where('fgs_pi_item.id', '=', $items['pi_item_id'])
+            ->orderBy('fgs_grs_item.id', 'DESC')
+            ->groupBy('fgs_pi_item.id')
+            ->get();
+
+        // Assigning the fetched PI item data to the 'pi_item' key
+        $items['pi_item'] = $pi_item;
     }
 
+    // Generating PDF
+    $pdf = PDF::loadView('pages.FGS.EXI.pdf-view', $data);
+    $pdf->set_paper('A4', 'landscape');
+    $pdf->setOptions(['isPhpEnabled' => true]);       
+
+    $file_name = "EXI" . $data['dni']['dni_number'] . "_" . $data['dni']['dni_date'];
+    return $pdf->stream($file_name . '.pdf');
+}
     public function exi_transaction(Request $request)
     {
         $condition=[];
@@ -263,19 +303,19 @@ class EXIController extends Controller
         
         if($request->item_code)
         {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+            $condition[] = ['fgs_item_master.sku_code','like', '%' . $request->item_code . '%']; 
         }
         if($request->from)
         {
-            $condition[] = ['fgs_dni_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_dni.dni_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
            
         }
-        $items=fgs_dni_item::select('fgs_dni.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        $items=fgs_dni_item::select('fgs_dni.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code',
         'fgs_dni.dni_number','fgs_dni.dni_date','fgs_dni.created_at as min_wef','fgs_dni_item.id as dni_item_id')
             ->leftJoin('fgs_dni_item_rel', 'fgs_dni_item_rel.item', '=', 'fgs_dni_item.id')
             ->leftJoin('fgs_dni', 'fgs_dni.id', '=', 'fgs_dni_item_rel.master')
             ->leftJoin('fgs_mrn_item', 'fgs_mrn_item.id', '=', 'fgs_dni_item.mrn_item_id')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_mrn_item.product_id')
            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_dni_item.batchcard_id')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
@@ -286,37 +326,113 @@ class EXIController extends Controller
         return view('pages/FGS/EXI/EXI-transaction-list',compact('items'));
 
     }
+    // public function exi_transaction_export(Request $request)
+    // {
+    //     $condition=[];
+    //     if($request->exi_no)
+    //     {
+    //         $condition[] = ['fgs_dni.dni_number','like', '%' . $request->exi_no . '%']; 
+    //     }
+        
+    //     if($request->item_code)
+    //     {
+    //         $condition[] = ['fgs_item_master.sku_code','like', '%' . $request->item_code . '%']; 
+    //     }
+    //     if($request->from)
+    //     {
+    //         $condition[] = ['fgs_dni_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+           
+    //     }
+    //     $items=fgs_dni_item::select('fgs_dni.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code',
+    //     'fgs_dni.dni_number','fgs_dni.dni_date','fgs_dni.created_at as min_wef','fgs_dni_item.id as dni_item_id')
+    //         ->leftJoin('fgs_dni_item_rel', 'fgs_dni_item_rel.item', '=', 'fgs_dni_item.id')
+    //         ->leftJoin('fgs_dni', 'fgs_dni.id', '=', 'fgs_dni_item_rel.master')
+    //         ->leftJoin('fgs_mrn_item', 'fgs_mrn_item.id', '=', 'fgs_dni_item.mrn_item_id')
+    //         ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_mrn_item.product_id')
+    //        // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_dni_item.batchcard_id')
+    //         //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+    //         ->where($condition)
+    //         ->where('fgs_dni.dni_exi','EXI')
+    //         //->distinct('fgs_min_item.id')
+    //         ->orderBy('fgs_dni_item.id','desc')
+    //         ->get();
+    //         return Excel::download(new FGSexitransactionExport($items), 'FGS-EXI-transaction' . date('d-m-Y') . '.xlsx');
+
+    // }
     public function exi_transaction_export(Request $request)
     {
-        $condition=[];
-        if($request->exi_no)
-        {
-            $condition[] = ['fgs_dni.dni_number','like', '%' . $request->exi_no . '%']; 
+        $condition = [];
+        if ($request->dni_no) {
+            $condition[] = ['fgs_dni.dni_number', 'like', '%' . $request->exi_no . '%'];
         }
-        
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
-        if($request->from)
-        {
-            $condition[] = ['fgs_dni_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-           
+        if ($request->from) {
+            $condition[] = ['fgs_dni.dni_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
         }
-        $items=fgs_dni_item::select('fgs_dni.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'fgs_dni.dni_number','fgs_dni.dni_date','fgs_dni.created_at as min_wef','fgs_dni_item.id as dni_item_id')
+        $items = fgs_dni_item::select(
+            'fgs_dni.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_pi_item.batch_qty as quantity',
+            'fgs_dni.dni_number',
+            'fgs_dni.dni_date',
+            'fgs_dni.created_at as min_wef',
+            'fgs_dni_item.id as dni_item_id',
+            'customer_supplier.firm_name',
+            'customer_supplier.city',
+            'state.state_name',
+            'zone.zone_name',
+            'fgs_product_category.category_name',
+            'fgs_product_category_new.category_name as new_category_name',
+            'transaction_type.transaction_name',
+            'customer_supplier.sales_type',
+            'inventory_gst.igst',
+            'inventory_gst.cgst',
+            'inventory_gst.sgst',
+            'inventory_gst.id as gst_id',
+            'fgs_oef_item.rate',
+            'fgs_oef_item.discount',
+            'fgs_oef.order_number',
+            'fgs_oef.order_date',
+            'fgs_oef.oef_number',
+            'fgs_oef.oef_date',
+            'fgs_oef.remarks as oef_remarks',
+            'product_group1.group_name as group1_name'
+
+        )
             ->leftJoin('fgs_dni_item_rel', 'fgs_dni_item_rel.item', '=', 'fgs_dni_item.id')
             ->leftJoin('fgs_dni', 'fgs_dni.id', '=', 'fgs_dni_item_rel.master')
+            ->leftJoin('fgs_pi_item', 'fgs_pi_item.id', '=', 'fgs_dni_item.pi_item_id')
+            ->leftJoin('fgs_pi_item_rel', 'fgs_pi_item_rel.item', '=', 'fgs_pi_item.id')
+            ->leftJoin('fgs_pi', 'fgs_pi.id', '=', 'fgs_pi_item_rel.master')
+            ->leftJoin('fgs_grs_item', 'fgs_grs_item.id', '=', 'fgs_pi_item.grs_item_id')
+            ->leftJoin('fgs_oef_item', 'fgs_oef_item.id', '=', 'fgs_grs_item.oef_item_id')
+            ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+            ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
+
+            ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_dni.customer_id')
+            ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+            ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+            ->leftjoin('inventory_gst', 'inventory_gst.id', '=', 'fgs_oef_item.gst')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_oef.product_category')
+            ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', '=', 'fgs_oef.new_product_category')
+            ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
+
             ->leftJoin('fgs_mrn_item', 'fgs_mrn_item.id', '=', 'fgs_dni_item.mrn_item_id')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
-           // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_dni_item.batchcard_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('product_group1', 'product_group1.id', '=', 'fgs_item_master.product_group1_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_dni_item.batchcard_id')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
-            ->where('fgs_dni.dni_exi','EXI')
+            ->where('fgs_dni.dni_exi', 'EXI')
             //->distinct('fgs_min_item.id')
-            ->orderBy('fgs_dni_item.id','desc')
+            ->orderBy('fgs_dni_item.id', 'desc')
             ->get();
-            return Excel::download(new FGSexitransactionExport($items), 'FGS-EXI-transaction' . date('d-m-Y') . '.xlsx');
-
+        //print_r($items);exit;
+        return Excel::download(new FGSexitransactionExport($items), 'FGS-EXI-transaction' . date('d-m-Y') . '.xlsx');
     }
 }

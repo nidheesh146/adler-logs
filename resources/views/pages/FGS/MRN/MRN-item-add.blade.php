@@ -148,10 +148,10 @@
                                     <button type="button" name="add" id="add" class="btn btn-success btn-xs" style="height:38px;float:right;margin-right:19px;" >
                                     <i class="fas fa-plus"></i></button>
                                 </div>
-                                <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                {{--<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                     <label for="exampleInputEmail1">Remarks  *</label>
                                     <textarea type="text" class="form-control" name="remarks" value="" placeholder=""></textarea>
-                                </div>
+                                </div>--}}
                             </div>
 
                             <div class="row">
@@ -413,10 +413,10 @@ function getsearch(){
                 $(".product").select2({
                     placeholder: 'Choose one',
                     searchInputPlaceholder: 'Search',
-                    minimumInputLength: 4,
+                    minimumInputLength: 3,
                     allowClear: true,
                     ajax: {
-                        url: "{{ url('fgs/productsearch') }}",
+                        url: "{{ url('fgs/search') }}",
                         processResults: function (data) {
                             
                                 return { results: data };

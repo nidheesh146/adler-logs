@@ -42,7 +42,7 @@
         .col23{
           
             float:left;
-            width:25%;
+            width:30%;
         }
         .col24{
             margin-top:-25px;
@@ -126,7 +126,7 @@
             <table>
                 <tr>
                     <td> <strong><font size="12px">{{$oef['firm_name']}} </font></strong>
-            <p>{{$oef['billing_address']}}<br/>
+                    <p>@if($oef['billing_address']){{$oef['billing_address']}} @else {{$oef['dummy_billing_address']}} @endif<br/>
             {{$oef['city']}}, {{$oef['state_name']}}
            
            </p></td>
@@ -135,7 +135,7 @@
                 
             </table>
         </div>
-        <div class="col23">
+        <div class="col23" style="float:right;">
             <table style="padding-left: 10px;">
                 <tr>
                     <td style="font-weight:bold;font-size: 12px;">Order No.</td>
@@ -159,7 +159,7 @@
      
     </div>
     <div  style="font-size:12px; padding-top: 30px;">
-        <span></span>
+        <span></span><br/>
         <span style="padding-left:0px;" >Dear Sir / Madam,</span><br>
         <span>This is to acknowledge that we are in receipt of your order having following details:</span>
     </div><br>
@@ -169,8 +169,8 @@
         }
     </style>
     <div class="row3"  style="border-bottom:solid 0.5px black;">
-        <table border=1>
-            <tr style="font-weight:bold;font-size: 10px;">
+        <table border="1" cellpadding="0" cellspacing="0" width="200px" style="border-collapse:collapse;">
+            <tr style="font-weight:bold;font-size: 10px;background-color:#BED7EF;">
                 <th rowspan="2">S.NO</th>
                 <th rowspan="2">ITEM NO.</th>
                 <th rowspan="2" width='40%'>ITEM DESCRIPTION</th>
@@ -179,20 +179,30 @@
                 <th rowspan="2">RATE</th>
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
+                @if($oef['zone_name']!='Export')
+                @if($oef['state_name']=='Maharashtra')
                 <th colspan="2">CGST</th>
                 <th colspan="2">SGST/UTGST</th>
+                @else
                 <th colspan="2">IGST</th>
+                @endif
+                @endif
                 <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
-            <tr>
+            <tr style="font-weight:bold;font-size: 10px;background-color:#BED7EF;">
                 <th>%</th>
                 <th>Value</th>
-                <th>%</th>
-                <th>Value</th>
-                <th>%</th>
-                <th>Value</th>
-                <th>%</th>
-                <th>Value</th>
+                @if($oef['zone_name']!='Export')
+                  @if($oef['state_name']=='Maharashtra')
+                  <th>%</th>
+                  <th>Value</th>
+                  <th>%</th>
+                  <th>Value</th>
+                  @else
+                  <th>%</th>
+                  <th>Value</th>
+                  @endif
+                @endif
             </tr>
             <?php $i=1;
             $total = 0;
@@ -207,7 +217,7 @@
             $totalsum = 0;
              ?>
             @foreach($items as $item)
-            <tr style="text-align: center;">
+            <tr style="text-align: center;font-size:9px;">
                 <td>{{$i++}}</td>
                 <td>{{$item['sku_code']}}</td>
                 <td style="text-align: left;">{{$item['discription']}}</td>
@@ -218,13 +228,29 @@
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
                 <td>{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
                 <td>{{$discount_value}}</td>
-                <td>{{$item['cgst']}}</td>
-                <td>{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
-                <td>{{$item['sgst']}}</td>
-                <td>{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
-                <td>{{$item['igst']}}</td>
-                <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
-                <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
+                @if($oef['zone_name']!='Export')
+                  @if($oef['state_name']=='Maharashtra')
+                    <td>{{$item['cgst']}}</td>
+                    <td>{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
+                    <td>{{$item['sgst']}}</td>
+                    <td>{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
+                    @else
+                    <td>{{$item['igst']}}</td>
+                    <td>{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
+                    @endif
+               
+                @endif
+                <?php// $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
+                <?php 
+                if($oef['zone_name']!='Export')
+                {
+                $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100); 
+                }
+                else
+                {
+                    $total_amount =$discount_value; 
+                }
+                 ?>
                 <td><b>{{number_format((float)($total_amount), 2, '.', '')}}</b></td>
                 <?php 
                 $total =$total+ $item['rate']* $item['quantity'];
@@ -242,7 +268,7 @@
                  ?>
             </tr>
             @endforeach
-            <tr style="text-align: center;">
+            <tr style="text-align: center;background-color:#BED7EF;">
                 <td></td>
                 <td></td>
                 <td></td>
@@ -252,12 +278,17 @@
                 <td></td>
                 <td></td>
                 <td><b>{{number_format((float)($tsum), 2, '.', '')}}</b></td>
+                @if($oef['zone_name']!='Export')
+                @if($oef['state_name']=='Maharashtra')
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
+                @else
                 <td></td>
                 <td></td>
+                @endif
+                @endif
                 <td><b>{{number_format((float)($totalsum), 2, '.', '')}}</b></td>
             </tr>       
         
@@ -268,8 +299,14 @@
         <div class="col41">
             <div class="valuewords">
                 <strong>Amount in Words</strong><br/>
-                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> 
-                
+               
+                <?php
+                 if($oef['zone_name']!='Export') 
+                    echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))));
+                else
+                //echo '0';
+                  echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount), 2, '.', '')))); 
+                ?> 
                 <span class="value_in_words"></span>
             </div>
            
@@ -286,26 +323,34 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
                 </tr>
-                <tr>
-                    <td style="width:160px">Sum of CGST</td>
-                    <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
-                </tr>
-                <tr>
-                    <td style="width:160px">Sum of SGST/UTGST</td>
-                    <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
-                </tr>
-                <tr>
-                    <td style="width:160px">Sum of IGST</td>
-                    <td style="width:30px;">:</td>
-                    <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
-                </tr>
+                @if($oef['zone_name']!='Export')
+                  @if($oef['state_name']=='Maharashtra')
+                  <tr>
+                      <td style="width:160px">Sum of CGST</td>
+                      <td style="width:30px;">:</td>
+                      <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width:160px">Sum of SGST/UTGST</td>
+                      <td style="width:30px;">:</td>
+                      <td style="text-align:right;">{{number_format((float)($total_sgst), 2, '.', '')}}</td>
+                  </tr>
+                  @else
+                  <tr>
+                      <td style="width:160px">Sum of IGST</td>
+                      <td style="width:30px;">:</td>
+                      <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
+                  </tr>
+                  @endif
+                @endif
                 <tr>
                     <td style="width:160px">Rounf Off</td>
                     <td style="width:30px;">:</td>
                      <?php 
-                    $t = number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '');
+                     if($oef['zone_name']!='Export')
+                        $t = number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '');
+                    else
+                         $t = number_format((float)($total-$total_discount), 2, '.', '');
                     $round = round($t);
                     $roundoff = number_format((float)($round-$t), 2, '.', '');
                     ?>
@@ -320,8 +365,10 @@
                      <?php
                      $grand = 0;
                      $grandt = 0;
-                    $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))
-                   
+                     if($oef['zone_name']!='Export')
+                        $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''));
+                    else
+                    $grand = round(number_format((float)($total-$total_discount), 2, '.', ''));
                     ?>
                     <th class="grand_total_value" style="text-align:right;">{{ $grand }} </th>
                 </tr> 
@@ -338,8 +385,9 @@ concerning this order.</span><br>
 numbers). You may receive a separate query from us relating to items from this order for which the 
 specifications were not clear or complete. When you receive this query, kindly send us a fresh order with 
 complete and clear specifications (code numbers) for items mentioned in our query letter.</span><br>
-  <span>Please Note : This is a computer generated e-mail intimating the booking of your order. If you have query 
-related to your orders, please communicate with our Commercial/Logistics department.</span><br><br>
+  <span>Please Note :This is a computer-generated email. Please do not reply to this email. If you have any queries related to your order or order acknowledgment, please write to orders@adler-healthcare.com or chandrashelhar.purohit@adler-healthcare.com.
+
+Please also note that once an order is booked, it cannot be canceled.</span><br><br>
     </div><br>
   <div class="row3">  
     

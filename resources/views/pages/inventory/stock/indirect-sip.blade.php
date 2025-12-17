@@ -42,9 +42,10 @@
                @endforeach 
         <div class="card-header bg-gray-400 bd-b-0-f pd-b-0">
             <nav class="nav nav-tabs">
-            <a class="nav-link" href="{{url('inventory/Stock/ToProduction/Direct')}}">Stock Issue To Production -Direct</a>
-                <a class="nav-link " href="{{url('inventory/Stock/ToProduction/Packing')}}">Stock Issue To Production -Packing</a>
-                <a class="nav-link active"  href="{{url('inventory/Stock/ToProduction/Indirect')}}">Stock Issue To Production -Indirect</a>
+            <a class="nav-link" href="{{url('inventory/Stock/ToProduction/Direct')}}">SIP -Direct</a>
+                <a class="nav-link " href="{{url('inventory/Stock/ToProduction/Packing')}}">SIP -Packing</a>
+                <a class="nav-link active"  href="{{url('inventory/Stock/ToProduction/Indirect')}}">SIP -Indirect</a>
+                <a class="nav-link"  href="{{url('inventory/Stock/ToProduction/underProcess')}}">SIP -Under Development</a>
             </nav> 
         </div><br/>
         <div class="tab-content">
@@ -130,6 +131,11 @@
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script>
+    $(document).ready(function() {
+            $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
+            });
+    });
     $('.work_centre').select2({
         placeholder: 'Choose one',
           searchInputPlaceholder: 'Search',

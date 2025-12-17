@@ -11,6 +11,7 @@
                 </a></span>
 			</div> 
 			<h4 class="az-content-title" style="font-size: 20px;">Price List
+			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/price-master/upload-excel')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> upload</button>
 			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/price-master/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Price Master</button>
 			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/price-master/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
             </h4>
@@ -89,38 +90,49 @@
 						<table class="table table-bordered mg-b-0" id="example1">
 							<thead>
 								<tr>
-									<th>Product Name</th>
-									<th>Description </th>
-									<th>Group </th>
+									<th>Product</th>
+									<th width="7%">Description </th>
+									<!--th>Group </th-->
 									<th>HSN Code</th>
 									<th>Purchase Price </th>
                                     <th>Sales Price</th>
                                     <th>Transfer Price</th>
 									<th>MRP</th>
+									<th>Effective Date(From-To)</th>
 									<th>Action</th>
+									<th>updated_at</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
 							@foreach($prices as $price)
+								@if($price['with_effective_from']==NULL || $price['with_effective_to']==NULL ||($price['with_effective_from']<=date('Y-m-d') && $price['with_effective_to']>=date('Y-m-d')) )
 								<tr>
-									
 									<td>{{$price['sku_code']}}</td>
 									<td>{{$price['discription']}}</td>
-									<td>{{$price['group_name']}}</td>
+									<!--td>{{$price['group_name']}}</td-->
 									<td>{{$price['hsn_code']}}</td>
 									<td>{{$price['purchase']}}</td>
 									<td>{{$price['sales']}}</td>
 									<td>{{$price['transfer']}}</td>
 									<td>{{$price['mrp']}}</td>
 									<td>
+										From:<b>@if($price['with_effective_from']) {{date('d-m-Y', strtotime($price['with_effective_from']))}} @endif</b><br/>
+										To:<b>@if($price['with_effective_to']) {{date('d-m-Y', strtotime($price['with_effective_to']))}} @endif</b>
+									</td>
+									<td>
 									<button data-toggle="dropdown" style="width: 64px;" class="badge @if($price['status_type']==1) badge-success @else badge-warning @endif">@if($price['status_type']==1)  Active @else Inactive @endif<i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 										<div class="dropdown-menu">
-											<a href="{{url('fgs/price-master/add?id='.$price["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-											<a href="{{url('fgs/price-master/delete?id='.$price["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+										<a href="{{ url('fgs/price-master/edit/'.$price['id']) }}" class="dropdown-item">
+										<i class="fas fa-edit"></i> Edit
+</a>
+											<a href="{{url('fgs/price-master/delete/'.$price["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
 										</div>
 									</td>
+									<td>{{$price['updated_at']}}</td>
+
 									
 								</tr>
+								@endif
 								@endforeach
 							</tbody>
 						</table>
@@ -170,6 +182,40 @@
 		}
 	});
 
+</script>
+
+<script>
+$(document).ready(function() {
+    var seen = {};
+
+    $('#example1 tbody tr').each(function() {
+        var key = '';
+
+        // Concatenate all the fields except the date to create a unique key
+        $(this).find('td').each(function(index) {
+            if(index !== 9) { // Assuming the date is in the 10th column (index 9)
+                key += $(this).text().trim() + '|';
+            }
+        });
+
+        var updatedAt = $(this).find('td:last').text().trim();
+        if (seen[key]) {
+            // Compare dates, keep the row with the latest date
+            var existingDate = seen[key].find('td:last').text().trim();
+            if (new Date(updatedAt) > new Date(existingDate)) {
+                seen[key].remove();  // Remove the older duplicate
+                seen[key] = $(this);  // Update to the current latest row
+            } else {
+                $(this).remove();  // Remove the current row as it's older
+            }
+        } else {
+            seen[key] = $(this);  // Store this row if not seen before
+        }
+    });
+
+    // Hide the updated_at column
+    $('#example1 thead th:last-child, #example1 tbody td:last-child').hide();
+});
 </script>
 
 

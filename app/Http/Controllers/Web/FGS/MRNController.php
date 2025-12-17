@@ -12,13 +12,17 @@ use App\Models\FGS\product_stock_location;
 use App\Models\FGS\fgs_product_stock_management;
 use App\Models\FGS\production_stock_management;
 use App\Models\FGS\fgs_product_category;
+use App\Models\FGS\fgs_product_category_new;
 use App\Models\FGS\fgs_mrn;
 use App\Models\FGS\fgs_mrn_item;
 use App\Models\FGS\fgs_mrn_item_rel;
 use App\Models\batchcard;
+use App\Models\fgs_item_master;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MRDExport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Exports\FGSmrntransactionExport;
+
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 
 class MRNController extends Controller
@@ -31,6 +35,7 @@ class MRNController extends Controller
         $this->fgs_mrn_item = new fgs_mrn_item;
         $this->fgs_mrn_item_rel = new fgs_mrn_item_rel;
         $this->product = new product;
+        $this->fgs_item_master = new fgs_item_master;
         $this->fgs_product_stock_management = new fgs_product_stock_management;
         $this->production_stock_management = new production_stock_management;
     }
@@ -50,8 +55,9 @@ class MRNController extends Controller
             $condition[] = ['fgs_mrn.mrn_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
 
-        $mrn = fgs_mrn::select('fgs_mrn.*', 'fgs_product_category.category_name', 'product_stock_location.location_name')
+        $mrn = fgs_mrn::select('fgs_mrn.*', 'fgs_product_category.category_name','fgs_product_category_new.category_name as new_category_name','product_stock_location.location_name')
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'fgs_mrn.product_category')
+            ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', 'fgs_mrn.new_product_category')
             ->leftJoin('product_stock_location', 'product_stock_location.id', 'fgs_mrn.stock_location')
             ->where($condition)
             ->where('fgs_mrn.status',1)
@@ -69,40 +75,68 @@ class MRNController extends Controller
             $validation['product_category'] = ['required'];
             $validation['stock_location'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
+    
             if (!$validator->errors()->all()) {
+                // Generate year combo
                 if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
                     $years_combo = date('y', strtotime('-1 year')) . date('y');
                 } else {
                     $years_combo = date('y') . date('y', strtotime('+1 year'));
                 }
-                $data['mrn_number'] = "MRN-" . $this->year_combo_num_gen(DB::table('fgs_mrn')->where('fgs_mrn.mrn_number', 'LIKE', 'MRN-' . $years_combo . '%')->count());
+    
+                // Fetch the latest MRN number for the current year combo
+                $latestMRN = DB::table('fgs_mrn')
+                    ->where('mrn_number', 'LIKE', 'MRN-' . $years_combo . '-%')
+                    ->orderBy('mrn_number', 'desc')
+                    ->value('mrn_number');
+    
+                // Generate new 4-digit running number
+                if ($latestMRN) {
+                    $lastNumber = (int) substr($latestMRN, -4);
+                    $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+                } else {
+                    $newNumber = '0001';
+                }
+    
+                // Final MRN Number
+                $data['mrn_number'] = "MRN-" . $years_combo . '-' . $newNumber;
+    
+                // Assign form values
                 $data['mrn_date'] = date('Y-m-d', strtotime($request->mrn_date));
                 $data['supplier_doc_number'] = $request->supplier_doc_number;
                 $data['supplier_doc_date'] = date('Y-m-d', strtotime($request->supplier_doc_date));
                 $data['product_category'] = $request->product_category;
+                $data['new_product_category'] = $request->new_product_category;
                 $data['stock_location'] = $request->stock_location;
-                $data['supplier']=$request->supplier;
+                $data['supplier'] = $request->supplier;
                 $data['created_by'] = config('user')['user_id'];
                 $data['status'] = 1;
+                $data['remarks'] = $request->remarks;
                 $data['created_at'] = date('Y-m-d H:i:s');
                 $data['updated_at'] = date('Y-m-d H:i:s');
+    
+                // Insert MRN
+               // dd($data);
                 $add = $this->fgs_mrn->insert_data($data);
                 if ($add) {
                     $request->session()->flash('success', "You have successfully added a MRN !");
                     return redirect('fgs/MRN/item-list/' . $add);
                 } else {
-                    $request->session()->flash('error', "MRN insertion is failed. Try again... !");
+                    $request->session()->flash('error', "MRN insertion failed. Try again... !");
                     return redirect('fgs/MRN-add');
                 }
             } else {
                 return redirect('fgs/MRN-add')->withErrors($validator)->withInput();
             }
         } else {
-            $locations = product_stock_location::get();
+            $locations = product_stock_location::where('status', 1)
+                ->whereNotIn('id', [12, 13, 14])->get();
             $category = fgs_product_category::get();
-            return view('pages/FGS/MRN/MRN-add', compact('locations', 'category'));
+            $product_category = fgs_product_category_new::get();
+            return view('pages/FGS/MRN/MRN-add', compact('locations', 'category', 'product_category'));
         }
     }
+    
     public function MRN_edit($id,Request $request)
     {
         if ($request->isMethod('post')) 
@@ -119,11 +153,13 @@ class MRNController extends Controller
                 $data['supplier_doc_number'] = $request->supplier_doc_number;
                 $data['supplier_doc_date'] = date('Y-m-d', strtotime($request->supplier_doc_date));
                 $data['product_category'] = $request->product_category;
+                $data['new_product_category'] = $request->new_product_category;
                 $data['stock_location'] = $request->stock_location;
                 $data['supplier']=$request->supplier;
                 //$data['created_by'] = config('user')['user_id'];
                 //$data['status'] = 1;
                 //$data['created_at'] = date('Y-m-d H:i:s');
+                $data['remarks']=$request->remarks;
                 $data['updated_at'] = date('Y-m-d H:i:s');
                 $update = $this->fgs_mrn->update_data(['fgs_mrn.id'=>$request->mrn_id],$data);
                 if ($update) {
@@ -145,16 +181,15 @@ class MRNController extends Controller
             $mrn = fgs_mrn::find($id);
             $locations = product_stock_location::get();
             $category = fgs_product_category::get();
-            return view('pages/FGS/MRN/MRN-add', compact('locations', 'category','mrn'));
+            $product_category = fgs_product_category_new::get();
+            return view('pages/FGS/MRN/MRN-add', compact('locations', 'category','mrn','product_category'));
         }
     }
-    public function MRN_delete($id)
+     public function MRN_delete($id)
     {
+//dd('hi');
+         fgs_mrn::where('id', $id)->delete();
 
-        fgs_mrn::where('id', $id)
-            ->update([
-                'status' => 0
-            ]);
         // fgs_mrn_item::leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
         //     ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
         //     ->where('fgs_mrn.id', $id)
@@ -171,7 +206,7 @@ class MRNController extends Controller
        ->first();
         $condition = ['fgs_mrn_item_rel.master' => $request->mrn_id];
         if ($request->product) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->product . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->product . '%'];
         }
         if ($request->batchnumber) {
             $condition[] = ['batchcard_batchcard.batch_no', 'like', '%' . $request->batchnumber . '%'];
@@ -186,20 +221,41 @@ class MRNController extends Controller
 
     public function fetchMRNInfo(Request $request)
     {
-        $mrn = fgs_mrn::select('fgs_mrn.*','fgs_product_category.category_name','product_stock_location.location_name')
+        $mrn = fgs_mrn::select('fgs_mrn.*','fgs_product_category.category_name','product_stock_location.location_name','fgs_product_category_new.category_name as new_category_name')
                             ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_mrn.product_category')
+                            ->leftJoin('fgs_product_category_new','fgs_product_category_new.id','fgs_mrn.new_product_category')
                             ->leftJoin('product_stock_location','product_stock_location.id','fgs_mrn.stock_location')
                             ->where('fgs_mrn.id','=',$request->mrn_id)
                             ->first();
         return $mrn;
     }
-
+    public function search(Request $request, $sku = null)
+    {
+        if (!$request->q) {
+            return response()->json(['message' => 'Product code is not valid'], 500); 
+        }
+    
+        // Initialize the conditions array with SKU code search
+        $condition = [
+            ['fgs_item_master.sku_code', 'like', '%' . strtoupper($request->q) . '%'],
+            ['fgs_item_master.status_type', '=', 1] // Filter for active products
+        ];
+    
+        // Fetch product data based on conditions
+        $data = $this->fgs_item_master->get_product_mrn($condition);
+    
+        if (!empty($data)) {
+            return response()->json($data, 200); 
+        } else {
+            return response()->json(['message' => 'Product code is not valid'], 500); 
+        }
+    }
 
     // function productsearch(Request $request,$sku = null){
     //     if(!$request->q){
     //         return response()->json(['message'=>'Product code is not valid'], 500); 
     //     }
-    //     $condition[] = ['product_product.sku_code','like','%'.strtoupper($request->q).'%'];
+    //     $condition[] = ['fgs_item_master.sku_code','like','%'.strtoupper($request->q).'%'];
     //     $data  = $this->product->get_product_mrn($condition);
     //     if(!empty( $data)){
     //         return response()->json( $data, 200); 
@@ -231,126 +287,125 @@ class MRNController extends Controller
 
     public function MRNitemAdd(Request $request, $mrn_id)
     {
-       $product_cat=DB::table('fgs_mrn')
-       ->where('id',$mrn_id)
-       ->first();
-       
+        $product_cat = DB::table('fgs_mrn')
+            ->where('id', $mrn_id)
+            ->first();
+    
         if ($request->isMethod('post')) {
-            if($product_cat->product_category==3)
-            {
+            // Validation based on product category
+            if ($product_cat->product_category == 3) {
                 $validation['moreItems.*.product'] = ['required'];
                 $validation['moreItems.*.batch_no'] = ['required'];
-                // $validation['batch_id.*'] = ['required'];
-                // $validation['qty'] = ['required'];
-                //$validation['moreItems.*.qty'] = ['required'];
-                $validation['moreItems.*.manufacturing_date'] = ['required', 'date']; 
-            }else{
+                $validation['moreItems.*.manufacturing_date'] = ['required', 'date'];
+            } else {
                 $validation['moreItems.*.product'] = ['required'];
                 $validation['moreItems.*.batch_no'] = ['required'];
-                // $validation['batch_id'] = ['required'];
-                // $validation['qty'] = ['required'];
                 $validation['moreItems.*.qty'] = ['required'];
                 $validation['moreItems.*.manufacturing_date'] = ['required', 'date'];
             }
-            // dd($request->moreItems['batch_no']);
-            //$validation['moreItems.*.expiry_date'] = ['required','date'];
+    
             $validator = Validator::make($request->all(), $validation);
-            //  dd($request->batch_id);
+    
             if (!$validator->errors()->all()) {
                 $mrn_info = fgs_mrn::find($request->mrn_id);
-                // if(!empty($request->batch_id)){
-                //     $batch_card_id= DB::table('batchcard_batchcard')
-                //     ->insertGetId([
-                //     "batch_no"=>$request->batch_id,
-                //     "quantity"=>$request->qty,
-                //     "is_trade"=>1
-                //     ]);
-                // }
-               
+    
                 foreach ($request->moreItems as $key => $value) {
-                    if($product_cat->product_category==3)
-                    {
-                        $batchcard_exist = DB::table('batchcard_batchcard')->where('batch_no','=',$value['batch_no'])->where('is_trade','=',1)->first();
-                        if(!empty($batchcard_exist))
-                        {
+                    // Get product information for sterility check
+                    $product_info = DB::table('fgs_item_master')->where('id', $value['product'])->first();
+    
+                    // Set expiry_date based on product sterility
+                    if ($product_info && $product_info->is_sterile == 0) {
+                        // Not sterile, set expiry_date to '0000-00-00'
+                        $expiry_date = '0000-00-00';
+                    } else {
+                        // If product is sterile, use actual expiry date or empty string if 'N.A'
+                        if ($value['expiry_date'] != 'N.A') {
+                            $expiry_date = date('Y-m-d', strtotime($value['expiry_date']));
+                        } else {
+                            $expiry_date = '';
+                        }
+                    }
+    
+                    // Handle batchcard existence and quantity adjustments
+                    if ($product_cat->product_category == 3) {
+                        // When product category is 3
+                        $batchcard_exist = DB::table('batchcard_batchcard')->where('batch_no', '=', $value['batch_no'])->where('is_trade', '=', 1)->first();
+    
+                        if (!empty($batchcard_exist)) {
                             $batch_card_id = $batchcard_exist->id;
-                            $qty=$value['qty'];
+                            $qty = $batchcard_exist->quantity - $value['qty'];
+                            DB::table('batchcard_batchcard')
+                                ->where('id', '=', $value['batch_no'])
+                                ->update(["quantity" => $qty]);
+                        } else {
+                            $batch_card_id = DB::table('batchcard_batchcard')
+                                ->insertGetId([
+                                    "batch_no" => $value['batch_no'],
+                                    "quantity" => $value['qty'],
+                                    "is_trade" => 1
+                                ]);
                         }
-                        else
-                        {
-                            $batch_card_id= DB::table('batchcard_batchcard')
-                            ->insertGetId([
-                            "batch_no"=>$value['batch_no'],
-                            "quantity"=>$value['qty'],
-                            "is_trade"=>1
-                            ]);
-                        }
-                        $qty=$value['qty'];
+                    } else {
+                        // When product category is not 3
+                        $batchcard_exist = DB::table('batchcard_batchcard')->where('id', '=', $value['batch_no'])->where('is_trade', '=', 0)->first();
+                        $batch_card_id = $value['batch_no'];
+                        $qty = $batchcard_exist->quantity - $value['qty'];
+                        DB::table('batchcard_batchcard')
+                            ->where('id', '=', $value['batch_no'])
+                            ->update(["quantity" => $qty]);
                     }
-                    else
-                    {
-                        $batch_card_id=$value['batch_no']; 
-                        $qty=$value['qty'];
-
-                    }
-
-                    if ($value['expiry_date'] != 'N.A')
-                        $expiry_date = date('Y-m-d', strtotime($value['expiry_date']));
-                    else
-                        $expiry_date = '';
-                        // if(empty($value['batch_no']))
-                        // {
-                        // $batchcard_id=$batch_card_id;
-                        // $qty=$request->qty;
-                        // }else{
-                        //    $batchcard_id=$value['batch_no'];
-                        //    $qty=$value['qty'];
-                        // }
+    
+                    // Prepare data to be inserted into MRN items and stock management
                     $data = [
                         "product_id" => $value['product'],
-                       // "batchcard_id" => $value['batch_no'],moreItems[0][batch_no]
-                       "batchcard_id" => $batch_card_id,
-                        "quantity" => $qty,
+                        "batchcard_id" => $value['batch_no'],
+                        "quantity" => $value['qty'],
                         "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
                         "expiry_date" => $expiry_date,
                         "created_at" => date('Y-m-d H:i:s')
                     ];
+    
                     $mrn_data = [
                         'remarks' => $request->remarks
                     ];
-                    $prdct_stock = fgs_product_stock_management::where('product_id',$value['product'])->where('batchcard_id',$batch_card_id)->where('stock_location_id',$mrn_info->stock_location)->first();
-                    if(!empty($prdct_stock))
-                    {
-                        $new_stock = $prdct_stock->quantity+ $qty;
-                        $res[] = $this->fgs_product_stock_management->update_data(['id'=>$prdct_stock->id],['quantity'=>$new_stock]);
-                    }
-                    else
-                    {
+    
+                    // Check if product stock already exists
+                    $prdct_stock = fgs_product_stock_management::where('product_id', $value['product'])
+                        ->where('batchcard_id', $batch_card_id)
+                        ->where('stock_location_id', $mrn_info->stock_location)
+                        ->first();
+    
+                    if (!empty($prdct_stock)) {
+                        $new_stock = $prdct_stock->quantity + $value['qty'];
+                        $res[] = $this->fgs_product_stock_management->update_data(['id' => $prdct_stock->id], ['quantity' => $new_stock]);
+                    } else {
                         $stock = [
                             "product_id" => $value['product'],
-                        // "batchcard_id" => $value['batch_no'],
-                        "batchcard_id" =>$batch_card_id,
-                            "quantity" => $qty,
+                            "batchcard_id" => $value['batch_no'],
+                            "quantity" => $value['qty'],
                             "stock_location_id" => $mrn_info['stock_location'],
-                            "quantity" => $qty,
                             "manufacturing_date" => date('Y-m-d', strtotime($value['manufacturing_date'])),
                             "expiry_date" => $expiry_date,
                         ];
                         $this->fgs_product_stock_management->insert_data($stock);
                     }
+    
+                    // Insert MRN item data
                     $this->fgs_mrn_item->insert_data($data, $request->mrn_id);
+                    // Update MRN data with remarks
                     $this->fgs_mrn->update_data(['id' => $request->mrn_id], $mrn_data);
-                    
-                  
                 }
-                $request->session()->flash('success', "You have successfully added a MRN item !");
+    
+                // Success message and redirect
+                $request->session()->flash('success', "You have successfully added an MRN item!");
                 return redirect('fgs/MRN/item-list/' . $request->mrn_id);
             } else {
+                // Validation errors, return back with errors
                 return redirect('fgs/MRN/add-item/' . $request->mrn_id)->withErrors($validator)->withInput();
             }
         } else {
-            //$batchcards = DB::table('batchcard_batchcard')->select('id',ba)->get();
-            return view('pages/FGS/MRN/MRN-item-add',compact('product_cat'));
+            // When request method is not post, return the view for adding MRN items
+            return view('pages/FGS/MRN/MRN-item-add', compact('product_cat'));
         }
     }
 
@@ -362,6 +417,8 @@ class MRNController extends Controller
 
         $pdf = PDF::loadView('pages.FGS.MRN.pdf-view', $data);
         // $pdf->set_paper('A4', 'landscape');
+        $pdf->setOptions(['isPhpEnabled' => true]);       
+
         $file_name = "MRN" . $data['mrn']['firm_name'] . "_" . $data['mrn']['mrn_date'];
         return $pdf->stream($file_name . '.pdf');
     }
@@ -381,189 +438,130 @@ class MRNController extends Controller
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
             $no_column = 5;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
-            //echo $sheet1_column_count;exit;
+    
             if($sheet1_column_count == $no_column)
             {
-                $reslt = $this->Excelsplitsheet($ExcelOBJ,$request->mrn_id);
-                 //print_r($res);exit;
-                 if($reslt)
-                 {
-                    $request->session()->flash('success',  "Successfully uploaded.");
+                $reslt = $this->Excelsplitsheet($ExcelOBJ, $request->mrn_id);
+    
+                if($reslt)
+                {
+                    $request->session()->flash('success', "Successfully uploaded.");
                     return redirect('fgs/MRN/item-list/'.$request->mrn_id);
-                 }
-                 else{
-                    $request->session()->flash('error',  "The data already uploaded.");
+                }
+                else
+                {
+                    $request->session()->flash('error', "The data already uploaded.");
                     return redirect('fgs/MRN/item-list/'.$request->mrn_id);
-                 }
+                }
             }
             else 
             {
-                $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
+                $request->session()->flash('error', "Column not matching. Please download the excel template and check the column count.");
                 return redirect('fgs/MRN/item-list/'.$request->mrn_id);
             }
         }
     }
-    public function Excelsplitsheet($ExcelOBJ,$mrn_id)
+    
+    public function Excelsplitsheet($ExcelOBJ, $mrn_id)
     {
         $ExcelOBJ->SQLdata = [];
         $ExcelOBJ->arrayinc = 0;
-
-        foreach ($ExcelOBJ->worksheetData as $key => $worksheet) {
-            $ExcelOBJ->sectionName = '';
+    
+        foreach ($ExcelOBJ->worksheetData as $worksheet) 
+        {
             $ExcelOBJ->sheetName = $worksheet['worksheetName'];
             $ExcelOBJ->reader->setLoadSheetsOnly($ExcelOBJ->sheetName);
             $ExcelOBJ->spreadsheet = $ExcelOBJ->reader->load($ExcelOBJ->inputFileName);
             $ExcelOBJ->worksheet = $ExcelOBJ->spreadsheet->getActiveSheet();
             $ExcelOBJ->excelworksheet = $ExcelOBJ->worksheet->toArray();
             $ExcelOBJ->date_created = date('Y-m-d H:i:s');
-            $ExcelOBJ->sheetname = $ExcelOBJ->sheetName;
-            $this->insert_MRN_items($ExcelOBJ,$mrn_id);
-        
-            //die("done");
+            
+            $this->insert_MRN_items($ExcelOBJ, $mrn_id);
         }
         return 1;
     }
-    function insert_MRN_items($ExcelOBJ,$mrn_id)
+    
+    function insert_MRN_items($ExcelOBJ, $mrn_id)
+{
+    $res = [];
+
+    foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
     {
-        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
-            $mrn = $this->fgs_mrn->get_single_mrn(['fgs_mrn.id'=>$mrn_id]);
-            if ($key > 0 &&  $excelsheet[1]) 
+        if ($key > 0 && $excelsheet[1]) 
+        {
+            $mrn = $this->fgs_mrn->get_single_mrn(['fgs_mrn.id' => $mrn_id]);
+
+            // Check if product exists and is not deactivated (status_type != 0)
+            $product = fgs_item_master::where('sku_code', '=', $excelsheet[0])->first();
+
+            if ($product && $product->status_type != 0) 
             {
-                //echo (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d'));exit;
-                if($mrn->category_name != 'TRADE') 
+                // Check if batch number exists in batchcard_batchcard table
+                $batchcard_id = batchcard::where('batch_no', '=', $excelsheet[1])->pluck('batchcard_batchcard.id')->first();
+
+                // If location_id is 10 and batch number doesn't exist, insert it
+               
+                if ($mrn->location_id == 10 && !$batchcard_id) {
+                    // Get the latest ID once before inserting multiple records
+                    $latestId = batchcard::selectRaw('MAX(batchcard_batchcard.id) as max_id')->value('max_id') ?? 0;
+                    
+                    // Assign the next ID
+                    $latestId++;
+                
+                    $batchcard_id = batchcard::insertGetId([
+                        'id' => $latestId, // Use the incremented ID
+                        'batch_no' => $excelsheet[1],
+                        'product_id' => $product->id, 
+                        'created' => now()
+                    ]);
+                
+                    // Increase the latest ID for the next iteration
+                    $latestId++;
+                }
+                                  
+                
+                if ($batchcard_id) 
                 {
-                    $product_id = product::where('sku_code', '=', $excelsheet[0])->pluck('id')->first();
-                    $batchcard_id = batchcard::where('batch_no', '=', $excelsheet[1])->pluck('batchcard_batchcard.id')->first();
-                    if ($product_id && $batchcard_id)
+                    $item['product_id'] = $product->id;
+                    $item['batchcard_id'] = $batchcard_id;
+                    $item['quantity'] = $excelsheet[2];
+                    $item['manufacturing_date'] = ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL;
+                    $item['expiry_date'] = ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' ';
+                    $item['created_at'] = date('Y-m-d H:i:s');
+                    
+                    $this->fgs_mrn_item->insert_data($item, $mrn_id);
+
+                    $prdct_stock = fgs_product_stock_management::where('product_id', $product->id)
+                                    ->where('batchcard_id', $batchcard_id)
+                                    ->where('stock_location_id', $mrn->stock_location)
+                                    ->first();
+
+                    if (!empty($prdct_stock)) 
                     {
-                        $item['product_id'] = $product_id;
-                        $item['batchcard_id'] = $batchcard_id;
-                        $item['quantity'] = $excelsheet[2];
-                        $item['manufacturing_date'] = ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL;
-                        $item['expiry_date'] = ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' ';
-                        $item['created_at'] = date('Y-m-d H:i:s');
-                        $this->fgs_mrn_item->insert_data($item, $mrn_id);
-                        $prdct_stock = fgs_product_stock_management::where('product_id',$product_id)->where('batchcard_id',$batchcard_id)->where('stock_location_id',$mrn->stock_location)->first();
-                        if(!empty($prdct_stock))
-                        {
-                            $new_stock = $prdct_stock->quantity+$excelsheet[2];
-                            $res[] = $this->fgs_product_stock_management->update_data(['id'=>$prdct_stock->id],['quantity'=>$new_stock]);
-                        }
-                        else
-                        {
-                            $stock = [
-                                "product_id" => $product_id,
-                                "batchcard_id" => $batchcard_id,
-                                "quantity" => $excelsheet[2],
-                                "stock_location_id" => $mrn->location_id,
-                                'manufacturing_date' => ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
-                                'expiry_date' => ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' '
-                            ];
-                            $res[]=$this->fgs_product_stock_management->insert_data($stock);
-                            // $res[]=DB::table('production_stock_management')->insert($data);
-                        }
+                        $new_stock = $prdct_stock->quantity + $excelsheet[2];
+                        $res[] = $this->fgs_product_stock_management->update_data(['id' => $prdct_stock->id], ['quantity' => $new_stock]);
                     } 
                     else 
                     {
-                        $prdct[] = $excelsheet[0];
-                        $batch_card[] = $excelsheet[1];
-                        $res[] = 1;
-                    }
-                }
-                else
-                {
-                    $product_id = product::where('sku_code', '=', $excelsheet[0])->pluck('id')->first();
-                    if($product_id)
-                    {
-                        $batchcard_exist = DB::table('batchcard_batchcard')->where('batch_no','=',$excelsheet[1])
-                                            ->where('is_trade','=',1)
-                                            ->where('product_id','=',$product_id)
-                                            ->first();
-                        if(!empty($batchcard_exist))
-                        {
-                            $batchcard_id = $batchcard_exist->id;
-                        }
-                        else
-                        {
-                            $batchcard_id= DB::table('batchcard_batchcard')
-                                            ->insertGetId([
-                                                "batch_no"=>$excelsheet[1],
-                                                "quantity"=>$excelsheet[2],
-                                                'product_id'=>$product_id,
-                                                "is_trade"=>1
-                                            ]);
-                        }
-                        $qty=$excelsheet[2];
-                        $item['product_id'] = $product_id;
-                        $item['batchcard_id'] = $batchcard_id;
-                        $item['quantity'] = $excelsheet[2];
-                        $item['manufacturing_date'] = ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL;
-                        $item['expiry_date'] = ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' ';
-                        $item['created_at'] = date('Y-m-d H:i:s');
-                        $this->fgs_mrn_item->insert_data($item, $mrn_id);
-                        $prdct_stock = fgs_product_stock_management::where('product_id',$product_id)->where('batchcard_id',$batchcard_id)->where('stock_location_id',$mrn->location_id)->first();
-                        if(!empty($prdct_stock))
-                        {
-                            $new_stock = $prdct_stock->quantity+$excelsheet[2];
-                            $res[] = $this->fgs_product_stock_management->update_data(['id'=>$prdct_stock->id],['quantity'=>$new_stock]);
-                        }
-                        else
-                        {
-                            $stock = [
-                                "product_id" => $product_id,
-                                "batchcard_id" => $batchcard_id,
-                                "quantity" => $excelsheet[2],
-                                "stock_location_id" => $mrn->location_id,
-                                'manufacturing_date' => ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
-                                'expiry_date' => ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' '
-                            ];
-                            $res[] = $this->fgs_product_stock_management->insert_data($stock);
-                        }
-                    }
-                    else
-                    {
-                        $prdct[] = $excelsheet[0];
-                        //$batch_card[] = $excelsheet[2];
-                        $res[] = 1;
+                        $stock = [
+                            "product_id" => $product->id,
+                            "batchcard_id" => $batchcard_id,
+                            "quantity" => $excelsheet[2],
+                            "stock_location_id" => $mrn->location_id,
+                            'manufacturing_date' => ($excelsheet[3] != "") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[3]))->format('Y-m-d')) : NULL,
+                            'expiry_date' => ($excelsheet[4] != "NA") ? (\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[4]))->format('Y-m-d')) : ' '
+                        ];
+                        $res[] = $this->fgs_product_stock_management->insert_data($stock);
                     }
                 }
             }
         }
-        if($res) {
-            //print_r($not_exist);
-            return 1;
-        } else
-            return 0;
     }
 
+    return !empty($res) ? 1 : 0;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     public function fgsMRNStockUpload()
     {
         $ExcelOBJ = new \stdClass();
@@ -841,7 +839,7 @@ class MRNController extends Controller
         $grs_item = DB::table('fgs_grs_item')->where('mrn_item_id',$id)->where('status','=',1)->get();
         if(count($grs_item)>0)
         {
-            $request->session()->flash('error', "You can't update this MRN Item.This moved to Next step !");
+            // $request->session()->flash('error', "You can't update this MRN Item.This moved to Next step !");
             return redirect()->back();
         }
         else
@@ -854,10 +852,10 @@ class MRNController extends Controller
             if($mrn->location_name!='SNN Trade')
             {
                     $item_details = DB::table('fgs_mrn_item')
-                        ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.id as product_id','product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
+                        ->select('fgs_mrn_item.*', 'fgs_item_master.sku_code', 'fgs_item_master.id as product_id','fgs_item_master.discription', 'fgs_item_master.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','fgs_item_master.is_sterile')
                         ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
                         ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
-                        ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+                        ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_mrn_item.product_id')
                         ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
                         ->where('fgs_mrn_item.id', $id)
                         ->orderBy('fgs_mrn_item.id', 'DESC')
@@ -871,10 +869,10 @@ class MRNController extends Controller
             else
             {
                 $item_details = DB::table('fgs_mrn_item')
-                        ->select('fgs_mrn_item.*', 'product_product.sku_code', 'product_product.id as product_id','product_product.discription', 'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','product_product.is_sterile')
+                        ->select('fgs_mrn_item.*', 'fgs_item_master.sku_code', 'fgs_item_master.id as product_id','fgs_item_master.discription', 'fgs_item_master.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_mrn.mrn_number','fgs_item_master.is_sterile')
                         ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
                         ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
-                        ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+                        ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_mrn_item.product_id')
                         ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
                         ->where('fgs_mrn_item.id', $id)
                         ->orderBy('fgs_mrn_item.id', 'DESC')
@@ -892,16 +890,97 @@ class MRNController extends Controller
             return view('pages/fgs/MRN/MRN-update-item', compact('item_details', 'id','batchcards'));
         }
     }
+    // public function update_mrn_item(Request $request)
+    // {
+    //     $validation['batch_no'] = ['required'];
+    //     $validation['stock_qty'] = ['required'];
+    //     $validation['manufacturing_date'] = ['required', 'date'];
+    //     $validator = Validator::make($request->all(), $validation);
+    //     if(!$validator->errors()->all())
+    //     {
+    //         $mrn_item = fgs_mrn_item::find($request->mrn_item_id);
+    //         $mrn_rel = DB::table('fgs_mrn_item_rel')->where('item',$request->mrn_item_id)->first();
+    //         $mrn = fgs_mrn::find($mrn_rel->master);
+    //         $old_batch = $mrn_item->batchcard_id;
+    //         $old_qty = $mrn_item->quantity;
+    //         $product = $request->product_id;
+
+    //         //old batch Stock updation 
+    //         $old_stock = DB::table('fgs_product_stock_management')
+    //                                 ->where('product_id','=',$product)
+    //                                 ->where('batchcard_id','=',$old_batch)
+    //                                 ->first();
+    //         $old_stock_update = $old_stock->quantity - $mrn_item->quantity; 
+    //         $old_stock_updation = DB::table('fgs_product_stock_management')
+    //                                         ->where('id',$old_stock->id)
+    //                                         ->update(['quantity'=>$old_stock_update]);
+            
+            
+    //         //new batch stock updation
+    //         $new_stock = DB::table('fgs_product_stock_management')
+    //                             ->where('product_id','=',$product)
+    //                             ->where('batchcard_id','=',$request->batch_no)
+    //                             ->first();
+    //         if(!empty($new_stock))
+    //         {
+    //             if ($request->expiry_date != 'N.A')
+    //                 $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
+    //             else
+    //                 $expiry_date = '';
+    //             $new_stock_update = $new_stock->quantity + $request->stock_qty; 
+    //             $new_stock_updation = DB::table('fgs_product_stock_management')
+    //                                     ->where('id',$new_stock->id)
+    //                                     ->update([
+    //                                         'quantity'=>$new_stock_update,
+    //                                         'manufacturing_date'=>date('Y-m-d', strtotime($request->manufacturing_date)),
+    //                                         'expiry_date'=>$expiry_date]);
+    //         }
+    //         else
+    //         {
+    //             if ($request->expiry_date != 'N.A')
+    //                 $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
+    //             else
+    //                 $expiry_date = '';
+    //             $stock = [
+    //                 "product_id" => $product,
+    //                 "batchcard_id" => $request->batch_no,
+    //                 "quantity" => $request->stock_qty,
+    //                 "stock_location_id" =>$mrn->stock_location,
+    //                 'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date)),
+    //                 'expiry_date' => $expiry_date,
+    //                 //'created_at'=>date('Y-m-d'),
+    //             ];
+    //             $res = $this->fgs_product_stock_management->insert_data($stock);
+    //         }
+    //         if ($request->expiry_date != 'N.A')
+    //         $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
+    //         else
+    //         $expiry_date = '';
+    //         $data['batchcard_id']=$request->batch_no;
+    //         $data['quantity'] = $request->stock_qty;
+    //         $data['manufacturing_date'] = date('Y-m-d', strtotime($request->manufacturing_date));
+    //         $data['expiry_date'] = $expiry_date;
+    //         $update_mrn = $this->fgs_mrn_item->update_data(['id'=>$mrn_item->id],$data);
+    //         if($update_mrn)
+    //         $request->session()->flash('success', "You have successfully updated a MRN Item !");
+    //         else
+    //         $request->session()->flash('error', "You have failed to update a MRN Item !");
+    //         return redirect('fgs/MRN/item-list/' . $mrn->id);
+    //     }
+    //     else
+    //     {
+    //         return redirect()->back()->withErrors($validator)->withInput();
+    //     }
+    // }
     public function update_mrn_item(Request $request)
     {
         $validation['batch_no'] = ['required'];
         $validation['stock_qty'] = ['required'];
         $validation['manufacturing_date'] = ['required', 'date'];
         $validator = Validator::make($request->all(), $validation);
-        if(!$validator->errors()->all())
-        {
+        if (!$validator->errors()->all()) {
             $mrn_item = fgs_mrn_item::find($request->mrn_item_id);
-            $mrn_rel = DB::table('fgs_mrn_item_rel')->where('item',$request->mrn_item_id)->first();
+            $mrn_rel = DB::table('fgs_mrn_item_rel')->where('item', $request->mrn_item_id)->first();
             $mrn = fgs_mrn::find($mrn_rel->master);
             $old_batch = $mrn_item->batchcard_id;
             $old_qty = $mrn_item->quantity;
@@ -909,36 +988,44 @@ class MRNController extends Controller
 
             //old batch Stock updation 
             $old_stock = DB::table('fgs_product_stock_management')
-                                    ->where('product_id','=',$product)
-                                    ->where('batchcard_id','=',$old_batch)
-                                    ->first();
-            $old_stock_update = $old_stock->quantity - $mrn_item->quantity; 
+                ->where('product_id', '=', $product)
+                ->where('batchcard_id', '=', $old_batch)
+                ->first();
+            $old_stock_update = $old_stock->quantity - $mrn_item->quantity;
             $old_stock_updation = DB::table('fgs_product_stock_management')
-                                            ->where('id',$old_stock->id)
-                                            ->update(['quantity'=>$old_stock_update]);
-            
-            
+                ->where('id', $old_stock->id)
+                ->update(['quantity' => $old_stock_update]);
+
+
             //new batch stock updation
             $new_stock = DB::table('fgs_product_stock_management')
-                                ->where('product_id','=',$product)
-                                ->where('batchcard_id','=',$request->batch_no)
-                                ->first();
-            if(!empty($new_stock))
-            {
+                ->where('product_id', '=', $product)
+                ->where('batchcard_id', '=', $request->batch_no)
+                ->first();
+            if (!empty($new_stock)) {
                 if ($request->expiry_date != 'N.A')
                     $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
                 else
                     $expiry_date = '';
-                $new_stock_update = $new_stock->quantity + $request->stock_qty; 
+                $new_stock_update = $new_stock->quantity + $request->stock_qty;
                 $new_stock_updation = DB::table('fgs_product_stock_management')
-                                        ->where('id',$new_stock->id)
-                                        ->update([
-                                            'quantity'=>$new_stock_update,
-                                            'manufacturing_date'=>date('Y-m-d', strtotime($request->manufacturing_date)),
-                                            'expiry_date'=>$expiry_date]);
-            }
-            else
-            {
+                    ->where('id', $new_stock->id)
+                    ->update([
+                        'quantity' => $new_stock_update,
+                        'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date)),
+                        'expiry_date' => $expiry_date
+                    ]);
+                $data['batchcard_id'] = $request->batch_no;
+                $data['quantity'] = $request->stock_qty;
+                $data['manufacturing_date'] = date('Y-m-d', strtotime($request->manufacturing_date));
+                $data['expiry_date'] = $expiry_date;
+                $update_mrn = $this->fgs_mrn_item->update_data(['id' => $mrn_item->id], $data);
+                if ($update_mrn)
+                    $request->session()->flash('success', "You have successfully updated a MRN Item !");
+                else
+                    $request->session()->flash('error', "You have failed to update a MRN Item !");
+                return redirect('fgs/MRN/item-list/' . $mrn->id);
+            } else {
                 if ($request->expiry_date != 'N.A')
                     $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
                 else
@@ -947,30 +1034,38 @@ class MRNController extends Controller
                     "product_id" => $product,
                     "batchcard_id" => $request->batch_no,
                     "quantity" => $request->stock_qty,
-                    "stock_location_id" =>$mrn->stock_location,
+                    "stock_location_id" => $mrn->stock_location,
                     'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date)),
                     'expiry_date' => $expiry_date,
                     //'created_at'=>date('Y-m-d'),
                 ];
                 $res = $this->fgs_product_stock_management->insert_data($stock);
+                $data['batchcard_id'] = $request->batch_no;
+                $data['quantity'] = $request->stock_qty;
+                $data['manufacturing_date'] = date('Y-m-d', strtotime($request->manufacturing_date));
+                $data['expiry_date'] = $expiry_date;
+                $update_mrn = $this->fgs_mrn_item->update_data(['id' => $mrn_item->id], $data);
+                if ($update_mrn)
+                    $request->session()->flash('success', "You have successfully updated a MRN Item !");
+                else
+                    $request->session()->flash('error', "You have failed to update a MRN Item !");
+                return redirect('fgs/MRN/item-list/' . $mrn->id);
             }
             if ($request->expiry_date != 'N.A')
-            $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
+                $expiry_date = date('Y-m-d', strtotime($request->expiry_date));
             else
-            $expiry_date = '';
-            $data['batchcard_id']=$request->batch_no;
+                $expiry_date = '';
+            $data['batchcard_id'] = $request->batch_no;
             $data['quantity'] = $request->stock_qty;
             $data['manufacturing_date'] = date('Y-m-d', strtotime($request->manufacturing_date));
             $data['expiry_date'] = $expiry_date;
-            $update_mrn = $this->fgs_mrn_item->update_data(['id'=>$mrn_item->id],$data);
-            if($update_mrn)
-            $request->session()->flash('success', "You have successfully updated a MRN Item !");
+            $update_mrn = $this->fgs_mrn_item->update_data(['id' => $mrn_item->id], $data);
+            if ($update_mrn)
+                $request->session()->flash('success', "You have successfully updated a MRN Item !");
             else
-            $request->session()->flash('error', "You have failed to update a MRN Item !");
+                $request->session()->flash('error', "You have failed to update a MRN Item !");
             return redirect('fgs/MRN/item-list/' . $mrn->id);
-        }
-        else
-        {
+        } else {
             return redirect()->back()->withErrors($validator)->withInput();
         }
     }
@@ -979,32 +1074,48 @@ class MRNController extends Controller
         $grs_item = DB::table('fgs_grs_item')->where('mrn_item_id','=',$mrn_item_id)->where('status',1)->get();
         if(count($grs_item)>0)
         {
+           // dd('if');
             $request->session()->flash('error', "You can't delete this MRN Item,It moved to next step !");
             return redirect()->back();
         }
         else
         {
+           // dd('else');
+            $mrn_item_rel = DB::table('fgs_mrn_item_rel')->where('item',$mrn_item_id)->first();
+            $mrn_master = DB::table('fgs_mrn')->where('id',$mrn_item_rel->master)->first();
             $mrn_item=DB::table('fgs_mrn_item')
                         ->where('id',$mrn_item_id) 
                         ->first();
             $stock=DB::table('fgs_product_stock_management')
                             ->where('product_id',$mrn_item->product_id)
                             ->where('batchcard_id',$mrn_item->batchcard_id)
+                            ->where('stock_location_id',$mrn_master->stock_location)
                             ->where('quantity','!=',0)
                             ->first();
-            $fgs_qty=number_format($mrn_item->quantity);
-            $pstock_qty=number_format($stock->quantity);
+            //print_r($mrn_item);exit;
+            //  dd($stock);
+            $fgs_qty = (float) $mrn_item->quantity;
+            if ($stock) {
+                $pstock_qty = (float) $stock->quantity;
+               // dd($pstock_qty);
             $update_stock =  DB::table('fgs_product_stock_management')
                                 ->where('id',$stock->id)
                                 ->update([
-                                    'quantity'=>$fgs_qty-$pstock_qty
+                                    'quantity'=>$pstock_qty-$fgs_qty
                                 ]);
+                }
             $mrn_item_update =  DB::table('fgs_mrn_item')
                                 ->where('id',$mrn_item->id)
                                 ->update([
                                     'status'=>0
                                 ]);
-            if($mrn_item_update && $update_stock)
+            $batch = DB::table('batchcard_batchcard')->where('batchcard_batchcard.id', $mrn_item->batchcard_id)->first();
+            $batchqty_new = $fgs_qty + $batch->quantity;
+            DB::table('batchcard_batchcard')->where('id', $mrn_item->batchcard_id)
+                ->update([
+                'quantity' => $batchqty_new,
+                        ]);                   
+            if($mrn_item_update)
             $request->session()->flash('success', "You have successfully deleted a MRN Item !");
             else
             $request->session()->flash('error', "You have failed to delete a MRN Item !");
@@ -1020,7 +1131,7 @@ class MRNController extends Controller
         }
 
         if ($request->item_code) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if ($request->from) {
             $condition[] = ['fgs_mrn_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
@@ -1028,9 +1139,9 @@ class MRNController extends Controller
 
         $items = fgs_mrn_item::select(
             'fgs_mrn_item.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'batchcard_batchcard.batch_no',
             'batchcard_batchcard.id as batch_id',
             'fgs_mrn.mrn_number',
@@ -1040,7 +1151,7 @@ class MRNController extends Controller
         )
             ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
             ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_mrn_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
             ->where($condition)
             ->where('fgs_mrn_item.status', 1)
@@ -1058,32 +1169,47 @@ class MRNController extends Controller
         }
 
         if ($request->item_code) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if ($request->from) {
-            $condition[] = ['fgs_mrn_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_mrn.mrn_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
         }
 
         $items = fgs_mrn_item::select(
             'fgs_mrn_item.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'batchcard_batchcard.batch_no',
             'batchcard_batchcard.id as batch_id',
             'fgs_mrn.mrn_number',
             'fgs_mrn.mrn_date',
             'fgs_mrn.created_at as mrn_wef',
-            'fgs_mrn_item.id as mrn_item_id'
+            'fgs_mrn_item.id as mrn_item_id',
+            'customer_supplier.firm_name',
+            'customer_supplier.city',
+            'state.state_name',
+            'zone.zone_name',
+            'fgs_product_category.category_name',
+            'fgs_product_category_new.category_name as new_category_name',
+            // 'transaction_type.transaction_name',
+            'customer_supplier.sales_type',
         )
             ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
             ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_mrn_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+            ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_mrn.supplier')
+                ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_mrn.product_category')
+                ->leftJoin('fgs_product_category_new','fgs_product_category_new.id','fgs_mrn.new_product_category')
+                // ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
+                ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+                ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
             ->where($condition)
-            ->where('fgs_mrn_item.status', 1)
-            ->distinct('fgs_mrn_item.id')
-            ->orderBy('fgs_mrn_item.id', 'desc')
+            ->where('fgs_mrn_item.status','=', 1)
+            ->where('fgs_mrn.status','=', 1)
+            //->distinct('fgs_mrn_item.id')
+            ->orderBy('fgs_mrn.id', 'desc')
             ->get();
 
         return Excel::download(new FGSmrntransactionExport($items), 'FGS-MRN-transaction' . date('d-m-Y') . '.xlsx');

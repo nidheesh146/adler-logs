@@ -40,30 +40,30 @@ class RequisitionItems implements FromCollection, WithHeadings, WithStyles,WithE
                 ->get();
         $i=1;
         $data = [];
-        foreach($items as $item)
-        {
-            if($item['status'] ==4)
+        foreach ($items as $item) {
+            $status = 'Unknown'; // Default value to avoid undefined variable
+        
+            if ($item['status'] == 4)
                 $status = 'Pending';
-            if($item['status'] == 5)
+            if ($item['status'] == 5)
                 $status = 'On hold';
-            if($item['status'] == 1)
+            if ($item['status'] == 1)
                 $status = 'Approved';
-		    if($item['status'] == 0)
+            if ($item['status'] == 0)
                 $status = 'Rejected';
+        
             $data[] = array(
-                    '#'=>$i++,
-                    'item_code'=>$item['item_code'],
-                    'hsn_code'=>$item['hsn_code'],
-                    'item_type'=>$item['type_name'],
-                    'description'=>$item['short_description'],
-                    'actual_order_qty'=>$item['actual_order_qty'],
-                    'unit'=>$item['unit_name'],
-                    'status'=>$status,
-                    // 'created_at'=>date('d-m-Y',strtotime($item['created_at'])),
-                    // 'updated_at'=>date('d-m-Y',strtotime($item['updated_at'])),
+                '#' => $i++,
+                'item_code' => $item['item_code'],
+                'hsn_code' => $item['hsn_code'],
+                'item_type' => $item['type_name'],
+                'description' => $item['short_description'],
+                'actual_order_qty' => $item['actual_order_qty'],
+                'unit' => $item['unit_name'],
+                'status' => $status,
             );
-           
         }
+        
         return collect($data);
     }
     public function headings(): array

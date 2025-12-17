@@ -71,10 +71,10 @@
 									<td>{{$item['discription']}}</td>	
 									<td>{{$item['hsn_code']}}</td>
 									<td>{{$item['batch_no']}}</td>
-                                    <td>{{$item['batch_quantity']}}Nos</td>
+                                    <td>{{$item['quantity']}}Nos</td>
                                     <td>{{$item['rate']}} {{$item['currency_code']}}</td>
                                     <td>{{$item['discount']}}%</td>
-                                    <td>{{($item['rate']*$item['batch_quantity'])-(($item['batch_quantity']*$item['discount']*$item['rate'])/100)}} {{$item['currency_code']}}</td>
+                                    <td>{{($item['rate']*$item['quantity'])-(($item['quantity']*$item['discount']*$item['rate'])/100)}} {{$item['currency_code']}}</td>
 								</tr>
 								@endforeach
 							</tbody>

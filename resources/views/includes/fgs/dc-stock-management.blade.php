@@ -14,6 +14,10 @@ $routeArray = app('request')->route()->getAction();
           <a class="nav-link @if (in_array($Action,['DeliveryNote.replacement'])) {{'active'}} @endif"  href="{{ url('fgs/Delivery_challan/Challan-stock-replacement') }}">Replacement</a>
           <a class="nav-link @if (in_array($Action,['DeliveryNote.dc_transfer_stock_demo'])) {{'active'}} @endif"  href="{{ url('fgs/Delivery_challan/Challan-stock-demo') }}">Demo</a>
           <a class="nav-link @if (in_array($Action,['DeliveryNote.dc_transfer_stock_samples'])) {{'active'}} @endif"  href="{{ url('fgs/Delivery_challan/Challan-stock-samples') }}">Samples</a>
+          <a class="nav-link @if (in_array($Action,['DeliveryNote.dc_transfer_stock_samples'])) {{'active'}} @endif"  href="{{ url('fgs/Delivery_challan/Challan-stock-scheme') }}">Scheme</a>
+          <a class="nav-link @if (in_array($Action,['DeliveryNote.dc_transfer_stock_samples'])) {{'active'}} @endif"  href="{{ url('fgs/Delivery_challan/Challan-stock-satellite') }}">Satellite</a>
+          <a class="nav-link @if (in_array($Action,['DeliveryNote.dc_transfer_stock_samples.MAAStock'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/MAA') }}"> Material Allocation Area(MAA) </a>
+
       </nav>
     </div>
 </div>

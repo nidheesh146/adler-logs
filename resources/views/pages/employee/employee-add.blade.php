@@ -67,14 +67,21 @@
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Role </label>
-                                <select class="form-control" name="role_permission" id="role_permission">
+                                @if(!empty($user))
+                                <?php  $role_array = explode(',', $user['role_permission']); ?>
+                                @endif
+                                <select class="form-control" name="role_permission[]" id="role_permission" multiple="multiple">
                                     <option value="">--- select one ---</option>
                                     @foreach($roles as $role)
                                     <option value="{{$role['role_id']}}"
                                         @if(!empty($user))  
-                                        @if($user["role_permission"]==$role["role_id"])
+                                       {{-- @if($user["role_permission"]==$role["role_id"])
+                                            selected
+                                        @endif--}}
+                                        @if(in_array($role["role_id"], $role_array))
                                             selected
                                         @endif
+                                       
                                         @endif>{{$role['role_name']}}</option>
                                     @endforeach
                                 </select>
@@ -216,6 +223,13 @@
         });
 
     
+  });
+  $('#role_permission').select2({
+        placeholder: 'Choose one',
+        searchInputPlaceholder: 'Search',
+        minimumInputLength: 3,
+        allowClear: true,
+        theme: "classic",
   });
     $('.Product').select2({
         placeholder: 'Choose one',

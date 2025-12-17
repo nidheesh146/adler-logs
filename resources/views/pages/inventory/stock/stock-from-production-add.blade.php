@@ -169,6 +169,11 @@
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script>
+ $(document).ready(function() {
+            $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
+            });
+    });
     //$('.item_code').select2();
     $('.az-toggle').on('click', function(){
           $(this).toggleClass('on');

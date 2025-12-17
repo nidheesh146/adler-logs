@@ -71,21 +71,51 @@ class inv_purchase_req_quotation_supplier extends Model
 
     }
     function get_quotation_all($condition){
+        return  $this->select('inv_purchase_req_quotation.*','user.f_name','user.l_name')
+        ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_purchase_req_quotation_supplier.quotation_id')
+        ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
+        ->leftjoin('inv_purchase_req_quotation_item_supp_rel','inv_purchase_req_quotation_item_supp_rel.quotation_id','=','inv_purchase_req_quotation.quotation_id')
+        ->leftjoin('user','user.user_id','=','inv_purchase_req_quotation.created_user')
+         ->whereNotIn('inv_purchase_req_quotation_item_supp_rel.item_id',function($query) {
+            $query->select('inv_final_purchase_order_item.item_id')->from('inv_final_purchase_order_item')->whereNotNull('item_id');
+          })
+        ->where($condition)
+        ->distinct('inv_purchase_req_quotation.quotation_id')
+        ->orderby('inv_purchase_req_quotation.quotation_id','desc')
+        ->paginate(15);
+
+    }
+    /*
+    function get_quotation_all($condition){
      return  $this->select('inv_purchase_req_quotation.*','user.f_name','user.l_name')
         ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=','inv_purchase_req_quotation_supplier.quotation_id')
         ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
         ->leftjoin('user','user.user_id','=','inv_purchase_req_quotation.created_user')
-        ->whereNotIn('inv_purchase_req_quotation.quotation_id',function($query) {
-            $query->select('inv_final_purchase_order_master.rq_master_id')->from('inv_final_purchase_order_master');
-          })
+         ->leftjoin('inv_purchase_req_quotation_item_supp_rel','inv_purchase_req_quotation_item_supp_rel.quotation_id','=','inv_purchase_req_quotation.quotation_id')
+        // ->whereNotIn('inv_purchase_req_quotation.quotation_id',function($query) {
+        //     $query->select('inv_final_purchase_order_master.rq_master_id')->from('inv_final_purchase_order_master');
+        //   })
+        // ->whereNotIn('inv_purchase_req_quotation_item_supp_rel.item_id',function($query) {
+        //     $query->select('inv_final_purchase_order_item.item_id')->from('inv_final_purchase_order_item');
+        //   })
+        // ->where(function($query) {
+        //     $query->whereNotIn('inv_purchase_req_quotation_item_supp_rel.item_id', function($subquery) {
+        //         $subquery->select('inv_final_purchase_order_item.item_id')
+        //                  ->from('inv_final_purchase_order_item')
+        //                  ->leftJoin('inv_final_purchase_order_rel', 'inv_final_purchase_order_item.id', '=', 'inv_final_purchase_order_rel.item')
+        //                  ->leftJoin('inv_final_purchase_order_master', 'inv_final_purchase_order_rel.master', '=', 'inv_final_purchase_order_master.id')
+        //                  ->where('inv_final_purchase_order_master.status', '=', 1);
+        //     });
+        // })
         ->distinct('inv_purchase_req_quotation.quotation_id')
-        ->orderby('inv_purchase_req_quotation.quotation_id','desc')
+        ->orderBy('inv_purchase_req_quotation.quotation_id', 'desc')
         ->where($condition)
+        ->where('inv_purchase_req_quotation_item_supp_rel.selected_item', 0)
         ->paginate(15);
 
     }
 
-
+*/
 
 
 }

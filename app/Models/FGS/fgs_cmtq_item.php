@@ -25,10 +25,10 @@ class fgs_cmtq_item extends Model
     }
     function getMTQItems($condition)
     {
-        return $this->select('fgs_cmtq_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no')
+        return $this->select('fgs_cmtq_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no')
                         ->leftjoin('fgs_cmtq_item_rel','fgs_cmtq_item_rel.item','=','fgs_cmtq_item.id')
                         ->leftjoin('fgs_cmtq','fgs_cmtq.id','=','fgs_cmtq_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_cmtq_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_cmtq_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmtq_item.batchcard_id')
                         ->where($condition)
                         ->orderBy('fgs_cmtq_item.id','ASC')
@@ -36,10 +36,10 @@ class fgs_cmtq_item extends Model
     }
     function get_items($condition)
     {
-        return $this->select('fgs_mtq_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_mtq.mtq_number')
+        return $this->select('fgs_mtq_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no','fgs_mtq.mtq_number')
                         ->leftjoin('fgs_mtq_item_rel','fgs_mtq_item_rel.item','=','fgs_mtq_item.id')
                         ->leftjoin('fgs_mtq','fgs_mtq.id','=','fgs_mtq_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_mtq_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_mtq_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mtq_item.batchcard_id')
                         ->where($condition)
                         ->orderBy('fgs_mtq_item.id','ASC')
@@ -47,11 +47,11 @@ class fgs_cmtq_item extends Model
     }
     function getAllItems($condition)
     {
-        return $this->select('fgs_cmtq_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_mtq_item.manufacturing_date','fgs_mtq_item.expiry_date')
+        return $this->select('fgs_cmtq_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no','fgs_mtq_item.manufacturing_date','fgs_mtq_item.expiry_date')
                         ->leftjoin('fgs_cmtq_item_rel','fgs_cmtq_item_rel.item','=','fgs_cmtq_item.id')
                         ->leftjoin('fgs_cmtq','fgs_cmtq.id','=','fgs_cmtq_item_rel.master')
                         ->leftjoin('fgs_mtq_item','fgs_mtq_item.id','=','fgs_cmtq_item.mtq_item_id')
-                        ->leftjoin('product_product','product_product.id','=','fgs_mtq_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_mtq_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mtq_item.batchcard_id')
                         ->where($condition)
                         ->orderBy('fgs_cmtq_item.id','ASC')

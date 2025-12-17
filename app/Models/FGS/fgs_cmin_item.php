@@ -25,10 +25,10 @@ class fgs_cmin_item extends Model
 
     function get_items($condition)
     {
-        return $this->select('fgs_cmin_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no')
+        return $this->select('fgs_cmin_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no')
                         ->leftjoin('fgs_cmin_item_rel','fgs_cmin_item_rel.item','=','fgs_cmin_item.id')
                         ->leftjoin('fgs_cmin','fgs_cmin.id','=','fgs_cmin_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_cmin_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_cmin_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmin_item.batchcard_id')
                         ->where($condition)
                         //->where('inv_mac.status','=',1)
@@ -38,11 +38,11 @@ class fgs_cmin_item extends Model
     }
     function getItems($condition)
     {
-         return $this->select('fgs_cmin_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_min_item.manufacturing_date','fgs_min_item.expiry_date')
+         return $this->select('fgs_cmin_item.*','fgs_item_master.sku_code','fgs_item_master.is_sterile','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no','fgs_cmin_item.manufacturing_date as min_man','fgs_cmin_item.expiry_date as minexp')
           ->leftjoin('fgs_min_item','fgs_min_item.id','=','fgs_cmin_item.cmin_item_id')
                         ->leftjoin('fgs_cmin_item_rel','fgs_cmin_item_rel.item','=','fgs_cmin_item.id')
                         ->leftjoin('fgs_cmin','fgs_cmin.id','=','fgs_cmin_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_cmin_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_cmin_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmin_item.batchcard_id')
                        ->where($condition)
                     ->orderBy('fgs_cmin_item.id','ASC')
@@ -50,9 +50,9 @@ class fgs_cmin_item extends Model
     }
 
     function get_min_item($condition){
-        return $this->select(['fgs_cmin_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no'])
+        return $this->select(['fgs_cmin_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no'])
                    ->join('fgs_cmin_item_rel','fgs_cmin_item_rel.item','=','fgs_cmin_item.id')
-                    ->leftjoin('product_product','product_product.id','=','fgs_cmin_item.product_id')
+                    ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_cmin_item.product_id')
                      ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_cmin_item.batchcard_id')
                     ->where($condition)
                     ->orderBy('fgs_cmin_item.id','ASC')

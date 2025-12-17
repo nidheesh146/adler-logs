@@ -57,8 +57,8 @@ class inv_mac_item extends Model
     }
 
     function get_item($condition){
-        return $this->select('inv_mac_item.id as id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_item_type.type_name','inv_supplier_invoice_item.order_qty',
-                    'inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_mac_item.accepted_quantity',
+        return $this->select('inv_mac_item.id as id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inv_item_type.type_name','inv_supplier_invoice_item.order_qty','inventory_rawmaterial.is_expiry',
+                    'inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_mac_item.accepted_quantity','inv_mac_item.expiry_date as mac_exp',
                     'inv_purchase_req_item.requisition_item_id','inv_lot_allocation.id as lot_id','inv_supplier_invoice_item.id as invoice_item_id')
                     ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_mac_item.id')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_mac_item.invoice_item_id')

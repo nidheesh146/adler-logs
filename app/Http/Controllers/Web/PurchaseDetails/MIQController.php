@@ -61,7 +61,6 @@ class MIQController extends Controller
         $data['miq']= $this->inv_miq->get_all_data($condition=null);
         return view('pages.inventory.MIQ.MIQ-list',compact('data'));
     }
-
     public function MIQAdd(Request $request,$id = null)
     {
         if ($request->isMethod('post')) {
@@ -75,18 +74,29 @@ class MIQController extends Controller
                     if(date('m')==01 || date('m')==02 || date('m')==03)
                     {
                         $years_combo = date('y', strtotime('-1 year')).date('y');
+                      //  dd($years_combo);
                     }
                     else
                     {
+                        
                         $years_combo = date('y').date('y', strtotime('+1 year'));
+                        //dd($years_combo);
+
                     }
                     $item_type = $this->item_type($request->invoice_number);
+                    //dd($item_type);
                     if($item_type=="Direct Items"){
-                        $Data['miq_number'] = "MIQ2-".$this->year_combo_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ2-'.$years_combo.'%')->count()); 
+                       // dd('dir');
+                        $Data['miq_number'] = "MIQ2-".$this->year_combo_num_gen_inv(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ2-'.$years_combo.'%')->count()); 
                     }
                     //if($item_type=="Indirect Items"){
                     else{
-                        $Data['miq_number'] = "MIQ3-" . $this->year_combo_num_gen(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ3-'.$years_combo.'%')->count()); 
+                        // dd('indir');
+
+                       
+                        $Data['miq_number'] = "MIQ3-" . $this->year_combo_num_gen_inv(DB::table('inv_miq')->where('inv_miq.miq_number', 'LIKE', 'MIQ3-'.$years_combo.'%')->count()+1); 
+                       // dd($Data);
+
                     }
                         
                         $Data['miq_date'] = date('Y-m-d', strtotime($request->miq_date));
@@ -95,7 +105,8 @@ class MIQController extends Controller
                         $Data['status']=1;
                         $Data['created_at'] =date('Y-m-d H:i:s');
                         $Data['updated_at'] =date('Y-m-d H:i:s');
-                    
+                       // dd($Data);
+
                     $add_id = $this->inv_miq->insert_data($Data);
                     $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item','inv_supplier_invoice_item.item_id')
                                            ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
@@ -111,6 +122,7 @@ class MIQController extends Controller
                             'updated_at'=>date('Y-m-d H:i:s')
 
                         ];
+                        //dd('stop');
                         $item_id = $this->inv_miq_item->insert_data($dat);
                         $dat2 =[
                             'master'=>$add_id,
@@ -120,13 +132,14 @@ class MIQController extends Controller
                     }
                     
                     if($add_id && $item_id && $rel)
-                        $request->session()->flash('success', "You have successfully created a MIQ !");
+                        $request->session()->flash('success', "Now please edit the items and confirm submission !");
                     else
                         $request->session()->flash('error', "MIQ creation is failed. Try again... !");
                     return redirect('inventory/MIQ-add/'.$add_id);
                 }
                 else
                 {
+                   // dd('else condition');
                         $Data['miq_date'] = date('Y-m-d', strtotime($request->miq_date));
                         $Data['invoice_master_id'] = $request->invoice_number;
                         $Data['created_by']= $request->created_by;
@@ -157,7 +170,6 @@ class MIQController extends Controller
         }
         return view('pages.inventory.MIQ.MIQ-add',compact('data'));
     }
-
     function item_type($invoice_number){
         $item_type = inv_supplier_invoice_rel::leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
                             ->leftJoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
@@ -228,17 +240,24 @@ class MIQController extends Controller
     public function getCurrency($invoice_item_id)
     {
         $po_master_id = inv_supplier_invoice_item::where('id','=',$invoice_item_id)->pluck('po_master_id')->first();
+        // dd($po_master_id);
         if(!$po_master_id)
         {
             $po_master_id = inv_supplier_invoice_item::where('merged_invoice_item','=',$invoice_item_id)->pluck('po_master_id')->first();
         }
         $po_master = inv_final_purchase_order_master::where('id','=',$po_master_id)->first();
-        //print_r($po_master_id);exit; 
+        // print_r($po_master_id);exit;
+        if(isset($po_master)) 
+        {
         $currency = inv_purchase_req_quotation_item_supp_rel::where('quotation_id','=',$po_master['rq_master_id'])->where('supplier_id','=',$po_master['supplier_id'])
         ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id', '=', 'inv_purchase_req_quotation_item_supp_rel.currency')
         ->where('inv_purchase_req_quotation_item_supp_rel.selected_item','=',1)
                             ->pluck('currency_id')->first();
         return $currency;
+        }else{
+            return null;
+ 
+        }
     }
 
     public function MIQExport(Request $request)
@@ -267,7 +286,7 @@ class MIQController extends Controller
     }
       public function LiveQuarantineReport(Request $request)
     {   
-       
+      // dd('hi');
         $condition = [];
         if($request)
         {
@@ -290,7 +309,7 @@ class MIQController extends Controller
            //$data['miq']= $this->inv_miq_item->get_items_not_in_mac($condition);
         }
         $data['miq']= $this->inv_miq_item->get_all_data_not_in_mac($condition);
-
+//dd($data);
         return view('pages.inventory.MIQ.LiveQuarantineReport',compact('data'));
     }
     public function invoiceInfo(Request $request)

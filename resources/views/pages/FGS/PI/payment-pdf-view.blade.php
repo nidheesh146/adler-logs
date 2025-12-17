@@ -51,7 +51,7 @@
         .col23 {
 
             float: left;
-            width: 50%;
+            width: 30%;
         }
 
         .col24 {
@@ -135,20 +135,34 @@
     <br /> <br /> <br />
     <div class="row3">
         <div class="col23">
-            <table style="font-weight:bold;font-size: 14px;">
+            <table style="font-weight:bold;">
                 <tr>
-                    <td>Reference No</td>
-                    <td>: {{$pi['pi_number']}} </td>
+                    <td>
+                    To <br/>
+                         <strong>
+                            <font size="12px">{{$pi['firm_name']}} </font>
+                        </strong>
+                        <p>@if($pi['billing_address']){{$pi['billing_address']}} @else {{$pi['dummy_billing_address']}} @endif<br/>
+                            {{$pi['city']}}, {{$pi['state_name']}}
 
+                        </p>
+                    </td>
                 </tr>
 
             </table>
         </div>
         <div class="col23">
-            <table style="font-weight:bold;font-size: 14px;float:right;">
+        </div>
+        <div class="col23">
+            <table style="font-weight:bold;font-size: 12px;float:right;text-align:right;">
+                <tr>
+                    <td>Reference No</td>
+                    <td>: {{$pi['pi_number']}} </td>
+
+                </tr>
                 <tr>
                     &nbsp &nbsp &nbsp &nbsp<td>Reference Date</td>
-                    <td>: {{$pi['pi_date']}} </td>
+                    <td>: {{date('d-m-Y', strtotime($pi['pi_date']))}}</td>
 
                 </tr>
 
@@ -157,7 +171,7 @@
 
     </div>
     <br><br>
-    <div class="row3" style="height:100px;">
+    {{--<div class="row3" style="height:100px;">
         <div class="col23">
             <table>
                 <tr>
@@ -176,8 +190,9 @@
 
             </table>
         </div>
-    </div>
+    </div>--}}
     <div style="font-size:12px; padding-top: 30px;">
+    <br/><br/>
         <span style="padding-left:0px;">Dear Sir / Madam,</span><br>
         <span>We are pleased to inform you that the material against your following order/s is ready for dispatch. The details for the same are as follows:</span>
     </div><br>
@@ -206,29 +221,39 @@
     $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);
     $total =$total+ $item['rate']* $item['remaining_qty_after_cancel'];
     $total_discount = $total_discount+($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100;
-    $total_igst = $total_igst+($discount_value*$item['igst'])/100;
-    $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
-    $total_cgst = $total_cgst+($discount_value* $item['remaining_qty_after_cancel']*$item['cgst'])/100;
+    if($pi['zone_name']!='Export')
+    {
+        $total_igst = $total_igst+($discount_value*$item['igst'])/100;
+        $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
+        $total_cgst = $total_cgst+($discount_value*$item['cgst'])/100;
+    }
+    else
+    {
+        $total_igst = 0;
+        $total_sgst = 0;
+        $total_cgst = 0;
+    }
     $totalsum = $totalsum+$total_amount;
 
-    $discount_value = ($item['rate'] * $item['quantity']) - (($item['rate'] * $item['quantity'] * $item['discount']) / 100);
+    //$discount_value = ($item['rate'] * $item['quantity']) - (($item['rate'] * $item['quantity'] * $item['discount']) / 100);
     $total_amount = $discount_value + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['igst']) / 100);
 
     ?>
     @endforeach
     <div class="row3">
-        <table >
-            <tr>
-                <th rowspan="2">Your Order No.</th>
-                <th rowspan="2">
+        <table border="1">
+            <thead>
+            <tr style="background-color:#BED7EF;">
+                <th>Your Order No.</th>
+                <th>
                     Your Order Date
                 </th>
-                <th rowspan="2">PI No.</th>
-                <th rowspan="2">PI Date</th>
-                <th rowspan="2">PI Value</th>
-
-            </tr><br>
-
+                <th>PI No.</th>
+                <th>PI Date</th>
+                <th>PI Value</th>
+            </tr>
+            </thead>
+            <tbody>
             <tr style="text-align: center;">
 
                 <td>{{$pi['order_number']}}</td>
@@ -236,17 +261,15 @@
                 <td>{{$pi['pi_number']}}</td>
                 <td>{{$pi['pi_date']}}</td>
                 <td>{{(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))}}</td>
-
-
             </tr>
-
+            </tbody>
         </table>
     </div><br>
 
     <div class="row3" style="font-size:12px; ">
 
     <span>
-        You are requested to deposit the payment of Rs. {{(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))}} (In Words:  Rs. <?php echo( $fn->getIndianCurrencyInt((round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))))) ?>  Only ) in our bank account, which details are given below and confirm to us by return mail to enabling us to dispatch your shipment immediately.
+        You are requested to deposit the payment of Rs. {{(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))}} (In Words:  Rs. <?php echo( $fn->getIndianCurrencyInt((round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))))) ?>  Only ) in our bank account, which details are given below and confirm to us by return mail to enable us to dispatch your shipment immediately.
         </span>
         <br><br>
         <b>Company's Bank Details:-</b><br>
@@ -258,7 +281,7 @@
         <br><br>
         <span>
             <p>
-            Please note that dispatches can be made only against receipt of funds in our above said back account.
+            Please note that dispatches can be made only against receipt of funds in our above said bank account.
             We would be thankful for your immediate response to this communication.
             </p>
         </span>

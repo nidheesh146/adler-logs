@@ -144,9 +144,9 @@ class inv_supplier_invoice_item extends Model
     }
     function get_supplier_invoice_item1($condition){
         return $this->select(['inv_supplier_invoice_item.id','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount',
-        'inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_final_purchase_order_master.po_number','inv_supplier_invoice_master.invoice_number'
+        'inv_purchase_req_master.pr_no','inventory_rawmaterial.item_code','inventory_rawmaterial.hsn_code','inv_supplier_invoice_master.invoice_number'
         ,'inv_supplier_invoice_master.invoice_date','inv_supplier.vendor_id', 'inv_supplier.vendor_name','inv_item_type.type_name','inv_unit.unit_name'])
-                    ->join('inv_supplier_invoice_rel','inv_supplier_invoice_rel.item','=','inv_supplier_invoice_item.id')
+                    ->leftjoin('inv_supplier_invoice_rel','inv_supplier_invoice_rel.item','=','inv_supplier_invoice_item.id')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
                     ->leftjoin('inv_purchase_req_master_item_rel','inv_purchase_req_master_item_rel.item','=','inv_supplier_invoice_item.item_id')
                     ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
@@ -175,6 +175,7 @@ class inv_supplier_invoice_item extends Model
                     ->orderBy('inv_supplier_invoice_item.id','desc')
                     //->orderBy('inv_lot_allocation.id','desc')
                     ->paginate(15);
+                    //->get();
     }
 
 

@@ -181,9 +181,16 @@
                     <td >PO Date</td>
                     <td>: {{date('d M y',strtotime($final_purchase['po_date']))}}</td>
                     @else
-                    <td >Supplier Quotation Date</td>
-                    <td>: {{date('d M y',strtotime($final_purchase['quotation_date']))}}</td>
-                    @endif
+                    <td>Supplier Quotation Date</td>
+<td>:
+    @if(empty($final_purchase['quotation_date']) || 
+        $final_purchase['quotation_date'] === '1970-01-01' || 
+        $final_purchase['quotation_date'] === '0000-00-00')
+        NA
+    @else
+        {{ date('d M y', strtotime($final_purchase['quotation_date'])) }}
+    @endif
+</td>   @endif
                 </tr>
                 <tr>
                     <td >Currency</td>
@@ -260,7 +267,7 @@
             @foreach($items as $item)
             <tr>
                 <td>{{$i++}}</td>
-                <td>{{$item['hsn_code']}}</td>
+                <td>{{ $item['item_code'] == 72463407 ? '90211000' : $item['hsn_code'] }}</td>
                 <td>{{$item['item_code']}}</td>
                 <td>{{$item['discription']}}</td>
                 <td>{{$item['order_qty']}}</td>

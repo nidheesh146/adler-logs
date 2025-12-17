@@ -60,26 +60,41 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Ref. No.  *</label>
-                                <input type="text" class="form-control" name="ref_number" value="" placeholder="Ref. No.">
+                                <input type="text" class="form-control" name="ref_number" value="" placeholder="Ref. No." required>
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Ref Date  *</label>
-                                <input type="text" class="form-control datepicker" name="ref_date" value="" placeholder="">
+                                <input type="text" class="form-control datepicker" name="ref_date" value="" placeholder="" required>
                             </div>
                         
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Product Category  *</label>
-                                <select class="form-control" name="product_category">
-                                    <option>Select one...</option>
+                                <label for="exampleInputEmail1">Business Category  *</label>
+                                <select class="form-control" name="product_category" required>
+                                <option value="">Select one...</option>
                                     @foreach($category as $cate)
                                     <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
                                     @endforeach
                                 </select>
                             </div>
+                            
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+    <label>Product Category *</label>
+
+    <select class="form-control" name="new_product_category" required>
+    <option value="">Select one...</option>
+        @foreach($product_category as $category)
+        <option value="{{ $category->id }}"
+            @if(!empty($min) && ($min->new_product_category == $category->id)) selected="selected" @endif>
+            {{ $category->category_name }}
+        </option>
+        @endforeach
+    </select>
+</div>
+
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location  *</label>
-                                <select class="form-control" name="stock_location">
-                                    <option>Select one...</option>
+                                <select class="form-control" name="stock_location" required>
+                                <option value="">Select one...</option>
                                     @foreach($locations as $loc)
                                     @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
@@ -89,9 +104,12 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>MIN Date *</label>
-                                <input type="text" value="" class="form-control datepicker min_date" name="min_date" placeholder="">
+                                <input type="text" value="" class="form-control datepicker min_date" name="min_date" placeholder="" required>
                             </div><!-- form-group -->
-                            
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label for="exampleInputEmail1">Remarks  </label>
+                                    <textarea type="text" class="form-control" name="remarks" value="" placeholder="" required></textarea>
+                                </div>
 
                             
                         </div>                       

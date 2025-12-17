@@ -30,7 +30,7 @@
 		</div>
 		@endif
         @if (Session::get('error'))
-		<div class="alert alert-success " style="width: 100%;">
+		<div class="alert alert-danger " style="width: 100%;">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 			<i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		</div>
@@ -118,6 +118,7 @@
                             <th>PO Number</th>
 							<th>Supplier</th>
 							<th>Transaction Date</th>
+                            <th>Discount Value</th>
 							<th>Created By</th>
 							<th>Action</th>
 						
@@ -136,6 +137,7 @@
                             </td>
 							<td>{{$item->vendor_id}} - {{$item->vendor_name}}</td>
 							<td>{{date('d-m-Y',strtotime($item->created_at)) }}</td>
+                            <td>{{ number_format((float)($fn->findInvoiceDiscountvalue($item->id)), 2, '.', '') }}</td>
 							<td>{{$item->f_name}} {{$item->l_name}}</td>
 							<td>
 								<!-- <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/supplier-invoice-add/'.$item->id)}}">-->
@@ -163,17 +165,24 @@
                 {{ csrf_field() }} 
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">#Edit Supplier Invoice <span class="invoice_number"></span></h4>
+                        <h4 class="modal-title">#Edit Supplier Invoice <span class="invoice_number"></span>
+                        <div style="float: right;margin-left:600px;">
+                            <div style="background-color:#FFFF8F;width:30px;height:30px;float:left;"></div>
+                            <div style="font-size: 14px;float:left;margin-top:10px;">&nbsp;indicates Expiry Control Item</div>
+                        </div>
+                    </h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
+
                         <div class="row">
                             <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
                                 <label>
                                    Invoice Number
                                 </label>
-                                <input type="text" name="invoice_number" id="invoice_number"  placeholder="Invoice Number" readonly>
+                                <input type="text" name="invoice_number" id="invoice_number"  placeholder="Invoice Number">
                                 <input type="hidden" name="invoice_id" id="invoice_id" value="">
+                                
                             </div>
 							<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
                                 <label>

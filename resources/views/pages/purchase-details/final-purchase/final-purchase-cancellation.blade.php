@@ -331,6 +331,11 @@
 
 
 <script>
+      $(document).ready(function() {
+            $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
+            });
+        });
  function cancelQuantity(id){
    let orderQtyAccept = parseFloat($(".orderQtyAccept"+id).val());
    let orderQty =  parseFloat($(".orderQty"+id).val()).toFixed(2);

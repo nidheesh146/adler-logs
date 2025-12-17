@@ -78,7 +78,7 @@
                          @endif
                         <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <label>Created by: *</label>
-                            <select class="form-control user_list" name="created_by">
+                            <select class="form-control user_list" name="created_by" required>
                             @foreach ($data['users'] as $user)
                                 <option value="{{$user->user_id}}"   @if(!empty($edit['grs']) && $edit['grs']->created_by == $user->user_id) selected  @endif   >{{$user->f_name}} {{$user->l_name}}</option>
                             @endforeach                                          
@@ -189,18 +189,50 @@
           $('.spinner-button').hide();
         }
       });
-    function enableTextBox(cash) 
-    {
-        const checkbox = $(cash);
-        if(checkbox.is(':checked')){
-            checkbox.closest('tr').find('.qty_to_cancel').attr("disabled", false);
-            checkbox.closest('tr').find('.qty_to_cancel').attr("required", "true");
-        }else{
-            checkbox.closest('tr').find('.qty_to_cancel').val('');
-            checkbox.closest('tr').find('.qty_to_cancel').attr("required", "false");
-            checkbox.closest('tr').find('.qty_to_cancel').attr("disabled", true);
+     //check all
+     function toggleCheckboxes(headerCheckbox) {
+            $('.rowCheckbox').prop('checked', headerCheckbox.checked);
+            enableTextBox();
         }
-    }
+
+        function enableTextBox() {
+            const checkedCheckboxes = $('.rowCheckbox:checked');
+
+            // Enable/disable qty_to_cancel inputs based on the number of checkboxes checked
+            $('.qty_to_cancel').each(function() {
+                const $row = $(this).closest('tr');
+                const $checkbox = $row.find('.rowCheckbox');
+
+                if ($checkbox.is(':checked') || checkedCheckboxes.length === 0) {
+                    $(this).prop('disabled', false).prop('required', true);
+
+                    // Set max attribute for qty_to_cancel based on the checked checkbox
+                    if (checkedCheckboxes.length > 1) {
+                        $(this).attr('max', function() {
+                            return $row.find('td:eq(4)').text().replace('Nos', '').trim();
+                        });
+
+                        // Copy the value from "QUANTITY" to "QUANTITY TO CANCEL"
+                        const quantityValue = $row.find('td:eq(4)').text().replace('Nos', '').trim();
+                        $(this).val(quantityValue);
+                    } else {
+                        $(this).removeAttr('max').val('').prop('required', false);
+                    }
+                } else {
+                    $(this).val('').prop('required', false).prop('disabled', true);
+                }
+            });
+        }
+
+        // Add a click event listener to individual row checkboxes
+        $('.rowCheckbox').on('click', function() {
+            enableTextBox();
+        });
+
+        // Add a click event listener to the "Select All" checkbox
+        $('#selectAll').on('click', function() {
+            toggleCheckboxes(this);
+        });
     
     </script>
 

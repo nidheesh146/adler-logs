@@ -37,13 +37,13 @@
         .col22{
             margin-top:-25px;
             float:left;
-            width:25%;
+            width:20%;
         }
         .col23{
             margin-left:150px;
             margin-top:-25px;
             float:left;
-            width:25%;
+            width:20%;
         }
         .col24{
             margin-left:180px;
@@ -56,7 +56,7 @@
             display:block;
             font-size:11px;
             height:65px;
-            border-bottom:solid 0.5px black;
+            /* border-bottom:solid 0.5px black; */
         }
         .row3, .row4{
             display:block;
@@ -69,15 +69,21 @@
         .row3 table{
             width:100%;
             font-size:10px;
+            border-collapse: collapse;
+
         }
         .row4{
             font-size:10px;
         }
-        .col41, .col42{
-            width:35%;
+        .col41{
+            float:30%;
             float:left;
         }
-        .col43{
+        .col42,.col43{
+            width:25%;
+            float:left;
+        }
+        .col44{
             font-size:11px;
             float:right;
         }
@@ -107,11 +113,11 @@
     </style>
    
     <!-- <div class="row1" style="height:150px;border-bottom:solid 2px black;"> -->
-    <div class="row1" style="height:210px;">
+    <div class="row1" style="height:130px; font-size: 11px;">
     <div class="col1">
             To<br/>
             <strong>{{$dni['firm_name']}}</strong>
-            <p>{{$dni['billing_address']}}<br/>
+            <p><?= nl2br($dni['dummy_billing_address'] ? $dni['dummy_billing_address'] : $dni['billing_address']); ?><br/>
             {{$dni['city']}},<br> {{$dni['state_name']}}<br/>
             Cell No : {{ $dni['contact_number'] }}<br/>
            {{-- <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$dni['email']}}<br/><span>--}}
@@ -119,9 +125,9 @@
             
 
         </div>
-        <div class="col2" style="text-align:left; font-size: 10px;" >
+        <div class="col2" style="text-align:left; font-size: 11px;" >
         <strong>Shipping Address :</strong> <br>
-        {{$dni['shipping_address']}}<br/>
+        <p><?= nl2br($dni['dummy_shipping_address'] ? $dni['dummy_shipping_address'] : $dni['shipping_address']); ?><br/>
            {{$dni['city']}}, <br> {{$dni['state_name']}}<br/>
            <table style="">
                 <tr>
@@ -144,7 +150,7 @@
             </table>
         </div>
         <div class="col3">
-            <span style="color:#1434A4;"><strong>ADLER HEALTHCARE PVT. LTD</strong></span>
+            <span style="color:#1434A4; font-size: 14px;"><strong>ADLER HEALTHCARE PVT. LTD</strong></span>
             <p> Plot No-A1 MIDC, Sadavali(Devrukh), <br/>
              Tal- Sangmeshwar, Dist -Ratnagiri , <br/> PIN-415804, Maharashtra, India<br/>
              Contact No: 8055136000, 8055146000<br/>
@@ -153,7 +159,7 @@
            </p>
         </div>
         <div class="col4" style="float:right;">
-            <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
+        <img src="data:img/logo.png;base64,<?php echo base64_encode(file_get_contents('img/logo.png')); ?>"style="width:80px;" />
         </div>
     </div><br/>
             
@@ -386,7 +392,7 @@
                     <td>: {{date('d-m-Y', strtotime($dni['dni_date']))}}</td>
                 </tr>
                 <tr>
-                    <td> Product Category</td>
+                    <td> Business Category</td>
                     @foreach($dni_items as $dni_item)
                         @foreach($dni_item['pi_item'] as $item)
                             <?php $category_name[]=$item['category_name']; ?>
@@ -406,6 +412,10 @@
                        
                     </td>
                 </tr>
+                <tr>
+    <td> Product Category</td>
+    <td>: {{$dni['new_category_name']}}</td> <!-- Make sure this accesses the correct variable -->
+</tr>
                 
             </table>
         </div>
@@ -480,7 +490,13 @@
                 <td>{{$item['sku_code']}}</td>
                 <td >{{$item['discription']}}</td>
                 <td >{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td >@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
+                <td>
+    @if($item['expiry_date'] != '0000-00-00' && $item['expiry_date'] != '1970-01-01')
+        {{ date('d-m-Y', strtotime($item['expiry_date'])) }}
+    @else
+        NA
+    @endif
+</td>
                 <td>{{$item['batch_no']}}</td>
                 <td style="text-align:center;">{{$item['remaining_qty_after_cancel']}}</td>
                 <td style="text-align:left;">Nos</td>
@@ -553,28 +569,46 @@
         </table>
     </div>
    <br>
-    <div class="row4" style="height:170px;">
+    <div class="row4" style="height:150px;">
         <div class="col41">
-            <div class="remarks" style="">
+            <div class="remarks" style="width: 350px;">
                 <strong>Value in words: </strong><br/>
-                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))))  ?>  Only
-                <div></div><br/><br/>
-                <table style="float:left;">
-                    <tr>
-                        <td>ML No.</td>
-                        <td>: MFG/MD/2021/000369</td>
-                        <td width="5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td>GSTIN No.</td>
-                        <td>: 27AAJCB3689C1ZJ</td>
-                    </tr>
-                    <tr>
-                        <td> PAN No.</td>
-                        <td>: AAJCB3689C</td>
-                        <td width="5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td>Sate Code</td>
-                        <td>: Maharashtra (27)</td>
-                    </tr>
-                </table>
+                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$dni->other_charges+$total_sgst), 2, '.', ''))))  ?>  Only
+                <div></div>
+                <strong>Remarks/Notes </strong><br/>
+                @foreach($dni_items as $dni_item)
+                        @foreach($dni_item['pi_item'] as $item)
+                        <?php $oef_remark[]=$item['oef_remarks']; ?>
+                           
+                        @endforeach
+                        @endforeach 
+                        <?php
+                            $oef_arr=array_values(array_unique($oef_remark));
+                            for($x = 0; $x <count($oef_arr); $x++) 
+                            {
+                            echo nl2br($oef_arr[$x]); ; 
+                            $oef_rem = $oef_arr[$x];
+                            echo "  ";
+                            }
+                        ?>
+
+                        <br/><br>
+                        <table style="float:left;">
+                            <tr>
+                                <td>ML No.</td>
+                                <td>: MFG/MD/2021/000369</td>
+                                <td width="5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>GSTIN No.</td>
+                                <td>: 27AAJCB3689C1ZJ</td>
+                            </tr>
+                            <tr>
+                                <td> PAN No.</td>
+                                <td>: AAJCB3689C</td>
+                                <td width="5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>State Code</td>
+                                <td>: Maharashtra (27)</td>
+                            </tr>
+                        </table>
                 <!-- <br/>
                 <br/>
                  ML No. : MFG/MD/2021/000369<br/>
@@ -588,17 +622,26 @@
                 <?= nl2br($dni['payment_terms']);?>
             </div>
             @endif
-            <br/>
-            <br/>
-            <div class="" style="height:50px;margin-left:50px;">
+            <!-- <br/>
+            <br/> -->
+            <!-- <div class="" style="height:50px;margin-left:50px;">
                <strong> Company's Bank Details:-</strong><br/>
                 Bank Name:- The Federal Bank Limited<br/>
                 Branch:- Kanjikode (Kl), Palakkad<br/>
                 Account No.: 15245500003334<br/>
                 IFSC Code: FDRL0001524
-            </div>
+            </div> -->
         </div>
         <div class="col43">
+       
+               <strong> Company's Bank Details:-</strong><br/>
+                Bank Name:- The Federal Bank Limited<br/>
+                Branch:- Kanjikode (Kl), Palakkad<br/>
+                Account No.: 15245500003334<br/>
+                IFSC Code: FDRL0001524
+            
+        </div>
+        <div class="col44">
             <table style="height:110px;">
                 <tr>
                     <td style="width:160px">Sum of Taxable Value</td>
@@ -622,10 +665,11 @@
                     <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
                 </tr>
                 <tr>
-                    <td style="width:160px">Other Charges</td>
-                    <td style="width:30px;">:</td>
-                    <td style="text-align:right;"></td>
-                </tr>
+    <td style="width:160px">Other Charges</td>
+    <td style="width:30px;">:</td>
+    <td style="text-align:right;">{{ number_format($dni->other_charges, 2) }}</td>
+</tr>
+
                  <tr>
                     <td style="width:160px">Round Off</td>
                     <td style="width:30px;">:</td>
@@ -644,7 +688,7 @@
                     <?php
                      $grand = 0;
                      $grandt = 0;
-                    $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))
+                     $grand = round(number_format((float)($total - $total_discount + $total_igst + $total_sgst + $total_sgst + $dni->other_charges+$roundoff), 2, '.', ''));
                    
                     ?>
                     <th class="grand_total_value" style="text-align:right;color:#1434A4;">{{ number_format((float)$grand,2,'.','') }}</th>
@@ -653,27 +697,58 @@
         </div>
        
     </div>
-    <br/>
-    <div class="row5" style="border-bottom:solid 1px black;height:170px;">
+    <div class="row5" style="height:90px;">
         <div class="col51" style="width:70%">
         <strong> Declaration:- </strong><br>
         <p>
         1. We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.
         </p>
         </div>
-        <div class="col52">
+        {{--<div class="col52">
             <p>For Adler Healthcare Pvt. Ltd.</p>
-            <br/><br/><br/>
+            <br/><br/>
             <p>Authorised Signatory</p>
             <br/><br/><br/>
-        </div>
+        </div>--}}
+        <div class="row5" style="float:right; margin-right:40px;font-size:12px;">
+            <div>
+                <p>For Adler Healthcare Pvt. Ltd.</p>
+                <br/>
+            </div>
+            <div class="">
+                <p>Authorised Signatory</p>
+                <br/>
+            </div>
     </div>
+    </div>
+    
    
-    <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
+    <!-- <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     
-    </div>
-    
-     
+    </div> -->
+    <script type="text/php">
+    if (isset($pdf)) {
+    $xPage = 780; // X-axis for "Page", positioned on the right side
+    $yPage = 560; // Y-axis horizontal position
+
+    $textPage = "Page {PAGE_NUM} of {PAGE_COUNT}"; // "Page" message
+
+    $font = $fontMetrics->get_font("helvetica");
+    $size = 7;
+    $color = array(0, 0, 0);
+
+
+    $pdf->page_text($xPage, $yPage, $textPage, $font, $size, $color); // "Page" on the right
+    $pageNumber = $pdf->get_page_number();
+    // Check if it's not the first page
+    if (var_dump($pageNumber) != 1) {
+        $xDoc = 750;  // X-axis for "Doc", positioned on the left side
+        $yDoc = 15; // Y-axis horizontal position
+        $textDoc = "{{$dni['dni_number']}}"; // "Doc" message
+        $pdf->page_text($xDoc, $yDoc, $textDoc, $font, $size, $color); // "Doc" on the left
+    }
+}
+</script>
    
 </body>
 </html>

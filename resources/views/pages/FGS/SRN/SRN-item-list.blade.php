@@ -46,7 +46,6 @@
 							<thead>
 								<tr>
 									<th></th>
-									<th>GRS Number</th>
                                     <th>Product</th>
 									<th>Description</th>
 									<th>HSN Code</th>
@@ -55,31 +54,31 @@
                                     <th>Rate</th>
                                     <th>Discount</th>
                                     <th>Net Value</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
                             @php $i=1; @endphp
                             @foreach($srn_items as $item)
-							
-							@foreach($item['dni_item'] as $item)
                                 <tr>
 									<td>{{$i++}}</td>
-									<td>{{$item['grs_number']}}</td>
 									<td>{{$item['sku_code']}}</td>
 									<td>{{$item['discription']}}</td>	
 									<td>{{$item['hsn_code']}}</td>
 									<td>{{$item['batch_no']}}</td>
-                                    <td>{{$item['batch_quantity']}}Nos</td>
-                                    <td>{{$item['rate']}} {{$item['currency_code']}}</td>
+                                    <td>{{$item['quantity']}}Nos</td>
+                                    <td>{{$item['rate']}}</td>
                                     <td>{{$item['discount']}}%</td>
-                                    <td>{{($item['rate']*$item['batch_quantity'])-(($item['batch_quantity']*$item['discount']*$item['rate'])/100)}} {{$item['currency_code']}}</td>
+                                    <td>{{($item['rate']*$item['quantity'])-(($item['quantity']*$item['discount']*$item['rate'])/100)}}</td>
+									<td>
+										<a class="badge badge-info" style="font-size: 13px;" href="{{ url('fgs/SRN/item-edit/' . $srn_id . '/' . $item['srn_item_id']) }}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+									</td>
 								</tr>
-								@endforeach
                                 @endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-                        
+						{{ $srn_items->appends(request()->input())->links() }}
 						</div>
 					</div>
 					<br/>

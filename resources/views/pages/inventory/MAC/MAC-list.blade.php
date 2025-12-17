@@ -128,7 +128,7 @@
                     	<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MAC-delete/'.$mac['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
                         @else
                         <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MAC-add/'.$mac['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-                    	<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MAC-delete/'.$mac['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                    	{{--<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MAC-delete/'.$mac['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>--}}
                         @endif
                         </td>
                     </tr>

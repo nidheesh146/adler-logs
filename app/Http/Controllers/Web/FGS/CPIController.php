@@ -20,6 +20,9 @@ use App\Models\FGS\fgs_cpi_item_rel;
 use App\Models\FGS\fgs_maa_stock_management;
 use App\Models\FGS\fgs_product_stock_management;
 use App\Models\product;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FGScpitransactionExport;
+
 class CPIController extends Controller
 {
     public function __construct()
@@ -55,6 +58,7 @@ class CPIController extends Controller
                 ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_cpi.customer_id')
                 ->where($condition)
                 ->distinct('fgs_cpi.id')
+                ->orderBy('fgs_cpi.id','DESC')
                 ->paginate(15);
         return view('pages/FGS/CPI/CPI-list', compact('cpi'));
     }
@@ -103,38 +107,40 @@ class CPIController extends Controller
                     ];
 
                     $this->fgs_cpi_item->insert_data($datas,$cpi_id);
+
+                    ///neww 
+                    $fgs_grs_data = fgs_grs::where('id','=',$pi_item['grs_id'])->first();
+                    $fgs_product_stock = fgs_product_stock_management::where('product_id', '=',  $pi_item['product_id'])
+                                ->where('batchcard_id', '=', $pi_item['batchcard_id'])
+                                ->where('stock_location_id', '=', $fgs_grs_data['stock_location1'])
+                                ->first();
+                    // print_r($fgs_grs_data);exit;
+                    $update_stock = $fgs_product_stock['quantity'] + $qty_to_cancel_array[$i];
+                    $production_stock = $this->fgs_product_stock_management->update_data(['id' => $fgs_product_stock['id']], ['quantity' => $update_stock]);
+
+                    $fgs_maa_stock = fgs_maa_stock_management::where('product_id', '=', $pi_item['product_id'])
+                                            ->where('batchcard_id', '=', $pi_item['batchcard_id'])
+                                            ->first();
+                    $update_maa_stocks = $fgs_maa_stock['quantity'] - $qty_to_cancel_array[$i];
+                    $maa_stock = $this->fgs_maa_stock_management->update_data(['id' => $fgs_maa_stock['id']], ['quantity' => $update_maa_stocks]);
+                    //new end
+
                     if($pi_item['remaining_qty_after_cancel']==$qty_to_cancel_array[$i])
                     {
                         $fgs_pi_item = fgs_pi_item::where('grs_id','=',$pi_item['grs_id'])
                                                     ->where('id','=',$pi_item['id'])
                                                     ->update(['cpi_status' => 1]);
                         $update_qty = $pi_item['remaining_qty_after_cancel']-$qty_to_cancel_array[$i];
-                        $fgs_pi_item = fgs_pi_item::where('product_id','=',$pi_item['product_id'])
+                        $fgs_pi_item = fgs_pi_item::where('id','=',$pi_item['id'])->where('product_id','=',$pi_item['product_id'])
                                                                         ->update(['remaining_qty_after_cancel'=>$update_qty]);
                     }
                     else
                     {
                         $update_qty = $pi_item['remaining_qty_after_cancel']-$qty_to_cancel_array[$i];
-                        $fgs_pi_item = fgs_pi_item::where('product_id','=',$pi_item['product_id'])
-                                            ->update(['remaining_qty_after_cancel'=>$update_qty]);
+                        $fgs_pi_item = fgs_pi_item::where('id','=',$pi_item['id'])->where('product_id','=',$pi_item['product_id'])
+                        ->update(['remaining_qty_after_cancel'=>$update_qty]);
                     }
 
-                    // $grs_item = fgs_grs_item::where('id','=',$pi_item['grs_item_id'])->first();   
-                    // $fgs_grs_data = fgs_grs::where('id','=',$pi_item['grs_id'])->first();
-                    // $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$pi_item['product_id'])
-                    //                         ->where('batchcard_id','=',$pi_item['batchcard_id'])
-                    //                         ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
-                    //                         ->first();
-
-                    // $update_stock = $fgs_product_stock['quantity']+$qty_to_cancel_array[$i];
-                    // $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
-
-                    // $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$pi_item['product_id'])
-                    //                             ->where('batchcard_id','=',$pi_item['batchcard_id'])
-                    //                             ->first();
-
-                    // $update_maa_stocks = $fgs_maa_stock['quantity']-$pi_item['batch_qty'];
-                    // $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
                     $i++;
                 }
                 if($cpi_id)
@@ -172,7 +178,7 @@ class CPIController extends Controller
     }
     public function PIitemlist($pi_id)
     {
-        $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','product_product.sku_code','product_product.hsn_code','product_product.discription',
+        $pi_item = fgs_pi_item_rel::select('fgs_grs.grs_number','fgs_item_master.sku_code','fgs_item_master.hsn_code','fgs_item_master.discription',
         'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_pi_item.rate','fgs_pi_item.discount','currency_exchange_rate.currency_code')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date')
                         ->leftJoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
@@ -182,7 +188,7 @@ class CPIController extends Controller
                         ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_pi_item.grs_item_id')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_grs_item.pi_item_id')
                         ->leftJoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_pi_item.mrn_item_id')
-                        ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_grs_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                         ->where('fgs_pi_item_rel.master','=', $pi_id)
                         ->where('fgs_grs.status','=',1)
@@ -233,9 +239,11 @@ class CPIController extends Controller
     public function CPIpdf($cpi_id)
     {
         $data['cpi'] = $this->fgs_cpi->get_single_cpi(['fgs_cpi.id' => $cpi_id]);
-        $data['items'] = $this->fgs_cpi_item->getItems(['fgs_cpi_item.id' => $cpi_id]);
+        $data['items'] = $this->fgs_cpi_item->getItems(['fgs_cpi_item_rel.master' => $cpi_id]);
         $pdf = PDF::loadView('pages.FGS.CPI.pdf-view', $data);
         $pdf->set_paper('A4', 'landscape');
+        //$pdf->setOptions(['isPhpEnabled' => true]);       
+        $pdf->setOptions(['isPhpEnabled' => true]); 
         $file_name = "CPI" . $data['cpi']['firm_name'] . "_" . $data['cpi']['cpi_date'];
         return $pdf->stream($file_name . '.pdf');
     }
@@ -324,7 +332,7 @@ class CPIController extends Controller
             $data .= '
             <thead>
             <tr>
-                <th ></th> 
+                <th><input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)"></th>                 
                 <th>GRS NUMBER</th>
                 <th>PRODUCT</th>
                 <th>DESCRIPTION</th>
@@ -336,11 +344,11 @@ class CPIController extends Controller
             foreach ($pi_item as $item) {
                 $data .= '
                 <tr>
-                       <td ><input type="checkbox" name="pi_item_id[]" onclick="enableTextBox(this)" id="pi_item_id" value="'.$item->id.'"></td>
+                       <td ><input type="checkbox" class="rowCheckbox" name="pi_item_id[]" onclick="enableTextBox(this)" id="pi_item_id" value="' . $item->id . '"></td>
                        <td>'.$item->grs_number.'</td>
                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->discription.'</td>
-                       <td>'.$item->batch_qty.'Nos</td>
+                       <td>'.$item->remaining_qty_after_cancel.'Nos</td>
                        <td style="display:none;">'.$item->grs_id.'</td>
                        <td style="display:none;">'.$item->grs_item_id.'</td>
                        <td style="display:none;">'.$item->mrn_item_id.'</td>
@@ -382,12 +390,137 @@ class CPIController extends Controller
         $condition = ['fgs_cpi_item_rel.master' =>$request->cpi_id];
         if($request->product)
         {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->product . '%'];
+            $condition[] = ['fgs_item_master.sku_code','like', '%' . $request->product . '%'];
         }
         $items = $this->fgs_cpi_item->get_items($condition);
         //print_r($items);exit; 
        // echo $min_id;exit;
         return view('pages/FGS/Cpi/Cpi-item-list', compact('cpi_id','items'));
+    }
+    public function cpi_transaction(Request $request)
+    {
+        $condition = [];
+        if ($request->cpi_no) {
+            $condition[] = ['fgs_cpi.cpi_number', 'like', '%' . $request->cpi_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_cpi.cpi_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        $items = fgs_cpi_item::select(
+            'fgs_cpi.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_cpi.cpi_number',
+            'fgs_cpi.cpi_date',
+            'fgs_cpi.created_at as min_wef',
+            'fgs_cpi_item.id as cpi_item_id',
+            'fgs_cpi_item.quantity'
+        )
+            ->leftJoin('fgs_cpi_item_rel', 'fgs_cpi_item_rel.item', '=', 'fgs_cpi_item.id')
+            ->leftJoin('fgs_cpi', 'fgs_cpi.id', '=', 'fgs_cpi_item_rel.master')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_cpi_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_pi_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_pi_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_cpi_item.id', 'desc')
+            ->paginate(15);
+        return view('pages/FGS/PI/CPI-transaction-list', compact('items'));
+    }
+    public function cpi_transaction_export(Request $request)
+    {
+        $condition = [];
+        if ($request->cpi_no) {
+            $condition[] = ['fgs_cpi.cpi_number', 'like', '%' . $request->cpi_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = ['fgs_cpi.cpi_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        }
+        // $items = fgs_cpi_item::select(
+        //     'fgs_cpi.*',
+        //     'fgs_item_master.sku_code',
+        //     'fgs_item_master.discription',
+        //     'fgs_item_master.hsn_code',
+        //     'fgs_cpi.cpi_number',
+        //     'fgs_cpi.cpi_date',
+        //     'fgs_cpi.created_at as min_wef',
+        //     'fgs_cpi_item.id as cpi_item_id',
+        //     'fgs_cpi_item.quantity',
+        //     'customer_supplier.firm_name',
+        //     'customer_supplier.city',
+        //     'state.state_name',
+        //     'zone.zone_name',
+        //     'fgs_product_category.category_name',
+        //     'fgs_product_category_new.category_name as new_category_name',
+        //     'transaction_type.transaction_name',
+        //     'customer_supplier.sales_type',
+        //     'inventory_gst.igst',
+        //     'inventory_gst.cgst',
+        //     'inventory_gst.sgst',
+        //     'inventory_gst.id as gst_id',
+        //     'fgs_oef_item.rate',
+        //     'fgs_oef_item.discount',
+        //     'fgs_oef.order_number',
+        //     'fgs_oef.order_date',
+        //     'fgs_oef.remarks as oef_remarks',
+        //     'product_group1.group_name as group1_name',
+
+
+        // )
+        // ->leftJoin('fgs_cpi_item_rel', 'fgs_cpi_item_rel.item', '=', 'fgs_cpi_item.id')
+        // ->leftJoin('fgs_cpi', 'fgs_cpi.id', '=', 'fgs_cpi_item_rel.master')
+        // ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_cpi_item.product_id')
+        // ->leftJoin('fgs_grs', 'fgs_grs.id', '=', 'fgs_cpi_item.grs_id')
+        //     ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_grs.oef_id')
+        //     ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.master', '=', 'fgs_oef.id')
+        //     ->leftJoin('fgs_oef_item', 'fgs_oef_item.id', '=', 'fgs_oef_item_rel.item')
+        //     ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_cpi.customer_id')
+        //     ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+        //     ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+        //     ->leftjoin('inventory_gst', 'inventory_gst.id', '=', 'fgs_oef_item.gst')
+        //     ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_oef.product_category')
+        //     ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', 'fgs_oef.new_product_category')
+        //     ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
+        //     ->leftjoin('product_group1','product_group1.id','=','fgs_item_master.product_group1_id')
+        // // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_pi_item.batchcard_id')
+        // //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+        // ->where($condition)
+        // //->where('fgs_pi_item.status',1)
+        // ->distinct('fgs_cpi_item.id')
+        // ->orderBy('fgs_cpi_item.id', 'desc')
+        //     ->get();
+        $items = fgs_cpi_item::select(
+            'fgs_cpi.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_cpi.cpi_number',
+            'fgs_cpi.cpi_date',
+            'fgs_cpi.created_at as min_wef',
+            'fgs_cpi_item.id as cpi_item_id',
+            'fgs_cpi_item.quantity'
+        )
+            ->leftJoin('fgs_cpi_item_rel', 'fgs_cpi_item_rel.item', '=', 'fgs_cpi_item.id')
+            ->leftJoin('fgs_cpi', 'fgs_cpi.id', '=', 'fgs_cpi_item_rel.master')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_cpi_item.product_id')
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_pi_item.batchcard_id')
+            //->where('fgs_min_item.batchcard_id', '=', $batch_id)
+            ->where($condition)
+            //->where('fgs_pi_item.status',1)
+            //->distinct('fgs_min_item.id')
+            ->orderBy('fgs_cpi_item.id', 'desc')
+            ->get();
+        return Excel::download(new FGScpitransactionExport($items), 'FGS-CPI-transaction' . date('d-m-Y') . '.xlsx');
     }
   
 }

@@ -59,6 +59,23 @@ class inv_stock_from_production extends Model
         ->paginate(15);
     }
 
+    function get_all_data_export($condition)
+    {
+        return $this->select('inv_stock_from_production.*','inv_lot_allocation.lot_number','inventory_rawmaterial.item_code', 'inv_item_type.type_name','inv_unit.unit_name',
+        'inv_stock_to_production.sip_number','inv_mac.mac_number')
+        ->leftjoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_stock_from_production.lot_id')
+        ->leftjoin('inv_stock_to_production','inv_stock_to_production.id','=','inv_stock_from_production.sip_id')
+        ->leftjoin('inv_mac_item_rel','inv_mac_item_rel.item','=','inv_stock_from_production.mac_item_id')
+        ->leftjoin('inv_mac','inv_mac.id','=','inv_mac_item_rel.master')
+        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_from_production.item_id')
+        ->leftjoin('inv_item_type', 'inv_item_type.id', '=','inventory_rawmaterial.item_type_id' )
+        ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+        ->where($condition)
+        ->where('inv_stock_from_production.status','=',1)
+        ->orderby('inv_stock_from_production.id','desc')
+        ->get();
+    }
+
     function getSIR_Not_In_StockTransferOrder($condition)
     {
         return $this->select(['inv_stock_from_production.id','inv_stock_from_production.sir_number', 'inv_stock_from_production.quantity','inv_supplier.vendor_id','inv_supplier.vendor_name','inventory_rawmaterial.item_code',

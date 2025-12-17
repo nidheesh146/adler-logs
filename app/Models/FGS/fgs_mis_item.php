@@ -24,11 +24,11 @@ class fgs_mis_item extends Model
     }
     function getMISItems($condition)
     {
-        return $this->select('product_product.sku_code','product_product.hsn_code','product_product.discription','batchcard_batchcard.batch_no',
+        return $this->select('fgs_item_master.sku_code','fgs_item_master.hsn_code','fgs_item_master.discription','batchcard_batchcard.batch_no',
         'fgs_mtq_item.quantity','fgs_mtq_item.manufacturing_date','fgs_mtq_item.expiry_date')
                     ->leftjoin('fgs_mis_item_rel','fgs_mis_item_rel.item','=', 'fgs_mis_item.id')
                     ->leftjoin('fgs_mtq_item','fgs_mtq_item.id','=', 'fgs_mis_item.mtq_item_id')
-                    ->leftjoin('product_product','product_product.id','=','fgs_mis_item.product_id')
+                    ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_mis_item.product_id')
                     ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mtq_item.batchcard_id')
                     ->where($condition)
                     ->orderBy('fgs_mis_item.id','ASC')
@@ -38,11 +38,11 @@ class fgs_mis_item extends Model
 
     function get_items($condition)
     {
-        return $this->select('fgs_mis_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_mtq_item.manufacturing_date','fgs_mtq_item.expiry_date','fgs_mtq_item.quantity')
+        return $this->select('fgs_mis_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no','fgs_mtq_item.manufacturing_date','fgs_mtq_item.expiry_date','fgs_mtq_item.quantity')
                         ->leftjoin('fgs_mis_item_rel','fgs_mis_item_rel.item','=','fgs_mis_item.id')
                         ->leftjoin('fgs_mis','fgs_mis.id','=','fgs_mis_item_rel.master')
                           ->leftjoin('fgs_mtq_item','fgs_mtq_item.id','=','fgs_mis_item.mtq_item_id')
-                        ->leftjoin('product_product','product_product.id','=','fgs_mtq_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_mtq_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mtq_item.batchcard_id')
                         ->where($condition)
                         ->orderBy('fgs_mis_item.id','ASC')

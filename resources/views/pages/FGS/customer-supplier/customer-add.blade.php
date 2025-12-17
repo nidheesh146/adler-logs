@@ -60,12 +60,26 @@
                                  <span style="font-size: 11px;">(Include STD code,telephone/mobile number) </span>  </label>
                                   <input type="text" name="contact_number" class="form-control"  value="{{(!empty($datas)) ? $datas['contact_number']: ""}}" placeholder="contact_number">
                             </div>   
-                            
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Whatsapp Number</label>
+                                <input type="text" name="whatsapp_number" class="form-control"  value="{{(!empty($datas)) ? $datas['whatsapp_number'] : ""}}" placeholder="Whatsapp Number"> 
+                            </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Email
                                  <span style="font-size: 11px;"></span>  </label>
                                  <input type="text" name="email" class="form-control"  value="{{(!empty($datas)) ? $datas['email']: ""}}" placeholder="contact_number">
                             </div>
+                            
+                            
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Billing Address  *</label>
+                                <textarea value="" class="form-control " name="billing_address"  id="billing_address" rows="4" placeholder="Billing Address"><?php echo (!empty($datas)) ? $datas['billing_address'] : ""; ?></textarea>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Shipping Address  *  <span align="right"> <input type="checkbox" id="address_same_check"> Billing address same as shipping address </span></label>
+                                <textarea value="" class="form-control " name="shipping_address" id="shipping_address" rows="4"  placeholder="Shipping Address"><?php echo (!empty($datas)) ? $datas['shipping_address'] : ""; ?></textarea>
+                            </div>
+                           
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sales Type</label>
                                 <select name="sales_type"  class="form-control">
@@ -75,14 +89,6 @@
                                     <option value="Doctor" @if(!empty($datas) && $datas['sales_type'] == 'Doctor' ) selected   @endif>Doctor</option>
                                     <option value="DUMY" @if(!empty($datas) && $datas['sales_type'] == 'DUMY' ) selected   @endif>DUMY</option>
                                 </select>
-                            </div>
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Billing Address  *</label>
-                                <textarea value="" class="form-control " name="billing_address"  id="billing_address" rows="4" placeholder="Billing Address"><?php echo (!empty($datas)) ? $datas['billing_address'] : ""; ?></textarea>
-                            </div>
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Shipping Address  *  <span align="right"> <input type="checkbox" id="address_same_check"> Billing address same as shipping address </span></label>
-                                <textarea value="" class="form-control " name="shipping_address" id="shipping_address" rows="4"  placeholder="Shipping Address"><?php echo (!empty($datas)) ? $datas['shipping_address'] : ""; ?></textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>City *</label>
@@ -112,6 +118,16 @@
                                 <input type="text" name="country" id="country" class="form-control"  value="{{(!empty($datas)) ? $datas->country: ""}}" placeholder="Country" > 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Currency</label>
+
+                                <select class="form-control" name="currency" id="currency">
+                                    <option value="">--- select one ---</option> 
+                                    @foreach($currency as $item)
+                                    <option value="{{$item->currency_id}}" @if($datas != null)  @if($item->currency_id == $datas->currency) selected @endif @endif>{{$item->currency_code}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>PAN Number *</label>
                                 <input type="text" name="pan_number" class="form-control"  value="{{(!empty($datas)) ? $datas->pan_number: ""}}" placeholder="PAN Number" required> 
                             </div>
@@ -128,34 +144,54 @@
                                 <input type="text" name="dl_number2" class="form-control"  value="{{(!empty($datas)) ? $datas['dl_number2'] : ""}}" placeholder="GST Number"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>DL Expiry Date (YYYY-MM-DD)</label>
+                                <input type="text" name="dl_expiry_date" class="form-control datepicker "  value="@if(!empty($datas) && $datas['dl_expiry_date']=='0000-00-00' || empty($datas['dl_expiry_date'])) N.A @else  {{$datas['dl_expiry_date']}} @endif" placeholder="DL Expiry Date"> 
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>DL Number (Others if any)</label>
                                 <input type="text" name="dl_number3" class="form-control"  value="{{(!empty($datas)) ? $datas['dl_number3'] : ""}}" placeholder="GST Number"> 
                             </div>
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>DL Expiry Date</label>
-                                <input type="date" name="dl_expiry_date" class="form-control"  value="{{(!empty($datas)) ? $datas['dl_expiry_date'] : ""}}" placeholder="DL Expiry Date"> 
-                            </div>
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                            
+                            {{--<div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sales Person Name</label>
                                 <input type="text" name="sales_person_name" class="form-control"  value="{{(!empty($datas)) ? $datas['sales_person_name']: ""}}" placeholder="Sales Person Name"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Sales Person Email Id</label>
                                 <input type="text" name="sales_person_email" class="form-control"  value="{{(!empty($datas)) ? $datas['sales_person_email']: ""}}" placeholder="Sales Person Email Id"> 
+                            </div>--}}
+                            
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>ZM Name </label>
+                                <input type="text" name="zm_name" class="form-control"  value="{{(!empty($datas)) ? $datas['zm_name'] : ""}}" placeholder="ZM Name"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Whatsapp Number</label>
-                                <input type="text" name="whatsapp_number" class="form-control"  value="{{(!empty($datas)) ? $datas['sales_person_email'] : ""}}" placeholder="Whatsapp Number"> 
+                                <label>ZM Email </label>
+                                <input type="text" name="zm_email" class="form-control"  value="{{(!empty($datas)) ? $datas['zm_email'] : ""}}" placeholder="ZM Email"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Currency</label>
-
-                                <select class="form-control" name="currency" id="currency">
-                                    <option value="">--- select one ---</option> 
-                                    @foreach($currency as $item)
-                                    <option value="{{$item->currency_id}}" @if($datas != null)  @if($item->currency_id == $datas->currency) selected @endif @endif>{{$item->currency_code}}</option>
-                                    @endforeach
-                                </select>
+                                <label>RM Name </label>
+                                <input type="text" name="rm_name" class="form-control"  value="{{(!empty($datas)) ? $datas['rm_name'] : ""}}" placeholder="RM Name"> 
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>RM Email </label>
+                                <input type="text" name="rm_email" class="form-control"  value="{{(!empty($datas)) ? $datas['rm_email'] : ""}}" placeholder="RM Email"> 
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>ASM Name</label>
+                                <input type="text" name="asm_name" class="form-control"  value="{{(!empty($datas)) ? $datas['asm_name']: ""}}" placeholder="ASM Name"> 
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>ASM Email</label>
+                                <input type="text" name="asm_email" class="form-control"  value="{{(!empty($datas)) ? $datas['asm_email']: ""}}" placeholder="ASM Email Id"> 
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>ME/SE Name </label>
+                                <input type="text" name="me_name" class="form-control"  value="{{(!empty($datas)) ? $datas['me_name'] : ""}}" placeholder="ME/SE NAME"> 
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>ME/SE Email</label>
+                                <input type="text" name="me_email" class="form-control"  value="{{(!empty($datas)) ? $datas['me_email'] : ""}}" placeholder="ME/SE EMAIL"> 
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Type</label>
@@ -214,11 +250,11 @@
   <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
   <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 <script>
-    $(document).ready(function() {
-            $('form').submit(function() {
-                $(this).find(':submit').prop('disabled', true);
-            });
-        });
+    // $(document).ready(function() {
+    //         $('form').submit(function() {
+    //             $(this).find(':submit').prop('disabled', true);
+    //         });
+    //     });
 autosize();
 function autosize(){
     var text = $('.autosize');

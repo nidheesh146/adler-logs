@@ -43,7 +43,7 @@ class inv_mrd_item extends Model
         'inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_mrd_item.value_inr','currency_exchange_rate.currency_code',
         'inv_mrd_item.rejected_quantity','inv_mrd_item.remarks','inv_mrd_item.conversion_rate','inv_mrd_item.conversion_rate as mrd_conversion_rate')
                     ->leftjoin('inv_mrd_item_rel','inv_mrd_item_rel.item','=','inv_mrd_item.id')
-                    ->leftjoin('inv_miq_item','inv_miq_item.id','=','inv_mrd_item.miq_item_id')
+                    ->leftjoin('inv_miq_item','inv_miq_item.id','=','inv_mrd_item.id')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
                     ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_supplier_invoice_item.item_id')
                     ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')

@@ -41,11 +41,11 @@
                 <div class="label-div" id="label-div">
                     @for ($i = 0; $i< $page_count; $i++)
                     <!-- <div class="page-container" style="margin-top:1cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;"> -->
-                    <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                    <div class="page-container" style="margin-top:0.4cm;margin-bottom:0.45cm;margin-left:-5px;width:21.1cm;height:29.3cm;">
                         @for ($j=0;$j<$label_per_page;$j++)
                         <!-- <div class="label-container" style="float:left;width:10.4cm;height:7.3cm;margin-bottom:0.08cm;margin-top:0.08cm;">  -->
                         <!-- <div class="label-container" style="float:left;width:50%;height:25%;margin-bottom:0.14cm;margin-top:0.09cm;">  -->
-                        <div class="label-container" style="float:left;width:50%;height:25%;margin-bottom:12px;"> 
+                        <div class="label-container" style="float:left;width:50%;height:25%;margin-bottom:12px; @if($j%2==0)margin-right:0px;@else margin-right:0px; @endif"> 
                             <div class="row1" style="font-size:12px;">    
                                 <div class="subcolumn1" style="float:left; width:60px">
                                     <div class="logo" style="text-align:center;">
@@ -115,7 +115,7 @@
                                             <small><span style="margin-left:26px;font-weight:550">{{$batchcard_data->sku_code}}</span></small>
                                             <br/>
                                             <!-- <span style="font-size:7px;margin-left:40px;">ML No:{{$batchcard_data->drug_license_number}}</span> -->
-                                            <div style="font-size:7px;margin-left:40px;margin-top:5px; padding-bottom:4.5px;">
+                                            <div style="font-size:7px;margin-left:69px;margin-top:4px; padding-bottom:9.5px;width:100px;">
                                                 {{$batchcard_data->drug_license_number}}
                                             </div>
                                         </div>
@@ -142,7 +142,8 @@
                                         <?php $img_path = '/img/'.$batchcard_data->label_image; ?>
                                         @if(file_exists(public_path($img_path))) 
                                             <!-- <img src="{{asset('/img/'.$batchcard_data->label_image)}}" style="width:55%;margin-top:128%;"> -->
-                                            <img src="{{asset($img_path)}}" style="width:55%;margin-top:-14px;">
+                                            <!-- <img src="{{asset($img_path)}}" style="width:85%;margin-top:-14px;"> -->
+                                            <img src="{{asset($img_path)}}" style="width:30px;margin-top:-18px;">
                                         @endif
                                     @endif
                                     </div>
@@ -158,7 +159,7 @@
                                             <br/>
                                             <span style="font-size:8px;">
                                                 Plot No-A1 MIDC, Sadavali, Tal- Sangmeshwar<br/>
-                                                Dist -Ratnagiri, Maharashtra-415804 MADE IN INDIA
+                                                Dist -Ratnagiri, Maharashtra-415804 <br/> MADE IN INDIA
                                             </span>
                                         </div>   
                                     </div> 
@@ -184,9 +185,9 @@
                             }
                         <?php }?>
                     </style>
-                    <div class="page-container" style="margin-top:0.9cm;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
+                    <div class="page-container" style="margin-top:0.9cm;margin-left:0px;margin-bottom:0.45cm;width:21.1cm;height:29.3cm;">
                         @for ($j=1;$j<=$label_per_page;$j++)
-                        <div class="label-container" style="float:left;width:50%;height:25%;margin-bottom:12px;">
+                        <div class="label-container" style="float:left;width:50%;height:25%;margin-bottom:12px; @if($j%2==0)margin-right:0px;@else margin-right:0px; @endif"> 
                         <div class="label-content{{$j}}" style="">
                             <div class="row1" style="font-size:12px;">    
                                 <div class="subcolumn1" style="float:left; width:60px">
@@ -257,7 +258,7 @@
                                             <span style="margin-left:26px;"><small>{{$batchcard_data->sku_code}}</small></span>
                                             <br/>
                                             <!-- <span style="font-size:7px;margin-left:40px;">ML No:{{$batchcard_data->drug_license_number}}</span> -->
-                                            <div style="font-size:7px;margin-left:40px;margin-top:5px; padding-bottom:4.5px;">
+                                            <div style="font-size:7px;margin-left:69px;margin-top:5px;width:150px; padding-bottom:9.5px;">
                                                 {{$batchcard_data->drug_license_number}}
                                             </div>
                                         </div>
@@ -284,8 +285,8 @@
                                         <?php $img_path = '/img/'.$batchcard_data->label_image; ?>
                                         @if(file_exists(public_path($img_path))) 
                                             <!-- <img src="{{asset('/img/'.$batchcard_data->label_image)}}" style="width:55%;margin-top:128%;"> -->
-                                            <img src="{{asset($img_path)}}" style="width:55%;margin-top:-14px;">
-                                        @endif
+                                            <!-- <img src="{{asset($img_path)}}" style="width:85%;margin-top:-14px;"> -->
+                                            <img src="{{asset($img_path)}}" style="width:36px;margin-top:-14px;">                                          @endif
                                     @endif
                                     </div>
                                 </div>
@@ -300,7 +301,7 @@
                                             <br/>
                                             <span style="font-size:8px;">
                                                 Plot No-A1 MIDC, Sadavali, Tal- Sangmeshwar<br/>
-                                                Dist -Ratnagiri, Maharashtra-415804 MADE IN INDIA
+                                                Dist -Ratnagiri, Maharashtra-415804 <br/> MADE IN INDIA
                                             </span>
                                         </div>   
                                     </div> 

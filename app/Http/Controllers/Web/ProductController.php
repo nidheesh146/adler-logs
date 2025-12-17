@@ -59,7 +59,7 @@ class ProductController extends Controller
         // }
         $pcondition = $this->product_product->get()->unique('is_sterile');
         
-        $data['products'] = $this->product->get_products($condition);
+        $data['products'] = $this->product->get_products_prdct($condition);
         
         return view('pages/product/product-list',compact('data','pcondition'));
     }
@@ -104,27 +104,53 @@ class ProductController extends Controller
         }
     }
 
-    public function productAdd(Request $request,$id=null)
+
+    public function productAdd(Request $request, $id = null)
     {
-        if ($request->isMethod('post')) 
-        {
-             $validation['sku_code'] = ['required'];
-             $validation['pimage'] = ['image', 'mimes:jpeg,png,jpg'];
+        //dd('product');
+       // print_r($_POST);
+        if ($request->isMethod('post')) {
+
+            if (!empty($request->pimage)) {
+
+                $validation['pimage'] = ['image', 'mimes:jpeg,png,jpg'];
+            }
+            if (!empty($request->pdf)) {
+                $validation['pdf'] = ['required|mimes:pdf|max:10240']; // 10MB limit
+            }
+
+            $validation['sku_code'] = ['required'];
             //  $validation['product_family_id'] = ['required'];
             //  $validation['product_group_id'] = ['required'];
             //  $validation['brand_details_id'] = ['required'];
             $validator = Validator::make($request->all(), $validation);
             if ($request->pimage) {
-               
+
                 $imageFile = $request->file('pimage');
-                
+
                 // Check if the uploaded file is not empty
                 if ($imageFile->isValid()) {
                     $imageName = $request->sku_code . '.' . $imageFile->getClientOriginalExtension();
-            
+
                     $imageFile->move(public_path('img/label_image'), $imageName);
-              
-            
+                }
+            }
+            if ($request->pdf) {
+
+                $pdfFile = $request->file('pdf');
+
+                // Check if the uploaded file is not empty
+                if ($pdfFile->isValid()) {
+                    // if($request->process_sheet_no){
+                    $pdfName = $request->sku_code . '.' . $pdfFile->getClientOriginalExtension();
+                    $pdfFile->move(public_path('pdf'), $pdfName);
+                    // }else{
+                    //     $request->session()->flash('error', "Please Add Process sheet no!");
+                    //     return redirect()->back();                    }
+
+                }
+            }
+
             // if(!$validator->errors()->all()) 
             // {
             //  if ($request->hasFile('image')) {
@@ -134,114 +160,225 @@ class ProductController extends Controller
             // $imageName = $request->sku_code.'.'.$request->pimage->getClientOriginalExtension();  
             // $request->pimage->move(public_path('img/productimg'), $imageName);
             //$datas = $imageName;
-             }else{
-             $imageName =Null;
-             } 
+            //  }else{
+            //  $imageName =Null;
+            //  }
+            if (!empty($request->sku_code)) {
                 $data['sku_code'] = $request->sku_code;
+            }
+            if (!empty($request->sku_name)) {
                 $data['sku_name'] = $request->sku_name;
+            }
+            if (!empty($request->discription)) {
                 $data['discription'] = $request->discription;
+            }
+            if (!empty($request->short_name)) {
                 $data['short_name'] = $request->short_name;
+            }
+            if (!empty($request->ad_sp1)) {
                 $data['ad_sp1'] = $request->ad_sp1;
+            }
+            if (!empty($request->given_reason)) {
                 $data['given_reason'] = $request->given_reason;
+            }
+            if (!empty($request->minimum_stock)) {
                 $data['minimum_stock'] = $request->minimum_stock;
+            }
+            if (!empty($request->expiry)) {
                 $data['expiry'] = $request->expiry;
+            }
+            if (!empty($request->sterilization_type)) {
                 $data['sterilization_type'] = $request->sterilization_type;
+            }
+            if (!empty($request->is_reusable)) {
                 $data['is_reusable'] = $request->is_reusable;
+            }
+            if (!empty($request->is_instruction)) {
                 $data['is_instruction'] = $request->is_instruction;
+            }
+            if (!empty($request->is_sterile)) {
                 $data['is_sterile'] = $request->is_sterile;
+            }
+            if (!empty($request->ad_sp2)) {
                 $data['ad_sp2'] = $request->ad_sp2;
+            }
+            if (!empty($request->mrp)) {
                 $data['mrp'] = $request->mrp;
+            }
+            if (!empty($request->product_family_id)) {
                 $data['product_family_id'] = $request->product_family_id;
+            }
+            if (!empty($request->product_group_id)) {
                 $data['product_group_id'] = $request->product_group_id;
+            }
+            if (!empty($request->brand_details_id)) {
                 $data['brand_details_id'] = $request->brand_details_id;
+            }
+            if (!empty($request->snn_description)) {
                 $data['snn_description'] = $request->snn_description;
+            }
+            if (!empty($request->drug_license_number)) {
                 $data['drug_license_number'] = $request->drug_license_number;
+            }
+            if (!empty($request->hierarchy_path)) {
                 $data['hierarchy_path'] = $request->hierarchy_path;
+            }
+            if (!empty($request->hsn_code)) {
                 $data['hsn_code'] = $request->hsn_code;
+            }
+            if (!empty($request->instruction_for_use)) {
                 $data['instruction_for_use'] = $request->instruction_for_use;
+            }
+            if (!empty($request->is_ce_marked)) {
                 $data['is_ce_marked'] = $request->is_ce_marked;
+            }
+            if (!empty($request->is_control_sample_applicable)) {
                 $data['is_control_sample_applicable'] = $request->is_control_sample_applicable;
+            }
+            if (!empty($request->is_doc_applicability)) {
                 $data['is_doc_applicability'] = $request->is_doc_applicability;
+            }
+            if (!empty($request->is_donot_reuse_logo)) {
                 $data['is_donot_reuse_logo'] = $request->is_donot_reuse_logo;
+            }
+            if (!empty($request->is_donot_reuse_symbol)) {
                 $data['is_donot_reuse_symbol'] = $request->is_donot_reuse_symbol;
+            }
+            if (!empty($request->is_ear_log_address)) {
                 $data['is_ear_log_address'] = $request->is_ear_log_address;
+            }
+            if (!empty($request->is_instruction_for_reuse_symbol)) {
                 $data['is_instruction_for_reuse_symbol'] = $request->is_instruction_for_reuse_symbol;
+            }
+            if (!empty($request->is_non_sterile_logo)) {
                 $data['is_non_sterile_logo'] = $request->is_non_sterile_logo;
+            }
+            if (!empty($request->is_read_instruction_logo)) {
                 $data['is_read_instruction_logo'] = $request->is_read_instruction_logo;
+            }
+            if (!empty($request->item_type)) {
                 $data['item_type'] = $request->item_type;
+            }
+            if (!empty($request->label_format_number)) {
                 $data['label_format_number'] = $request->label_format_number;
+            }
+            if (!empty($request->maximum_stock)) {
                 $data['maximum_stock'] = $request->maximum_stock;
+            }
+            if (!empty($request->min_stock_set_date)) {
                 $data['min_stock_set_date'] = $request->min_stock_set_date;
+            }
+            if (!empty($request->notified_body_number)) {
                 $data['notified_body_number'] = $request->notified_body_number;
+            }
+            if (!empty($request->over_stock_level)) {
                 $data['over_stock_level'] = $request->over_stock_level;
+            }
+            if (!empty($request->quantity_per_pack)) {
                 $data['quantity_per_pack'] = $request->quantity_per_pack;
+            }
+            if (!empty($request->record_file_no)) {
                 $data['record_file_no'] = $request->record_file_no;
+            }
+            if (!empty($request->revision_record)) {
                 $data['revision_record'] = $request->revision_record;
-                 $data['technical_file'] = $request->technical_file;
+            }
+            if (!empty($request->technical_file)) {
+                $data['technical_file'] = $request->technical_file;
+            }
+            if (!empty($request->unit_weight_kg)) {
                 $data['unit_weight_kg'] = $request->unit_weight_kg;
+            }
+            if (!empty($request->groups)) {
                 $data['groups'] = $request->groups;
+            }
+            if (!empty($request->family)) {
                 $data['family'] = $request->family;
+            }
+            if (!empty($request->brand)) {
                 $data['brand'] = $request->brand;
-                $data['is_active'] = 1;
+            }
+            $data['is_active'] = $request->has('is_active') ? $request->is_active : 0;
+
+           // $data['is_active'] = 1;
+
+            if (!empty($request->process_sheet_no)) {
                 $data['process_sheet_no'] = $request->process_sheet_no;
-                $data['label_image'] = 'label_image/'.$imageName;
-
-               // $data['process_sheet_pdf'] = $image_fileName;
-
-                if($request->id){ 
-                    $data['updated'] = date('Y-m-d H:i:s');
-                    $data['updated'] = config('user')['user_id'];
-                    $this->product->update_data(['id'=>$request->id],$data);
-                    $request->session()->flash('success',"You have successfully updated a product !");
-                    return redirect("product/list");
-                }
-                else{
-                        
-                        $data['created_by_id'] = config('user')['user_id'];
-                        $data['created'] = date('Y-m-d H:i:s');
-                        $data['updated'] = date('Y-m-d H:i:s');
-                        $this->product->insert_data($data);
-                        $request->session()->flash('success',"You have successfully added a product !");
-                        return redirect("product/list");
-
-                    
-                }
-
             }
-            if($validator->errors()->all()) 
-            { 
-            if($request->id)
+            if (!empty($request->pimage)) {
+                $data['label_image'] = 'label_image/' . $imageName;
+            }
+            if (!empty($request->pdf)) {
+                $data['pdf'] = 'pdf/' . $pdfName;
+            }
+            // $data['process_sheet_pdf'] = $image_fileName;
+
+            if ($request->id) {
+                $data['updated'] = date('Y-m-d H:i:s');
+                //$data['updated_by_id'] = config('user')['user_id']; // Fixed 'updated' to 'updated_by_id'
+               // dd($data);
+                $this->product->update_data(['id' => $request->id], $data);
+                $request->session()->flash('success', "You have successfully updated a product !");
+                return redirect("product/list");
+            } else {
+                // Prepare the data for insertion into the product table
+                $data['created_by_id'] = config('user')['user_id'];
+                $data['created'] = date('Y-m-d H:i:s');
+                $data['updated'] = date('Y-m-d H:i:s');
+                //dd($data);
+                $this->product->insert_data($data);
+                
+                // If the item is either FINISHED GOODS or SEMIFINISHED GOODS, insert into fgs_item_master
+                // if (in_array($data['item_type'], ['FINISHED GOODS', 'SEMI FINISHED GOODS'])) {
+                //     $fgsItemData = [
+                //         'sku_code' => $data['sku_code'],
+                //         'sku_name' => $data['sku_name'],
+                //         'item_type' => $data['item_type'],
+                //        // 'minimum_stock' => $data['minimum_stock'],
+                //        // 'maximum_stock' => $data['maximum_stock'],
+                //         'is_sterile' => $data['is_sterile'],
+                //        // 'quantity_per_pack' => $data['quantity_per_pack'],
+                //         'hsn_code' => $data['hsn_code'],
+                //         //'gst' => $data['gst'],
+                //         'created_by_id' => config('user')['user_id'],
+                //         'is_active' => $data['is_active'],
+                //         'created' => now(),
+                //         'updated' => now(),
+                //        // 'status_type' => $data['status_type'],
+                //     ];
+                //     DB::table('fgs_item_master')->insert($fgsItemData); // Insert into fgs_item_master table
+                // }
+                
+                $request->session()->flash('success', "You have successfully added a product !");
+                return redirect("product/list");
+            }
             
-                return redirect("product/Product-add".$id)->withErrors($validator)->withInput();
-            else
-                return redirect("product/Product-add")->withErrors($validator)->withInput();
+            if ($validator->errors()->all()) {
+                if ($request->id) {
+                    return redirect("product/Product-add" . $id)->withErrors($validator)->withInput();
+                } else {
+                    return redirect("product/Product-add")->withErrors($validator)->withInput();
+                }
             }
+            } else {
+                if ($request->id) {
+                    $data = product::find($request->id);
+                    $materials = $this->product_input_material->getAllData(['product_input_material.product_id' => $request->product_id]);
+                    $family = $this->product_productfamily->distinct('product_productfamily.family_name')->get();
+                    $group = $this->product_productgroup->distinct('product_productgroup.group_name')->get();
+                    $brand = $this->product_productbrand->distinct('product_productbrand.brand_name')->get();
+                    return view('pages/product/Product-add', compact('data', 'materials', 'family', 'group', 'brand'));
+                } else {
+                    $materials = $this->product_input_material->getAllData(['product_input_material.product_id' => $request->product_id]);
+                    $family = $this->product_productfamily->distinct('product_productfamily.family_name')->get();
+                    $group = $this->product_productgroup->distinct('product_productgroup.group_name')->get();
+                    $brand = $this->product_productbrand->distinct('product_productbrand.brand_name')->get();
+                    return view('pages/product/Product-add', compact('materials', 'family', 'group', 'brand'));
+                }
+            }
+            
         }
-        else
-        { 
-
-             if($request->id)
-            {
-
-            $data = product::find($request->id);
-            $materials = $this->product_input_material->getAllData(['product_input_material.product_id'=>$request->product_id]);
-            $family = $this->product_productfamily->distinct('product_productfamily.family_name')->get();
-            $group = $this->product_productgroup->distinct('product_productgroup.group_name')->get();
-            $brand = $this->product_productbrand->distinct('product_productbrand.brand_name')->get();
-            //print_r($materials);exit;
-            return view('pages/product/product-add', compact('data','materials','family','group','brand'));
-        }
-        else
-            $materials = $this->product_input_material->getAllData(['product_input_material.product_id'=>$request->product_id]);
-            $family = $this->product_productfamily->distinct('product_productfamily.family_name')->get();
-            $group = $this->product_productgroup->distinct('product_productgroup.group_name')->get();
-            $brand = $this->product_productbrand->distinct('product_productbrand.brand_name')->get();
-            //print_r($materials);exit;
-            return view('pages/product/product-add', compact('materials','family','group','brand'));
-        }
-
-    }
-
+    
     public function alternativeInputMaterialAdd(Request $request)
     {
         $validation['materialid'] = ['required'];
@@ -295,7 +432,7 @@ class ProductController extends Controller
         $request->session()->flash('succ', "Input material deleted successfully..");
         else
         $request->session()->flash('err', "Input material deleting failed..");
-        return Redirect::back();
+        return Redirect('fgs/product-master/list');
     }
     public function get_item1_id($material_id)
     {
@@ -309,6 +446,7 @@ class ProductController extends Controller
 
     public function productFileUpload(Request $request)
     {
+       // dd('hi');
         $file = $request->file('file');
         if ($file) {
 
@@ -332,16 +470,18 @@ class ProductController extends Controller
             if($sheet1_column_count == $no_column)
             {
                 $res = $this->Excelsplitsheet($ExcelOBJ);
+                $request->session()->flash('success',  "Successfully uploaded.");
+                return redirect('product/file/upload');
                  //print_r($res);exit;
-                 if($res)
-                 {
-                    $request->session()->flash('success',  "Successfully uploaded.");
-                    return redirect('product/file/upload');
-                 }
-                 else{
-                    $request->session()->flash('error',  "The data already uploaded.");
-                    return redirect('product/file/upload');
-                 }
+                //  if($res)
+                //  {
+                //     $request->session()->flash('success',  "Successfully uploaded.");
+                //     return redirect('product/file/upload');
+                //  }
+                //  else{
+                //     $request->session()->flash('error',  "The data already uploaded.");
+                //     return redirect('product/file/upload');
+                //  }
             }
             else 
             {
@@ -383,196 +523,119 @@ class ProductController extends Controller
     function identify_id($data,$type)
     {
         if($type=='product group'){
-           $id =  DB::table('product_productgroup')->where('group_name','=',$data)->first()->id;
-           return $id;  
+            if($data=='N. A.')
+            return NULL;
+            else{
+                $grp =  DB::table('product_productgroup')->where('group_name','=',$data)->first();
+                //return $id; 
+                if($grp)
+                {
+                    return $grp->id;
+                }
+                else
+                {
+                    return redirect('product/list')->with('error', 'The product group  "'.$data.'"  not exist on Database.So add this product group, then try to upload.');;
+                } 
+            }
         }
         if($type=='product brand'){
-            $id =  DB::table('product_productbrand')->where('brand_name',$data)->first()->id;
-            return $id;  
+            $brand =  DB::table('product_productbrand')->where('brand_name',$data)->first();
+            if($brand)
+            {
+                return $brand->id;
+            }
+            else
+            {
+                return redirect('product/list')->with('error', 'The product brand  "'.$data.'"  not exist on Database.So add this product brand, then try to upload.');;
+            } 
         }
          if($type=='product family'){
-            $id =  DB::table('product_productfamily')->where('family_name',$data)->first()->id;
-            return $id;  
+            $family =  DB::table('product_productfamily')->where('family_name',$data)->first();
+            if($family)
+            {
+                return $family->id;
+            }
+            else
+            {
+                return redirect('product/list')->with('error', 'The product family  "'.$data.'"  not exist on Database.So add this product family, then try to upload.');;
+            }   
         }
         
     }
     public function insert_product($ExcelOBJ)
     {
-        //print_r(json_encode($ExcelOBJ->excelworksheet));exit;
         foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) 
         {
             if ($key > 0) 
             {   
-                //echo $excelsheet[49];exit;
-                    $data['minimum_stock'] = $excelsheet[44];
-                    $data['maximum_stock'] = "0";
-                    if ($excelsheet[47] && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[47])) != 'NA' && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[47])) != 'N. A.') {
-                        $data['min_stock_set_date']  = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[47]))->format('Y-m-d');
-                    } else {
-                            $data['min_stock_set_date'] = null;
-                    }
-                    $data['over_stock_level'] = $excelsheet[46];
-                    $data['discription'] = $excelsheet[2];
-                    $data['is_active'] = 1;
-                    if ($excelsheet[6] && $excelsheet[6] != 'NA' && $excelsheet[6] != 'N. A.') {
-                        $data['published_date'] = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d');
-                    } else {
-                        $data['published_date'] = null;
-                    }
-                    $data['record_file_no'] = $excelsheet[22];
-                    $data['technical_file'] = $excelsheet[23];
-                    $data['instruction_for_use'] = $excelsheet[24];
-                    $data['classification_mdd'] = $excelsheet[25];
-                    $data['item_type'] = $excelsheet[26];
-                    $data['family_name'] = $excelsheet[28];
-
-                    $data['sku_name'] =  $excelsheet[1];
-                    $data['snn_description']= $excelsheet[29];
-
-                    $data['label_format_number'] = $excelsheet[30];
-                    $data['is_sterile'] = (strtolower($excelsheet[31]) == 'yes') ? 1 : 0;
-                    $data['is_non_sterile_logo'] =  (strtolower($excelsheet[32]) == 'yes') ? 1 : ((strtolower($excelsheet[32]) == 'no') ? 0 : NULL) ;
-                    $data['sterilization_type'] = $excelsheet[33];
-                    $data['is_sterile_expiry_date'] = (strtolower($excelsheet[34]) == 'yes') ? 1 : ((strtolower($excelsheet[34]) == 'no') ? 0 : NULL) ;
-                    // $label_image = preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[35]));
-                    // if ($excelsheet[35] && $label_image != 'NA' && $label_image != 'N. A.') {
-                    //     $data['label_image'] = 'label_image/'.$excelsheet[35];
-                    // } else {
-                    //     $data['label_image'] = null;
-                    // }
-                    $data['is_ce_marked'] = (strtolower($excelsheet[36]) == 'yes') ? 1 : ((strtolower($excelsheet[36]) == 'no') ? 0 : NULL) ;
-                    $data['notified_body_number'] = $excelsheet[37];
-                    $data['is_ear_log_address'] = (strtolower($excelsheet[38]) == 'yes') ? 1 : ((strtolower($excelsheet[38]) == 'no') ? 0 : NULL) ;
-                    
-                    $data['is_read_instruction_logo'] = (strtolower($excelsheet[39]) == 'yes') ? 1 : ((strtolower($excelsheet[39]) == 'no') ? 0 : NULL) ;
-                    
-                    $data['is_instruction'] = (strtolower($excelsheet[39]) == 'yes') ? 1 : 0;
-                    
-                    $data['is_temperature_logo'] = (strtolower($excelsheet[40]) == 'yes') ? 1 : ((strtolower($excelsheet[40]) == 'no') ? 0 : NULL) ;
-                    
-                    $data['is_donot_reuse_logo'] = (strtolower($excelsheet[41]) == 'yes') ? 1 : ((strtolower($excelsheet[41]) == 'no') ? 0 : NULL) ;
-                    
-                    $data['is_reusable'] = (strtolower($excelsheet[41]) == 'yes') ? 1 : 0;
-                    
-                    $data['drug_license_number'] = $excelsheet[42];
-                    $data['hsn_code'] = $excelsheet[43];
-                    
-                    //$data['product_group_id'] = $this->identify_id($excelsheet[49],"product group");
-                    // $data['product_group_id'] = ((($excelsheet[49]) == '') ? NULL : $this->identify_id($excelsheet[49],"product group"));
-                    // $data['brand_details_id'] = ((($excelsheet[27]) == '') ? NULL : $this->identify_id($excelsheet[27],"product brand"));
-                    // $data['product_family_id'] = ((($excelsheet[28]) == '') ? NULL : $this->identify_id($excelsheet[28],"product family"));
-                    if(empty($excelsheet[49]))
-                    $data['product_group_id'] = NULL;
-                    else
-                    $data['product_group_id'] = $this->identify_id($excelsheet[49],"product group");
-                    if($excelsheet[27]=='N. A.' || $excelsheet[27]=='')
-                    $data['brand_details_id'] = NULL;
-                    else
-                    $data['brand_details_id'] = $this->identify_id($excelsheet[27],"product brand");
-                    // if($excelsheet[28]=='N. A.' || $excelsheet[28]=='')
-                    // $data['product_family_id'] = NULL;
-                    // else
-                    // $data['product_family_id'] = $this->identify_id($excelsheet[27],"product family");
-                    if ($excelsheet[44] && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[44])) != 'NA' && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[44])) != 'N. A.' ) {
-                        $data['quantity_per_pack'] = $excelsheet[44];
-                    } else {
-                        $data['quantity_per_pack'] = NULL;
-                    }
-                    $data['hierarchy_path'] = $excelsheet[45];
-                    if ($excelsheet[46] && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[46])) != 'NA' && preg_replace('/[^A-Za-z0-9\-]/', '', preg_replace('/\s+/', '', $excelsheet[46])) != 'N. A.') {
-                        $data['unit_weight_kg'] = $excelsheet[46];
-                    }else{
-                        $data['unit_weight_kg'] = NULL;
-                    }
-                    $data['revision_record'] = $excelsheet[47];
-                    $data['is_inactive'] = (strtolower($excelsheet[48]) == 'y') ? 1 : ((strtolower($excelsheet[48]) == 'n') ? 0 : NULL);
-                    $data['gs1_code'] = $excelsheet[50];
-                    $data['is_control_sample_applicable'] = (strtolower($excelsheet[51]) == 'yes') ? 1 : ((strtolower($excelsheet[51]) == 'no') ? 0 : NULL);
-                    $data['is_doc_applicability'] =(strtolower($excelsheet[52]) == 'yes') ? 1 : ((strtolower($excelsheet[52]) == 'no') ? 0 : NULL);
-                    $data['is_instruction_for_reuse_symbol'] = $excelsheet[53] ? $excelsheet[53]  : NULL;
-                    $data['is_donot_reuse_symbol'] = $excelsheet[54] ? $excelsheet[54] : NULL ; 
-                    $data['ce_logo'] = $excelsheet[56]  ? $excelsheet[56]  : NULL; 
-                    $data['ad_sp1'] =  $excelsheet[57];
-                    $data['ad_sp2'] = $excelsheet[58];
-                    $data['groups'] = $excelsheet[49] ;
-                    $data['family'] =  $excelsheet[28];
-                    $data['brand'] = $excelsheet[27];
-                    $data['sku_code'] = $excelsheet[1];
-                    //print_r(json_encode($data));exit;
-                    $product_product = DB::table('product_product')->where('sku_code',$excelsheet[1])->first();
-                    if(!$product_product)
-                    {
-                        $res[] = DB::table('product_product')->insert($data); 
-                        //$res[] = 1;
-                    }
-                    else
-                    {
-                        //echo "yes";exit;
-                        $da['label_format_number'] = $excelsheet[30];
-                        $da['drug_license_number'] = $excelsheet[42];
-                        $da['is_sterile'] = (strtolower($excelsheet[31]) == 'yes') ? 1 : 0;
-                        $da['process_sheet_no'] = $excelsheet[16];
-                        $da['groups'] = $excelsheet[49];
-                        $da['family'] =  $excelsheet[28];
-                        $da['brand'] = $excelsheet[27];
-                        $da['is_ce_marked'] = (strtolower($excelsheet[36]) == 'yes') ? 1 : ((strtolower($excelsheet[36]) == 'no') ? 0 : NULL) ;
-                        $da['notified_body_number'] = $excelsheet[37];
-                        $da['is_ear_log_address'] = (strtolower($excelsheet[38]) == 'yes') ? 1 : ((strtolower($excelsheet[38]) == 'no') ? 0 : NULL) ;
-                        
-                        $da['is_read_instruction_logo'] = (strtolower($excelsheet[39]) == 'yes') ? 1 : ((strtolower($excelsheet[39]) == 'no') ? 0 : NULL) ;
-                        
-                        $da['is_instruction'] = (strtolower($excelsheet[39]) == 'yes') ? 1 : 0;
-                        
-                        $da['is_temperature_logo'] = (strtolower($excelsheet[40]) == 'yes') ? 1 : ((strtolower($excelsheet[40]) == 'no') ? 0 : NULL) ;
-                        
-                        $da['is_donot_reuse_logo'] = (strtolower($excelsheet[41]) == 'yes') ? 1 : ((strtolower($excelsheet[41]) == 'no') ? 0 : NULL) ;
-                        
-                        $da['is_reusable'] = (strtolower($excelsheet[41]) == 'yes') ? 1 : 0;
-                        
-                        $da['drug_license_number'] = $excelsheet[42];
-                        //$da['hsn_code'] = $excelsheet[43];
-                        // $da['product_group_id'] = ((($excelsheet[49]) == '') ? NULL : $this->identify_id($excelsheet[49],"product group"));
-                        // $da['brand_details_id'] = ((($excelsheet[27]) == '') ? NULL : $this->identify_id($excelsheet[27],"product brand"));
-                        // $da['product_family_id'] = ((($excelsheet[28]) == '') ? NULL : $this->identify_id($excelsheet[28],"product family"));
-                        if(empty($excelsheet[49]))
-                        $da['product_group_id'] = NULL;
-                        else
-                        $da['product_group_id'] = $this->identify_id($excelsheet[49],"product group");
-                        if($excelsheet[27]=='N. A.' || $excelsheet[27]=='')
-                        $da['brand_details_id'] = NULL;
-                        else
-                        $da['brand_details_id'] = $this->identify_id($excelsheet[27],"product brand");
-                        $da['snn_description']= $excelsheet[29];
-                        $da['revision_record'] = $excelsheet[47];
-                        $da['is_inactive'] = (strtolower($excelsheet[48]) == 'y') ? 1 : ((strtolower($excelsheet[48]) == 'n') ? 0 : NULL);
-                        $da['gs1_code'] = $excelsheet[50];
-                        $da['is_control_sample_applicable'] = (strtolower($excelsheet[51]) == 'yes') ? 1 : ((strtolower($excelsheet[51]) == 'no') ? 0 : NULL);
-                        $da['is_doc_applicability'] =(strtolower($excelsheet[52]) == 'yes') ? 1 : ((strtolower($excelsheet[52]) == 'no') ? 0 : NULL);
-                        $da['is_instruction_for_reuse_symbol'] = $excelsheet[53] ? $excelsheet[53]  : NULL;
-                        $da['is_donot_reuse_symbol'] = $excelsheet[54] ? $excelsheet[54] : NULL ; 
-                        $da['ce_logo'] = $excelsheet[56]  ? $excelsheet[56]  : NULL; 
-                        $da['ad_sp1'] =  $excelsheet[57];
-                        $da['ad_sp2'] = $excelsheet[58];
-                        $da['groups'] = $excelsheet[49] ;
-                        $da['family'] =  $excelsheet[28];
-                        $da['brand'] = $excelsheet[27];
-                        // if($excelsheet[28]=='N. A.' || $excelsheet[28]=='')
-                        // $da['product_family_id'] = NULL;
-                        // else
-                        // $da['product_family_id'] = $this->identify_id($excelsheet[27],"product family");
-                       // $data['product_group_id'] = ((($excelsheet[49]) == '') ? NULL : $this->identify_id($excelsheet[49],"product group")) ;
-                        $res[] = DB::table('product_product')->where('id', $product_product->id)->update($da);
-                    }
+                // Initialize the $data array with default values
+                $data = [
+                    'minimum_stock' => $excelsheet[44] ?? null,
+                    'maximum_stock' => "0",
+                    'min_stock_set_date' => isset($excelsheet[47]) && preg_match('/[^NAna]/i', $excelsheet[47])
+                        ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[47]))->format('Y-m-d')
+                        : null,
+                    'over_stock_level' => $excelsheet[46] ?? null,
+                    'discription' => $excelsheet[2] ?? null,
+                    'is_active' => 1,
+                    'published_date' => isset($excelsheet[6]) && preg_match('/[^NAna]/i', $excelsheet[6])
+                        ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($excelsheet[6]))->format('Y-m-d')
+                        : null,
+                    'record_file_no' => $excelsheet[22] ?? null,
+                    'technical_file' => $excelsheet[23] ?? null,
+                    'instruction_for_use' => $excelsheet[24] ?? null,
+                    'classification_mdd' => $excelsheet[25] ?? null,
+                    'item_type' => $excelsheet[26] ?? null,
+                    'family_name' => $excelsheet[28] ?? null,
+                    'sku_name' => $excelsheet[1] ?? null,
+                    'snn_description' => $excelsheet[29] ?? null,
+                    'label_format_number' => $excelsheet[30] ?? null,
+                    'is_sterile' => (isset($excelsheet[31]) && strtolower($excelsheet[31]) == 'yes') ? 1 : 0,
+                    'is_non_sterile_logo' => isset($excelsheet[32]) ? ((strtolower($excelsheet[32]) == 'yes') ? 1 : 0) : null,
+                    'sterilization_type' => $excelsheet[33] ?? null,
+                    'is_sterile_expiry_date' => isset($excelsheet[34]) ? ((strtolower($excelsheet[34]) == 'yes') ? 1 : 0) : null,
+                    'is_ce_marked' => isset($excelsheet[36]) ? ((strtolower($excelsheet[36]) == 'yes') ? 1 : 0) : null,
+                    'notified_body_number' => $excelsheet[37] ?? null,
+                    'is_ear_log_address' => isset($excelsheet[38]) ? ((strtolower($excelsheet[38]) == 'yes') ? 1 : 0) : null,
+                    'is_read_instruction_logo' => isset($excelsheet[39]) ? ((strtolower($excelsheet[39]) == 'yes') ? 1 : 0) : null,
+                    'is_instruction' => isset($excelsheet[39]) ? ((strtolower($excelsheet[39]) == 'yes') ? 1 : 0) : null,
+                    'is_temperature_logo' => isset($excelsheet[40]) ? ((strtolower($excelsheet[40]) == 'yes') ? 1 : 0) : null,
+                    'is_donot_reuse_logo' => isset($excelsheet[41]) ? ((strtolower($excelsheet[41]) == 'yes') ? 1 : 0) : null,
+                    'drug_license_number' => $excelsheet[42] ?? null,
+                    'hsn_code' => $excelsheet[43] ?? null,
+                    'product_group_id' => isset($excelsheet[49]) ? $this->identify_id($excelsheet[49], "product group") : null,
+                    'brand_details_id' => isset($excelsheet[27]) ? $this->identify_id($excelsheet[27], "product brand") : null,
+                    'quantity_per_pack' => $excelsheet[44] ?? null,
+                    'hierarchy_path' => $excelsheet[45] ?? null,
+                    'unit_weight_kg' => $excelsheet[46] ?? null,
+                    'revision_record' => $excelsheet[47] ?? null,
+                    'is_inactive' => isset($excelsheet[48]) ? ((strtolower($excelsheet[48]) == 'y') ? 1 : 0) : null,
+                    'gs1_code' => $excelsheet[50] ?? null,
+                    'is_control_sample_applicable' => isset($excelsheet[51]) ? ((strtolower($excelsheet[51]) == 'yes') ? 1 : 0) : null,
+                    'is_doc_applicability' => isset($excelsheet[52]) ? ((strtolower($excelsheet[52]) == 'yes') ? 1 : 0) : null,
+                    'is_instruction_for_reuse_symbol' => $excelsheet[53] ?? null,
+                    'is_donot_reuse_symbol' => $excelsheet[54] ?? null,
+                    'ce_logo' => $excelsheet[56] ?? null,
+                    'ad_sp1' => $excelsheet[57] ?? null,
+                    'ad_sp2' => $excelsheet[58] ?? null,
+                    'groups' => $excelsheet[49] ?? null,
+                    'family' => $excelsheet[28] ?? null,
+                    'brand' => $excelsheet[27] ?? null,
+                    'sku_code' => $excelsheet[1] ?? null
+                ];
+    
+                $product_product = DB::table('product_product')->where('sku_code', $excelsheet[1] ?? '')->first();
+                if (!$product_product) {
+                    $res[] = DB::table('product_product')->insert($data);
+                } else {
+                    $res[] = DB::table('product_product')->where('id', $product_product->id)->update($data);
+                }
             }
-            
         }
-        if($res)
-        return 1;
-        else 
-        return 0;
-       
+    
+        return isset($res) && !empty($res) ? 1 : 0;
     }
-
+    
     public function prd_InputmaterialUpload()
     {
         // $file = $request->file('file');
@@ -804,6 +867,7 @@ class ProductController extends Controller
         ->orderby('id','DESC')
         //->get();
         ->paginate(15);
+        //dd('group');
         return view('pages.product.product_group_add',compact('product_group'));
     }
     public function productAddingGroup(Request $request)
@@ -922,7 +986,7 @@ class ProductController extends Controller
             $ExcelOBJ->reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($ExcelOBJ->inputFileType);
             $ExcelOBJ->reader->setReadDataOnly(true);
             $ExcelOBJ->worksheetData = $ExcelOBJ->reader->listWorksheetInfo($ExcelOBJ->inputFileName);
-            $no_column = 11;
+            $no_column = 10;
             $sheet1_column_count = $ExcelOBJ->worksheetData[0]['totalColumns'];
             //echo $sheet1_column_count;exit;
             if ($sheet1_column_count == $no_column) {
@@ -936,7 +1000,7 @@ class ProductController extends Controller
                 }
             } else {
                 $request->session()->flash('error',  "Column not matching.. Please download the excel template and check the column count");
-                return redirect('inventory/inv-item-upload');
+                return redirect('product/input-material-upload');
             }
         }
     }

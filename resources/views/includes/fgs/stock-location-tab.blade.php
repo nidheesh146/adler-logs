@@ -13,10 +13,11 @@ $routeArray = app('request')->route()->getAction();
           <a class="nav-link @if (in_array($Action,['StockManagement.location2Stock'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/location2') }}">Location2</a>
           <a class="nav-link @if (in_array($Action,['StockManagement.location3Stock'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/location3') }}">Location3</a>
           <a class="nav-link @if (in_array($Action,['StockManagement.locationSNN'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/locationSNN') }}">SNN Mktd</a>
-          <a class="nav-link @if (in_array($Action,['StockManagement.locationSNNTrade'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/locationSNNTrade') }}">SNN Trade</a>
+          <a class="nav-link @if (in_array($Action,['StockManagement.locationSNNTrade'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/locationSNNTrade') }}">Trade</a>
+          <a class="nav-link @if (in_array($Action,['StockManagement.locationSNNOEM'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/locationSNNOEM') }}">OEM</a>
           <a class="nav-link @if (in_array($Action,['StockManagement.locationAHPL'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/locationAHPL') }}">AHPL Mktd </a>
-          <a class="nav-link @if (in_array($Action,['StockManagement.MAAStock'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/MAA') }}"> Material Allocation Area(MAA) </a>
-          <a class="nav-link @if (in_array($Action,['StockManagement.quarantineStock'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/quarantine') }}"> Quarantine</a>
+          <a class="nav-link @if (in_array($Action,['StockManagement.MAAStock'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/Jayon') }}"> Jayon Mktd </a> 
+          <!-- <a class="nav-link @if (in_array($Action,['StockManagement.quarantineStock'])) {{'active'}} @endif"  href="{{ url('fgs/stock-management/quarantine') }}"> Quarantine</a> -->
       </nav>
     </div>
 </div>

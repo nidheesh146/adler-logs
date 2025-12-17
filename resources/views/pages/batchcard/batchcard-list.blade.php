@@ -114,23 +114,46 @@
 								
 							@foreach($data['batchcards'] as $card)
                         <tr>
+
 							<td><input type="checkbox" class="check_batchcard" name="batchcard_id[]" value="{{$card['id']}}"></td>
                             <td>{{$card['batch_no']}}</td>
                             <td>{{$card['sku_code']}}</td>
                             <td>{{$card['quantity']}}</td>
                             <td>@if($card['start_date']) {{date( 'd-m-Y' , strtotime($card['start_date']))}} @endif</td>
                             <td>@if($card['target_date']) {{date( 'd-m-Y' , strtotime($card['target_date']))}} @endif</td>
-                            <td>{{$card['process_sheet_no']}}</td>
-                            <td>
-								@foreach($card['material'] as $material)
-								@if($material['item_code']!=NULL)
-                                <span>{{$material['item_code']}}</span> -
-                                <span>{{$material['quantity']}}{{$material['unit_name']}}</span><br/>
-								@else
-								Assembly
-								@endif
-                                @endforeach
-                            </td>
+                            <td>{{$card['process_sheet_id']}}</td>
+                            <!-- <td>
+							 @foreach($card['material'] as $material)
+    @if($material['item_code'] != NULL)
+        <span>{{ $material['item_code'] }}</span> - 
+        <span>{{ $material['quantity'] }}{{ $material['unit_name'] }}</span><br/>
+    @else
+        Assembly
+    @endif
+@endforeach --> 
+<td>
+    {{-- Display Input Materials --}}
+    @if(!empty($card['input_material']))
+        @foreach($card['input_material'] as $input)
+            @if($input['item1_code'])
+                <span>{{ $input['item1_code'] }}</span> - 
+                <span>{{ $input['quantity1'] }}</span> 
+				<span>{{ $input['unit_name'] }}</span><br/>
+				@endif
+            @if($input['item2_code'])
+                <span>{{ $input['item2_code'] }}</span> - 
+                <span>{{ $input['quantity2'] }}</span> 
+                <span>{{ $input['unit_name2'] }}</span><br/> {{-- Assuming 'unit_name2' exists for input item 2 --}}
+            @endif
+            @if($input['item3_code'])
+                <span>{{ $input['item3_code'] }}</span> - 
+                <span>{{ $input['quantity3'] }}</span> 
+                <span>{{ $input['unit_name3'] }}</span><br/> {{-- Assuming 'unit_name3' exists for input item 3 --}}
+            @endif
+        @endforeach
+    @endif
+</td>
+
 							
 							<td>
 								@if($card['is_active']==1)

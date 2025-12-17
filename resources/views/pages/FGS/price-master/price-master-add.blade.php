@@ -15,7 +15,7 @@
               <span><a href="{{url('inventory/suppliers-list')}}" style="color: #596881;">Customer - Supplier Master</a></span> 
                   <span><a href=""> Price Master </a></span>
               </div>
-              <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;"> Customer - Supplier</h4>
+              <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;"> Price Master</h4>
               @foreach ($errors->all() as $errorr)
               <div class="alert alert-danger "  role="alert" style="width: 100%;">
                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -84,6 +84,14 @@
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>MRP </label>
                                 <input type="text" name="mrp" class="form-control"  value="{{(!empty($data)) ? $data['mrp']: ""}}" placeholder="MRP"> 
+                            </div> 
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>With Effective From </label>
+                                <input type="date" name="with_effective_from" class="form-control"  value="{{(!empty($data)) ? $data['with_effective_from']: ""}}" placeholder="Select Date"> 
+                            </div> 
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>With Effective To </label>
+                                <input type="date" name="with_effective_to" class="form-control"  value="{{(!empty($data)) ? $data['with_effective_to']: ""}}" placeholder="Select Date"> 
                             </div>  
                             <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <label>Status</label>

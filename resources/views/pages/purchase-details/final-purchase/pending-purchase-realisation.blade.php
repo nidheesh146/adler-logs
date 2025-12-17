@@ -116,41 +116,42 @@
                             </thead>
                             <tbody>
                             @foreach($data as $item)
-                            <tr>
-                                <td>{{$item['pr_number']}}</td>
-                                <td>{{$item['po_number']}}</td>
-                                <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['short_description']}}" >{{$item['item_code']}}</td>
-                                <td>{{$item['type']}}</td>
-                                {{--<td>@if($item['current_invoice_qty']!=0)
-                                    {{$item['current_invoice_qty']}} {{$item['unit_name']}}
-                                    @elseif($item['order_qty']==$item['qty_to_invoice'])
-                                    {{$item['order_qty']}} {{$item['unit_name']}}
-                                    @else
-                                    {{$item['qty_to_invoice']}} {{$item['unit_name']}}
-                                    @endif
-                                </td>--}}
-                                <td> {{$item['order_qty']}} {{$item['unit_name']}}</td>
-                                <td> {{$item['qty_to_invoice']}} {{$item['unit_name']}}</td>
-                                <td>{{$item['rate']}}</td>
-                                <td>{{$item['discount']}}</td>
-                                <td>@if($item['igst']!=0)
-                                        IGST:{{$item['igst']}}%<br/>
-                                        @endif
-                                    @if($item['cgst']!=0)
-                                        CGST:{{$item['cgst']}}%<br/>
-                                        @endif
-                                    @if($item['sgst']!=0)
-                                        SGST:{{$item['sgst']}}%
-                                    @endif
-                                </td>
-                                <td>{{$item['vendor']}}</td>
-                            </tr>
-                            @endforeach
+    @if(abs(floatval($item['qty_to_invoice'])) > 0.0001)
+        <tr>
+            <td>{{$item['pr_number']}}</td>
+            <td>{{$item['po_number']}}</td>
+            <td>
+                <a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['short_description']}}">
+                    {{$item['item_code']}}
+                </a>
+            </td>
+            <td>{{$item['type']}}</td>
+            <td>{{$item['order_qty']}} {{$item['unit_name']}}</td>
+            <td>{{ number_format($item['qty_to_invoice'], 2) }} {{$item['unit_name']}}</td>
+            <td>{{$item['rate']}}</td>
+            <td>{{$item['discount']}}</td>
+            <td>
+                @if($item['igst'] != 0)
+                    IGST: {{$item['igst']}}%<br/>
+                @endif
+                @if($item['cgst'] != 0)
+                    CGST: {{$item['cgst']}}%<br/>
+                @endif
+                @if($item['sgst'] != 0)
+                    SGST: {{$item['sgst']}}%
+                @endif
+            </td>
+            <td>{{$item['vendor_name']}}</td>
+        </tr>
+    @endif
+@endforeach
+      
+
                             </tbody>
                         </table>
                         <div class="box-footer clearfix">
-                            
-                    </div> 
+                        {{ $data->appends(request()->input())->links() }}
+                        </div> 
                 
                 
                     </div>

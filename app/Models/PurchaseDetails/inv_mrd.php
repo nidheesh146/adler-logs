@@ -55,16 +55,31 @@ class inv_mrd extends Model
             ->delete();
      return  $this->where($condition)->delete();
     }
-    function find_mrd_not_in_rmrn($condition)
-    {
-        return $this->select(['inv_mrd.mrd_number as text','inv_mrd.id'])
-        ->where($condition)
-        ->whereNotIn('inv_mrd.id',function($query) {
+    // function find_mrd_not_in_rmrn($condition)
+    // {
+    //     return $this->select(['inv_mrd.mrd_number as text','inv_mrd.id'])
+    //     ->where($condition)
+    //     ->whereNotIn('inv_mrd.id',function($query) {
 
-            $query->select('inv_rmrn.mrd_id')->from('inv_rmrn');
+    //         $query->select('inv_rmrn.mrd_id')->from('inv_rmrn');
         
-        })->where('inv_mrd.status','=',1)
+    //     })->where('inv_mrd.status','=',1)
+    //     ->get();
+    // }
+    public function find_mrd_not_in_rmrn($condition)
+{
+    return $this->select(['inv_mrd.mrd_number as text', 'inv_mrd.id'])
+        ->where($condition)
+        ->where('inv_mrd.status', '=', 1)
+        ->whereExists(function($query) {
+            $query->select(DB::raw(1))
+                ->from('inv_mrd_item_rel as mir')
+                ->leftJoin('inv_rmrn_item as rri', 'mir.item', '=', 'rri.mrd_item_id') // adjust column names if different
+                ->whereRaw('mir.master = inv_mrd.id')
+                ->whereNull('rri.id'); // Item not yet used in RMRN
+        })
         ->get();
-    }
+}
+
 
 }

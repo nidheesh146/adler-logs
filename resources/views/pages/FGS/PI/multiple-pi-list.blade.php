@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-
+@inject('fn', 'App\Http\Controllers\Web\FGS\PIController')
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -93,7 +93,10 @@
 			
 			
 					<div class="tab-pane  active  show " id="purchase"> 
-					
+					<a class="badge badge-success" style="float:right;font-size: 13px; color:white;border:solid black;border-width:thin;margin-top:2px;"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a><span style="float:right;">&nbsp;&nbsp;Sent Mail : </span>
+					&nbsp;&nbsp;
+					<a class="badge badge-default" style="float:right;font-size: 13px; color:white;background:blue;border:solid black;border-width:thin;margin-top:2px;"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a><span style="float:right;">Not Sent Mail : </span>
+
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" >
 							<thead>
@@ -102,7 +105,7 @@
                                     <th>Merged PI Date</th>
 									<th>Customer</th>
 									<th>Shipping Address</th>
-									<th>Billing Address</th> 
+									<th style="width:12%;">PI Numbers</th> 
                                     <th>Created By</th> 
                                     <th>Action</th>
 								</tr>
@@ -115,10 +118,20 @@
 									<td>{{date('d-m-Y', strtotime($item['created_at']))}}</td>	
 									<td>{{$item['firm_name']}}</td>
 									<td>{{$item['shipping_address']}}</td>
-									<td>{{$item['shipping_address']}}</td>
+									<td> 
+										<?php $mpi_items= $fn->getMPIItemsData($item->id); ?>
+										@foreach($mpi_items as $mpi_item)
+											{{$mpi_item['pi_number']}}<br/>
+										@endforeach
+									</td>
 									<td>{{$item['f_name']}} {{$item['l_name']}}</td>
                                     <td>
-										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/merged-payment-pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Payment</a>	
+										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/merged-payment-pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Payment</a>
+										@if($item['is_mail_sent']==1)
+										<a class="badge badge-success" style="font-size: 13px;color:white;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/merged-PI/payment-mail/'.$item["id"])}}"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a>
+										@else
+										<a class="badge badge-default" style="font-size: 13px;background:blue; color:white;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/merged-PI/payment-mail/'.$item["id"])}}"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a>
+										@endif	
 									</td>
 								</tr>
 								@endforeach

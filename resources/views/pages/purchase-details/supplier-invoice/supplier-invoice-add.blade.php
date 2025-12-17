@@ -82,6 +82,9 @@
                                                 @endif
                                             </div> 
                                         </div>
+                                        <button type="button" id="resetCheckbox" class="btn btn-danger">
+    Reset Checkbox
+</button>
                                     </div>
                                 </th>
                             </form>
@@ -101,17 +104,23 @@
                     </label>
                     <div class="form-devider"></div>
                     <div class="row">
-                        <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2" style="margin-top: 6px;padding:0px;text-align:right;">
+                        <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px;padding:0px;text-align:right;">
                             <label>Supplier Invoice Number</label>
                         </div>
-                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                            <input type="text"  name="invoice_number" id="invoice_number" class="form-control" placeholder="Invoice number">                            
+                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <input type="text"  name="invoice_number" id="invoice_number" class="form-control" placeholder="Invoice number"required>                            
                         </div>
-                        <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2" style="margin-top: 6px;padding:0px;text-align:right;">
+                        <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px;padding:0px;text-align:right;">
                             <label>Supplier Invoice Date</label>
                         </div>
-                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                            <input type="date"  name="invoice_date" id="invoice_date" value="{{date("d-m-Y")}}" class="form-control" placeholder="Invoice Date">                            
+                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <input type="date"  name="invoice_date" id="invoice_date" value="{{date("d-m-Y")}}" class="form-control" placeholder="Invoice Date"required>                            
+                        </div>
+                        <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1" style="margin-top: 6px;padding:0px;text-align:right;"required>
+                            <label>Material Reciept Date</label>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                            <input type="date"  name="reciept_date" id="reciept_date" value="{{date("d-m-Y")}}" class="form-control" placeholder="Invoice Date"required>                            
                         </div>
                     </div>
                 </div>
@@ -125,6 +134,8 @@
 							<th>Item Code</th>
 							<th>Type</th>
 							<th>Quantity</th>
+                            <th>Item Description</th>
+
                             <th>RATE</th>
                             <th>DISCOUNT</th>
 							<th>GST</th>
@@ -133,43 +144,57 @@
 						</tr>
 					</thead>
 					<tbody>
-    					@foreach($data as $item)
-                        <tr>
-                            <td><input type="checkbox" name="po_item_id[]" id="po_item_id" supplier="{{$item['vendor']}}" value="{{$item['po_item']}}"></td>
-                            <td>{{$item['po_number']}}</td>
-                            <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['short_description']}}" >{{$item['item_code']}}</td>
-                            <td>{{$item['type']}}</td>
-                            <td>@if($item['current_invoice_qty']!=0)
-                                {{$item['current_invoice_qty']}} {{$item['unit_name']}}
-                                @elseif($item['order_qty']==$item['qty_to_invoice'])
-                                {{$item['order_qty']}} {{$item['unit_name']}}
-                                @else
-                                {{$item['qty_to_invoice']}} {{$item['unit_name']}}
-                                @endif
-                            </td>
-                            <td>{{$item['rate']}}</td>
-                            <td>{{$item['discount']}}</td>
-                            <td>@if($item['igst']!=0)
-                                    IGST:{{$item['igst']}}%<br/>
-                                    @endif
-                                @if($item['cgst']!=0)
-                                    CGST:{{$item['cgst']}}%<br/>
-                                    @endif
-                                @if($item['sgst']!=0)
-                                    SGST:{{$item['sgst']}}%
-                                 @endif
-                            </td>
-                            <td>{{$item['vendor']}}</td>
-                            <td><a href="" data-toggle="modal"  data-target="#invoicependingModal" class="invoice-pending-model badge badge-info"   id="invoice-add-model" poItem="{{$item['po_item']}}" itemCode="{{$item['item_code']}}" unit="{{$item['unit_name']}}" Orderqty="{{$item['order_qty']}}" description="{{$item['short_description']}}"   poId="{{$item['po_number']}}" style="font-size: 13px;" balanceQty="@if($item['current_invoice_qty']!=0)
-                                {{$item['current_invoice_qty']}} 
-                                @elseif($item['order_qty']==$item['qty_to_invoice'])
-                                {{$item['order_qty']}}
-                                @else
-                                {{$item['qty_to_invoice']}} 
-                                @endif"><i class="fas fa-plus"></i> Partial Invoice</a></td>
-                        </tr>
-                        @endforeach
-					</tbody>
+    @foreach($data as $item)
+        @if($item['qty_to_invoice'] > 0)
+            <tr>
+                <td>
+                    <input type="checkbox" name="po_item_id[]" class="po-checkbox" id="po_item_{{$item['po_item']}}" supplier="{{$item['vendor']}}" value="{{$item['po_item']}}">
+                </td>
+                <td>{{$item['po_number']}}</td>
+                <td>
+                    <a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['short_description']}}">
+                        {{$item['item_code']}}
+                    </a>
+                </td>
+                <td>{{$item['type']}}</td>
+                <td>
+    {{ number_format($item['qty_to_invoice'], 2) }} {{ $item['unit_name'] }}
+</td>
+
+                <td>
+                    @php
+                        $poType = explode('-', $item['po_number'])[0];
+                    @endphp
+                    @if($poType === 'POI1')
+                        {{$item['product_description'] ?? 'N/A'}}
+                    @else
+                        {{$item['description'] ?? 'N/A'}}
+                    @endif
+                </td>
+                <td>{{$item['rate']}}</td>
+                <td>{{$item['discount']}}</td>
+                <td>
+                    @if($item['igst'] != 0)
+                        IGST: {{$item['igst']}}%<br/>
+                    @endif
+                    @if($item['cgst'] != 0)
+                        CGST: {{$item['cgst']}}%<br/>
+                    @endif
+                    @if($item['sgst'] != 0)
+                        SGST: {{$item['sgst']}}%
+                    @endif
+                </td>
+                <td>{{$item['vendor']}}</td>
+                <td>
+                    <a href="" data-toggle="modal" data-target="#invoicependingModal" class="invoice-pending-model badge badge-info" id="invoice-add-model" poItem="{{$item['po_item']}}" itemCode="{{$item['item_code']}}" unit="{{$item['unit_name']}}" Orderqty="{{$item['order_qty']}}" description="{{$item['short_description']}}" poId="{{$item['po_number']}}" style="font-size: 13px;" balanceQty="{{$item['qty_to_invoice']}}">
+                        <i class="fas fa-plus"></i> Partial Invoice
+                    </a>
+                </td>
+            </tr>
+        @endif
+    @endforeach
+</tbody>
+
 				</table>
 				<div class="box-footer clearfix">
                 
@@ -268,9 +293,46 @@
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+<script>
+    $(document).ready(function() {
+        // On page load, check local storage for saved checkbox states
+        $('.po-checkbox').each(function() {
+            const poItemId = $(this).attr('id');
+            const isChecked = localStorage.getItem(poItemId); // Retrieve the saved state
 
+            if (isChecked === 'true') {
+                $(this).prop('checked', true); // Set checkbox as checked
+            }
+        });
+
+        // On checkbox click, save the state in localStorage
+        $('.po-checkbox').on('change', function() {
+            const poItemId = $(this).attr('id');
+            const isChecked = $(this).is(':checked');
+
+            localStorage.setItem(poItemId, isChecked); // Save the state in localStorage
+        });
+
+        // Reset Button to Uncheck all and clear localStorage
+        $('#resetCheckbox').on('click', function() {
+            if (confirm('Are you sure you want to uncheck all items?')) {
+                $('.po-checkbox').each(function() {
+                    const poItemId = $(this).attr('id');
+                    $(this).prop('checked', false); // Uncheck
+                    localStorage.removeItem(poItemId); // Remove from localStorage
+                });
+            }
+        });
+    });
+</script>
 <script>
   $(function(){
+    $(document).ready(function() {
+        $('form').submit(function() {
+            $(this).find(':submit').prop('disabled', true);
+        });
+        
+    });
     'use strict'
     var date = new Date();
     date.setDate(date.getDate());

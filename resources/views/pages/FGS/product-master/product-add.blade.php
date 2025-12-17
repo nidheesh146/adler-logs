@@ -53,7 +53,7 @@
 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label>SKU code *</label>
+                                <label>SKU ckode *</label>
                                 <input type="text" value="{{(!empty($datas)) ? $datas['sku_code']: ""}}" class="form-control" name="sku_code" id="sku_code" placeholder="SKU Code">
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -73,7 +73,7 @@
                                 <input type="text" value="{{(!empty($datas)) ? $datas['gs1_code']: ""}}" class="form-control" name="gs1_code" id="gs1_code" placeholder="GS1 Code" >
                             </div><!-- form-group -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label>Product Category *</label>
+                                <label>Business Category *</label>
                                 <select class="form-control" name="product_category">
                                     <option>..select one..</option>
                                     @foreach($data['product_category'] as $category)
@@ -82,6 +82,16 @@
                                     @endforeach
                                 </select> 
                             </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label>product Category *</label>
+                                <select class="form-control" name="new_product_category">
+    <option>..select one..</option>
+    @foreach($data['new_product_category'] as $category)
+    <option value="{{$category->id}}"
+     @if($datas != null && $datas->new_product_category_id == $category->id) selected @endif>{{$category->category_name}}</option>
+    @endforeach
+</select> 
+                            </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Product group *</label>
                                 <select class="form-control" name="product_group">
@@ -101,7 +111,7 @@
                                     @endforeach
                                 </select> 
                             </div>
-                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                            {{--<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Product OEM</label>
                                 <select class="form-control" name="product_oem">
                                     <option>..select one..</option>
@@ -109,7 +119,7 @@
                                     <option value="{{$oem->id}}" @if($datas != null)  @if($datas->product_oem_id == $oem->id) selected @endif @endif>{{$oem->oem_name}}</option>
                                     @endforeach
                                 </select> 
-                            </div>
+                            </div>--}}
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Product Brand</label>
                                 <select class="form-control" name="product_brand" id="product_brand">

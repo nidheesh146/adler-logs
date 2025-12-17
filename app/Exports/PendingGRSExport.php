@@ -19,51 +19,56 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
     }
     public function collection()
     {
-        $i=1;
+        $i = 1;
         $data = [];
-        foreach($this->grs_data as $item)
-        {
-            if($item['expiry_date']=='0000-00-00') 
-            $expiry = 'NA'; 
+    
+        foreach ($this->grs_data as $item) {
+            if ($item['expiry_date'] == '0000-00-00') 
+                $expiry = 'NA'; 
             else 
-            $expiry = date('d-m-Y',strtotime($item['expiry_date']));
-            if($item->rate)
-            {
-                $total_rate = $item['remaining_qty_after_cancel']*$item['rate'];
-                $discount_value = $total_rate*$item['discount']/100;
-                $discounted_value = $total_rate-$discount_value;
-                $igst_value = $total_rate*$item['igst']/100;
-                $sgst_value = $total_rate*$item['sgst']/100;
-                $cgst_value = $total_rate*$item['cgst']/100;
-                $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
-                
-            }
-            else
-            {
+                $expiry = date('d-m-Y', strtotime($item['expiry_date']));
+    
+            if ($item->rate) {
+                $total_rate = $item['remaining_qty_after_cancel'] * $item['rate'];
+                $discount_value = $total_rate * $item['discount'] / 100;
+                $discounted_value = $total_rate - $discount_value;
+    
+                $igst_value = $discounted_value * $item['igst'] / 100;
+                $sgst_value = $discounted_value * $item['sgst'] / 100;
+                $cgst_value = $discounted_value * $item['cgst'] / 100;
+    
+                $gst_total_value = $igst_value + $sgst_value + $cgst_value;
+                $total_value = $discounted_value + $gst_total_value;
+            } else {
+                $total_rate = 0;
+                $gst_total_value = 0;
                 $total_value = 0;
             }
-            $data[]= array(
+    
+            $data[] = array(
                 '#' => $i++,
-                'Doc_Date' =>date('d-m-Y', strtotime($item['grs_date'])),
+                'Doc_Date' => date('d-m-Y', strtotime($item['grs_date'])),
                 'Doc_No' => $item['grs_number'],
                 'Customer_Name' => $item['firm_name'],
-                'Zone'=>$item['zone_name'],
-                'State'=>$item['state_name'],
-                'city'=>$item['city'],
+                'Zone' => $item['zone_name'],
+                'State' => $item['state_name'],
+                'city' => $item['city'],
                 'Order_No' => $item['order_number'],
-                'Order_Date' =>date('d-m-Y', strtotime($item['order_date'])),
+                'Order_Date' => date('d-m-Y', strtotime($item['order_date'])),
                 'Item_Code' => $item['sku_code'],
                 'Item_Description' => $item['discription'],
-                'Category'=>$item['category_name'],
+                'Business Category' => $item['category_name'],
+                'Product Category' => $item['new_category_name'],
                 'Pending_Qty' => $item['remaining_qty_after_cancel'],
-                // 'rate' => $grs['mrp'],
-                // 'discount' =>$grs['discount'],
-                // 'gst' =>"IGST:".$grs['igst'].", SGST:".$grs['sgst'].", CGST:".$grs['cgst'],
-                'value'=>(number_format((float)($total_rate), 2, '.', '')),
+               // 'GST(%)' => "IGST: {$item['igst']}%, SGST: {$item['sgst']}%, CGST: {$item['cgst']}%",
+                //'GST Value' => number_format((float)$gst_total_value, 2, '.', ''),
+                'Pending Value' => number_format((float)$total_value, 2, '.', ''),
             );
         }
+    
         return collect($data);
     }
+    
     public function headings(): array
         {
         return [
@@ -78,11 +83,13 @@ class PendingGRSExport implements FromCollection, WithHeadings, WithStyles,WithE
             'Order Date',
             'Item Code',
             'Item Description',
-            'Category',
+            'Business Category',
+            'Product Category',
+            //  'Batch',
             'Pending Qty',
             // 'Rate',
             // 'Discount(%)',
-            // 'GST(%)',
+             //'GST(%)',
             'Pending Value',
         ];
     }

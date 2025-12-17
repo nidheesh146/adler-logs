@@ -1,6 +1,9 @@
 @extends('layouts.default')
 @section('content')
-
+@php
+use App\Http\Controllers\Web\FGS\MINController;
+$obj_min=new MINController;
+@endphp
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -99,11 +102,12 @@
 							<thead>
 								<tr>
 									<th>MIN Number</th>
+									<th>MIN date</th>
                                     <th>Ref. number</th>
 									<th>Ref. date</th>
+									<th>Business Category</th>
 									<th>Product Category</th>
 									<th>Stock Location</th>
-									<th>MIN date</th>
                                     <th>Action</th>
 								</tr>
 							</thead>
@@ -112,15 +116,22 @@
                                 <tr>
 									
 									<td>{{$item['min_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['min_date']))}}</td>
                                     <td>{{$item['ref_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['ref_date']))}}</td>
 									<td>{{$item['category_name']}}</td>
+									<td>{{$item['new_category_name']}}</td>
 									<td>{{$item['location_name']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['min_date']))}}</td>
                                     <td>
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MIN/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/MIN/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> 
 										<a class="badge badge-primary" style="font-size: 13px;" href="{{url('fgs/MIN-edit/'.$item["id"])}}" target="_blank"><i class="fas fa-file-edit"></i>&nbsp;Edit</a> 
+										<?php $min_items = $obj_min->check_min_items($item["id"]); ?>
+										@if(count($min_items)!=0)
+										<a class="badge badge-danger" style="font-size: 13px;" onclick="return confirm('Cant Delete.MIN have items!');"><i class="fa fa-trash"></i> Delete</a>
+										@else
+										<a class="badge badge-danger" style="font-size: 13px;" href="{{url('fgs/MIN-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+										@endif
 </td>
 								</tr>
 								@endforeach

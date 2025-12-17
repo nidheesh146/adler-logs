@@ -126,6 +126,7 @@
 								}
 								else
 									{
+										$total_rate =0;
 										$total_value =0;
 									}
 								?>

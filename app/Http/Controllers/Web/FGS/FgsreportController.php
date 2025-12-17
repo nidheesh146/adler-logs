@@ -20,74 +20,120 @@ use App\Models\FGS\fgs_mtq_item;
 use App\Models\FGS\fgs_cmtq_item;
 use App\Models\FGS\fgs_mis_item;
 use App\Models\FGS\fgs_oef_item;
+use App\Models\FGS\fgs_dni_item;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FGSTransactionExport;
+use App\Exports\FGSInvTransactionExport;
+use App\Exports\FGSTransactionAllExport;
 
 class FgsreportController extends Controller
 {
-    public function get_data(Request $request)
+    public function get_sales_data(Request $request)
+{
+    $query = fgs_mrn_item::select(
+        'fgs_mrn_item.id',
+        'fgs_mrn_item.*',
+        'product_product.sku_code',
+        'product_product.discription',
+        'product_product.hsn_code',
+        'batchcard_batchcard.batch_no',
+        'batchcard_batchcard.id as batch_id',
+        'fgs_mrn.mrn_number',
+        'fgs_mrn.mrn_date',
+        'fgs_mrn.created_at as mrn_wef',
+        'fgs_mrn_item.id as mrn_item_id',
+        'fgs_oef.oef_date'
+    )
+    ->leftJoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+    ->leftJoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+    ->leftJoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+    ->leftJoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+    ->join('fgs_grs_item', 'fgs_grs_item.mrn_item_id', '=', 'fgs_mrn_item.id')
+    ->join('fgs_oef_item', 'fgs_oef_item.id', '=', 'fgs_grs_item.oef_item_id')
+    ->join('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+    ->join('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
+    ->where('fgs_mrn_item.status', 1);
+
+    // SKU filter if provided
+    if (!empty($request->item_code)) {
+        $query->where('product_product.sku_code', 'like', '%' . $request->item_code . '%');
+    }
+
+    // Apply strict date filter: only rows with non-null oef_date and within range
+    if (!empty($request->from) && !empty($request->to)) {
+        $from = date('Y-m-d', strtotime($request->from));
+        $to = date('Y-m-d', strtotime($request->to));
+        $query->whereNotNull('fgs_oef.oef_date')
+              ->whereBetween('fgs_oef.oef_date', [$from, $to]);
+    } else {
+        // Default: only if oef_date is present and in current month
+        $currentMonth = date('Y-m');
+        $query->whereNotNull('fgs_oef.oef_date')
+              ->whereRaw("DATE_FORMAT(fgs_oef.oef_date, '%Y-%m') = ?", [$currentMonth]);
+    }
+
+    $items = $query->distinct()
+        ->orderByDesc('fgs_mrn_item.id')
+        ->paginate(15);
+    return view('pages/FGS/product-master/fin-goods-report', compact('items'));
+}
+    public function get_inv_data(Request $request)
     {
+        
+
+      
         $condition = [];
-        // if($request->item_code)
-        // {
-        //     $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%'];
-        //     $product_details = DB::table('product_product')
-        //             ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
-        //             ->select('product_product.*', 'batchcard_batchcard.batch_no')
-        //             ->where($condition)
-        //             ->paginate(15);
-        // }
-        // if($request->from || $request->to)
-        // {
-        //     $from_date=\Carbon\Carbon::createFromFormat('m-Y',  $request->from)->format('Y-m');
-        //     $to_date=\Carbon\Carbon::createFromFormat('m-Y',  $request->to)->format('Y-m');
-        //     $product_details = DB::table('product_product')
-        //             ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
-        //             ->select('product_product.*', 'batchcard_batchcard.batch_no')           
-        //             ->whereRaw("DATE_FORMAT(product_product.created,'%Y-%m') BETWEEN '$from_date' AND '$to_date'")
-        //             ->paginate(15);
-        // }
-        // if(!$request->item_code && !$request->from && !$request->to)
-        // {
-        //     $product_details = DB::table('product_product')
-        //             ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
-        //             ->select('product_product.*', 'batchcard_batchcard.batch_no')
-        //             //->where($condition)
-        //             ->paginate(15);
-        // }
-        
-        
-        // $from_date = date('m-Y');
-        // $to_date = date('m-Y');
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if($request->from)
         {
-            $condition[] = ['fgs_grs.grs_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-            $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            $condition[] = [DB::raw("DATE_FORMAT(fgs_mrn.mrn_date,'%Y-%m')"), '=', date('Y-m',strtotime('01-'.$request->from))];
+           
         }
-        if($request->to)
-        {
-            $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-d', strtotime('01-' . $request->to))];
-           // $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->to))];
+        else{
+            $condition[] = [DB::raw("DATE_FORMAT(fgs_mrn.mrn_date,'%Y-%m')"), '=', date('Y-m')];
+
         }
-        $items = fgs_mrn_item::select('fgs_mrn_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'batchcard_batchcard.batch_no','batchcard_batchcard.id as batch_id','fgs_mrn.mrn_number','fgs_mrn.mrn_date','fgs_mrn.created_at as mrn_wef','fgs_mrn_item.id as mrn_item_id')
-                        ->leftjoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
-                        ->leftjoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
-                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
-                        ->where($condition)
-                        ->where('fgs_mrn_item.status',1)
-                        ->distinct('fgs_mrn_item.id')
-                        ->orderBy('fgs_mrn_item.id','desc')
-                        ->paginate(15);
+        // if($request->from)
+        // {
+        //     $condition[] = ['fgs_mrn.mrn_date', '>=', date('Y-m', strtotime($request->from))];
+        //    // $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        // }
+        // if($request->to)
+        // {
+        //     $condition[] = ['fgs_mrn.mrn_date', '<=', date('Y-m', strtotime( $request->to))];
+        //    // $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->to))];
+        // }
+            // $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->to))];
+        
+        $items = fgs_mrn_item::select(
+            'fgs_mrn_item.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'batchcard_batchcard.batch_no',
+            'batchcard_batchcard.id as batch_id',
+            'fgs_mrn.mrn_number',
+            'fgs_mrn.mrn_date',
+            'fgs_mrn.created_at as mrn_wef',
+            'fgs_mrn_item.id as mrn_item_id'
+        )
+            ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+            ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+            ->where($condition)
+            ->where('fgs_mrn_item.status', 1)
+            ->where('fgs_mrn.status', 1)
+            ->distinct('fgs_mrn_item.id')
+            ->orderBy('fgs_mrn_item.id', 'desc')
+            ->paginate(15);
 
-
-        return view('pages/FGS/product-master/fin-goods-report', compact('items'));
+        return view('pages/inventory/FGS-Transfer/fgs-inventory-trans-report', compact('items'));
     }
+    
     function getOEFDetails($mrn_item_id)
     {
         $oef_details = fgs_grs_item::select('fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.created_at as oef_wef','fgs_oef_item.remaining_qty_after_cancel','fgs_oef_item.id as oef_item_id')
@@ -200,6 +246,18 @@ class FgsreportController extends Controller
                 ->leftJoin('fgs_mis_item_rel','fgs_mis_item_rel.item','=','fgs_mis_item.id')
                 ->leftJoin('fgs_mis','fgs_mis.id','=','fgs_mis_item_rel.master')
                 ->where('fgs_mis_item.grs_item_id','=',$mtq_item_id)
+                //->where('fgs_coef_item.status','=',1)
+                ->first();
+        return $mis_details;
+    }
+    function getDNIDetails($mrn_item_id)
+    {
+        $mis_details = fgs_dni_item::select('fgs_dni.dni_number','fgs_dni.dni_date','fgs_dni.created_at as mis_wef','fgs_pi_item.batch_qty')
+                ->leftJoin('fgs_dni_item_rel','fgs_dni_item_rel.item','=','fgs_dni_item.id')
+                ->leftJoin('fgs_dni','fgs_dni.id','=','fgs_dni_item_rel.master')
+                ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_dni_item.pi_item_id')
+
+                ->where('fgs_dni_item.mrn_item_id','=',$mrn_item_id)
                 //->where('fgs_coef_item.status','=',1)
                 ->first();
         return $mis_details;
@@ -410,269 +468,234 @@ class FgsreportController extends Controller
     {
         // echo "kk";exit;
         $condition = [];
+        ini_set('max_execution_time', 700);
+
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = [DB::raw("DATE_FORMAT(fgs_mrn.mrn_date,'%Y-%m')"), '=', date('Y-m', strtotime('01-' . $request->from))];
+        } else {
+            $condition[] = [DB::raw("DATE_FORMAT(fgs_mrn.mrn_date,'%Y-%m')"), '=', date('Y-m')];
+        }
+        // if($request->from)
+        // {
+        //     $condition[] = ['fgs_mrn.mrn_date', '>=', date('Y-m', strtotime($request->from))];
+        //    // $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        // }
+        // if($request->to)
+        // {
+        //     $condition[] = ['fgs_mrn.mrn_date', '<=', date('Y-m', strtotime( $request->to))];
+        //    // $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->to))];
+        // }
+        // $threeMonthsAgo = Carbon::now()->subMonths(2);
+        // $dateString = $threeMonthsAgo->format('Y-m-d');
+
+        $datas = fgs_mrn_item::select(
+
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_mrn_item.product_id',
+            'batchcard_batchcard.batch_no',
+            'batchcard_batchcard.id as batch_id',
+            // 'fgs_mrn.mrn_number',
+            'fgs_mrn.mrn_date',
+            // 'fgs_mrn.created_at as mrn_wef',
+            'fgs_mrn_item.id as mrn_item_id'
+        )
+            ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+            ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+            ->where($condition)
+            ->where('fgs_mrn_item.status', 1)
+            // ->where(DB::raw("DATE_FORMAT(fgs_mrn.mrn_date, '%Y-%m-%d')"), '>=', $dateString)
+
+            //->where('created_at', '>=', $threeMonthsAgo)
+            ->distinct('fgs_mrn_item.id')
+            ->orderBy('fgs_mrn_item.id', 'desc')
+
+            ->get();
+        //dd($datas);
+        return Excel::download(new FGSTransactionExport($datas, $request->from), 'fgs-sales-transaction-report' . date('d-m-Y') . '.xlsx');
+    }
+    public function fgsinvExport(Request $request)
+    {
+        // echo "kk";exit;
+        $condition = [];
         ini_set('max_execution_time', 500);
-        // if($request->item_code)
-        // {
-        //     $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%'];
-        //     $product_details = DB::table('product_product')
-        //             ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
-        //             ->select('product_product.*', 'batchcard_batchcard.batch_no')
-        //             ->where($condition)
-        //             ->get();
-        // }
-        // if($request->from || $request->to)
-        // {
-        //     $from_date=\Carbon\Carbon::createFromFormat('m-Y',  $request->from)->format('Y-m');
-        //     $to_date=\Carbon\Carbon::createFromFormat('m-Y',  $request->to)->format('Y-m');
-        //     $product_details = DB::table('product_product')
-        //             ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
-        //             ->select('product_product.*', 'batchcard_batchcard.batch_no')           
-        //             ->whereRaw("DATE_FORMAT(product_product.created,'%Y-%m') BETWEEN '$from_date' AND '$to_date'")
-        //             ->get();
-        // }
-        // if(!$request->item_code && !$request->from && !$request->to)
-        // {
-        //     $product_details = DB::table('product_product')
-        //             ->join('batchcard_batchcard', 'product_product.id', '=', 'batchcard_batchcard.product_id')
-        //             ->select('product_product.*', 'batchcard_batchcard.batch_no')
-        //             //->where($condition)
-        //             ->get();
-        // }
-        // foreach($product_details as $product_detail)
-        // {
-        //     if(!empty($this->get_mrn($product_detail->id)))
-        //     {
-        //         $mrn_number = $this->get_mrn($product_detail->id)->mrn_number;
-        //         $mrn_qty =$this->get_mrn($product_detail->id)->quantity;
-        //         $mrn_date = $this->get_mrn($product_detail->id)->mrn_date;
-        //         $mrn_wef = date('d-m-Y',strtotime($this->get_mrn($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $mrn_number = '';
-        //         $mrn_qty ='';
-        //         $mrn_date = '';
-        //         $mrn_wef = '';
-        //     }
-        //     if(!empty($this->get_oef($product_detail->id)))
-        //     {
-        //         $oef_number = $this->get_oef($product_detail->id)->oef_number;
-        //         $oef_qty =$this->get_oef($product_detail->id)->quantity;
-        //         $oef_date = $this->get_oef($product_detail->id)->oef_date;
-        //         $oef_wef = date('d-m-Y',strtotime($this->get_oef($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $oef_number = '';
-        //         $oef_qty ='';
-        //         $oef_date = '';
-        //         $oef_wef = '';
-        //     }
-        //     if(!empty($this->get_coef($product_detail->id)))
-        //     {
-        //         $coef_number = $this->get_coef($product_detail->id)->coef_number;
-        //        // $coef_qty =$this->get_coef($product_detail->id)->quantity;
-        //         $coef_date = $this->get_coef($product_detail->id)->coef_date;
-        //         $coef_wef = date('d-m-Y',strtotime($this->get_coef($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $coef_number = '';
-        //         $coef_qty ='';
-        //         $coef_date = '';
-        //         $coef_wef = '';
-        //     }
-        //     if(!empty($this->get_pi($product_detail->id)))
-        //     {
-        //         $pi_number = $this->get_pi($product_detail->id)->pi_number;
-        //         $pi_qty =$this->get_pi($product_detail->id)->batch_qty;
-        //         $pi_date = $this->get_pi($product_detail->id)->pi_date;
-        //         $pi_wef = date('d-m-Y',strtotime($this->get_pi($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     { 
-        //         $pi_number ='';
-        //         $pi_qty ='';
-        //         $pi_date = '';
-        //         $pi_wef = '';
-
-        //     }
-        //     if(!empty($this->get_cpi($product_detail->id)))
-        //     {
-        //         $cpi_number = $this->get_cpi($product_detail->id)->cpi_number;
-        //        // $cpi_qty =$this->get_cpi($product_detail->id)->batch_qty;
-        //         $cpi_date = $this->get_cpi($product_detail->id)->cpi_date;
-        //         $cpi_wef = date('d-m-Y',strtotime($this->get_cpi($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $cpi_number ='';
-        //         $cpi_qty = '';
-        //         $cpi_date = '';
-        //         $cpi_wef = '';
-        //     }
-        //     if(!empty($this->get_grs($product_detail->id)))
-        //     {
-        //         $grs_number = $this->get_grs($product_detail->id)->grs_number;
-        //         $grs_date = $this->get_grs($product_detail->id)->grs_date;
-        //         $grs_wef =date('d-m-Y',strtotime($this->get_grs($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $grs_number = '';
-        //         $grs_date = '';
-        //         $grs_wef = '';
-        //     }
-        //     if(!empty($this->get_cgrs($product_detail->id)))
-        //     {
-        //         $cgrs_number = $this->get_cgrs($product_detail->id)->cgrs_number;
-        //         $cgrs_date = $this->get_cgrs($product_detail->id)->cgrs_date;
-        //         $cgrs_wef =date('d-m-Y',strtotime($this->get_cgrs($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $cgrs_number = '';
-        //         $cgrs_date ='';
-        //         $cgrs_wef ='';
-        //     }
-        //     if(!empty($this->get_min($product_detail->id)))
-        //     {
-        //         $min_number = $this->get_min($product_detail->id)->min_number;
-        //         $min_date = $this->get_min($product_detail->id)->min_date;
-        //         $min_wef =date('d-m-Y',strtotime($this->get_min($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $min_number ='';
-        //         $min_date ='';
-        //         $min_wef ='';
-
-        //     }
-        //     if(!empty($this->get_cmin($product_detail->id)))
-        //     {
-        //         $cmin_number = $this->get_cmin($product_detail->id)->cmin_number;
-        //         $cmin_date = $this->get_cmin($product_detail->id)->cmin_date;
-        //         $cmin_wef =date('d-m-Y',strtotime($this->get_cmin($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $cmin_number ='';
-        //         $cmin_date ='';
-        //         $cmin_wef ='';
-        //     }
-        //     if(!empty($this->get_mis($product_detail->id)))
-        //     {
-        //         $mis_number = $this->get_mis($product_detail->id)->mis_number;
-        //         $mis_date = $this->get_mis($product_detail->id)->mis_date;
-        //         $mis_wef =date('d-m-Y',strtotime($this->get_mis($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $mis_number ='';
-        //         $mis_date ='';
-        //         $mis_wef ='';
-        //     }
-        //     if(!empty($this->get_mtq($product_detail->id)))
-        //     {
-        //         $mtq_number = $this->get_mtq($product_detail->id)->mtq_number;
-        //         $mtq_date = $this->get_mtq($product_detail->id)->mtq_date;
-        //         $mtq_wef =date('d-m-Y',strtotime($this->get_mtq($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $mtq_number ='';
-        //         $mtq_date = '';
-        //         $mtq_wef ='';
-        //     }
-        //     if(!empty($this->get_cmtq($product_detail->id)))
-        //     {
-        //         $cmtq_number = $this->get_cmtq($product_detail->id)->cmtq_number;
-        //         $cmtq_date = $this->get_cmtq($product_detail->id)->cmtq_date;
-        //         $cmtq_wef =date('d-m-Y',strtotime($this->get_cmtq($product_detail->id)->created_at));
-        //     }
-        //     else
-        //     {
-        //         $cmtq_number ='';
-        //         $cmtq_date = '';
-        //         $cmtq_wef ='';
-        //     }
-        //     $datas[] = array(
-        //         'sku_code'=>$product_detail->sku_code,
-        //         'batch_no'=>$product_detail->batch_no,
-        //         'Date'=>date('d-m-Y',strtotime($product_detail->created)),
-        //         'description'=>$product_detail->discription,
-        //         'mrn_number' =>$mrn_number,
-        //         'mrn_qty' =>$mrn_qty,
-        //         'mrn_date' =>$mrn_date,
-        //         'mrn_wef' =>$mrn_wef,
-        //         'oef_number'=>$oef_number,
-        //         'oef_qty'=>$oef_qty,
-        //         'oef_date'=>$oef_date,
-        //         'oef_wef'=>$oef_wef,
-        //         'coef_number'=>$coef_number,
-        //         'coef_qty'=>$coef_qty,
-        //         'coef_date'=>$coef_date,
-        //         'coef_wef'=>$coef_wef,
-        //         'pi_number'=>$pi_number,
-        //         'pi_qty' =>$pi_qty,
-        //         'pi_date' => $pi_date,
-        //         'pi_wef' =>$pi_wef,
-        //         'cpi_number'=>$cpi_number,
-        //         'cpi_qty' =>$cpi_qty,
-        //         'cpi_date' => $cpi_date,
-        //         'cpi_wef' =>$cpi_wef,
-        //         'grs_number'=>$grs_number,
-        //         'grs_date' => $grs_date,
-        //         'grs_wef' =>$grs_wef,
-        //         'cgrs_number'=>$cgrs_number,
-        //         'cgrs_date' => $cgrs_date,
-        //         'cgrs_wef' =>$cgrs_wef,
-        //         'min_number'=>$min_number,
-        //         'min_date' => $min_date,
-        //         'min_wef' =>$min_wef,
-        //         'cmin_number'=>$cmin_number,
-        //         'cmin_date' => $cmin_date,
-        //         'cmin_wef' =>$cmin_wef,
-        //         'mis_number'=>$mis_number,
-        //         'mis_date' => $mis_date,
-        //         'mis_wef' =>$mis_wef,
-        //         'mtq_number'=>$mtq_number,
-        //         'mtq_date' => $mtq_date,
-        //         'mtq_wef' =>$mtq_wef,
-        //         'cmtq_number'=>$cmtq_number,
-        //         'cmtq_date' => $cmtq_date,
-        //         'cmtq_wef' =>$cmtq_wef,
 
 
-        //     );
-        // }
-        // ini_set('max_execution_time', 500);
-        // //print_r($datas);exit;
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if($request->from)
         {
-            $condition[] = ['fgs_grs.grs_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-            $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+            $condition[] = [DB::raw("DATE_FORMAT(fgs_mrn.mrn_date,'%Y-%m')"), '=', date('Y-m',strtotime('01-'.$request->from))];
+           
         }
-        if($request->to)
-        {
-            $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-d', strtotime('01-' . $request->to))];
-           // $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->to))];
+        else{
+            $condition[] = [DB::raw("DATE_FORMAT(fgs_mrn.mrn_date,'%Y-%m')"), '=', date('Y-m')];
+
         }
-        $datas = fgs_mrn_item::select('fgs_mrn_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'batchcard_batchcard.batch_no','batchcard_batchcard.id as batch_id','fgs_mrn.mrn_number','fgs_mrn.mrn_date','fgs_mrn.created_at as mrn_wef','fgs_mrn_item.id as mrn_item_id')
-                        ->leftjoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
-                        ->leftjoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
-                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
-                        ->where($condition)
-                        ->where('fgs_mrn_item.status',1)
-                        ->distinct('fgs_mrn_item.id')
-                        ->orderBy('fgs_mrn_item.id','desc')
-                        ->get();
-        return Excel::download(new FGSTransactionExport($datas), 'fgs-transaction-report' . date('d-m-Y') . '.xlsx');
+        // if ($request->from) {
+        //     $condition[] = ['fgs_grs.grs_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        //     $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        // }
+        // if ($request->to) {
+        //     $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-d', strtotime('01-' . $request->to))];
+        //     // $condition[] = ['fgs_grs.grs_date', '<=', date('Y-m-t', strtotime('01-' . $request->to))];
+        // }
+        // $threeMonthsAgo = Carbon::now()->subMonths(3);
+        // $dateString = $threeMonthsAgo->format('Y-m');
+
+        $datas = fgs_mrn_item::select(
+            'fgs_mrn_item.*',
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'product_product.mrp',
+            'batchcard_batchcard.batch_no',
+            'batchcard_batchcard.id as batch_id',
+            'fgs_mrn.mrn_number',
+            'fgs_mrn.mrn_date',
+            'fgs_mrn.created_at as mrn_wef',
+            'fgs_mrn_item.id as mrn_item_id'
+        )
+            ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+            ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+            ->where($condition)
+            ->where('fgs_mrn_item.status', 1)
+           // ->where(DB::raw("DATE_FORMAT(fgs_mrn.created_at,'%Y-%m')"), '>=', $dateString)
+            ->distinct('fgs_mrn_item.id')
+            ->orderBy('fgs_mrn_item.id', 'desc')
+            ->get();
+       
+        return Excel::download(new FGSInvTransactionExport($datas,$request->from), 'fgs-Inv-transaction-report' . date('d-m-Y') . '.xlsx');
+    }
+    public function fgsallExport(Request $request)
+    {
+        // $condition[] = [DB::raw("DATE_FORMAT(fgs_mrn.mrn_date,'%Y-%m')"), '=', 2024-01];
+
+        // $condition = [];
+        if ($request->item_code) {
+            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $condition[] = [DB::raw("DATE_FORMAT(fgs_mrn.mrn_date,'%Y-%m')"), '=', date('Y-m', strtotime('01-' . $request->from))];
+        } else {
+            $condition[] = [DB::raw("DATE_FORMAT(fgs_mrn.mrn_date,'%Y-%m')"), '=', date('Y-m')];
+        }
+        $datas= fgs_mrn_item::select(
+
+            'product_product.sku_code',
+            'product_product.discription',
+            'product_product.hsn_code',
+            'fgs_mrn_item.product_id',
+            'batchcard_batchcard.batch_no',
+            'batchcard_batchcard.id as batch_id',
+            'fgs_mrn.mrn_number',
+            'fgs_mrn.mrn_date',
+            'fgs_mrn.created_at as mrn_wef',
+            'fgs_mrn_item.id as mrn_item_id',
+            'fgs_oef.oef_number',
+            'fgs_oef.order_number',
+            'fgs_oef.order_date',
+            'fgs_oef_item.rate',
+            'fgs_oef.oef_date',
+            'fgs_oef_item.quantity',
+            'fgs_oef_item.id as oef_item_id',
+            'inventory_gst.igst',
+            'inventory_gst.cgst',
+            'inventory_gst.sgst',
+            'inventory_gst.id as gst_id',
+            'fgs_coef.coef_number',
+            'fgs_coef.coef_date',
+            'fgs_coef.created_at as coef_wef',
+            'fgs_coef_item.quantity',
+            'fgs_grs.grs_number',
+            'fgs_grs.grs_date',
+            'fgs_grs.created_at as grs_wef',
+            'fgs_grs_item.batch_quantity',
+            'fgs_grs_item.id as grs_item_id',
+            'fgs_cgrs.cgrs_number',
+            'fgs_cgrs.cgrs_date',
+            'fgs_cgrs.created_at as cgrs_wef',
+            'fgs_cgrs_item.batch_quantity',
+            'fgs_min.min_number',
+            'fgs_min.min_date',
+            'fgs_min.created_at as min_wef',
+            'fgs_mtq.mtq_number',
+            'fgs_mtq.mtq_date',
+            'fgs_mtq.created_at as mtq_wef',
+            'fgs_mtq_item.id as mtq_item_id',
+            'fgs_pi.pi_number',
+            'fgs_pi.pi_date',
+            'fgs_pi.created_at as pi_wef',
+            'fgs_pi_item.batch_qty as piqty',
+            'fgs_pi_item.id as pi_item_id',
+            'fgs_cpi.cpi_number',
+            'fgs_cpi.cpi_date',
+            'fgs_cpi.created_at as cpi_wef',
+            'fgs_cpi_item.quantity as cpiqty',
+            'fgs_cpi_item.id as cpi_item_id',
+            'fgs_dni.dni_number',
+            'fgs_dni.dni_date',
+            'fgs_dni_item.quantity as dniqty',
+            'fgs_srn.srn_number',
+            'fgs_srn.srn_date',
+            'fgs_srn_item.quantity as srnqty'
+
+
+        )
+            ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+            ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mrn_item.product_id')
+            ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mrn_item.batchcard_id')
+            ->leftJoin('fgs_grs_item', 'fgs_grs_item.mrn_item_id', '=', 'fgs_mrn_item.id')
+            ->leftJoin('fgs_oef_item', 'fgs_oef_item.id', '=', 'fgs_grs_item.oef_item_id')
+            ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+            ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
+            ->leftJoin('fgs_coef_item', 'fgs_coef_item.coef_item_id', '=', 'fgs_oef_item.id')
+            ->leftJoin('fgs_coef_item_rel', 'fgs_coef_item_rel.item', '=', 'fgs_coef_item.id')
+            ->leftJoin('fgs_coef', 'fgs_coef.id', '=', 'fgs_coef_item_rel.master')
+            ->leftjoin('inventory_gst', 'inventory_gst.id', '=', 'fgs_oef_item.gst')
+            ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
+            ->leftJoin('fgs_grs', 'fgs_grs.id', '=', 'fgs_grs_item_rel.master')
+            ->leftJoin('fgs_cgrs_item', 'fgs_cgrs_item.grs_item_id', '=', 'fgs_grs_item.id')
+            ->leftJoin('fgs_cgrs_item_rel', 'fgs_cgrs_item_rel.item', '=', 'fgs_cgrs_item.id')
+            ->leftJoin('fgs_cgrs', 'fgs_cgrs.id', '=', 'fgs_cgrs_item_rel.master')
+            ->leftJoin('fgs_min_item', 'fgs_min_item.product_id', '=', 'fgs_mrn_item.product_id')
+            ->leftJoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
+            ->leftJoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
+            ->leftJoin('fgs_cmin_item', 'fgs_cmin_item.cmin_item_id', '=', 'fgs_min_item.id')
+            ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
+            ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
+            ->leftjoin('fgs_mtq_item', 'fgs_mtq_item.product_id', '=', 'fgs_mrn_item.product_id')
+            ->leftJoin('fgs_mtq_item_rel', 'fgs_mtq_item_rel.item', '=', 'fgs_mtq_item.id')
+            ->leftJoin('fgs_mtq', 'fgs_mtq.id', '=', 'fgs_mtq_item_rel.master')
+            ->leftJoin('fgs_pi_item', 'fgs_pi_item.mrn_item_id', '=', 'fgs_mrn_item.id')
+            ->leftJoin('fgs_pi_item_rel', 'fgs_pi_item_rel.item', '=', 'fgs_pi_item.id')
+            ->leftJoin('fgs_pi', 'fgs_pi.id', '=', 'fgs_pi_item_rel.master')
+            ->leftJoin('fgs_cpi_item', 'fgs_cpi_item.pi_item_id', '=', 'fgs_pi_item.id')
+            ->leftJoin('fgs_cpi_item_rel', 'fgs_cpi_item_rel.item', '=', 'fgs_cpi_item.id')
+            ->leftJoin('fgs_cpi', 'fgs_cpi.id', '=', 'fgs_cpi_item_rel.master')
+            ->leftJoin('fgs_dni_item', 'fgs_pi_item.id', '=', 'fgs_dni_item.pi_item_id')
+            ->leftJoin('fgs_dni_item_rel', 'fgs_dni_item_rel.item', '=', 'fgs_dni_item.id')
+            ->leftJoin('fgs_dni', 'fgs_dni.id', '=', 'fgs_dni_item_rel.master')
+            ->leftJoin('fgs_srn_item', 'fgs_srn_item.product_id', 'fgs_mrn_item.product_id')
+            ->leftJoin('fgs_srn_item_rel', 'fgs_srn_item_rel.item', 'fgs_srn_item.id')
+            ->leftJoin('fgs_srn', 'fgs_srn_item_rel.master', 'fgs_srn.id')
+            //  ->where($condition)
+            ->where('fgs_mrn_item.status', 1)
+            // ->where('fgs_min_item.batchcard_id', 'fgs_mrn_item.batchcard_id')
+            ->distinct('fgs_mrn_item.id')
+            ->orderBy('fgs_mrn_item.id', 'desc')
+            ->get();
+        //  dd($datas);
+        return Excel::download(new FGSTransactionAllExport($datas), 'fgs-transaction-report' . date('d-m-Y') . '.xlsx');
     }
 }

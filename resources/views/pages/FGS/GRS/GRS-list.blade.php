@@ -59,7 +59,11 @@
 														<label>GRS No :</label>
 														<input type="text" value="{{request()->get('grs_no')}}" name="grs_no" id="grs_no" class="form-control" placeholder="GRS NO">
 													</div><!-- form-group -->
-													
+
+													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
+														<label>Customer</label>
+														<input type="text" value="{{request()->get('customer_no')}}" name="customer_no" id="customer_no" class="form-control" placeholder="Customer">
+													</div>
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label for="exampleInputEmail1" style="font-size: 12px;">OEF No</label>
@@ -99,29 +103,30 @@
 								<tr>
 									<th>GRS Number</th>
 									<th>GRS date</th>
-									<th>Order Date</th>
+									<th>Customer</th>
+									<th>OEF Number</th>
 									<th>Order Number</th>
-                                    <th>OEF Number</th>
+									<th>Order Date</th>
+									<th>Business Category</th>
 									<th>Product Category</th>
 									<th>Stock Location1(Decrease)</th>
 									<th>Stock Location2(Increase)</th>
-                                    <th>Customer</th>
-                                   
                                     <th>Action</th>
-								</tr>
+								</tr>	
 							</thead>
 							<tbody id="prbody1">
 							@foreach($grs as $master)
                             <tr>
-                                <td>{{$master['grs_number']}}</td>
+								<td>{{$master['grs_number']}}</td>
 								<td>{{date('d-m-Y', strtotime($master['grs_date']))}}</td>
-								<td>{{date('d-m-Y', strtotime($master['order_date']))}}</td>
+								<td>{{$master['firm_name']}}</td>
+								<td>{{$master['oef_number']}}</td>
 								<td>{{$master['order_number']}}</td>
-                                <td>{{$master['oef_number']}}</td>
-                                <td>{{$master['category_name']}}</td>
+								<td>{{date('d-m-Y', strtotime($master['order_date']))}}</td>
+								<td>{{$master['category_name']}}</td>
+								<td>{{$master['new_category_name']}}</td>
                                 <td>{{$master['location_name1']}}</td>
                                 <td>{{$master['location_name2']}}</td>
-                                <td>{{$master['firm_name']}}</td>
                                 <td>
 									<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/item-list/'.$master["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
 									<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/GRS/pdf/'.$master["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
@@ -159,30 +164,30 @@
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 
 <script>
-  $(function(){
-    'use strict'
-	var date = new Date();
-    date.setDate(date.getDate());
-	$(".datepicker").datepicker({
-        format: "mm-yyyy",
-        viewMode: "months",
-        minViewMode: "months",
-        // startDate: date,
-        autoclose:true
-    });
-	$('#prbody1').show();
-	$('#prbody2').show();
-  });
+//   $(function(){
+//     'use strict'
+// 	var date = new Date();
+//     date.setDate(date.getDate());
+// 	$(".datepicker").datepicker({
+//         format: "mm-yyyy",
+//         viewMode: "months",
+//         minViewMode: "months",
+//         // startDate: date,
+//         autoclose:true
+//     });
+// 	$('#prbody1').show();
+// 	$('#prbody2').show();
+//   });
   	
-	$('.search-btn').on( "click", function(e)  {
-		var grs_no = $('#grs_no').val();
-		var oef_no = $('#oef_no').val();
-		var from = $('#from').val();
-		if(!grs_no  & !oef_no & !from)
-		{
-			e.preventDefault();
-		}
-	});
+	// $('.search-btn').on( "click", function(e)  {
+	// 	var grs_no = $('#grs_no').val();
+	// 	var oef_no = $('#oef_no').val();
+	// 	var from = $('#from').val();
+	// 	if(!grs_no  & !oef_no & !from)
+	// 	{
+	// 		e.preventDefault();
+	// 	}
+	// });
 </script>
 
 

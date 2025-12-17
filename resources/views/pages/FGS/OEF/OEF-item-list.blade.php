@@ -110,17 +110,20 @@ $obj_oef=new OEFController;
 							<tbody id="prbody1">
 								@foreach($items as $item)
 								<tr>
-									<td>{{$item['id']}}</td>
-									<td>{{$item['sku_code']}}</td>
+									<td>{{$item['id']}}-{{$item['sku_code']}}</td>
 									<td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
 									<td>{{$item['quantity']}} Nos</td>
 									<td>{{$item['remaining_qty_after_cancel']}} Nos</td>
 									<td>{{$item['rate']}}</td>
 									<td>{{$item['discount']}}%</td>
-									<td>IGST:{{$item['igst']}}%<br />
+									<td>@if($item['igst']==0 && $item['cgst']==0 && $item['sgst']==0)
+										N.A
+										@else
+										IGST:{{$item['igst']}}%<br />
 										CGST:{{$item['cgst']}}%<br />
 										SGST:{{$item['sgst']}}%
+										@endif
 									</td>
 									<td>
 										@if($item['coef_status']==0)

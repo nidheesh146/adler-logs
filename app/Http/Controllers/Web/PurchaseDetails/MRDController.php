@@ -254,12 +254,12 @@ class MRDController extends Controller
                     }
                     $item_type = $this->get_item_type($request->invoice_number);
                     if($item_type=="Direct Items"){
-                        $Data['mrd_number'] = "MRD2-".$this->year_combo_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD2-'.$years_combo.'%')->count()); 
+                        $Data['mrd_number'] = "MRD2-".$this->year_combo_num_gen_inv(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD2-'.$years_combo.'%')->count()); 
                     }
                     //if($item_type=="Indirect Items"){
                     else
                     {
-                        $Data['mrd_number'] = "MRD3-" . $this->year_combo_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD3-'.$years_combo.'%')->count()); 
+                        $Data['mrd_number'] = "MRD3-" . $this->year_combo_num_gen_inv(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'MRD3-'.$years_combo.'%')->count()); 
                     }
                     $Data['mrd_date'] = date('Y-m-d', strtotime($request->mrd_date));
                     $Data['invoice_id'] = $request->invoice_number;
@@ -418,11 +418,11 @@ class MRDController extends Controller
                     }
                     $item_type = $this->get_item_type($request->invoice_number);
                     if($item_type=="Direct Items"){
-                        $Data['mrd_number'] = "WOR2-".$this->year_combo_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR2-'.$years_combo.'%')->count()); 
+                        $Data['mrd_number'] = "WOR2-".$this->year_combo_num_gen_inv(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR2-'.$years_combo.'%')->count()); 
                     }
                    // if($item_type=="Indirect Items"){
                     else{
-                        $Data['mrd_number'] = "WOR3-" . $this->year_combo_num_gen(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR3-'.$years_combo.'%')->count()); 
+                        $Data['mrd_number'] = "WOR3-" . $this->year_combo_num_gen_inv(DB::table('inv_mrd')->where('inv_mrd.mrd_number', 'LIKE', 'WOR3-'.$years_combo.'%')->count()); 
                     }
                     $Data['mrd_date'] = date('Y-m-d', strtotime($request->mrd_date));
                     $Data['invoice_id'] = $request->invoice_number;
@@ -602,10 +602,10 @@ class MRDController extends Controller
                     }
                     $item_type = $this->get_item_type($request->mrd_number);
                     if($item_type=="Direct Items"){
-                        $Data['rmrn_number'] = "RMRN2-".$this->year_combo_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN2-'.$years_combo.'%')->count()); 
+                        $Data['rmrn_number'] = "RMRN2-".$this->year_combo_num_gen_inv(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN2-'.$years_combo.'%')->count()); 
                     }
                     else{
-                        $Data['rmrn_number'] = "RMRN3-" . $this->year_combo_num_gen(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN3-'.$years_combo.'%')->count()); 
+                        $Data['rmrn_number'] = "RMRN3-" . $this->year_combo_num_gen_inv(DB::table('inv_rmrn')->where('inv_rmrn.rmrn_number', 'LIKE', 'RMRN3-'.$years_combo.'%')->count()); 
                     }
                     $Data['rmrn_date'] = date('Y-m-d', strtotime($request->rmrn_date));
                     $Data['mrd_id'] = $request->mrd_number;
@@ -841,7 +841,7 @@ class MRDController extends Controller
         $data['items'] = $this->inv_rmrn_item->get_items(['inv_rmrn_item_rel.master' => $id]);
         
         $pdf = PDF::loadView('pages.inventory.RMRN.RMRN-pdf', $data);
-        $pdf->set_paper('A3', 'landscape');
+        $pdf->set_paper('A3', 'portrait');
         $file_name = "RMRN_" . $data['rmrn']['vendor_name'] . "_" . $data['rmrn']['rmr_date'];
         return $pdf->stream($file_name . '.pdf');
     }

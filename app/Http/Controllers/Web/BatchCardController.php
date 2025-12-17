@@ -9,21 +9,33 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use DB;
 use Validator;
 use PDF;
+use Dompdf\Options;
+
 use Picqer;
+use App\Exports\BatchItemExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\batchcard;
 use App\Models\product;
+use App\Models\user;
 use App\Models\product_input_material;
 use App\Models\batchcard_material;
+use App\Models\PurchaseDetails\customer_supplier;
+use App\Models\PurchaseDetails\inv_supplier;
+
 use App\Models\PurchaseDetails\inv_lot_allocation;
 use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\batchcard_materials;
 use App\Models\PurchaseDetails\inv_batchcard_qty_updation_request;
+use App\Models\PurchaseDetails\inv_purchase_req_quotation_item_supp_rel;
+use App\Models\inventory_gst;
 
 class BatchCardController extends Controller
 {
     public function __construct()
     { 
         $this->batchcard = new batchcard;
+        $this->inventory_rawmaterial = new inventory_rawmaterial;
+
         $this->product = new product;
         $this->product_input_material = new product_input_material;
         $this->batchcard_material = new batchcard_material;
@@ -42,11 +54,23 @@ class BatchCardController extends Controller
             return response()->json(['message'=>'Product is not exist'], 500); 
         }
     }
+    public function findBatchCard(Request $request)
+    {
+        if (!$request->q) {
+            return response()->json(['message' => 'Batchcard is not valid'], 500);
+        }
+        $condition[] = ['batchcard_batchcard.batch_no', 'like', '%' . strtoupper($request->q) . '%'];
+        $data = $this->batchcard->get_all_batchcards_assembly($condition);
+        // $data  = $this->inventory_rawmaterial->getItems($condition);
+        if (!empty($data)) {
+            return response()->json($data, 200);
+        } else {
+            return response()->json(['message' => 'Batchcard is not valid'], 500);
+        }
+    }
     public function BatchcardList(Request $request)
     {
-        //$this->SetBatchcardAlloted();
-        //$this->SetBatchcardInputmaterial();
-        $condition=[];
+        $condition = [];
         if ($request->batch_no) {
             $condition[] = ['batchcard_batchcard.batch_no', 'like', '%' . $request->batch_no . '%'];
         }
@@ -56,12 +80,31 @@ class BatchCardController extends Controller
         if ($request->process_sheet) {
             $condition[] = ['product_product.process_sheet_no', 'like', '%' . $request->process_sheet . '%'];
         }
+    
         $data['batchcards'] = $this->batchcard->get_all_batchcard_list($condition);
-        foreach($data['batchcards'] as $card)
-        {
-            $card['material'] = $this->batchcard_material->get_batchcard_material(['batchcard_materials.batchcard_id'=>$card['id']]);
+    
+        foreach ($data['batchcards'] as $card) {
+            // Fetch batchcard materials
+            $card['material'] = $this->batchcard_material->get_batchcard_material(['batchcard_materials.batchcard_id' => $card['id']]);
+    
+            // Fetch input materials for the batchcard's product
+            $card['input_material'] = product_input_material::select(
+                'product_input_material.*',
+                'material_option1.item_code as item1_code',
+                'material_option1.id as item1_id',
+                'material_option2.item_code as item2_code',
+                'material_option2.id as item2_id',
+                'material_option3.item_code as item3_code',
+                'material_option3.id as item3_id'
+            )
+            ->leftJoin('inventory_rawmaterial as material_option1', 'material_option1.id', '=', 'product_input_material.item_id1')
+            ->leftJoin('inventory_rawmaterial as material_option2', 'material_option2.id', '=', 'product_input_material.item_id2')
+            ->leftJoin('inventory_rawmaterial as material_option3', 'material_option3.id', '=', 'product_input_material.item_id3')
+            ->where('product_input_material.product_id', '=', $card['product_id'])
+            ->get();
         }
-        return view('pages/batchcard/batchcard-list',compact('data'));
+    
+        return view('pages/batchcard/batchcard-list', compact('data'));
     }
     public function BatchcardPrint(Request $request)
     {
@@ -441,6 +484,8 @@ class BatchCardController extends Controller
         {
             if ($key > 1 &&  $excelsheet[0]) 
             {
+                // $excelsheet[1] = strval($excelsheet[1]);
+                                //dd($excelsheet[1]);
                 $product = DB::table('product_product')->select(['is_sterile','id'])->where('sku_code', $excelsheet[1])->first();
                 $batchcard =  DB::table('batchcard_batchcard')->select(['*'])->where('batch_no', $excelsheet[0])->first();
                 if(!($batchcard) && $product)
@@ -511,7 +556,7 @@ class BatchCardController extends Controller
                     $batchcard_material = DB::table('batchcard_materials')->insert($material);
                     
                 }
-                if($batchcard && $product)
+                if($batchcard && $product->id == $batchcard->product_id )
                 {
                     if(strtolower($excelsheet[6]) == 'assembly')
                     $is_assemble = 1;
@@ -607,7 +652,7 @@ class BatchCardController extends Controller
         {
 
             $data .= '<tr>
-                        <th>Input Material Option1</th>
+                        <th>Input Material Option1d</th>
                         <th>Input Material Option2</th>
                         <th>Input Material Option3</th>
                     </tr>
@@ -728,80 +773,60 @@ class BatchCardController extends Controller
         return $lotcard;
     }
     function batchcardNumberGeneration()
-    {
-        $i=1993;
-        for($x = 'A'; $x <='Z' & $x !== 'AAA'; $x++)
-        {
-            $timestamp = strtotime(date('Y'));
-            $current_year = idate('Y', $timestamp);
-            if(date('m')==01 || date('m')==02 || date('m')==03)
-            {
-                if($i==((int)$current_year-1))
-                {
-                    $year_char =$x;
-                    
-                }
-            }else
-            {
-                if($i==(int)$current_year)
-                {
-                    $year_char = $x;
-                } 
+{
+    $i = 1993;
+    $year_char = '';
+   
+    for ($x = 'A'; $x <= 'Z' && $x !== 'AAA'; $x++) {
+        $timestamp = strtotime(date('Y'));
+        $current_year = idate('Y', $timestamp);
+
+        if (date('m') == '01' || date('m') == '02' || date('m') == '03') {
+            if ($i == ((int)$current_year - 1)) {
+                $year_char = $x;
+                break;
             }
-            $i++;
+        } else {
+            if ($i == (int)$current_year) {
+                $year_char = $x;
+                break;
+            }
         }
-        $m=date('m');
-        switch ($m) {
-            case 1:        
-                $mnth_char = "A";
-                break;
-            case 2:        
-                $mnth_char = "B";
-                break;
-            case 3:        
-                $mnth_char = "C";
-                break;
-            case 4:        
-                $mnth_char = "D";
-                break;
-            case 5:        
-                $mnth_char = "E";
-                break;
-            case 6:        
-                $mnth_char = "F";
-                break;
-            case 7:        
-                $mnth_char = "G";
-                break;
-            case 8:        
-                $mnth_char = "H";
-                break;
-            case 9:        
-                $mnth_char = "I";
-                break;
-            case 10:        
-                $mnth_char = "J";
-                break;
-            case 11:        
-                $mnth_char = "K";
-                break;
-            case 12:        
-                $mnth_char = "L";
-                break;        
-        }
-        
-        $structure = $year_char.$mnth_char;
-        $count = DB::table('batchcard_batchcard')->where('batchcard_batchcard.batch_no', 'LIKE', $structure.'%')->count();
-        //echo $structure;
-        if ($count+1 <= 9999)
-        {
-            $numZero = 4 - strlen($count+1);
-            $serial_no=str_repeat('0', $numZero).$count+1;
-            $count++;
-        }
-       $batch_no = $structure.$serial_no;
-        return $batch_no;
+        $i++;
     }
+
+    $m = date('m');
+    $mnth_char = chr(64 + (int)$m); // converts month number to A-L (1=A, 2=B,...,12=L)
+
+    $structure = $year_char . $mnth_char;
+
+    // Extract batch numbers that contain this structure, ignoring prefixes like 'RW-'
+    $batchNumbers = DB::table('batchcard_batchcard')
+        ->select('batch_no')
+        ->where('batch_no', 'LIKE', '%' . $structure . '%')
+        ->get()
+        ->pluck('batch_no')
+        ->toArray();
+
+    $maxSerial = 0;
+
+    foreach ($batchNumbers as $batchNo) {
+        // Extract the actual structure + 4 digit number using regex
+        if (preg_match('/' . $structure . '(\d{4})/', $batchNo, $matches)) {
+            $serial = (int)$matches[1];
+            if ($serial > $maxSerial) {
+                $maxSerial = $serial;
+            }
+        }
+    }
+
+    $nextSerial = $maxSerial + 1;
+    $serial_no = str_pad($nextSerial, 4, '0', STR_PAD_LEFT);
+
+    $batch_no = $structure . $serial_no;
+
+    return $batch_no;
+}
 
     public function requestList(Request $request)
     {
@@ -1093,6 +1118,110 @@ class BatchCardController extends Controller
 
         
     }
-  
+    public function batch_item_search(Request $request)
+    {
+        $condition=[];
+        if ($request->batch_no) {
+            $condition[] = ['batchcard_batchcard.batch_no', 'like', '%' . $request->batch_no . '%'];
+        }
+        if ($request->item_code) {
+            $condition[] = ['inventory_rawmaterial.item_code', 'like', '%' . $request->item_code . '%'];
+        }
+
+        $data['items'] = $this->batchcard->get_all_batch_item_list($condition);
+        // dd($data['items']);
+        return view('pages/batchcard/batch-item-search',compact('data'));
+    }
+  public function batch_item_search_export(Request $request)
+  {
+    $condition=[];
+    if ($request->batch_no) {
+        $condition[] = ['batchcard_batchcard.batch_no', 'like', '%' . $request->batch_no . '%'];
+    }
+    if ($request->item_code) {
+        $condition[] = ['inventory_rawmaterial.item_code', 'like', '%' . $request->item_code . '%'];
+    }
+    $data['items'] = $this->batchcard->get_all_batch_item_list_export($condition);
+    return Excel::download(new BatchItemExport($data['items']), 'BatchItemData' . date('d-m-Y') . '.xlsx');
+
+  }
+   public function batch_item_more($id)
+   {
+    // $data['item'] = $this->batchcard->get_batch_item_more($id);
+    $data['item'] = $this->inventory_rawmaterial->get_batch_item_details($id);
+// dd($data['item']);
+    return view('pages/batchcard/batch-item-view',compact('data','id'));
+
+   } 
+   public function user($id)
+   {
+        $user=user::where('user_id',$id)->first();
+        return $user;
+   }
+   public function suplier($id)
+   {
+        $user=inv_supplier::where('id',$id)->first();
+        return $user;
+   }
+
+   public function batch_item_pdf($id)
+   {
+    $data['item'] = $this->inventory_rawmaterial->get_batch_item_details($id);
+   // print_r($data['item']);exit;
+    // $data['item'] = $this->batchcard->get_batch_item_more($id);
+    //   return view('pages/batchcard/batch-item-pdf',compact('data','id'));
     
+      $pdf = PDF::loadView('pages.batchcard.batch-item-pdf',compact('data'));
+
+         $pdf->setPaper('A4', 'landscape');
+         $options = new Options();
+
+          $pdf->getDomPDF()->setOptions($options);
+         // $pdf->set_paper('A4', 'landscape');
+        //  $pdf->setOptions(['isPhpEnabled' => true]);
+
+        $file_name = "batchcard" . $data['item']['batch_no'];
+
+        return $pdf->stream($file_name . '.pdf');
+
+   }
+   public function get_sup_list($id)
+   {
+        $data=inv_purchase_req_quotation_item_supp_rel::where('quotation_id',$id)
+                     ->groupBy('supplier_id')->get();
+        
+        return $data;
+   }
+   public function gst($id)
+   {
+        $gst=inventory_gst::where('id',$id)->first();
+        return $gst;
+   }
+
+   public function getDNIInfo($batch_id)
+   {
+        $dni_info = DB::table('fgs_dni_item')->select('customer_supplier.firm_name','fgs_dni.dni_number','fgs_dni_item.quantity')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','fgs_dni_item.batchcard_id')
+                        ->leftJoin('fgs_dni_item_rel','fgs_dni_item_rel.item','fgs_dni_item.id')
+                        ->leftJoin('fgs_dni','fgs_dni.id','fgs_dni_item_rel.master')
+                        ->leftjoin('customer_supplier', 'customer_supplier.id', 'fgs_dni.customer_id')
+                        ->where('fgs_dni_item.batchcard_id','=',$batch_id)
+                        ->where('fgs_dni_item.status','=',1)
+                        ->where('fgs_dni.status','=',1)
+                        ->get();
+        return $dni_info;
+   }
+   public function getCustomers($batch_id)
+   {
+        $customers = DB::table('fgs_dni_item')->select('customer_supplier.firm_name')
+                        ->leftJoin('batchcard_batchcard','batchcard_batchcard.id','fgs_dni_item.batchcard_id')
+                        ->leftJoin('fgs_dni_item_rel','fgs_dni_item_rel.item','fgs_dni_item.id')
+                        ->leftJoin('fgs_dni','fgs_dni.id','fgs_dni_item_rel.master')
+                        ->leftjoin('customer_supplier', 'customer_supplier.id', 'fgs_dni.customer_id')
+                        ->where('fgs_dni_item.batchcard_id','=',$batch_id)
+                        ->where('fgs_dni_item.status','=',1)
+                        ->where('fgs_dni.status','=',1)
+                        ->get();
+        return $customers;
+   }
 }

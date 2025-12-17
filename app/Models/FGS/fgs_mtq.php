@@ -21,8 +21,9 @@ class fgs_mtq extends Model
 
     function get_single_mtq($condition) 
     {
-        return $this->select('fgs_mtq.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1', 'stock_location.location_name as location_name2')
+        return $this->select('fgs_mtq.*','fgs_product_category.category_name','fgs_product_category_new.category_name as new_category_name','product_stock_location.location_name as location_name1', 'stock_location.location_name as location_name2')
                     ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_mtq.product_category_id')
+                    ->leftJoin('fgs_product_category_new','fgs_product_category_new.id','fgs_mtq.new_product_category')
                     ->leftJoin('product_stock_location','product_stock_location.id','fgs_mtq.stock_location_id1')
                     ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_mtq.stock_location_id2')
                     ->where($condition)
@@ -31,8 +32,9 @@ class fgs_mtq extends Model
     }
     function get_all_mtq($condition) 
     {
-        return $this->select('fgs_mtq.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1','stock_location.location_name as location_name2')
+        return $this->select('fgs_mtq.*','fgs_product_category.category_name','fgs_product_category_new.category_name as new_category_name','product_stock_location.location_name as location_name1','stock_location.location_name as location_name2')
                     ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_mtq.product_category_id')
+                    ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', 'fgs_mtq.new_product_category')
                     ->leftJoin('product_stock_location','product_stock_location.id','fgs_mtq.stock_location_id1')
                     ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_mtq.stock_location_id2')
                     ->where($condition)

@@ -28,33 +28,46 @@ class RolePermission
         if(empty($config['user']) || $config['user']['status'] != 1){
             return redirect("logout");
         }
-        $role_permission = $this->role_permission($config['user']['role_permission']);
-        // print_r($role_permission); exit;
+        //print_r($config['user']['role_permission']); exit;
+        $role_array = explode(',', $config['user']['role_permission']);
+        //print_r($role_array); exit;
+        $role_array_len = count($role_array);
+            $role_permission = $this->role_permission($config['user']['role_permission']);
+           // $role_permission = $this->role_permission($role_array[$i]);
+        
+        //print_r($role_permission); exit;
         $config['permission'] = $role_permission['permission'];
         config($config);
         return $next($request);
     }
 
-    public function role_permission($role_id)
+    public function role_permission($roles)
     {
         $role = new Role;
         $role_permission_rel = new role_permission_rel;
-        $role_data = $role->get_role($role_id);
-        if (!$role_data) 
-        {
-            return redirect("logout");
-        }
+        $role_array = explode(',', $roles);
+        //print_r($role_array); exit;
+        $role_array_len = count($role_array);
         $module = [];
         $permission = [];
-        $get_permission = $role_permission_rel->get_permissions(['role_id'=>$role_id]);
-        if(!$get_permission)
+        for($i=0;$i<$role_array_len;$i++)
         {
-            return redirect("logout");
-        }
-        foreach($get_permission as $get_permission)
-        {
-            $permission[] = $get_permission->per_name;
-            $module[$get_permission->per_module] = $get_permission->per_module;
+            $role_data = $role->get_role($role_array[$i]);
+            if (!$role_data) 
+            {
+                return redirect("logout");
+            }
+           
+            $get_permission = $role_permission_rel->get_permissions(['role_id'=>$role_array[$i]]);
+            if(!$get_permission)
+            {
+                return redirect("logout");
+            }
+            foreach($get_permission as $get_permission)
+            {
+                $permission[] = $get_permission->per_name;
+                $module[$get_permission->per_module]= $get_permission->per_module;
+            }
         }
         return ['module' => $module, 'permission' => $permission];
     }

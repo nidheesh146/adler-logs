@@ -25,11 +25,11 @@ class fgs_mrn_item extends Model
 
     function getItems($condition)
     {
-        return $this->select('fgs_mrn_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
+        return $this->select('fgs_mrn_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code',
         'batchcard_batchcard.batch_no','fgs_mrn.mrn_number','fgs_mrn.mrn_date','fgs_mrn.created_at as mrn_wef')
                         ->leftjoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
                         ->leftjoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_mrn_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                         ->where($condition)
                         ->where('fgs_mrn_item.status',1)
@@ -39,10 +39,10 @@ class fgs_mrn_item extends Model
     }
     function getMRNItems($condition)
     {
-        return $this->select('fgs_mrn_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_mrn.mrn_number')
+        return $this->select('fgs_mrn_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no','fgs_mrn.mrn_number')
                         ->leftjoin('fgs_mrn_item_rel','fgs_mrn_item_rel.item','=','fgs_mrn_item.id')
                         ->leftjoin('fgs_mrn','fgs_mrn.id','=','fgs_mrn_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_mrn_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_mrn_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                        ->where($condition)
                        ->where('fgs_mrn_item.status',1)

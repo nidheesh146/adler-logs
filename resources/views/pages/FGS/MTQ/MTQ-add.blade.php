@@ -2,27 +2,27 @@
 @section('content')
 
 <div class="az-content az-content-dashboard">
-  <br>
-	<div class="container">
-		<div class="az-content-body">
+    <br>
+    <div class="container">
+        <div class="az-content-body">
 
-            <div class="az-content-breadcrumb"> 
-                <span><a href="" style="color: #596881;">Material Transferred To Qurantine(MTQ)</a></span> 
+            <div class="az-content-breadcrumb">
+                <span><a href="" style="color: #596881;">Material Transferred To Qurantine(MTQ)</a></span>
                 <!-- <span><a href="" style="color: #596881;">MRN</a></span> -->
                 <span><a href="">
-                   
-                </a></span>
-            </div>
-	
-            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
-            Material Transferred To Qurantine(MTQ)
-            </h4>
-            <div class="az-dashboard-nav">
-           
+
+                    </a></span>
             </div>
 
-			<div class="row">
-                    
+            <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
+                Material Transferred To Qurantine(MTQ)
+            </h4>
+            <div class="az-dashboard-nav">
+
+            </div>
+
+            <div class="row">
+
                 <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
                     @if (Session::get('success'))
                     <div class="alert alert-success " style="width: 100%;">
@@ -31,33 +31,33 @@
                     </div>
                     @endif
                     @foreach ($errors->all() as $errorr)
-                    <div class="alert alert-danger "  role="alert" style="width: 100%;">
-                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                      {{ $errorr }}
+                    <div class="alert alert-danger " role="alert" style="width: 100%;">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        {{ $errorr }}
                     </div>
-                   @endforeach               
-                   
-                    <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
-                    <form method="POST" id="commentForm" autocomplete="off" >
-               
+                    @endforeach
 
-                        {{ csrf_field() }}  
+                    <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
+                    <form method="POST" id="commentForm" autocomplete="off">
+
+
+                        {{ csrf_field() }}
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
                                 <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                                    <i class="fas fa-address-card"></i> Basic details  
+                                    <i class="fas fa-address-card"></i> Basic details
                                 </label>
                                 <div class="form-devider"></div>
                             </div>
-                         </div>
+                        </div>
 
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Ref No.  *</label>
+                                <label for="exampleInputEmail1">Ref No. *</label>
                                 <input type="text" class="form-control" name="ref_no" value="" placeholder="Ref No">
-                            </div> 
+                            </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Ref Date  *</label>
+                                <label for="exampleInputEmail1">Ref Date *</label>
                                 <input type="text" class="form-control datepicker" name="ref_date" value="" placeholder="Ref Date">
                             </div>
                             <!-- <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" style="float:left;">
@@ -66,7 +66,7 @@
                                 </select>
                             </div> -->
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Product Category  *</label>
+                                <label for="exampleInputEmail1">Business Category *</label>
                                 <select class="form-control" name="product_category">
                                     <option value="">Select one...</option>
                                     @foreach($category as $cate)
@@ -75,23 +75,35 @@
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Stock Location1  *</label>
+    <label>Product Category *</label>
+    <select class="form-control" name="new_product_category">
+        <option>..select one..</option>
+        @foreach($product_category as $category)
+        <option value="{{ $category->id }}"
+            @if(!empty($mtq) && ($mtq->new_product_category == $category->id)) selected="selected" @endif>
+            {{ $category->category_name }}
+        </option>
+        @endforeach
+    </select>
+</div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label for="exampleInputEmail1">Stock Location1 *</label>
                                 <select class="form-control" name="stock_location1">
                                     <option value="">Select one...</option>
                                     @foreach($locations as $loc)
                                     @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
-                                    @endif 
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Stock Location2  *</label>
+                                <label for="exampleInputEmail1">Stock Location2 *</label>
                                 <select class="form-control" name="stock_location2">
                                     @foreach($locations as $loc)
                                     @if($loc['location_name']=='Quarantine')
                                     <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
-                                    @endif 
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -99,13 +111,16 @@
                                 <label>MTQ Date *</label>
                                 <input type="text" value="" class="form-control datepicker" name="mtq_date" placeholder="">
                             </div><!-- form-group -->
-                        </div> 
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                    <label for="exampleInputEmail1">Remarks  </label>
+                                    <textarea type="text" class="form-control" name="remarks" value="" placeholder=""></textarea>
+                                </div>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <button type="submit"  class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
-                                    role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
                                     Save & Next
-                                
+
                                 </button>
                             </div>
                         </div>
@@ -114,19 +129,19 @@
 
                 </div>
             </div>
-            
+
 
         </div>
-        
-	</div>
-	<!-- az-content-body -->
+
+    </div>
+    <!-- az-content-body -->
 </div>
 
 
 
 
 <script src="<?= url('') ?>/js/azia.js"></script>
-<script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>
+<script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js"> </script>
 <script src="<?= url('') ?>/js/jquery.validate.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
@@ -135,19 +150,19 @@
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
 
 <script>
-  $(function(){
-    'use strict'
+    $(function() {
+        'use strict'
 
-    $(".datepicker").datepicker({
-    format: " dd-mm-yyyy",
-    autoclose:true
-    });
-    $(".datepicker").datepicker('update', new Date());
+        $(".datepicker").datepicker({
+            format: " dd-mm-yyyy",
+            autoclose: true
+        });
+        $(".datepicker").datepicker('update', new Date());
 
-    $('.datepicker').mask('99-99-9999');
-              
+        $('.datepicker').mask('99-99-9999');
 
-    $("#commentForm").validate({
+
+        $("#commentForm").validate({
             rules: {
                 ref_no: {
                     required: true,
@@ -167,28 +182,26 @@
                 mtq_date: {
                     required: true,
                 }
-                
+
             },
             submitHandler: function(form) {
                 $('.spinner-button').show();
                 form.submit();
             }
         });
-  });
-//   $('.product').select2({
-//         placeholder: 'Choose one',
-//         searchInputPlaceholder: 'Search',
-//         minimumInputLength: 4,
-//         allowClear: true,
-//         ajax: {
-//             url: "{{ url('batchcard/productsearch') }}",
-//             processResults: function (data) {
-//                 return { results: data };
-//             }
-//         }
-//     });
-  
-  
+    });
+    //   $('.product').select2({
+    //         placeholder: 'Choose one',
+    //         searchInputPlaceholder: 'Search',
+    //         minimumInputLength: 4,
+    //         allowClear: true,
+    //         ajax: {
+    //             url: "{{ url('batchcard/productsearch') }}",
+    //             processResults: function (data) {
+    //                 return { results: data };
+    //             }
+    //         }
+    //     });
 </script>
 
 

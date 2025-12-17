@@ -16,16 +16,15 @@ use App\Models\FGS\transaction_type;
 use App\Models\FGS\order_fulfil;
 use App\Models\inventory_gst;
 use App\Models\FGS\fgs_product_category;
+use App\Models\FGS\fgs_product_category_new;
 use App\Models\PurchaseDetails\customer_supplier;
 use App\Models\product;
+use App\Models\fgs_item_master;
 use App\Models\FGS\product_product;
-
-
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PendingOEFExport;
 use NumberFormatter;
 use App\Exports\FGSoeftransactionExport;
-
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -35,6 +34,7 @@ class OEFController extends Controller
     {
         $this->fgs_oef = new fgs_oef;
         $this->fgs_oef_item = new fgs_oef_item;
+        $this->fgs_item_master = new fgs_item_master;
         $this->fgs_product_category = new fgs_product_category;
         $this->fgs_oef_item_rel = new fgs_oef_item_rel;
         $this->transaction_type = new transaction_type;
@@ -52,6 +52,9 @@ class OEFController extends Controller
         //echo $this->getIndianCurrency('123456.78');
         //exit;
         $condition = [];
+        if ($request->firm_name) {
+            $condition[] = ['customer_supplier.firm_name', 'like', '%' . $request->firm_name . '%'];
+        }
         if ($request->oef_number) {
             $condition[] = ['fgs_oef.oef_number', 'like', '%' . $request->oef_number . '%'];
         }
@@ -71,11 +74,13 @@ class OEFController extends Controller
             'customer_supplier.shipping_address',
             'customer_supplier.contact_person',
             'customer_supplier.contact_number',
-            'fgs_product_category.category_name'
+            'fgs_product_category.category_name',
+            'fgs_product_category_new.category_name as new_category_name'
         )
             ->leftJoin('order_fulfil', 'order_fulfil.id', '=', 'fgs_oef.order_fulfil')
             ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'fgs_oef.product_category')
+            ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', '=', 'fgs_oef.new_product_category')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
             ->where($condition)
             ->where('fgs_oef.status','=',1)
@@ -168,15 +173,34 @@ class OEFController extends Controller
             $validation['due_date'] = ['required', 'date'];
             $validation['order_fulfil'] = ['required'];
             $validation['product_category'] = ['required'];
-
+    
             $validator = Validator::make($request->all(), $validation);
             if (!$validator->errors()->all()) {
+    
+                // 🗓 Get current year combo
                 if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
                     $years_combo = date('y', strtotime('-1 year')) . date('y');
                 } else {
                     $years_combo = date('y') . date('y', strtotime('+1 year'));
                 }
-                $data['oef_number'] = "OEF-" . $this->year_combo_num_gen(DB::table('fgs_oef')->where('fgs_oef.oef_number', 'LIKE', 'OEF-' . $years_combo . '%')->count());
+    
+                // 🔍 Find latest OEF number starting with this year's combo
+                $prefix = 'OEF-' . $years_combo . '-';
+                $latestOEF = DB::table('fgs_oef')
+                    ->where('oef_number', 'LIKE', $prefix . '%')
+                    ->orderBy('oef_number', 'desc')
+                    ->value('oef_number');
+    
+                if ($latestOEF) {
+                    $lastNum = (int)substr($latestOEF, -4); // get last 4 digits
+                    $newSerial = str_pad($lastNum + 1, 4, '0', STR_PAD_LEFT);
+                } else {
+                    $newSerial = '0001';
+                }
+    
+                $data['oef_number'] = $prefix . $newSerial;
+    
+                // 📝 Assign values
                 $data['customer_id'] = $request->customer;
                 $data['oef_date'] = date('Y-m-d', strtotime($request->oef_date));
                 $data['order_number'] = $request->order_number;
@@ -185,17 +209,25 @@ class OEFController extends Controller
                 $data['order_fulfil'] = $request->order_fulfil;
                 $data['transaction_type'] = $request->transaction_type;
                 $data['product_category'] = $request->product_category;
+                $data['new_product_category'] = $request->new_product_category;
                 $data['created_by'] = config('user')['user_id'];
                 $data['status'] = 1;
                 $data['remarks'] = $request->remarks;
-                $data['created_at'] = date('Y-m-d H:i:s');
-                $data['updated_at'] = date('Y-m-d H:i:s');
+                $data['created_at'] = now();
+                $data['updated_at'] = now();
+    
+                // Optional dummy billing/shipping
+                if (in_array($request->customer, [93, 95, 96, 112])) {
+                    $data['dummy_billing_address'] = $request->billing_address;
+                    $data['dummy_shipping_address'] = $request->shipping_address;
+                }
+              //  dd($data);
                 $add = $this->fgs_oef->insert_data($data);
                 if ($add) {
-                    $request->session()->flash('success', "You have successfully added a OEF !");
+                    $request->session()->flash('success', "You have successfully added a OEF!");
                     return redirect('fgs/OEF/item-list/' . $add);
                 } else {
-                    $request->session()->flash('error', "OEF insertion is failed. Try again... !");
+                    $request->session()->flash('error', "OEF insertion failed. Try again.");
                     return redirect('fgs/OEF-add');
                 }
             } else {
@@ -205,9 +237,11 @@ class OEFController extends Controller
             $transaction_type = transaction_type::get();
             $order_fulfil = order_fulfil::get();
             $category = fgs_product_category::get();
-            return view('pages/FGS/OEF/OEF-add', compact('transaction_type', 'order_fulfil', 'category'));
+            $product_category = fgs_product_category_new::get();
+            return view('pages/FGS/OEF/OEF-add', compact('transaction_type', 'order_fulfil', 'category', 'product_category'));
         }
     }
+    
     public function check_item($id)
     {
         $oef_item = fgs_oef_item_rel::select('fgs_oef_item_rel.item')
@@ -219,26 +253,21 @@ class OEFController extends Controller
     }
     public function OEFDelete($id)
     {
-
-        // fgs_oef::where('id', $id)
-        //     ->update([
-        //         'status' => 0
-        //     ]);
-        // fgs_oef_item::leftjoin('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
-        // ->leftjoin('fgs_oef','fgs_oef.id','=','fgs_oef_item_rel.master')
-        // ->where('fgs_oef.id',$id)
-        // ->update([
-        //     'fgs_oef_item.status'=>0
-        // ]);
-        DB::table('fgs_oef_item') 
-                ->join('fgs_oef_item_rel','fgs_oef_item_rel.item','=','fgs_oef_item.id')
-                ->where('fgs_oef_item_rel.master','=',$id)
-                ->delete();
+        // Delete related items first to maintain referential integrity
+        DB::table('fgs_oef_item')
+            ->join('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
+            ->where('fgs_oef_item_rel.master', '=', $id)
+            ->delete();
+    
+        // Delete relationships
         DB::table('fgs_oef_item_rel')
-                ->where('fgs_oef_item_rel.master','=',$id)
-                ->delete();
-        fgs_oef::where('id', '=',$id)->delete();
-        session()->flash('success', "You have successfully deleted OEF !");
+            ->where('fgs_oef_item_rel.master', '=', $id)
+            ->delete();
+    
+        // Delete the main record from fgs_oef
+        fgs_oef::where('id', $id)->delete(); 
+    
+        session()->flash('success', "You have successfully deleted OEF!");
         return redirect()->back();
     }
     public function edit_oef($id)
@@ -252,18 +281,24 @@ class OEFController extends Controller
             'customer_supplier.shipping_address',
             'customer_supplier.contact_person',
             'customer_supplier.contact_number',
-            'fgs_product_category.category_name'
+            'fgs_product_category.category_name',
+            'fgs_product_category_new.category_name as new_category_name'
         )
             ->leftJoin('order_fulfil', 'order_fulfil.id', '=', 'fgs_oef.order_fulfil')
             ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'fgs_oef.product_category')
+            ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', 'fgs_oef.new_product_category')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
             ->where('fgs_oef.id',$id)
             //->distinct('fgs_oef.id')
             //->orderBy('fgs_oef.id', 'DESC')
             ->first();
             
-        return view('pages/FGS/OEF/OEF-edit',compact('oef'));
+            $category = fgs_product_category::get();
+            $product_category = fgs_product_category_new::get();
+            $transaction_type = transaction_type::get();
+            $order_fulfil = order_fulfil::get();
+            return view('pages/FGS/OEF/OEF-edit', compact('oef','category','product_category','transaction_type','order_fulfil'));
     }
     public function update_oef(Request $request)
     {
@@ -282,15 +317,22 @@ class OEFController extends Controller
         foreach($oefitem as $items)
         {
             $itemproduct=$items['product_id'];
-            // $condition[] = ['product_product._id', '=', $itemproduct];
+            // $condition[] = ['fgs_item_master._id', '=', $itemproduct];
             $data = product_product::where('id',$itemproduct)->first();
             if ($data['gst'] != '') {
-                if ($customer->state_name == 'Maharashtra') {
-                    $gst = $data['gst'] / 2;
-                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->first();
-                } else {
-                    $gst = $data['gst'];
-                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->first();
+                if( $customer->zone_name=='Export')
+                {
+                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', 0)->where('inventory_gst.cgst', '=', 0)->where('inventory_gst.igst', '=', 0)->first();
+                }
+                else
+                {
+                    if ($customer->state_name == 'Maharashtra') {
+                        $gst = $data['gst'] / 2;
+                        $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->first();
+                    } else {
+                        $gst = $data['gst'];
+                        $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->first();
+                    }
                 }
                 
                 fgs_oef_item::where('id',$items['id'])
@@ -301,6 +343,10 @@ class OEFController extends Controller
         ->update([
             'customer_id'=>$request->customer_id,
             'order_number'=>$request->order_number,
+            'product_category' => $request->product_category,
+            'new_product_category'=> $request->new_product_category,
+            'order_fulfil' => $request->order_fulfil,
+            'transaction_type' => $request->transaction_type,
             'order_date'=>date('Y-m-d', strtotime($request->order_date)),
             'oef_date'=>date('Y-m-d', strtotime($request->oef_date)),
             'due_date'=>date('Y-m-d', strtotime($request->due_date)),
@@ -311,79 +357,128 @@ class OEFController extends Controller
         
     }
     public function OEFproductsearch(Request $request, $oef_id)
-    {
-        $condition = [];
-        if (!$request->q) {
-            return response()->json(['message' => 'Product is not valid'], 500);
-        }
-        $oef = fgs_oef::find($oef_id);
-        $customer = customer_supplier::select('customer_supplier.firm_name', 'zone.zone_name', 'state.state_name')
-            ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
-            ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
-            ->where('customer_supplier.id', '=', $oef['customer_id'])->first();
-        $condition[] = ['product_product.product_category_id', '=', $oef['product_category']];
-        $data =  $this->product->get_product_info_for_oef(strtoupper($request->q), $condition);
-        foreach ($data as $dat) {
-            if ($dat['gst'] != '') {
-                if ($customer['state_name'] == 'Maharashtra') {
-                    $gst = $dat['gst'] / 2;
-                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->first();
-                } else {
-                    $gst = $dat['gst'];
-                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->first();
-                }
-                $prdct[] = array(
-                    'id' => $dat['id'],
-                    'text' => $dat['text'],
-                    'discription' => $dat['discription'],
-                    'group_name' => $dat['group_name'],
-                    'hsn_code' => $dat['hsn_code'],
-                    'sales' => $dat['sales'],
-                    'gst_id' => $gst_data['id'],
-                    'igst' => $gst_data['igst'],
-                    'sgst' => $gst_data['sgst'],
-                    'cgst' => $gst_data['cgst'],
-                );
-                // $dat['gst_id'] = $gst_data['id'];
-                // $dat['igst'] = $gst_data['igst'];
-                // $dat['sgst'] = $gst_data['sgst'];
-                // $dat['cgst'] = $gst_data['cgst'];
-            } else {
-                if ($customer['state_name'] == 'Maharashtra') {
-                    $gst = 0;
-                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->where('inventory_gst.cgst', '=', $gst)->where('inventory_gst.sgst', '=', $gst)->first();
-                } else {
-                    $gst = 0;
-                    $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->where('inventory_gst.cgst', '=', $gst)->where('inventory_gst.sgst', '=', $gst)->first();
-                }
-                $prdct[] = array(
-                    'id' => $dat['id'],
-                    'text' => $dat['text'],
-                    'discription' => $dat['discription'],
-                    'group_name' => $dat['group_name'],
-                    'hsn_code' => $dat['hsn_code'],
-                    'sales' => $dat['sales'],
-                    'gst_id' => $gst_data['id'],
-                    'igst' => $gst_data['igst'],
-                    'sgst' => $gst_data['sgst'],
-                    'cgst' => $gst_data['cgst'],
-                );
-            }
-        }
-
-        // print_r( $data);exit;
-        if (!empty($data)) {
-            return response()->json($prdct, 200);
-        } else {
-            return response()->json(['message' => 'Product is not exist'], 500);
-        }
+{
+   // dd('check');
+    $condition = [];
+    if (!$request->q) {
+        return response()->json(['message' => 'Product is not valid'], 500);
     }
 
+    // Find the OEF record
+    $oef = fgs_oef::find($oef_id);
+
+    // Fetch customer details
+    $customer = customer_supplier::select('customer_supplier.firm_name', 'zone.zone_name', 'state.state_name')
+        ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+        ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+        ->where('customer_supplier.id', '=', $oef['customer_id'])
+        ->first();
+
+    // Add product category condition
+    $condition[] = ['fgs_item_master.product_category_id', '=', $oef['product_category']];
+    
+    // Add status_type == 1 condition to fetch only active products
+    $condition[] = ['fgs_item_master.status_type', '=', 1];
+
+    // Fetch product data based on the search query and conditions
+    $data = $this->fgs_item_master->get_product_info_for_oef(strtoupper($request->q), $condition);
+//dd($data);
+    // Process each product
+    foreach ($data as $dat) {
+        if ($dat['gst'] != '') {
+            if ($customer['zone_name'] == 'Export') {
+                $gst_data = inventory_gst::select('inventory_gst.*')
+                    ->where('inventory_gst.igst', '=', 0)
+                    ->where('inventory_gst.sgst', '=', 0)
+                    ->where('inventory_gst.cgst', '=', 0)
+                    ->first();
+            } else {
+                if ($customer['state_name'] == 'Maharashtra') {
+                    $gst = $dat['gst'] / 2;
+                    $gst_data = inventory_gst::select('inventory_gst.*')
+                        ->where('inventory_gst.sgst', '=', $gst)
+                        ->first();
+                } else {
+                    $gst = $dat['gst'];
+                    $gst_data = inventory_gst::select('inventory_gst.*')
+                        ->where('inventory_gst.igst', '=', $gst)
+                        ->first();
+                }
+            }
+        } else {
+            $gst = 0;
+            $gst_data = inventory_gst::select('inventory_gst.*')
+                ->where('inventory_gst.igst', '=', $gst)
+                ->where('inventory_gst.cgst', '=', $gst)
+                ->where('inventory_gst.sgst', '=', $gst)
+                ->first();
+        }
+
+        // Fetch sales price for the product
+        $sales_price = $this->getProductSalesPrice($dat['id']);
+
+        // Prepare the product data for response
+        $prdct[] = [
+            'id' => $dat['id'],
+            'text' => $dat['text'],
+            'discription' => $dat['discription'],
+            'group_name' => $dat['group_name'],
+            'hsn_code' => $dat['hsn_code'],
+            'sales' => $sales_price,
+            'gst_id' => $gst_data['id'],
+            'igst' => $gst_data['igst'],
+            'sgst' => $gst_data['sgst'],
+            'cgst' => $gst_data['cgst'],
+        ];
+    }
+
+    // Return the response
+    if (!empty($data)) {
+        return response()->json($prdct, 200);
+    } else {
+        return response()->json(['message' => 'Product does not exist'], 500);
+    }
+}
+
+    public function getProductSalesPrice($product_id)
+    {
+        $price = DB::table('product_price_master')
+                    ->where('product_id','=',$product_id)
+                    ->where('with_effective_from','<=',date('Y-m-d'))
+                    ->where('with_effective_to','>=',date('Y-m-d'))
+                    ->first();
+        if($price)
+        {
+            return $price->sales;
+        }
+        else
+        {
+            $price1 = DB::table('product_price_master')
+                        ->where('product_id','=',$product_id)
+                        ->where('with_effective_from','<=',date('Y-m-d'))
+                        ->whereNull('with_effective_to')
+                        ->first();
+            if($price1)
+            {
+                return $price1->sales;
+            }
+            else
+            {
+                $price2 = DB::table('product_price_master')
+                        ->where('product_id','=',$product_id)
+                        ->whereNull('with_effective_from')
+                        ->whereNull('with_effective_to')
+                        ->first();
+                return $price2->sales;
+            }
+        }
+        return 0;
+    }
     public function OEFitemlist(Request $request, $oef_id)
     {
         $condition = ['fgs_oef_item_rel.master' => $request->oef_id];
         if ($request->product) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->product . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->product . '%'];
         }
         $items = $this->fgs_oef_item->getItems($condition);
         return view('pages/FGS/OEF/OEF-item-list', compact('oef_id', 'items'));
@@ -391,6 +486,8 @@ class OEFController extends Controller
 
     public function OEFitemAdd(Request $request, $oef_id)
     {
+       // dd($request);
+       // print_r($request);exit;
         if ($request->isMethod('post')) {
             $validation['moreItems.*.product'] = ['required'];
             $validation['moreItems.*.quantity'] = ['required'];
@@ -453,9 +550,9 @@ class OEFController extends Controller
     {
         $items = fgs_oef_item::select(
             'fgs_oef_item.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'fgs_oef.oef_number',
             'inventory_gst.igst',
             'inventory_gst.cgst',
@@ -464,7 +561,7 @@ class OEFController extends Controller
         )
             ->leftjoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
             ->leftjoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_oef_item.product_id')
             ->leftjoin('inventory_gst', 'inventory_gst.id', '=', 'fgs_oef_item.gst')
             ->where('fgs_oef_item.id', $id)
             ->where('fgs_oef.status', '=', 1)
@@ -480,20 +577,20 @@ class OEFController extends Controller
         // $end = date('Y-m-d', strtotime('$request->manufacturing_date1','+5 years'));
         // $expiry_date=($request->manufacturing_date1)->addYears(5);
 
-        $product = $request->product_id;
-        $batch = $request->batchcard_id;
-        //dd($batch);
-        $ps_mangaer = DB::table('fgs_product_stock_management')
-            ->where('product_id', '=', $product)
-            //->where('batchcard_id', '=', $batch)
-            ->first();
-        $ps_qty = $ps_mangaer->quantity;
-        if ($request->stock_qty1 > $ps_qty) {
-            $dif = $request->quantity1 - $ps_qty;
-            $qty = $ps_qty + $dif;
-        } else {
-            $qty = $ps_qty - $request->quantity1;
-        }
+        // $product = $request->product_id;
+        // $batch = $request->batchcard_id;
+        // //dd($batch);
+        // $ps_mangaer = DB::table('fgs_product_stock_management')
+        //     ->where('product_id', '=', $product)
+        //     //->where('batchcard_id', '=', $batch)
+        //     ->first();
+        // $ps_qty = $ps_mangaer->quantity;
+        // if ($request->stock_qty1 > $ps_qty) {
+        //     $dif = $request->quantity1 - $ps_qty;
+        //     $qty = $ps_qty + $dif;
+        // } else {
+        //     $qty = $ps_qty - $request->quantity1;
+        // }
 
         // $sterile = DB::table('product_product')
         //     ->where('id', $product)
@@ -509,21 +606,25 @@ class OEFController extends Controller
             ->where('id', $request->item_id)
             ->update([
                 'quantity' => $request->quantity1,
+                "quantity_to_allocate" => $request->quantity1,
+                "remaining_qty_after_cancel" =>  $request->quantity1,
+                'discount' => $request->discount1
+
                 // 'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date1)),
                 // 'expiry_date' => $end
             ]);
-        DB::table('fgs_product_stock_management')
-            ->where('id', $ps_mangaer->id)
-            ->update([
-                'quantity' => $qty,
-                // 'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date1)),
-                // 'expiry_date' => $end
-            ]);
+        // DB::table('fgs_product_stock_management')
+        //     ->where('id', $ps_mangaer->id)
+        //     ->update([
+        //         'quantity' => $qty,
+        //         // 'manufacturing_date' => date('Y-m-d', strtotime($request->manufacturing_date1)),
+        //         // 'expiry_date' => $end
+        //     ]);
         $items = fgs_oef_item::select(
             'fgs_oef_item.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'fgs_oef.oef_number',
             'inventory_gst.igst',
             'inventory_gst.cgst',
@@ -532,7 +633,7 @@ class OEFController extends Controller
         )
             ->leftjoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
             ->leftjoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_oef_item.product_id')
             ->leftjoin('inventory_gst', 'inventory_gst.id', '=', 'fgs_oef_item.gst')
             ->where('fgs_oef_item.id', $request->item_id)
             ->where('fgs_oef.status', '=', 1)
@@ -540,15 +641,19 @@ class OEFController extends Controller
             //->distinct('fgs_oef_item.id')
             ->first();
         $id = $request->item_id;
-
+        $request->session()->flash('success', "You have successfully Edit OEF item !");
         return view('pages/FGS/OEF/OEF-update-item', compact('items', 'id'));
     }
     public function OEFpdf($oef_id)
     {
         $data['oef'] = $this->fgs_oef->get_single_oef(['fgs_oef.id' => $oef_id]);
-        $data['items'] = $this->fgs_oef_item->getAllItems(['fgs_oef_item_rel.master' => $oef_id]);
+        $data['items'] = $this->fgs_oef_item->getAllItems_pdf(['fgs_oef_item_rel.master' => $oef_id]);
+      //  print_r($data['items']);exit;
         $pdf = PDF::loadView('pages.FGS.OEF.pdf-view', $data);
+       // print_r($pdf);exit;
         $pdf->set_paper('A4', 'landscape');
+        $pdf->setOptions(['isPhpEnabled' => true]);       
+
         $file_name = "OEF" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
         return $pdf->stream($file_name . '.pdf');
     }
@@ -568,7 +673,7 @@ class OEFController extends Controller
         }
         $oef_items = fgs_oef_item::select(
             'fgs_oef.*',
-            'product_product.*',
+            'fgs_item_master.*',
             'customer_supplier.firm_name',
             'customer_supplier.shipping_address',
             'customer_supplier.contact_person',
@@ -586,10 +691,10 @@ class OEFController extends Controller
         )
             ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
             ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
-            ->leftJoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
-            ->leftjoin('product_price_master','product_price_master.product_id','=','product_product.id')
+            ->leftJoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_oef_item.product_id')
+            ->leftjoin('product_price_master','product_price_master.product_id','=','fgs_item_master.id')
             ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
-            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_item_master.product_category_id')
             ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
             ->where('fgs_oef.status', '=', 1)
             // ->whereNotIn('fgs_oef_item.id', function ($query) {
@@ -609,6 +714,7 @@ class OEFController extends Controller
     }
     public function pendingOEFExport(Request $request)
     {
+      //  dd('s');
         if ($request) {
             return Excel::download(new PendingOEFExport($request), 'OEFBackOrderReport' . date('d-m-Y') . '.xlsx');
         } else {
@@ -619,7 +725,7 @@ class OEFController extends Controller
     public function OEFackpdf($oef_id)
     {
         $data['oef'] = $this->fgs_oef->get_single_oef(['fgs_oef.id' => $oef_id]);
-        $data['items'] = $this->fgs_oef_item->getAllItems(['fgs_oef_item_rel.master' => $oef_id]);
+        $data['items'] = $this->fgs_oef_item->getAllItems_pdf(['fgs_oef_item_rel.master' => $oef_id]);
         $pdf = PDF::loadView('pages.FGS.OEF.ack-pdf-view', $data);
         // $pdf->set_paper('A4', 'landscape');
         $file_name = "ORDER ACKNOWLEDGMENT" . $data['oef']['firm_name'] . "_" . $data['oef']['oef_date'];
@@ -687,115 +793,131 @@ class OEFController extends Controller
             return $res;
         }
     }
-    function insert_requisition_items($ExcelOBJ, $oef_id)
-    {
-        //echo $pr_id;exit;
-        $data = [];
-        foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
-            if ($key > 0 &&  $excelsheet[0]) {
-                $product = DB::table('product_product')->where('sku_code', $excelsheet[0])->first();
+ function insert_requisition_items($ExcelOBJ, $oef_id)
+{
+    $data = [];
+    $item_id = null;
 
-                $oef = fgs_oef::find($oef_id);
+    foreach ($ExcelOBJ->excelworksheet as $key => $excelsheet) {
 
+        // Get formatted SKU from column A
+        $sku = $ExcelOBJ->worksheet
+            ->getCellByColumnAndRow(1, $key + 1)
+            ->getFormattedValue();
 
-                $customer = customer_supplier::select('customer_supplier.firm_name', 'zone.zone_name', 'state.state_name')
-                    ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
-                    ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
-                    ->where('customer_supplier.id', '=', $oef['customer_id'])->first();
-
-                // $condition[] = ['product_product.product_category_id', '=', $oef['product_category']];
-                // $data =  $this->product->get_product_for_oef($product->sku_code, $condition);
-                $data = DB::table('product_product')
-                    ->select([
-                        'product_product.id', 'product_product.sku_code as text', 'product_product.discription', 'product_productgroup.group_name',
-                        'product_product.hsn_code', 'product_price_master.mrp', 'product_product.gst'
-                    ])
-                    ->leftjoin('product_productgroup', 'product_productgroup.id', '=', 'product_product.product_group_id')
-                    ->leftjoin('product_price_master', 'product_price_master.product_id', '=', 'product_product.id')
-                    ->where('product_product.id', $product->id)
-                    //->where('product_product.product_category_id',$oef['product_category'])
-                    ->first();
-                // print_r($data);exit;
-
-                if ($data->gst != '') {
-
-                    if ($customer['state_name'] == 'Maharashtra') {
-                        $gst = $data->gst / 2;
-                        $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.sgst', '=', $gst)->where('inventory_gst.cgst', '=', $gst)->first();
-                    } else {
-
-                        $gst = $data->gst;
-                        $gst_data = inventory_gst::select('inventory_gst.*')->where('inventory_gst.igst', '=', $gst)->first();
-                    }
-                } else {
-                    //echo "yes";
-                    $gst_data = inventory_gst::select('inventory_gst.*')
-                        ->where('inventory_gst.sgst', '=', 0)
-                        ->where('inventory_gst.igst', '=', 0)
-                        ->where('inventory_gst.cgst', '=', 0)
-                        ->first();
-                }
-                if ($data->mrp == null) {
-                    $rate = 0;
-                } else {
-                    $rate = $data->mrp;
-                }
-                if ($product) {
-                    $item = [
-                        'product_id' => $product->id,
-                        'quantity' => $excelsheet[1],
-                        'quantity_to_allocate' => $excelsheet[1],
-                        'remaining_qty_after_cancel' => $excelsheet[1],
-                        //'rate'=>$rate,
-                        'rate' => $excelsheet[3],
-                        'discount' => $excelsheet[2],
-                        'gst' => $gst_data->id,
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ];
-                    $item_id = DB::table('fgs_oef_item')
-                        ->insertGetId($item);
-
-                    DB::table('fgs_oef_item_rel')
-                        ->insert([
-                            'master' => $oef_id,
-                            'item' => $item_id
-                        ]);
-                }
-            }
+        // Skip header + empty rows
+        if ($key == 0 || empty($sku)) {
+            continue;
         }
-        return $item_id;
+
+        // Use formatted SKU instead of $excelsheet[0]
+        $product = DB::table('fgs_item_master')->where('sku_code', $sku)->first();
+        if (!$product) {
+            continue;
+        }
+
+        $oef = fgs_oef::find($oef_id);
+        $customer = customer_supplier::select('customer_supplier.firm_name', 'zone.zone_name', 'state.state_name')
+            ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+            ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+            ->where('customer_supplier.id', '=', $oef['customer_id'])
+            ->first();
+
+        if (!$customer) {
+            continue;
+        }
+
+        $data = DB::table('fgs_item_master')
+            ->select([
+                'fgs_item_master.id', 'fgs_item_master.sku_code as text', 'fgs_item_master.discription',
+                'product_productgroup.group_name', 'fgs_item_master.hsn_code',
+                'product_price_master.mrp', 'fgs_item_master.gst'
+            ])
+            ->leftJoin('product_productgroup', 'product_productgroup.id', '=', 'fgs_item_master.product_group_id')
+            ->leftJoin('product_price_master', 'product_price_master.product_id', '=', 'fgs_item_master.id')
+            ->where('fgs_item_master.id', $product->id)
+            ->first();
+
+        if (!$data) {
+            continue;
+        }
+
+        if ($data->gst != '') {
+            if ($customer['state_name'] === 'Maharashtra') {
+                $gst = $data->gst / 2;
+                $gst_data = inventory_gst::where('inventory_gst.sgst', $gst)
+                    ->where('inventory_gst.cgst', $gst)
+                    ->first();
+            } else {
+                $gst = $data->gst;
+                $gst_data = inventory_gst::where('inventory_gst.igst', $gst)->first();
+            }
+        } else {
+            $gst_data = inventory_gst::where('inventory_gst.sgst', 0)
+                ->where('inventory_gst.igst', 0)
+                ->where('inventory_gst.cgst', 0)
+                ->first();
+        }
+
+        if ($gst_data) {
+            $item = [
+                'product_id' => $product->id,
+                'quantity' => $excelsheet[1],
+                'quantity_to_allocate' => $excelsheet[1],
+                'remaining_qty_after_cancel' => $excelsheet[1],
+                'rate' => $excelsheet[3],
+                'discount' => $excelsheet[2],
+                'gst' => $gst_data->id,
+                'created_at' => now(),
+            ];
+
+            $item_id = DB::table('fgs_oef_item')->insertGetId($item);
+
+            DB::table('fgs_oef_item_rel')->insert([
+                'master' => $oef_id,
+                'item' => $item_id
+            ]);
+        }
     }
+
+    return $item_id ?: null;
+}
+
     public function oef_transaction(Request $request)
     {
         $condition = [];
-        if ($request->mrn_no) {
+        if ($request->oef_no) {
             $condition[] = ['fgs_oef.oef_number', 'like', '%' . $request->oef_no . '%'];
         }
 
         if ($request->item_code) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if ($request->from) {
-            $condition[] = ['fgs_oef_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_oef.oef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
         }
         $items = fgs_oef_item::select(
             'fgs_oef.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'fgs_oef.oef_number',
             'fgs_oef.oef_date',
             'fgs_oef.created_at as min_wef',
-            'fgs_oef_item.id as oef_item_id'
+            'fgs_oef_item.id as oef_item_id',
+            'fgs_oef_item.quantity'
         )
             ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
             ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_oef_item.product_id')
             // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_oef_item.batchcard_id')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
-            //->where('fgs_oef_item.status',1)
-            //->distinct('fgs_min_item.id')
+           // ->where(DB::raw("DATE_FORMAT(fgs_oef.created_at, '%Y-%m')"), '>=', $dateString)
+
+            ->where('fgs_oef.status', 1)
+            ->where('fgs_oef_item.status', 1)
+            ->distinct('fgs_oef_item.id')
             ->orderBy('fgs_oef_item.id', 'desc')
             ->paginate(15);
 
@@ -803,35 +925,65 @@ class OEFController extends Controller
     }
     public function oef_transaction_export(Request $request)
     {
+       // dd('hi');
         $condition = [];
-        if ($request->mrn_no) {
+        if ($request->oef_no) {
             $condition[] = ['fgs_oef.oef_number', 'like', '%' . $request->oef_no . '%'];
         }
 
         if ($request->item_code) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if ($request->from) {
-            $condition[] = ['fgs_oef_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_oef.oef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
         }
         $items = fgs_oef_item::select(
-            'fgs_oef.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            // 'fgs_oef.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'fgs_oef.oef_number',
             'fgs_oef.oef_date',
+            'fgs_oef.order_date',
+            'fgs_oef.order_number',
+            'fgs_oef.remarks',
+            'fgs_oef.other_charges',
             'fgs_oef.created_at as min_wef',
-            'fgs_oef_item.id as oef_item_id'
+            'fgs_oef_item.id as oef_item_id',
+            'customer_supplier.firm_name',
+            'customer_supplier.city',
+            'state.state_name',
+            'zone.zone_name',
+            'inventory_gst.igst',
+            'inventory_gst.cgst',
+            'inventory_gst.sgst',
+            'inventory_gst.id as gst_id',
+            'fgs_product_category.category_name',
+            'fgs_product_category_new.category_name as new_category_name',
+            'transaction_type.transaction_name',
+            'customer_supplier.sales_type',
+            'fgs_oef_item.rate',
+            'fgs_oef_item.quantity',
+            'fgs_oef_item.discount',
+            'product_group1.group_name as group1_name'
+        
         )
             ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.item', '=', 'fgs_oef_item.id')
             ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_oef_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_oef_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_oef_item.product_id')
+            ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
+            ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+            ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+            ->leftjoin('inventory_gst', 'inventory_gst.id', '=', 'fgs_oef_item.gst')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_oef.product_category')
+            ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', '=', 'fgs_oef.new_product_category')
+            ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
+            ->leftjoin('product_group1','product_group1.id','=','fgs_item_master.product_group1_id')
             // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_oef_item.batchcard_id')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
-            //->where('fgs_oef_item.status',1)
-            //->distinct('fgs_min_item.id')
+            ->where('fgs_oef_item.status',1)
+            ->distinct('fgs_oef_item.id')
             ->orderBy('fgs_oef_item.id', 'desc')
             ->get();
 
@@ -840,5 +992,59 @@ class OEFController extends Controller
     public function OEFdeliverychallan()
     {
         return view('pages/FGS/OEF/Delivery_Challan_pdf');
+    }
+    public function OrderAcknowledgementEmail($oef_id, Request $request)
+    {
+        $oef = $this->fgs_oef->get_single_oef(['fgs_oef.id' => $oef_id]);
+        $data['items'] = $this->fgs_oef_item->getAllItems(['fgs_oef_item_rel.master' => $oef_id]);
+    
+        // cron job
+        $mailData = new \stdClass();
+        $mailData->module = 'Order Acknowledgement';
+        $mailData->subject = "Order Acknowledgement against your order no '" . $oef['order_number'] . "' dated  " . date('d-m-Y', strtotime($oef['order_date'])) . "  (" . $oef['oef_number'] . ")";
+        
+        $supp = DB::table('customer_supplier')
+            ->select(['firm_name', 'contact_person', 'billing_address', 'shipping_address', 'email', 'contact_number', 'zm_name', 'zm_email', 'rm_name', 'rm_email',
+                'asm_email', 'zm_email', 'rm_email', 'email'])
+            ->where(['id' => $oef->customer_id])
+            ->first();
+    
+        $receipter = [];  
+        if ($supp->email != NULL)
+            $receipter[] = $supp->email;                 
+    
+        $mailData->to = $receipter;
+        $mailData->firm_name = $supp->firm_name;
+    
+        if (!empty($mailData->to) && count($mailData->to) > 0) {
+            $mailData->oef_id = $oef_id;
+            $mailData->customer_id = $oef->customer_id;
+            $mailData->url = url('order-acknowledgement/' . (new Controller)->encrypt($oef_id) . '/' . (new Controller)->encrypt($oef->customer_id));
+            
+            $job = (new \App\Jobs\OEFOrderAcknowledgementMail($mailData))
+                ->delay(now()->addSeconds(3));
+            
+            dispatch($job);
+        }
+    
+        if (isset($job)) {
+            $update = fgs_oef::where('id', $oef_id)->update(['is_mail_sent' => 1]);
+            $request->session()->flash('success', "You have successfully sent Email..");
+        } else {
+            $request->session()->flash('error', "You have failed to send Email !");
+        }
+    
+        return redirect('fgs/OEF-list');
+    }
+    
+    public function getOEFData($oef_id)
+    {
+        $oef = $this->fgs_oef->get_single_oef(['fgs_oef.id' => $oef_id]);
+        return $oef;
+    }
+    public function getOEFItemsData($oef_id)
+    {
+        $items = $this->fgs_oef_item->getAllItems_pdf(['fgs_oef_item_rel.master' => $oef_id]);
+        return $items;
     }
 }

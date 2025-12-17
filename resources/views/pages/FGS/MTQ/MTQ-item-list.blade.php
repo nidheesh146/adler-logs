@@ -120,8 +120,8 @@
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-                                <tr>
 									@foreach($items as $item)
+									<tr>
 									<td>{{$item['sku_code']}}</td>
 									<td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
@@ -129,9 +129,9 @@
 									<td>{{$item['quantity']}}</td>
 									<td>Nos</td>
                                     <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
+                                    <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}@else N A  @endif</td>
+									</tr>
 									@endforeach
-								</tr>
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">

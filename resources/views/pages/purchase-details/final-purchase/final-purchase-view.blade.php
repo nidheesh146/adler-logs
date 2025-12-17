@@ -109,8 +109,8 @@
                                 <th>{{date('d-m-Y',strtotime($data['master']['rq_date']))}}</th>
                             </tr>
                             <tr>
-                                <td>Delivery Schedule</td>
-                                <td>{{date('d-m-Y',strtotime($data['master']['delivery_schedule']))}}</td>
+                                <!-- <td>Delivery Schedule</td>
+                                <td>{{date('d-m-Y',strtotime($data['master']['delivery_schedule']))}}</td> -->
                                 <td>Created By</td>
                                 <td><?php $user = $fn->find_user($data['master']['rq_created_user']); ?>
                                     {{$user['f_name']}} {{$user['l_name']}}

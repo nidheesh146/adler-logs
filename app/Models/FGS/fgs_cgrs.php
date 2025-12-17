@@ -54,7 +54,7 @@ class fgs_cgrs extends Model
     }
     function get_single_cgrs($condition)
     {
-        return $this->select('fgs_grs.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1',
+        return $this->select('fgs_grs.*','fgs_product_category.category_name','fgs_product_category_new.category_name as new_category_name','product_stock_location.location_name as location_name1','fgs_oef.remarks as oef_remarks',
         'stock_location.location_name as location_name2','fgs_oef.oef_number','fgs_oef.oef_date','order_fulfil.order_fulfil_type','fgs_oef.order_number','fgs_oef.order_date',
         'transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
         'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person',
@@ -62,6 +62,7 @@ class fgs_cgrs extends Model
         'currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.dl_number2','customer_supplier.dl_number3','fgs_cgrs.cgrs_number','fgs_cgrs.cgrs_date')
             ->leftJoin('fgs_grs','fgs_grs.id','fgs_cgrs.grs_id')
             ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_grs.product_category')
+            ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', 'fgs_grs.new_product_category')
             ->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
             ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
             ->leftJoin('fgs_oef','fgs_oef.id','fgs_grs.oef_id')

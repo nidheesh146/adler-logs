@@ -219,7 +219,7 @@ class inv_supplier_invoice_master extends Model
                 ->leftjoin('user','user.user_id','=','inv_supplier_invoice_master.created_by')
                 ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
                 ->where($condition1)
-                //->where('')
+                ->where('inv_supplier_invoice_master.status',1)
                 ->orderBy('inv_supplier_invoice_master.id','DESC')
                 ->paginate(15);
     }

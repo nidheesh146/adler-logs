@@ -78,90 +78,73 @@
 
                     </div>
                     <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span
-                                    class="spinner-border spinner-button spinner-border-sm" style="display:none;"
-                                    role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
-                                    @if(!empty($data['miq'])) Update @else Submit @endif
-                            </button>
-                        </div>
+                    @if(!empty($data['miq']))
+    <!-- Edit Items & Confirm Submit Button -->
+    <button type="submit" class="btn btn-primary btn-rounded" id="submitBtn" style="float: right;" disabled>
+        <span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span>
+        <i class="fas fa-save"></i> Edit Items & Confirm Submit
+    </button>
+@else
+    <button type="submit" class="btn btn-primary btn-rounded" id="submitBtn" style="float: right;" disabled>
+        <span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span>
+        <i class="fas fa-save"></i> Submit
+    </button>
+@endif
                     </div>
                 </form>
                 <div class="data-bindings">
                 </div>
                 @if(!empty($data['miq']))
-                <div class="data-bindings6">
-                    <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                            <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                                Supplier Invoice ({{$data['miq']->invoice_number}})
-                                </label>
-                            <div class="form-devider"></div>
-                        </div>
-                    </div>
-                    <table class="table table-bordered mg-b-0">    
-                        <thead>
-                            <tr>
-                                <th>Invoice No</th>
-                                <th>{{$data['miq']->invoice_number}}</th>
-                                <th>Invoice Date</th>
-                                <th>{{date('d-m-Y',strtotime($data['miq']->invoice_date))}}</th>
-                            </tr>
-                            <tr>
-                                <th>Supplier</th>
-                                <th>{{$data['miq']->vendor_id}}-{{$data['miq']->vendor_name}}</th>
-                                <th>Prepared By</th>
-                                <th>{{$data['miq']->f_name}} {{$data['miq']->l_name}}</th>
-                            </tr>
-                            
-                        </thead> 
-                    </table>
-                    <br/>
-                    <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-                            <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                            Supplier Invoice items</label>
-                            <div class="form-devider"></div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered mg-b-0" id="example1">
-                            <thead>
-                                <tr>
-                                    <th>Item Code</th>
-                                    <th>Item Type</th>
-                                    <th>LOT No.</th>
-                                    <th>Quantity</th>
-                                    <th>Stock keeping Unit</th>
-                                    <th>unit Rate</th>
-                                    <th>Expiry Control</th>
-                                    <th>Expiry Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        <tbody >
-                            @if($data['miq_items'])
-                            @foreach($data['miq_items'] as $item)
-                            <tr>
-                                <th>{{$item['item_code']}}</th>
-                                <th>{{$item['type_name']}}</th>
-                                <th>{{$item['lot_number']}}</th>
-                                <th>{{$item['order_qty']}}</th>
-                                <th>{{$item['unit_name']}}</th>
-                                <th>{{$item['rate']}}</th>
-                                <th>@if($item['expiry_control']=='1') Yes 
-                                    @elseif($item['expiry_control']=='0') No 
-                                    @else {{$item['expiry_control']}}
-                                    @endif
-                                </th>
-                                <th>{{$item['expiry_date']}}</th>
-                                <th><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MIQ/'.$item['item_id'].'/item')}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	</th>
-                            </tr>
-                            @endforeach
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+                <div class="row">
+    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+        <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+        Supplier Invoice items</label>
+        <div class="form-devider"></div>
+    </div>
+</div>
+<div id="error-message" class="alert alert-warning" style="display:none;">
+    <strong>Warning!</strong> Expiry Control,Currency,Landmark Value and Expiry Date must be populated for all items.
+</div>
+<div class="table-responsive">
+    <table class="table table-bordered mg-b-0" id="example1">
+        <thead>
+            <tr>
+                <th>Item Code</th>
+                <th>Item Type</th>
+                <th>LOT No.</th>
+                <th>Quantity</th>
+                <th>Stock keeping Unit</th>
+                <th>Unit Rate</th>
+                <th>Expiry Control</th>
+                <th>Expiry Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if($data['miq_items'])
+            @foreach($data['miq_items'] as $item)
+                <tr class="item-row" data-item-id="{{$item['item_id']}}">
+                    <td>{{$item['item_code']}}</td>
+                    <td>{{$item['type_name']}}</td>
+                    <td>{{$item['lot_number']}}</td>
+                    <td>{{$item['order_qty']}}</td>
+                    <td>{{$item['unit_name']}}</td>
+                    <td>{{$item['rate']}}</td>
+                    <td>@if($item['expiry_control']=='1') Yes @elseif($item['expiry_control']=='0') No @else {{$item['expiry_control']}} @endif</td>
+                    <td>{{$item['expiry_date']}}</td>
+                    <td>
+                        <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MIQ/'.$item['item_id'].'/item')}}" class="dropdown-item">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
+            @endif
+        </tbody>
+    </table>
+</div>
+
+
             </div>
         @endif
     </div>
@@ -175,6 +158,41 @@
     <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
     <script src="<?= url('') ?>/js/jquery.validate.js"></script>
     <script src="<?= url('') ?>/js/additional-methods.js"></script>
+    <script>
+    $(document).ready(function() {
+        // Function to check if expiry fields are populated
+        function checkExpiryFields() {
+            let allFieldsPopulated = true;
+
+            $('.item-row').each(function() {
+                let expiryControl = $(this).find('td').eq(6).text().trim();
+                let expiryDate = $(this).find('td').eq(7).text().trim();
+
+                // Check if expiry control and expiry date are populated
+                if (expiryControl === '' || expiryDate === '') {
+                    allFieldsPopulated = false;
+                }
+            });
+
+            // Enable/disable the submit button based on the fields' status
+            if (allFieldsPopulated) {
+                $('#submitBtn').prop('disabled', false);
+                $('#error-message').hide();  // Hide error message if fields are populated
+            } else {
+                $('#submitBtn').prop('disabled', true);
+                $('#error-message').show();  // Show error message if fields are empty
+            }
+        }
+
+        // Check the expiry fields on page load
+        checkExpiryFields();
+
+        // Optionally, re-check when the user interacts with the form
+        // $('#submitBtn').click(function() {
+        //     checkExpiryFields();  // This can be called after changes if needed
+        // });
+    });
+</script>
     <script>
       $(function(){
         'use strict'

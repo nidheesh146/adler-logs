@@ -36,9 +36,9 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 $total_rate = $oef['quantity_to_allocate']*$oef['mrp'];
                 $discount_value = $total_rate*$oef['discount']/100;
                 $discounted_value = $total_rate-$discount_value;
-                $igst_value = $total_rate*$oef['igst']/100;
-                $sgst_value = $total_rate*$oef['sgst']/100;
-                $cgst_value = $total_rate*$oef['cgst']/100;
+                $igst_value = $discounted_value*$oef['igst']/100;
+                $sgst_value = $discounted_value*$oef['sgst']/100;
+                $cgst_value = $discounted_value*$oef['cgst']/100;
                 $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
             }
             else
@@ -48,6 +48,7 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
 
             $data[] = array(
                 '#' => $i++,
+                'Doc_name'=>'OEF',
                 'Doc_Date' => $oef_date,
                 'Doc_No' => $oef['oef_number'],
                 'Customer_Name' => $oef['firm_name'],
@@ -58,7 +59,9 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 'Order_Date' => date('d-m-Y', strtotime($oef['order_date'])),
                 'Item_Code' => $oef['sku_code'],
                 'Item_Description' => $oef['discription'],
-                'Category'=>$oef['category_name'],
+                'Business Category'=>$oef['category_name'],
+                'Product Category'=>$oef['new_category_name'],
+                'group'=>$oef['group_name'],
                 'Pending_Qty'=> $oef['quantity_to_allocate'],
                 // 'rate' => $oef['mrp'],
                 // 'discount' =>$oef['discount'],
@@ -78,9 +81,9 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 $total_rate = $grs['remaining_qty_after_cancel']*$grs['mrp'];
                 $discount_value = $total_rate*$grs['discount']/100;
                 $discounted_value = $total_rate-$discount_value;
-                $igst_value = $total_rate*$grs['igst']/100;
-                $sgst_value = $total_rate*$grs['sgst']/100;
-                $cgst_value = $total_rate*$grs['cgst']/100;
+                $igst_value = $discounted_value*$grs['igst']/100;
+                $sgst_value = $discounted_value*$grs['sgst']/100;
+                $cgst_value = $discounted_value*$grs['cgst']/100;
                 $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
             }
             else
@@ -90,6 +93,7 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
 
             $data[] = array(
                 '#' => $i++,
+                'Doc_name'=>'GRS',
                 'Doc_Date' => $grs_date,
                 'Doc_No' => $grs['grs_number'],
                 'Customer_Name' => $grs['firm_name'],
@@ -100,12 +104,14 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 'Order_Date' =>date('d-m-Y', strtotime($grs['order_date'])),
                 'Item_Code' => $grs['sku_code'],
                 'Item_Description' => $grs['discription'],
-                'Category'=>$grs['category_name'],
+                'Business Category'=>$grs['category_name'],
+                'Product Category'=>$grs['new_category_name'],
+                'group'=>$grs['group_name'],
                 'Pending_Qty' => $grs['remaining_qty_after_cancel'],
                 // 'rate' => $grs['mrp'],
                 // 'discount' =>$grs['discount'],
                 // 'gst' =>"IGST:".$grs['igst'].", SGST:".$grs['sgst'].", CGST:".$grs['cgst'],
-                'value'=>(number_format((float)($total_rate), 2, '.', '')),
+                'value'=>(number_format((float)($total_value), 2, '.', '')),
 
 
             );
@@ -121,9 +127,9 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 $total_rate = $pi['pi_qty_balance']*$pi['rate'];
                 $discount_value = $total_rate*$pi['discount']/100;
                 $discounted_value = $total_rate-$discount_value;
-                $igst_value = $total_rate*$pi['igst']/100;
-                $sgst_value = $total_rate*$pi['sgst']/100;
-                $cgst_value = $total_rate*$pi['cgst']/100;
+                $igst_value = $discounted_value*$pi['igst']/100;
+                $sgst_value = $discounted_value*$pi['sgst']/100;
+                $cgst_value = $discounted_value*$pi['cgst']/100;
                 $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
                 
             }
@@ -136,6 +142,7 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
 
             $data[] = array(
                 '#' => $i++,
+                'Doc_name'=>'PI',
                 'Doc_Date' => $pi_date,
                 'Doc_No' => $pi['pi_number'],
                 'Customer_Name' => $pi['firm_name'],
@@ -146,13 +153,15 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
                 'Order_Date' => date('d-m-Y', strtotime($pi['order_date'])),
                 'Item_Code' => $pi['sku_code'],
                 'Item_Description' => $pi['discription'],
-                'Category'=>$pi['category_name'],
+                'Business Category'=>$pi['category_name'],
+                'Product Category'=>$pi['new_category_name'],
+                'group'=>$pi['group_name'],
+
                 'Pending_Qty' => $pi['pi_qty_balance'],
                 // 'rate' => $pi['mrp'],
                 // 'discount' =>$pi['discount'],
                 // 'gst' =>"IGST:".$pi['igst'].", SGST:".$pi['sgst'].", CGST:".$pi['cgst'],
                 'pending_value'=>(number_format((float)($total_value), 2, '.', '')),
-
             );
         }
         return collect($data);
@@ -161,8 +170,7 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
     {
         return [
             '#',
-            
-
+            'Doc Name',
             'Doc Date',
             'Doc No',
             'Customer Name',
@@ -173,7 +181,9 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
             'Order Date',
             'Item Code',
             'Item Description',
-            'Category',
+            'Business Category',
+            'Product Category',
+            'Group',
             'Pending Qty',
             // 'Rate',
             // 'Discount(%)',
@@ -195,19 +205,20 @@ class BackorderExport implements FromCollection, WithHeadings, WithStyles, WithE
             AfterSheet::class    => function (AfterSheet $event) {
 
                 $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(5);
-                $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(18);
-                $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(35);
-                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(18);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(35);
+                $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(20);
                 $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(18);
-                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(18);
                 $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(30);
-                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(30);
                 $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(25);
                 // $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(12);
 
                 // $cellRange = 'F1:F20000';

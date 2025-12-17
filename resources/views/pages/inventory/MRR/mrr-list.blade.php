@@ -105,6 +105,7 @@
 						<th>@if(request()->get('order_type')=='wo') SRR  @else MRR @endif  No</th>
                         <th>@if(request()->get('order_type')!='wo') MAC No @else WOA No @endif
 						<th>Supplier</th>
+                        <th>Discount</th>
                         <th>Prepared By</th> 
                         <th>@if(request()->get('order_type')=='wo') SRR  @else MRR @endif Date</th>
                         <th>Action</th>
@@ -116,11 +117,12 @@
                         <td>{{$mrr['mrr_number']}}</td>
                         <td>{{$mrr['mac_number']}}</td>
                         <td>{{$mrr['vendor_name']}}</td>
+                        <td>{{$mrr['discount']}}</td>
                         <td>{{$mrr['f_name']}} {{$mrr['l_name']}}</td>
                         <td>{{date('d-m-Y', strtotime($mrr['mrr_date']))}} </td>
                         <td>
                             <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRR-add/'.$mrr['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
-                            <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRR-delete/'.$mrr['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                            {{--<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRR-delete/'.$mrr['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>--}}
                             @if(request()->get('order_type')=='wo') 
                             <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/receipt-report/'.$mrr['id'].'/report')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;SRR</a>
                             @else 

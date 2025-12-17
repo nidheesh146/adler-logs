@@ -50,7 +50,7 @@
             display:block;
             font-size:11px;
             height:120px;
-            border-bottom:solid 0.5px black;
+            /* border-bottom:solid 0.5px black; */
         }
         .row3, .row4{
             display:block;
@@ -63,6 +63,8 @@
         .row3 table{
             width:100%;
             font-size:10px;
+            border-collapse: collapse;
+
         }
         .row4{
             font-size:10px;
@@ -121,7 +123,7 @@
            </p>
         </div>
         <div class="col4" style="float:right;">
-            <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
+        <img src="data:img/logo.png;base64,<?php echo base64_encode(file_get_contents('img/logo.png')); ?>"style="width:80px;" />
         </div>
     </div><br/>
             
@@ -134,6 +136,7 @@
     <div class="row2">
         <div class="col21">
             <table>
+            
                 <tr>
                     <td>OEF No.</td>
                     <td>: {{$cgrs['oef_number']}} </td>
@@ -150,6 +153,10 @@
                 <tr>
                     <td>Order Date</td>
                     <td>: {{date('d-m-Y', strtotime($cgrs['order_date']))}}</td>
+                </tr>
+                <tr>
+                    <td>Stck Lctn (Decrease)</td>
+                    <td>: {{$cgrs['location_name2']}}</td> 
                 </tr>
             </table>
         </div>
@@ -171,6 +178,11 @@
                     <td>Trnsctn Type</td>
                     <td>: {{$cgrs['transaction_name']}} </td>
                 </tr>
+                <tr>
+                    <td>Stck Lctn (Increase)</td>
+                    <td>: {{$cgrs['location_name1']}}
+                    </td> 
+                </tr>
             </table>
         </div>
         <div class="col23">
@@ -184,16 +196,26 @@
                     <td>: {{date('d-m-Y', strtotime($cgrs['cgrs_date']))}}</td>
                 </tr>
                 <tr>
-                    <td> Product Category</td>
+                    <td> Business Category</td>
                     <td>:{{$cgrs['category_name']}}</td>
                 </tr>
                 <tr>
+                    <td> Product Category</td>
+                    <td>:{{$cgrs['new_category_name']}}</td>
+                </tr>
+                <!-- <tr>
                     <td>Stck Lctn (Decrease)</td>
-                    <td>: {{$cgrs['location_name1']}}</td> 
+                    <td>: {{$cgrs['location_name2']}}</td> 
                 </tr>
                 <tr>
                     <td>Stck Lctn (Increase)</td>
-                    <td>: {{$cgrs['location_name2']}}</td> 
+                    <td>: {{$cgrs['location_name1']}}
+                    </td> 
+                </tr> -->
+                <tr>
+                    <td>GRS No.</td>
+                    <td>: {{$cgrs['grs_number']}} </td>
+                   
                 </tr>
             </table>
         </div>
@@ -253,12 +275,16 @@
         </table>
     </div>
     <br/>
-    <div class="row4" style="border-bottom:solid 1px black;height:170px;">
+    <div class="row4" style="height:170px;">
         <div class="col41">
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>
+                @if($cgrs['oef_remarks'])
+                <?php echo nl2br($cgrs['oef_remarks']); ?>
+                <br/>
+                @endif
                 @if($cgrs['remarks'])
-                {{$cgrs['remarks']}}
+                <?php echo nl2br($cgrs['remarks']); ?>
                 @endif
             </div>
             
@@ -270,11 +296,35 @@
        
     </div>
    
-    <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     
-    </div>
     
      
-   
+    <script type="text/php">
+
+
+
+if (isset($pdf)) {
+    $xPage = 535; // X-axis for "Page", positioned on the right side
+    $yPage = 815; // Y-axis horizontal position
+
+    $textPage = "Page {PAGE_NUM} of {PAGE_COUNT}"; // "Page" message
+
+    $font = $fontMetrics->get_font("helvetica");
+    $size = 7;
+    $color = array(0, 0, 0);
+
+
+    $pdf->page_text($xPage, $yPage, $textPage, $font, $size, $color); // "Page" on the right
+    $pageNumber = $pdf->get_page_number();
+    // Check if it's not the first page
+    if (var_dump($pageNumber) != 1) {
+        $xDoc = 520;  // X-axis for "Doc", positioned on the left side
+        $yDoc = 15; // Y-axis horizontal position
+        $textDoc = "{{$cgrs['cgrs_number']}}"; // "Doc" message
+        $pdf->page_text($xDoc, $yDoc, $textDoc, $font, $size, $color); // "Doc" on the left
+    }
+}
+
+</script> 
 </body>
 </html>

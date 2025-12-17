@@ -98,13 +98,27 @@ class InventoryController extends Controller
        
         $data['department']= $this->Department->get_dept([]);
         $data['pr_nos'] = $this->inv_purchase_req_master->get_pr_nos();
-        // print_r(json_encode($data['master']));
-        // exit;
+        // $items = inv_purchase_req_master_item_rel::select('master','item')->where('master',2030)->get();
+        //     foreach($items as $item)
+        //     {
+        //         inv_purchase_req_item::where('requisition_item_id',$item['item'])->delete();
+        //         DB::table('inv_purchase_req_item_approve')->where('pr_item_id',$item['item'])->delete();
+        //         DB::table('inv_purchase_req_master_item_rel')->where('item',$item['item'])->delete();
+        //     }
         return view('pages/purchase-details/purchase-requisition/purchase-requisition-list', compact('data'));
        // $data['master']=$this->inv_purchase_req_master->get_inv_purchase_req_master_list();
         //return view('pages/purchase-details/purchase-requisition/purchase-requisition-list', compact('data'));
     }
-
+    public function status($id)
+    {
+        $data = inv_purchase_req_master::leftjoin('inv_purchase_req_master_item_rel', 'inv_purchase_req_master_item_rel.master', '=', 'inv_purchase_req_master.master_id')
+            ->leftjoin('inv_purchase_req_item', 'inv_purchase_req_master_item_rel.item', '=', 'inv_purchase_req_item.requisition_item_id')
+            ->leftjoin('inv_purchase_req_item_approve', 'inv_purchase_req_item_approve.pr_item_id', '=', 'inv_purchase_req_item.requisition_item_id')
+            ->where('inv_purchase_req_item_approve.status', 1)
+            ->where('inv_purchase_req_master.master_id', $id)
+            ->first();
+            return $data;
+    }
     // Purchase Reqisition Master Add
     public function add_purchase_reqisition(Request $request)
     {
@@ -118,19 +132,19 @@ class InventoryController extends Controller
 
             if(!$validator->errors()->all()){
                 $datas['requestor_id'] = $request->Requestor;
-                if(date('m')==01 || date('m')==02 || date('m')==03)
-                {
-                    $yearMonth = date('y',strtotime("-1 year")).date('m');
-                }
-                else
-                {
+                // if(date('m')==01 || date('m')==02 || date('m')==03)
+                // {
+                //     $yearMonth = date('y',strtotime("-1 year")).date('m');
+                // }
+                // else
+                // {
                     $yearMonth = date('y').date('m');
-                }
+                // }
                 if($request->prsr=="pr"){
-                $datas['pr_no'] = "PR-".$this->num_gen(DB::table('inv_purchase_req_master')->where('pr_no','LIKE', '%PR-'.$yearMonth.'%')->count());
+                $datas['pr_no'] = "PR-".$this->pr_num_gen(DB::table('inv_purchase_req_master')->where('pr_no','LIKE', '%PR-'.$yearMonth.'%')->count());
                 }
                 if($request->prsr=="sr"){
-                    $datas['pr_no'] = "SR-".$this->num_gen(DB::table('inv_purchase_req_master')->where('pr_no','LIKE', '%SR-'.$yearMonth.'%')->count());
+                    $datas['pr_no'] = "SR-".$this->pr_num_gen(DB::table('inv_purchase_req_master')->where('pr_no','LIKE', '%SR-'.$yearMonth.'%')->count());
                 }
                 $datas['department'] =  $request->Department;
                 $datas['date'] =  date('Y-m-d',strtotime($request->Date));
@@ -386,6 +400,7 @@ class InventoryController extends Controller
       {
         $id = $request->id;
         $gst = $this->inventory_gst->get_single_gst(['id'=>$id]);
+       // dd($gst);
         return $gst;
      }
   
@@ -521,6 +536,7 @@ class InventoryController extends Controller
 
     public function upload_purchase_requesition_item(Request $request)
     {
+        ini_set('max_execution_time', '259200');
         $file = $request->file('file');
         if ($file) {
             $pr_id = $request->pr_id;

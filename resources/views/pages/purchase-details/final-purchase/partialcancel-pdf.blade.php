@@ -149,6 +149,7 @@
                 <tr>
                     <td>Supplier Quotation No</td>
                     <td>: {{$final_purchase['rq_no']}}</td>
+
                 </tr>
                 <tr>
                     <td >Supplier Quotation Date</td>

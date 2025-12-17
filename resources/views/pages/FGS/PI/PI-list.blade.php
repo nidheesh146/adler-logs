@@ -93,7 +93,10 @@
 			
 			
 					<div class="tab-pane  active  show " id="purchase"> 
-					
+					<a class="badge badge-success" style="float:right;font-size: 13px; color:white;border:solid black;border-width:thin;margin-top:2px;"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a><span style="float:right;">&nbsp;&nbsp;Sent Mail : </span>
+					&nbsp;&nbsp;
+					<a class="badge badge-default" style="float:right;font-size: 13px; color:white;background:blue;border:solid black;border-width:thin;margin-top:2px;"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a><span style="float:right;">Not Sent Mail : </span>
+
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" >
 							<thead>
@@ -102,13 +105,14 @@
                                     <th>PI Date</th>
 									<th>GRS Number</th>
                                     <th>GRS Date</th>
+									<th>Busines category</th>
+									<th>Product category</th>
 									<th>OEF Number</th>
                                     <th>OEF Date</th>
 									<th>Order Number</th>
                                     <th>Order Date</th>
 									<th>Customer</th>
-									<!-- <th>Shipping Address</th>
-									<th>Billing Address</th> -->
+									<th>Merged PI Number</th>
                                     <th>Action</th>
 								</tr>
 							</thead>
@@ -126,6 +130,14 @@
 									</td>
 									<td>@foreach($grs_info as $grs)
 										{{date('d-m-Y', strtotime($grs['grs_date']))}}<br/>
+										@endforeach
+									</td>
+									<td>@foreach($grs_info as $grs)
+										{{ $grs['category_name'] }}<br/>
+										@endforeach
+									</td>
+									<td>@foreach($grs_info as $grs)
+										{{ $grs['new_category_name'] }}<br/>
 										@endforeach
 									</td>
 									<?php $oef_info = $fn->getOEFInfo($item['id']); ?>	
@@ -152,10 +164,16 @@
 										Contact Person:{{$item['contact_person']}}<br/>
 										Contact Number:{{$item['contact_number']}}<br/>
 									</td>
+									<td>{{$item['merged_pi_name']}}</td>
                                     <td>
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/PI/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a> 
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>	
-										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/payment-pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Payment</a>	
+										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/payment-pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Payment</a>
+										@if($item['is_mail_sent']==1)
+										<a class="badge badge-success" style="font-size: 13px;color:white;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/payment-mail/'.$item["id"])}}"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a>
+										@else
+										<a class="badge badge-default" style="font-size: 13px;background:blue; color:white;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/PI/payment-mail/'.$item["id"])}}"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a>
+										@endif	
 										<?php $is_exist_in_dni = $fn->piExistInDNI($item['id']);?>
 										@if($is_exist_in_dni==1)
 										<a class="badge badge-primary" style="font-size: 13px;" onclick="return confirm('Cannot edit PI . It moved to next step!');"><i class="fa fa-edit"></i> Edit</a>

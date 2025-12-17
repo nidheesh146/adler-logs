@@ -21,6 +21,12 @@
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
 		   </div>
 		   @endif
+		   @if(isset($error_message))
+    <div class="alert alert-danger" role="alert">
+        {{ $error_message }}
+    </div>
+@endif
+
 			<div class="tab-content">
 				<div class="row row-sm mg-b-20 mg-lg-b-0">
 						<div class="table-responsive" style="margin-bottom: 13px;">
@@ -115,7 +121,7 @@
 										<button data-toggle="dropdown" style="width: 64px;" class="badge @if($customer['status_type']==1) badge-success @else badge-warning @endif">@if($customer['status_type']==1)  Active @else Inactive @endif<i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 										<div class="dropdown-menu">
 											<a href="{{url('fgs/customer-supplier/add?id='.$customer["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-											<a href="{{url('fgs/customer-supplier/delete?id='.$customer["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+											{{--<a href="{{url('fgs/customer-supplier/delete?id='.$customer["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> --}}
 										</div>
 									@endif
 									</td>

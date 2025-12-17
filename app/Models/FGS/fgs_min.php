@@ -21,8 +21,9 @@ class fgs_min extends Model
 
     function get_single_min($condition) 
     {
-        return $this->select('fgs_min.*','fgs_product_category.category_name','product_stock_location.location_name as location_name1')
+        return $this->select('fgs_min.*','fgs_product_category.category_name','fgs_product_category_new.category_name as new_category_name','product_stock_location.location_name as location_name1')
         ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_min.product_category')
+        ->leftJoin('fgs_product_category_new','fgs_product_category_new.id','fgs_min.new_product_category')
             ->leftJoin('product_stock_location','product_stock_location.id','fgs_min.stock_location')
                   
                     ->where($condition)

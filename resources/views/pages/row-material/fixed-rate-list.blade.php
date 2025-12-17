@@ -13,7 +13,7 @@
                 </a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Fixed Rate Raw Materials
-			<button style="float: right;font-size: 14px;" onclick="document.location.href=''" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Fixed Rate Row Material</button>
+			<button style="float: right;font-size: 14px;" onclick="document.location.href='fixed-rate/add'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Fixed Rate Row Material</button>
             </h4>
 			
 		   @if (Session::get('success'))
@@ -71,70 +71,100 @@
 							</table>
 						</div>
 					</div>
-				<div class="tab-pane tab-pane active  show" id="purchase">
-					
-					<div class="table-responsive">
-						<table class="table table-bordered mg-b-0" id="example1">
-							<thead>
-								<tr>
-									<th>Item Code </th>
-									<th>Supplier </th>
-									<th>Rate </th>
-									<th>Rate Expiry Start Date</th>
-									<th>Rate Expiry End Date</th>
-									<th>GST</th>
-									<th>Discount</th>
-                                    <th>Delivery Within</th>
-									<th>Currency</th>
-									<th>Action</th>
-								</tr>
-							</thead>
-							<tbody >
-							@foreach($data['items'] as $item)
-                        <tr>
-                            <td>{{$item['item_code']}}</td>
-                            <td>{{$item['vendor_name']}}</td>
-                            <td>{{$item['rate']}}</td>
-                            <td>{{$item['rate_expiry_startdate'] ? date('d-m-Y',strtotime($item['rate_expiry_startdate'])) : '-'}}</td>
-                            <td>{{$item['rate_expiry_enddate'] ? date('d-m-Y',strtotime($item['rate_expiry_enddate'])) : '-'}}</td>
-                            <td>@if($item['gst']==NULL)
-                                -
-                                @else
-                                    @if($item['igst']!=0)
-                                    IGST:{{$item['igst']}}%
-                                    &nbsp;
-                                    @endif
-                                    
-                                    @if($item['sgst']!=0)
-                                    SGST:{{$item['sgst']}}%,
-                                    &nbsp;
-                                    @endif
-                                    
-                                    @if($item['sgst']!=0)
-                                    CGST:{{$item['sgst']}}%
-                                    @endif
-                                @endif
-                            </td>
-                            <td>{{($item['discount']!=NULL) ? $item['discount'] : 0}}</td>
-                            <td>{{$item['delivery_within']}} Days</td>
-							<td>{{$item['currency_code']}}</td>
-							<td>
-                                <a href="{{url('row-material/fixed-rate/edit?id='.$item["id"])}}" class="badge badge-success"><i class="fas fa-edit"></i> Edit</a> 
-							</td>
-                        </tr>
-                        @endforeach
-							</tbody>
-						</table>
-						<div class="box-footer clearfix">
-							{{ $data['items']->appends(request()->input())->links() }}
-						</div> 
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- az-content-body -->
+                    <form action="{{ route('purchase.applyChanges') }}" method="POST">
+    @csrf
+
+    <!-- Hidden field for selected checkboxes -->
+    <input type="hidden" id="selectedItems" name="selected_items[]" value="">
+
+    <!-- Activation Date -->
+    <div class="mb-3" id="date-container" style="display: none;">
+        <label for="activation_date">New Expiry Date:</label>
+        <input type="date" id="activation_date" class="form-control form-control-sm w-50" name="activation_date">
+    </div>
+
+    <!-- Apply Changes Button -->
+    <button type="submit" id="applyChangesBtn" class="btn btn-primary mt-2" style="display:none;">Apply Changes</button>
+</form>
+<button type="button" id="resetSelectionBtn" class="btn btn-warning mt-2" style="display: none;">Reset Selection</button>
+<div class="d-flex align-items-center mt-2">
+    <button type="button" id="resetSelectionBtn" class="btn btn-warning me-2" style="display: none;">
+        Reset
+    </button>
+    <p class="mb-0 text-danger" id="message-warning"><small>Click the reset button after updating the expiry dates.</small></p>
 </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered mg-b-0" id="example1">
+            <thead>
+                <tr>
+                    <th>Item Code</th>
+                    <th>Supplier</th>
+                    <th>Rate</th>
+                    <th>Rate Expiry Start Date</th>
+                    <th>Rate Expiry End Date</th>
+                    <th>GST</th>
+                    <th>Discount</th>
+                    <th>Delivery Within</th>
+                    <th>Currency</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th>Select</th> <!-- Checkbox Column -->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['items'] as $item)
+                <tr>
+                    <td>{{$item['item_code']}}</td>
+                    <td>{{$item['vendor_name']}}</td>
+                    <td>{{$item['rate']}}</td>
+                    <td>{{$item['rate_expiry_startdate'] ? date('d-m-Y',strtotime($item['rate_expiry_startdate'])) : '-'}}</td>
+                    <td>{{$item['rate_expiry_enddate'] ? date('d-m-Y',strtotime($item['rate_expiry_enddate'])) : '-'}}</td>
+                    <td>
+                        @if($item['gst']==NULL)
+                            -
+                        @else
+                            @if($item['igst']!=0) IGST:{{$item['igst']}}% &nbsp; @endif
+                            @if($item['sgst']!=0) SGST:{{$item['sgst']}}%, &nbsp; @endif
+                            @if($item['sgst']!=0) CGST:{{$item['sgst']}}% @endif
+                        @endif
+                    </td>
+                    <td>{{($item['discount']!=NULL) ? $item['discount'] : 0}}</td>
+                    <td>{{$item['delivery_within']}} Days</td>
+                    <td>{{$item['currency_code']}}</td>
+                    <td>
+                        <a href="{{url('row-material/fixed-rate/edit/'.$item['id'])}}" class="badge badge-success">
+                            <i class="fas fa-edit"></i> Edit
+                        </a> 
+                    </td>
+                    <td>
+                        @if($item['is_active']==2)
+                            <a href="{{url('row-material/fixed-rate/status/'. $item['id'] . '/1')}}" 
+                               onclick="return confirm('Are you sure you want to Activate this ?');" 
+                               class="badge badge-success">
+                                <i class="fas fa-edit"></i> Active
+                            </a> 
+                        @elseif($item['is_active']==1)
+                            <a href="{{url('row-material/fixed-rate/status/'. $item['id'] . '/2')}}" 
+                               onclick="return confirm('Are you sure you want to Deactivate this ?');" 
+                               class="badge badge-danger">
+                                <i class="fas fa-edit"></i> Deactive
+                            </a> 
+                        @endif
+                    </td>
+                    <td>
+                        <input type="checkbox" class="item-checkbox" data-id="{{$item['id']}}">
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <div class="box-footer clearfix">
+            {{ $data['items']->appends(request()->input())->links() }}
+        </div> 
+    </div>
+</div>
+
 
 
 <script src="<?= url('') ?>/lib/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -146,33 +176,101 @@
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 <script>
-  $(function(){
-    'use strict'
-	var date = new Date();
-    date.setDate(date.getDate());
-	$(".datepicker").datepicker({
-        format: "mm-yyyy",
-        viewMode: "months",
-        minViewMode: "months",
-        // startDate: date,
-        autoclose:true
+document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(".item-checkbox");
+    const dateContainer = document.getElementById("date-container");
+    const activationDate = document.getElementById("activation_date");
+    const selectedItemsInput = document.getElementById("selectedItems");
+    const applyChangesBtn = document.getElementById("applyChangesBtn");
+    const resetSelectionBtn = document.getElementById("resetSelectionBtn"); // Reset Button
+	const resetmessage=document.getElementById("message-warning");
+
+    function updateVisibility() {
+        let hasCheckedItems = document.querySelectorAll(".item-checkbox:checked").length > 0;
+		if (resetmessage) resetmessage.style.display=hasCheckedItems ? "block" : "none";
+        if (dateContainer) dateContainer.style.display = hasCheckedItems ? "block" : "none";
+        if (applyChangesBtn) applyChangesBtn.style.display = hasCheckedItems ? "block" : "none";
+        if (resetSelectionBtn) resetSelectionBtn.style.display = hasCheckedItems ? "inline-block" : "none"; // Show/Hide Reset Button
+    }
+
+    function loadStoredValues() {
+        let storedSelectedItems = JSON.parse(sessionStorage.getItem("selectedItems") || "[]");
+        let savedDate = sessionStorage.getItem("activation_date");
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = storedSelectedItems.includes(checkbox.dataset.id);
+        });
+
+        if (activationDate && savedDate) {
+            activationDate.value = savedDate;
+        }
+
+        if (selectedItemsInput) {
+            selectedItemsInput.value = storedSelectedItems.join(",");
+        }
+
+        updateVisibility();
+    }
+
+    function saveToStorage() {
+        let storedSelectedItems = JSON.parse(sessionStorage.getItem("selectedItems") || "[]");
+        let selectedIds = Array.from(document.querySelectorAll(".item-checkbox:checked")).map(cb => cb.dataset.id);
+        
+        let mergedSelectedItems = [...new Set([...storedSelectedItems, ...selectedIds])];
+
+        sessionStorage.setItem("selectedItems", JSON.stringify(mergedSelectedItems));
+
+        if (activationDate) {
+            sessionStorage.setItem("activation_date", activationDate.value);
+        }
+
+        updateVisibility(); // Ensure visibility updates
+    }
+
+    document.addEventListener("change", function (event) {
+        if (event.target.classList.contains("item-checkbox")) {
+            saveToStorage();
+        }
     });
 
-    //$('#prbody').show();
-  });
-  
-	$('.search-btn').on( "click", function(e)  {
-		//var supplier = $('#supplier').val();
-		var rq_no = $('#rq_no').val();
-		var po_no = $('#po_no').val();
-		var from = $('#from').val();
-		if(!rq_no & !po_no & !from)
-		{
-			e.preventDefault();
-		}
-	});
+    if (activationDate) {
+        activationDate.addEventListener("input", function () {
+            sessionStorage.setItem("activation_date", activationDate.value);
+        });
+    }
+
+    if (applyChangesBtn) {
+        applyChangesBtn.addEventListener("click", function () {
+            let storedSelectedItems = JSON.parse(sessionStorage.getItem("selectedItems") || "[]");
+            if (selectedItemsInput) {
+                selectedItemsInput.value = storedSelectedItems.join(",");
+            }
+        });
+    }
+
+    if (resetSelectionBtn) {
+        resetSelectionBtn.addEventListener("click", function () {
+            checkboxes.forEach(checkbox => (checkbox.checked = false));
+            sessionStorage.removeItem("selectedItems");
+            sessionStorage.removeItem("activation_date");
+
+            if (selectedItemsInput) selectedItemsInput.value = "";
+            if (activationDate) activationDate.value = "";
+
+            updateVisibility();
+        });
+    }
+
+    document.addEventListener("ajaxComplete", function () {
+        setTimeout(loadStoredValues, 100);
+    });
+
+    loadStoredValues();
+});
+
 
 </script>
+
 
 
 @stop

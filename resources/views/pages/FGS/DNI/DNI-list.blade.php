@@ -59,17 +59,14 @@ $obj_oef= new DNIController;
 										<th scope="row">
 											<div class="row filter_search" style="margin-left: 0px;">
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
-
+												<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+														<label for="exampleInputEmail1" style="font-size: 12px;">Customer</label>
+														<input type="text" value="{{request()->get('customer')}}" name="customer" id="customer" class="form-control" placeholder="CUSTOMER">
+													</div>
 													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
 														<label>DNI No :</label>
 														<input type="text" value="{{request()->get('dni_number')}}" name="dni_number" id="dni_number" class="form-control" placeholder="DNI NO">
 													</div><!-- form-group -->
-
-
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label for="exampleInputEmail1" style="font-size: 12px;">Customer</label>
-														<input type="text" value="{{request()->get('customer')}}" name="customer" id="customer" class="form-control" placeholder="CUSTOMER">
-													</div>
 
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label style="font-size: 12px;">DNI Month</label>

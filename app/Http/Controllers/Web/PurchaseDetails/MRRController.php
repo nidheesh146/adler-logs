@@ -77,9 +77,12 @@ class MRRController extends Controller
             $condition[] = ['inv_supplier_invoice_master.type','=', 'PO'];
             $data = $this->inv_mrr->get_all_data($condition);
         }
-        $mrr = inv_mrr::select('inv_mac.invoice_id','inv_mrr.id')
-                        ->leftJoin('inv_mac','inv_mac.id','=','inv_mrr.mac_id')
+        /*$mrr = inv_mrr::select('inv_mac.invoice_id','inv_mrr.id')
+                        //->leftJoin('inv_mac','inv_mac.id','=','inv_mrr.mac_id')
                         ->get();
+        // $mrr = inv_mrr::select('inv_mac.invoice_id','inv_mrr.id')
+        //                 ->leftJoin('inv_mac','inv_mac.id','=','inv_mrr.mac_id')
+        //                 ->get();
         foreach($mrr as $mr)
         {
             
@@ -93,10 +96,11 @@ class MRRController extends Controller
         {
             //$mrd_id= inv_mrd::where('invoice_id','=',$mr['invoice_id'])->pluck('id')->first();
             $item = inv_mrr_item::where('id','=',$mr_item['id'])->update(['invoice_item_id'=>$mr_item['invoice_item_id']]);
-        }
+        }*/
         
         return view('pages.inventory.MRR.mrr-list',compact('data'));
     }
+   
     public function addMRR(Request $request,$id=Null)
     {
         if($request->isMethod('post'))
@@ -107,6 +111,15 @@ class MRRController extends Controller
             $validator = Validator::make($request->all(), $validation);
             if(!$validator->errors()->all())
             {
+                $invoice_exists_in_mac = inv_mac::where('invoice_id', $request->invoice_number)->exists();
+                $invoice_exists_in_mrd = inv_mrd::where('invoice_id', $request->invoice_number)->exists();
+    
+                if (!$invoice_exists_in_mac && !$invoice_exists_in_mrd) {
+                    // If invoice does not exist in either table, return with error
+                    return redirect('inventory/MRR-add')
+                        ->withErrors(['invoice_number' => 'Invoice number must exist in either MAC or MRD.'])
+                        ->withInput();
+                }
                 if(!$request->id)
                 {
                     if(date('m')==01 || date('m')==02 || date('m')==03)
@@ -122,20 +135,20 @@ class MRRController extends Controller
                     if($request->order_type=='po')
                     {
                         if($item_type=="Direct Items"){
-                            $Data['mrr_number'] = "MRR2-".$this->year_combo_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR2-'.$years_combo.'%')->count()); 
+                            $Data['mrr_number'] = "MRR2-".$this->year_combo_num_gen_inv(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR2-'.$years_combo.'%')->count()); 
                         }
                         //if($item_type=="Indirect Items"){
                         else{
-                            $Data['mrr_number'] = "MRR3-" . $this->year_combo_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR3-'.$years_combo.'%')->count()); 
+                            $Data['mrr_number'] = "MRR3-" . $this->year_combo_num_gen_inv(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'MRR3-'.$years_combo.'%')->count()); 
                         }
                     }
                     else
                     {
                         if($item_type=="Direct Items"){
-                            $Data['mrr_number'] = "SRR2-".$this->year_combo_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'SRR2-'.$years_combo.'%')->count()); 
+                            $Data['mrr_number'] = "SRR2-".$this->year_combo_num_gen_inv(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'SRR2-'.$years_combo.'%')->count()); 
                         }
                        else{
-                            $Data['mrr_number'] = "SRR3-" . $this->year_combo_num_gen(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'SRR3-'.$years_combo.'%')->count()); 
+                            $Data['mrr_number'] = "SRR3-" . $this->year_combo_num_gen_inv(DB::table('inv_mrr')->where('inv_mrr.mrr_number', 'LIKE', 'SRR3-'.$years_combo.'%')->count()); 
                         }
                     }
                     // $miq_number = inv_mac::leftJoin('inv_miq','inv_miq.id','=','inv_mac.miq_id')
@@ -233,6 +246,8 @@ class MRRController extends Controller
         else
         return view('pages.inventory.MRR.MRR-add',compact('data'));
     }
+   
+
     public function get_item_type($invoice_number)
     {
         $item_type = inv_supplier_invoice_rel::leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
@@ -409,20 +424,28 @@ class MRRController extends Controller
         $data['mrr'] = $this->inv_mrr->find_mrr_data(['inv_mrr.id' => $id]);
         //print_r($data['mrr']);exit;
         $data['items'] = $this->inv_mrr_item->get_items(['inv_mrr_item_rel.master' => $id]);
-        // print_r(json_encode($data['items']));exit;
+        //dd($data['order_qty']);
+    //print_r(json_encode($data['items']));exit;
         $pdf = PDF::loadView('pages.inventory.MRR.pdf-view', $data);
         $pdf->set_paper('A4', 'landscape');
         $file_name = "MRR" . $data['mrr']['vendor_name'] . "_" . $data['mrr']['mrr_date'];
         return $pdf->stream($file_name . '.pdf');
     }
 
+
     public function getPO_for_merged_si_item($supplier_invoice_item_id)
     {
-        $po_nos = inv_supplier_invoice_item::leftJoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
-                    ->leftJoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_supplier_invoice_item.po_item_id')
-                    ->where('inv_supplier_invoice_item.merged_invoice_item','=',$supplier_invoice_item_id)
-                    ->select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_item.order_qty','inv_final_purchase_order_item.cancelled_qty')
-                    ->get();
+        $po_nos = inv_supplier_invoice_item::leftJoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id', '=', 'inv_supplier_invoice_item.po_master_id')
+            ->leftJoin('inv_final_purchase_order_item', 'inv_final_purchase_order_item.id', '=', 'inv_supplier_invoice_item.po_item_id')
+            ->where('inv_supplier_invoice_item.merged_invoice_item', '=', $supplier_invoice_item_id)
+            ->select(
+                'inv_final_purchase_order_master.po_number',
+                'inv_final_purchase_order_master.po_date',
+                'inv_final_purchase_order_item.order_qty',
+                'inv_final_purchase_order_item.cancelled_qty'
+            )
+            ->get();
+            
         return $po_nos;
     }
     
@@ -480,102 +503,106 @@ class MRRController extends Controller
     public function invoice_details($id, $active = null)
     {
         $invoice = $this->inv_supplier_invoice_master->get_master_data_mrr(['inv_supplier_invoice_master.id' => $id]);
-        //return $invoice;
         $invoice_item = $this->inv_supplier_invoice_item->get_supplier_invoice_item(['inv_supplier_invoice_rel.master' => $id]);
-        
-
+    
+        // Check if both MAC/WOA Number and MRD/WOR Number are empty
+        if (empty($invoice->mac_number) && empty($invoice->mrd_number)) {
+            // Display an alert if both are empty
+            return '<div class="alert alert-danger" role="alert">
+                        Error: Both MAC/WOA Number and MRD/WOR Number are missing!
+                    </div>';
+        }
+    
         $data = '<div class="row">
-           <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-               <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
-                Supplier Invoice (' . $invoice->invoice_number . ')
-                   </label>
-               <div class="form-devider"></div>
-           </div>
-           </div>
-           <table class="table table-bordered mg-b-0">
-                <thead>
-            
-                </thead>
-                <tbody>
-                    <tr>
-                        <th>Invoice Date</th>
-                        <td>' . date('d-m-Y', strtotime($invoice->invoice_date)) . '</td>
-                    </tr>
-                    <tr>
-                            <th>Created Date</th>
-                            <td>' . date('d-m-Y', strtotime($invoice->invoice_created)) . '</td>
-                    </tr>
-                    <tr>
-                        <th>Supplier ID</th>
-                        <td>'.$invoice->vendor_id.'</td>
-                        
-                    </tr>
-                    <tr>
-                        <th>Supplier Name</th>
-                        <td>'.$invoice->vendor_name.'</td>
-                    </tr>
-                    <tr>
-                        <th>MAC/WOA Number</th>
-                        <td>'.$invoice->mac_number.'</td>
-                    </tr>
-                    <tr>
-                        <th>MRD/WOR Number</th>
-                        <td>'.$invoice->mrd_number.'</td>
-                    </tr>
-                </tbody>
-           </table>
-           <br>
-           <div class="row">
-           <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
-               <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">';
-       
-            $data .= 'Invoice Items ';
-            $data .= '</label>
-               <div class="form-devider"></div>
-                </div>
-                </div>
-                <div class="table-responsive">
-                <table class="table table-bordered mg-b-0" id="example1">';
-
-        
-            $data .= '<thead>
-                   <tr>
-                   <th>PR No</th>
-                   <th>Item Code:</th>
-                   <th>Lot No</th>
-                   <th>Invoice Qty</th>
-                   <th>Rate</th>
-                   <th>Discount </th>
-                   <th>GST </th>
-                   <th>Accepted Qty</th>
-                   <th>Rejected Qty</th>
-                   </tr>
-               </thead>
-               <tbody >';
-            foreach ($invoice_item as $item) {
-                $data .= '<tr>
-                        <td>'.$item->pr_no.'</td>
-                       <td>'.$item->item_code.'</td>
-                       <td>'.$item->lot_number.'</td>
-                       <td>'.$item->order_qty. $item->unit_name.'</td>
-                       <td>'.$item->rate.'</td>
-                       <td>'.$item->discount.'</td>
-                       <td>IGST:'.$item->igst.'% ,
-                            SGST:'.$item->sgst.'%,
-                            CGST:'.$item->cgst.'%<br/>
-                       </td>
-                       <td>'.$item->accepted_quantity. $item->unit_name.'</td>
-                       <td>'.$item->rejected_quantity. $item->unit_name.'</td>
-                       
-                   </tr>';
-            }
-            $data .= '</tbody>';
-        
-
+               <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                   <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
+                    Supplier Invoice (' . $invoice->invoice_number . ')
+                       </label>
+                   <div class="form-devider"></div>
+               </div>
+               </div>
+               <table class="table table-bordered mg-b-0">
+                    <thead>
+                
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Invoice Date</th>
+                            <td>' . date('d-m-Y', strtotime($invoice->invoice_date)) . '</td>
+                        </tr>
+                        <tr>
+                                <th>Created Date</th>
+                                <td>' . date('d-m-Y', strtotime($invoice->invoice_created)) . '</td>
+                        </tr>
+                        <tr>
+                            <th>Supplier ID</th>
+                            <td>'.$invoice->vendor_id.'</td>
+                        </tr>
+                        <tr>
+                            <th>Supplier Name</th>
+                            <td>'.$invoice->vendor_name.'</td>
+                        </tr>
+                        <tr>
+                            <th>MAC/WOA Number</th>
+                            <td id="macNumber">'.$invoice->mac_number.'</td>
+                        </tr>
+                        <tr>
+                            <th>MRD/WOR Number</th>
+                            <td id="mrdNumber">'.$invoice->mrd_number.'</td>
+                        </tr>
+                    </tbody>
+               </table>
+               <br>
+               <div class="row">
+               <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 0px;">
+                   <label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">';
+    
+        $data .= 'Invoice Items ';
+        $data .= '</label>
+                   <div class="form-devider"></div>
+                    </div>
+                    </div>
+                    <div class="table-responsive">
+                    <table class="table table-bordered mg-b-0" id="example1">';
+    
+        $data .= '<thead>
+                       <tr>
+                       <th>PR No</th>
+                       <th>Item Code:</th>
+                       <th>Lot No</th>
+                       <th>Invoice Qty</th>
+                       <th>Rate</th>
+                       <th>Discount </th>
+                       <th>GST </th>
+                       <th>Accepted Qty</th>
+                       <th>Rejected Qty</th>
+                       </tr>
+                   </thead>
+                   <tbody >';
+    
+        foreach ($invoice_item as $item) {
+            $data .= '<tr>
+                            <td>'.$item->pr_no.'</td>
+                           <td>'.$item->item_code.'</td>
+                           <td>'.$item->lot_number.'</td>
+                           <td>'.$item->order_qty. $item->unit_name.'</td>
+                           <td>'.$item->rate.'</td>
+                           <td>'.$item->discount.'</td>
+                           <td>IGST:'.$item->igst.'% ,
+                                SGST:'.$item->sgst.'%,
+                                CGST:'.$item->cgst.'%<br/>
+                           </td>
+                           <td>'.$item->accepted_quantity. $item->unit_name.'</td>
+                           <td>'.$item->rejected_quantity. $item->unit_name.'</td>
+                       </tr>';
+        }
+        $data .= '</tbody>';
+    
         $data .= '</table>
-       </div>';
+           </div>';
         return $data;
     }
+    
     public function MRRExport(Request $request)
     {
         if($request)

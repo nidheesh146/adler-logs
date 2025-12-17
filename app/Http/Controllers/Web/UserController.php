@@ -33,7 +33,6 @@ class UserController extends Controller
                 'password' => $this->encrypt($request->password),
             ];
             $user_data = $this->User->login($data);
-            print_r($user_data);
             if (!empty($user_data->user_id)) {
                 if ($user_data->status == 1) {
                     session(['user.id' => $user_data->user_id]);

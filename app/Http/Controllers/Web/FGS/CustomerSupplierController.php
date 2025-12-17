@@ -42,137 +42,121 @@ class CustomerSupplierController extends Controller
         }
         $states = $this->state->get_states([]);
         $customers = $this->customer_supplier->get_all($condition);
-        return view('pages/FGS/customer-supplier/customer-list',compact('customers','states'));
+        //print_r('hello');exit;
+        $error_message = null;
+    if ($request->all() && $customers->isEmpty()) {
+        $error_message = "No records found for the given search criteria.";
+    }
+        return view('pages/FGS/customer-supplier/customer-list',compact('customers','states','error_message'));
     }
 
-        public function addCustomerSupplier(Request $request,$id=null)
-        {
+    public function addCustomerSupplier(Request $request, $id = null)
+    {
+        $datas = [];
+        if ($request->isMethod('post')) {
+            // Define validation rules
+            $validation['firm_name'] = ['required'];
+            $validation['contact_person'] = ['required'];
+            $validation['contact_number'] = ['required'];
+            $validation['billing_address'] = ['required'];
+            $validation['shipping_address'] = ['required'];
+            $validation['sales_type'] = ['required'];
+            $validation['pan_number'] = ['required'];
+            $validation['status_type'] = ['required'];
+    
+            $validator = Validator::make($request->all(), $validation);
+            if (!$validator->errors()->all()) {
+                // Prepare data for insertion/update
+                $data['firm_name'] = $request->firm_name;
+                $data['contact_person'] = $request->contact_person;
+                $data['designation'] = $request->designation;
+                $data['contact_number'] = $request->contact_number;
+                $data['email'] = $request->email;
+                $data['billing_address'] = $request->billing_address;
+                $data['shipping_address'] = $request->shipping_address;
+                $data['city'] = $request->city;
+                $data['state'] = $request->state;
+                $data['zone'] = $request->zone;
+                $data['country'] = $request->country;
+                $data['pan_number'] = $request->pan_number;
+                $data['gst_number'] = $request->gst_number;
+                $data['dl_number1'] = $request->dl_number1;
+                $data['dl_number2'] = $request->dl_number2;
+                $data['dl_number3'] = $request->dl_number3;
+                $data['currency'] = $request->currency;
+                $data['payment_terms'] = $request->payment_terms;
+                $data['sales_type'] = $request->sales_type;
+                $data['me_name'] = $request->me_name;
+                $data['me_email'] = $request->me_email;
+                $data['asm_name'] = $request->asm_name;
+                $data['asm_email'] = $request->asm_email;
+                $data['zm_name'] = $request->zm_name;
+                $data['zm_email'] = $request->zm_email;
+                $data['rm_name'] = $request->rm_name;
+                $data['rm_email'] = $request->rm_email;
+                $data['whatsapp_number'] = $request->whatsapp_number;
+                $data['status_type'] = $request->status_type;
+                $data['master_type'] = $request->master_type;
+    
+                // Handle dl_expiry_date
+                // Handle dl_expiry_date
+if (empty($request->dl_expiry_date) || $request->dl_expiry_date == '0000-00-00' || 
+strtoupper($request->dl_expiry_date) == 'NA' || strtoupper($request->dl_expiry_date) == 'N.A') {
+$data['dl_expiry_date'] = null; // Set to NULL if any of the invalid or 'N.A' values are entered
+} else {
+$data['dl_expiry_date'] = date('Y-m-d', strtotime($request->dl_expiry_date));
+}
 
-            $datas = [];
-            if ($request->isMethod('post'))
-            {
-                $validation['firm_name'] = ['required'];
-                $validation['contact_person'] = ['required'];
-                $validation['contact_person'] = ['required'];
-                $validation['contact_number'] = ['required'];
-                $validation['billing_address'] = ['required'];
-                $validation['shipping_address'] = ['required'];
-                $validation['sales_type'] = ['required'];
-                $validation['pan_number'] = ['required'];
-                $validation['status_type'] = ['required'];
-                $validator = Validator::make($request->all(), $validation);
-                if(!$validator->errors()->all()) 
-                { 
-                    $data['firm_name'] = $request->firm_name;
-                    $data['contact_person'] = $request->contact_person;
-                    $data['designation'] = $request->designation;
-                    $data['contact_number'] = $request->contact_number;
-                    $data['email'] = $request->email;
-                    $data['billing_address'] = $request->billing_address;
-                    $data['shipping_address'] = $request->shipping_address;
-                    $data['city'] = $request->city;
-                    $data['state'] = $request->state;
-                    $data['zone'] = $request->zone;
-                    $data['country'] = $request->country;
-                    $data['pan_number'] = $request->pan_number;
-                    $data['gst_number'] = $request->gst_number;
-                    $data['dl_number1'] = $request->dl_number1;
-                    $data['dl_number2'] = $request->dl_number2;
-                    $data['dl_number3'] = $request->dl_number3;
-                    $data['currency'] = $request->currency;
-                    $data['payment_terms'] = $request->payment_terms;
-                    $data['sales_type'] = $request->sales_type;
-                    $data['sales_person_name'] = $request->sales_person_name;
-                    $data['sales_person_email'] = $request->sales_person_email;
-                    $data['whatsapp_number'] = $request->whatsapp_number;
-                    $data['status_type'] = $request->status_type;
-                    $data['master_type'] = $request->master_type;
-                    $data['dl_expiry_date'] =date('Y-m-d',strtotime($request->dl_expiry_date));
-
-                    if($request->id)
-                    { 
-                         
+    
+                // Update existing customer/supplier
+                if ($request->id) {
                     $data['updated_at'] = date('Y-m-d H:i:s');
-                        $this->customer_supplier->update_data(['id'=>$request->id],$data);
-
-                        $request->session()->flash('success',"You have successfully updated a customer !");
-                        return redirect("fgs/customer-supplier");
-                    
-                    }
-                    else
-                    {
-                       
-                    $data['firm_name'] = $request->firm_name;
-                    $data['contact_person'] = $request->contact_person;
-                    $data['designation'] = $request->designation;
-                    $data['contact_number'] = $request->contact_number;
-                    $data['email'] = $request->email;
-                    $data['billing_address'] = $request->billing_address;
-                    $data['shipping_address'] = $request->shipping_address;
-                    $data['city'] = $request->city;
-                    $data['state'] = $request->state;
-                    $data['zone'] = $request->zone;
-                    $data['pan_number'] = $request->pan_number;
-                    $data['gst_number'] = $request->gst_number;
-                    $data['dl_number1'] = $request->dl_number1;
-                    $data['dl_number2'] = $request->dl_number2;
-                    $data['dl_number3'] = $request->dl_number3;
-                    $data['currency'] = $request->currency;
-                    $data['payment_terms'] = nl2br($request->payment_terms);
-                    $data['sales_type'] = $request->sales_type;
-                    $data['sales_person_name'] = $request->sales_person_name;
-                    $data['sales_person_email'] = $request->sales_person_email;
-                    $data['whatsapp_number'] = $request->whatsapp_number;
-                    $data['dl_expiry_date'] =date('Y-m-d',strtotime($request->dl_expiry_date));
-                    $data['status_type'] = $request->status_type;
-                    $data['master_type'] = $request->master_type;
-
-                        $data['created_by'] = config('user')['user_id'];
-                        $data['created_at'] = date('Y-m-d H:i:s');
-                        $data['updated_at'] = date('Y-m-d H:i:s');
-                        $this->customer_supplier->insert_data($data);
-                        $request->session()->flash('success',"You have successfully added a customer !");
-                        return redirect("fgs/customer-supplier");
-                    
+                    $this->customer_supplier->update_data(['id' => $request->id], $data);
+                    $request->session()->flash('success', "You have successfully updated a customer !");
+                    return redirect("fgs/customer-supplier");
+                } else {
+                    // Insert new customer/supplier
+                    $data['created_by'] = config('user')['user_id'];
+                    $data['created_at'] = date('Y-m-d H:i:s');
+                    $data['updated_at'] = date('Y-m-d H:i:s');
+                    $this->customer_supplier->insert_data($data);
+                    $request->session()->flash('success', "You have successfully added a customer !");
+                    return redirect("fgs/customer-supplier");
                 }
             }
-                if($validator->errors()->all()) 
-                { 
-                    if($request->id)
-                    return redirect("fgs/customer-supplier/add/".$id)->withErrors($validator)->withInput();
-                    else
-                    return redirect("fgs/customer-supplier/add")->withErrors($validator)->withInput();
+    
+            // Handle validation errors
+            if ($validator->errors()->all()) {
+                return $request->id ?
+                    redirect("fgs/customer-supplier/add/" . $id)->withErrors($validator)->withInput() :
+                    redirect("fgs/customer-supplier/add")->withErrors($validator)->withInput();
+            }
+        } else {
+            // Get data for editing existing record
+            if ($request->id) {
+                $datas = $this->customer_supplier->get_single_customer_supplier(['customer_supplier.id' => $request->id]);
+    
+                // Format dl_expiry_date to 'N.A' if it's '0000-00-00'
+                if ($datas && $datas->dl_expiry_date === '0000-00-00') {
+                    $datas->dl_expiry_date = 'N.A';
                 }
+    
+                $currency = $this->currency_exchange_rate->get_currency([]);
+                $states = $this->state->get_states([]);
+                $zones = $this->zone->get_zones([]);
+    
+                return view('pages/FGS/customer-supplier/customer-add', compact('datas', 'id', 'currency', 'states', 'zones'));
+            } else {
+                // Display the form for a new record
+                $currency = $this->currency_exchange_rate->get_currency([]);
+                $states = $this->state->get_states([]);
+                $zones = $this->zone->get_zones([]);
+    
+                return view('pages/FGS/customer-supplier/customer-add', compact('currency', 'states', 'zones', 'datas'));
             }
-            else
-            {
-            if($request->id)
-            {
-                $datas = $this->customer_supplier->get_single_customer_supplier(['customer_supplier.id'=>$request->id]);
-                 
-                  $currency =  $this->currency_exchange_rate->get_currency([]);
-            $states = $this->state->get_states([]);
-           
-            $zones = $this->zone->get_zones([]);
-
-                 return view('pages/FGS/customer-supplier/customer-add',compact('datas','id','currency','states','zones'));
-                  
-            
-            }
-         
-            else
-            {
-                $datas = [];
-                 $currency =  $this->currency_exchange_rate->get_currency([]);
-            $states = $this->state->get_states([]);
-
-            $zones = $this->zone->get_zones([]);
-
-             return view('pages/FGS/customer-supplier/customer-add',compact('currency','states','zones','datas'));
-            }
+        }
     }
-    }
-
+    
     
     public function customersearch(Request $request)
     {
@@ -210,18 +194,15 @@ class CustomerSupplierController extends Controller
             return response()->json(['message'=>'Customer is not valid'], 500); 
         }
     }
-     public function CustomerSupplierExport(Request $request)
+     
+    public function CustomerSupplierExport(Request $request)
     {
-        if($request)
-        {
+        if ($request) {
             return Excel::download(new CustomerSupplierExport($request), 'CustomerSupplier' . date('d-m-Y') . '.xlsx');
-        }
-        else
-        {
-            $request =null;
+        } else {
+            $request = null;
             return Excel::download(new CustomerSupplierExport($request), 'CustomerSupplier' . date('d-m-Y') . '.xlsx');
         }
     }
-
     
 }

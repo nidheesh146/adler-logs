@@ -14,12 +14,18 @@
         <div class="row ">
             <div class="col-lg-12 col-xl-12 mg-t-20 mg-lg-t-0">
                 <!-- <div class="card card-table-one" style="min-height: 500px;"> -->
-                    @if (Session::get('succs'))
-                    <div class="alert alert-success " style="width: 100%;">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <i class="icon fa fa-check"></i> {{ Session::get('succs') }}
-                    </div>
-                    @endif
+                @if (Session::get('success'))
+                <div class="alert alert-success " style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                </div>
+                @endif
+                @if (Session::get('error'))
+                <div class="alert alert-danger " style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <i class="icon fa fa-check"></i> {{ Session::get('error') }}
+                </div>
+                @endif
                     <div class="row row-sm mg-b-20 mg-lg-b-0">
                         <div class="table-responsive" style="margin-bottom: 13px;">
                             <table class="table table-bordered mg-b-0">
@@ -110,6 +116,7 @@
                                             <th>Product Group</th>
                                             <th>OEM</th>
                                             <th>Std. Pack Size</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -131,11 +138,14 @@
                                             <td>{{$stck['group_name']}}</td>
                                             <td>{{$stck['oem_name']}}</td>
                                             <td>{{$stck['quantity_per_pack']}}</td>
+                                            <td><a href="" data-toggle="modal"  data-target="#update-stock" class=" badge badge-primary"   id="updatestock" stockid="{{$stck->id}}" skucode ="{{$stck['sku_code']}}" batch="{{$stck['batch_no']}}" location="{{$stck['location_name']}}" qty="{{$stck['quantity']}}"> 
+                                                <i class="fas fa-edit"></i>Stock Adjustment</a>
+                                            </td>
                                         </tr>
                                         @endforeach
                                         @else
                                         <tr>
-                                            <td colspan="13">
+                                            <td colspan="15">
                                             <center>No data found...</center>
                                             </td>
                                         </tr>
@@ -152,7 +162,62 @@
 	</div>
 </div>
 	<!-- az-content-body -->
-	<!-- Modal content-->
+
+    <!-- Modal content-->
+    <div id="update-stock" class="modal">
+        <div class="modal-dialog modal-md" role="document">
+            <form id="form1" method="post" action="{{url('fgs/stock-update')}}" autocomplete="off">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#Stock Adjustment</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <table>
+                                    <tr>
+                                    <td>SKU Code : </td><td><input type="text"  class="product form-control" disabled></td>
+                                    </tr>
+                                    </tr>
+                                    <td>Batch Number : </td><td><input type="text" class="batch_no form-control" disabled></td>
+                                    </tr>
+                                    </tr>
+                                    <td>Stock Location : </td><td><input type="text" class="location form-control" disabled></td>
+                                    </tr>
+                                    <tr> 
+                                        <td>
+                                        Quantity :&nbsp;
+                                        </td>
+                                        <td>
+                                        <div class="input-group">
+                                            <input type="text" class="quantity form-control" id="quantity" name="quantity"  aria-describedby="unit-div">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text unit-div" id="unit-div"></span>
+                                            </div>
+                                        </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <input type="hidden" name="stock_id"  id="stock_id"  class="stock_id">
+                                <input type="hidden" name="location_name"  id="location_name"  class="location_name">
+                            </div>
+                        </div>
+                        <!-- <div class="form-devider"></div> -->
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                            <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+     
 
 	
       
@@ -183,5 +248,43 @@
 
      
           });
+          $(document).ready(function() {
+        $('body').on('click', '#updatestock', function (event) {
+            event.preventDefault()
+            $('.quantity').val('');
+            $('.stock_id').val('');
+            $('.product').val('');
+            $('.batch_no').val('');
+            $('.unit-div').text('');
+            $('.location').val('');
+            $('.location_name').val('');
+            $('#quantity-error').empty();
+            var stockid = $(this).attr('stockid');
+            var skucode = $(this).attr('skucode');
+            var batchno = $(this).attr('batch');
+            var location = $(this).attr('location');
+            var qty = $(this).attr('qty');
+            $('.quantity').val(qty);
+            $('.stock_id').val(stockid);
+            $('.product').val(skucode);
+            $('.location').val(location);
+            $('.location_name').val(location);
+            $('.batch_no').val(batchno);
+            $('.unit-div').text('Nos');
+            $('#quantity-error').empty();
+            
+        });
+        $("#form1").validate({
+            rules: {
+                quantity: {
+                    required: true,
+                    number: true,
+                },
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+    });
 </script>
 @stop

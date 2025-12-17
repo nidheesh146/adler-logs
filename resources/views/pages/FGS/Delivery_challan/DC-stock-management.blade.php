@@ -5,7 +5,7 @@
     <div class="container">
         <div class="az-content-body">
             <div class="az-content-breadcrumb">
-                <span><a href="" style="color: #596881;">DC Management</a></span>
+                <span><a href="" style="color: #596881;">FGS_OFF_STOCK</a></span>
                 <span><a href="">All</a></span>
             </div>
             @include('includes.fgs.dc-stock-management')
@@ -31,7 +31,11 @@
                         <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/Delivery_challan/Challan-stock-export/demo')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                         @elseif($location=='samples')
                         <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/Delivery_challan/Challan-stock-export/samples')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
-                        
+                        @elseif($location=='Scheme')
+                        <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/Delivery_challan/Challan-stock-export/samples')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                        @elseif($location=='Satellite')
+                        <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/Delivery_challan/Challan-stock-export/satellite')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                       
 
                         @endif
                         <div>
@@ -73,6 +77,10 @@
                                                         <label style="font-size: 12px;">BATCH No</label>
                                                         <input type="text" value="{{request()->get('batch_no')}}" id="batch_no" class="form-control" name="batch_no" placeholder="BATCH No">
                                                     </div>
+                                                    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                  <label  style="font-size: 12px;">Customer Name</label>
+                                     <input type="text" value="{{request()->get('customer_name')}}" id="customer_name" class="form-control" name="customer_name" placeholder="Customer Name">
+                                </div>
                                                     <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                         <label style="font-size: 12px;">Product Category</label>
                                                         <select name="category_name" id="category_name" class="form-control">
@@ -116,6 +124,7 @@
                     </table>
                 </div>
             </div>
+            
             <p class="az-content-text mg-b-20"></p>
             <div class="table-responsive">
                 <table class="table table-bordered mg-b-0">
@@ -123,6 +132,7 @@
                         <tr>
                             <th>SKU Code</th>
                             <!-- <th>Description</th> -->
+                            <th>Customer Name</th>
                             <th>Batch Number</th>
                             <th>Qty.</th>
                             <th>UOM</th>
@@ -144,12 +154,19 @@
                         <tr>
                             <td>{{$stck['sku_code']}}</td>
                             <!-- <td>{{$stck['discription']}}</td> -->
+                            <td>{{$stck['firm_name']}}</td>
                             <td>{{$stck['batch_no']}}</td>
                             <td>{{$stck['quantity']}} </td>
                             <td>Nos </td>
                             <td>{{$stck['location_name']}} </td>
                             <td>{{date('d-m-Y', strtotime($stck['manufacturing_date']))}}</td>
-                            <td>@if($stck['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($stck['expiry_date']))}} @else NA @endif</td>
+                            <td>
+    @if($stck['expiry_date'] != '0000-00-00' && $stck['expiry_date'] >= '1990-01-01')
+        {{ date('d-m-Y', strtotime($stck['expiry_date'])) }}
+    @else
+        NA
+    @endif
+</td>
                             <td>{{$stck['hsn_code']}}</td>
                             <td>{{$stck['category_name']}}</td>
 
@@ -226,9 +243,10 @@
     $('.search-btn').on("click", function(e) {
         var sku_code = $('#sku_code').val();
         var batch_no = $('#batch_no').val();
+        var customer_name = $('#customer_name').val();
         var category_name = $('#category_name').val();
         var is_sterile = $('#is_sterile').val();
-        if (!sku_code & !batch_no & !category_name & !is_sterile) {
+        if (!sku_code & !batch_no & !category_name & !customer_name & !is_sterile) {
             e.preventDefault();
         }
     });

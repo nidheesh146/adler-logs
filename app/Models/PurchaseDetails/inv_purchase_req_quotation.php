@@ -32,8 +32,32 @@ class inv_purchase_req_quotation extends Model
         $quotation_id = $this->insertGetId($data);
         if($quotation_id){
             foreach($request->Supplier as $supplier_id){
+
                 DB::table('inv_purchase_req_quotation_supplier')->insert(['supplier_id'=>$supplier_id,'quotation_id'=>$quotation_id]);
-                foreach($request->purchase_requisition_item as $purchase_requisition_item){
+               
+                $checkedItemIDs = $request->input('purchase_requisition_item', []);
+                $uncheckedItemIDs = $request->input('item', []);
+                // Separate checked and unchecked item IDs
+                $checkedItems = [];
+                $uncheckedItems = [];
+                foreach ($checkedItemIDs as $checkedItemID) {
+                    // If the checked item ID is not in the list of unchecked item IDs, it's checked
+                    if (!in_array($checkedItemID, $uncheckedItemIDs)) {
+                        $checkedItems[] = $checkedItemID;
+                    }
+                }
+                // Now all remaining unchecked item IDs are truly unchecked
+                $uncheckedItems = array_diff($uncheckedItemIDs, $checkedItemIDs);
+                if ($uncheckedItems) {
+                    foreach ($uncheckedItems as $purchase_requisition_items) {
+                        DB::table('inv_purchase_req_quotation_item_supp_rel')->where('item_id', '=', $purchase_requisition_items)
+                            // ->where('supplier_id', '=',  $supplier_id)
+                            ->update([
+                                'status' => 0
+                            ]);
+                    }
+                }
+                foreach($checkedItemIDs as $purchase_requisition_item){
                     $item_id = DB::table('inv_purchase_req_item')->where('inv_purchase_req_item.requisition_item_id','=',$purchase_requisition_item)->pluck('Item_code')->first();
                     $fixed = DB::table('inv_supplier_itemrate')
                                 ->select('inv_supplier_itemrate.*')
@@ -53,7 +77,8 @@ class inv_purchase_req_quotation extends Model
                     $mailData = new \stdClass();
                     $mailData->module = 'add_quotation';
                     $mailData->subject = "Adler";
-                    $mailData->to = ['komal.murali@gmail.com','shilma33@gmail.com'];
+                     $mailData->to =['Nayan.Dhane@adler-healthcare.com'];
+                    //$mailData->to =['shilma33@gmail.com'];
                     $supp = DB::table('inv_supplier')->select(['vendor_id','vendor_name','email'])->where(['id'=>$supplier_id])->first();
                     //$mailData->to =   json_decode($supp->email,true);
                     $mailData->vendor_id = $supp->vendor_id;
@@ -102,7 +127,8 @@ class inv_purchase_req_quotation extends Model
                     $mailData = new \stdClass();
                     $mailData->module = 'add_quotation';
                     $mailData->subject = "Adler";
-                    $mailData->to = ['shilma33@gmail.com','komal.murali@gmail.com'];
+                    $mailData->to =['Nayan.Dhane@adler-healthcare.com'];
+                    //$mailData->to =['shilma33@gmail.com'];
                     $supp = DB::table('inv_supplier')->select(['vendor_id','vendor_name','email'])->where(['id'=>$request->Supplier])->first();
                     //$mailData->to =   json_decode($supp->email,true);
                     $mailData->vendor_id = $supp->vendor_id;
@@ -166,7 +192,7 @@ class inv_purchase_req_quotation extends Model
        $query =  $this->select(['inv_purchase_req_quotation.quotation_id as id','inv_purchase_req_quotation.rq_no as text'])
                   //  ->join('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
                     ->whereNotIn('inv_purchase_req_quotation.quotation_id',function($query) {
-                        $query->select('inv_final_purchase_order_master.rq_master_id')->from('inv_final_purchase_order_master');
+                        $query->select('inv_final_purchase_order_master.rq_master_id')->from('inv_final_purchase_order_master')->whereNotNull('rq_master_id');
                       })
                     ->where($condition1)
                     ->get();
@@ -180,22 +206,30 @@ class inv_purchase_req_quotation extends Model
     //     ->get();
 
     }
-    function get_rq_final_purchase($condition1){
-        $query =  $this->select('inv_purchase_req_quotation.*')
-                    ->leftjoin('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
-                    ->leftjoin('inv_supplier','inv_supplier.id','=','inv_purchase_req_quotation_supplier.supplier_id')
-                    ->leftjoin('inv_purchase_req_quotation_item_supp_rel','inv_purchase_req_quotation_item_supp_rel.quotation_id','=','inv_purchase_req_quotation.quotation_id')
-                    ->distinct('inv_purchase_req_quotation.quotation_id')
-                    ->orderby('inv_purchase_req_quotation.quotation_id','desc')
-                   //  ->join('inv_purchase_req_quotation_supplier','inv_purchase_req_quotation_supplier.quotation_id','=','inv_purchase_req_quotation.quotation_id')
-                     ->whereNotIn('inv_purchase_req_quotation.quotation_id',function($query) {
-                         $query->select('inv_final_purchase_order_master.rq_master_id')->from('inv_final_purchase_order_master');
-                       })
-                     ->where($condition1)
-                     ->where('inv_purchase_req_quotation_item_supp_rel.selected_item','=',1)
-                     ->paginate(15);
-                     return $query;
+    function get_rq_final_purchase($condition1)
+    {
+        $query = $this->select('inv_purchase_req_quotation.*')
+            ->leftJoin('inv_purchase_req_quotation_supplier', 'inv_purchase_req_quotation_supplier.quotation_id', '=', 'inv_purchase_req_quotation.quotation_id')
+            ->leftJoin('inv_supplier', 'inv_supplier.id', '=', 'inv_purchase_req_quotation_supplier.supplier_id')
+            ->leftJoin('inv_purchase_req_quotation_item_supp_rel', 'inv_purchase_req_quotation_item_supp_rel.quotation_id', '=', 'inv_purchase_req_quotation.quotation_id')
+            ->distinct('inv_purchase_req_quotation.quotation_id')
+            ->orderBy('inv_purchase_req_quotation.quotation_id', 'desc')
+            ->whereNotIn('inv_purchase_req_quotation.quotation_id', function ($subQuery) {
+                // Exclude quotations that have already been turned into purchase orders
+                $subQuery->select('rq_master_id')->from('inv_final_purchase_order_master')->whereNotNull('rq_master_id');
+            })
+            ->whereNotIn('inv_purchase_req_quotation_item_supp_rel.item_id', function ($subQuery) {
+                // Exclude items that have already been turned into purchase orders
+                $subQuery->select('item_id')->from('inv_final_purchase_order_item')->whereNotNull('item_id');
+            })
+            ->where($condition1)
+            ->where('inv_purchase_req_quotation_item_supp_rel.selected_item', '=', 1)
+            ->paginate(70);
+    
+        return $query;
     }
+    
+    
 
     function get_rq_nos()
     {

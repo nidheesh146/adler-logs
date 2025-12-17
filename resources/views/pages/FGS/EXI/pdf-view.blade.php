@@ -5,16 +5,15 @@
     
     <title>EXI_{{$dni['firm_name']}}_{{$dni['dni_number']}}</title>
 </head>
-@inject('fn', 'App\Http\Controllers\Web\FGS\OEFController')
 <body>
-
+@inject('fn', 'App\Http\Controllers\Web\FGS\OEFController')
     <style>
         .col1,.col3{
             float:left;
             width:33%;
             font-size:11px;
         }
-        .col2{ 
+        .col2{
             width:28%;
             float:left;
         }
@@ -56,8 +55,8 @@
          .row2{
             display:block;
             font-size:11px;
-            height:120px;
-            border-bottom:solid 0.5px black;
+            height:65px;
+            /* border-bottom:solid 0.5px black; */
         }
         .row3, .row4{
             display:block;
@@ -70,6 +69,8 @@
         .row3 table{
             width:100%;
             font-size:10px;
+            border-collapse: collapse;
+
         }
         .row4{
             font-size:10px;
@@ -108,26 +109,25 @@
     </style>
    
     <!-- <div class="row1" style="height:150px;border-bottom:solid 2px black;"> -->
-    <div class="row1" style="height:200px;">
+    <div class="row1" style="height:210px;">
     <div class="col1">
             To<br/>
             <strong>{{$dni['firm_name']}}</strong>
             <p>{{$dni['billing_address']}}<br/>
-            {{$dni['city']}}, {{$dni['state_name']}}<br/>
+            {{$dni['city']}},<br> {{$dni['state_name']}}<br/>
             Cell No : {{ $dni['contact_number'] }}<br/>
-            <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$dni['email']}}<br/><span>
-           </p>
+           {{-- <span style="font-size:10px;  overflow-wrap: break-word;">Email:{{$dni['email']}}<br/><span>--}}
            
+            
 
         </div>
-        <div class="col2" style="text-align:left;font-size: 10px;">
+        <div class="col2" style="text-align:left; font-size: 10px;" >
         <strong>Shipping Address :</strong> <br>
         {{$dni['shipping_address']}}<br/>
-          <p> {{$dni['city']}},  {{$dni['state_name']}}
-           </p> 
+           {{$dni['city']}}, <br> {{$dni['state_name']}}<br/>
            <table style="">
                 <tr>
-                    <td>GST Details :</td><td> {{$dni['gst_number']}}</td>
+                    <!-- <td>GST Details :</td><td> {{$dni['gst_number']}}</td> -->
                 </tr>
                 <tr>
                     <td>DL Number Details:</td><td> 20B: {{$dni['dl_number1']}}</td>
@@ -155,7 +155,7 @@
            </p>
         </div>
         <div class="col4" style="float:right;">
-            <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
+        <img src="data:img/logo.png;base64,<?php echo base64_encode(file_get_contents('img/logo.png')); ?>"style="width:80px;" />
         </div>
     </div><br/>
             
@@ -164,7 +164,7 @@
         Export Invoice(EXI)<!--Padding is optional-->
         </span>
     </div>
-    <br/>
+    
     <div class="row2">
         <div class="col21">
             <table>
@@ -172,7 +172,7 @@
                     <td>GRS No.</td>
                     <td>: 
                        
-                        @foreach($dni_items as $dni_item)
+                    @foreach($dni_items as $dni_item)
                         @foreach($dni_item['pi_item'] as $item)
                             <?php $ar[]=$item['grs_number']; ?>
                             {{--$item['grs_number']--}} 
@@ -180,10 +180,12 @@
                         @endforeach
                         
                         <?php
-                        $arr=array_values(array_unique($ar));
-                        for($x = 0; $x <count($arr); $x++) {
-                        echo $arr[$x];
-                         echo "  ";
+                       // print_r(array_filter(array_unique($ar)));exit;
+                        $arr_dni=array_values(array_unique($ar));
+                       // print_r($arr_dni);exit;
+                        for($x = 0; $x <count($arr_dni); $x++) {
+                        echo $arr_dni[$x];
+                        echo " ";
                         }
                         ?>
                     </td>
@@ -247,6 +249,7 @@
                 </tr>
             </table>
         </div>
+       
         <div class="col22">
             <table style="float:left;">
                 <tr>
@@ -375,16 +378,17 @@
             </table>
         </div>
         <div class="col24">
-            <table style="float:right;">
+        <table style="float: right; margin-right: 100px;">
                 <tr>
                     <td>Doc No.</td>
-                    <td>: {{$dni['dni_number']}}</td>
+                    <td>: <b>{{$dni['dni_number']}}</b></td>
                 </tr>
                 <tr>
                     <td> Doc  Date</td>
                     <td>: {{date('d-m-Y', strtotime($dni['dni_date']))}}</td>
                 </tr>
-                <td> Product Category</td>
+                <tr>
+                    <td> Business Category</td>
                     @foreach($dni_items as $dni_item)
                         @foreach($dni_item['pi_item'] as $item)
                             <?php $category_name[]=$item['category_name']; ?>
@@ -397,15 +401,21 @@
                             for($x = 0; $x <count($category_name_arr); $x++) 
                             {
                             echo $category_name_arr[$x]; 
+                            $category = $category_name_arr[$x];
                             echo "  ";
                             }
                         ?>
                        
                     </td>
-                
+                </tr>
+                <tr>
+                    <td> Product Category   :</td>
+                    <td>{{ $item['new_category'] }}</td> <!-- Display new product category -->
+
             </table>
         </div>
-    <br/>    
+   
+   
     </div>
     
     <style>
@@ -413,39 +423,50 @@
             text-align:center;
         }
     </style>
-    <div class="row3">
-        <table border="1">
+<div class="row3" style="position: relative;top: 10px;">
+        <table border="1" >
             <tr>
                 <th rowspan="2">S.NO</th>
                 <th rowspan="2">
                     HSN CODE  
                 </th>
                 <th rowspan="2">SKU CODE</th>
-                <th rowspan="2" width='35%'>ITEM DESCRIPTION</th>
+                <th rowspan="2" width='30%'>ITEM DESCRIPTION</th>
                 <th rowspan="2" style="width:6%;">DATE Of MFG.</th>
-                <th rowspan="2" style="width:6%;">DATE Of EXPIRY</th>
-                <th rowspan="2">BATCH NO.</th>
+                <th rowspan="2" style="width:5% !important;">DATE Of EXPIRY</th>
+                <th rowspan="2" >BATCH NO</th>
                 <th rowspan="2">QTY</th>
                 <th rowspan="2">UNIT</th>
+                @if($category!='TRADE')
                 <th rowspan="2">MRP</th>
+                @endif
                 <th rowspan="2">RATE</th>
-               
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
-                <!-- <th colspan="2">CGST</th>
-                <th colspan="2">SGST/UTGST  </th> -->
-                <th colspan="2">IGST</th>
+                @if($dni['zone_name']!='Export')
+                    @if($dni['state_name']=='Maharashtra')
+                    <th colspan="2">CGST</th>
+                    <th colspan="2" style="width:5%;">SGST/UTGST  </th>
+                    @else
+                    <th colspan="2">IGST</th>
+                    @endif
+                @endif
                 <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
-            <tr>
-            <th style="width:3% !important">% </th>
-                <th width='3%'>Value</th>
-                <!-- <th style="width:3% !important">% </th>
-                <th width='3%'>Value</th>
+            <tr> 
                 <th style="width:3% !important">% </th>
-                <th width='3%'>Value  </th> -->
-                <th style="width:3% !important">% </th>
-                <th width='12%'>Value</th> 
+                <th width='3%'>Value</th>
+                @if($dni['zone_name']!='Export')
+                    @if($dni['state_name']=='Maharashtra')
+                    <th style="width:3% !important">% </th>
+                    <th width='3%'>Value</th>
+                    <th style="width:3% !important">% </th>
+                    <th width='3%'>Value  </th>
+                    @else
+                    <th style="width:3% !important">% </th>
+                    <th width='3%'>Value</th> 
+                    @endif
+                @endif
             </tr>
             <?php $i=1;
             $total = 0;
@@ -459,52 +480,74 @@
             $isum = 0;
             $totalsum = 0;
             $totalmrp = 0;
-             ?>
+
+             ?> 
             @foreach($dni_items as $dni_item)
             @foreach($dni_item['pi_item'] as $item)
             <tr>
-                <td  style="text-align:center;">{{$i++}}</td>
+                <td style="text-align:center;">{{$i++}}</td>
                 <td>{{$item['hsn_code']}}</td>
                 <td>{{$item['sku_code']}}</td>
-                <td>{{$item['discription']}}</td>
-                <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
+                <td >{{$item['discription']}}</td>
+                <td >{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                <td >@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA @endif</td>
                 <td>{{$item['batch_no']}}</td>
-                <td  style="text-align:center;">{{$item['quantity']}}</td>
-                <td  style="text-align:center;">Nos</td>
+                <td style="text-align:center;">{{$item['remaining_qty_after_cancel']}}</td>
+                <td style="text-align:left;">Nos</td>
+                @if($category!='TRADE')
                 <td style="text-align:right;">{{number_format((float)$item['mrp'], 2, '.', '')}}</td>
+                @endif
                 <td style="text-align:right;">{{number_format((float)$item['rate'], 2, '.', '')}}</td>
-               
-                <td  style="text-align:center;">{{$item['discount']}}</td>
-                <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
-                <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
-                <td style="text-align:right;">{{number_format((float)$discount_value, 2, '.', '')}}</td>
-                {{--<td  style="text-align:center;">{{$item['cgst']}}</td>
-                <td style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
-                <td  style="text-align:center;">{{$item['sgst']}}</td>
-                <td width="5%" style="text-align:right;">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>--}}
-                <td  style="text-align:center;">{{$item['igst']}}</td>
-                <td style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
-                <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
-                <td style="text-align:right;">{{number_format((float)($total_amount), 2, '.', '')}}</td>
+                <td style="text-align:center;">{{$item['discount']}}</td>
+                <?php $discount_value = ($item['rate']* $item['remaining_qty_after_cancel'])-(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100);?>
+                <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100), 2, '.', '')}}</td>
+                <td  style="text-align:right;">{{number_format((float)$discount_value, 2, '.', '')}}</td>
+                @if($dni['zone_name']!='Export')
+                    @if($dni['state_name']=='Maharashtra')
+                    <td style="text-align:center;">{{$item['cgst']}}</td>
+                    <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
+                    <td style="text-align:center;">{{$item['sgst']}}</td>
+                    <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
+                    @else
+                    <td style="text-align:center;">{{$item['igst']}}</td>
+                    <td  style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
+                    @endif
+                @endif
                 <?php 
-                $total =$total+ $item['rate']* $item['quantity'];
-                $total_discount = $total_discount+($item['rate']* $item['quantity']*$item['discount'])/100;
-                $total_igst = $total_igst+($discount_value*$item['igst'])/100;
-                $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
-                $total_cgst = $total_cgst+($discount_value* $item['quantity']*$item['cgst'])/100;
+                    if($dni['zone_name']!='Export')
+                        $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);
+                    else
+                        $total_amount =$discount_value;  
+                ?>
+                <td  style="text-align:right;">{{number_format((float)($total_amount), 2, '.', '')}}</td>
+                <?php 
+                $total =$total+ $item['rate']* $item['remaining_qty_after_cancel'];
+                $total_discount = $total_discount+($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100;
+                if($dni['zone_name']!='Export')
+                {
+                    $total_igst = $total_igst+($discount_value*$item['igst'])/100;
+                    $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
+                    $total_cgst = $total_cgst+($discount_value*$item['cgst'])/100;
+                }
+                else
+                {
+                    $total_igst = 0;
+                    $total_sgst = 0;
+                    $total_cgst = 0;
+                }
+                $totalmrp = $totalmrp + $item['mrp'];
                 ?>
                  <?php 
-                 $qsum = $qsum+$item['quantity'];
+                 $qsum = $qsum+$item['remaining_qty_after_cancel'];
                  $rsum = $rsum+$item['rate'];
                  $tsum = $tsum+$discount_value;
                  $isum = $isum+$total_igst;
                  $totalsum = $totalsum+$total_amount;
-                 $totalmrp = $totalmrp+$item['mrp'];
                  ?>
             </tr>
+            
             @endforeach
-            @endforeach   
+            @endforeach 
             <tr>
                 <th></th>
                 <th></th>
@@ -515,27 +558,34 @@
                 <th></th>
                 <th style="text-align:center;font-weight:bold;">{{  $qsum }}</th>
                 <th style="font-weight:bold;text-align:left;">Nos</th>
-                <th style="text-align:center;font-weight:bold;">{{ number_format((float)($totalmrp), 2, '.', '') }}</th>
+                @if($category!='TRADE')
+                <th style="text-align:center;font-weight:bold;">{{--number_format((float)($totalmrp), 2, '.', '') --}}</th>
+                @endif
                 <th style="text-align:center;font-weight:bold;">{{-- number_format((float)($rsum), 2, '.', '') --}}</th>
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
-                {{--<th></th>
-                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
-                <th></th>
-                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_cgst), 2, '.', '') }}</th>--}}
-                <th></th> 
-                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>
+                @if($dni['zone_name']!='Export')
+                    @if($dni['state_name']=='Maharashtra')
+                    <th></th>
+                    <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
+                    <th></th>
+                    <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_cgst), 2, '.', '') }}</th>
+                    @else
+                    <th></th> 
+                    <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>
+                    @endif
+                @endif
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
-            </tr>              
+            </tr>       
         </table>
     </div>
-    <br/>
+   <br>
     <div class="row4" style="height:170px;">
         <div class="col41">
             <div class="remarks" style="">
                 <strong>Value in words: </strong><br/>
-                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?>  Only
+                <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))))  ?>  Only
                 <div></div><br/><br/>
                 <table style="float:left;">
                     <tr>
@@ -566,7 +616,8 @@
                 <?= nl2br($dni['payment_terms']);?>
             </div>
             @endif
-            <br/><br/>
+            <br/>
+            <br/>
             <div class="" style="height:50px;margin-left:50px;">
                <strong> Company's Bank Details:-</strong><br/>
                 Bank Name:- The Federal Bank Limited<br/>
@@ -576,13 +627,13 @@
             </div>
         </div>
         <div class="col43">
-            <table style="height:130px;">
+            <table style="height:110px;">
                 <tr>
                     <td style="width:160px">Sum of Taxable Value</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total-$total_discount), 2, '.', '')}}</td>
                 </tr>
-                
+                @if($dni['zone_name']!='Export')
                 <tr>
                     <td style="width:160px">Sum of CGST</td>
                     <td style="width:30px;">:</td>
@@ -598,59 +649,91 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
                 </tr>
+                @endif
                 <tr>
-                    <td style="width:160px">Other Charges</td> 
+                    <td style="width:160px">Other Charges</td>
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;"></td>
                 </tr>
                  <tr>
                     <td style="width:160px">Round Off</td>
                     <td style="width:30px;">:</td>
-                     <?php 
+                    <?php 
                     $t = number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '');
                     $round = round($t);
                     $roundoff = number_format((float)($round-$t), 2, '.', '');
                     ?>
                     <td style="text-align:right;">{{ $roundoff }}</td>
                 </tr>
-                
             </table>
             <table style="border-bottom:solid 1px black;width:100%;border-top:solid 1px black;width:100%;">
                 <tr>
                     <th style="width:148px; text-align: left;color:#1434A4;">GRAND TOTAL</th>
                     <th style="width:30px;color:#1434A4;">:</th>
-                     <?php
+                    <?php
                      $grand = 0;
                      $grandt = 0;
                     $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))
                    
                     ?>
-                    <th class="grand_total_value" style="text-align:right;color:#1434A4;">{{ number_format((float)$grand,2,'.','') }} </th>
+                    <th class="grand_total_value" style="text-align:right;color:#1434A4;">{{ number_format((float)$grand,2,'.','') }}</th>
                 </tr> 
             </table>
         </div>
        
     </div>
     <br/>
-    <div class="row5" style="border-bottom:solid 1px black;height:170px;">
+    <div class="row5" style="height:170px;">
         <div class="col51" style="width:70%">
         <strong> Declaration:- </strong><br>
         <p>
         1. We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.
         </p>
         </div>
-        <div class="col52">
+       {{-- <div class="col52">
             <p>For Adler Healthcare Pvt. Ltd.</p>
             <br/><br/><br/>
             <p>Authorised Signatory</p>
             <br/><br/><br/>
+        </div>--}}
+        <div class="row5" style="float:right; margin-right:40px;font-size:12px;">
+            <div>
+                <p>For Adler Healthcare Pvt. Ltd.</p>
+                <br/>
+            </div>
+            <div class="">
+                <p>Authorised Signatory</p>
+                <br/>
+            </div>
         </div>
     </div>
    
-    <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     
-    </div>
-    
+    <script type="text/php">
+
+
+    if (isset($pdf)) {
+    $xPage = 780; // X-axis for "Page", positioned on the right side
+    $yPage = 573; // Y-axis horizontal position
+
+    $textPage = "Page {PAGE_NUM} of {PAGE_COUNT}"; // "Page" message
+
+    $font = $fontMetrics->get_font("helvetica");
+    $size = 7;
+    $color = array(0, 0, 0);
+
+
+    $pdf->page_text($xPage, $yPage, $textPage, $font, $size, $color); // "Page" on the right
+    $pageNumber = $pdf->get_page_number();
+    // Check if it's not the first page
+    if (var_dump($pageNumber) != 1) {
+        $xDoc = 770;  // X-axis for "Doc", positioned on the left side
+        $yDoc = 15; // Y-axis horizontal position
+        $textDoc = "{{$dni['dni_number']}}"; // "Doc" message
+        $pdf->page_text($xDoc, $yDoc, $textDoc, $font, $size, $color); // "Doc" on the left
+    }
+}
+</script>
      
    
 </body>

@@ -20,6 +20,7 @@
                     </div>  
                 <div>  exportFinalPurchase -->
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button> 
+                <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/multiple-RQ-purchase-add')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}'" class="badge badge-pill badge-success"><i class="fas fa-plus"></i> Multiple RQ -> @if(request()->get('order_type')=='wo') WO @else PO @endif </button> 
                 @if(in_array('order.creation',config('permission')))
                 <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/final-purchase-add')}}?order_type={{(request()->get('order_type') == 'wo') ? 'wo' : 'po' }}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Final @if(request()->get('order_type')=='wo') Work @else Purchase @endif  Order </button> 
                 @endif

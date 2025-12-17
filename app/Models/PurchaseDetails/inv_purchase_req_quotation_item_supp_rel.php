@@ -139,6 +139,7 @@ class inv_purchase_req_quotation_item_supp_rel extends Model
                         ->leftjoin('inv_purchase_req_master','inv_purchase_req_master.master_id','=','inv_purchase_req_master_item_rel.master')
                         ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.Item_code')
                         ->orderBy('inv_purchase_req_quotation_item_supp_rel.id','DESC')
+                        ->where('inv_purchase_req_item.status',1)
                         ->where($condition)
                         ->get();
         }

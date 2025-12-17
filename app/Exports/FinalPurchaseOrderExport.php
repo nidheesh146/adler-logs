@@ -9,6 +9,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use DB;
+use Carbon\Carbon;
 class FinalPurchaseOrderExport implements FromCollection, WithHeadings, WithStyles, WithEvents
 {
     /**
@@ -46,9 +47,9 @@ class FinalPurchaseOrderExport implements FromCollection, WithHeadings, WithStyl
         //                                         ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=', 'inv_final_purchase_order_master.rq_master_id')
         //                                         ->get();
         // }
-       // print_r($this->request);exit;
         if($this->request=='null')
         {
+            //echo "kk";exit;
             // $orders = inv_final_purchase_order_master::select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_master.status',
             //                                     'user.f_name','user.l_name','user.employee_id','inv_supplier.vendor_id' ,'inv_supplier.vendor_name','inv_purchase_req_quotation.rq_no', 'inv_final_purchase_order_master.created_at',
             //                                     'inv_final_purchase_order_master.updated_at')
@@ -73,21 +74,25 @@ class FinalPurchaseOrderExport implements FromCollection, WithHeadings, WithStyl
                                                     ->leftjoin('inv_supplier', 'inv_supplier.id', '=', 'inv_final_purchase_order_master.supplier_id')
                                                     ->leftjoin('inv_purchase_req_quotation','inv_purchase_req_quotation.quotation_id','=', 'inv_final_purchase_order_master.rq_master_id')
                                                     //->where($condition1)
+                                                    ->where('inv_final_purchase_order_master.created_at', '>=', Carbon::now()->subMonth())
                                                     ->orderby('inv_final_purchase_order_rel.id','desc')
                                                     ->get();
         }
         else
         {
             $condition1 =[];
+
             if($this->request->order_type)
             {
                 if($this->request->order_type == 'wo')
                 {
                     $condition1[] = ['inv_final_purchase_order_master.type','=', "WO"];
+                    //$condition1[] = ['inv_final_purchase_order_master.created_at', '>=', Carbon::now()->subMonth()];
                 }
                 else
                 {
                     $condition1[] = ['inv_final_purchase_order_master.type','=', "PO"];
+                    //$condition1[] = ['inv_final_purchase_order_master.created_at', '>=', Carbon::now()->subMonth()];
                 }
             }
             if ($this->request->rq_no) {

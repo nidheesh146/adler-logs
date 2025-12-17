@@ -59,7 +59,7 @@ class EmployeeController extends Controller
             $validation['password'] = ['required'];
             $validation['confirm_password'] = ['required','same:password'];
             $validator = Validator::make($request->all(), $validation);
-    
+  //  print_r($request->role_permission);exit;
             if(!$validator->errors()->all()){
                 if($request->file('profile_img')){
                     $file= $request->file('profile_img');
@@ -77,7 +77,8 @@ class EmployeeController extends Controller
                         "department"=> $request->department,
                         "designation"=> $request->designation,
                         "date_of_hire"=> date('Y-m-d',strtotime($request->date_of_hire)),
-                        "role_permission"=>$request->role_permission,
+                        "role_permission"=>implode(",",$request->role_permission),
+                        //"role_permission"=>$request->role_permission,
                         "email"=> $request->email,
                         "phone"  => $request->phone ,
                         "address"=>  $request->address,
@@ -117,7 +118,7 @@ class EmployeeController extends Controller
             $validation['password'] = ['required'];
             $validation['confirm_password'] = ['required','same:password'];
             $validator = Validator::make($request->all(), $validation);
-    
+            //echo(implode(",",$request->role_permission));exit;
             if(!$validator->errors()->all()){
 
                 if($request->file('profile_img')){
@@ -141,7 +142,8 @@ class EmployeeController extends Controller
                         "department"=> $request->department,
                         "designation"=> $request->designation,
                         "date_of_hire"=> date('Y-m-d',strtotime($request->date_of_hire)),
-                        "role_permission"=>$request->role_permission,
+                        // "role_permission"=>$request->role_permission,
+                        "role_permission"=>implode(",",$request->role_permission),
                         "email"=> $request->email,
                         "phone"  => $request->phone ,
                         "address"=>  $request->address,

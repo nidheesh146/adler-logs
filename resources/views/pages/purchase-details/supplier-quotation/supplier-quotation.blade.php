@@ -12,6 +12,7 @@
 				 </div>
 			<h4 class="az-content-title" style="font-size: 20px;">Supplier Quotation
               <div class="right-button">
+			  <button style="float: right;font-size: 15px; height:25px; background-color:#85BB65;color:white; border-radius: 25px;" type="button" data-toggle="modal" data-target="#currencyModal">Currency</button>
 			  <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('inventory/supplier-quotation/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
               <div>  
               </div>
@@ -142,6 +143,40 @@
 						</div> 
 					</div>
 				</div>
+
+				@if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+
+
+				<div class="modal" id="currencyModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add Currency Exchange Rate</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="exchangeRateForm" action="{{url('saveExchangeRate')}}" method="POST" autocomplete="off">
+                    @csrf
+                    <div class="form-group">
+                        <label for="currency">Enter Currency Code:</label>
+                        <input type="text" class="form-control" id="currency" name="currency" required maxlength="3" placeholder="e.g., INR" pattern="[A-Z]{3}">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 				<!-- <div class="tab-pane tab-pane @if(request()->get('prsr')=='sr')active  show @endif" id="service">
 					
 					<div class="table-responsive">

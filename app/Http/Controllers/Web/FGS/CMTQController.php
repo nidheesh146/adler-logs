@@ -52,107 +52,217 @@ class CMTQController extends Controller
         // {
         //     $condition[] = ['fgs_mtq.ref_number','like', '%' . $request->ref_number . '%'];
         // }
-        if($request->from)
-        {
-            $condition[] = ['fgs_cmtq.cmtq_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-            $condition[] = ['fgs_cmtq.cmtq_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        if ($request->from) {
+            $condition[] = ['fgs_cmtq.cmtq_date', '>=', date('Y-m-d', strtotime( $request->from))];
         }
-        $cmtq = fgs_cmtq::select('fgs_cmtq.*')
-                 ->leftJoin('fgs_mtq','fgs_mtq.id','=','fgs_cmtq.mtq_id')
+        if ($request->to) {
+            $condition[] = ['fgs_cmtq.cmtq_date', '<=', date('Y-m-d', strtotime( $request->to))];
+        
+        }
+        // if($request->from)
+        // {
+        //     $condition[] = ['fgs_cmtq.cmtq_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+        //     $condition[] = ['fgs_cmtq.cmtq_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
+        // }
+        $cmtq = fgs_cmtq::select('fgs_cmtq.*','fgs_mtq.mtq_number','fgs_mtq.mtq_date')
+                 ->leftJoin('fgs_mtq','fgs_mtq.id','=','fgs_cmtq.mtq_id',)
                         ->where($condition)
                         ->distinct('fgs_cmtq.id')
                         ->paginate(15);
         return view('pages/FGS/CMTQ/CMTQ-list',compact('cmtq'));
        
     }
+    // public function CMTQAdd(Request $request)
+    // {
+    //     if ($request->isMethod('post')) {
+    //         $validation['cmtq_date'] = ['required'];
+    //         $validator = Validator::make($request->all(), $validation);
+    //         if (!$validator->errors()->all()) {
+    //             if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
+    //                 $years_combo = date('y', strtotime('-1 year')) . date('y');
+    //             } else {
+    //                 $years_combo = date('y') . date('y', strtotime('+1 year'));
+    //             }
+    //             $data['cmtq_number'] = "CMTQ-" . $this->year_combo_num_gen(DB::table('fgs_cmtq')->where('fgs_cmtq.cmtq_number', 'LIKE', 'Cmtq-' . $years_combo . '%')->count());
+    //             $data['cmtq_date'] = date('Y-m-d', strtotime($request->cmtq_date));
+    //             $data['mtq_id'] = $request->mtq_number;
+    //             $data['created_by'] = config('user')['user_id'];
+    //             $data['status'] = 1;
+    //             $data['created_at'] = date('Y-m-d H:i:s');
+    //             $data['updated_at'] = date('Y-m-d H:i:s');
+    //             $data['remarks'] = $request->remarks;
+    //             $data['stock_location_id2'] = $request->stock_location_id2;
+    //             $data['stock_location_id1'] = $request->stock_location_id1;
+    //             $data['remarks'] = $request->remarks;
+    //             $qty_to_cancel_array = $request->qty_to_cancel;
+
+    //             $fgs_mtq_data = $this->fgs_mtq->get_master_data(['fgs_mtq.id' => $data['mtq_id']]);
+    //             $cmtq_id = $this->fgs_cmtq->insert_data($data);
+    //             foreach ($request->mtq_item_id as $i => $mtq_item_id) {
+    //                 $mtq_item = fgs_mtq_item::find($mtq_item_id);
+    //                 $datas = [
+    //                     "mtq_item_id" => $mtq_item_id,
+    //                     "product_id" => $mtq_item['product_id'],
+    //                     "batchcard_id" => $mtq_item['batchcard_id'],
+    //                     // "quantity" => $mtq_item['quantity'],
+    //                     "quantity" => $qty_to_cancel_array[$i],
+    //                     "created_at" => date('Y-m-d H:i:s')
+    //                 ];
+
+    //                 $this->fgs_cmtq_item->insert_data($datas, $cmtq_id);
+    //                 $fgs_mtq_item = fgs_mtq_item::where('product_id', '=', $mtq_item['product_id'])
+    //                     ->update(['cmtq_status' => 1]);
+
+    //                 $qurantine_stock = fgs_qurantine_stock_management::where('product_id', '=', $mtq_item['product_id'])
+    //                     ->where('batchcard_id', '=', $mtq_item['batchcard_id'])
+    //                     ->first();
+    //                 $update_stock = $qurantine_stock['quantity'] - $mtq_item['quantity'];
+    //                 $product_stock = $this->fgs_qurantine_stock_management->update_data(['id' => $qurantine_stock['id']], ['quantity' => $update_stock]);
+
+    //                 $fgs_product_stock = fgs_product_stock_management::where('product_id', '=', $mtq_item['product_id'])
+    //                     ->where('batchcard_id', '=', $mtq_item['batchcard_id'])
+    //                     ->where('stock_location_id', '=', $fgs_mtq_data->stock_location_id1)
+    //                     ->first();
+    //                 $update_stock = $fgs_product_stock['quantity'] + $mtq_item['quantity'];
+    //                 $production_stock = $this->fgs_product_stock_management->update_data(['id' => $fgs_product_stock['id']], ['quantity' => $update_stock]);
+    //             }
+    //             if ($cmtq_id) {
+    //                 $request->session()->flash('success', "You have successfully added a CMTQ !");
+    //                 return redirect('fgs/CMTQ-list');
+    //             } else {
+    //                 $request->session()->flash('error', "Cmtq insertion is failed. Try again... !");
+    //                 return redirect('fgs/CMTQ/CMTQ-add');
+    //             }
+    //         }
+    //         if ($validator->errors()->all()) {
+    //             return redirect('FGS/CMTQ/CMTQ-add')->withErrors($validator)->withInput();
+    //         }
+    //     } else {
+    //         $condition1[] = ['user.status', '=', 1];
+    //         $data['users'] = $this->User->get_all_users($condition1);
+    //         $locations = product_stock_location::get();
+    //         $category = fgs_product_category::get();
+    //         return view('pages/FGS/CMTQ/CMTQ-add', compact('locations', 'category', 'data'));
+    //     }
+    // }
+    // public function MTQAdd(Request $request)
+    // {
+    //     if ($request->isMethod('post')) {
+    //         $validation['ref_no'] = ['required'];
+    //         $validation['ref_date'] = ['required', 'date'];
+    //         $validation['mtq_date'] = ['required', 'date'];
+    //         $validation['product_category'] = ['required'];
+    //         $validation['stock_location1'] = ['required'];
+    //         $validation['stock_location2'] = ['required'];
+    //         $validator = Validator::make($request->all(), $validation);
+    //         if (!$validator->errors()->all()) {
+    //             if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
+    //                 $years_combo = date('y', strtotime('-1 year')) . date('y');
+    //             } else {
+    //                 $years_combo = date('y') . date('y', strtotime('+1 year'));
+    //             }
+    //             $data['mtq_number'] = "MTQ-" . $this->year_combo_num_gen(DB::table('fgs_mtq')->where('fgs_mtq.mtq_number', 'LIKE', 'MTQ-' . $years_combo . '%')->count());
+    //             $data['mtq_date'] = date('Y-m-d', strtotime($request->mtq_date));
+    //             $data['ref_number'] = $request->ref_no;
+    //             $data['ref_date'] = date('Y-m-d', strtotime($request->ref_date));
+    //             $data['product_category_id'] = $request->product_category;
+    //             $data['stock_location_id1'] = $request->stock_location1;
+    //             $data['stock_location_id2'] = $request->stock_location2;
+    //             $data['created_by'] = config('user')['user_id'];
+    //             $data['status'] = 1;
+    //             $data['created_at'] = date('Y-m-d H:i:s');
+    //             $data['updated_at'] = date('Y-m-d H:i:s');
+    //             $data['remarks'] =$request->remarks;
+
+    //             $add = $this->fgs_mtq->insert_data($data);
+    //             if ($add) {
+    //                 $request->session()->flash('success', "You have successfully added a MTQ !");
+    //                 return redirect('fgs/MTQ/item-list/' . $add);
+    //             } else {
+    //                 $request->session()->flash('error', "MTQ insertion is failed. Try again... !");
+    //                 return redirect('fgs/MTQ-add');
+    //             }
+    //         } else {
+    //             return redirect('fgs/MTQ-add')->withErrors($validator)->withInput();
+    //         }
+    //     } else {
+    //         $locations = product_stock_location::get();
+    //         $category = fgs_product_category::get();
+    //         return view('pages/FGS/MTQ/MTQ-add', compact('locations', 'category'));
+    //     }
+    // }
     public function CMTQAdd(Request $request)
     {
-        if($request->isMethod('post'))
-        { 
-           $validation['cmtq_date'] = ['required'];
-           $validator = Validator::make($request->all(), $validation);
-            if(!$validator->errors()->all())
-            {
-                if(date('m')==01 || date('m')==02 || date('m')==03)
-                {
-                    $years_combo = date('y', strtotime('-1 year')).date('y');
+        if ($request->isMethod('post')) {
+            $validation['cmtq_date'] = ['required'];
+            $validator = Validator::make($request->all(), $validation);
+            if (!$validator->errors()->all()) {
+                if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
+                    $years_combo = date('y', strtotime('-1 year')) . date('y');
+                } else {
+                    $years_combo = date('y') . date('y', strtotime('+1 year'));
                 }
-                else
-                {
-                    $years_combo = date('y').date('y', strtotime('+1 year'));
-                }
-                $data['cmtq_number'] = "CMTQ-".$this->year_combo_num_gen(DB::table('fgs_cmtq')->where('fgs_cmtq.cmtq_number', 'LIKE', 'Cmtq-'.$years_combo.'%')->count()); 
+                $data['cmtq_number'] = "CMTQ-" . $this->year_combo_num_gen(DB::table('fgs_cmtq')->where('fgs_cmtq.cmtq_number', 'LIKE', 'Cmtq-' . $years_combo . '%')->count());
                 $data['cmtq_date'] = date('Y-m-d', strtotime($request->cmtq_date));
                 $data['mtq_id'] = $request->mtq_number;
-                $data['created_by']= config('user')['user_id'];
-                $data['status']=1;
-                $data['created_at'] =date('Y-m-d H:i:s');
-                $data['updated_at'] =date('Y-m-d H:i:s');
+                $data['created_by'] = config('user')['user_id'];
+                $data['status'] = 1;
+                $data['created_at'] = date('Y-m-d H:i:s');
+                $data['updated_at'] = date('Y-m-d H:i:s');
                 $data['remarks'] = $request->remarks;
                 $data['stock_location_id2'] = $request->stock_location_id2;
                 $data['stock_location_id1'] = $request->stock_location_id1;
                 $data['remarks'] = $request->remarks;
-                 $fgs_mtq_data = $this->fgs_mtq->get_master_data(['fgs_mtq.id' => $data['mtq_id']]);
-                 $cmtq_id = $this->fgs_cmtq->insert_data($data);
+                $qty_to_cancel_array = $request->qty_to_cancel;
 
-                foreach ($request->mtq_item_id as $mtq_item_id) {
-                        $mtq_item =fgs_mtq_item::find($mtq_item_id);
-                        $datas = [
-                            "mtq_item_id" => $mtq_item_id,
-                            "product_id" => $mtq_item['product_id'],
-                            "batchcard_id" => $mtq_item['batchcard_id'],
-                            "quantity" => $mtq_item['quantity'],
-                            "created_at" => date('Y-m-d H:i:s')
-                        ];
+                $fgs_mtq_data = $this->fgs_mtq->get_master_data(['fgs_mtq.id' => $data['mtq_id']]);
+                $cmtq_id = $this->fgs_cmtq->insert_data($data);
+                foreach ($request->mtq_item_id as $i => $mtq_item_id) {
+                    $mtq_item = fgs_mtq_item::find($mtq_item_id);
+                    $datas = [
+                        "mtq_item_id" => $mtq_item_id,
+                        "product_id" => $mtq_item['product_id'],
+                        "batchcard_id" => $mtq_item['batchcard_id'],
+                        // "quantity" => $mtq_item['quantity'],
+                        "quantity" => $qty_to_cancel_array[$i],
+                        "created_at" => date('Y-m-d H:i:s')
+                    ];
 
-                         $this->fgs_cmtq_item->insert_data($datas,$cmtq_id);
-                         $fgs_mtq_item = fgs_mtq_item::
-                                        where('product_id','=',$mtq_item['product_id'])
-                                        ->update(['cmtq_status' => 1]);
+                    $this->fgs_cmtq_item->insert_data($datas, $cmtq_id);
+                    $fgs_mtq_item = fgs_mtq_item::where('product_id', '=', $mtq_item['product_id'])
+                        ->update(['cmtq_status' => 1]);
 
-                        $qurantine_stock = fgs_qurantine_stock_management::where('product_id','=',$mtq_item['product_id'])
-                                        ->where('batchcard_id','=',$mtq_item['batchcard_id'])
-                                        ->first();
-                            $update_stock = $qurantine_stock['quantity']-$mtq_item['quantity'];
-                            $product_stock = $this->fgs_qurantine_stock_management->update_data(['id'=>$qurantine_stock['id']],['quantity'=>$update_stock]);
+                    $qurantine_stock = fgs_qurantine_stock_management::where('product_id', '=', $mtq_item['product_id'])
+                        ->where('batchcard_id', '=', $mtq_item['batchcard_id'])
+                        ->first();
+                    $update_stock = $qurantine_stock['quantity'] - $mtq_item['quantity'];
+                    $product_stock = $this->fgs_qurantine_stock_management->update_data(['id' => $qurantine_stock['id']], ['quantity' => $update_stock]);
 
-
-
-                         $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$mtq_item['product_id'])
-                                        ->where('batchcard_id','=',$mtq_item['batchcard_id'])
-                                        ->where('stock_location_id','=',$fgs_mtq_data->stock_location_id1)
-                                        ->first();
-                            $update_stock = $fgs_product_stock['quantity']+$mtq_item['quantity'];
-                            $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
-                   
-                if($cmtq_id)
-                {
+                    $fgs_product_stock = fgs_product_stock_management::where('product_id', '=', $mtq_item['product_id'])
+                        ->where('batchcard_id', '=', $mtq_item['batchcard_id'])
+                        ->where('stock_location_id', '=', $fgs_mtq_data->stock_location_id1)
+                        ->first();
+                    $update_stock = $fgs_product_stock['quantity'] + $mtq_item['quantity'];
+                    $production_stock = $this->fgs_product_stock_management->update_data(['id' => $fgs_product_stock['id']], ['quantity' => $update_stock]);
+                }
+                if ($cmtq_id) {
                     $request->session()->flash('success', "You have successfully added a CMTQ !");
                     return redirect('fgs/CMTQ-list');
-                }
-                else
-                {
+                } else {
                     $request->session()->flash('error', "Cmtq insertion is failed. Try again... !");
                     return redirect('fgs/CMTQ/CMTQ-add');
                 }
-
             }
-        }
-            if($validator->errors()->all())
-                {
-                    return redirect('FGS/CMTQ/CMTQ-add')->withErrors($validator)->withInput();
-                }
+            if ($validator->errors()->all()) {
+                return redirect('FGS/CMTQ/CMTQ-add')->withErrors($validator)->withInput();
             }
-        
-        else
-        {
+        } else {
             $condition1[] = ['user.status', '=', 1];
             $data['users'] = $this->User->get_all_users($condition1);
             $locations = product_stock_location::get();
             $category = fgs_product_category::get();
-            return view('pages/FGS/CMTQ/CMTQ-add',compact('locations','category','data'));
+            return view('pages/FGS/CMTQ/CMTQ-add', compact('locations', 'category', 'data'));
         }
-       
     }
     public function CMTQitemlist(Request $request)
     {
@@ -162,7 +272,7 @@ class CMTQController extends Controller
         $condition = ['fgs_cmtq_item_rel.master' =>$request->cmtq_id];
         if($request->product)
         {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->product . '%'];
+            $condition[] = ['fgs_item_master.sku_code','like', '%' . $request->product . '%'];
         }
         if($request->batch_no)
         {
@@ -259,7 +369,7 @@ class CMTQController extends Controller
             
             $data .= '<thead>
                 <tr>
-                <th ></th> 
+                <th><input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)"></th>                
                <th>PRODUCT</th>
                 <th>HSN CODE</th>
                 <th>DESCRIPTION</th>
@@ -270,12 +380,13 @@ class CMTQController extends Controller
                <tbody >';
                foreach ($mtq_item as $item) {
                 $data .= '<tr>
-                       <td ><input type="checkbox" name="mtq_item_id[]" id="mtq_item_id" value="'.$item->id.'"></td>
-                       <td>'.$item->sku_code.'</td>
+                        <td ><input type="checkbox" class="rowCheckbox" name="mtq_item_id[]" onclick="enableTextBox(this)" id="mtq_item_id" value="' . $item->id . '"></td>
+                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->hsn_code.'</td>
                        <td>'.$item->discription.'</td>
                        <td>'.$item->batch_no.'</td>
-                       <td>'.$item->quantity.'</td>
+                       <td id="qty">' . $item->quantity . '</td>
+                       <td><input type="number" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" ' . $item->quantity . '" disabled></td>
                       
                       </tr>';
                 }
@@ -318,72 +429,94 @@ class CMTQController extends Controller
         $data['cmtq'] = $this->fgs_cmtq->get_single_cmtq(['fgs_cmtq.id' => $cmtq_id]);
         $data['items'] = $this->fgs_cmtq_item->getAllItems(['fgs_cmtq_item_rel.master' => $cmtq_id]);
         $pdf = PDF::loadView('pages.FGS.CMTQ.pdf-view', $data);
-        $pdf->set_paper('A4', 'landscape');
+        // $pdf->set_paper('A4', 'landscape');
+       // $pdf->setOptions(['isPhpEnabled' => true]); 
+       $pdf->setOptions(['isPhpEnabled' => true]);       
+      
+
         $file_name = "CMTQ" . $data['cmtq']['firm_name'] . "_" . $data['cmtq']['cmtq_date'];
         return $pdf->stream($file_name . '.pdf');
     }
     public function cmtq_transaction(Request $request)
     {
-        $condition=[];
-        if($request->cmtq_no)
-        {
-            $condition[] = ['fgs_cmtq.cmtq_number','like', '%' . $request->cmtq_no . '%']; 
+        $condition = [];
+        if ($request->cmtq_no) {
+            $condition[] = ['fgs_cmtq.cmtq_number', 'like', '%' . $request->cmtq_no . '%'];
         }
-        
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
-        if($request->from)
-        {
+        if ($request->from) {
             $condition[] = ['fgs_cmtq_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-           
         }
-        $items = fgs_cmtq_item::select('fgs_cmtq.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'fgs_cmtq.cmtq_number','fgs_cmtq.cmtq_date','fgs_cmtq.created_at as cmtq_wef','fgs_cmtq_item.id as cmtq_item_id')
+        $items = fgs_cmtq_item::select(
+            'fgs_cmtq.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_cmtq.cmtq_number',
+            'fgs_cmtq.cmtq_date',
+            'fgs_cmtq.created_at as cmtq_wef',
+            'fgs_cmtq_item.id as cmtq_item_id',
+            'fgs_cmtq_item.quantity'
+        )
             ->leftJoin('fgs_cmtq_item_rel', 'fgs_cmtq_item_rel.item', '=', 'fgs_cmtq_item.id')
             ->leftJoin('fgs_cmtq', 'fgs_cmtq.id', '=', 'fgs_cmtq_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cmtq_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_cmtq_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cmtq_item.batchcard_id')
             //->where('fgs_cmtq_item.batchcard_id', '=', $batch_id)
             ->where($condition)
             //->where('fgs_cmtq_item.status',1)
             //->distinct('fgs_cmtq_item.id')
-            ->orderBy('fgs_cmtq_item.id','desc')
+            ->orderBy('fgs_cmtq_item.id', 'desc')
             ->paginate(15);
-            
-        return view('pages/fgs/CMTQ/CMTQ-transaction-list',compact('items'));
+
+        return view('pages/fgs/CMTQ/CMTQ-transaction-list', compact('items'));
     }
     public function cmtq_transaction_export(Request $request)
     {
-        $condition=[];
-        if($request->cmtq_no)
-        {
-            $condition[] = ['fgs_cmtq.cmtq_number','like', '%' . $request->cmtq_no . '%']; 
+        $condition = [];
+        if ($request->cmtq_no) {
+            $condition[] = ['fgs_cmtq.cmtq_number', 'like', '%' . $request->cmtq_no . '%'];
         }
-        
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
-        if($request->from)
-        {
+        if ($request->from) {
             $condition[] = ['fgs_cmtq_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-           
         }
-        $items = fgs_cmtq_item::select('fgs_cmtq.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'fgs_cmtq.cmtq_number','fgs_cmtq.cmtq_date','fgs_cmtq.created_at as cmtq_wef','fgs_cmtq_item.id as cmtq_item_id')
+        $items = fgs_cmtq_item::select(
+            'fgs_cmtq.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_cmtq.cmtq_number',
+            'fgs_cmtq.cmtq_date',
+            'fgs_cmtq.created_at as cmtq_wef',
+            'fgs_cmtq_item.id as cmtq_item_id',
+            'fgs_cmtq_item.quantity',
+            'fgs_product_category.category_name',
+            'fgs_product_category_new.category_name as new_category_name'
+
+        )
             ->leftJoin('fgs_cmtq_item_rel', 'fgs_cmtq_item_rel.item', '=', 'fgs_cmtq_item.id')
             ->leftJoin('fgs_cmtq', 'fgs_cmtq.id', '=', 'fgs_cmtq_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cmtq_item.product_id')
+            ->leftJoin('fgs_mtq', 'fgs_mtq.id', '=', 'fgs_cmtq.mtq_id')
+
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_cmtq_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cmtq_item.batchcard_id')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_mtq.product_category_id')
+            ->leftJoin('fgs_product_category_new','fgs_product_category_new.id','fgs_mtq.new_product_category')
+
             //->where('fgs_cmtq_item.batchcard_id', '=', $batch_id)
             ->where($condition)
             //->where('fgs_cmtq_item.status',1)
             //->distinct('fgs_cmtq_item.id')
-            ->orderBy('fgs_cmtq_item.id','desc')
+            ->orderBy('fgs_cmtq_item.id', 'desc')
             ->get();
-            return Excel::download(new FGScmtqtransactionExport($items), 'FGS-CMTQ-transaction' . date('d-m-Y') . '.xlsx');
 
+        return Excel::download(new FGScmtqtransactionExport($items), 'FGS-CMTQ-transaction' . date('d-m-Y') . '.xlsx');
     }
 }   

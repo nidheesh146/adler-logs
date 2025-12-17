@@ -26,12 +26,12 @@ class fgs_coef_item extends Model
    
     function getAllItems($condition)
     {
-        return $this->select('fgs_coef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','fgs_coef.coef_number',
-        'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_oef_item.rate')
+        return $this->select('fgs_coef_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','fgs_coef.coef_number',
+        'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_oef_item.rate','fgs_oef_item.discount')
                         ->leftjoin('fgs_oef_item','fgs_oef_item.id','=','fgs_coef_item.coef_item_id')
                         ->leftjoin('fgs_coef_item_rel','fgs_coef_item_rel.item','=','fgs_coef_item.id')
                         ->leftjoin('fgs_coef','fgs_coef.id','=','fgs_coef_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_coef_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_coef_item.product_id')
                         ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
                         ->where($condition)
                         ->where('fgs_coef.status','=',1)
@@ -43,10 +43,10 @@ class fgs_coef_item extends Model
     
     function get_items($condition)
     {
-        return $this->select('fgs_coef_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code')
+        return $this->select('fgs_coef_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code')
                         ->leftjoin('fgs_coef_item_rel','fgs_coef_item_rel.item','=','fgs_coef_item.id')
                         ->leftjoin('fgs_coef','fgs_coef.id','=','fgs_coef_item_rel.master')
-                        ->leftjoin('product_product','product_product.id','=','fgs_coef_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_coef_item.product_id')
                          ->where($condition)
                         ->orderBy('fgs_coef_item.id','DESC')
                         ->distinct('fgs_coef_item.id')

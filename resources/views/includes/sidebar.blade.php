@@ -27,6 +27,7 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
   <div class="az-sidebar-body">
     <ul class="nav">
       <li class="nav-label">Main Menu</li>
+      @if(in_array('purchase_details.view',config('permission')))
       <li class="nav-item @if (in_array($Action,['Inventory.get_purchase_reqisition','Inventory.add_purchase_reqisition','Inventory.edit_purchase_reqisition',
         'Inventory.get_purchase_reqisition_item','Inventory.edit_purchase_reqisition_item',
         'Inventory.add_purchase_reqisition_item','Approval.getList','Quotation.getQuotation', 
@@ -72,12 +73,12 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
           <li class="nav-sub-item  @if(in_array($Action,['Purchase.pendingPurchaseRealisation'])){{'active'}} @endif "><a href="{{url('inventory/pending-purchase-realisation')}}" class="nav-sub-link">R02-Pending Purchase Realisation</a></li>
         </ul>
       </li><!-- nav-item -->
-
-
+@endif
+      @if(in_array('inventory.view',config('permission')))
       <li class="nav-item @if(in_array($Action,['Purchase.supplierInvoice','Purchase.supplierInvoiceAdd','Purchase.supplierInvoiceItemEdit','LotAllocation.addLotAllocation','LotAllocation.lotAllocation','MIQ.MIQlist','MIQ.MIQAdd','MIQ.MIQAddItemInfo','MAC.MACAddItemInfo','MAC.MAClist','MAC.MACAdd','MRR.receiptReport',
-        'MRD.RMRNAddItemInfo','MRR.addMRR','Stock.viewItems','Inventoryreport.get_data','Stock.stockReport','Stock.transactionSlip','Stock.transactionSlipAdd','Purchase.SplitInvoiceItem',
+        'MRD.RMRNAddItemInfo','MRR.addMRR','Stock.viewItems','Inventoryreport.get_data','Stock.stockReport','Stock.transactionSlip','Stock.transactionSlipAdd','Purchase.SplitInvoiceItem','Stock.PackingSIP','Stock.underProcessSIP',
         'MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.RMRNlist','MRD.RMRNAdd','Stock.StockToProduction','Stock.StockToProductionAdd','MAC.WOAAdd','MRD.WORAdd','Stock.resetBatchInputMaterial',
-        'Stock.StockFromProduction','Stock.StockFromProductionAdd','Stock.StockTransfer','Stock.StockTransferAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview','MIQ.LiveQuarantineReport','FGSTransfer.fgsTransfer','FGSTransfer.fgsTransferList','FGSTransfer.fgsTransferAdd'])){{'active show'}} @endif ">
+        'Stock.StockFromProduction','Stock.StockFromProductionAdd','Stock.StockTransfer','Stock.StockTransferAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview','MIQ.LiveQuarantineReport','FGSTransfer.fgsTransfer','FGSTransfer.fgsTransferList','FGSTransfer.fgsTransferAdd','Stock.Add_stock_location'])){{'active show'}} @endif ">
         <a href="#" class="nav-link with-sub">
           <i class="fas fa-boxes" style="font-size:19px"></i>Inventory</a>
 
@@ -90,37 +91,41 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
           <li class="nav-sub-item  @if(in_array($Action,['MRD.MRDlist','MRD.MRDAdd','MRD.MRDAddItemInfo','MRD.WORAdd'])){{'active'}} @endif "><a href="{{url('inventory/MRD')}}" class="nav-sub-link">MRD/WOR</a></li>
           <li class="nav-sub-item  @if(in_array($Action,['MRD.RMRNlist','MRD.RMRNAdd','MRD.RMRNAddItemInfo'])){{'active'}} @endif "><a href="{{url('inventory/RMRN')}}" class="nav-sub-link">RMRN</a></li>
           <li class="nav-sub-item  @if(in_array($Action,['MRR.addMRR','MRR.receiptReport'])){{'active'}} @endif "><a href="{{url('inventory/receipt-report')}}" class="nav-sub-link">MRR/SRR</a></li>
-          <li class="nav-sub-item  @if(in_array($Action,['FGSTransfer.fgsTransfer','FGSTransfer.fgsTransferList','FGSTransfer.fgsTransferAdd'])){{'active'}} @endif "><a href="{{url('inventory/fgs-transfer-list')}}" class="nav-sub-link">FGS Transfer</a></li>
+          <!-- <li class="nav-sub-item  @if(in_array($Action,['FGSTransfer.fgsTransfer','FGSTransfer.fgsTransferList','FGSTransfer.fgsTransferAdd'])){{'active'}} @endif "><a href="{{url('inventory/fgs-transfer-list')}}" class="nav-sub-link">FGS Transffer</a></li> -->
           <li class="nav-sub-item  @if(in_array($Action,['Stock.stockReport','Stock.transactionSlipAdd'])){{'active'}} @endif"><a href="{{url('inventory/stock-report')}}" class="nav-sub-link">Stock Report</a></li>
           <li class="nav-sub-item  @if(in_array($Action,['Stock.transactionSlip'])){{'active'}} @endif"><a href="{{url('inventory/transaction-slip')}}" class="nav-sub-link">Transaction Slip</a></li>
           <li class="nav-sub-item  @if(in_array($Action,['Stock.resetBatchInputMaterial'])){{'active'}} @endif"><a href="{{url('inventory/reset-batchcard-material')}}" class="nav-sub-link">Reset Batchcard Material </a></li>
-          <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li>
+          <li class="nav-sub-item  @if(in_array($Action,['Stock.StockToProduction','Stock.StockToProductionAdd','Stock.DirectSIP','Stock.IndirectSIP','Stock.SIPview', 'Stock.PackingSIP','Stock.underProcessSIP'])){{'active'}} @endif "><a href="{{url('inventory/Stock/ToProduction')}}" class="nav-sub-link">Stock Issue To Production</a></li>
           <li class="nav-sub-item  @if(in_array($Action,['Stock.StockFromProduction','Stock.StockFromProductionAdd'])){{'active'}} @endif "><a href="{{url('inventory/Stock/FromProduction')}}" class="nav-sub-link">Stock Return From Production</a></li>
           <li class="nav-sub-item  @if(in_array($Action,['Stock.StockTransfer','Stock.StockTransferAdd','Stock.viewItems'])){{'active'}} @endif "><a href="{{url('inventory/Stock/transfer')}}" class="nav-sub-link">Stock Transfer Order</a></li>
           <li class="nav-sub-item @if(in_array($Action,['Inventoryreport.get_data'])){{'active'}} @endif "><a href="{{url('inventory/inventory-trans-report')}}" class="nav-sub-link">Inventory Transaction Report</a></li>
 
         </ul>
       </li>
-
+      @endif
+      @if(in_array('finished_goods.view',config('permission')))
       <li class="nav-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier','Price.priceList','Price.priceAdd','MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRN_edit','MRN.MRNitemlist','OEF.pendingOEF',
         'MRN.MRNitemAdd','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINitemlist','CMIN.CMINitemAdd','OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist',
         'PI.PIAdd','PI.PIList','PI.PIitemlist','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','MTQ.MTQAdd','StockManagement.productionStockAdd',
-        'StockManagement.productionStockList','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','PI.pendingPI','GRS.pendingGRS','PI.mergedPIList','BackorderReport.get_data','GRS.GRSitemAdd',
+        'StockManagement.productionStockList','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList','CMIN.CMINitemAdd','PI.pendingPI','GRS.pendingGRS','PI.mergedPIList','PI.mergeMutiplePI','BackorderReport.get_data','GRS.GRSitemAdd',
         'COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','ProductMaster.productList','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist' ,
-        'CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd','StockManagement.locationSNNTrade','GRS.GRSItemEdit','GRS.GRSEdit','PI.PIEdit',
-        'StockManagement.allLocations','StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','PI.pendingPI','Fgsreport.get_data','StockManagement.batchTraceReport','DNI.netBillingReport','DeliveryNote.ChallanList',
-              'DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist','MIN.MINitemedit','MRN.edit_mrn','MRN.edit_mrn_item'])){{'active show'}} @endif ">
-
+        'CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd','StockManagement.locationSNNTrade','GRS.GRSItemEdit','GRS.GRSEdit','PI.PIEdit','OEF.edit_oef_item','DCreport.DCReport','DCreport.CDCReport','SRN.SRNManualAdd',
+        'StockManagement.allLocations','StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','PI.pendingPI','Fgsreport.get_sales_data','Fgsreport.get_inv_data','StockManagement.batchTraceReport','DNI.netBillingReport','DeliveryNote.ChallanList',
+        'DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist','MIN.MINitemedit','MRN.edit_mrn','MRN.edit_mrn_item','CDC.CDCList','CDC.CDCAdd','CDC.CDCItemList','CDC.CDCpdf','SAI.SAIlist','SAI.SAIAdd','SAI.SAIItemList','SAD.SADlist','SAD.SADAdd','SAD.SADlist','SAD.SADItemList',
+        'Dcbackorder.GetAllDC','Dcbackorder.PendingDC','Dcbackorder.PendingCDC','Price.priceUpload','ProductMaster.product_upload','NetBkBillingr.NetBillingReportAll','DeliveryNote.dc_transfer_stock','DeliveryNote.dc_transfer_stock_consignment','DeliveryNote.dc_transfer_stock_loaner','DeliveryNote.dc_transfer_stock_replacement','DeliveryNote.dc_transfer_stock_demo','DeliveryNote.dc_transfer_stock_samples',
+        'SatelliteStock.locationList','SRNcontroller.srn_transaction','EXI.exi_transaction','DNI.dni_transaction','CPI.cpi_transaction',
+        'OEF.oef_transaction','COEF.coef_transaction','Fgsreport.get_inv_data','MIScontroller.mis_transaction','CMTQ.cmtq_transaction','MTQ.mtq_transaction','MIN.cmin_transaction','MIN.min_transaction',
+      'CGRS.cgrs_transaction','GRS.grs_transaction','MRN.mrn_transaction'])){{'active show'}} @endif ">
         <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Finished Goods</a>
         <ul class="nav-sub">
           <li class="nav-sub-item @if(in_array($Action,['CustomerSupplier.customerSupplierList','CustomerSupplier.addCustomerSupplier'])){{'active'}} @endif ">
             <a href="{{url('fgs/customer-supplier')}}" class="nav-sub-link">FGS Customer-Supplier</a>
           </li>
-          <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd'])){{'active'}} @endif ">
+          <li class="nav-sub-item @if(in_array($Action,['Price.priceList','Price.priceAdd','Price.priceUpload'])){{'active'}} @endif ">
             <a href="{{url('fgs/price-master/list')}}" class="nav-sub-link">FGS Price Master</a>
           </li>
 
-          <li class="nav-sub-item @if(in_array($Action,['ProductMaster.productAdd','ProductMaster.productList'])){{'active'}} @endif ">
+          <li class="nav-sub-item @if(in_array($Action,['ProductMaster.productAdd','ProductMaster.productList','ProductMaster.product_upload'])){{'active'}} @endif ">
             <a href="{{url('fgs/product-master/list')}}" class="nav-sub-link">FGS Item Master</a>
           </li>
           {{--
@@ -130,13 +135,21 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
       --}}
       <li class="nav-sub-item @if(in_array($Action,['StockManagement.location1Stock','StockManagement.location2Stock','StockManagement.MAAStock','StockManagement.quarantineStock','StockManagement.allLocations',
             'StockManagement.location3Stock','StockManagement.locationSNN','StockManagement.locationAHPL','StockManagement.locationSNNTrade'])){{'active'}} @endif ">
-        <a href="{{url('fgs/stock-management/all-locations')}}" class="nav-sub-link">FGS Stock Management</a>
+        <a href="{{url('fgs/stock-management/all-locations')}}" class="nav-sub-link">FGS On shelf Stock</a>
       </li>
       <li class="nav-sub-item @if(in_array($Action,['BackorderReport.get_data','GRS.pendingGRS','PI.pendingPI','OEF.pendingOEF'])){{'active'}} @endif ">
         <a href="{{url('fgs/back-ordr-report')}}" class="nav-sub-link">FGS Back order Report</a>
       </li>
-      <li class="nav-sub-item  @if(in_array($Action,['Fgsreport.get_data'])){{'active'}} @endif">
+      {{--<li class="nav-sub-item  @if(in_array($Action,['Fgsreport.get_data'])){{'active'}} @endif">
         <a href="{{url('fgs/fgs-report')}}" class="nav-sub-link">FGS Transaction Report</a>
+      </li>--}}
+      <li class="nav-sub-item  @if(in_array($Action,['Fgsreport.get_sales_data','SRNcontroller.srn_transaction','EXI.exi_transaction','DNI.dni_transaction','CPI.cpi_transaction',
+      'OEF.oef_transaction','COEF.coef_transaction'])){{'active'}} @endif">
+        <a href="{{url('fgs/fgs-sales-report')}}" class="nav-sub-link">FGS Sales Transaction Report</a>
+      </li>
+      <li class="nav-sub-item  @if(in_array($Action,['Fgsreport.get_inv_data','MIScontroller.mis_transaction','CMTQ.cmtq_transaction','MTQ.mtq_transaction','MIN.cmin_transaction','MIN.min_transaction',
+      'CGRS.cgrs_transaction','GRS.grs_transaction','MRN.mrn_transaction'])){{'active'}} @endif">
+        <a href="{{url('fgs/fgs-inv-report')}}" class="nav-sub-link">FGS Inv Transaction Report</a>
       </li>
       <li class="nav-sub-item  @if(in_array($Action,['StockManagement.batchTraceReport'])){{'active'}} @endif">
         <a href="{{url('fgs/batch-trace-report')}}" class="nav-sub-link">FGS Batch Trace Report</a>
@@ -144,10 +157,23 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
       <li class="nav-sub-item  @if(in_array($Action,['DNI.netBillingReport'])){{'active'}} @endif">
         <a href="{{url('fgs/net-billing-report')}}" class="nav-sub-link">FGS Net Billing Report</a>
       </li>
+      <li class="nav-sub-item @if(in_array($Action,['DeliveryNote.dc_transfer_stock','DeliveryNote.dc_transfer_stock_consignment','DeliveryNote.dc_transfer_stock_loaner','DeliveryNote.dc_transfer_stock_replacement','DeliveryNote.dc_transfer_stock_demo','DeliveryNote.dc_transfer_stock_samples'])){{'active'}} @endif ">
+            <a href="{{url('fgs/Delivery_challan/Challan-stock-all-location')}}" class="nav-sub-link">FGS OFF Shelf Stock</a>
+      </li>
+      <li class="nav-sub-item  @if(in_array($Action,['DCreport.DCReport','DCreport.CDCReport'])){{'active'}} @endif">
+        <a href="{{url('fgs/DC-report')}}" class="nav-sub-link">FGS DC-CDC Backorder Report</a>
+      </li>
+      <li class="nav-sub-item @if(in_array($Action,['Dcbackorder.GetAllDC','Dcbackorder.PendingDC','Dcbackorder.PendingCDC'])){{'active'}} @endif ">
+        <a href="{{url('fgs/Dc-pending-report')}}" class="nav-sub-link">DC Back order Report</a>
+      </li>
+      <li class="nav-sub-item  @if(in_array($Action,['NetBkBillingr.NetBillingReportAll'])){{'active'}} @endif">
+        <a href="{{url('fgs/net-all-billing-report')}}" class="nav-sub-link">FGS Net Booking-Billing Report</a>
+      </li>
       <li class="nav-item @if(in_array($Action,['MRN.MRNList','MRN.MRNList','MRN.MRNAdd','MRN.MRNitemlist','MTQ.MTQitemlist','MTQ.MTQList','MTQ.MTQitemAdd','GRS.GRSitemAdd','GRS.GRSItemEdit','GRS.GRSEdit',
               'MRN.MRNitemAdd','MRN.MRN_edit','MIN.MINList','MIN.MINAdd','MIN.MINitemlist','MIN.MINitemAdd','GRS.GRSList','GRS.GRSAdd','GRS.GRSitemlist','CMIN.CMINList','CMIN.CMINAdd','CMIN.CMINItemList',
               'CMIN.CMINitemAdd','MTQ.MTQAdd','CGRS.CGRSList','CGRS.CGRSAdd','CGRS.CGRSItemList','MIS.MISList','MIS.MISAdd','MIS.MISitemlist','CMTQ.CMTQitemlist','CMTQ.CMTQList','CMTQ.CMTQAdd','CMTQ.CMTQitemAdd','DeliveryNote.ChallanList',
-              'DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist','MIN.MINitemedit','MRN.edit_mrn','MRN.edit_mrn_item'])){{'active show'}} @endif">
+              'DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist','MIN.MINitemedit','MRN.edit_mrn','MRN.edit_mrn_item','CDC.CDCList','CDC.CDCAdd','CDC.CDCItemList','CDC.CDCpdf',
+              'SAI.SAIlist','SAI.SAIAdd','SAI.SAIItemList','SAD.SADlist','SAD.SADAdd','SAD.SADlist','SAD.SADItemList'])){{'active show'}} @endif">
         <a href="#" class="nav-link with-sub">Inventory</a>
         <ul class="nav-sub">
           <li class="nav-sub-item @if(in_array($Action,['MRN.MRNList','MRN.MRNitemlist','MRN.MRNAdd','MRN.MRNitemAdd','MRN.MRN_edit','MRN.edit_mrn','MRN.edit_mrn_item'])){{'active'}} @endif ">
@@ -180,13 +206,22 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
           <li class="nav-sub-item @if(in_array($Action,['DeliveryNote.ChallanList','DeliveryNote.ChallanAdd','DeliveryNote.ChallanItemAdd','DeliveryNote.Challanitemlist'])){{'active'}} @endif ">
             <a href="{{url('fgs/Delivery_challan/Challan-list')}}" class="nav-sub-link">Delivery Note</a>
           </li>
+          <li class="nav-sub-item @if(in_array($Action,['CDC.CDCList','CDC.CDCAdd','CDC.CDCItemList','CDC.CDCpdf'])){{'active'}} @endif ">
+            <a href="{{url('fgs/CDC/CDC-list')}}" class="nav-sub-link">CDC</a>
+          </li>
+          <li class="nav-sub-item  @if(in_array($Action,['SAI.SAIlist','SAI.SAIAdd','SAI.SAIItemList'])){{'active'}} @endif">
+            <a href="{{url('fgs/SAI-list')}}" class="nav-sub-link">SAI</a>
+          </li>
+          <li class="nav-sub-item  @if(in_array($Action,['SAD.SADlist','SAD.SADAdd','SAD.SADlist','SAD.SADItemList'])){{'active'}} @endif">
+            <a href="{{url('fgs/SAD-list')}}" class="nav-sub-link">SAD</a>
+          </li>
         </ul>
       </li>
-      <li class="nav-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','PI.PIAdd','PI.PIList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','PI.mergedPIList','PI.PIEdit',
-            'EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','PI.PIList','PI.PIAdd','PI.PIitemlist','COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist'])){{'active show'}} @endif">
+      <li class="nav-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','COEF.COEFList','COEF.COEFAdd','COEF.COEFitemlist','COEF.COEFitemAdd','PI.PIAdd','PI.PIList','DNI.DNIList','DNI.DNIAdd','DNI.DNIitemlist','PI.mergedPIList','PI.mergeMutiplePI','PI.PIEdit',
+            'EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist','PI.PIList','PI.PIAdd','PI.PIitemlist','COEF.COEFList','COEF.COEFAdd','COEF.COEFItemList','COEF.COEFitemAdd','CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList','SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist','OEF.edit_oef_item','SRN.SRNManualAdd'])){{'active show'}} @endif">
         <a href="#" class="nav-link with-sub">Sales</a>
         <ul class="nav-sub">
-          <li class="nav-sub-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd'])){{'active'}} @endif ">
+          <li class="nav-sub-item @if(in_array($Action,['OEF.OEFList','OEF.OEFAdd','OEF.OEFitemlist','OEF.OEFitemAdd','OEF.edit_oef_item'])){{'active'}} @endif ">
             <a href="{{url('fgs/OEF-list')}}" class="nav-sub-link">OEF</a>
           </li>
           <!-- <li class="nav-sub-item @if(in_array($Action,['OEF.pendingOEF'])){{'active'}} @endif ">
@@ -198,7 +233,7 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
           <li class="nav-sub-item @if(in_array($Action,['PI.PIList','PI.PIAdd','PI.PIitemlist','PI.PIEdit'])){{'active'}} @endif ">
             <a href="{{url('fgs/PI-list')}}" class="nav-sub-link">PI</a>
           </li>
-          <li class="nav-sub-item @if(in_array($Action,['PI.mergedPIList'])){{'active'}} @endif ">
+          <li class="nav-sub-item @if(in_array($Action,['PI.mergedPIList','PI.mergeMutiplePI'])){{'active'}} @endif ">
             <a href="{{url('fgs/merged-PI-list')}}" class="nav-sub-link">Merged PI List</a>
           </li>
           <li class="nav-sub-item @if(in_array($Action,['CPI.CPIList','CPI.CPIAdd','CPI.CPIItemList'])){{'active'}} @endif ">
@@ -210,15 +245,30 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
           <li class="nav-sub-item @if(in_array($Action,['EXI.EXIList','EXI.EXIAdd','EXI.EXIitemlist'])){{'active'}} @endif ">
             <a href="{{url('fgs/EXI-list')}}" class="nav-sub-link">EXI</a>
           </li>
-          <li class="nav-sub-item @if(in_array($Action,['SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist'])){{'active'}} @endif ">
+          <li class="nav-sub-item @if(in_array($Action,['SRN.SRNAdd','SRN.SRNlist','SRN.SRNitemlist','SRN.SRNManualAdd'])){{'active'}} @endif ">
             <a href="{{url('fgs/SRN-list')}}" class="nav-sub-link">SRN</a>
           </li>
         </ul>
       </li>
+      <li class="nav-item @if(in_array($Action,['SatelliteStock.locationList'])){{'active'}} @endif ">
+        <a href="#" class="nav-link with-sub">Satellite Stock</a>
+        <ul class="nav-sub">
+          <li class="nav-sub-item @if(in_array($Action,['SatelliteStock.locationList'])){{'active'}} @endif ">
+            <a href="{{url('fgs/satellite-stock/location')}}" class="nav-sub-link">Satellite Stock Location</a>
+          </li>
+          <li class="nav-sub-item @if(in_array($Action,['Stock.Add_stock_location'])){{'active'}} @endif "><a href="{{url('inventory/stock-location-Add')}}" class="nav-sub-link">Stock Location</a></li>
+
+          {{--<li class="nav-sub-item @if(in_array($Action,['SatelliteStock.locationList'])){{'active'}} @endif ">
+            <a href="{{url('fgs/satellite/stock')}}" class="nav-sub-link">Satellite Stock</a>
+          </li>--}}
+        </ul>
+      </li>
+
     </ul>
     </li>
-
-    <li class="nav-item @if(in_array($Action,['BatchCard.getBatchcardUpload', 'BatchCard.BatchcardAdd','BatchCard.BatchcardList','BatchCard.requestList'])){{'active show'}} @endif ">
+    @endif
+    @if(in_array('batchcard.view',config('permission')))
+    <li class="nav-item @if(in_array($Action,['BatchCard.getBatchcardUpload', 'BatchCard.BatchcardAdd','BatchCard.BatchcardList','BatchCard.requestList','BatchCard.batch_item_search'])){{'active show'}} @endif ">
       <a href="#" class="nav-link with-sub"><i class="typcn typcn-tabs-outline"></i>Batch Card</a>
       <ul class="nav-sub">
         <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardList'])){{'active'}} @endif ">
@@ -230,16 +280,21 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         <li class="nav-sub-item @if(in_array($Action,['BatchCard.BatchcardAdd'])){{'active'}} @endif ">
           <a href="{{url('batchcard/batchcard-add')}}" class="nav-sub-link">Batch Card Add</a>
         </li>
-        <li class="nav-sub-item @if(in_array($Action,['BatchCard.requestList'])){{'active'}} @endif ">
+        <!-- <li class="nav-sub-item @if(in_array($Action,['BatchCard.requestList'])){{'active'}} @endif ">
             <a href="{{url('batchcard/trackItemcode')}}"  class="nav-sub-link">Requistion-Batchcard </a>
+        </li> -->
+        <li class="nav-sub-item @if(in_array($Action,['BatchCard.batch_item_search'])){{'active'}} @endif ">
+            <a href="{{url('batchcard/batch-item-search')}}"  class="nav-sub-link">Batch-Item Report</a>
         </li>
       </ul>
     </li>
-
-
+@endif
+    @if(in_array('label_card.view',config('permission')))
     <li class="nav-item @if(in_array($Action,['Label.sterilizationProductLabel', 'Label.nonSterileProductLabel' ,'Label.instrumentLabel','Label.patientLabel', 'Label.mrpLabel', 
         'Label.generateInstrumentLabel', 'Label.generateMRPLabel','Label.generateNonSterileProductLabel','Label.generateSterilizationProductLabel','Label.generatePatientLabel',
-        'Label.printingReport','Label.adhlMRPLabel','Label.generateADHLMRPLabel','Label.ahplMRPLabel','Label.generateAHPLMRPLabel','Label.snnMRPLabel','Label.generateSNNMRPLabel'])){{'active show'}} @endif ">
+        'Label.printingReport','Label.adhlMRPLabel','Label.generateADHLMRPLabel','Label.ahplMRPLabel','Label.generateAHPLMRPLabel','Label.snnMRPLabel','Label.generateSNNMRPLabel',
+        'Label.docAdlerMRPLabel','Label.mailingLabel','Label.jayonMRPLabel','Label.nonSterileProductLabel2','Label.generateNonSterileProductLabel2','Label.docSNNMRPLabel',
+        'Label.docWiseComparison'])){{'active show'}} @endif ">
       <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Label Card</a>
       <ul class="nav-sub">
         <li class="nav-sub-item @if(in_array($Action,['Label.instrumentLabel', 'Label.generateInstrumentLabel'])){{'active'}} @endif ">
@@ -251,23 +306,68 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         <li class="nav-sub-item @if(in_array($Action,['Label.ahplMRPLabel', 'Label.generateAHPLMRPLabel'])){{'active'}} @endif ">
           <a href="{{url('label/ahpl-mrp-label')}}" class="nav-sub-link">AHPL MRP Label</a>
         </li>
+        {{--<li class="nav-sub-item @if(in_array($Action,['Label.ahplMRPLabel', 'Label.generateAHPLMRPLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/ahpl-mrp1-label')}}" class="nav-sub-link">AHPL MRP Label</a>
+        </li>--}}
         <li class="nav-sub-item @if(in_array($Action,['Label.snnMRPLabel', 'Label.generateADHLMRPLabel'])){{'active'}} @endif ">
           <a href="{{url('label/snn-mrp-label')}}" class="nav-sub-link">SNN MRP Label</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['Label.jayonMRPLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/Jayon-mrp-label')}}" class="nav-sub-link">Jayon MRP Label</a>
+        </li>
+       {{-- <li class="nav-sub-item @if(in_array($Action,['Label.ahplMRPLabel', 'Label.generateAHPLMRPLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/doc-ahpl-mrp-label')}}" class="nav-sub-link">DOC. AHPL MRP Label</a>
+        </li>--}}
+        <li class="nav-sub-item @if(in_array($Action,['Label.docWiseComparison'])){{'active'}} @endif ">
+          <a href="{{url('label/doc-item-comparison')}}" class="nav-sub-link">DOC. Wise Item Comparison</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['Label.docAdlerMRPLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/doc-adler-mrp-label')}}" class="nav-sub-link">DOC. Wise Adler MRP Label</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['Label.docSNNMRPLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/doc-snn-mrp-label')}}" class="nav-sub-link">DOC. Wise SNN MRP Label</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['Label.mailingLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/mailing-label')}}" class="nav-sub-link">Mailing Label</a>
         </li>
         <li class="nav-sub-item @if(in_array($Action,['Label.nonSterileProductLabel', 'Label.generateNonSterileProductLabel'])){{'active'}} @endif ">
           <a href="{{url('label/non-sterile-product-label')}}" class="nav-sub-link">Non-Sterile Label</a>
         </li>
+        <li class="nav-sub-item @if(in_array($Action,['Label.nonSterileProductLabel2', 'Label.generateNonSterileProductLabel2'])){{'active'}} @endif ">
+          <a href="{{url('label/non-sterile-product-label2')}}" class="nav-sub-link">Non-Sterile Label 2</a>
+        </li>
         <li class="nav-sub-item @if(in_array($Action,['Label.sterilizationProductLabel','Label.generateSterilizationProductLabel'])){{'active'}} @endif ">
           <a href="{{url('label/sterilization-label')}}" class="nav-sub-link">Sterilization Label</a>
         </li>
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.SterilizationProductLABLE2','SampleLabel.GenerateSterilizationProductLABLE2'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/sterilization-label-2')}}" class="nav-sub-link">Sterilization label 2</a>
+        </li>
+        <!-- <li class="nav-sub-item @if(in_array($Action,['Label.sterilizationProductLabel2','Label.generateSterilizationProductLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/sterilization-label2')}}" class="nav-sub-link">Sterilization Label2</a>
+        </li> -->
+        <!-- <li class="nav-sub-item @if(in_array($Action,['Label.sterilizationProductLabel2','Label.generateSterilizationProductLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/new-sterile')}}" class="nav-sub-link">new-sterile</a>
+        </li> -->
+        <!-- <li class="nav-sub-item @if(in_array($Action,['Label.sterilizationProductLabel2','Label.generateSterilizationProductLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/aneurysm-clip-sterile-packaging')}}" class="nav-sub-link">Aneursym Clip Sterile</a>
+        </li> -->
+        <!-- <li class="nav-sub-item @if(in_array($Action,['Label.sterilizationProductLabel2','Label.generateSterilizationProductLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/new-non-sterile-label')}}" class="nav-sub-link">New Non Sterile</a>
+        </li> -->
         <li class="nav-sub-item @if(in_array($Action,['Label.patientLabel', 'Label.generatePatientLabel'])){{'active'}} @endif ">
           <a href="{{url('label/patient-label')}}" class="nav-sub-link">Patient Label</a>
         </li>
+        <!-- <li class="nav-sub-item @if(in_array($Action,['Label.newpatientLabel', 'Label.generatenewPatientLabel'])){{'active'}} @endif ">
+          <a href="{{url('label/new-patient-label')}}" class="nav-sub-link">New Patient Label</a>
+        </li> -->
+        
         <li class="nav-sub-item @if(in_array($Action,['Label.printingReport'])){{'active'}} @endif ">
           <a href="{{url('label/printing-report')}}" class="nav-sub-link">Label Printing Report</a>
         </li>
       </ul>
     </li>
+    @endif
+    @if(in_array('raw_material.view',config('permission')))
     <li class="nav-item @if(in_array($Action,['RowMaterial.materialList','RowMaterial.materialAdd','RowMaterial.materialEdit','RowMaterial.fixedRateList','RowMaterial.getfixedRateUpload',
         'RowMaterial.materialUpload','Inventorygst.Add_itemtype'])){{'active show'}} @endif ">
       <a href="#" class="nav-link with-sub"><i class="fas fa-swatchbook" style="font-size: 19px"></i>Raw Material</a>
@@ -289,7 +389,8 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         </li>
       </ul>
     </li>
-
+    @endif
+    @if(in_array('product.view',config('permission')))
     <li class="nav-item @if(in_array($Action,['Product.productList','Product.productFileUpload','Product.addInputMaterial','Product.getProductUpload','Product.locationList','Product.upload_product_inputmaterial'])){{'active show'}} @endif ">
       <a href="#" class="nav-link with-sub"><i class="fab fa-product-hunt" style="font-size: 19px"></i>Product</a>
       <ul class="nav-sub">
@@ -310,7 +411,8 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         </li>
       </ul>
     </li>
-
+    @endif
+    @if(in_array('employee.view',config('permission')))
     <li class="nav-item @if(in_array($Action,['Employee.employeeList','Employee.employeeAdd','Employee.employeeEdit'])){{'active show'}} @endif ">
       <a href="#" class="nav-link with-sub"><i class="fas fa-user-alt" style="font-size: 19px"></i>Employee</a>
       <ul class="nav-sub">
@@ -320,6 +422,8 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
 
       </ul>
     </li>
+    @endif
+    @if(in_array('settings.view',config('permission')))
     <li class="nav-item @if(in_array($Action,['RolePermission.roleList','RolePermission.moduleList','RolePermission.permissionList','RolePermission.rolePermission','Config.get_config_list','Config.get_configpage','Config.add_configsetting'])){{'active show'}} @endif ">
       <a href="#" class="nav-link with-sub"><i class="fa fa-cog" style="font-size: 19px"></i>Settings</a>
       <ul class="nav-sub">
@@ -340,8 +444,79 @@ $Action = str_replace('Controller','',$controller.'.'.request()->route()->getAct
         </li>
       </ul>
     </li>
+    @endif
+    @if(in_array('accounts.view',config('permission')))
+    <li class="nav-item @if(in_array($Action,['AccountsPayment.PaymentAdd','AccountsReceipt.ReceiptAdd'])){{'active show'}} @endif ">
+      <a href="#" class="nav-link with-sub"><i class="fab fa-product-hunt" style="font-size: 19px"></i>Accounts</a>
+      <ul class="nav-sub">
+        <li class="nav-sub-item @if(in_array($Action,['AccountsPayment.PaymentAdd'])){{'active'}} @endif ">
+          <a href="{{url('accounts/payment-add')}}" class="nav-sub-link">Payment</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['AccountsReceipt.ReceiptAdd'])){{'active'}} @endif ">
+          <a href="{{url('accounts/receipt-add')}}" class="nav-sub-link">Receipt</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['AccountsJournal.JournalAdd'])){{'active'}} @endif ">
+          <a href="{{url('accounts/Journal-add')}}" class="nav-sub-link">Journal</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['AccountsContra.ContraAdd'])){{'active'}} @endif ">
+          <a href="{{url('accounts/Contra-add')}}" class="nav-sub-link">Contra</a>
+        </li>
+      </ul>
+    </li>
+    @endif
+    @if(in_array('sample_label_card.view',config('permission')))
+    <li class="nav-item @if(in_array($Action,['SampleLabel.newaneurysm','SampleLabel.NewNonsterile','SampleLabel.Newsterile','SampleLabel.NewpatientLabel','SampleLabel.InstrumentLabel','SampleLabel.NonSterileProductLabel','SampleLabel.Patient30Label','SampleLabel.NewNonsterilization','SampleLabel.SterilizationProductLABLE2'])){{'active show'}} @endif ">
+      <a href="#" class="nav-link with-sub"><i class="fas fa-address-card" style="font-size:20px;"></i>Sample Label Card</a>
+      <ul class="nav-sub">
 
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.Newsterile','SampleLabel.NewsterileGenrate'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/new-sterile-label')}}" class="nav-sub-link">New Sterile</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.newaneurysm','SampleLabel.newaneurysmgenrate'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/aneurysm-label')}}" class="nav-sub-link">Aneursym Clip Sterile</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.NewNonsterile','SampleLabel.NewNonsterileGenrate'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/new-non-sterile')}}" class="nav-sub-link">New Non Sterile</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.NewNonsterilization','SampleLabel.NewNonsterilizationGenrate'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/new-non-sterilization-label')}}" class="nav-sub-link">Non-Sterile-label 2</a>
+        </li>
+        <!-- <li class="nav-sub-item @if(in_array($Action,['Label.nonSterileProductLabel2', 'Label.generateNonSterileProductLabel2'])){{'active'}} @endif ">
+          <a href="{{url('label/non-sterile-product-label2')}}" class="nav-sub-link">Non-Sterile Label 2</a>
+        </li> -->
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.NewpatientLabel', 'SampleLabel.NewgeneratePatientLabel'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/new-patient')}}" class="nav-sub-link">New Patient Label</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.InstrumentLabel','SampleLabel.GenerateInstrumentLabel'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/new-instrument')}}" class="nav-sub-link">New Instrument</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.NonSterileProductLabel','SampleLabel.GenerateNonSterile'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/flip-non-sterile')}}" class="nav-sub-link">Flip Non Sterile</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.Patient30Label','SampleLabel.GeneratePatient30Label'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/patient-30-label')}}" class="nav-sub-link">Patient 30</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['SampleLabel.SterilizationProductLABLE2','SampleLabel.GenerateSterilizationProductLABLE2'])){{'active'}} @endif ">
+          <a href="{{url('samplelabel/sterilization-label-2')}}" class="nav-sub-link">Sterilization label 2</a>
+        </li>
 
+      </ul>
+    </li>
+    @endif
+    @if(in_array('quality.list',config('permission'))  || in_array('quality.check',config('permission')))
+    <li class="nav-item @if(in_array($Action,['Quality.qualitylist'])){{'active show'}} @endif ">
+      <a href="#" class="nav-link with-sub"><i class="fas fa-check-circle" style="font-size: 19px"></i>Quality</a>
+      <ul class="nav-sub">
+        <li class="nav-sub-item @if(in_array($Action,['Quality.qualitylist'])){{'active'}} @endif ">
+          <a href="{{url('quality/qualitylist')}}" class="nav-sub-link">Quality List</a>
+        </li>
+        <li class="nav-sub-item @if(in_array($Action,['Quality.inspectedqualitylist'])){{'active'}} @endif ">
+          <a href="{{url('quality/inspected-quality-list')}}" class="nav-sub-link">Inspected Quality List</a>
+        </li>
+      </ul>
+      
+    </li>
+@endif
     </ul><!-- nav -->
   </div><!-- az-sidebar-body -->
 </div><!-- az-sidebar -->

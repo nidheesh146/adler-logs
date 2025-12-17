@@ -11,12 +11,12 @@
 				 	CPI  Transaction List
 				</a></span>
 				 </div>
-                 @include('includes.fgs.fgs-transaction-tab')
+				 @include('includes.fgs.sales-trans-tab')
             <br><br>
 			<h4 class="az-content-title" style="font-size: 20px;">
             CPI  Transaction List
               <div class="right-button">
-			  <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/fgs-pi-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
+			  <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/fgs-cpi-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
 
               <div>  
 				
@@ -116,9 +116,9 @@
                             <td>{{$sl++}}</td>
                                 <td>{{$item->sku_code}}</td>
                                 <td>{{$item->discription}}</td>
-                                <td>{{$item->pi_number}}</td>
+                                <td>{{$item->cpi_number}}</td>
                                 <td>{{$item->quantity}} Nos</td>
-                                <td>{{date('d-m-Y',strtotime($item->pi_date))}}</td>
+                                <td>{{date('d-m-Y',strtotime($item->cpi_date))}}</td>
                             </tr>
                             @endforeach
 							</tbody>

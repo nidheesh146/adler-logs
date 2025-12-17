@@ -54,7 +54,7 @@
             display:block;
             font-size:11px;
             height:35px;
-            border-bottom:solid 0.5px black;
+            /* border-bottom:solid 0.5px black; */
         }
         .row3, .row4{
             display:block;
@@ -67,6 +67,8 @@
         .row3 table{
             width:100%;
             font-size:10px;
+            border-collapse: collapse;
+
         }
         .row4{
             font-size:10px;
@@ -128,7 +130,7 @@
            </p>
         </div>
         <div class="col4" style="float:right;">
-            <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
+        <img src="data:img/logo.png;base64,<?php echo base64_encode(file_get_contents('img/logo.png')); ?>"style="width:80px;" />
         </div>
     </div>
        <div class="row1" >  
@@ -189,8 +191,12 @@
                 </tr>
                 <tr>
                 <tr>
-                    <td>Product Category</td>
+                    <td>Business Category</td>
                     <td>: {{$coef['category_name']}}</td> -->
+                </tr>
+                <tr>
+                    <td>Product Category</td>
+                    <td>: {{$coef['new_category_name']}}</td> -->
                 </tr>
                 </tr>
             </table>
@@ -208,6 +214,11 @@
                 <tr>
                     <td>Due Date</td>
                     <td>: {{date('d-m-Y', strtotime($coef['due_date']))}} </td>
+                </tr>
+                <tr>
+                    <td>OEF No.</td>
+                    <td>: {{$coef['oef_number']}} </td>
+                   
                 </tr>
             </table>
         </div>
@@ -234,20 +245,24 @@
                 {{--<th rowspan="2">VALUE</th>--}}
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
+                @if($coef['zone_name']!='Export')
                 <th colspan="2">CGST</th>
                 <th colspan="2">SGST/UTGST</th>
                 <th colspan="2">IGST</th>
+                @endif
                 <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
             <tr>
                 <th>%</th>
                 <th>Value</th>
+                @if($coef['zone_name']!='Export')
                 <th>%</th>
                 <th>Value</th>
                 <th>%</th>
                 <th>Value</th>
                 <th>%</th>
                 <th>Value</th>
+                @endif
             </tr>
             <?php $i=1;
             $total = 0;
@@ -278,13 +293,25 @@
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
                 <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
                 <td style="text-align:right;">{{$discount_value}}</td>
+                @if($coef['zone_name']!='Export')
                 <td style="text-align:center;">{{$item['cgst']}}</td>
                 <td style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['sgst']}}</td>
                 <td style="text-align:right;">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
                 <td style="text-align:center;">{{$item['igst']}}</td>
                 <td style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
-                <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
+                @endif
+                <?php // $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
+                <?php
+                if($coef['zone_name']!='Export')
+                {
+                $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100); 
+                }
+                else
+                {
+                    $total_amount =$discount_value; 
+                }
+                ?>
                 <td style="text-align:right;">{{number_format((float)($total_amount), 2, '.', '')}}</td>
                 <?php 
                 $total =$total+ $item['rate']* $item['quantity'];
@@ -315,18 +342,20 @@
                 <th></th>
                 <th style="text-align:right;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
+                @if($coef['zone_name']!='Export')
                 <th></th>
                 <th style="text-align:right;">{{number_format((float)($sgstsum), 2, '.', '') }}</th>
                 <th></th>
                 <th style="text-align:right;">{{number_format((float)($cgstsum), 2, '.', '') }}</th>
                 <th></th> 
                 <th style="text-align:right;">{{number_format((float)($igstsum), 2, '.', '') }}</th>
+                @endif
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
             </tr>  
         </table>
     </div>
     <br/>
-    <div class="row4" style="border-bottom:solid 1px black;height:170px;">
+    <div class="row4" style="height:170px;">
         <div class="col41">
             <div class="valuewords">
                 <strong>Value in Words</strong><br/>
@@ -334,8 +363,11 @@
             </div><br/>
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>
+                @if($coef['oef_remarks'])
+                <?= nl2br($coef['oef_remarks']);?><br/>
+                @endif
                 @if($coef['remarks'])
-                {{$coef['remarks']}}
+                <?= nl2br($coef['remarks']);?>
                 @endif
             </div>
             
@@ -361,6 +393,7 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
                 </tr>--}}
+                @if($coef['zone_name']!='Export')
                 <tr>
                     <td style="width:160px">Sum of CGST</td>
                     <td style="width:30px;">:</td>
@@ -376,6 +409,7 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
                 </tr>
+                @endif
                 <tr>
                     <td style="width:160px">Rounf Off</td>
                     <td style="width:30px;">:</td>
@@ -405,11 +439,35 @@
         </div>
     </div>
    
-    <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
+    <!-- <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     
-    </div>
+    </div> -->
     
-     
+    <script type="text/php">
+
+    if (isset($pdf)) {
+    $xPage = 780; // X-axis for "Page", positioned on the right side
+    $yPage = 573; // Y-axis horizontal position
+
+    $textPage = "Page {PAGE_NUM} of {PAGE_COUNT}"; // "Page" message
+
+    $font = $fontMetrics->get_font("helvetica");
+    $size = 7;
+    $color = array(0, 0, 0);
+
+
+    $pdf->page_text($xPage, $yPage, $textPage, $font, $size, $color); // "Page" on the right
+    $pageNumber = $pdf->get_page_number();
+    // Check if it's not the first page
+    if (var_dump($pageNumber) != 1) {
+        $xDoc = 755;  // X-axis for "Doc", positioned on the left side
+        $yDoc = 15; // Y-axis horizontal position
+        $textDoc = "Doc: {{$coef['coef_number']}}"; // "Doc" message
+        $pdf->page_text($xDoc, $yDoc, $textDoc, $font, $size, $color); // "Doc" on the left
+    }
+}
+
+</script>  
    
 </body>
 </html>

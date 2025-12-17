@@ -50,7 +50,7 @@
             display:block;
             font-size:11px;
             height:120px;
-            border-bottom:solid 0.5px black;
+            /* border-bottom:solid 0.5px black; */
         }
         .row3, .row4{
             display:block;
@@ -63,6 +63,8 @@
         .row3 table{
             width:100%;
             font-size:10px;
+            border-collapse: collapse;
+
         }
         .row4{
             font-size:10px;
@@ -123,6 +125,10 @@
                     <td>Reference Date</td>
                     <td>: {{date('d-m-Y', strtotime($mtq['ref_date']))}}</td>
                 </tr>
+                <tr>
+                    <td>Stock Location</td>
+                    <td>: {{$mtq['location_name1']}}</td> 
+                </tr>
             </table>
         </div>
         <div class="col22">
@@ -138,12 +144,12 @@
                     <td>: {{date('d-m-Y', strtotime($mtq['mtq_date']))}}</td>
                 </tr>
                 <tr>
-                    <td> Product Category</td>
+                    <td> Business Category</td>
                     <td>: {{$mtq['category_name']}}</td>
                 </tr>
                 <tr>
-                    <td>Stock Location</td>
-                    <td>: {{$mtq['location_name1']}}</td> 
+                    <td> Product Category</td>
+                    <td>: {{$mtq['new_category_name']}}</td>
                 </tr>
             </table>
         </div>   
@@ -183,7 +189,7 @@
                 <td style="text-align:center;">{{$item['quantity']}}</td> 
                 <td>Nos</td> 
                 <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                <td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
+                <td>@if($item['expiry_date']!='0000-00-00'){{date('d-m-Y', strtotime($item['expiry_date']))}}@else N A @endif</td>
                
                 <?php $qsum=$qsum+$item['quantity']; ?>
             </tr>
@@ -194,7 +200,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th style="text-align:center;">{{$item['quantity']}}</th>
+                <th style="text-align:center;">{{$qsum}}</th>
                 <th>Nos</th>
                 <th></th>
                 <th></th>
@@ -203,27 +209,47 @@
         </table>
     </div>
     <br/>
-    <div class="row4" style="border-bottom:solid 1px black;height:170px;">
+    <div class="row4" style="height:170px;">
         <div class="col41">
             <div class="remarks" style="">
-                <strong>Remarks/Notes </strong><br/>
-              
-
+                <strong>Remarks/Notes </strong><br />
+                <?= nl2br($mtq['remarks']); ?>
             </div>
-            
+
         </div>
         <div class="col42">
             <div class="" style="height:50px;">
             </div>
         </div>
-       
+
     </div>
    
     <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     
     </div>
     
-     
+    <script type="text/php">
+    if (isset($pdf)) {
+    $xPage = 535; // X-axis for "Page", positioned on the right side
+    $yPage = 810; // Y-axis horizontal position
+
+    $textPage = "Page {PAGE_NUM} of {PAGE_COUNT}"; // "Page" message
+
+    $font = $fontMetrics->get_font("helvetica");
+    $size = 7;
+    $color = "#808080";
+
+    $pdf->page_text($xPage, $yPage, $textPage, $font, $size, $color); // "Page" on the right
+    $pageNumber = $pdf->get_page_number();
+    // Check if it's not the first page
+    if (var_dump($pageNumber) != 1) {
+        $xDoc = 530;  // X-axis for "Doc", positioned on the left side
+        $yDoc = 15; // Y-axis horizontal position
+        $textDoc = "{{$mtq['mtq_number']}}"; // "Doc" message
+        $pdf->page_text($xDoc, $yDoc, $textDoc, $font, $size, $color); // "Doc" on the left
+    }
+}
+</script>
    
 </body>
 </html>

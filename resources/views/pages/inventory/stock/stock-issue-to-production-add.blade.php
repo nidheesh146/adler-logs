@@ -138,6 +138,11 @@
 <script src="<?= url('') ?>/lib/amazeui-datetimepicker/js/bootstrap-datepicker.js"></script>
 <script src="<?= url('') ?>/js/additional-methods.js"></script>
 <script>
+     $(document).ready(function() {
+            $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
+            });
+    });
     $(".datepicker").datepicker({
         format: "mm-yyyy",
         viewMode: "months",

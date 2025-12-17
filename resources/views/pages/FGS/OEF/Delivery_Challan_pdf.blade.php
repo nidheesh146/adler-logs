@@ -71,7 +71,7 @@
                         <td>Returnable</td>
                     </tr>
                     <tr>
-                        <td colspan="3">Stock Location (Decrese): <span>AHPL Mktd.</span></td>
+                        <td colspan="3">Stock Location (Decrease): <span>AHPL Mktd.</span></td>
                         <td colspan="2"></td>
                         <td>Product Category:</td>
                         <td>OBM</td>

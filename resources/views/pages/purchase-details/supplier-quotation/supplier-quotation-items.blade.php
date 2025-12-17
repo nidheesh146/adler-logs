@@ -144,6 +144,7 @@
 				<table class="table table-bordered mg-b-0" id="example1">
 					<thead>
 						<tr>
+							<th>SL NO</th>
 							<th>PR/SR NO.</th>
 							<th>Item Code:</th>
 							<th>Delivery schedule</th>
@@ -163,7 +164,7 @@
 							@php $fixed_items= $fn->getFixedRateItems($rq_no,$item['item_id']);
 					 		@endphp
                         <tr>
-                            {{-- <th>1</th> --}}
+							<td>{{$loop->index+1}}</td>
                             <td>{{$item['pr_no']}}</td>
                             <td>{{$item['item_code']}}</td>
 							<!-- <td>{{$item['hsn_code']}}</td> -->

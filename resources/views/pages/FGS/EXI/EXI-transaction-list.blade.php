@@ -11,7 +11,8 @@
 				 	EXI  Transaction List
 				</a></span>
 				 </div>
-                 @include('includes.fgs.fgs-transaction-tab')
+				 @include('includes.fgs.sales-trans-tab')
+
             <br><br>
 			<h4 class="az-content-title" style="font-size: 20px;">
             EXI  Transaction List
@@ -116,9 +117,9 @@
                             <td>{{$sl++}}</td>
                                 <td>{{$item->sku_code}}</td>
                                 <td>{{$item->discription}}</td>
-                                <td>{{$item->exi_number}}</td>
+                                <td>{{$item->dni_number}}</td>
                                 <td>{{$item->quantity}} Nos</td>
-                                <td>{{date('d-m-Y',strtotime($item->exi_date))}}</td>
+                                <td>{{date('d-m-Y',strtotime($item->dni_date))}}</td>
                             </tr>
                             @endforeach
 							</tbody>

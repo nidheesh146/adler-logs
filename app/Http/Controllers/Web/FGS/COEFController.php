@@ -109,13 +109,15 @@ class COEFController extends Controller
                          $this->fgs_coef_item->insert_data($datas,$coef_id);
                          if($oef_item['quantity_to_allocate']==$qty_to_cancel_array[$i])
                          {
-                            $fgs_oef_item = fgs_oef_item::where('product_id','=',$oef_item['product_id'])
-                                            ->update(['coef_status' => 1,'remaining_qty_after_cancel'=>0]);
+                            $fgs_oef_item = fgs_oef_item::where('id', '=', $oef_item['id'])
+                            ->where('product_id', '=', $oef_item['product_id'])
+                            ->update(['coef_status' => 1, 'remaining_qty_after_cancel' => 0]);
                          }
                          else
                          {
                             $update_qty = $oef_item['quantity_to_allocate']-$qty_to_cancel_array[$i];
-                            $fgs_oef_item = fgs_oef_item::where('product_id','=',$oef_item['product_id'])
+                            $fgs_oef_item = fgs_oef_item::where('id', '=', $oef_item['id'])
+                                            ->where('product_id','=',$oef_item['product_id'])
                                             ->update(['remaining_qty_after_cancel'=>$update_qty,'quantity_to_allocate'=>$update_qty]);
                          }
                          $i++;
@@ -239,8 +241,8 @@ class COEFController extends Controller
             
             $data .= '<thead>
                 <tr>
-                <th ></th> 
-               <th>PRODUCT</th>
+                <th><input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)"></th>                
+                <th>PRODUCT</th>
                 <th>HSN CODE</th>
                 <th>DESCRIPTION</th>
                 <th> QUANTITY</th>
@@ -250,7 +252,7 @@ class COEFController extends Controller
                <tbody >';
                foreach ($oef_item as $item) {
                 $data .= '<tr>
-                    <td ><input type="checkbox" name="oef_item_id[]" id="oef_item_id" onclick="enableTextBox(this)" value="'.$item->id.'"></td>
+                    <td ><input type="checkbox" class="rowCheckbox" name="oef_item_id[]" id="oef_item_id" onclick="enableTextBox(this)" value="'.$item->id.'"></td>
                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->hsn_code.'</td>
                         <td>'.$item->discription.'</td>
@@ -295,7 +297,7 @@ class COEFController extends Controller
         $condition = ['fgs_coef_item_rel.master' =>$request->coef_id];
         if($request->product)
         {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->product . '%'];
+            $condition[] = ['fgs_item_master.sku_code','like', '%' . $request->product . '%'];
         }
         $items = $this->fgs_coef_item->get_items($condition);
         //print_r($items);exit; 
@@ -304,40 +306,43 @@ class COEFController extends Controller
     }
     public function COEFpdf($coef_id)
     {
-        $data['coef'] = $this->fgs_coef->get_single_oef(['fgs_coef.id' => $coef_id]);
+        $data['coef'] = $this->fgs_coef->get_single_coef(['fgs_coef.id' => $coef_id]);
         $data['items'] = $this->fgs_coef_item->getAllItems(['fgs_coef_item_rel.master' => $coef_id]);
         //print_r($data['items']);exit;
         $pdf = PDF::loadView('pages.FGS.COEF.pdf-view', $data);
         $pdf->set_paper('A4', 'landscape');
+        $pdf->setOptions(['isPhpEnabled' => true]);
+        $pdf->set_base_path(public_path());
         $file_name = "COEF" . $data['coef']['firm_name'] . "_" . $data['coef']['coef_date'];
         return $pdf->stream($file_name . '.pdf');
     }
     public function coef_transaction(Request $request)
     {
         $condition = [];
-        if ($request->mrn_no) {
-            $condition[] = ['fgs_oef.oef_number', 'like', '%' . $request->oef_no . '%'];
+        if ($request->coef_no) {
+            $condition[] = ['fgs_coef.coef_number', 'like', '%' . $request->coef_no . '%'];
         }
 
         if ($request->item_code) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if ($request->from) {
-            $condition[] = ['fgs_oef_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_coef.coef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
         }
         $items = fgs_coef_item::select(
             'fgs_coef.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'fgs_coef.coef_number',
             'fgs_coef.coef_date',
             'fgs_coef.created_at as min_wef',
-            'fgs_coef_item.id as coef_item_id'
+            'fgs_coef_item.id as coef_item_id',
+            'fgs_coef_item.quantity'
         )
             ->leftJoin('fgs_coef_item_rel', 'fgs_coef_item_rel.item', '=', 'fgs_coef_item.id')
             ->leftJoin('fgs_coef', 'fgs_coef.id', '=', 'fgs_coef_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_coef_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_coef_item.product_id')
             // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_coef_item.batchcard_id')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
@@ -351,34 +356,64 @@ class COEFController extends Controller
     public function coef_transaction_export(Request $request)
     {
         $condition = [];
-        if ($request->mrn_no) {
+        if ($request->coef_no) {
             $condition[] = ['fgs_coef.coef_number', 'like', '%' . $request->coef_no . '%'];
         }
 
         if ($request->item_code) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if ($request->from) {
-            $condition[] = ['fgs_coef_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $condition[] = ['fgs_coef.coef_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
         }
         $items = fgs_coef_item::select(
             'fgs_coef.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'fgs_coef.coef_number',
             'fgs_coef.coef_date',
             'fgs_coef.created_at as min_wef',
-            'fgs_coef_item.id as coef_item_id'
+            'fgs_coef_item.id as coef_item_id',
+            'fgs_coef_item.quantity',
+            'customer_supplier.firm_name',
+            'customer_supplier.city',
+            'state.state_name',
+            'zone.zone_name',
+            'fgs_product_category.category_name',
+            'fgs_product_category.category_name',
+            'transaction_type.transaction_name',
+            'customer_supplier.sales_type',
+            'inventory_gst.igst',
+            'inventory_gst.cgst',
+            'inventory_gst.sgst',
+            'inventory_gst.id as gst_id',
+            'fgs_oef.order_date',
+            'fgs_oef.order_number',
+            'fgs_oef.remarks as oef_remarks',
+            'fgs_oef_item.rate',
+            'fgs_oef_item.discount',
+            'product_group1.group_name as group1_name'
         )
             ->leftJoin('fgs_coef_item_rel', 'fgs_coef_item_rel.item', '=', 'fgs_coef_item.id')
             ->leftJoin('fgs_coef', 'fgs_coef.id', '=', 'fgs_coef_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_coef_item.product_id')
+            ->leftJoin('fgs_oef', 'fgs_oef.id', '=', 'fgs_coef.oef_id')
+            ->leftJoin('fgs_oef_item_rel', 'fgs_oef_item_rel.master', '=', 'fgs_oef.id')
+            ->leftJoin('fgs_oef_item', 'fgs_oef_item.id', '=', 'fgs_oef_item_rel.item')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_coef_item.product_id')
+            ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')
+            ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+            ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+            ->leftjoin('inventory_gst', 'inventory_gst.id', '=', 'fgs_oef_item.gst')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_oef.product_category')
+            ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', '=', 'fgs_oef.new_product_category')
+            ->leftJoin('transaction_type', 'transaction_type.id', '=', 'fgs_oef.transaction_type')
+            ->leftjoin('product_group1','product_group1.id','=','fgs_item_master.product_group1_id')
             // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_coef_item.batchcard_id')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
             //->where('fgs_coef_item.status',1)
-            //->distinct('fgs_min_item.id')
+            ->distinct('fgs_min_item.id')
             ->orderBy('fgs_coef_item.id', 'desc')
             ->get();
 

@@ -38,60 +38,54 @@
                 <input type="hidden" name="expiry_date" id="expiry_date" value="{{date('Y-m-d', strtotime($sterilization_expiry_date))}}">
                 <input type="hidden" name="label_name" id="label_name" value="Patient Label">
 
-                @for ($i = 0; $i< $page_count; $i++)
-                <!-- <div class="page-container" style="margin-top:6mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;"> -->
-                <div class="page-container" style="margin-top:5mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;margin-left:2px">
-                    @for ($j=0;$j<$label_per_page;$j++)
-                    <div class="label-container" style="float:left;width:6.9cm;height:2.45cm;margin-left:5px;margin-bottom:0.7px" >
-                        <div class="sub-columns" style="">
-                            <div class="" style="width:7px;text-align: justify;">
-                                <span class="smalltext" style="font-size:5px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;margin-right:1px;">
-                                LBL/F-10_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
+                @for ($i = 0; $i < $page_count; $i++)
+                <div class="page-container" style="margin-top:5mm; margin-bottom:0cm; width:21.1cm; height:29.3cm; margin-left:2px">
+                    @for ($j = 0; $j < $label_per_page; $j++)
+                    <div class="label-container" style="float:left; width:6.4cm; height:2.45cm; margin-left:1.5px; margin-bottom:3.5px; margin-right:22.4px; margin-top:-2px;">
+                        <div class="sub-columns">
+                            <div style="width:7px; text-align: justify;">
+                                <span class="smalltext" style="font-size:4px; float: left; writing-mode: vertical-lr; transform: rotate(180deg); margin-top:20%; margin-right:1px; margin-left:4px;">
+                                    LBL/F-10_REV00_{{ strtoupper(date('dMY', strtotime('14-12-2021'))) }}
                                 </span>
                             </div>
-                            <div class="col-md-9 sub-column" style="width:64%;float: left; margin-left:2px;line-height:65%;">
-                                <span style="font-size:9px;font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
-                                @if($batchcard_data->discription!="")
-                                <span class="smalltext" style=" font-size:7.5px;">{{$batchcard_data->discription}}</span><br/>
+                            <div class="col-md-9 sub-column" style="width:64%; float: left; margin-left:2px; line-height:55%;">
+                                <span style="font-size:9px; font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
+                                @if($batchcard_data->discription != "")
+                                    <span class="smalltext" style="font-size:6px;">{{$batchcard_data->discription}}</span><br/>
                                 @endif
-                                <div class="" style="display:block;margin-top:1.5px;">
-                                    <!-- <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;"> -->
-                                    <div style="display:block;float:left;font-family: Arial, sans-serif;font-size:6px;font-weight:400;">
-                                        <span style="padding:1.5px; border-style: solid;border-width: thin;border-color:#101010;">STERILE</span>
-                                        <span style="border-top: solid 0.1px #101010;border-bottom: solid 0.1px black;border-right: solid 0.1px black;border-width: thin;padding:1.5px; padding-left:4px;margin-left:-2px;">
-                                        @if($batchcard_data->sterilization_type=='R')
-                                            R
-                                        @elseif($batchcard_data->sterilization_type=='EO')
-                                            EO
-                                        @else
-                                            &nbsp;
-                                        @endif
+                                <div style="display:block; margin-top:1.5px;">
+                                    <div style="display:block; float:left; font-family: Arial, sans-serif; font-size:6px; font-weight:400;">
+                                        <span style="padding:1.5px; border-style: solid; border-width: thin; border-color:#101010;">STERILE</span>
+                                        <span style="border-top: solid 0.1px #101010; border-bottom: solid 0.1px black; border-right: solid 0.1px black; border-width: thin; padding:1.5px; padding-left:4px; margin-left:-2px;">
+                                            @if($batchcard_data->sterilization_type == 'R')
+                                                R
+                                            @elseif($batchcard_data->sterilization_type == 'EO')
+                                                EO
+                                            @else
+                                                &nbsp;
+                                            @endif
                                         </span>
                                     </div>
-                                    <!-- <img src="{{asset('/img/alderlogo/sterile_r1.png')}}" style="width:47px;height:11px;"> -->
-                                    <span class="smalltext" style=" font-size:8px;float:left;">&nbsp;{{$lot_no}}&nbsp;</span>
-                                    <!-- <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:20px;float:left;"> -->
-                                    <span style="float:left;height:10px;padding-left:1.2px;padding-right:1.2px; border-style: solid;border-width: thin;border-color:#101010;font-family: Arial, sans-serif;font-size:6px;font-weight:400;margin-top:-1px">LOT</span>
-                                    <span class="smalltext" style=" font-size:8px;float:left;">&nbsp;{{$batchcard_data->batch_no}}&nbsp;</span>      
+                                    <span class="smalltext" style="font-size:8px; float:left;">&nbsp;{{$lot_no}}&nbsp;</span>
+                                    <span style="float:left; height:10px; padding-left:1.2px; padding-right:1.2px; border-style: solid; border-width: thin; border-color:#101010; font-family: Arial, sans-serif; font-size:6px; font-weight:400; margin-top:-1px">LOT</span>
+                                    <span class="smalltext" style="font-size:8px; float:left;">&nbsp;{{$batchcard_data->batch_no}}&nbsp;</span>
                                 </div>
-                                </br> 
-                                 <div style="display:block;height: 8px;width:90%; border-bottom: 1px solid black; ">
-                                    <span style=" font-weight:bold;position: absolute;font-size: 7px; background-color: #f4f5f8; padding: 0 3px;margin-top: 4.0px;position: absolute;margin-left:-28px">
-                                        STERILIZATION<!--Padding is optional-->
+                                </br>
+                                <div style="display:block; height: 8px; width:90%; border-bottom: 1px solid black;">
+                                    <span style="font-weight:bold; position: absolute; font-size: 7px; background-color: #f4f5f8; padding: 0 3px; margin-top: 4.0px; position: absolute; margin-left:-28px">
+                                        STERILIZATION
                                     </span>
                                 </div>
-                                <div class="" style="display:block;margin-bottom:3px;margin-top:7px;">
+                                <div style="display:block; margin-bottom:3px; margin-top:7px;">
                                     <img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">
-                                    <span class="" style=" font-size:7.5px;">{{date('Y-m-d', strtotime($sterilization_expiry_date))}}</span>
-                                    <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:14px;height:9px;">
-                                    <span class="s" style=" font-size:7.5px;">{{$manufacture_date}}</span>
+                                    <span style="font-size:7.5px;">{{date('Y-m-d', strtotime($sterilization_expiry_date))}}</span>
+                                    <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:14px; height:9px;">
+                                    <span style="font-size:7.5px;">{{$manufacture_date}}</span>
                                 </div>
                             </div>
-                            <div class="sub-column" style="width:30%;float: left;margin-top: 40px;margin-left:2px;" >
-                                <!-- <div class="width:30%;float: left;margin-top:60px;padding:2px"> -->
-                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 22px;float:left;">
-                                    <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:22px;float:left;">
-                                <!-- </div> -->
+                            <div class="sub-column" style="width:30%; float: left; margin-top: 40px; margin-left:2px;">
+                                <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 22px; float:left;">
+                                <img src="{{asset('/img/alderlogo/alder_logo.png')}}" style="width:22px; float:left;">
                             </div>
                         </div>
                     </div>
@@ -99,76 +93,63 @@
                     <div style="break-after:page"></div>
                 </div>
                 @endfor
+
+                @if($remaining != 0)
                 <style>
-                        <?php for($i=1;$i<=$label_per_page;$i++) { ?>
-                            .label-content<?php echo $i; ?>{
-                                display:none;
-                            }
-                        <?php }?>
+                    <?php for($i = 1; $i <= $label_per_page; $i++) { ?>
+                        .label-content<?php echo $i; ?> {
+                            display:none;
+                        }
+                    <?php } ?>
                 </style>
-                @if($remaining!=0)
-                    <style>
-                        <?php for($i=1;$i<=$remaining;$i++) { ?>
-                            .label-content<?php echo $i; ?>{
-                                display:block;
-                            }
-                        <?php }?>
-                    </style>
-                <div class="page-container" style="margin-top:5mm;margin-bottom:0cm;width:21.1cm;height:29.3cm;margin-left:2px">
-                    @for ($j=1;$j<=$label_per_page;$j++)
-                    <div class="label-container" style="float:left;width:6.9cm;height:2.45cm;margin-left:5px;margin-bottom:0.7px" >
-                        <div class="label-content{{$j}}" style="">
-                        <!-- <div class="sub-columns" style=""> -->
-                            <div class="" style="width:7px;text-align: justify;">
-                                <span class="smalltext" style="font-size:5px;float: left;writing-mode: vertical-lr;transform: rotate(180deg); margin-top:20%;margin-right:1px;">
-                                LBL/F-10_REV00_{{strtoupper(date( 'dMY' , strtotime('14-12-2021') ))}}
+                <div class="page-container" style="margin-top:5mm; margin-bottom:0cm; width:21.1cm; height:29.3cm; margin-left:2px">
+                    @for ($j = 1; $j <= $remaining; $j++)
+                    <div class="label-container" style="float:left; width:6.4cm; height:2.45cm; margin-left:1.5px; margin-bottom:3.5px; margin-right:22.4px; margin-top:-2px;">
+                        <div class="sub-columns">
+                            <div style="width:7px; text-align: justify;">
+                                <span class="smalltext" style="font-size:4px; float: left; writing-mode: vertical-lr; transform: rotate(180deg); margin-top:20%; margin-right:1px; margin-left:4px;">
+                                    LBL/F-10_REV00_{{ strtoupper(date('dMY', strtotime('14-12-2021'))) }}
                                 </span>
                             </div>
-                            <div class="col-md-9 sub-column" style="width:64%;float: left; margin-left:2px;line-height:65%;">
-                                <span style="font-size:9px;font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
-                                @if($batchcard_data->discription!="")
-                                <span class="smalltext" style=" font-size:7.5px;">{{$batchcard_data->discription}}</span><br/>
+                            <div class="col-md-9 sub-column" style="width:64%; float: left; margin-left:2px; line-height:55%;">
+                                <span style="font-size:9px; font-weight:bolder;">Ref: {{$batchcard_data->sku_code}}</span><br/>
+                                @if($batchcard_data->discription != "")
+                                    <span class="smalltext" style="font-size:6px;">{{$batchcard_data->discription}}</span><br/>
                                 @endif
-                                <div class="" style="display:block;margin-top:1.5px;">
-                                    <!-- <img src="{{asset('/img/alderlogo/sterile_eo.png')}}" style="width:47px;height:13px;"> -->
-                                    <div style="display:block;float:left;font-family: Arial, sans-serif;font-size:6px;font-weight:400;">
-                                        <span style="padding:1.5px; border-style: solid;border-width: thin;border-color:#101010;">STERILE</span>
-                                        <span style="border-top: solid 0.1px #101010;border-bottom: solid 0.1px black;border-right: solid 0.1px black;border-width: thin;padding:1.5px; padding-left:4px;margin-left:-2px;">
-                                        @if($batchcard_data->sterilization_type=='R')
-                                            R
-                                        @elseif($batchcard_data->sterilization_type=='EO')
-                                            EO
-                                        @else
-                                            &nbsp;
-                                        @endif
+                                <div style="display:block; margin-top:1.5px;">
+                                    <div style="display:block; float:left; font-family: Arial, sans-serif; font-size:6px; font-weight:400;">
+                                        <span style="padding:1.5px; border-style: solid; border-width: thin; border-color:#101010;">STERILE</span>
+                                        <span style="border-top: solid 0.1px #101010; border-bottom: solid 0.1px black; border-right: solid 0.1px black; border-width: thin; padding:1.5px; padding-left:4px; margin-left:-2px;">
+                                            @if($batchcard_data->sterilization_type == 'R')
+                                                R
+                                            @elseif($batchcard_data->sterilization_type == 'EO')
+                                                EO
+                                            @else
+                                                &nbsp;
+                                            @endif
                                         </span>
                                     </div>
-                                    <!-- <img src="{{asset('/img/alderlogo/sterile_r1.png')}}" style="width:47px;height:11px;"> -->
-                                    <span class="smalltext" style=" font-size:8px;float:left;">&nbsp;{{$lot_no}}&nbsp;</span>
-                                    <!-- <img src="{{asset('/img/alderlogo/lot.png')}}" style="width:20px;float:left;"> -->
-                                    <span style="float:left;height:10px;padding-left:1.2px;padding-right:1.2px; border-style: solid;border-width: thin;border-color:#101010;font-family: Arial, sans-serif;font-size:6px;font-weight:400;margin-top:-1px">LOT</span>
-                                    <span class="smalltext" style=" font-size:8px;float:left;">&nbsp;{{$batchcard_data->batch_no}}&nbsp;</span>      
+                                    <span class="smalltext" style="font-size:8px; float:left;">&nbsp;{{$lot_no}}&nbsp;</span>
+                                    <span style="float:left; height:10px; padding-left:1.2px; padding-right:1.2px; border-style: solid; border-width: thin; border-color:#101010; font-family: Arial, sans-serif; font-size:6px; font-weight:400; margin-top:-1px">LOT</span>
+                                    <span class="smalltext" style="font-size:8px; float:left;">&nbsp;{{$batchcard_data->batch_no}}&nbsp;</span>
                                 </div>
-                                </br> 
-                                 <div style="display:block;height: 8px;width:90%; border-bottom: 1px solid black; ">
-                                    <span style=" font-weight:bold;position: absolute;font-size: 7px; background-color: #f4f5f8; padding: 0 3px;margin-top: 4.0px;position: absolute;margin-left:-28px">
-                                        STERILIZATION<!--Padding is optional-->
+                                </br>
+                                <div style="display:block; height: 8px; width:90%; border-bottom: 1px solid black;">
+                                    <span style="font-weight:bold; position: absolute; font-size: 7px; background-color: #f4f5f8; padding: 0 3px; margin-top: 4.0px; position: absolute; margin-left:-28px">
+                                        STERILIZATION
                                     </span>
                                 </div>
-                                <div class="" style="display:block;margin-bottom:3px;margin-top:7px;">
+                                <div style="display:block; margin-bottom:3px; margin-top:7px;">
                                     <img src="{{asset('/img/alderlogo/expiry_date.png')}}" style="width:8px; height:10px;">
-                                    <span class="" style=" font-size:7.5px;">{{date('Y-m-d', strtotime($sterilization_expiry_date))}}</span>
-                                    <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:14px;height:9px;">
-                                    <span class="s" style=" font-size:7.5px;">{{$manufacture_date}}</span>
+                                    <span style="font-size:7.5px;">{{date('Y-m-d', strtotime($sterilization_expiry_date))}}</span>
+                                    <img src="{{asset('/img/alderlogo/manufacturing.png')}}" style="width:14px; height:9px;">
+                                    <span style="font-size:7.5px;">{{$manufacture_date}}</span>
                                 </div>
                             </div>
-                            <div class="sub-column" style="width:30%;float: left;margin-top: 40px;margin-left:2px;" >
-                                <!-- <div class="width:30%;float: left;margin-top:60px;padding:2px"> -->
-                                    <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 22px;float:left;">
-                                    <img src="{{asset('/img/alderlogo/alder_logo.png')}}"  style="width:22px;float:left;">
-                                <!-- </div> -->
+                            <div class="sub-column" style="width:30%; float: left; margin-top: 40px; margin-left:2px;">
+                                <img src="{{asset('/img/alderlogo/manufactured_address.png')}}" style="width: 22px; float:left;">
+                                <img src="{{asset('/img/alderlogo/alder_logo.png')}}" style="width:22px; float:left;">
                             </div>
-                        <!-- </div> -->
                         </div>
                     </div>
                     @endfor
@@ -178,6 +159,7 @@
         </div>
     </div>
 </div>
+
 <script src="<?= url('') ?>/js/azia.js"></script>
 
 <script src="<?= url('') ?>/lib/bootstrap/js/bootstrap.bundle.min.js">  </script>

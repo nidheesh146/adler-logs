@@ -116,7 +116,7 @@
                         <td>{{$rmrn['f_name']}} {{$rmrn['l_name']}}</td>
                         <td>{{date('d-m-Y', strtotime($rmrn['rmrn_date']))}}</td>
                         <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/RMRN-add/'.$rmrn['rmrn_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
-                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/RMRN-delete/'.$rmrn['rmrn_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        {{--<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/RMRN-delete/'.$rmrn['rmrn_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>--}}
                         <a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;" href="{{url('inventory/RMRN/pdf/'.$rmrn['rmrn_id'])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> 
                         </td>
                     </tr>

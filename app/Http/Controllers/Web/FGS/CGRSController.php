@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\product;
 use App\Models\FGS\product_stock_location;
 use App\Models\FGS\fgs_product_stock_management;
+use App\Models\FGS\dc_transfer_stock;
 use App\Models\FGS\production_stock_management;
 use App\Models\FGS\fgs_maa_stock_management;
 use App\Models\FGS\fgs_product_category;
@@ -24,7 +25,7 @@ use App\Models\FGS\fgs_cgrs_item;
 use App\Models\FGS\fgs_cgrs_item_rel;
 use App\Models\FGS\fgs_mrn_item;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\FGSgrstransactionExport;
+use App\Exports\FGScgrstransactionExport;
 
 class CGRSController extends Controller
 {
@@ -52,140 +53,260 @@ class CGRSController extends Controller
       public function CGRSpdf($cgrs_id)
     { 
         $data['cgrs'] = $this->fgs_cgrs->get_single_cgrs(['fgs_cgrs.id' => $cgrs_id]);
-        $data['items'] = $this->fgs_cgrs_item->getItems(['fgs_cgrs_item_rel.master' => $cgrs_id]);
+        $data['items'] = $this->fgs_cgrs_item->getItems_pdf(['fgs_cgrs_item_rel.master' => $cgrs_id]);
         $pdf = PDF::loadView('pages.FGS.CGRS.pdf-view', $data);
+        $pdf->setOptions(['isPhpEnabled' => true]);
+        $pdf->set_base_path(public_path());
         // $pdf->set_paper('A4', 'landscape');
+        //$pdf->setOptions(['isPhpEnabled' => true]);       
+
         $file_name = "CGRS" . $data['cgrs']['firm_name'] . "_" . $data['cgrs']['cgrs_date'];
         return $pdf->stream($file_name . '.pdf');
     }
 
     public function CGRSAdd(Request $request)
-        {
+    {
 
-           if($request->isMethod('post'))
-            {
-             $validation['cgrs_date'] = ['required','date'];
-             $validation['stock_location1'] = ['required'];
-             $validation['stock_location2'] = ['required'];
-             
-             $validator = Validator::make($request->all(), $validation);
-                if(!$validator->errors()->all())
-                {
-                    if(!$request->id)
-                    {
-                        if(date('m')==01 || date('m')==02 || date('m')==03)
-                        {
-                            $years_combo = date('y', strtotime('-1 year')).date('y');
-                        }
-                        else
-                        {
-                            $years_combo = date('y').date('y', strtotime('+1 year'));
-                        }
-                        $data['cgrs_number'] = "CGRS-".$this->year_combo_num_gen(DB::table('fgs_cgrs')->where('fgs_cgrs.cgrs_number', 'LIKE', 'Cgrs-'.$years_combo.'%')->count()); 
-                       $data['cgrs_date'] = date('Y-m-d', strtotime($request->cgrs_date));
-                       $data['grs_id']= $request->grs_number;
-                       $fgs_grs_data = $this->fgs_grs->get_master_data(['fgs_grs.id' => $data['grs_id']]);
-                       $data['stock_location1'] = $fgs_grs_data->stock_location1;
-                       $data['stock_location2'] = $fgs_grs_data->stock_location2;
-                       $data['remarks']= $request->remarks;
-                       $data['created_by']= config('user')['user_id'];
-                       $data['status']=1;
-                       $data['created_at'] =date('Y-m-d H:i:s');
-                       $cgrs_id = $this->fgs_cgrs->insert_data($data);
-                       $i=0;
-                        $qty_to_cancel_array = $request->qty_to_cancel;
-                        foreach ($request->grs_item_id as $grs_item_id) 
-                        {
-                            $grs_item =fgs_grs_item::find($grs_item_id);
-                            $datas = [
-                                "grs_item_id" => $grs_item_id,
-                                "product_id" => $grs_item['product_id'],
-                                "batch_quantity" => $qty_to_cancel_array[$i],
-                                "created_at" => date('Y-m-d H:i:s')
-                            ];
-                            $this->fgs_cgrs_item->insert_data($datas,$cgrs_id);
-                            if($grs_item['batch_quantity']==$qty_to_cancel_array[$i])
-                            {
-                                 $fgs_grs_item_qty_update = fgs_grs_item::where('fgs_grs_item.id','=',$grs_item_id)
-                                                    // ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                                    // ->where('product_id','=',$grs_item['product_id'])
-                                                         ->update(['cgrs_status' => 1]);
-                                $update_qty = $grs_item['batch_quantity']-$qty_to_cancel_array[$i];
-                                $fgs_grs_item_qty_update = fgs_grs_item::where('product_id','=',$grs_item['product_id'])
-                                                                ->update(['remaining_qty_after_cancel'=>$update_qty,'qty_to_invoice'=>$update_qty]);
-                   
-                                $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
-                                            ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                            ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
-                                            ->first();
+        if ($request->isMethod('post')) {
+            $validation['cgrs_date'] = ['required', 'date'];
+            $validation['stock_location1'] = ['required'];
+            $validation['stock_location2'] = ['required'];
 
-                                $update_stock = $fgs_product_stock['quantity']+$qty_to_cancel_array[$i];
-                                $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
-
-                                $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$grs_item['product_id'])
-                                                    ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                                    ->first();
-
-                                $update_maa_stocks = $fgs_maa_stock['quantity']-$qty_to_cancel_array[$i];
-                                $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
-                            }
-                            else
-                            {
-                                $update_qty = $grs_item['batch_quantity']-$qty_to_cancel_array[$i];
-                                $fgs_grs_item_qty_update = fgs_grs_item::where('product_id','=',$grs_item['product_id'])
-                                                ->update(['remaining_qty_after_cancel'=>$update_qty,'qty_to_invoice'=>$update_qty]);
-                                $fgs_product_stock = fgs_product_stock_management::where('product_id','=',$grs_item['product_id'])
-                                                ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                                ->where('stock_location_id','=',$fgs_grs_data->stock_location1)
-                                                ->first();
-        
-                                $update_stock = $fgs_product_stock['quantity']+$qty_to_cancel_array[$i];
-                                $production_stock = $this->fgs_product_stock_management->update_data(['id'=>$fgs_product_stock['id']],['quantity'=>$update_stock]);
-        
-                                $fgs_maa_stock = fgs_maa_stock_management::where('product_id','=',$grs_item['product_id'])
-                                                        ->where('batchcard_id','=',$grs_item['batchcard_id'])
-                                                        ->first();
-        
-                                $update_maa_stocks = $fgs_maa_stock['quantity']-$qty_to_cancel_array[$i];
-                                $maa_stock = $this->fgs_maa_stock_management->update_data(['id'=>$fgs_maa_stock['id']],['quantity'=>$update_maa_stocks]);
-                            }
-                            
-                           
-
-                            $i++;
-                
-                        }
-                        if($cgrs_id && $fgs_grs_item_qty_update)
-                        {
-                            $request->session()->flash('success', "You have successfully created a CGRS !");
-                              return redirect('fgs/CGRS/CGRS-list');
-                        }
-                        else
-                        {
-                            $request->session()->flash('error', "CGRS creation is failed. Try again... !");
-                            return redirect('FGS/CGRS-add');
-                        }
-                        
+            $validator = Validator::make($request->all(), $validation);
+            if (!$validator->errors()->all()) {
+                /*if (!$request->id) {
+                    if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
+                        $years_combo = date('y', strtotime('-1 year')) . date('y');
+                    } else {
+                        $years_combo = date('y') . date('y', strtotime('+1 year'));
                     }
-                   
-                }
-                if($validator->errors()->all())
-                {
-                    return redirect('FGS/CGRS-add')->withErrors($validator)->withInput();
+                    $data['cgrs_number'] = "CGRS-" . $this->year_combo_num_gen(DB::table('fgs_cgrs')->where('fgs_cgrs.cgrs_number', 'LIKE', 'Cgrs-' . $years_combo . '%')->count());
+                    $data['cgrs_date'] = date('Y-m-d', strtotime($request->cgrs_date));
+                    $data['grs_id'] = $request->grs_number;
+                    $fgs_grs_data = $this->fgs_grs->get_master_data(['fgs_grs.id' => $data['grs_id']]);
+                    $data['stock_location1'] = $fgs_grs_data->stock_location1;
+                    $data['stock_location2'] = $fgs_grs_data->stock_location2;
+                    $data['remarks'] = $request->remarks;
+                    $data['created_by'] = config('user')['user_id'];
+                    $data['status'] = 1;
+                    $data['created_at'] = date('Y-m-d H:i:s');
+                    $cgrs_id = $this->fgs_cgrs->insert_data($data);
+                    $i = 0;
+                    $qty_to_cancel_array = $request->qty_to_cancel;
+                    // dd($qty_to_cancel_array[$i]);
+                    foreach ($request->grs_item_id as $grs_item_id) {
+                        $grs_item = fgs_grs_item::find($grs_item_id);
+                        $datas = [
+                            "grs_item_id" => $grs_item_id,
+                            "product_id" => $grs_item['product_id'],
+                            "batch_quantity" => $qty_to_cancel_array[$i],
+                            "created_at" => date('Y-m-d H:i:s')
+                        ];
+                        $this->fgs_cgrs_item->insert_data($datas, $cgrs_id);
+                        // if ($grs_item['batch_quantity'] == $qty_to_cancel_array[$i]) {
+                        //     $fgs_grs_item_qty_update = fgs_grs_item::where('fgs_grs_item.id', '=', $grs_item_id)
+                        //         // ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                        //         // ->where('product_id','=',$grs_item['product_id'])
+                        //         ->update(['cgrs_status' => 1]);
+                        //     $update_qty = $grs_item['batch_quantity'] - $qty_to_cancel_array[$i];
+                        //     $fgs_grs_item_qty_update = fgs_grs_item::where('product_id', '=', $grs_item['product_id'])
+                        //         ->update(['remaining_qty_after_cancel' => $update_qty, 'qty_to_invoice' => $update_qty]);
+
+                        //     $fgs_product_stock = fgs_product_stock_management::where('product_id', '=', $grs_item['product_id'])
+                        //         ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                        //         ->where('stock_location_id', '=', $fgs_grs_data->stock_location1)
+                        //         ->first();
+
+                        //     $update_stock = $fgs_product_stock['quantity'] + $qty_to_cancel_array[$i];
+                        //     $production_stock = $this->fgs_product_stock_management->update_data(['id' => $fgs_product_stock['id']], ['quantity' => $update_stock]);
+
+                        //     if ($fgs_grs_data->stock_location1 == 8 || $fgs_grs_data->stock_location1 == 9 || $fgs_grs_data->stock_location1 == 12 || $fgs_grs_data->stock_location1 == 13 || $fgs_grs_data->stock_location1 == 14) {
+                        //         $dc_stock = dc_transfer_stock::select('id as dc_stock_id', 'quantity')
+                        //             ->where('product_id', '=', $grs_item['product_id'])
+                        //             ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                        //             ->where('stock_location_id', '=', $fgs_grs_data->stock_location1)
+                        //             ->first();
+                        //         $dc_update_stock = $dc_stock['quantity'] + $qty_to_cancel_array[$i];
+
+                        //         $dc_stock_mngment = dc_transfer_stock::find($dc_stock['dc_stock_id']);
+                        //         $dc_stock_mngment->quantity = $dc_update_stock;
+                        //         $dc_stock_mngment->save();
+                        //         //$dc_production_stock = $this->dc_transfer_stock->update_data(['id' => $dc_stock['id']], ['quantity' => $update_stock]);
+
+                        //     }
+
+                        //     $fgs_maa_stock = fgs_maa_stock_management::where('product_id', '=', $grs_item['product_id'])
+                        //         ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                        //         ->first();
+                        //     $update_maa_stocks = $fgs_maa_stock['quantity'] - $qty_to_cancel_array[$i];
+                        //     $maa_stock = $this->fgs_maa_stock_management->update_data(['id' => $fgs_maa_stock['id']], ['quantity' => $update_maa_stocks]);
+                        // } else {
+                        // dd($qty_to_cancel_array[$i]);
+
+                        $update_qty = $grs_item['batch_quantity'] - $qty_to_cancel_array[$i];
+                        $fgs_grs_item_qty_update = fgs_grs_item::where('product_id', '=', $grs_item['product_id'])
+                            ->update(['remaining_qty_after_cancel' => $update_qty, 'qty_to_invoice' => $update_qty, 'cgrs_status' => 1]);
+                        $fgs_product_stock = fgs_product_stock_management::where('product_id', '=', $grs_item['product_id'])
+                            ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                            ->where('stock_location_id', '=', $fgs_grs_data->stock_location1)
+                            ->first();
+
+                        $update_stock = $fgs_product_stock['quantity'] + $qty_to_cancel_array[$i];
+                        $production_stock = $this->fgs_product_stock_management->update_data(['id' => $fgs_product_stock['id']], ['quantity' => $update_stock]);
+
+                        $fgs_maa_stock = fgs_maa_stock_management::where('product_id', '=', $grs_item['product_id'])
+                            ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                            ->first();
+                        //    dd($fgs_maa_stock);
+                        if(isset($fgs_maa_stock)){
+                        if ($fgs_maa_stock['quantity']>$qty_to_cancel_array[$i]) {
+                            $update_maa_stocks = $fgs_maa_stock['quantity'] - ($qty_to_cancel_array[$i]);
+                            $maa_stock = $this->fgs_maa_stock_management->update_data(['id' => $fgs_maa_stock['id']], ['quantity' => $update_maa_stocks]);
+                        }else{
+                            $maa_stock = $this->fgs_maa_stock_management->update_data(['id' => $fgs_maa_stock['id']], ['quantity' => 0]);
+                        }
+                        }
+
+                        $i++;
+                    }
+                    if ($cgrs_id && $fgs_grs_item_qty_update) {
+                        $request->session()->flash('success', "You have successfully created a CGRS !");
+                        return redirect('fgs/CGRS/CGRS-list');
+                    } else {
+                        $request->session()->flash('error', "CGRS creation is failed. Try again... !");
+                        return redirect('fgs/CGRS/CGRS-list');
+                    }
+                }*/
+                if (!$request->id) {
+                    if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
+                        $years_combo = date('y', strtotime('-1 year')) . date('y');
+                    } else {
+                        $years_combo = date('y') . date('y', strtotime('+1 year'));
+                    }
+                    $data['cgrs_number'] = "CGRS-" . $this->year_combo_num_gen(DB::table('fgs_cgrs')->where('fgs_cgrs.cgrs_number', 'LIKE', 'Cgrs-' . $years_combo . '%')->count());
+                    $data['cgrs_date'] = date('Y-m-d', strtotime($request->cgrs_date));
+                    $data['grs_id'] = $request->grs_number;
+                    $fgs_grs_data = $this->fgs_grs->get_master_data(['fgs_grs.id' => $data['grs_id']]);
+                    $data['stock_location1'] = $fgs_grs_data->stock_location1;
+                    $data['stock_location2'] = $fgs_grs_data->stock_location2;
+                    $data['remarks'] = $request->remarks;
+                    $data['created_by'] = config('user')['user_id'];
+                    $data['status'] = 1;
+                    $data['created_at'] = date('Y-m-d H:i:s');
+                    $cgrs_id = $this->fgs_cgrs->insert_data($data);
+                    $i = 0;
+                    $qty_to_cancel_array = $request->qty_to_cancel;
+                    // dd($qty_to_cancel_array[$i]);
+                    foreach ($request->grs_item_id as $grs_item_id) {
+                        $grs_item = fgs_grs_item::find($grs_item_id);
+                        $datas = [
+                            "grs_item_id" => $grs_item_id,
+                            "product_id" => $grs_item['product_id'],
+                            "batch_quantity" => $qty_to_cancel_array[$i],
+                            "created_at" => date('Y-m-d H:i:s')
+                        ];
+                        $this->fgs_cgrs_item->insert_data($datas, $cgrs_id);
+                        // if ($grs_item['batch_quantity'] == $qty_to_cancel_array[$i]) {
+                        //     $fgs_grs_item_qty_update = fgs_grs_item::where('fgs_grs_item.id', '=', $grs_item_id)
+                        //         // ->where('batchcard_id','=',$grs_item['batchcard_id'])
+                        //         // ->where('product_id','=',$grs_item['product_id'])
+                        //         ->update(['cgrs_status' => 1]);
+                        //     $update_qty = $grs_item['batch_quantity'] - $qty_to_cancel_array[$i];
+                        //     $fgs_grs_item_qty_update = fgs_grs_item::where('product_id', '=', $grs_item['product_id'])
+                        //         ->update(['remaining_qty_after_cancel' => $update_qty, 'qty_to_invoice' => $update_qty]);
+
+                        //     $fgs_product_stock = fgs_product_stock_management::where('product_id', '=', $grs_item['product_id'])
+                        //         ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                        //         ->where('stock_location_id', '=', $fgs_grs_data->stock_location1)
+                        //         ->first();
+
+                        //     $update_stock = $fgs_product_stock['quantity'] + $qty_to_cancel_array[$i];
+                        //     $production_stock = $this->fgs_product_stock_management->update_data(['id' => $fgs_product_stock['id']], ['quantity' => $update_stock]);
+
+                        //     if ($fgs_grs_data->stock_location1 == 8 || $fgs_grs_data->stock_location1 == 9 || $fgs_grs_data->stock_location1 == 12 || $fgs_grs_data->stock_location1 == 13 || $fgs_grs_data->stock_location1 == 14) {
+                        //         $dc_stock = dc_transfer_stock::select('id as dc_stock_id', 'quantity')
+                        //             ->where('product_id', '=', $grs_item['product_id'])
+                        //             ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                        //             ->where('stock_location_id', '=', $fgs_grs_data->stock_location1)
+                        //             ->first();
+                        //         $dc_update_stock = $dc_stock['quantity'] + $qty_to_cancel_array[$i];
+
+                        //         $dc_stock_mngment = dc_transfer_stock::find($dc_stock['dc_stock_id']);
+                        //         $dc_stock_mngment->quantity = $dc_update_stock;
+                        //         $dc_stock_mngment->save();
+                        //         //$dc_production_stock = $this->dc_transfer_stock->update_data(['id' => $dc_stock['id']], ['quantity' => $update_stock]);
+
+                        //     }
+
+                        //     $fgs_maa_stock = fgs_maa_stock_management::where('product_id', '=', $grs_item['product_id'])
+                        //         ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                        //         ->first();
+                        //     $update_maa_stocks = $fgs_maa_stock['quantity'] - $qty_to_cancel_array[$i];
+                        //     $maa_stock = $this->fgs_maa_stock_management->update_data(['id' => $fgs_maa_stock['id']], ['quantity' => $update_maa_stocks]);
+                        // } else {
+                        // dd($qty_to_cancel_array[$i]);
+
+
+
+                        
+
+                        $update_qty = $grs_item['batch_quantity'] - $qty_to_cancel_array[$i];
+                        $fgs_grs_item_qty_update = fgs_grs_item::where('fgs_grs_item.id', '=', $grs_item_id)
+                                                        ->where('product_id', '=', $grs_item['product_id'])
+                                                        ->update(['remaining_qty_after_cancel' => $update_qty, 'qty_to_invoice' => $update_qty]);
+                        if ($grs_item['batch_quantity'] == $qty_to_cancel_array[$i]) 
+                        {
+                            $fgs_grs_item_qty_update = fgs_grs_item::where('fgs_grs_item.id', '=', $grs_item_id)
+                                                        ->where('product_id', '=', $grs_item['product_id'])
+                                                        ->update(['cgrs_status' => 1]);
+                        }
+                        $fgs_product_stock = fgs_product_stock_management::where('product_id', '=', $grs_item['product_id'])
+                            ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                            ->where('stock_location_id', '=', $fgs_grs_data->stock_location1)
+                            ->first();
+
+                        $update_stock = $fgs_product_stock['quantity'] + $qty_to_cancel_array[$i];
+                        $production_stock = $this->fgs_product_stock_management->update_data(['id' => $fgs_product_stock['id']], ['quantity' => $update_stock]);
+
+                        $fgs_maa_stock = fgs_maa_stock_management::where('product_id', '=', $grs_item['product_id'])
+                            ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                            ->first();
+                        //    dd($fgs_maa_stock);
+                        if(isset($fgs_maa_stock)){
+                        if ($fgs_maa_stock['quantity']>$qty_to_cancel_array[$i]) {
+                            $update_maa_stocks = $fgs_maa_stock['quantity'] - ($qty_to_cancel_array[$i]);
+                            $maa_stock = $this->fgs_maa_stock_management->update_data(['id' => $fgs_maa_stock['id']], ['quantity' => $update_maa_stocks]);
+                        }else{
+                            $maa_stock = $this->fgs_maa_stock_management->update_data(['id' => $fgs_maa_stock['id']], ['quantity' => 0]);
+                        }
+                        }
+
+                        $i++;
+                    }
+                    if ($cgrs_id && $fgs_grs_item_qty_update) {
+                        $request->session()->flash('success', "You have successfully created a CGRS !");
+                        return redirect('fgs/CGRS/CGRS-list');
+                    } else {
+                        $request->session()->flash('error', "CGRS creation is failed. Try again... !");
+                        return redirect('fgs/CGRS/CGRS-list');
+                    }
                 }
             }
-            $condition1[] = ['user.status', '=', 1];
-            $data['users'] = $this->User->get_all_users($condition1);
-
-            if($request->id){
-                $edit['grs'] = $this->fgs_grs->find_grs_datas(['fgs_grs.id' => $request->id]);
-
-                $edit['items'] = $this->fgs_grs_item->get_items(['fgs_grs_item_rel.master' =>$request->id]);
-               return view('pages.FGS.CGRS.CGRS-add',compact('edit','data'));
+            if ($validator->errors()->all()) {
+                return redirect('FGS/CGRS-add')->withErrors($validator)->withInput();
             }
-            else
-            return view('pages.FGS.CGRS.CGRS-add',compact('data'));
         }
+        $condition1[] = ['user.status', '=', 1];
+        $data['users'] = $this->User->get_all_users($condition1);
+
+        if ($request->id) {
+            $edit['grs'] = $this->fgs_grs->find_grs_datas(['fgs_grs.id' => $request->id]);
+
+            $edit['items'] = $this->fgs_grs_item->get_items(['fgs_grs_item_rel.master' => $request->id]);
+            return view('pages.FGS.CGRS.CGRS-add', compact('edit', 'data'));
+        } else
+            return view('pages.FGS.CGRS.CGRS-add', compact('data'));
+    }
         
          public function findGrsNumberForCGRS(Request $request){
           if ($request->q) {
@@ -281,7 +402,7 @@ class CGRSController extends Controller
             
             $data .= '<thead>
                 <tr>
-                <th ></th> 
+                <th><input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)"></th>                
                 <th>SKU CODE</th>
                 <th>Description</th>
                 <th>Batch NUMBER</th>
@@ -292,11 +413,11 @@ class CGRSController extends Controller
                <tbody >';
             foreach ($grs_item as $item) {
                 $data .= '<tr>
-                    <td ><input type="checkbox" name="grs_item_id[]" id="grs_item_id" onclick="enableTextBox(this)" value="'.$item->id.'"></td>
+                    <td ><input type="checkbox" class="rowCheckbox" name="grs_item_id[]" id="grs_item_id" onclick="enableTextBox(this)" value="'.$item->id.'"></td>
                        <td>'.$item->sku_code.'</td>
                        <td>'.$item->discription.'</td>
                        <td>'.$item->batch_no.'</td>
-                       <td>'.$item->remaining_qty_after_cancel.'</td>
+                       <td id="qty">'.$item->remaining_qty_after_cancel.'</td>
                        <td><input type="number" class="qty_to_cancel" id="qty_to_cancel" name="qty_to_cancel[]" min="1" max="'.$item->remaining_qty_after_cancel.'" disabled></td>
                       
                       </tr>';
@@ -334,25 +455,35 @@ class CGRSController extends Controller
     public function CGRSList(Request $request)
     {
         $condition =[];
+        if ($request->firm_name) {
+            $condition[] = ['customer_supplier.firm_name', 'like', '%' . $request->firm_name . '%'];
+        }
         if($request->cgrs_no)
         {
             $condition[] = ['fgs_cgrs.cgrs_number','like', '%' . $request->cgrs_no . '%'];
         }
-         if($request->stock_location)
+        if($request->grs_no)
         {
-            $condition[] = ['fgs_cgrs.stock_location1','like', '%' . $request->stock_location1 . '%'];
+            $condition[] = ['fgs_grs.grs_number','like', '%' . $request->grs_no . '%'];
         }
+        //  if($request->stock_location)
+        // {
+        //     $condition[] = ['fgs_cgrs.stock_location1','like', '%' . $request->stock_location1 . '%'];
+        // }
         if($request->from)
         {
             $condition[] = ['fgs_cgrs.cgrs_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
             $condition[] = ['fgs_cgrs.cgrs_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
         $cgrs = fgs_cgrs::select('fgs_cgrs.*','product_stock_location.location_name as location_name1',
-        'stock_location.location_name as location_name2','fgs_grs.grs_number')
+        'stock_location.location_name as location_name2','fgs_grs.grs_number','customer_supplier.firm_name')
                    ->leftJoin('fgs_grs','fgs_grs.id','fgs_cgrs.grs_id')
                        ->leftJoin('product_stock_location','product_stock_location.id','fgs_grs.stock_location1')
                         ->leftJoin('product_stock_location as stock_location','stock_location.id','fgs_grs.stock_location2')
+                        ->leftJoin('fgs_oef', 'fgs_oef.id', 'fgs_grs.oef_id')
+                        ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_oef.customer_id')            
                         ->where($condition)
+                        ->where('fgs_cgrs.status',1)
                         ->orderBy('fgs_cgrs.id','DESC')
                         ->paginate(15);
         return view('pages/FGS/CGRS/CGRS-list', compact('cgrs'));
@@ -363,14 +494,14 @@ class CGRSController extends Controller
         $condition = ['fgs_cgrs_item_rel.master' =>$request->cgrs_id];
         if($request->product)
         {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->product . '%'];
+            $condition[] = ['fgs_item_master.sku_code','like', '%' . $request->product . '%'];
         }
         
        
-        // $items = fgs_grs_item::select('fgs_grs_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_grs.grs_number')
+        // $items = fgs_grs_item::select('fgs_grs_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no','fgs_grs.grs_number')
         //                 ->leftjoin('fgs_grs_item_rel','fgs_grs_item_rel.item','=','fgs_grs_item.id')
         //                 ->leftjoin('fgs_grs','fgs_grs.id','=','fgs_grs_item_rel.master')
-        //                 ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+        //                 ->leftjoin('product_product','fgs_item_master.id','=','fgs_grs_item.product_id')
         //                 ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_grs_item.batchcard_id')
         //                 ->where($condition)
         //                 //->where('inv_mac.status','=',1)
@@ -385,29 +516,34 @@ class CGRSController extends Controller
     public function cgrs_transaction(Request $request)
     {
         $condition = [];
-        if ($request->mrn_no) {
+        if ($request->cgrs_no) {
             $condition[] = ['fgs_cgrs.cgrs_number', 'like', '%' . $request->cgrs_no . '%'];
         }
 
         if ($request->item_code) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if ($request->from) {
-            $condition[] = ['fgs_cgrs_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
+            $monthStart = date('Y-m-01', strtotime('01-' . $request->from));
+            $monthEnd = date('Y-m-t', strtotime('01-' . $request->from));
+            $condition[] = ['fgs_cgrs.cgrs_date', '>=', $monthStart];
+            $condition[] = ['fgs_cgrs.cgrs_date', '<=', $monthEnd];
         }
+        
         $items = fgs_cgrs_item::select(
             'fgs_cgrs.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'fgs_cgrs.cgrs_number',
             'fgs_cgrs.cgrs_date',
             'fgs_cgrs.created_at as min_wef',
-            'fgs_cgrs_item.id as cgrs_item_id'
+            'fgs_cgrs_item.id as cgrs_item_id',
+            'fgs_cgrs_item.batch_quantity as quantity'
         )
             ->leftJoin('fgs_cgrs_item_rel', 'fgs_cgrs_item_rel.item', '=', 'fgs_cgrs_item.id')
             ->leftJoin('fgs_cgrs', 'fgs_cgrs.id', '=', 'fgs_cgrs_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cgrs_item.product_id')
+            ->leftjoin('product_product', 'fgs_item_master.id', '=', 'fgs_cgrs_item.product_id')
             // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cgrs_item.batchcard_id')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
@@ -422,29 +558,50 @@ class CGRSController extends Controller
     public function cgrs_transaction_export(Request $request)
     {
         $condition = [];
-        if ($request->mrn_no) {
-            $condition[] = ['fgs_cgrs.grs_number', 'like', '%' . $request->grs_no . '%'];
+        if ($request->cgrs_no) {
+            $condition[] = ['fgs_cgrs.cgrs_number', 'like', '%' . $request->cgrs_no . '%'];
         }
 
         if ($request->item_code) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->item_code . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
         if ($request->from) {
             $condition[] = ['fgs_cgrs_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
         }
-        $items = fgs_grs_item::select(
+        $items = fgs_cgrs_item::select(
             'fgs_cgrs.*',
-            'product_product.sku_code',
-            'product_product.discription',
-            'product_product.hsn_code',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
             'fgs_cgrs.cgrs_number',
             'fgs_cgrs.cgrs_date',
             'fgs_cgrs.created_at as min_wef',
-            'fgs_cgrs_item.id as cgrs_item_id'
+            'fgs_cgrs_item.id as cgrs_item_id',
+            'fgs_cgrs_item.batch_quantity as quantity',
+            'customer_supplier.firm_name',
+            'customer_supplier.city',
+            'state.state_name',
+            'zone.zone_name',
+            'fgs_product_category.category_name',
+            'fgs_product_category_new.category_name as new_category_name',
+            // 'transaction_type.transaction_name',
+            'customer_supplier.sales_type',
         )
             ->leftJoin('fgs_cgrs_item_rel', 'fgs_cgrs_item_rel.item', '=', 'fgs_cgrs_item.id')
             ->leftJoin('fgs_cgrs', 'fgs_cgrs.id', '=', 'fgs_cgrs_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cgrs_item.product_id')
+            ->leftJoin('fgs_grs_item', 'fgs_grs_item.id', '=', 'fgs_cgrs_item.grs_item_id')
+            ->leftJoin('fgs_grs_item_rel', 'fgs_grs_item_rel.item', '=', 'fgs_grs_item.id')
+            ->leftJoin('fgs_grs', 'fgs_grs.id', '=', 'fgs_grs_item_rel.master')
+            ->leftjoin('product_product', 'fgs_item_master.id', '=', 'fgs_grs_item.product_id')
+
+            ->leftJoin('fgs_mrn_item', 'fgs_mrn_item.id', '=', 'fgs_grs_item.mrn_item_id')
+            ->leftjoin('fgs_mrn_item_rel', 'fgs_mrn_item_rel.item', '=', 'fgs_mrn_item.id')
+            ->leftjoin('fgs_mrn', 'fgs_mrn.id', '=', 'fgs_mrn_item_rel.master')
+            ->leftJoin('customer_supplier', 'customer_supplier.id', '=', 'fgs_mrn.supplier')
+            ->leftJoin('state', 'state.state_id', '=', 'customer_supplier.state')
+            ->leftJoin('zone', 'zone.id', '=', 'customer_supplier.zone')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_mrn.product_category')
+            ->leftJoin('fgs_product_category_new','fgs_product_category_new.id','fgs_grs.new_product_category')
             // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_grs_item.batchcard_id')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
@@ -454,6 +611,62 @@ class CGRSController extends Controller
             ->get();
 
         return Excel::download(new FGScgrstransactionExport($items), 'FGS-cGRS-transaction' . date('d-m-Y') . '.xlsx');
+    }
+    public function CGRS_delete($id, Request $request)
+    {
+        $cgrs_items = fgs_cgrs_item::select('fgs_cgrs_item.*', 'fgs_cgrs.stock_location1')
+            ->leftJoin('fgs_cgrs_item_rel', 'fgs_cgrs_item_rel.item', '=', 'fgs_cgrs_item.id')
+            ->leftJoin('fgs_cgrs', 'fgs_cgrs.id', '=', 'fgs_cgrs_item_rel.master')
+            ->where('fgs_cgrs.id', $id)
+            ->get();
+        // dd($cgrs);
+        foreach ($cgrs_items as $items) {
+            $grs_item = fgs_grs_item::where('id', $items['grs_item_id'])->first();
+            fgs_grs_item::where('id', $items['grs_item_id'])
+                ->update([
+                    'cgrs_status' => 0
+                ]);
+            $update_qty = $grs_item['qty_to_invoice'] + $items['batch_quantity'];
+            $fgs_grs_item_qty_update = fgs_grs_item::where('id', $items['grs_item_id'])
+                ->update(['remaining_qty_after_cancel' =>$grs_item['remaining_qty_after_cancel'] + $items['batch_quantity'],
+                 'qty_to_invoice' => $grs_item['qty_to_invoice']+ $items['batch_quantity']]);
+
+            $fgs_product_stock = fgs_product_stock_management::where('product_id', '=', $grs_item['product_id'])
+                ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                ->where('stock_location_id', '=', $items['stock_location1'])
+                ->first();
+            if ($fgs_product_stock['quantity']>0) {
+                $update_stock = $fgs_product_stock['quantity'] - $items['batch_quantity'];
+                $production_stock = $this->fgs_product_stock_management->update_data(['id' => $fgs_product_stock['id']], ['quantity' => $update_stock]);
+            }
+
+            if ($items['stock_location1'] == 8 || $items['stock_location1'] == 9 || $items['stock_location1'] == 12 || $items['stock_location1'] == 13 || $items['stock_location1'] == 14) {
+                $dc_stock = dc_transfer_stock::select('id as dc_stock_id', 'quantity')
+                    ->where('product_id', '=', $grs_item['product_id'])
+                    ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                    ->where('stock_location_id', '=', $items['stock_location1'])
+                    ->first();
+                $dc_update_stock = $dc_stock['quantity'] - $items['batch_quantity'];
+
+                $dc_stock_mngment = dc_transfer_stock::find($dc_stock['dc_stock_id']);
+                $dc_stock_mngment->quantity = $dc_update_stock;
+                $dc_stock_mngment->save();
+                //$dc_production_stock = $this->dc_transfer_stock->update_data(['id' => $dc_stock['id']], ['quantity' => $update_stock]);
+
+            }
+
+            $fgs_maa_stock = fgs_maa_stock_management::where('product_id', '=', $grs_item['product_id'])
+                ->where('batchcard_id', '=', $grs_item['batchcard_id'])
+                ->first();
+            $update_maa_stocks = $fgs_maa_stock['quantity'] + $items['batch_quantity'];
+            $maa_stock = $this->fgs_maa_stock_management->update_data(['id' => $fgs_maa_stock['id']], ['quantity' => $update_maa_stocks]);
+
+            $cgrs = fgs_cgrs::where('id', $id)->update([
+                'status' => 0
+            ]);
+        }
+        $request->session()->flash('success', "You have successfully Deleted  CGRS !");
+        return redirect()->back();
     }
 }   
         

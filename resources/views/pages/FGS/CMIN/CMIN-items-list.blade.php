@@ -103,28 +103,31 @@
 						<thead>
 								<tr>
 									<th>Product</th>
-                  <th>HSN Code</th>
+                  					<th>HSN Code</th>
 									<th>Description</th>
 									<th>Batch No.</th>
 									<th>Quantity</th>
 									<th>UOM</th>
-                </tr>
-							</thead>
+									<th></th>
+                				</tr>
+						</thead>
 							<tbody id="prbody1">
 								@foreach($items as $item)
-                 <tr>
+                				<tr>
 									<td>{{$item['sku_code']}}</td>
-                  <td>{{$item['hsn_code']}}</td>
+                  					<td>{{$item['hsn_code']}}</td>
 									<td>{{$item['discription']}}</td>
 									<td>{{$item['batch_no']}}</td>
 									<td>{{$item['quantity']}}</td>
 									<td>Nos</td>
+									<td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/CMIN/edit-item/'.$item['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> </td>
+
 								</tr>
 								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							
+						{{ $items->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>

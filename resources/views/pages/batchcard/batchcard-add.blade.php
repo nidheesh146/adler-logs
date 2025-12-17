@@ -337,7 +337,7 @@
         minimumInputLength: 3,
         allowClear: true,
         ajax: {
-            url: "{{ url('inventory/stock/find-batchcard') }}",
+            url: "{{ url('batchcard/find-batchcard') }}",
             processResults: function (data) {
                 return { results: data };
             }

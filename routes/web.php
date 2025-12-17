@@ -14,6 +14,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('backup', 'App\Http\Controllers\Web\BackupController@createBackup');
+
+Route::get('download', 'App\Http\Controllers\Web\FGS\PIController@downloadexcel');
+
+Route::get('insertdata', 'App\Http\Controllers\Web\FGS\FgsreportController@fgsInsert');
+
+Route::get('insertinvdata', 'App\Http\Controllers\Web\FGS\FgsreportController@fgsinvInsert');
+
+Route::get('invdownload', 'App\Http\Controllers\Web\FGS\PIController@invdownloadexcel');
+
+Route::get('batchreportinsert', 'App\Http\Controllers\Web\FGS\StockManagementController@batchTraceReportInsert');
+
+Route::get('batch_trace_report_download', 'App\Http\Controllers\Web\FGS\StockManagementController@batchTraceReportDownload');
+
 Route::group(['namespace' => 'App\Http\Controllers\Web'], function () {
     Route::get('/', 'UserController@login');
     Route::post('/', 'UserController@login');
@@ -86,6 +100,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
 
 
     Route::get('inventory/supplier-quotation', 'SupplierQuotationController@getSupplierQuotation');
+    Route::get('inventory/supplier-quotation-merge', 'SupplierQuotationController@getSupplierQuotationMerge');
     Route::post('inventory/supplierQuotationUpdate/{rq_no}/{supp_id}', 'SupplierQuotationController@supplierQuotationUpdate');
     Route::get('inventory/view-supplier-quotation-items/{rq_no}/{supp_id}', 'SupplierQuotationController@viewSupplierQuotationItems');
     Route::get('inventory/edit-supplier-quotation-item/{rq_no}/{supp_id}/{item_id}', 'SupplierQuotationController@getSupplierQuotationEditItem');
@@ -95,6 +110,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
     Route::get('inventory/comparison-quotation/{rq_no}', 'SupplierQuotationController@comparisonOfQuotation');
     Route::post('inventory/select-quotation', 'SupplierQuotationController@selectQuotation');
     Route::post('inventory/select-quotation-items', 'SupplierQuotationController@selectQuotationItems');
+    Route::post('saveExchangeRate', 'SupplierQuotationController@saveExchangeRate')->name('saveExchangeRate');
+
 
     //final purchase
     // Route::get('inventory/final-purchase-add/{id?}', 'PurchaseController@addFinalPurchase');
@@ -104,6 +121,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
     Route::post('inventory/final-purchase-insert', 'PurchaseController@insertFinalPurchase');
     Route::get('inventory/final-purchase-edit/{id?}', 'PurchaseController@editFinalPurchase');
     Route::post('inventory/final-purchase-edit/{id?}', 'PurchaseController@editFinalPurchase');
+    Route::get('inventory/multiple-RQ-purchase-add', 'PurchaseController@addFinalPurchaseFromMultipleRQ');
+    Route::post('inventory/multiple-RQ-purchase-insert', 'PurchaseController@insertFinalPurchaseFromMultipleRQ');
+    Route::get('inventory/final-purchase/rq-number', 'PurchaseController@getRQNumber');
 
 
     Route::get('inventory/final-purchase-delete/{id?}', 'PurchaseController@deleteFinalPurchase');
@@ -129,6 +149,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
     Route::get('inventory/pending-purchase-realisation/excel-export', 'PurchaseController@pendingPurchaseRealisationExport');
     Route::get('inventory/getTermsandConditions', 'PurchaseController@getTermsandConditions');
     Route::post('inventory/final-purchase/change/terms-condition', 'PurchaseController@changeTerms');
+    Route::get('inventory/R02-pending-purchase-realisation/excel-export', 'PurchaseController@R02pendingPurchaseRealisation');
+
     //supplier-invoice
     Route::get('inventory/supplier-invoice', 'PurchaseController@supplierInvoice');
     Route::get('inventory/supplier-invoice-add', 'PurchaseController@supplierInvoiceAdd');
@@ -255,6 +277,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
     Route::post('inventory/Stock/ToProduction/Indirect', 'StockController@addIndirectSIP');
     Route::get('inventory/Stock/ToProduction/Packing', 'StockController@PackingSIP');
     Route::post('inventory/Stock/ToProduction/Packing', 'StockController@addPackingSIP');
+    Route::get('inventory/Stock/ToProduction/underProcess','StockController@underProcessSIP');
+    Route::post('inventory/Stock/ToProduction/underProcess', 'StockController@addUnderProcessSIP');
+    Route::get('inventory/all-requisition-item/excel-export', 'StockController@AllSIPItemExport');
+
     Route::get('inventory/Stock/packing-itemcodesearch', 'StockController@packingItem');
     Route::get('inventory/Stock/ToProduction/excel-export', 'StockController@StockToProductionExport');
     Route::get('inventory/stock/fetchDeviationItemLotcards', 'StockController@fetchDeviationItemLotcards');
@@ -286,6 +312,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
     //Route::get('inventory/stock/fetchSIPinfoDirect','StockController@fetchSIPinfoDirect');
     Route::get('inventory/stock/fetchDirectItemLotCards', 'StockController@fetchDirectItemLotCards');
     Route::get('inventory/stock/lotcardInfo', 'StockController@lotcardInfo');
+    Route::get('inventory/Stock/FromProduction/excel-export', 'StockController@AllSRPItemExport');
 
     Route::get('inventory/stock/fetchSIPinfoIndirect', 'StockController@fetchSIPinfoIndirect');
 
@@ -298,6 +325,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
     Route::get('inventory/stock/fetchLotStock', 'StockController@fetchLotStock');
     Route::get('inventory/Stock/transfer/items/{sto_id}', 'StockController@viewSTOItems');
     Route::get('getSingleSTO', 'StockController@getSingleSTO');
+    Route::get('inventory/Stock/transfer/excel-export', 'StockController@AllSTOItemExport');
+
+    
+    Route::get('inventory/stock-location-Add', 'StockController@Add_stock_location');
+    Route::post('inventory/stock-location-Add', 'StockController@Add_stock_location');
 
     // suppliers
     // Route::get('inventory/terms-and-conditions-list','TermsconditionsController@list_terms_conditions');
@@ -326,6 +358,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\PurchaseDetails', 'middle
 
 Route::group(['namespace' => 'App\Http\Controllers\Web', 'middleware' => ['RolePermission']], function () {
 
+        Route::get('/run-python-scripts','PythonController@runScripts');
+
     //DashBoard
     Route::get('dashboard', 'DashboardController@index');
     Route::get('profile', 'ProfileController@profile');
@@ -335,6 +369,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web', 'middleware' => ['RoleP
     Route::post('batchcard/print', 'BatchCardController@BatchcardPrint');
     Route::get('batchcard/batchcard-upload', 'BatchCardController@getBatchcardUpload');
     Route::post('batchcard/batchcard-upload', 'BatchCardController@batchcardUpload');
+    Route::get('batchcard/find-batchcard', 'BatchCardController@findBatchCard');
 
     Route::get('batchcard/edit', 'BatchCardController@Batchcardedit');
     Route::post('batchcard/edit', 'BatchCardController@Batchcardedit');
@@ -351,11 +386,38 @@ Route::group(['namespace' => 'App\Http\Controllers\Web', 'middleware' => ['RoleP
     Route::get('batchcard/get-InputMaterial', 'BatchCardController@getInputMaterial');
     Route::post('batchcard/add-input-material', 'BatchCardController@addInputMaterial');
     Route::get('batchcard/track-pr-item','TrackController@trackPrItem');
+    Route::get('batchcard/batch-item-search', 'BatchCardController@batch_item_search');
+    Route::post('batchcard/batch-item-search', 'BatchCardController@batch_item_search');
+    Route::get('batchcard/batch-item-search-export','BatchCardController@batch_item_search_export');
+    Route::get('batchcard/item-more/{id}','BatchCardController@batch_item_more');
+    Route::get('batchcard/batch-item-pdf/{id}','BatchCardController@batch_item_pdf');
+    //fin value chain report
+
     //Label card
     Route::get('label/snn-mrp-label', 'LabelController@snnMRPLabel');
     Route::post('label/snn-mrp-label', 'LabelController@generateSNNMRPLabel');
+    Route::get('label/ahpl-mrp1-label', 'LabelController@ahplMRP1Label');
+    Route::post('label/ahpl-mrp1-label', 'LabelController@generateAHPLMRP1Label');
     Route::get('label/ahpl-mrp-label', 'LabelController@ahplMRPLabel');
     Route::post('label/ahpl-mrp-label', 'LabelController@generateAHPLMRPLabel');
+    Route::get('label/Jayon-mrp-label','LabelController@jayonMRPLabel');
+    Route::post('label/Jayon-mrp-label','LabelController@generateJayonMRPLabel');
+    
+    Route::get('label/doc-adler-mrp-label', 'LabelController@docAdlerMRPLabel');
+    Route::post('label/doc-adler-mrp-label', 'LabelController@generateDocAdlerMRPLabel');
+    Route::get('label/doc-snn-mrp-label','LabelController@docSNNMRPLabel');
+    Route::post('label/doc-snn-mrp-label', 'LabelController@generateDocSNNMRPLabel');
+
+    Route::get('label/doc-ahpl-mrp-label', 'LabelController@docAHPLMRPLabel');
+    Route::post('label/doc-ahpl-mrp-label', 'LabelController@generateDocAHPLMRPLabel');
+    Route::get('label/getDocNumbers/{doc_type}','LabelController@getDocNumbers');
+    Route::get('label/getDocNumberInfo/{doc_type}/{doc_id}','LabelController@getDocNumberInfo');
+    Route::get('label/doc-item-comparison', 'LabelController@docWiseComparison');
+    Route::get('label/docNumberInfoForComparison/{doc_type}/{doc_id}','LabelController@docNumberInfoForComparison');
+
+    Route::get('label/mailing-label','LabelController@mailingLabel');
+    Route::post('label/generate-mailing-label','LabelController@generateMailingLabel');
+
     Route::get('label/mrp-label', 'LabelController@mrpLabel');
     Route::post('label/mrp-label', 'LabelController@generateMRPLabel');
     Route::get('label/getBatchcard/{sku_code}', 'LabelController@getBatchcard');
@@ -374,7 +436,52 @@ Route::group(['namespace' => 'App\Http\Controllers\Web', 'middleware' => ['RoleP
     Route::post('label/insert-printing-data', 'LabelController@insertPrintingData');
     Route::get('label/exportPrinting-report', 'LabelController@exportPrintingReport')->name('ExportPrintingData');
 
+    Route::get('label/non-sterile-product-label2', 'LabelController@nonSterileProductLabel2');
+    Route::post('label/non-sterile-product-label2', 'LabelController@generateNonSterileProductLabel2');
+
+    Route::get('label/auto-gen-label', 'LabelController@AutogenLabel');
+    Route::post('label/auto-gen-label', 'LabelController@AutogenLabel');
+
+    Route::get('label/new-patient-label', 'LabelController@newpatientLabel');
+    Route::post('label/new-patient-label', 'LabelController@newgeneratePatientLabel');
+    Route::get('label/sterilization-label2', 'LabelController@sterilizationProductLabel2');
+    Route::post('label/sterilization-label2', 'LabelController@generateSterilizationProductLabel2');
+    Route::get('label/new-sterile', 'LabelController@NewSterile');
+    Route::post('label/new-genrate-sterile', 'LabelController@NewSterileGenrate');
+    Route::get('label/aneurysm-clip-sterile-packaging', 'LabelController@NewAneurysm');
+    Route::post('label/aneurysm-clip-sterile-packaging-print', 'LabelController@NewAneurysmGenrate');
+    Route::get('label/new-non-sterile-label', 'LabelController@NewNonSterile');
+    Route::post('label/new-non-sterile-label-print', 'LabelController@NewNonSterileGenrate');
+    Route::get('label/new-sterilization-label-2', 'LabelController@SterilizationProductLABLE2');
+    Route::post('label/new-sterilization-label-2-print', 'LabelController@GenerateSterilizationProductLABLE2');
+
+
+
+
+    //samplelabel
+    Route::get('samplelabel/aneurysm-label', 'SampleLabelController@newaneurysm');
+    Route::post('samplelabel/aneurysm-label-print', 'SampleLabelController@newaneurysmGenrate');
+    Route::get('samplelabel/new-non-sterile', 'SampleLabelController@NewNonsterile');
+    Route::post('samplelabel/new-non-sterile-print', 'SampleLabelController@NewNonsterileGenrate');
+    Route::get('samplelabel/new-sterile-label', 'SampleLabelController@Newsterile');
+    Route::post('samplelabel/new-sterile-print', 'SampleLabelController@NewsterileGenrate');
+    Route::get('samplelabel/new-patient', 'SampleLabelController@NewpatientLabel');
+    Route::post('samplelabel/new-patient-print', 'SampleLabelController@NewgeneratePatientLabel');
+    Route::get('samplelabel/new-instrument', 'SampleLabelController@InstrumentLabel');
+    Route::post('samplelabel/new-instrument-print', 'SampleLabelController@GenerateInstrumentLabel');
+    Route::get('samplelabel/flip-non-sterile', 'SampleLabelController@NonSterileProductLabel');
+    Route::post('samplelabel/flip-non-sterile-print', 'SampleLabelController@GenerateNonSterile');
+    Route::get('samplelabel/patient-30-label', 'SampleLabelController@Patient30Label');
+    Route::post('samplelabel/patient-30-label-print', 'SampleLabelController@GeneratePatient30Label');
+    Route::get('samplelabel/sterilization-label-2', 'SampleLabelController@SterilizationProductLABLE2');
+    Route::post('samplelabel/sterilization-label-2-print', 'SampleLabelController@GenerateSterilizationProductLABLE2');
+    Route::get('samplelabel/new-non-sterilization-label', 'SampleLabelController@NewNonsterilization');
+    Route::post('samplelabel/new-non-sterilization-label-print', 'SampleLabelController@NewNonsterilizationGenrate');
+
+    
     // Row material
+    Route::post('/purchase/apply-changes', 'RowMaterialController@applyChanges')->name('purchase.applyChanges');
+
     Route::get('row-material/list', 'RowMaterialController@materialList');
     Route::get('row-material/upload', 'RowMaterialController@materialUpload');
     Route::post('row-material/upload', 'RowMaterialController@materialPostUpload');
@@ -382,7 +489,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Web', 'middleware' => ['RoleP
     Route::post('row-material/add', 'RowMaterialController@materialAdd');
     Route::get('row-material/edit', 'RowMaterialController@materialEdit');
     Route::post('row-material/edit', 'RowMaterialController@materialEdit');
-    Route::get('row-material/delete', 'RowMaterialController@materialDelete');
+    Route::get('row-material/fixed-rate/edit/{id}', 'RowMaterialController@fixedRateEdit');
+    Route::post('row-material/fixed-rate/edit/{id}', 'RowMaterialController@fixedRateEdit');
+    Route::get('raw-material/deactivate', 'RowMaterialController@materialDeactivate');
+    Route::get('raw-material/activate', 'RowMaterialController@materialActivate');
+    Route::get('row-material/fixed-rate/status/{id}/{status}', 'RowMaterialController@fixedRatestatus');
 
     //fixed rate row material
     Route::get('row-material/fixed-rate', 'RowMaterialController@fixedRateList');
@@ -399,6 +510,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Web', 'middleware' => ['RoleP
     Route::get('product/add-input-material', 'ProductController@addInputMaterial');
     Route::post('product/add-input-material', 'ProductController@addInputMaterial');
     Route::get('product/delete-input-material', 'ProductController@deleteInputMaterial');
+// Route::get('fgs/product-master/delete-input-material', 'ProductMasterController@deleteInputMaterial');
+
+    
     Route::get('product/file/upload', 'ProductController@getProductUpload');
     Route::post('product/product-upload', 'ProductController@productFileUpload');
     Route::get('product/alternative-input-material', 'ProductController@alternativeInputMaterial');
@@ -438,11 +552,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/export_customersearch', 'CustomerSupplierController@exportCustomer');
     Route::get('fgs/customer-supplier/excel-export', 'CustomerSupplierController@CustomerSupplierExport');
     //Price master
+    Route::match(['get', 'post'], 'fgs/price-master/edit/{id}', 'PriceController@priceEdit')->name('price.edit');
+
     Route::get('fgs/price-master/list', 'PriceController@priceList');
     Route::get('fgs/price-master/add/{id?}', 'PriceController@priceAdd');
+    Route::get('fgs/price-master/delete/{id}', 'PriceController@priceDelete');
     Route::post('fgs/price-master/add/{id?}', 'PriceController@priceAdd');
     Route::get('fgs/productsearch', 'PriceController@productsearch');
     Route::get('fgs/productsearch-trade', 'PriceController@productsearch_trade');
+    Route::get('fgs/price-master/upload-excel', 'PriceController@priceUpload');
+    Route::post('fgs/price-master/upload', 'PriceController@priceMasterUpload');
 
     Route::get('fgs/price-master/excel-export', 'PriceController@PriceMasterExport');
     // Product master
@@ -450,7 +569,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
 
     Route::get('fgs/product-master/add/{id?}', 'ProductMasterController@productAdd');
     Route::post('fgs/product-master/add/{id?}', 'ProductMasterController@productAdd');
-
+    Route::get('fgs/product-master/upload-excel', 'ProductMasterController@product_upload');
+    Route::post('fgs/product-master/upload', 'ProductMasterController@productFgsUpload');
     Route::get('fgs/product-master/excel-export', 'ProductMasterController@ProductExport');
 
     //Production stock
@@ -468,6 +588,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/MRN/item-list/{mrn_id}', 'MRNController@MRNitemlist');
     Route::get('fgs/fetchMRNInfo', 'MRNController@fetchMRNInfo');
     Route::post('fgs/MRN/item-upload', 'MRNController@MRNUpload');
+    Route::get('fgs/search', 'MRNController@search');
     Route::get('fgs/MRN-item-edit/{id?}', 'MRNController@edit_mrn_item');
     Route::post('fgs/MRN-item-update', 'MRNController@update_mrn_item');
     Route::get('fgs/MRN-item-delete/{id?}', 'MRNController@delete_mrn_item');
@@ -504,10 +625,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/fetchBatchCardQtyManufatureDate', 'MINController@fetchBatchCardQtyManufatureDate');
     Route::get('fgs/MIN/edit-item/{min_id}', 'MINController@MINitemedit');
     Route::post('fgs/MIN/update-item', 'MINController@MINitemupdate');
-    Route::get('fgs/MIN-item-delete/{id?}', 'MINController@delete_min');
+    Route::get('fgs/MIN-item-delete/{id?}', 'MINController@delete_min_item');
+    Route::get('fgs/MIN-delete/{id?}', 'MINController@Min_delete');
 
 
     //CMIN
+    //CMIN
+    Route::get('fgs/manual-CMIN','CMINController@CMINNewManualAddPage');
+    Route::post('fgs/manual-CMIN','CMINController@CMINNewManualAddPage');
+    Route::get('/your-route-to-fetch-categories-CMIN','CMINController@fetchCategoriesCMIN');
     Route::get('fgs/CMIN/CMIN-list', 'CMINController@CMINList');
     Route::get('fgs/CMIN-add', 'CMINController@CMINAdd');
     Route::post('fgs/CMIN-add', 'CMINController@CMINAdd');
@@ -515,6 +641,144 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/CMIN/find-min-info', 'CMINController@minInfo');
     Route::get('fgs/CMIN/items-list/{cmin_id}', 'CMINController@CMINItemList');
     Route::get('fgs/CMIN/pdf/{cmin_id}', 'CMINController@CMINpdf');
+    Route::get('fgs/CMIN/edit-item/{cmin_id}', 'CMINController@CMINedit');
+    Route::post('fgs/CMIN/edit-item/{cmin_id}', 'CMINController@CMINedit');
+
+        //OEF
+        
+        Route::post('/upload-oef-item/{oef_id}', 'OEFController@upload_oef_item');
+        Route::get('fgs/OEFproductsearch/{oef_id}', 'OEFController@OEFproductsearch');
+        Route::post('/save-oef-item', 'OEFController@save_oef_item')->name('save_oef_item');
+        Route::get('/oef-items/{oef_id}','OEFController@oefItemList')->name('oef_item_list');
+        Route::get('fgs/OEF-list', 'OEFController@OEFList');
+        Route::get('fgs/OEF-add', 'OEFController@OEFAdd');
+        Route::post('fgs/OEF-add', 'OEFController@OEFAdd');
+        Route::get('fgs/OEF-delete/{id}', 'OEFController@OEFDelete');
+        Route::get('fgs/OEF/item-list/{oef_id}', 'OEFController@OEFitemlist');
+        Route::get('fgs/OEF-item-delete/{oef_item_id}', 'OEFController@delete_oef_item');
+        Route::get('fgs/OEF-item-edit/{oef_item_id}', 'OEFController@edit_oef_item');
+        Route::post('fgs/OEF-item-update', 'OEFController@update_oef_item');
+        Route::get('fgs/OEF-edit/{oef_id}', 'OEFController@edit_oef');
+        Route::post('fgs/OEF-update', 'OEFController@update_oef');
+    
+    
+    
+    
+        Route::get('fgs/OEF/add-item/{oef_id}', 'OEFController@OEFitemAdd');
+        Route::post('fgs/OEF/add-item/{oef_id}', 'OEFController@OEFitemAdd');
+        Route::get('fgs/OEFproductsearch/{oef_id}', 'OEFController@OEFproductsearch');
+        Route::get('fgs/OEF/pdf/{oef_id}', 'OEFController@OEFpdf');
+        Route::get('fgs/OEF/pending-report', 'OEFController@pendingOEF');
+        Route::get('fgs/OEF/pending-OEF-export', 'OEFController@pendingOEFExport');
+        Route::get('fgs/OEF/ackpdf/{oef_id}', 'OEFController@OEFackpdf');
+        Route::get('fgs/OEF/order-acknowledgement-mail/{oef_id}', 'OEFController@OrderAcknowledgementEmail');
+        Route::post('fgs/OEF/item-upload/{oef_id}', 'OEFController@upload_oef_item');
+    
+        //COEF
+        Route::get('fgs/COEF/COEF-list', 'COEFController@COEFList');
+        Route::get('fgs/COEF-add', 'COEFController@COEFAdd');
+        Route::post('fgs/COEF-add', 'COEFController@COEFAdd');
+        Route::get('fgs/COEF/find-oef-number-for-coef', 'COEFController@findOefNumberForCOEF');
+        Route::get('fgs/COEF/find-oef-info', 'COEFController@oefInfo');
+        Route::get('fgs/COEF/item-list/{coef_id}', 'COEFController@COEFItemList');
+        Route::get('fgs/COEF/pdf/{coef_id}', 'COEFController@COEFpdf');
+        //GRS
+        Route::get('fgs/GRS-list', 'GRSController@GRSList');
+        Route::get('fgs/GRS-add', 'GRSController@GRSAdd');
+        Route::post('fgs/GRS-add', 'GRSController@GRSAdd');
+        Route::get('fgs/GRS/item-list/{grs_id}', 'GRSController@GRSitemlist');
+        Route::get('fgs/GRS/{grs_id}/add-item/{oef_item_id}', 'GRSController@GRSitemAdd');
+        Route::post('fgs/GRS/{grs_id}/add-item/{oef_item_id}', 'GRSController@GRSitemAdd');
+        // Route::get('fgs/GRS/add-item/{grs_id}','GRSController@GRSitemAdd');
+        // Route::post('fgs/GRS/add-item/{grs_id}','GRSController@GRSitemAdd');
+        Route::get('fgs/GRS/find-oef-number-for-grs', 'GRSController@findOEFforGRS');
+        Route::get('fgs/GRS/find-oef-info', 'GRSController@findOEFInfo');
+        Route::get('fgs/GRS/pdf/{grs_id}', 'GRSController@GRSpdf');
+        Route::get('fgs/GRS/pending-report', 'GRSController@pendingGRS');
+        Route::get('fgs/GRS/pending-GRS-export', 'GRSController@pendingGRSExport');
+        Route::get('fgs/GRS-item-edit/{grs_item_id}','GRSController@GRSItemEdit');
+        Route::post('fgs/GRS-item-edit/{grs_item_id}','GRSController@GRSItemEdit');
+        Route::get('fgs/GRS-item-delete/{grs_item_id}','GRSController@GRSItemDelete');
+        Route::get('fgs/GRS-edit/{grs_id}','GRSController@GRSEdit');
+        Route::post('fgs/GRS-edit/{grs_id}','GRSController@GRSEdit');
+        Route::get('fgs/GRS-delete/{grs_id}','GRSController@GRSDelete');
+        Route::get('/fetch-business-category','GRSController@fetchBusinessCategory')->name('fetch.business.category');
+         Route::get('/fetch-product-category','GRSController@fetchProductCategory')->name('fetch.product.category');
+        //CGRS
+        Route::get('fgs/CGRS/CGRS-list', 'CGRSController@CGRSList');
+        Route::get('fgs/CGRS-add', 'CGRSController@CGRSAdd');
+        Route::post('fgs/CGRS-add', 'CGRSController@CGRSAdd');
+        Route::get('fgs/CGRS/find-grs-number-for-cgrs', 'CGRSController@findGrsNumberForCGRS');
+        Route::get('fgs/CGRS/find-grs-info', 'CGRSController@grsInfo');
+        Route::get('fgs/CGRS/items-list/{cgrs_id}', 'CGRSController@CGRSItemList');
+        Route::get('fgs/CGRS/pdf/{cgrs_id}', 'CGRSController@CGRSpdf');
+        Route::get('fgs/CGRS/delete/{cgrs_id}', 'CGRSController@CGRS_delete');
+
+        //PI
+        Route::get('fgs/PI-list', 'PIController@PIList');
+        Route::get('fgs/PI-add', 'PIController@PIAdd');
+        Route::post('fgs/PI-add', 'PIController@PIAdd');
+        Route::get('fgs/PI-delete/{pi_id}', 'PIController@PIDelete');
+        Route::get('fgs/PI-edit/{grs_id}','PIController@PIEdit');
+        Route::post('fgs/PI-edit/{grs_id}','PIController@PIEdit');
+        Route::get('fgs/PI/item-list/{pi_id}', 'PIController@PIitemlist');
+        Route::get('fgs/PI-item-delete/{pi_item_id}','PIController@PIItemDelete');
+        Route::get('fgs/PI/fetchGRS', 'PIController@fetchGRS');
+        Route::get('fgs/PI/pdf/{pi_id}', 'PIController@PIpdf');
+        Route::get('fgs/PI/payment-pdf/{pi_id}', 'PIController@PIPaymentpdf');
+        Route::get('fgs/PI/payment-mail/{pi_id}', 'PIController@PIPaymentEmail');
+        Route::get('fgs/PI/pending-report', 'PIController@pendingPI');
+        Route::get('fgs/PI/pending-PI-export', 'PIController@pendingPIExport');
+        Route::get('fgs/merged-PI-list', 'PIController@mergedPIList');
+        Route::get('fgs/merge-multiple-PI', 'PIController@mergeMutiplePI');
+        Route::post('fgs/merge-pi', 'PIController@mergePIInsert');
+        Route::get('fgs/PI/merged-payment-pdf/{mpi_id}', 'PIController@MergedPIPaymentpdf');
+        Route::get('fgs/merged-PI/payment-mail/{mpi_id}', 'PIController@MergedPIPaymentEmail');
+        Route::get('fgs/back-ordr-report', 'BackorderReportController@get_data');
+        Route::get('fgs/all/export', 'BackorderReportController@allExport');
+        Route::post('fgs/pi/partial-invoice', 'PIController@PartialPI');
+        //CPI
+        Route::get('fgs/CPI/CPI-list', 'CPIController@CPIList');
+        Route::get('fgs/CPI/CPI-add', 'CPIController@CPIAdd');
+        Route::post('fgs/CPI/CPI-add', 'CPIController@CPIAdd');
+        Route::get('fgs/CPI/find-pi-number-for-cpi', 'CPIController@findPiNumberForCPI');
+        Route::get('fgs/CPI/find-pi-info', 'CPIController@piInfo');
+        Route::get('fgs/CPI/item-list/{cpi_id}', 'CPIController@CPIItemList');
+        Route::get('fgs/CPI/pdf/{cpi_id}', 'CPIController@CPIpdf');
+        Route::get('fgs/PI/back-ordr-report', 'BackorderReportController@get_data');
+    
+    
+        //DNI
+        Route::get('fgs/DNI-list', 'DNIController@DNIList');
+        Route::get('fgs/DNI-add', 'DNIController@DNIAdd');
+        Route::post('fgs/DNI-add', 'DNIController@DNIAdd');
+        Route::get('fgs/DNI/item-list/{dni_id}', 'DNIController@DNIitemlist');
+        Route::get('fgs/DNI/fetchPI', 'DNIController@fetchPI');
+        Route::get('fgs/DNI/pdf/{grs_id}', 'DNIController@DNIpdf');
+        Route::get('fgs/net-billing-report', 'DNIController@netBillingReport');
+        Route::get('fgs/net-billing-report/excel-export', 'DNIController@netBillingExport');
+        Route::get('fgs/DNI-delete/{dni_id}','DNIController@DNIDelete');
+        Route::get('fgs/DNI-item-delete/{dni_id}','DNIController@DNIItemDelete');
+        
+        Route::get('fgs/net-all-billing-report', 'NetBkBillingrController@NetBillingReportAll');
+        Route::get('fgs/net-bking-report', 'NetBkBillingrController@NetBookingReport');
+        Route::get('fgs/net-bk-billing-report', 'NetBkBillingrController@NetBillingReport');
+
+        Route::post('fgs/net-all-billing-report', 'NetBkBillingrController@NetBillingReportAll');
+        Route::post('fgs/net-bking-report', 'NetBkBillingrController@NetBookingReport');
+        Route::post('fgs/net-bk-billing-report', 'NetBkBillingrController@NetBillingReport');
+        Route::get('fgs/net-bk-billing-report/export', 'NetBkBillingrController@NetBillingReportExport');
+        Route::get('fgs/net-bking-report/export', 'NetBkBillingrController@NetBookingReportExport');
+        Route::get('fgs/net-all-billing-report/export', 'NetBkBillingrController@NetBillingReportAllexport');
+
+        //EXI
+        Route::get('fgs/EXI-list', 'EXIController@EXIList');
+        Route::get('fgs/EXI-add', 'EXIController@EXIAdd');
+        Route::post('fgs/EXI-add', 'EXIController@EXIAdd');
+        Route::get('fgs/EXI/item-list/{exi_id}', 'EXIController@EXIitemlist');
+        Route::get('fgs/EXI/fetchPI', 'EXIController@fetchPI');
+        Route::get('fgs/EXI/pdf/{grs_id}', 'EXIController@EXIpdf');
+        Route::get('fgs/EXI-delete/{dni_id}','EXIController@EXIDelete');
 
     //MTQ
     Route::get('fgs/MTQ-list', 'MTQController@MTQList');
@@ -549,151 +813,104 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/Delivery_challan/Challan-list', 'DeliveryNoteController@ChallanList');
     Route::get('fgs/Delivery_challan/Challan-add', 'DeliveryNoteController@ChallanAdd');
     Route::post('fgs/Delivery_challan/Challan-add', 'DeliveryNoteController@ChallanAdd');
+    Route::get('fgs/Delivery_challan/Challan-edit/{id}', 'DeliveryNoteController@ChallanEdit');
+    Route::post('fgs/Delivery_challan/Challan-edit/{id}', 'DeliveryNoteController@ChallanEdit');
+    Route::get('fgs/Delivery_challan/Challan-delete/{id}', 'DeliveryNoteController@ChallanDelete');
+    Route::get('fgs/GRS/find-grs-by-customer','DeliveryNoteController@findGrsByCustomer');
+
+    Route::get('fgs/Dcbackorder-report', 'DcbackorderController@GetAllDC');
+    Route::post('fgs/Dcbackorder-report', 'DcbackorderController@GetAllDC');
+    Route::get('fgs/Dc-pending-report', 'DcbackorderController@PendingDC');
+    Route::post('fgs/Dc-pending-report', 'DcbackorderController@PendingDC');
+    Route::get('fgs/CDC-pending-report', 'DcbackorderController@PendingCDC');
+    Route::post('fgs/CDC-pending-report', 'DcbackorderController@PendingCDC');
+    Route::get('fgs/pending-DC-export', 'DcbackorderController@PendingDCExport');
+    Route::get('fgs/pending-CDC-export', 'DcbackorderController@PendingCDCExport');
+    Route::get('fgs/dc-all/export', 'DcbackorderController@GetAllDCExport');
+    
+   //finacial value chain
+    Route::get('financial-value-chain','FinancialvalueController@get_financial_value');
+    Route::post('financial-value-chain','FinancialvalueController@get_financial_value');
+    Route::get('financial-value-chain_item/{id}','FinancialvalueController@get_financial_value_item');
+    Route::get('financial-value-chain_item_pdf/{id}','FinancialvalueController@get_financial_value_item_pdf');
+
+    
+    
+
     //Route::get('fgs/Delivery_challan/Challan-add-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
     //Route::post('fgs/Delivery_challan/Challan-add-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
    // Route::get('fgs/Delivery_challan/Challan-add-trade-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
     //Route::post('fgs/Delivery_challan/Challan-add-trade-item/{id}', 'DeliveryNoteController@ChallanItemAdd');
     Route::get('fgs/Delivery_challan/Challan-item-list/{id}', 'DeliveryNoteController@Challanitemlist');
+    Route::get('fgs/Delivery_challan/Challan-item-delete/{id}', 'DeliveryNoteController@Challanitemdelete');
+    Route::get('fgs/Delivery_challan/Challan-item-edit/{id}', 'DeliveryNoteController@ChallanitemEdit');
+    Route::post('fgs/Delivery_challan/Challan-item-edit/{id}', 'DeliveryNoteController@ChallanitemEdit');
+
     Route::get('fgs/Delivery_challan/{grs_id}/add-item/{oef_item_id}', 'DeliveryNoteController@ChallanitemAdd');
     Route::post('fgs/Delivery_challan/{grs_id}/add-item/{oef_item_id}', 'DeliveryNoteController@ChallanitemAdd');
     Route::get('fgs/Delivery_challan/Challan-stock-all-location', 'DeliveryNoteController@dc_transfer_stock');
     Route::post('fgs/Delivery_challan/Challan-stock-all-location', 'DeliveryNoteController@dc_transfer_stock');
+    
+    Route::get('fgs/Delivery_challan/Challan-stock-satellite', 'DeliveryNoteController@dc_transfer_stock_satellite');
+    Route::post('fgs/Delivery_challan/Challan-stock-satellite', 'DeliveryNoteController@dc_transfer_stock_satellite');
+   
     Route::get('fgs/Delivery_challan/Challan-stock-consignment', 'DeliveryNoteController@dc_transfer_stock_consignment');
     Route::post('fgs/Delivery_challan/Challan-stock-consignment', 'DeliveryNoteController@dc_transfer_stock_consignment');
-    Route::get('fgs/Delivery_challan/Challan-stock-loaner', 'DeliveryNoteController@dc_transfer_stock_consignment');
-    Route::post('fgs/Delivery_challan/Challan-stock-loaner', 'DeliveryNoteController@dc_transfer_stock_consignment');
+    Route::get('fgs/Delivery_challan/Challan-stock-loaner', 'DeliveryNoteController@dc_transfer_stock_loaner');
+    Route::post('fgs/Delivery_challan/Challan-stock-loaner', 'DeliveryNoteController@dc_transfer_stock_loaner');
+    Route::get('fgs/Delivery_challan/Challan-stock-scheme', 'DeliveryNoteController@dc_transfer_stock_scheme');
+    Route::post('fgs/Delivery_challan/Challan-stock-scheme', 'DeliveryNoteController@dc_transfer_stock_scheme');
     Route::get('fgs/Delivery_challan/Challan-stock-replacement', 'DeliveryNoteController@dc_transfer_stock_replacement');
     Route::post('fgs/Delivery_challan/Challan-stock-replacement', 'DeliveryNoteController@dc_transfer_stock_replacement');
     Route::get('fgs/Delivery_challan/Challan-stock-demo', 'DeliveryNoteController@dc_transfer_stock_demo');
     Route::post('fgs/Delivery_challan/Challan-stock-demo', 'DeliveryNoteController@dc_transfer_stock_demo');
     Route::get('fgs/Delivery_challan/Challan-stock-samples', 'DeliveryNoteController@dc_transfer_stock_samples');
     Route::post('fgs/Delivery_challan/Challan-stock-samples', 'DeliveryNoteController@dc_transfer_stock_samples');
+    Route::get('Challan-stock-export/maa', 'StockManagementController@MAAStockExport');
 
     Route::get('fgs/Delivery_challan/Challan-stock-all-export', 'DeliveryNoteController@dc_transfer_stock_export');
     Route::get('fgs/Delivery_challan/Challan-stock-export/{value}', 'DeliveryNoteController@dc_transfer_stock_export1');
-
-
-
-
-
-
-    
+    Route::get('fgs/Delivery-challan/oef-info','DeliveryNoteController@OEFInfo');
 
     Route::get('fgs/Delivery_challan/Delivery_Challan_pdf/{id}', 'DeliveryNoteController@challanpdf');
     Route::get('fgs/fetchStockProductBatchCardschallan', 'DeliveryNoteController@fetchStockProductBatchCardschallan');
     Route::get('fgs/fetchBatchCardQtychallan', 'DeliveryNoteController@fetchBatchCardQtychallan');
     Route::get('fgs/Delivery_challan/productsearch', 'DeliveryNoteController@productsearch');
-    //OEF
-    Route::get('fgs/OEF-list', 'OEFController@OEFList');
-    Route::get('fgs/OEF-add', 'OEFController@OEFAdd');
-    Route::post('fgs/OEF-add', 'OEFController@OEFAdd');
-    Route::get('fgs/OEF-delete/{id}', 'OEFController@OEFDelete');
-    Route::get('fgs/OEF/item-list/{oef_id}', 'OEFController@OEFitemlist');
-    Route::get('fgs/OEF-item-delete/{oef_item_id}', 'OEFController@delete_oef_item');
-    Route::get('fgs/OEF-item-edit/{oef_item_id}', 'OEFController@edit_oef_item');
-    Route::post('fgs/OEF-item-update', 'OEFController@update_oef_item');
-    Route::get('fgs/OEF-edit/{oef_id}', 'OEFController@edit_oef');
-    Route::post('fgs/OEF-update', 'OEFController@update_oef');
 
 
+    
+    //DC-CDC Report
+    Route::get('fgs/DC-report','DCreportController@DCReport');
+    Route::get('fgs/DC-report-export','DCreportController@DCReportExport');
+    Route::get('fgs/CDC-report','DCreportController@CDCReport');
+    Route::get('fgs/CDC-report-export','DCreportController@CDCReportExport');
+    Route::get('fgs/DC-report-inv-transaction','DCreportController@DCInvTransactionReport');
+    Route::get('fgs/CDC-report-inv-transaction','CDCController@CDCInvTransactionReport');
 
 
-    Route::get('fgs/OEF/add-item/{oef_id}', 'OEFController@OEFitemAdd');
-    Route::post('fgs/OEF/add-item/{oef_id}', 'OEFController@OEFitemAdd');
-    Route::get('fgs/OEFproductsearch/{oef_id}', 'OEFController@OEFproductsearch');
-    Route::get('fgs/OEF/pdf/{oef_id}', 'OEFController@OEFpdf');
-    Route::get('fgs/OEF/pending-report', 'OEFController@pendingOEF');
-    Route::get('fgs/OEF/pending-OEF-export', 'OEFController@pendingOEFExport');
-    Route::get('fgs/OEF/ackpdf/{oef_id}', 'OEFController@OEFackpdf');
-    Route::post('fgs/OEF/item-upload/{oef_id}', 'OEFController@upload_oef_item');
+    //CDC
+    Route::get('fgs/CDC/CDC-add', 'CDCController@CDCAdd');
+    Route::post('fgs/CDC/CDC-add', 'CDCController@CDCAdd');
+    Route::get('fgs/CDC/CDC-list', 'CDCController@CDCList');
+    Route::get('fgs/CDC/item-list/{id}', 'CDCController@CDCItemList');
+    Route::get('fgs/CDC/pdf/{id}', 'CDCController@CDCpdf');
+    Route::get('fgs/CDC/find-dc-number-for-cdc', 'CDCController@findDCNumberForCDC');
+    Route::get('fgs/CDC/find-dc-info', 'CDCController@dcInfo');
+    Route::get('fgs/CDC/item-edit/{id}', 'CDCController@CDCitemEdit');
+    Route::post('fgs/CDC/item-edit/{id}', 'CDCController@CDCitemEdit');
 
-    //COEF
-    Route::get('fgs/COEF/COEF-list', 'COEFController@COEFList');
-    Route::get('fgs/COEF-add', 'COEFController@COEFAdd');
-    Route::post('fgs/COEF-add', 'COEFController@COEFAdd');
-    Route::get('fgs/COEF/find-oef-number-for-coef', 'COEFController@findOefNumberForCOEF');
-    Route::get('fgs/COEF/find-oef-info', 'COEFController@oefInfo');
-    Route::get('fgs/COEF/item-list/{coef_id}', 'COEFController@COEFItemList');
-    Route::get('fgs/COEF/pdf/{coef_id}', 'COEFController@COEFpdf');
-    //GRS
-    Route::get('fgs/GRS-list', 'GRSController@GRSList');
-    Route::get('fgs/GRS-add', 'GRSController@GRSAdd');
-    Route::post('fgs/GRS-add', 'GRSController@GRSAdd');
-    Route::get('fgs/GRS/item-list/{grs_id}', 'GRSController@GRSitemlist');
-    Route::get('fgs/GRS/{grs_id}/add-item/{oef_item_id}', 'GRSController@GRSitemAdd');
-    Route::post('fgs/GRS/{grs_id}/add-item/{oef_item_id}', 'GRSController@GRSitemAdd');
-    // Route::get('fgs/GRS/add-item/{grs_id}','GRSController@GRSitemAdd');
-    // Route::post('fgs/GRS/add-item/{grs_id}','GRSController@GRSitemAdd');
-    Route::get('fgs/GRS/find-oef-number-for-grs', 'GRSController@findOEFforGRS');
-    Route::get('fgs/GRS/find-oef-info', 'GRSController@findOEFInfo');
-    Route::get('fgs/GRS/pdf/{grs_id}', 'GRSController@GRSpdf');
-    Route::get('fgs/GRS/pending-report', 'GRSController@pendingGRS');
-    Route::get('fgs/GRS/pending-GRS-export', 'GRSController@pendingGRSExport');
-    Route::get('fgs/GRS-item-edit/{grs_item_id}','GRSController@GRSItemEdit');
-    Route::post('fgs/GRS-item-edit/{grs_item_id}','GRSController@GRSItemEdit');
-    Route::get('fgs/GRS-item-delete/{grs_item_id}','GRSController@GRSItemDelete');
-    Route::get('fgs/GRS-edit/{grs_id}','GRSController@GRSEdit');
-    Route::post('fgs/GRS-edit/{grs_id}','GRSController@GRSEdit');
-    Route::get('fgs/GRS-delete/{grs_id}','GRSController@GRSDelete');
-    //CGRS
-    Route::get('fgs/CGRS/CGRS-list', 'CGRSController@CGRSList');
-    Route::get('fgs/CGRS-add', 'CGRSController@CGRSAdd');
-    Route::post('fgs/CGRS-add', 'CGRSController@CGRSAdd');
-    Route::get('fgs/CGRS/find-grs-number-for-cgrs', 'CGRSController@findGrsNumberForCGRS');
-    Route::get('fgs/CGRS/find-grs-info', 'CGRSController@grsInfo');
-    Route::get('fgs/CGRS/items-list/{cgrs_id}', 'CGRSController@CGRSItemList');
-    Route::get('fgs/CGRS/pdf/{cgrs_id}', 'CGRSController@CGRSpdf');
-    //PI
-    Route::get('fgs/PI-list', 'PIController@PIList');
-    Route::get('fgs/PI-add', 'PIController@PIAdd');
-    Route::post('fgs/PI-add', 'PIController@PIAdd');
-    Route::get('fgs/PI-delete/{pi_id}', 'PIController@PIDelete');
-    Route::get('fgs/PI-edit/{grs_id}','PIController@PIEdit');
-    Route::post('fgs/PI-edit/{grs_id}','PIController@PIEdit');
-    Route::get('fgs/PI/item-list/{pi_id}', 'PIController@PIitemlist');
-    Route::get('fgs/PI-item-delete/{pi_item_id}','PIController@PIItemDelete');
-    Route::get('fgs/PI/fetchGRS', 'PIController@fetchGRS');
-    Route::get('fgs/PI/pdf/{pi_id}', 'PIController@PIpdf');
-    Route::get('fgs/PI/payment-pdf/{pi_id}', 'PIController@PIPaymentpdf');
-    Route::get('fgs/PI/pending-report', 'PIController@pendingPI');
-    Route::get('fgs/PI/pending-PI-export', 'PIController@pendingPIExport');
-    Route::get('fgs/merged-PI-list', 'PIController@mergedPIList');
-    Route::get('fgs/merge-multiple-PI', 'PIController@mergeMutiplePI');
-    Route::post('fgs/merge-pi', 'PIController@mergePIInsert');
-    Route::get('fgs/PI/merged-payment-pdf/{mpi_id}', 'PIController@MergedPIPaymentpdf');
-    Route::get('fgs/back-ordr-report', 'BackorderReportController@get_data');
-    Route::get('fgs/all/export', 'BackorderReportController@allExport');
-    Route::post('fgs/pi/partial-invoice', 'PIController@PartialPI');
-    //CPI
-    Route::get('fgs/CPI/CPI-list', 'CPIController@CPIList');
-    Route::get('fgs/CPI/CPI-add', 'CPIController@CPIAdd');
-    Route::post('fgs/CPI/CPI-add', 'CPIController@CPIAdd');
-    Route::get('fgs/CPI/find-pi-number-for-cpi', 'CPIController@findPiNumberForCPI');
-    Route::get('fgs/CPI/find-pi-info', 'CPIController@piInfo');
-    Route::get('fgs/CPI/item-list/{cpi_id}', 'CPIController@CPIItemList');
-    Route::get('fgs/CPI/pdf/{cpi_id}', 'CPIController@CPIpdf');
-    Route::get('fgs/PI/back-ordr-report', 'BackorderReportController@get_data');
+    Route::get('fgs/manual-CDC','CDCController@CDCNewManualAddPage');
+    Route::post('fgs/manual-CDC','CDCController@CDCNewManualAddPage');
+    Route::get('/your-route-to-fetch-categories','CDCController@fetchCategories');
+    Route::get('/your-route-to-fetch-categories-dc','CDCController@fetchCategoriesdc');
+    Route::get('fgs/CDC/find-dc-number-for-manualcdc', 'CDCController@findDCNumberFormanualCDC');
+    Route::get('fgs/manual-CDC/item-list/{id}','CDCController@manualCDCItemList');
+    Route::get('fgs/manual-CDC-item-add/{cdc_id}','CDCController@manualCDCItemAdd');
+    Route::post('fgs/manual-CDC-item-add/{cdc_id}','CDCController@manualCDCItemAdd');
+    Route::get('fgs/cdc/fetchProductBatchCards','CDCController@fetchProductBatchCards');
+    Route::get('fgs/cdc/fetchBatchCardQtyManufatureDate','CDCController@fetchBatchCardQtyManufatureDate');
 
 
-    //DNI
-    Route::get('fgs/DNI-list', 'DNIController@DNIList');
-    Route::get('fgs/DNI-add', 'DNIController@DNIAdd');
-    Route::post('fgs/DNI-add', 'DNIController@DNIAdd');
-    Route::get('fgs/DNI/item-list/{dni_id}', 'DNIController@DNIitemlist');
-    Route::get('fgs/DNI/fetchPI', 'DNIController@fetchPI');
-    Route::get('fgs/DNI/pdf/{grs_id}', 'DNIController@DNIpdf');
-    Route::get('fgs/net-billing-report', 'DNIController@netBillingReport');
-    Route::get('fgs/net-billing-report/excel-export', 'DNIController@netBillingExport');
-    Route::get('fgs/DNI-delete/{dni_id}','DNIController@DNIDelete');
-
-    //EXI
-    Route::get('fgs/EXI-list', 'EXIController@EXIList');
-    Route::get('fgs/EXI-add', 'EXIController@EXIAdd');
-    Route::post('fgs/EXI-add', 'EXIController@EXIAdd');
-    Route::get('fgs/EXI/item-list/{exi_id}', 'EXIController@EXIitemlist');
-    Route::get('fgs/EXI/fetchPI', 'EXIController@fetchPI');
-    Route::get('fgs/EXI/pdf/{grs_id}', 'EXIController@EXIpdf');
-    Route::get('fgs/EXI-delete/{dni_id}','EXIController@EXIDelete');
 
     //stock-management
     Route::get('fgs/stock-management/all-locations', 'StockManagementController@allLocations');
@@ -702,8 +919,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/stock-management/location3', 'StockManagementController@location3Stock');
     Route::get('fgs/stock-management/locationSNN', 'StockManagementController@locationSNN');
     Route::get('fgs/stock-management/locationSNNTrade', 'StockManagementController@locationSNNTrade');
+    Route::get('fgs/stock-management/locationSNNOEM', 'StockManagementController@locationSNNOEM');
     Route::get('fgs/stock-management/locationAHPL', 'StockManagementController@locationAHPL');
     Route::get('fgs/stock-management/MAA', 'StockManagementController@MAAStock');
+    Route::get('fgs/stock-management/Jayon', 'StockManagementController@JayonStock');
     Route::get('fgs/stock-management/quarantine', 'StockManagementController@quarantineStock');
     Route::get('fgs/stock-report/all', 'StockManagementController@AlllocationExport');
     Route::get('fgs/stock-report/location1', 'StockManagementController@location1Export');
@@ -712,9 +931,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/stock-report/MAA', 'StockManagementController@MAAExport');
     Route::get('fgs/stock-report/SNN', 'StockManagementController@SNNExport');
     Route::get('fgs/stock-report/SNNTrade', 'StockManagementController@SNNTradeExport');
+    Route::get('fgs/stock-report/SNNOEM', 'StockManagementController@SNNOEMExport');
     Route::get('fgs/stock-report/AHPL', 'StockManagementController@AHPLExport');
     Route::get('fgs/batch-trace-report', 'StockManagementController@batchTraceReport');
     Route::get('fgs/batch-trace-report/export', 'StockManagementController@batchTraceReportExport');
+    Route::get('fgs/batch-trace-report/export1', 'StockManagementController@batchTraceReportExport1');
+
+
+    Route::post('fgs/stock-update','StockManagementController@stockUpdate');
+
+    Route::get('fgs/batch-trace-report-new', 'StockManagementController@batchTraceReportNew');
 
     //  //MTQ
     //  Route::get('fgs/MTQ-list','MTQController@MTQList');
@@ -743,14 +969,24 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/SRN-list', 'SRNController@SRNlist');
     Route::get('fgs/SRN-add', 'SRNController@SRNAdd');
     Route::post('fgs/SRN-add', 'SRNController@SRNAdd');
+    Route::get('fgs/SRN-manual-add', 'SRNController@SRNManualAdd');
+    Route::post('fgs/SRN-manual-add', 'SRNController@SRNManualAdd');
     Route::get('fgs/SRN/find-dni-number-for-srn', 'SRNController@findDNINumberForSRN');
     Route::get('fgs/SRN/find-dni-info', 'SRNController@findDNIInfo');
     Route::get('fgs/SRN/item-list/{srn_id}', 'SRNController@SRNitemlist');
     Route::get('fgs/SRN/pdf/{srn_id}', 'SRNController@SRNpdf');
+    Route::get('fgs/SRN/item-edit/{srn_id}/{id}', 'SRNController@ItemEdit');
+    Route::post('fgs/SRN/item-edit/{srn_id}/{id}', 'SRNController@ItemEdit');
+    Route::match(['get', 'post'], 'fgs/SRN-edit/{id}','SRNController@SRNEdit')->name('fgs.SRN-edit');
 
-    Route::get('fgs/fgs-report', 'FgsreportController@get_data');
+    Route::get('fgs/fgs-sales-report', 'FgsreportController@get_sales_data');
+    Route::get('fgs/fgs-inv-report', 'FgsreportController@get_inv_data');
+
     // Route::post('fgs/fgs-report-search','FgsreportController@get_result');
-    Route::get('fgs/fgs-export', 'FgsreportController@fgsExport');
+    Route::get('fgs/fgs-sales-export', 'FgsreportController@fgsExport');
+    Route::get('fgs/fgs-inv-export', 'FgsreportController@fgsinvExport');
+    Route::get('fgs/fgs-sales-export-full', 'FgsreportController@fgsallExport');
+
     Route::get('fgs/fgs-mrn-transaction-report', 'MRNController@mrn_transaction');
     Route::get('fgs/fgs-mrn-export', 'MRNController@mrn_transaction_export');
     Route::get('fgs/fgs-min-transaction-report', 'MINController@min_transaction');
@@ -779,12 +1015,55 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\FGS', 'middleware' => ['R
     Route::get('fgs/fgs-coef-export', 'COEFController@coef_transaction_export');
     Route::get('fgs/fgs-mtq-transaction-report', 'MTQController@mtq_transaction');
     Route::get('fgs/fgs-mtq-export', 'MTQController@mtq_transaction_export');
-    Route::get('fgs/fgs-cmtq-transaction-report', 'MTQController@cmtq_transaction');
-    Route::get('fgs/fgs-cmtq-export', 'MTQController@cmtq_transaction_export');
+    Route::get('fgs/fgs-cmtq-transaction-report', 'CMTQController@cmtq_transaction');
+    Route::get('fgs/fgs-cmtq-export', 'CMTQController@cmtq_transaction_export');
     Route::get('fgs/fgs-srn-transaction-report', 'SRNcontroller@srn_transaction');
     Route::get('fgs/fgs-srn-export', 'SRNcontroller@srn_transaction_export');
     Route::get('fgs/fgs-mis-transaction-report', 'MIScontroller@mis_transaction');
     Route::get('fgs/fgs-mis-export', 'MIScontroller@mis_transaction_export');
+
+    // Stock Adjustment - Increase
+    Route::get('fgs/SAI-list', 'SAIController@SAIlist');
+    Route::get('fgs/SAI-add', 'SAIController@SAIAdd');
+    Route::post('fgs/SAI-add', 'SAIController@SAIAdd');
+    Route::get('fgs/SAI/item-list/{sai_id}', 'SAIController@SAIItemList');
+    Route::post('fgs/SAI/item-upload/{sai_id}','SAIController@SAIItemUpload');
+    Route::get('fgs/SAI/pdf/{sai_id}', 'SAIController@SAIpdf');
+    Route::get('fgs/SAI/add-item/{sai_id}','SAIController@SAIItemAdd');
+    Route::post('fgs/SAI/add-item/{sai_id}','SAIController@SAIItemAdd');
+    Route::get('fgs/saifetchBatchCardQtyManufatureDate','SAIController@fetchBatchCardQtyManufatureDate');
+    Route::get('fgs/saifetchProductBatchCards', 'SAIController@fetchProductBatchCardssai');
+
+
+    // Stock Adjustment - Decrease
+    Route::get('fgs/SAD-list', 'SADController@SADlist');
+    Route::get('fgs/SAD-add', 'SADController@SADAdd');
+    Route::post('fgs/SAD-add', 'SADController@SADAdd');
+    Route::get('fgs/SAD/item-list/{sad_id}', 'SADController@SADItemList');
+    Route::post('fgs/SAD/item-upload/{sad_id}','SADController@SADItemUpload');
+    Route::get('fgs/SAD/pdf/{sai_id}', 'SADController@SADpdf');
+    Route::get('fgs/SAD/add-item/{sai_id}','SADController@SADItemAdd');
+    Route::post('fgs/SAD/add-item/{sai_id}','SADController@SADItemAdd');
+
+    //satellite-stock
+    Route::get('fgs/satellite-stock/location','SatelliteStockController@locationList');
+    Route::post('fgs/satellite-stock/location','SatelliteStockController@locationList');
+    Route::get('fgs/satellite-stock/location/{location_id}', 'SatelliteStockController@locationList');
+    Route::post('fgs/satellite-stock/location/{location_id}', 'SatelliteStockController@locationList');
+    Route::get('fgs/satellite-stock/location/delete/{location_id}', 'SatelliteStockController@deleteLocation');
+    Route::get('fgs/satellite/stock','SatelliteStockController@stockList');
+});
+Route::group(['namespace' => 'App\Http\Controllers\Web', 'middleware' => ['RolePermission']], function () {
+    //Quality
+    Route::get('quality/qualitylist','QualityController@qualitylist');
+    Route::get('quality/quality-check/{id}','QualityController@qualitycheck');
+    Route::get('quality/inspected-quality-list','QualityController@inspectedqualitylist');
+    Route::post('quality/quality-check', 'QualityController@addquality');
+    Route::get('quality/quality-analysis-report', 'QualityController@qualityAnalysisReport');
+    Route::get('quality/batchcardSearch', 'QualityController@batchcardSearch');
+    Route::get('quality/quality-inward-form/{id}', 'QualityController@qualityInwardForm');
+    Route::post('quality/quality-inward', 'QualityController@addinward');
+    Route::get('quality/inspected-list', 'QualityController@inspectedList');
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Settings', 'middleware' => ['RolePermission']], function () {
@@ -809,4 +1088,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Web\Settings', 'middleware' =
     Route::get('settings/configlist', 'ConfigController@get_config_list');
     Route::get('settings/config/{id}', 'ConfigController@get_configpage');
     Route::post('settings/config/add', 'ConfigController@add_configsetting');
+
+
 });

@@ -41,9 +41,10 @@
                @endforeach 
         <div class="card-header bg-gray-400 bd-b-0-f pd-b-0">
             <nav class="nav nav-tabs">
-                <a class="nav-link active" href="">Stock Issue To Production -Direct</a>
-                <a class="nav-link " href="{{url('inventory/Stock/ToProduction/Packing')}}">Stock Issue To Production -Packing</a>
-                <a class="nav-link"  href="{{url('inventory/Stock/ToProduction/Indirect')}}">Stock Issue To Production -Indirect</a>
+                <a class="nav-link active" href="{{url('inventory/Stock/ToProduction/Direct')}}">SIP -Direct</a>
+                <a class="nav-link " href="{{url('inventory/Stock/ToProduction/Packing')}}">SIP -Packing</a>
+                <a class="nav-link"  href="{{url('inventory/Stock/ToProduction/Indirect')}}">SIP -Indirect</a>
+                <a class="nav-link"  href="{{url('inventory/Stock/ToProduction/underProcess')}}">SIP -Under Development</a>
             </nav> 
         </div><br/>
 		<form method="post" action="">
@@ -131,6 +132,11 @@
 
 
 <script>
+    $(document).ready(function() {
+            $('form').submit(function() {
+                $(this).find(':submit').prop('disabled', true);
+            });
+    });
     $(".datepicker").datepicker({
         format: "mm-yyyy",
         viewMode: "months",
@@ -271,7 +277,27 @@
         }
     }
         
-     
+    $(document).ready(function() {
+            $(document).on('change', '.lot-radio', function() {
+                // Get the stock quantity from the data attribute
+                let stockQty = $(this).attr('lotqty'); // Access the lotqty attribute
+                
+                // Convert stockQty to float for numeric comparison if needed
+                stockQty = parseFloat(stockQty);
+
+                // Get the entered quantity to production
+                let qtyToProduction = parseFloat($('#qty_to_production').val());
+
+                // Debugging: Log the values to the console
+                console.log('Stock Quantity for the selected lot:', stockQty);
+                console.log('Entered Quantity to Production:', qtyToProduction);
+
+                // Compare the quantities and display success message if needed
+                if (qtyToProduction > stockQty) {
+                    alert('Quantity to production is greater than the stock quantity.');
+                }
+            });
+        });
           
 
 </script>

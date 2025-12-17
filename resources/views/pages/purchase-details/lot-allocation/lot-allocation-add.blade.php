@@ -44,6 +44,12 @@
                     <i class="icon fa fa-check"></i> {{ Session::get('success') }}
                 </div>
                 @endif 
+                @foreach ($errors->all() as $errorr)
+                <div class="alert alert-danger " role="alert" style="width: 100%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{ $errorr }}
+                </div>
+                @endforeach 
                 
                
                 <div class="table-responsive">
@@ -271,7 +277,10 @@
                                         <label> Transporter Name </label>
                                         <input type="text" value="" class="form-control" name="transporter_name" id="transporter_name" placeholder="Transporter Name">
                                     </div>
-    
+                                    <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
+                                        <label>Recieved Date *</label>
+                                        <input type="date" class="form-control"value="" id="recieved_date" name="recieved_date" placeholder="Test Report Date" >
+                                    </div>
 
                                 {{--<div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                         <label> Prepared By I/C ST </label>
@@ -442,6 +451,9 @@
 
             $("#commentForm").validate({
                 rules: {
+                    recieved_date: {
+                            required: true,
+                        },
                         // document_no: {
                         //     required: true,
                         // },
@@ -498,8 +510,13 @@
                 }
             });    
         });
+        $(document).ready(function() {
+        $('form').submit(function() {
+            $(this).find(':submit').prop('disabled', true);
+        });
+        });
 
-                </script>
+    </script>
 
 
 @stop

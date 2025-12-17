@@ -1,6 +1,42 @@
 @extends('layouts.default')
 @section('content')
 @inject('fn', 'App\Http\Controllers\Web\FGS\GRSController')
+@php 
+use App\Http\Controllers\Web\FGS\GRSController;
+$obj_batch= new GRSController;
+@endphp
+<style>
+    input[type="checkbox"]{
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        content: none;
+        outline: none;
+        margin: 0;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    
+
+    input[type="checkbox"]:checked {
+        appearance: none;
+        outline: none;
+        padding: 0;
+        content: none;
+        border: none;
+    }
+
+    input[type="checkbox"]:checked::before{
+        position: absolute;
+        color: white !important;
+        content: "\00A0\2713\00A0" !important;
+        border: 1px solid #d3d3d3;
+        font-weight: bolder;
+        font-size: 18px;
+    }
+
+               
+                
+</style>
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -89,7 +125,13 @@
                                             <td>{{$item['batch_no']}} </td>
                                             <td>{{$item['batch_quantity']}} Nos</td>
                                             <td>{{$item['manufacturing_date']}}</td>
-                                            <td>@if($item['expiry_date']=='0000-00-00') NA @else {{$item['expiry_date']}} @endif</td>
+											<td>
+    @if($item['expiry_date'] == '0000-00-00' || $item['expiry_date'] < '1990-01-01') 
+        NA 
+    @else 
+        {{$item['expiry_date']}} 
+    @endif
+</td>
                                             <td>
 												@if($item['cgrs_status']==0)
 												<span class="badge badge-primary" style="width:60px;">Active</span>
@@ -116,7 +158,7 @@
                                 </tbody>
                             </table>
                             <div class="box-footer clearfix">
-                                {{ $oef_items->appends(request()->input())->links() }}
+                                {{ $grs_items->appends(request()->input())->links() }}
                             </div>
                         </div>
 						<br/>
@@ -125,6 +167,14 @@
 							<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
 							<i class='fas fa-hand-point-right'></i> Unreserved OEF Items
 							</label>
+							<div style="float:right;">
+                                <input type="checkbox" disabled  class="item-select-radio check-approve bg-info text-white "  style="color:info;width:20px;height:20px;">
+                                <span style="vertical-align: middle;"><label  style="font-size: 12px;">Batch card with full qty</label></span>
+                                <input type="checkbox" disabled class="item-select-radio check-hold bg-warning text-dark "   style="color:yellow;width:20px;height:20px;">
+                                <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>Batch card with partial qty</span></label></span>
+                                <input type="checkbox"disabled  class="item-select-radio check-reject bg-danger text-white check-all-reject"  style="color:red;width:20px;height:20px;">
+                                <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>No batchcard</span></label></span>
+                            </div>
 							<table class="table table-bordered mg-b-0" >
                             	<thead>
                                 	<tr>
@@ -152,7 +202,13 @@
                                                         CGST:{{$item['cgst']}}%<br/>
                                                         SGST:{{$item['sgst']}}%
                                             </td>
-											<td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/'.$grs_id.'/add-item/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-plus"></i>  GRS Item</a></td>
+											<td><a
+											 @if($obj_batch->get_batch($grs_id,$item["id"])==0)class="badge badge-danger"
+											 @elseif($obj_batch->get_batch($grs_id,$item["id"])==1 && $item['quantity']==$item['quantity_to_allocate'] || $item['quantity']<$item['quantity_to_allocate']) class="badge badge-info"
+											  @else class="badge badge-warning"@endif 
+											  style="font-size: 13px;" href="{{url('fgs/GRS/'.$grs_id.'/add-item/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-plus"></i>  GRS Item</a></td>
+											{{--<td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/GRS/'.$grs_id.'/add-item/'.$item["id"])}}" 
+											 class="dropdown-item"><i class="fas fa-plus"></i>  GRS Item</a></td>--}}
                                         </tr>
                                     @endforeach
 									

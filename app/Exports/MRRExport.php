@@ -59,10 +59,12 @@ class MRRExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                 $condition[] = ['inv_mrd.mrd_date', '>=', date('Y-m-d', strtotime('01-' . $this->request->from))];
                 $condition[] = ['inv_mrd.mrd_date', '<=', date('Y-m-t', strtotime('01-' . $this->request->from))];
             }
-            $items= inv_mrr_item::select('inv_mrr_item.id as id','inv_mac.mac_number','inv_supplier_invoice_master.invoice_number','inv_miq.miq_number','inv_mrd.mrd_number','inv_mrr.mrr_number','inv_lot_allocation.lot_number')
+            $items= inv_mrr_item::select('inv_mrr_item.id as id','inv_mac.mac_number','inv_supplier_invoice_item.discount','inv_supplier_invoice_master.invoice_number','inv_miq.miq_number','inv_mrd.mrd_number','inv_mrr.mrr_number','inv_lot_allocation.lot_number')
                      ->leftjoin('inv_mrr_item_rel','inv_mrr_item_rel.item','=','inv_mrr_item.id')
                      ->leftjoin('inv_mrr','inv_mrr.id','=','inv_mrr_item_rel.master')
-                      ->leftjoin('inv_mac','inv_mac.id','=','inv_mrr.mac_id')
+            ->leftJoin('inv_supplier_invoice_item', 'inv_supplier_invoice_item.id', '=', 'inv_mrr_item.invoice_item_id')
+           
+                     ->leftjoin('inv_mac','inv_mac.id','=','inv_mrr.mac_id')
                       ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_mac.invoice_id')
                       ->leftjoin('inv_miq','inv_miq.invoice_master_id','=','inv_supplier_invoice_master.id')
                       ->leftjoin('inv_mrd','inv_mrd.invoice_id','=','inv_supplier_invoice_master.id')
@@ -70,7 +72,7 @@ class MRRExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                       ->leftjoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=', 'inv_supplier_invoice_rel.item')
                       ->where($condition)
                       ->get();
-
+//print_r($items);exit;
         }
         $i=1;
         $data = [];
@@ -88,6 +90,7 @@ class MRRExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                     'mrr_number'=>$item['mrr_number'],
                     'invoice_number'=>$item['invoice_number'],
                     'lot_number'=>$item['lot_number'],
+                    'discount'      => isset($item['discount']) ? (string)$item['discount'] : '0',
                     'miq'=>$item['miq_number'],
                     'mac'=>$item['mac_number'],
                     'mrd_number'=>$item['mrd_number']
@@ -104,6 +107,7 @@ class MRRExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             'MRR/WOR Number',
             'supplier invoice ',
             'Lot Number',
+            'Discount',
             'MIQ',
             'MAC/wOA',
             'MRD/WOR',

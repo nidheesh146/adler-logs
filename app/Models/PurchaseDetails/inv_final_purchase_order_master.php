@@ -25,7 +25,9 @@ class inv_final_purchase_order_master extends Model
     }
     function insert_data($data,$terms = null){
       $POMaster = $this->insertGetId($data);
+    //   dd($POMaster);
       if( $POMaster ){
+       DB::table('inv_purchase_req_quotation')->where(['quotation_id'=>$data['rq_master_id']])->update(['final_purchase_order'=>1]);
        $item =  DB::table('inv_purchase_req_quotation_item_supp_rel')->where(['quotation_id'=>$data['rq_master_id'],'status'=>1,'supplier_id'=>$data['supplier_id'],'selected_item'=>1])->get();
        foreach($item as $items){
             $datas['item_id'] = $items->item_id;
@@ -36,6 +38,7 @@ class inv_final_purchase_order_master extends Model
             $datas['Specification'] =  $items->specification;
             $datas['rate'] =  $items->rate;
             $datas['gst'] =  $items->gst;
+            $datas['pending_accepted_qty']= $items->quantity;
             $or_item_id = DB::table('inv_final_purchase_order_item')->insertGetId($datas);
                 if( $or_item_id){
                     DB::table('inv_final_purchase_order_rel')->insertGetId(['master'=>$POMaster,'item'=>$or_item_id]);

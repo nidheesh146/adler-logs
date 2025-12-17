@@ -31,9 +31,9 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
                 $total_rate = $item['pi_qty_balance']*$item['rate'];
                 $discount_value = $total_rate*$item['discount']/100;
                 $discounted_value = $total_rate-$discount_value;
-                $igst_value = $total_rate*$item['igst']/100;
-                $sgst_value = $total_rate*$item['sgst']/100;
-                $cgst_value = $total_rate*$item['cgst']/100;
+                $igst_value = $discounted_value*$item['igst']/100;
+                $sgst_value = $discounted_value*$item['sgst']/100;
+                $cgst_value = $discounted_value*$item['cgst']/100;
                 $total_value = $discounted_value+$igst_value+$cgst_value+$sgst_value;
                 
             }
@@ -53,7 +53,9 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
                 'Order_Date' => date('d-m-Y', strtotime($item['order_date'])),
                 'Item_Code' => $item['sku_code'],
                 'Item_Description' => $item['discription'],
-                'Category'=>$item['category_name'],
+                'business Category'=>$item['category_name'],
+                'product Category'=>$item['new_category_name'],
+                // 'batch'=>$item['batch_no'],
                 'Pending_Qty' => $item['pi_qty_balance'],
                 // 'rate' => $pi['mrp'],
                 // 'discount' =>$pi['discount'],
@@ -77,8 +79,11 @@ class PendingPIExport implements FromCollection, WithHeadings, WithStyles,WithEv
             'Order Date',
             'Item Code',
             'Item Description',
-            'Category',
+            'business Category',
+            'product Category',
+        //    'Batch',
             'Pending Qty',
+            
             // 'Rate',
             // 'Discount(%)',
             // 'GST(%)',

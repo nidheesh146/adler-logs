@@ -239,6 +239,13 @@
           $('.spinner-button').hide();
         }
       });
+
+      $(document).ready(function() {
+        $('form').submit(function() {
+            $(this).find(':submit').prop('disabled', true);
+        });
+        
+    });
     
     </script>
 

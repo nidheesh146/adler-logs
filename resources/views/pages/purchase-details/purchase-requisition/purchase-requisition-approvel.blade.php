@@ -422,6 +422,11 @@
             $(currentgrp).find(".check-hold").not(this).prop('checked',false);
         });
     });
+    $(document).ready(function() {
+                $('#approve-form').submit(function() {
+                    $(this).find(':submit').prop('disabled', true);
+                });
+            });
 
 </script>
 <script>

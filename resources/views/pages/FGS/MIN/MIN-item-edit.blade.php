@@ -78,6 +78,9 @@
                                                         @foreach($batchcards as $batchcard)
                                                         <option value="{{$batchcard['batch_id']}}" qty="{{$batchcard['quantity']}}" @if($item_details->batch_no==$batchcard['batch_no']) selected="selected" @endif>{{$batchcard['batch_no']}}</option>
                                                         @endforeach
+                                                        @if($item_details->batch_no)
+                                                        <option value="{{$item_details->batch_id}}" selected>{{$item_details->batch_no}}</option>
+                                                        @endif
                                                     </select>                            
                                                 </div>
                                             </div>

@@ -19,10 +19,11 @@ class product extends Model
         return $this->where($condition)->update($data);
     }
     function get_product_data($data){
-        return $this->select(['id','sku_code as text','discription','process_sheet_no'])
+        return $this->select(['product_product.id as id','sku_code as text','discription','process_sheet_no'])
         ->leftjoin('product_input_material','product_product.id','=','product_input_material.product_id')
         ->leftjoin('fgs_transfer','fgs_transfer.pr_item_id','=','product_input_material.item_id1')
                     ->where('sku_code','like','%'.$data.'%')
+                    ->where('product_product.is_active', 1)
                     ->get()->toArray();
         
     }
@@ -36,6 +37,23 @@ class product extends Model
     function get_products($condition){
         
         return $this->select(['product_product.*','product_productfamily.family_name','product_productgroup.group_name','product_productbrand.brand_name',
+        'product_group1.group_name as group1_name','fgs_product_category.category_name','fgs_product_category_new.category_name as new_category_name','product_type.product_type_name'])
+                    ->leftjoin('product_productfamily','product_productfamily.id','=','product_product.product_family_id')
+                    ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
+                    ->leftjoin('product_group1','product_group1.id','=','product_product.product_group1_id')
+                    ->leftjoin('product_productbrand','product_productbrand.id','=','product_product.brand_details_id')
+                    ->leftjoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                    ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', '=', 'product_product.new_product_category_id')
+                    ->leftjoin('product_type','product_type.id','=','product_product.product_type_id')
+                    ->where($condition)
+                    ->where('product_product.item_type','!=','SEMIFINISHED GOODS')
+                    ->orderBy('product_product.id','desc')
+                    ->distinct('product_product.id')
+                    ->paginate(15);
+    }
+    function get_products_prdct($condition){
+        
+        return $this->select(['product_product.*','product_productfamily.family_name','product_productgroup.group_name','product_productbrand.brand_name',
         'product_group1.group_name as group1_name','fgs_product_category.category_name','product_type.product_type_name'])
                     ->leftjoin('product_productfamily','product_productfamily.id','=','product_product.product_family_id')
                     ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
@@ -44,13 +62,15 @@ class product extends Model
                     ->leftjoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
                     ->leftjoin('product_type','product_type.id','=','product_product.product_type_id')
                     ->where($condition)
+                    // ->where('product_product.item_type','!=','SEMIFINISHED GOODS')
                     ->orderBy('product_product.id','desc')
+                    ->whereNotNull('product_product.sku_code') // ✅ FIXED this line
                     ->distinct('product_product.id')
                     ->paginate(15);
     }
     function get_all_products($condition){
         return $this->select(['product_product.*','product_productfamily.family_name','product_productgroup.group_name','product_productbrand.brand_name',
-        'product_group1.group_name as group1_name','product_oem.oem_name','product_type.product_type_name','fgs_product_category.category_name'])
+        'product_group1.group_name as group1_name','product_oem.oem_name','product_type.product_type_name','fgs_product_category.category_name','fgs_product_category_new.category_name as new_category_name'])
                     ->leftjoin('product_productfamily','product_productfamily.id','=','product_product.product_family_id')
                     ->leftjoin('product_productgroup','product_productgroup.id','=','product_product.product_group_id')
                     ->leftjoin('product_group1','product_group1.id','=','product_product.product_group1_id')
@@ -58,7 +78,14 @@ class product extends Model
                     ->leftjoin('product_oem','product_oem.id','=','product_product.product_oem_id')
                     ->leftjoin('product_productbrand','product_productbrand.id','=','product_product.brand_details_id')
                     ->leftjoin('fgs_product_category','fgs_product_category.id','=','product_product.product_category_id')
+                    ->leftjoin('fgs_product_category_new','fgs_product_category_new.id','=','product_product.new_product_category_id')
                     ->where($condition)
+                    ->where('product_product.item_type','!=','SEMIFINISHED GOODS')
+
+                    // ->where(function($query) {
+                    //     $query->where('product_product.item_type', '=', 'FINISHED GOODS')
+                    //           ->orWhere('product_product.item_type', '=', 'SEMIFINISHED GOODS');
+                    // })
                     ->orderBy('product_product.id','desc')
                     ->distinct('product_product.id')
                     ->get();

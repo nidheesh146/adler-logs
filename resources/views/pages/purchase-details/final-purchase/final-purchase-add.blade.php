@@ -108,9 +108,9 @@
                             @foreach($data['quotation'] as $item)
 							    <tr>
 									<td><input type="checkbox" class="quotation_id" id="quotation_id" name="quotation_id[]" value="{{$item['quotation_id']}}"></td> 
-									<td>{{$item['rq_no']}}</td>
-									<td>{{$item['date'] ? date('d-m-Y',strtotime($item['date'])) : '-'}}</td>
-									<td>{{$item['delivery_schedule'] ? date('d-m-Y',strtotime($item['delivery_schedule'])) : '-'}}</td>
+									<td><input type="hidden" id="quotation_no" name="quotation_no[]" value="{{$item['rq_no']}}">{{$item['rq_no']}}</td>
+									<td><input type="hidden" id="date" name="date[]" value="{{$item['date'] ? date('d-m-Y',strtotime($item['date'])) : '-'}}">{{$item['date'] ? date('d-m-Y',strtotime($item['date'])) : '-'}}</td>
+									<td><input type="hidden" id="delivery_schedule" name="delivery_schedule[]" value="{{$item['delivery_schedule'] ? date('d-m-Y',strtotime($item['delivery_schedule'])) : '-'}}">{{$item['delivery_schedule'] ? date('d-m-Y',strtotime($item['delivery_schedule'])) : '-'}}</td>
 									<td>
 										@if($item['quotation_id'])
 
@@ -214,12 +214,6 @@
     
                     }
                 });
-                
-            });
-            
-            
-
-
 </script>
 
 

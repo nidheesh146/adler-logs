@@ -69,7 +69,7 @@
 							@foreach($pi_item as $item)
                                 <tr>
 									
-									<td>{{$item['grs_number']}}</td>
+									<td>{{$item['grs_number']}} - {{$item['pi_item_id']}}</td>
 									<td>{{$item['sku_code']}}</td>
 									<td>{{$item['discription']}}</td>	
 									<td>{{$item['hsn_code']}}</td>
@@ -78,7 +78,7 @@
 									<td>{{$item['remaining_qty_after_cancel']}}Nos</td>
                                     <td>{{$item['rate']}} {{$item['currency_code']}}</td>
                                     <td>{{$item['discount']}}%</td>
-                                    <td>{{($item['rate']*$item['batch_quantity'])-(($item['batch_quantity']*$item['discount']*$item['rate'])/100)}} {{$item['currency_code']}}</td>
+                                    <td>{{($item['rate']*$item['remaining_qty_after_cancel'])-(($item['remaining_qty_after_cancel']*$item['discount']*$item['rate'])/100)}} {{$item['currency_code']}}</td>
 									<td>
 										<?php $is_exist_in_dni = $fn->piItemExistInDNI($item['pi_item_id']); ?>
 										@if($is_exist_in_dni==1)

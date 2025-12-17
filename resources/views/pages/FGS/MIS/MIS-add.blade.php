@@ -58,7 +58,7 @@
                                 </select>
                             </div> 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Product Category  *</label>
+                                <label for="exampleInputEmail1">Business Category  *</label>
                                 <select class="form-control" name="product_category" id="product_category">
                                     <option value="">Select one...</option>
                                     @foreach($category as $cate)
@@ -66,6 +66,18 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+    <label>Product Category *</label>
+    <select class="form-control" name="new_product_category">
+        <option>..select one..</option>
+        @foreach($product_category as $category)
+        <option value="{{ $category->id }}"
+            @if(!empty($mtq) && ($mtq->new_product_category == $category->id)) selected="selected" @endif>
+            {{ $category->category_name }}
+        </option>
+        @endforeach
+    </select>
+</div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location  *</label>
                                 <select class="form-control" name="stock_location">

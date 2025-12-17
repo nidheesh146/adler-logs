@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 use App\Models\FGS\dc_transfer_stock;
-
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -27,26 +26,35 @@ class DCstockExport implements FromCollection,WithHeadings, WithStyles,WithEvent
         $total = 0;
         foreach($this->data as $stk)
         {
-            if($stk['expiry_date']!='0000-00-00') 
-            $expiry = date('d-m-Y', strtotime($stk['expiry_date']));
+           // print_r($stk);exit;
+            if ($stk['expiry_date'] != '0000-00-00' && strtotime($stk['expiry_date']) >= strtotime('1990-01-01')) {
+                $expiry = date('d-m-Y', strtotime($stk['expiry_date']));
+            }
             else 
             $expiry = 'NA';  
            
             $data[]= array(
                 '#'=>$i++,
                 'sku_code'=>$stk['sku_code'],
+                'hsn'=>$stk['hsn_code'],
+                'discription'=>$stk['discription'],
+               // print_r($stk['prdt_description']),
+                'category'=>$stk['category_name'],
+                'new category'=>$stk['new_category'],
                 'batchno'=>$stk['batch_no'],
                 'quantity'=>$stk['quantity'],
+                'customer'=>$stk['firm_name'],
                 'uom'=>'Nos',
                 'location'=>$stk['location_name'],
                 'mfg_date'=>date('d-m-Y',strtotime($stk['manufacturing_date'])),
                 'expiry_date'=> $expiry,
-                'hsn'=>$stk['hsn_code'],
-                'category'=>$stk['category_name'],
+              
+                
                 
 
             );
         }
+      //  print_r($data);exit;
         return collect($data);
     }
     public function headings(): array
@@ -54,14 +62,19 @@ class DCstockExport implements FromCollection,WithHeadings, WithStyles,WithEvent
         return [
             '#',
             'SKU Code',
+            'HSN Code',
             'Description',
+            'Business Category',
+            'Product Category',
             'Batchcard',
             'Quantity',
+            'Customer',
             'UOM',
+            'Location Name',
             'Mfg. Date',
             'Expiry Date',
-            'HSN Code',
-            'Product Category',
+
+            
             
 
         ];

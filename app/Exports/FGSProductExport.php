@@ -15,10 +15,14 @@ class FGSProductExport implements FromCollection, WithHeadings, WithStyles,WithE
     private $products;
 
     public function __construct($products) 
-    {
+    {//$condition[] = ['product_product.product_group1_id','!=','null'];
+
+    
+       
         $this->products = $products;
     }
     public function collection()
+    
     {
         $i=1;
         foreach($this->products as $item)
@@ -31,6 +35,10 @@ class FGSProductExport implements FromCollection, WithHeadings, WithStyles,WithE
              $status ="Active";
              else
              $status ="Inactive";
+            if($item['gst'])
+            $gst = $item['gst'].'%';
+            else
+            $gst ='';
             $data[]= array(
                     '#'=>$i++,
                     'SKU CODE' =>$item['sku_code'],
@@ -38,12 +46,15 @@ class FGSProductExport implements FromCollection, WithHeadings, WithStyles,WithE
                     'Description'=> $item['discription'],
                     'Product Type'=>$item['product_type_name'],
                     'Product Condition'=>$product_condition,
-                    'Product Category'=>$item['category_name'],
+                    'Business Category'=>$item['category_name'],
+                    'Product Category'=>$item['new_category_name'],
                     'Group Name' => $item['group1_name'],
-                    'OEM'=>$item['oem_name'],
+                    // 'OEM'=>$item['oem_name'],
                     'Std pack size'=>$item['quantity_per_pack'],
+                    'GST'=>$gst,
                     'status'=>$status,
                     'WEF'=>date('d-m-Y',strtotime($item['created'])),
+                    //$condition[] = ['product_product.product_group1_id','!=','null'],
 
             );
         }
@@ -51,6 +62,7 @@ class FGSProductExport implements FromCollection, WithHeadings, WithStyles,WithE
     }
     public function headings(): array
     {
+    
         return [
             '#',
             'SKU CODE',
@@ -58,10 +70,12 @@ class FGSProductExport implements FromCollection, WithHeadings, WithStyles,WithE
             'Description',
             'Product Type',
             'Product Condition',
+            'Business Category',
             'Product Category',
             'Product Group ',
-            'OEM',
+            // 'OEM',
             'Std pack size',
+            'GST',
             'Status',
             'WEF',
             

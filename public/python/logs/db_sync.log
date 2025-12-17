@@ -1,0 +1,440 @@
+2025-11-11 13:35:04,510 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 13:35:19,382 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 13:35:19,390 - __main__ - ERROR - [MainThread] -  Local database connection failed: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 13:35:19,391 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 13:35:19,487 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 763, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+2025-11-11 13:35:19,488 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 13:38:50,327 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 13:39:05,576 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 13:39:05,584 - __main__ - ERROR - [MainThread] -  Local database connection failed: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 13:39:05,584 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 13:39:05,591 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 763, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+2025-11-11 13:39:05,593 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:27:39,988 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 15:27:57,303 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 15:27:57,310 - __main__ - ERROR - [MainThread] -  Local database connection failed: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:27:57,311 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:27:57,320 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 763, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+2025-11-11 15:27:57,322 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:28:48,828 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 15:29:05,912 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 15:29:05,917 - __main__ - ERROR - [MainThread] -  Local database connection failed: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:29:05,921 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:29:05,929 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 763, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+2025-11-11 15:29:05,931 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:33:42,678 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 15:34:00,232 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 15:34:00,241 - __main__ - ERROR - [MainThread] -  Local database connection failed: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:34:00,242 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:34:00,258 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 763, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+
+2025-11-11 15:34:00,260 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'current_time' at line 1
+2025-11-11 15:40:42,763 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 15:41:02,130 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 15:41:02,181 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-11 15:41:02
+2025-11-11 15:41:02,843 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-11 15:41:02,844 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-11 15:41:02,852 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-11 15:41:02,853 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-11 15:56:13,874 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 15:56:31,313 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 15:56:31,349 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-11 15:56:31
+2025-11-11 15:56:31,997 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-11 15:56:31,998 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-11 15:56:32,005 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-11 15:56:32,006 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-11 16:00:30,529 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 16:00:47,931 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 16:00:47,950 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-11 16:00:47
+2025-11-11 16:00:48,509 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-11 16:00:48,510 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-11 16:00:48,518 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-11 16:00:48,520 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-11 16:04:30,837 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 16:04:48,064 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 16:04:48,072 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-11 16:04:48
+2025-11-11 16:04:48,679 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-11 16:04:48,680 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-11 16:04:48,689 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-11 16:04:48,690 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-11 16:41:46,255 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 16:42:03,956 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-11 16:42:03,985 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-11 16:42:03
+2025-11-11 16:42:04,609 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-11 16:42:04,611 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-11 16:42:04,620 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-11 16:42:04,622 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-15 12:14:22,149 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 12:14:43,611 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-15 12:14:43,622 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-15 12:14:43
+2025-11-15 12:14:44,329 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-15 12:14:44,330 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-15 12:14:44,413 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-15 12:14:44,417 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-15 12:37:17,301 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 12:37:32,716 - __main__ - INFO - [MainThread] -  Sync process interrupted by user
+2025-11-15 12:43:47,435 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 12:44:10,142 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-15 12:44:10,149 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-15 12:44:10
+2025-11-15 12:44:10,723 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-15 12:44:10,724 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-15 12:44:10,728 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-15 12:44:10,728 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-15 12:48:24,969 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 12:48:42,503 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-15 12:48:42,507 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-15 12:48:42
+2025-11-15 12:48:43,096 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-15 12:48:43,098 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-15 12:48:43,102 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-15 12:48:43,103 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-15 12:49:02,767 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 12:49:18,880 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-15 12:49:18,884 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-15 12:49:18
+2025-11-15 12:49:19,422 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-15 12:49:19,422 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-15 12:49:19,425 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-15 12:49:19,425 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-15 12:50:52,001 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 12:51:08,227 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-15 12:51:08,232 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-15 12:51:08
+2025-11-15 12:51:08,833 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-15 12:51:08,834 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-15 12:51:08,837 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-15 12:51:08,837 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-15 12:55:30,670 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 12:55:46,727 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-15 12:55:46,729 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-15 12:55:46
+2025-11-15 12:55:47,322 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-15 12:55:47,322 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-15 12:55:47,325 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-15 12:55:47,326 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-15 13:26:09,905 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 13:26:28,108 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-15 13:26:28,115 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-15 13:26:28
+2025-11-15 13:26:28,677 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-15 13:26:28,678 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-15 13:26:28,704 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-15 13:26:28,705 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-15 13:31:18,758 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 13:31:35,401 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-15 13:31:35,407 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-15 13:31:35
+2025-11-15 13:31:35,957 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-15 13:31:35,958 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-15 13:31:35,971 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-15 13:31:35,972 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected
+2025-11-15 13:32:39,398 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-15 13:33:03,310 - __main__ - INFO - [MainThread] - Connection pools created successfully
+2025-11-15 13:33:03,314 - __main__ - INFO - [MainThread] -  Local database connection successful - 2025-11-15 13:33:03
+2025-11-15 13:33:03,946 - __main__ - ERROR - [MainThread] -  Online database connection failed: 2055: Cursor is not connected
+2025-11-15 13:33:03,946 - __main__ - ERROR - [MainThread] - Critical error during sync process: 2055: Cursor is not connected
+2025-11-15 13:33:03,952 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 311, in execute
+    raise ProgrammingError
+mysql.connector.errors.ProgrammingError: Unknown error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 707, in run_sync
+    self.test_connections()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 776, in test_connections
+    local_cursor.execute("SELECT 1 AS test, NOW() AS `current_time`")
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 313, in execute
+    raise ProgrammingError("Cursor is not connected", 2055) from err
+mysql.connector.errors.ProgrammingError: 2055: Cursor is not connected
+
+2025-11-15 13:33:03,953 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 2055: Cursor is not connected

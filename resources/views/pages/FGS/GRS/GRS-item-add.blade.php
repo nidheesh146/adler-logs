@@ -157,50 +157,66 @@
     });
 	
   });
-  	
-    $('#batchcard').on('change', function ()
-    {
-        var element = $("option:selected", this); 
-        var batchqty = element.attr("qty"); 
-        var manufacturing_date = element.attr("manufacturingDate"); 
-        var expiry_date = element.attr("expiryDate"); 
-        var mrn_item_id = element.attr('mrnItemId');
-        $("#batch_qty1").val(batchqty);
-        $("#batch_qty1").attr('max',batchqty);
-        $("#batch_qty1").attr('qty',batchqty);
-        $("#batch_qty").attr('min',0);
-        $("#batch_qty").attr(batchqty);
-        $("#manufacturing_date").val(manufacturing_date);
-        $("#mrn_item_id").val(mrn_item_id);
-        if(expiry_date!='0000-00-00')
-        $("#expiry_date").val(expiry_date);
-        else
-        $("#expiry_date").val('N.A');
-        
-           // alert(stock_qty);
-    }); 
-    $(document).on('change', '#batch_qty', function (e) {
-        var unreserved_qty = parseFloat($('#unreserved_qty').val());
-        var quantity = parseFloat($('#batch_qty').val());
-        //var batchqty = parseFloat($('#batch_qty').attr());
-        var batchqty = $('#batch_qty1').attr("qty");
-        $("#error").text('');
-        if(quantity>unreserved_qty)
-        {
-            $("#error").text('Quantity Taken do not exceed unreserved quantity...');
-            // alert('Quantity Taken do not exceed unreserved quantity...');
-                //e.preventDefault();
-        }
-        if(quantity>batchqty)
-        {
-            $("#error").text('Quantity Taken do not exceed Batch quantity...');
-            //alert('');
-            //e.preventDefault();
-        }
-        
+  $('#batchcard').on('change', function () {
+    var element = $("option:selected", this);
+    var batchcard = element.html();
+    var batchqty = element.attr("qty");
+    var manufacturing_date = element.attr("manufacturingDate");
+    var expiry_date = element.attr("expiryDate");
+    var mrn_item_id = element.attr('mrnItemId');
 
-        //alert(available_qty);
-    }) ;
+    $("#batch_qty1").val(batchqty);
+    $("#batch_qty1").attr('max', batchqty);
+    $("#batch_qty1").attr('qty', batchqty);
+    $("#batch_qty").attr('min', 0);
+    $("#batch_qty").attr('qty', batchqty);
+
+    $("#manufacturing_date").val(manufacturing_date);
+    $("#mrn_item_id").val(mrn_item_id);
+
+    if (expiry_date != '0000-00-00' && expiry_date != '1970-01-01') {
+        $("#expiry_date").val(expiry_date);
+
+        var now = new Date();
+        var tomorrow_date = now.setDate(now.getDate() + 1);
+        var sixMonthsAfterNow = now.setMonth(now.getMonth() + 6);
+        var item_expiry_date = new Date(expiry_date).getTime();
+
+        if (tomorrow_date > item_expiry_date) {
+            alert("This product batchcard can't be selected. Its expiry date is " + expiry_date + ". Please select another batchcard.");
+            location.reload();
+        } else if (item_expiry_date <= sixMonthsAfterNow) {
+            var startDay = new Date();
+            var endDay = new Date(expiry_date);
+            var millisBetween = endDay.getTime() - startDay.getTime();
+            var days = millisBetween / (1000 * 3600 * 24);
+            var remaining_days = Math.round(Math.abs(days));
+
+            alert("This product batchcard will expire within " + remaining_days + " days.");
+        }
+    } else {
+        $("#expiry_date").val('N.A');
+    }
+});
+
+$(document).on('change', '#batch_qty', function (e) {
+    var unreserved_qty = parseFloat($('#unreserved_qty').val());
+    var quantity = parseFloat($('#batch_qty').val());
+    var batchqty = $('#batch_qty1').attr("qty");
+
+    $("#error").text('');
+
+    if (quantity > unreserved_qty) {
+        $("#error").text('Quantity Taken cannot exceed unreserved quantity...');
+        e.preventDefault(); // Prevent the form submission or further actions
+    }
+
+    if (quantity > batchqty) {
+        $("#error").text('Quantity Taken cannot exceed Batch quantity...');
+        e.preventDefault(); // Prevent the form submission or further actions
+    }
+});
+
 </script>
 <script>
     $(document).ready(function() {

@@ -58,44 +58,65 @@ class Controller extends BaseController
         else
         return date('y').date('m').substr($decimal, 0, 4);
     }
-
-    function po_num_gen($Number,$type)
-    {
-        $Number = (($Number + 1) / 999);
+    function pr_num_gen($Number){
+        $Number = (($Number + 1) / 9999);
         list($whole, $decimal) = explode('.', $Number);
         if(!$decimal){
-            if($type==1)
-            {
-                if(date('m')==01 || date('m')==02 || date('m')==03)
-                return date('y', strtotime('-1 year')).date('y').'-'."999";
-                else
-                return date('y').date('y', strtotime('+1 year')).'-'."999";
-            }
-            else
-            {
-                if(date('m')==01 || date('m')==02 || date('m')==03)
-                return date('y', strtotime('-1 year')).date('y').'ID-'."999";
-                else
-                return date('y').date('y', strtotime('+1 year')).'ID-'."999";
-            }
+            // if(date('m')==01 || date('m')==02 || date('m')=='03')
+            return date('y').date('m')."9999";
+            // else
+            // return date('y').date('m')."9999";
 
         }
-        if($type==1)
-        {
-            if(date('m')==01 || date('m')==02 || date('m')==03)
-            return date('y', strtotime('-1 year')).date('y').'-'.substr($decimal, 0, 3);
-            else
-            return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
-        }
-        else
-        {
-            if(date('m')==01 || date('m')==02 || date('m')==03)
-            return  date('y', strtotime('-1 year')).date('y').'ID-'.substr($decimal, 0, 3);
-            else
-            return date('y').date('y', strtotime('+1 year')).'ID-'.substr($decimal, 0, 3);
+      
+        return date('y').date('m').substr($decimal, 0, 4);
+    }
+    function po_num_gen($Number, $type)
+    {
+        if (($Number) >= 999) {
+            $Number = (($Number + 1) / 9999);
+            list($whole, $decimal) = explode('.', $Number);
+    
+            // Ensure $decimal exists and is properly formatted
+            $decimal = isset($decimal) ? str_pad(substr($decimal, 0, 4), 4, '0', STR_PAD_LEFT) : "0000";
+    
+            if ($type == 1) {
+                if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
+                    return date('y', strtotime('-1 year')) . date('y') . '-' . $decimal;
+                } else {
+                    return date('y') . date('y', strtotime('+1 year')) . '-' . $decimal;
+                }
+            } else {
+                if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
+                    return date('y', strtotime('-1 year')) . date('y') . 'ID-' . $decimal;
+                } else {
+                    return date('y') . date('y', strtotime('+1 year')) . 'ID-' . $decimal;
+                }
+            }
+        } else {
+            $Number = (($Number + 1) / 999);
+            list($whole, $decimal) = explode('.', $Number);
+    
+            // Ensure $decimal exists and is properly formatted
+            $decimal = isset($decimal) ? str_pad(substr($decimal, 0, 3), 3, '0', STR_PAD_LEFT) : "000";
+    
+            if ($type == 1) {
+                if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
+                    return date('y', strtotime('-1 year')) . date('y') . '-' . $decimal;
+                } else {
+                    return date('y') . date('y', strtotime('+1 year')) . '-' . $decimal;
+                }
+            } else {
+                if (date('m') == 01 || date('m') == 02 || date('m') == 03) {
+                    return date('y', strtotime('-1 year')) . date('y') . 'ID-' . $decimal;
+                } else {
+                    return date('y') . date('y', strtotime('+1 year')) . 'ID-' . $decimal;
+                }
+            }
         }
     }
-
+    
+   
     function wo_num_gen($Number){
         $Number = (($Number + 1) / 999);
         list($whole, $decimal) = explode('.', $Number);
@@ -111,8 +132,8 @@ class Controller extends BaseController
         return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
     }
 
-    function year_combo_num_gen($Number){
-       
+    function year_combo_num_gen_inv($Number){
+
         if($Number==998)
         {
             if(date('m')==01 || date('m')==02 || date('m')==03)
@@ -151,18 +172,55 @@ class Controller extends BaseController
             return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 3);
         }
     }
+    
+    function year_combo_num_gen($Number){
+       
+        if($Number==998)
+        {
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            return date('y', strtotime('-1 year')).date('y').'-'."999";
+            else
+            return date('y').date('y', strtotime('+1 year')).'-'."999";
+        }
+        else if($Number>=999)
+        {
+            $Number = (($Number + 1) / 9999);
+            list($whole, $decimal) = explode('.', $Number);
+            if(!$decimal){
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                return date('y', strtotime('-1 year')).date('y').'-'."9999";
+                else
+                return date('y').date('y', strtotime('+1 year')).'-'."9999";
+            }
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            return date('y', strtotime('-1 year')).date('y').'-'.substr($decimal, 0, 4);
+            else
+            return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 4);
+        }
+        else
+        {
+            $Number = (($Number + 1) / 9999);
+            list($whole, $decimal) = explode('.', $Number);
+            if(!$decimal){
+                if(date('m')==01 || date('m')==02 || date('m')==03)
+                return date('y', strtotime('-1 year')).date('y').'-'."999";
+                else
+                return date('y').date('y', strtotime('+1 year')).'-'."999";
+            }
+            if(date('m')==01 || date('m')==02 || date('m')==03)
+            return date('y', strtotime('-1 year')).date('y').'-'.substr($decimal, 0, 4);
+            else
+            return date('y').date('y', strtotime('+1 year')).'-'.substr($decimal, 0, 4);
+        }
+    }
     function lot_num_gen($Number){
         $Number = (($Number + 1) / 999);
         list($whole, $decimal) = explode('.', $Number);
         if(!$decimal){
-            // if(date('m')==01 || date('m')==02 || date('m')==03)
-            // return "999".date('m').date('y', strtotime('-1 year'));
-            // else
+           
             return "999".date('m').date('y');
         }
-        // if(date('m')==01 || date('m')==02 || date('m')==03)
-        // return substr($decimal, 0, 3).date('m').date('y', strtotime('-1 year'));
-        // else
+      
         return substr($decimal, 0, 3).date('m').date('y');
     }
 

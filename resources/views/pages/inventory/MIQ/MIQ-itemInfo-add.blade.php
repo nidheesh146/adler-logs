@@ -3,8 +3,8 @@
 @inject('fn', 'App\Http\Controllers\Web\PurchaseDetails\MIQController')
 <div class="az-content az-content-dashboard">
   <br>
-	<div class="container">
-		<div class="az-content-body">
+    <div class="container">
+        <div class="az-content-body">
 
             <div class="az-content-breadcrumb"> 
                 <span><a href="" style="color: #596881;">Material Inwards To Quarantine</a></span>
@@ -12,7 +12,7 @@
                    MIQ Item
                 </a></span>
             </div>
-	
+    
             <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                     MIQ Item
             </h4>
@@ -21,7 +21,7 @@
            
             </div>
 
-			<div class="row">
+            <div class="row">
                     
                 <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
                     @if (Session::get('success'))
@@ -52,86 +52,83 @@
                          </div>
                         <?php $currency_id = $fn->getCurrency($data['invoice_item_id']); ?>
                         <div class="row">
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Item code </label>
-                                <input type="text" value="@if($data) {{$data['item_code']}} @endif" class="form-control" name="Type" readonly>
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Item Type </label>
-                                <input type="text" value="@if($data) {{$data['type_name']}} @endif" class="form-control" name="Type" readonly>
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Item Description </label>
-                                <textarea type="text" class="form-control" name="item_description" id="item_description" placeholder="Item Description" readonly>@if($data) {{$data['discription']}} @endif</textarea>
-                            </div><!-- form-group -->
+    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <label>Item code </label>
+        <input type="text" value="@if($data) {{$data['item_code']}} @endif" class="form-control" name="Type" readonly required>
+    </div><!-- form-group -->
+    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <label>Item Type </label>
+        <input type="text" value="@if($data) {{$data['type_name']}} @endif" class="form-control" name="Type" readonly required>
+    </div><!-- form-group -->
+    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <label>Item Description </label>
+        <textarea type="text" class="form-control" name="item_description" id="item_description" placeholder="Item Description" readonly required>@if($data) {{$data['discription']}} @endif</textarea>
+    </div><!-- form-group -->
 
-                            @if($data['type_name']=="Direct Items")
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Lot Number *</label>
-                                <input type="text" value="@if($data) {{$data['lot_number']}} @endif" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number" readonly>
-                            </div><!-- form-group -->
-                            @endif
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Quantity </label>
-                                <input type="text" value="@if($data) {{$data['order_qty']}} @endif" class="form-control " name="Quantity" id="qty" placeholder="Quantity" readonly>
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Stock Keeping Unit</label>
-                                <input type="text" value="@if($data) {{$data['unit_name']}} @endif" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Unit Rate  @if($data)( Rate : {{$data['rate']}} , Discount(%) : {{$data['discount']}}) @endif</label>
-                                <input type="text" value="@if($data) {{$data['rate']-($data['rate']*$data['discount']/100)}} @endif" class="form-control" name="rate" id="rate" placeholder="Supplier Unit Rate" readonly>
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                <label>Value</label>
-                                <input type="text" readonly class="form-control" value="@if($data) {{$data['order_qty']*($data['rate']-($data['rate']*$data['discount']/100))}} @endif"  name="value" id="value" placeholder="Value">
-                            </div>
-                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                <label>Currency *</label>
-                                <select class="form-control" name="currency" id="currency">
-                                <option value="">--- select one ---</option> 
-                                    @foreach ($currency as $item)
-                                        <option value="{{$item->currency_id}}" @if($item->currency_id == $data['currency']) selected  @elseif($item->currency_id==$currency_id) selected @endif >{{$item->currency_code}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                <label>Landed Rate (INR) *</label>
-                                <input type="text" class="form-control" value="@if($data) {{$data['conversion_rate']}} @endif" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">
-                            </div>
-                            <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
-                                <label>Value in INR </label>
-                                <input type="text" readonly class="form-control" value="@if($data) {{$data['value_inr']}} @endif" name="value_inr" id="value_inr" placeholder="Value in INR">
-                            </div>
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Expiry Control *</label>
-                                <select class="form-control" name="expiry_control" id="expiry_control">
-                                    <option value="">--- select one ---</option>
-                                    <option value="1" @if($data) @if($data['expiry_control']==1 && $data['expiry_control']!=NULL) selected @endif @endif>Yes</option>
-                                    <option value="0" @if($data) @if($data['expiry_control']==0 && $data['expiry_control']!=NULL) selected @endif @endif>No</option>
-                                </select>
-                                
-                            </div><!-- form-group -->
-                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                <label>Expiry Date *</label>
-                                <input type="text" value=" {{(!empty($data) &&($data['expiry_date']!=NULL) ) ? date('d-m-Y',strtotime($data['expiry_date'])) : date('d-m-Y') }}" class="form-control datepicker" name="expiry_date" placeholder="Expiry Date">
-                            </div><!-- form-group -->
-                        </div> 
-                      
+    @if($data['type_name']=="Direct Items")
+    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <label>Lot Number *</label>
+        <input type="text" value="@if($data) {{$data['lot_number']}} @endif" class="form-control" name="lot_number" id="lot_number" placeholder="Lot Number" readonly required>
+    </div><!-- form-group -->
+    @endif
+    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <label>Quantity </label>
+        <input type="text" value="@if($data) {{$data['order_qty']}} @endif" class="form-control " name="Quantity" id="qty" placeholder="Quantity" readonly required>
+    </div><!-- form-group -->
+    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <label>Stock Keeping Unit</label>
+        <input type="text" value="@if($data) {{$data['unit_name']}} @endif" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly required>
+    </div><!-- form-group -->
+    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <label>Unit Rate  @if($data)( Rate : {{$data['rate']}} , Discount(%) : {{$data['discount']}}) @endif</label>
+        <input type="text" value="@if($data) {{$data['rate']-($data['rate']*$data['discount']/100)}} @endif" class="form-control" name="rate" id="rate" placeholder="Supplier Unit Rate" readonly required>
+    </div><!-- form-group -->
+    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+        <label>Value</label>
+        <input type="text" readonly class="form-control" value="@if($data) {{$data['order_qty']*($data['rate']-($data['rate']*$data['discount']/100))}} @endif" name="value" id="value" placeholder="Value" required>
+    </div>
+    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+        <label>Currency *</label>
+        <select class="form-control" name="currency" id="currency" required>
+            <option value="">--- select one ---</option> 
+            @foreach ($currency as $item)
+                <option value="{{$item->currency_id}}" @if($item->currency_id == $data['currency']) selected @elseif($item->currency_id==$currency_id) selected @endif >{{$item->currency_code}}</option>
+            @endforeach
+        </select>
+    </div>
+    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+        <label>Landed Rate (INR) *</label>
+        <input type="text" class="form-control" value="@if($data) {{$data['conversion_rate']}} @endif" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate" required>
+    </div>
+    <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+        <label>Value in INR </label>
+        <input type="text" readonly class="form-control" value="@if($data) {{$data['value_inr']}} @endif" name="value_inr" id="value_inr" placeholder="Value in INR" required>
+    </div>
+    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <label>Expiry Control *</label>
+        <select class="form-control" name="expiry_control" id="expiry_control" required>
+            <option value="">--- select one ---</option>
+            <option value="1" @if($data) @if($data['expiry_control']==1 && $data['expiry_control']!=NULL) selected @endif @endif>Yes</option>
+            <option value="0" @if($data) @if($data['expiry_control']==0 && $data['expiry_control']!=NULL) selected @endif @endif>No</option>
+        </select>
+    </div><!-- form-group -->
+    <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <label>Expiry Date *</label>
+        <input type="text" value=" {{(!empty($data) &&($data['expiry_date']!=NULL) ) ? date('d-m-Y',strtotime($data['expiry_date'])) : date('d-m-Y') }}" class="form-control datepicker" name="expiry_date" placeholder="Expiry Date" required>
+    </div><!-- form-group -->
+</div> 
 
-              
-            
-                        <div class="row">
-                            <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;"
-                                    role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
-                               Save
-                                </button>
-                            </div>
-                        </div>
-                        <div class="form-devider"></div>
-                    </form>
+<div class="row">
+    <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <button type="submit" class="btn btn-primary btn-rounded" style="float: right;">
+            <span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> 
+            <i class="fas fa-save"></i> Save
+        </button>
+    </div>
+</div>
+<div class="form-devider"></div>
+</form>
+
 
                 </div>
             </div>
@@ -148,8 +145,8 @@
 
 
 
-	</div>
-	<!-- az-content-body -->
+    </div>
+    <!-- az-content-body -->
 </div>
 
 

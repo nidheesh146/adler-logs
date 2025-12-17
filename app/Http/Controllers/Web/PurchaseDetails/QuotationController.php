@@ -71,60 +71,96 @@ class QuotationController extends Controller
             //print_r(json_encode($data['reopen_data']));exit;
         }
       
-        $data['getdata'] = $this->inv_purchase_req_item->getdata($condition);
+        $data['getdata'] = $this->inv_purchase_req_item->getqdata($condition);
       
-        //print_r($data['getdata']);exit;
+        // print_r($data['getdata']);exit;
         return view('pages/purchase-details/Quotation/quotation-add', compact('data','id'));
     }
 
-    // Add Quotation
     public function postQuotation(Request $request)
     {
-        $validation['date'] = ['required','date'];
-        $validation['Supplier'] = ['required'];
-        $validation['delivery'] = ['required'];
-        $validation['purchase_requisition_item'] = ['required'];
+        $validation = [
+            'date' => ['required', 'date'],
+            'Supplier' => ['required'],
+            'delivery' => ['required'],
+            'purchase_requisition_item' => ['required'], // Ensure it's an array of item IDs
+        ];
+    
         $validator = Validator::make($request->all(), $validation);
-       
-        if(!$validator->errors()->all()){
-            if(date('m')==01 || date('m')==02 || date('m')==03)
-            {
-                $yearMonth = date('y',strtotime("-1 year")).date('m');
+    
+        if (!$validator->errors()->all()) {
+            $supplierIds = [ // List of all supplier IDs
+                237, 83, 88, 87, 86, 100, 102, 81, 129, 76, 75, 58, 70, 68, 
+                66, 63, 103, 59, 57, 121, 106, 147, 145, 94, 108, 47, 44119, 
+                127, 120, 117, 32, 118, 153, 27, 26, 93, 125, 101, 96, 11, 
+                151, 7, 148, 4
+            ];
+    
+            $suppliers = $request->input('Supplier', []);
+    
+            // Check if any supplier in the request matches the given supplier list
+            if (!empty(array_intersect($suppliers, $supplierIds))) {
+                $expiredItems = [];
+    
+                foreach ($request->purchase_requisition_item as $item_id) {
+                    $item = DB::table('inv_purchase_req_item')
+                        ->where('requisition_item_id', $item_id)
+                        ->first();
+    
+                    if ($item) {
+                        $supplierItem = DB::table('inv_supplier_itemrate')
+                            ->where('item_id', $item->Item_code)
+                            ->whereIn('supplier_id', $supplierIds) // Using all supplier IDs
+                            ->first();
+    
+                        if ($supplierItem && strtotime($supplierItem->rate_expiry_enddate) < strtotime(now())) {
+                            $expiredItems[] = $item->Item_code;
+                        }
+                    }
+                }
+    
+                if (!empty($expiredItems)) {
+                    return redirect('inventory/quotation')
+                        ->withErrors(['msg' => 'The following items have expired: ' . implode(', ', $expiredItems)])
+                        ->withInput();
+                }
             }
-            else
-            {
-                $yearMonth = date('y').date('m');
-            }
-            $rq_number = "RQ-".$this->num_gen(DB::table('inv_purchase_req_quotation')->where('rq_no','LIKE', '%RQ-'.$yearMonth.'%')->count());
-            $data = ['date'=>date('Y-m-d',strtotime($request->date)),
-                     'delivery_schedule'=>date('Y-m-d',strtotime($request->delivery)),
-                     //'rq_no'=>'RQ-'.$this->num_gen( $this->inv_purchase_req_quotation->get_count()),
-                     'rq_no'=>$rq_number,
-                     'created_at'=>date('Y-m-d H:i:s'),
-                     'created_user'=>config('user')['user_id'],
-                     'type'=> ($request->prsr == 'sr') ? 'SR' : 'PR'
-                    ];
-            // print_r($request->purchase_requisition_item);
-            // exit;
-            $this->inv_purchase_req_quotation->insert_data($data,$request);
-
-            $request->session()->flash('success', "You have successfully created a  Request For Quotation !");
-            if($request->prsr)
-            return redirect('inventory/quotation?prsr='.$request->prsr);
-            else
-            return redirect('inventory/quotation');
-
+    
+            // Generate the quotation number
+            $yearMonth = date('y') . date('m');
+            $rq_number = "RQ-" . $this->pr_num_gen(
+                DB::table('inv_purchase_req_quotation')
+                    ->where('rq_no', 'LIKE', '%RQ-' . $yearMonth . '%')
+                    ->count()
+            );
+    
+            $data = [
+                'date' => date('Y-m-d', strtotime($request->date)),
+                'delivery_schedule' => date('Y-m-d', strtotime($request->delivery)),
+                'rq_no' => $rq_number,
+                'created_at' => now(),
+                'created_user' => config('user')['user_id'],
+                'type' => ($request->prsr == 'sr') ? 'SR' : 'PR',
+            ];
+    
+            // Insert quotation data
+            $this->inv_purchase_req_quotation->insert_data($data, $request);
+    
+            // Update the status in `inv_purchase_req_item_approve` to 8
+            DB::table('inv_purchase_req_item_approve')
+                ->whereIn('pr_item_id', $request->purchase_requisition_item) 
+                ->update(['status' => 8]);
+    
+            $request->session()->flash('success', "You have successfully created a Request For Quotation!");
+    
+            return redirect($request->prsr ? 'inventory/quotation?prsr=' . $request->prsr : 'inventory/quotation');
         }
-        if($validator->errors()->all()){
-            if($request->prsr)
-            return redirect('inventory/quotation?prsr='.$request->prsr)->withErrors($validator)->withInput();
-            else
-            return redirect('inventory/quotation')->withErrors($validator)->withInput();
-
-            //return redirect('inventory/quotation');
-        }
-           
+    
+        return redirect($request->prsr ? 'inventory/quotation?prsr=' . $request->prsr : 'inventory/quotation')
+            ->withErrors($validator)
+            ->withInput();
     }
+
 
     public function getItems(Request $request)
     {
@@ -177,39 +213,86 @@ class QuotationController extends Controller
 
     public function directPurchaseQuotation(Request $request)
     {
-        $validation['date'] = ['required','date'];
-        $validation['Supplier'] = ['required'];
-        $validation['delivery'] = ['required'];
-        $validation['purchase_requisition_item'] = ['required'];
+        
+        $validation = [
+            'date' => ['required', 'date'],
+            'Supplier' => ['required'],
+            'delivery' => ['required'],
+            'purchase_requisition_item' => ['required']
+        ];
+    
         $validator = Validator::make($request->all(), $validation);
-       
-        if(!$validator->errors()->all()){
-            $data = ['date'=>date('Y-m-d',strtotime($request->date)),
-                     'delivery_schedule'=>date('Y-m-d',strtotime($request->delivery)),
-                     'rq_no'=>'RQ-'.$this->num_gen( $this->inv_purchase_req_quotation->get_count()),
-                     'created_at'=>date('Y-m-d H:i:s'),
-                     'created_user'=>config('user')['user_id'],
-                     'type'=> ($request->prsr == 'sr') ? 'SR' : 'PR'
-                    ];
-            $this->inv_purchase_req_quotation->insert_fixed_item_data($data,$request);
+    
+        if (!$validator->errors()->all()) {
+            $supplierIds = [ // List of all supplier IDs
+                237, 83, 88, 87, 86, 100, 102, 81, 129, 76, 75, 58, 70, 68, 
+                66, 63, 103, 59, 57, 121, 106, 147, 145, 94, 108, 47, 44119, 
+                127, 120, 117, 32, 118, 153, 27, 26, 93, 125, 101, 96, 11, 
+                151, 7, 148, 4
+            ];
+    
+            $suppliers = $request->input('Supplier');
 
-            $request->session()->flash('success', "You have successfully created a  Request For Quotation !");
-            if($request->prsr)
-            return redirect('inventory/direct/purchase?prsr='.$request->prsr);
-            else
-            return redirect('inventory/direct/purchase');
-
+            if (!is_array($suppliers)) {
+                $suppliers = $suppliers ? [$suppliers] : [];
+            }
+                
+            // Check if any supplier in the request matches the given supplier list
+            if (!empty(array_intersect($suppliers, $supplierIds))) {
+                $expiredItems = [];
+    
+                foreach ($request->purchase_requisition_item as $item_id) {
+                    $item = DB::table('inv_purchase_req_item')
+                        ->where('requisition_item_id', $item_id)
+                        ->first();
+    
+                    if ($item) {
+                        $supplierItem = DB::table('inv_supplier_itemrate')
+                            ->where('item_id', $item->Item_code)
+                            ->whereIn('supplier_id', $supplierIds) // Using all supplier IDs
+                            ->first();
+    
+                        if ($supplierItem && strtotime($supplierItem->rate_expiry_enddate) < strtotime(now())) {
+                            $expiredItems[] = $item->Item_code;
+                        }
+                    }
+                }
+    
+                if (!empty($expiredItems)) {
+                    return redirect('inventory/direct/purchase')
+                        ->withErrors(['msg' => 'The following items have expired: ' . implode(', ', $expiredItems)])
+                        ->withInput();
+                }
+            }
+    
+            $data = [
+                'date' => date('Y-m-d', strtotime($request->date)),
+                'delivery_schedule' => date('Y-m-d', strtotime($request->delivery)),
+                'rq_no' => 'RQ-' . $this->num_gen($this->inv_purchase_req_quotation->get_count()),
+                'created_at' => now(),
+                'created_user' => config('user')['user_id'],
+                'type' => ($request->prsr == 'sr') ? 'SR' : 'PR'
+            ];
+    
+            // Insert the quotation data
+            $this->inv_purchase_req_quotation->insert_fixed_item_data($data, $request);
+    
+            // Update the status of the corresponding `pr_item_id` to 8
+            $prItemIds = $request->input('purchase_requisition_item'); // Assume this contains an array of `pr_item_id`
+            DB::table('inv_purchase_req_item_approve')
+                ->whereIn('pr_item_id', $prItemIds)
+                ->update(['status' => 8]);
+    
+            $request->session()->flash('success', "You have successfully created a Request For Quotation!");
+            return redirect($request->prsr ? 'inventory/direct/purchase?prsr=' . $request->prsr : 'inventory/direct/purchase');
         }
-        if($validator->errors()->all()){
-            if($request->prsr)
-            return redirect('inventory/direct/purchase?prsr='.$request->prsr)->withErrors($validator)->withInput();
-            else
-            return redirect('inventory/direct/purchase')->withErrors($validator)->withInput();
-
-            //return redirect('inventory/quotation');
-        }
+    
+        return redirect($request->prsr ? 'inventory/direct/purchase?prsr=' . $request->prsr : 'inventory/direct/purchase')
+            ->withErrors($validator)
+            ->withInput();
     }
-
+    
+    
     public function get_supplier($id){
         $supplier = inv_supplier::where('id','=',$id)->pluck('vendor_name')->first();
         return $supplier;

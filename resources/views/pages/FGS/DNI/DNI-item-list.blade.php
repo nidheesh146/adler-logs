@@ -20,6 +20,18 @@
               </div>
           </div>
         </h4>	
+		@if(Session::get('error'))
+			<div class="alert alert-danger " role="alert" style="width: 100%;">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				{{Session::get('error')}}
+			</div>
+			@endif
+			@if (Session::get('success'))
+			<div class="alert alert-success " style="width: 100%;">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				<i class="icon fa fa-check"></i> {{ Session::get('success') }}
+			</div>
+			@endif
 		  
 		   
 			<div class="tab-content"> 
@@ -54,6 +66,7 @@
 								<tr>
 									<th></th>
 									<th>GRS Number</th>
+									<th>PI Number</th>
                                     <th>Product</th>
 									<th>Description</th>
 									<th>HSN Code</th>
@@ -62,30 +75,31 @@
                                     <th>Rate</th>
                                     <th>Discount</th>
                                     <th>Net Value</th>
+									<th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
 							@php $i=1; @endphp
-							@foreach($dni_items as $dni_item)
-							@foreach($dni_item['pi_item'] as $item)
+							@foreach($dni_items as $item)
                                 <tr>
 									<td>{{$i++}}</td>
-									<td>{{$item['grs_number']}}</td>
-									<td>{{$item['sku_code']}}</td>
-									<td>{{$item['discription']}}</td>	
-									<td>{{$item['hsn_code']}}</td>
-									<td>{{$item['batch_no']}}</td>
-                                    <td>{{$item['batch_quantity']}}Nos</td>
-                                    <td>{{$item['rate']}} {{$item['currency_code']}}</td>
-                                    <td>{{$item['discount']}}%</td>
-                                    <td>{{($item['rate']*$item['batch_quantity'])-(($item['batch_quantity']*$item['discount']*$item['rate'])/100)}} {{$item['currency_code']}}</td>
+									<td>{{$item->grs_number}}</td>
+									<td>{{$item->pi_number}}</td>
+									<td>{{$item->sku_code}}</td>
+									<td>{{$item->discription}}</td>	
+									<td>{{$item->hsn_code}}</td>
+									<td>{{$item->batch_no}}</td>
+                                    <td>{{$item->quantity}}Nos</td>
+                                    <td>{{$item->rate}} {{$item->currency_code}}</td>
+                                    <td>{{$item->discount}}%</td>
+                                    <td>{{($item->rate*$item->quantity)-(($item->quantity*$item->discount*$item->rate)/100)}} {{$item->currency_code}}</td>
+									<td><a class="badge badge-danger" style="font-size: 13px;" href="{{url('fgs/DNI-item-delete/'.$item->dni_item_id)}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a></td>
 								</tr>
-								@endforeach
 								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-                        
+                        {{ $dni_items->appends(request()->input())->links() }}
 						</div>
 					</div>
 					<br/>

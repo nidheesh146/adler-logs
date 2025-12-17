@@ -22,12 +22,18 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
     {
         if($this->request=='null')
         {
-            $items=   product_price_master::select('product_price_master.*','product_product.discription','product_product.sku_code','product_group1.group_name')
-                                    ->leftjoin('product_product','product_product.id','=','product_price_master.product_id')
-                                    ->leftjoin('product_group1','product_group1.id','=','product_product.product_group1_id') 
-                                    ->where('product_price_master.is_active','=',1)
-                                    ->orderBy('product_price_master.id','DESC')
-                                    ->get();
+                $items = product_price_master::select('product_price_master.*', 'product_product.discription', 'product_product.sku_code', 'product_group1.group_name', 'fgs_product_category.category_name','fgs_product_category_new.category_name as new_category_name')
+                    ->leftJoin('product_product', 'product_product.id', '=', 'product_price_master.product_id')
+                    ->leftJoin('product_group1', 'product_group1.id', '=', 'product_product.product_group1_id')
+                    ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+                    ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', '=', 'product_product.new_product_category_id')
+                    ->where('product_price_master.is_active', '=', 1)
+                    // ->where(function ($query) {
+                    //     $query->where('product_product.item_type', '=', 'FINISHED GOODS')
+                    //         ->orWhere('product_product.item_type', '=', 'SEMIFINISHED GOODS');
+                    // })
+                    ->orderBy('product_price_master.id', 'DESC')
+                    ->get();
         }
         else
         {
@@ -44,16 +50,60 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
             {
                 $condition[] = ['product_productgroup.group_name','like', '%' . $this->request->group_name . '%'];
             }
-           $items=   product_price_master::select('product_price_master.*','product_product.discription','product_product.sku_code','product_product.hsn_code','product_group1.group_name')
-                            ->leftjoin('product_product','product_product.id','=','product_price_master.product_id')
-                            ->leftjoin('product_group1','product_group1.id','=','product_product.product_group1_id')              
-                            ->where('product_price_master.is_active','=',1)
-                            ->where($condition)
-                            ->orderBy('product_price_master.id','DESC')
-                            ->get();
-        }
-        $i=1;
-        $data = [];
+            
+            // $items = product_price_master::select('product_price_master.*', 'product_product.discription', 'product_product.sku_code', 'product_product.hsn_code', 'product_group1.group_name', 'fgs_product_category.category_name')
+            // ->leftJoin('product_product', 'product_product.id', '=', 'product_price_master.product_id')
+            // ->leftJoin('product_group1', 'product_group1.id', '=', 'product_product.product_group1_id')
+            // ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'product_product.product_category_id')
+            // ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', '=', 'product_product.new_product_category_id')
+            // ->where('product_price_master.is_active', '=', 1)
+            // ->whereNotNull('product_product.product_group1_id') // Filter where product_group1_id is not null
+            // // ->where(function($query) {
+            // //     $query->where('product_product.item_type', '=', 'FINISHED GOODS')
+            // //           ->orWhere('product_product.item_type', '=', 'SEMIFINISHED GOODS');
+            // // })
+            
+            // ->where($condition) 
+            // ->orderBy('product_price_master.id', 'DESC')
+            // ->get();
+            // else {
+            //     $condition = [];
+            //     if ($this->request->sku_code) {
+            //         $condition[] = ['product_product.sku_code', 'like', '%' . $this->request->sku_code . '%'];
+            //     }
+            //     if ($this->request->hsn_code) {
+            //         $condition[] = ['product_product.hsn_code', 'like', '%' . $this->request->hsn_code . '%'];
+            //     }
+            //     if ($this->request->group_name) {
+            //         $condition[] = ['product_productgroup.group_name', 'like', '%' . $this->request->group_name . '%'];
+            //     }
+            
+                // Now, the code for fetching items
+                $items = product_price_master::select(
+                    'product_price_master.*', 
+                    'fgs_item_master.discription', 
+                    'fgs_item_master.sku_code', 
+                    'product_group1.group_name', 
+                    'fgs_item_master.hsn_code'
+                )
+                ->leftJoin('fgs_item_master', 'fgs_item_master.id', '=', 'product_price_master.product_id')
+                ->leftJoin('product_group1', 'product_group1.id', '=', 'fgs_item_master.product_group1_id')
+                ->where($condition)
+                ->where('product_price_master.is_active', '=', 1)
+                ->where(function ($query) {
+                    $query->where('fgs_item_master.item_type', '=', 'finished goods')
+                          ->orWhere('fgs_item_master.item_type', '=', 'semifinished goods')
+                          ->orWhereIn('new_product_category_id', [1, 2, 3]);
+                })
+                ->orderBy('product_price_master.id', 'desc')
+                ->distinct('product_price_master.id')
+                ->get();
+            
+                // Initialize counter variable and prepare data
+                $i = 1;
+                $data = []; // your data processing logic goes here
+            }
+            
         foreach($items as $item)
         {
             $rate_aftr_discount = $item['rate']-($item['rate']*$item['discount'])/100;
@@ -68,6 +118,8 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
                     'HSN CODE' =>$item['hsn_code'],
                     'Description'=> $item['discription'],
                     'Group Name' => $item['group_name'],
+                    'Business Category' => $item['category_name'],
+                    'Product Category' => $item['new_category_name'],
                     'Purchase'=>$item['purchase'],
                     'Sale'=>$item['sales'],
                     'Transfer'=>$item['transfer'],
@@ -87,6 +139,8 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
             'HSN CODE',
             'Description',
             'Group Name',
+            'Business category',
+            'Product Category',
             'Purchase',
             'Sales',
             'Transfer',
@@ -96,9 +150,11 @@ class PriceMasterExport implements FromCollection, WithHeadings, WithStyles,With
             
         ];
     }
+    
     public function styles(Worksheet $sheet)
+
     {   
-        
+          
         return [
         // Style the first row as bold text.
         1    => ['font' => ['size' => 12,'bold' => true]],

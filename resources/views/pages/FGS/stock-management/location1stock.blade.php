@@ -5,7 +5,7 @@
   <div class="container">
 	<div class="az-content-body">
 		<div class="az-content-breadcrumb"> 
-			 <span><a href="" style="color: #596881;">Stock Management</a></span>
+			 <span><a href="" style="color: #596881;">FGS ON STOCK</a></span>
              <span><a href="">Location1</a></span>
         </div>
         @include('includes.fgs.stock-location-tab')
@@ -25,24 +25,33 @@
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/location2')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @elseif($location=='location3')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/location3')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
-                            @elseif($location=='MAA')
-                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/MAA')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
-                            @elseif($location=='SNN_Mktd')
+                             @elseif($location=='SNN_Mktd')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/SNN')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @elseif($location=='SNN_Trade')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/SNNTrade')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                            @elseif($location=='SNN_OEM')
+                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/SNNOEM')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
                             @elseif($location=='AHPL_Mktd')
                             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-report/AHPL')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                            @elseif($location=='Jayon_Mktd')
+                            <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/stock-management/Jayon')}}'" class="badge badge-pill badge-info "><i class="fas fa-file-excel"></i> Report</button>
+                          
                             @endif
                         <div>  
                             
                         </div>
                     </div>
                     </h4>
-                    @if (Session::get('succs'))
+                    @if (Session::get('success'))
                     <div class="alert alert-success " style="width: 100%;">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <i class="icon fa fa-check"></i> {{ Session::get('succs') }}
+                        <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+                    </div>
+                    @endif
+                    @if (Session::get('error'))
+                    <div class="alert alert-danger " style="width: 100%;">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <i class="icon fa fa-check"></i> {{ Session::get('error') }}
                     </div>
                     @endif
                     <div class="row row-sm mg-b-20 mg-lg-b-0">
@@ -67,7 +76,7 @@
                                     <label>SKU Code</label>
                                     <input type="text" value="{{request()->get('sku_code')}}" name="sku_code"  id="sku_code" class="form-control" placeholder="SKU Code">
                                   </div><!-- form-group -->
-                                    
+                                 
                                  <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                   <label  style="font-size: 12px;">BATCH No</label>
                                      <input type="text" value="{{request()->get('batch_no')}}" id="batch_no" class="form-control" name="batch_no" placeholder="BATCH No">
@@ -131,41 +140,56 @@
                                             <th>Product Type</th>
                                             <th>HSN Code</th>
                                             <th>Product Condition</th>
-                                            <th>Product Category</th>
+                                            <!-- <th>Product Category</th>
                                             <th>Product Group</th>
-                                            <th>OEM</th>
+                                            <th>OEM</th> -->
                                             <th>Std. Pack Size</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="prbody1">
-                                        @if(count($stock)>0)
-                                        @foreach($stock as $stck)
-                                        <tr>
-                                            <td>{{$stck['sku_code']}}</td>
-                                            <!-- <td>{{$stck['discription']}}</td> -->
-                                            <td>{{$stck['batch_no']}}</td>
-                                            <td>{{$stck['quantity']}} </td>
-                                            <td>Nos </td>
-                                            <td>{{$stck['location_name']}} </td>
-                                            <td>{{date('d-m-Y', strtotime($stck['manufacturing_date']))}}</td>
-                                            <td>@if($stck['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($stck['expiry_date']))}} @else NA  @endif</td>
-                                            <td>{{$stck['product_type_name']}}</td>
-                                            <td>{{$stck['hsn_code']}}</td>
-                                            <td>@if($stck['is_sterile']==1) Sterile @else Non-Sterile @endif</td>
-                                            <td>{{$stck['category_name']}}</td>
-                                            <td>{{$stck['group_name']}}</td>
-                                            <td>{{$stck['oem_name']}}</td>
-                                            <td>{{$stck['quantity_per_pack']}}</td>
-                                        </tr>
-                                        @endforeach
-                                        @else
-                                        <tr>
-                                            <td colspan="13">
-                                            <center>No data found...</center>
-                                            </td>
-                                        </tr>
-                                        @endif
-                                    </tbody>
+    <!-- @if(count($stock) > 0) -->
+        @foreach($stock as $stck)
+            @if($stck['quantity'] > 0) <!-- Only display if quantity is greater than 0 -->
+                <tr>
+                    <td>{{$stck['sku_code']}}</td>
+                    <!-- <td>{{$stck['discription']}}</td> -->
+                    <td>{{$stck['batch_no']}}</td>
+                    <td>{{$stck['quantity']}}</td>
+                    <td>Nos</td>
+                    <td>{{$stck['location_name']}}</td>
+                    <td>{{date('d-m-Y', strtotime($stck['manufacturing_date']))}}</td>
+                    <td>
+    @if($stck['expiry_date'] == '1970-01-01' || $stck['expiry_date'] == '0000-00-00' || is_null($stck['expiry_date']) || strtotime($stck['expiry_date']) === false)
+        NA
+    @else  
+        {{ date('d-m-Y', strtotime($stck['expiry_date'])) }} 
+    @endif
+</td>
+
+                    <td>{{$stck['product_type_name']}}</td>
+                    <td>{{$stck['hsn_code']}}</td>
+                    <td>@if($stck['is_sterile'] == 1) Sterile @else Non-Sterile @endif</td>
+                    <td>{{$stck['category_name']}}</td>
+                    <td>
+                        <a href="" data-toggle="modal" data-target="#update-stock" class="badge badge-primary" id="updatestock" 
+                           stockid="{{$stck->id}}" skucode="{{$stck['sku_code']}}" batch="{{$stck['batch_no']}}" 
+                           location="{{$stck['location_name']}}" qty="{{$stck['quantity']}}"> 
+                            <i class="fas fa-edit"></i>Stock Adjustment
+                        </a>
+                    </td>
+                </tr>
+            @endif
+        @endforeach
+    <!-- @else
+        <tr>
+            <td colspan="15">
+                <center>No data found...</center>
+            </td>
+        </tr>
+    @endif -->
+</tbody>
+
                                 </table>
                                 <div class="box-footer clearfix">
                                     {{ $stock->appends(request()->input())->links() }}
@@ -179,7 +203,60 @@
 	<!-- az-content-body -->
 	<!-- Modal content-->
 
-	
+	<!-- Modal content-->
+    <div id="update-stock" class="modal">
+        <div class="modal-dialog modal-md" role="document">
+            <form id="form1" method="post" action="{{url('fgs/stock-update')}}" autocomplete="off">
+                {{ csrf_field() }} 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#Stock Adjustment</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <table>
+                                    <tr>
+                                    <td>SKU Code : </td><td><input type="text"  class="product form-control" disabled></td>
+                                    </tr>
+                                    </tr>
+                                    <td>Batch Number : </td><td><input type="text" class="batch_no form-control" disabled></td>
+                                    </tr>
+                                    </tr>
+                                    <td>Stock Location : </td><td><input type="text" class="location form-control" disabled></td>
+                                    </tr>
+                                    <tr> 
+                                        <td>
+                                        Quantity :&nbsp;
+                                        </td>
+                                        <td>
+                                        <div class="input-group">
+                                            <input type="text" class="quantity form-control" id="quantity" name="quantity"  aria-describedby="unit-div">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text unit-div" id="unit-div"></span>
+                                            </div>
+                                        </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <input type="hidden" name="stock_id"  id="stock_id"  class="stock_id">
+                                <input type="hidden" name="location_name"  id="location_name"  class="location_name">
+                            </div>
+                        </div>
+                        <!-- <div class="form-devider"></div> -->
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                            <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
       
 
 <script src="<?=url('');?>/js/azia.js"></script>
@@ -229,11 +306,50 @@
         var sku_code = $('#sku_code').val();
         var batch_no = $('#batch_no').val();
         var category_name = $('#category_name').val();
+        var customer_name = $('#customer_name').val();
         var is_sterile = $('#is_sterile').val();
-        if(!sku_code & !batch_no & !category_name & !is_sterile)
+        if(!sku_code & !batch_no & !category_name & !customer_name & !is_sterile)
         {
             e.preventDefault();
         }
+    });
+    $(document).ready(function() {
+        $('body').on('click', '#updatestock', function (event) {
+            event.preventDefault()
+            $('.quantity').val('');
+            $('.stock_id').val('');
+            $('.product').val('');
+            $('.batch_no').val('');
+            $('.unit-div').text('');
+            $('.location').val('');
+            $('.location_name').val('');
+            $('#quantity-error').empty();
+            var stockid = $(this).attr('stockid');
+            var skucode = $(this).attr('skucode');
+            var batchno = $(this).attr('batch');
+            var location = $(this).attr('location');
+            var qty = $(this).attr('qty');
+            $('.quantity').val(qty);
+            $('.stock_id').val(stockid);
+            $('.product').val(skucode);
+            $('.location').val(location);
+            $('.location_name').val(location);
+            $('.batch_no').val(batchno);
+            $('.unit-div').text('Nos');
+            $('#quantity-error').empty();
+            
+        });
+        $("#form1").validate({
+            rules: {
+                quantity: {
+                    required: true,
+                    number: true,
+                },
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
     });
 
 </script>

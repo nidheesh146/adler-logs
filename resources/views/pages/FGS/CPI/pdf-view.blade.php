@@ -59,7 +59,7 @@
             display:block;
             font-size:11px;
             height:35px;
-            border-bottom:solid 0.5px black;
+            /* border-bottom:solid 0.5px black; */
         }
         .row3, .row4{
             display:block;
@@ -72,6 +72,8 @@
         .row3 table{
             width:100%;
             font-size:10px;
+            border-collapse: collapse;
+
         }
         .row4{
             font-size:10px;
@@ -131,7 +133,7 @@
            </p>
         </div>
         <div class="col4" style="float:right;">
-            <img src="{{asset('/img/logo.png')}}"  style="width:80px;">
+        <img src="data:img/logo.png;base64,<?php echo base64_encode(file_get_contents('img/logo.png')); ?>"style="width:80px;" />
         </div>
     </div><br/>
             
@@ -172,7 +174,7 @@
                     <td>: {{date('d-m-Y', strtotime($cpi['oef_date']))}}</td>
                 </tr>
                 <tr>
-                    <td> Product Category</td>
+                    <td> Business Category</td>
                     <td>: {{$cpi['category_name']}}</td>
                 </tr>
             </table>
@@ -188,8 +190,8 @@
                     <td>: {{date('d-m-Y', strtotime($cpi['order_date']))}}</td>
                 </tr>
                 <tr>
-                    <td>Order Fulfil</td>
-                    <td>: {{$cpi['order_fulfil_type']}} </td>
+                    <td> Product Category</td>
+                    <td>: {{$cpi['new_category_name']}}</td>
                 </tr>
             </table>
         </div>
@@ -203,6 +205,10 @@
                     <td> Sales Type:</td>
                     <td>:{{$cpi['sales_type']}}</td>
                 </tr>
+                <tr>
+                    <td>Order Fulfil</td>
+                    <td>: {{$cpi['order_fulfil_type']}} </td>
+                </tr>
                 
             </table>
         </div>
@@ -215,6 +221,10 @@
                 <tr>
                      <td>Doc Date.</td>
                     <td>:{{date('d-m-Y', strtotime($cpi['cpi_date']))}} </td> 
+                </tr>
+                <tr>
+                     <td>PI No..</td>
+                    <td>:{{$cpi['pi_number']}}</td> 
                 </tr>
             </table>
         </div>
@@ -244,25 +254,29 @@
                 <!-- <th rowspan="2">VALUE</th> -->
                 <th colspan="2">DISC</th>
                 <th rowspan="2">TAXABLE VALUE</th>
-                @if($cpi['state_name']=='Maharashtra')
-                <th colspan="2">CGST</th>
-                <th colspan="2">SGST/UTGST  </th>
-                @else
-                <th colspan="2">IGST</th>
+                @if($cpi['zone_name']!='Export')
+                    @if($cpi['state_name']=='Maharashtra')
+                    <th colspan="2">CGST</th>
+                    <th colspan="2">SGST/UTGST  </th>
+                    @else
+                    <th colspan="2">IGST</th>
+                    @endif
                 @endif
                 <th rowspan="2">TOTAL AMOUNT</th>
             </tr>
             <tr>
                 <th>%</th>
                 <th>Value</th>
-                @if($cpi['state_name']=='Maharashtra')
-                <th>%</th>
-                <th>Value</th>
-                <th>%</th>
-                <th>Value  </th>
-                @else
-                <th>%</th>
-                <th>Value</th>
+                @if($cpi['zone_name']!='Export')
+                    @if($cpi['state_name']=='Maharashtra')
+                    <th>%</th>
+                    <th>Value</th>
+                    <th>%</th>
+                    <th>Value  </th>
+                    @else
+                    <th>%</th>
+                    <th>Value</th>
+                    @endif
                 @endif
             </tr>
             <?php $i=1;
@@ -294,16 +308,28 @@
                 <?php $discount_value = ($item['rate']* $item['quantity'])-(($item['rate']* $item['quantity']*$item['discount'])/100);?>
                 <td style="text-align:right;">{{number_format((float)(($item['rate']* $item['quantity']*$item['discount'])/100), 2, '.', '')}}</td>
                 <td style="text-align:right;">{{number_format((float)$discount_value, 2, '.', '')}}</td>
-                @if($cpi['state_name']=='Maharashtra')
-                <td style="text-align:center;">{{$item['cgst']}}</td>
-                <td style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
-                <td style="text-align:center;">{{$item['sgst']}}</td>
-                <td width="5%" style="text-align:right;">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
-                @else
-                <td style="text-align:center;">{{$item['igst']}}</td>
-                <td style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
+                @if($cpi['zone_name']!='Export')  
+                    @if($cpi['state_name']=='Maharashtra')
+                    <td style="text-align:center;">{{$item['cgst']}}</td>
+                    <td style="text-align:right;">{{number_format((float)(($discount_value*$item['cgst'])/100), 2, '.', '')}}</td>
+                    <td style="text-align:center;">{{$item['sgst']}}</td>
+                    <td width="5%" style="text-align:right;">{{number_format((float)(($discount_value*$item['sgst'])/100), 2, '.', '')}}</td>
+                    @else
+                    <td style="text-align:center;">{{$item['igst']}}</td>
+                    <td style="text-align:right;">{{number_format((float)(($discount_value*$item['igst'])/100), 2, '.', '')}}</td>
+                    @endif
                 @endif
-                <?php $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
+                <?php// $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);  ?>
+                <?php
+                if($cpi['zone_name']!='Export')
+                {
+                $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100); 
+                }
+                else
+                {
+                    $total_amount =$discount_value; 
+                }
+                ?>
                 <td style="text-align:right;">{{number_format((float)($total_amount), 2, '.', '')}}</td>
                 <?php 
                 $total =$total+ $item['rate']* $item['quantity'];
@@ -333,14 +359,16 @@
                 <th></th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_discount), 2, '.', '') }}</th>
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($tsum), 2, '.', '') }}</th>
-                @if($cpi['state_name']=='Maharashtra')
-                <th></th>
-                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
-                <th></th>
-                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
-                @else
-                <th></th> 
-                <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>
+                @if($cpi['zone_name']!='Export')
+                    @if($cpi['state_name']=='Maharashtra')
+                    <th></th>
+                    <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
+                    <th></th>
+                    <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_sgst), 2, '.', '') }}</th>
+                    @else
+                    <th></th> 
+                    <th style="text-align:right;font-weight:bold;">{{number_format((float)($total_igst), 2, '.', '') }}</th>
+                    @endif
                 @endif
                 <th style="text-align:right;font-weight:bold;">{{number_format((float)($totalsum), 2, '.', '') }}</th>
             </tr>  
@@ -348,16 +376,25 @@
         </table>
     </div>
     <br/>
-    <div class="row4" style="border-bottom:solid 1px black;height:170px;">
+    <div class="row4" style="height:170px;">
         <div class="col41">
             <div class="valuewords">
                 <strong>Value in Words</strong><br/>
-                <span class="value_in_words"><?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '')))) ?> Only</span>
+                <?php
+                if($cpi['zone_name']!='Export')
+                    $amnt = $total-$total_discount+$total_igst+$total_sgst+$total_sgst;
+                else
+                    $amnt = $total-$total_discount;
+                 ?>
+                <span class="value_in_words"><?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($amnt), 2, '.', '')))) ?> Only</span>
             </div>
             <div class="remarks" style="">
                 <strong>Remarks/Notes </strong><br/>
+                @if($cpi['oef_remarks'])
+                <?= nl2br($cpi['oef_remarks']);?><br/>
+                @endif
                 @if($cpi['remarks'])
-                {{$cpi['remarks']}}
+                <?= nl2br($cpi['remarks']);?>
                 @endif
             </div>
             
@@ -383,6 +420,7 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)$total_discount, 2, '.', '')}}</td>
                 </tr> -->
+                @if($cpi['zone_name']!='Export')
                 <tr>
                     <td style="width:160px">Sum of CGST</td>
                     <td style="width:30px;">:</td>
@@ -398,6 +436,7 @@
                     <td style="width:30px;">:</td>
                     <td style="text-align:right;">{{number_format((float)($total_igst), 2, '.', '')}}</td>
                 </tr>
+                @endif
                 <tr>
                     <td style="width:160px">Other Charges</td>
                     <td style="width:30px;">:</td>
@@ -407,9 +446,12 @@
                     <td style="width:160px">Rounf Off</td>
                     <td style="width:30px;">:</td>
                      <?php 
-                    $t = number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '');
-                    $round = round($t);
-                    $roundoff = number_format((float)($round-$t), 2, '.', '');
+                        if($cpi['zone_name']!='Export')
+                            $t = number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', '');
+                        else
+                            $t = number_format((float)($total-$total_discount), 2, '.', '');
+                        $round = round($t);
+                        $roundoff = number_format((float)($round-$t), 2, '.', '');
                     ?>
                     <td style="text-align:right;">{{ $roundoff }}</td>
                 </tr>
@@ -420,8 +462,10 @@
                     <?php
                      $grand = 0;
                      $grandt = 0;
-                    $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''))
-                   
+                     if($cpi['zone_name']!='Export')
+                        $grand = round(number_format((float)($total-$total_discount+$total_igst+$total_sgst+$total_sgst), 2, '.', ''));
+                    else
+                        $grand = round(number_format((float)($total-$total_discount), 2, '.', ''));
                     ?>
                     <th style="width:30px;color:#1434A4;">:</th>
                     <th class="grand_total_value" style="text-align:right;color:#1434A4;">{{ number_format((float)$grand,2,'.','') }} </th>
@@ -430,11 +474,36 @@
         </div>
     </div> 
    
-    <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
+    <!-- <div style="border-top:solid 1.5px black; margin-top:5px;font-size:10px;">
     
-    </div>
+    </div> -->
     
-     
+    <script type="text/php">
+
+    if (isset($pdf)) {
+    $xPage = 780; // X-axis for "Page", positioned on the right side
+    $yPage = 573; // Y-axis horizontal position
+
+    $textPage = "Page {PAGE_NUM} of {PAGE_COUNT}"; // "Page" message
+
+    $font = $fontMetrics->get_font("helvetica");
+    $size = 7;
+    $color = array(0, 0, 0);
+
+
+    $pdf->page_text($xPage, $yPage, $textPage, $font, $size, $color); // "Page" on the right
+    $pageNumber = $pdf->get_page_number();
+    // Check if it's not the first page
+    if (var_dump($pageNumber) != 1) {
+        $xDoc = 780;  // X-axis for "Doc", positioned on the left side
+        $yDoc = 15; // Y-axis horizontal position
+        $textDoc = "{{$cpi['cpi_number']}}"; // "Doc" message
+        $pdf->page_text($xDoc, $yDoc, $textDoc, $font, $size, $color); // "Doc" on the left
+    }
+}
+
+
+</script>   
    
 </body>
 </html>

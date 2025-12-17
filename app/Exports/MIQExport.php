@@ -25,7 +25,8 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
         {
             $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_supplier_invoice_item.id as supplier_invoice_item_id',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
-                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number')
+                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number',                'inv_supplier_invoice_master.material_receipt_date',
+                    )
                     ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
                     ->leftjoin('inv_miq','inv_miq.id','=','inv_miq_item_rel.master')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
@@ -62,9 +63,15 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                 $condition[] = ['inv_miq.miq_date', '>=', date('Y-m-d', strtotime('01-' . $this->request->from))];
                 $condition[] = ['inv_miq.miq_date', '<=', date('Y-m-t', strtotime('01-' . $this->request->from))];
             }
+//             $today = date('Y-m-d');
+// $condition[] = ['inv_supplier_invoice_master.material_receipt_date', '>=', '2024-10-31'];
+// $condition[] = ['inv_supplier_invoice_master.material_receipt_date', '<=', $today];
+
             $items =inv_miq_item::select('inv_miq_item.id as item_id','inv_miq_item.expiry_control','inv_miq_item.expiry_date','inv_supplier_invoice_item.order_qty','inv_supplier_invoice_item.rate','inv_supplier_invoice_item.discount','inv_supplier_invoice_item.id as supplier_invoice_item_id',
                     'inventory_rawmaterial.item_code','inventory_rawmaterial.discription','inventory_rawmaterial.hsn_code','inv_item_type.type_name','inv_unit.unit_name','inv_lot_allocation.lot_number','inv_miq_item.value_inr','currency_exchange_rate.currency_code',
-                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date','inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number')
+                    'inv_miq_item.conversion_rate','inv_miq.miq_number','inv_miq.miq_date',
+                    'inv_miq.created_at','user.f_name','user.l_name','inv_supplier.vendor_id','inv_supplier.vendor_name','inv_supplier_invoice_master.invoice_number','inv_supplier_invoice_master.invoice_date','inv_final_purchase_order_master.po_number','inv_supplier_invoice_master.material_receipt_date',
+                    )
                     ->leftjoin('inv_miq_item_rel','inv_miq_item_rel.item','=','inv_miq_item.id')
                     ->leftjoin('inv_miq','inv_miq.id','=','inv_miq_item_rel.master')
                     ->leftjoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_miq_item.invoice_item_id')
@@ -75,78 +82,79 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
                     ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
                     ->leftjoin('currency_exchange_rate', 'currency_exchange_rate.currency_id','=', 'inv_miq_item.currency')
                     ->leftjoin('user','user.user_id','inv_miq.created_by')
-                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','inv_miq.invoice_master_id')
+                    ->leftjoin('inv_supplier_invoice_master','inv_supplier_invoice_master.id','=','inv_miq.invoice_master_id')
                     ->leftjoin('inv_supplier','inv_supplier.id','=','inv_supplier_invoice_master.supplier_id')
                     ->leftjoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
-                    //->where($condition)
+                    // ->where($condition)
                     ->where('inv_miq.status','=',1)
                     ->orderBy('inv_miq_item.id','DESC')
                     ->get();
             
         }
-        $i=1;
         $data = [];
-        foreach($items as $item)
-        {
+$i = 1;
+foreach ($items as $item) {
+    $rate_aftr_discount = $item['rate'] - ($item['rate'] * $item['discount']) / 100;
+    $value = $item['order_qty'] * $rate_aftr_discount;
+    
+    $expiry_control = $item['expiry_control'] == 1 ? 'Yes' : 'No';
+    
+    if (!$item['po_number']) {
+        $po_nos = inv_supplier_invoice_item::leftJoin('inv_final_purchase_order_master', 'inv_final_purchase_order_master.id', '=', 'inv_supplier_invoice_item.po_master_id')
+            ->leftJoin('inv_final_purchase_order_item', 'inv_final_purchase_order_item.id', '=', 'inv_supplier_invoice_item.po_item_id')
+            ->where('inv_supplier_invoice_item.merged_invoice_item', '=', $item['supplier_invoice_item_id'])
+            ->select('inv_final_purchase_order_master.po_number', 'inv_final_purchase_order_master.po_date', 'inv_final_purchase_order_item.order_qty')
+            ->get();
 
-            $rate_aftr_discount = $item['rate']-($item['rate']*$item['discount'])/100;
-            $value = $item['order_qty']*$rate_aftr_discount;
-            if($item['expiry_control']==1)
-            $expiry_control = 'Yes';
-            else
-            $expiry_control = 'No';
-            if(!$item['po_number'])
-            {
-                $po_nos = inv_supplier_invoice_item::leftJoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
-                        ->leftJoin('inv_final_purchase_order_item','inv_final_purchase_order_item.id','=','inv_supplier_invoice_item.po_item_id')
-                        ->where('inv_supplier_invoice_item.merged_invoice_item','=',$item['supplier_invoice_item_id'])
-                        ->select('inv_final_purchase_order_master.po_number','inv_final_purchase_order_master.po_date','inv_final_purchase_order_item.order_qty')
-                        ->get();
-                //return $po_nos;
-                $po = '';
-                foreach($po_nos as $po_no)
-                {
-                    $po .= $po_no['po_number'];
-                    $po .=', ';
-                }
-            }
-            else
-            {
-                $po = $item['po_number'];
-            }
-           
-            $data[]= array(
-                    '#'=>$i++,
-                    'miq_number'=>$item['miq_number'],
-                    'invoice_number'=>$item['invoice_number'],
-                    'po_number'=>$item['po_number'],
-                    'po_number'=>$po,
-                    'invoice_date'=>$item['invoice_date'],
-                    'item_code'=>$item['item_code'],
-                    'hsn_code'=>$item['hsn_code'],
-                    'item_type'=>$item['type_name'],
-                    'description'=>$item['discription'],
-                    'lot_number'=>$item['lot_number'],
-                    'supplier_code'=>$item['vendor_id'],
-                    'supplier_name'=>$item['vendor_name'],
-                    'quantity'=>$item['order_qty'],
-                    'unit'=>$item['unit_name'],
-                    'rate'=>$item['rate'],
-                    'discount'=>$item['discount'],
-                    'rate_aftr_discount'=>$rate_aftr_discount,
-                    'value'=>$value,
-                    'currency'=>$item['currency_code'],
-                    'landed_rate'=>$item['conversion_rate'],
-                    'value_in_inr'=>$item['value_inr'],
-                    'expiry_control'=>$expiry_control,
-                    'expiry_date'=>date('d-m-Y',strtotime($item['expiry_date'])),
-                    'miq_date'=>date('d-m-Y',strtotime($item['miq_date'])),
-                    'created_by'=>$item['f_name']. ' '.$item['l_name'], 
-                    'created_at'=>date('d-m-Y',strtotime($item['created_at'])),
-
-            );
+        $po = '';
+        foreach ($po_nos as $po_no) {
+            $po .= $po_no['po_number'] . ', ';
         }
-        return collect($data);
+        $po = rtrim($po, ', '); // Remove trailing comma
+    } else {
+        $po = $item['po_number'];
+    }
+
+    $reciept_date = $item['material_receipt_date'] ? date('d-m-Y', strtotime($item['material_receipt_date'])) : "";
+
+    if ($item['expiry_date'] && $item['expiry_date'] != '1970-01-01' && $item['expiry_date'] != '0000-00-00') {
+        $expiry_date = date('d-m-Y', strtotime($item['expiry_date']));
+    } else {
+        $expiry_date = "NA";
+    }
+
+    $data[] = [
+        '#' => $i++,
+        'miq_number' => $item['miq_number'],
+        'invoice_number' => $item['invoice_number'],
+        'po_number' => $po,
+        'invoice_date' => $item['invoice_date'],
+        'reciept_date' => $reciept_date,
+        'item_code' => $item['item_code'],
+        'hsn_code' => $item['hsn_code'],
+        'item_type' => $item['type_name'],
+        'description' => $item['discription'],
+        'lot_number' => $item['lot_number'],
+        'supplier_code' => $item['vendor_id'],
+        'supplier_name' => $item['vendor_name'],
+        'quantity' => $item['order_qty'],
+        'unit' => $item['unit_name'],
+        'rate' => $item['rate'],
+        'discount' => $item['discount'],
+        'rate_aftr_discount' => $rate_aftr_discount,
+        'value' => $value,
+        'currency' => $item['currency_code'],
+        'landed_rate' => $item['conversion_rate'],
+        'value_in_inr' => $item['value_inr'],
+        'expiry_control' => $expiry_control,
+        'expiry_date' => $expiry_date,
+        'miq_date' => date('d-m-Y', strtotime($item['miq_date'])),
+        'created_by' => $item['f_name'] . ' ' . $item['l_name'],
+        'created_at' => date('d-m-Y', strtotime($item['created_at'])),
+    ];
+}
+
+return collect($data);
     }
     public function headings(): array
     {
@@ -156,6 +164,7 @@ class MIQExport implements FromCollection, WithHeadings, WithStyles,WithEvents
             'Invoice Number',
             'PO Number',
             'Invoice Date',
+            'Material Reciept Date',
             'Item Code',
             'HSN/SAC Code',
             'Item Type',

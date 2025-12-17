@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
-
+use Carbon\Carbon;
 
 class FGSmrntransactionExport implements  FromCollection, WithHeadings, WithStyles,WithEvents
 {
@@ -23,15 +23,61 @@ class FGSmrntransactionExport implements  FromCollection, WithHeadings, WithStyl
         $data = [];
         foreach($this->items as $item)
         {
-            
+            if (date('m', strtotime($item->mrn_date)) == 6 || date('m', strtotime($item->mrn_date)) == 5 || date('m', strtotime($item->mrn_date)) == 4) {
+                $qtr = "Q1";
+            }
+            if (date('m', strtotime($item->mrn_date)) == 7 || date('m', strtotime($item->mrn_date)) == 8 || date('m', strtotime($item->mrn_date)) == 9) {
+                $qtr = "Q2";
+            }
+            if (date('m', strtotime($item->mrn_date)) == 10 || date('m', strtotime($item->mrn_date)) == 11 || date('m', strtotime($item->mrn_date)) == 12) {
+                $qtr = "Q3";
+            }
+            if (date('m', strtotime($item->mrn_date)) == 1 || date('m', strtotime($item->mrn_date)) == 2 || date('m', strtotime($item->mrn_date)) == 3) {
+                $qtr = "Q4";
+            }
+
+            //fin year
+            $currentDate = Carbon::now();
+            $currentYear = $currentDate->year;
+
+            if ($currentDate->month >= 4) {
+                $startYear = $currentYear;
+                $endYear = $currentYear + 1;
+            } else {
+                $startYear = $currentYear - 1;
+                $endYear = $currentYear;
+            }
+            $financialYear = $startYear . '-' . substr($endYear, -2);
 
             $data[] = array(
                 '#' => $i++,
-                'Item_Code' => $item->sku_code,
-                'Description' => $item->discription,
-                'MRN_number' => $item->mrn_number,
-                'Qty' => $item->quantity,
-                'MRN_date' => date('d-m-Y',strtotime($item->mrn_date)),
+                'doc_no' => $item->mrn_number,
+                    'doc_date' => date('d-m-Y', strtotime($item->mrn_date)),
+                    'customer_name' => $item->firm_name,
+                    'item_code' => $item['sku_code'],
+                    'description' => $item['discription'],
+                    // 'order_no' => $oef_details->order_number,
+                    // 'order_date' => date('d-m-Y', strtotime($oef_details->order_date)),
+                    'qty' => $item->quantity,
+                    // 'rate' => number_format((float)$oef_details->rate, 2, '.', ''),
+                    // 'disc' => $oef_details->discount,
+                    // 'disc_value' => $discount_value,
+                    // 'Taxable_Value' => number_format((float)$discount_value, 2, '.', ''),
+                    // 'gst' => $cgst_i . ',' . $sgst_i . ',' . $igst_i,
+                    // 'gst_value' => $gst_value,
+                    // 'Total Amount' => $total_amount,
+                    'Zone' => $item->zone_name,
+                    'State' => $item->state_name,
+                    'City' => $item->city,
+                    'Product Category' => $item->category_name,
+                    'Busines Category' => $item->new_category_name,
+                    // 'Transaction Type' => $mrn_datas->transaction_name,
+                    'Sales Type' => $item->sales_type,
+                    'Remarks' => $item->remarks,
+                    'Month' => date('F', strtotime($item->mrn_date)),
+                    'Qtr' => $qtr,
+                    'CY(Calender Year)' => date('Y', strtotime($item->mrn_date)),
+                    'FY(Financial Year)' => $financialYear
          
             );
         }
@@ -41,29 +87,28 @@ class FGSmrntransactionExport implements  FromCollection, WithHeadings, WithStyl
         {
         return [
             '#',
+            
+            'Doc No',
+
+            'Doc Date',
+            'Customer Name',
             'Item Code',
             'Description',
-            'MRN number',
+           
             'Qty',
-            'MRN_date',
             
-            // '#',
-            // 'GRS Number',
-            // 'GRS Date',
-            // 'OEF Number',
-            // 'OEF Date',
-            // 'Order Number',
-            // 'Order Date',
-            // 'Product Sku Code',
-            // 'HSNCode',
-            // 'Description',
-            // 'Quantity',
-            // 'Outstanding Quantity',
-            // 'Unit',
-            // 'Manufacturing date',
-            // 'Expiry date',
-            // 'Customer',
-            // 'WEF',
+            'Zone',
+            'State',
+            'City',
+            'Business category',
+            'Product Category',
+            //'Transaction Type',
+            'Sales Type',
+            'Remarks',
+            'Month',
+            'Qty',
+            'CY(Calender Year)',
+            'FY(Financial Year)'
         ];
     }
     public function styles(Worksheet $sheet)

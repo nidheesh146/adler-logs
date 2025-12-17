@@ -71,19 +71,19 @@
                             <div class="row">
                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3 type-form">
                                     <label style="float:left;">Type * </label>
-                                        <span class="error" id="select_error"  >
-                                        You have to Select Type.
-                                        </span>
-                                    <div id="type-wrapper">
-                                    <select class="form-control " name="type" id="type" required>
-                                        <option value="0">--select one--</option>
-                                        <option value="1" @if(request()->get('type')==1) selected @endif>Indirect Items</option>
-                                        <option value="2" @if(request()->get('type')==2) selected @endif>Direct Items</option>
-                                        <option value="4" @if(request()->get('type')==4) selected @endif>Finished Goods</option>
-                                    </select>
-                                    <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
-                                    </div>
-                                </div>
+                                    <span class="error" id="select_error">
+        You have to Select Type.
+    </span>
+    <div id="type-wrapper">
+        <select class="form-control" name="type" id="type" required>
+            <option value="0">--select one--</option>
+            <option value="1" @if(request()->get('type')==1) selected @endif>Indirect Items</option>
+            <option value="2" @if(request()->get('type')==2) selected @endif>Direct Items</option>
+            <option value="3" @if(request()->get('type')==3) selected @endif>Services</option>
+        </select>
+        <input type="hidden" value="{{request()->get('prsr')}}" id="prsr" name="prsr">
+    </div>
+</div>
                                 <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                     <label>Date *</label>
                                     <input type="text"  class="form-control datepicker" value="{{date('d-m-Y')}}" name="date" placeholder="Date">
@@ -93,19 +93,19 @@
                                     <input type="text"  class="form-control datepicker" value="{{date('d-m-Y')}}" name="delivery" placeholder="Date">
                                 </div>
                                 <input type="hidden" value="{{request()->get('prsr')}}" id="prsr"  name="prsr">
-                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                    <label>Supplier *</label>
-                                    <select class="form-control Supplier" name="Supplier[]" multiple="multiple">
-                                            {{-- <option value="">--- select one ---</option>  --}}
-                                            {{-- @if(!empty($data['reopen_supplier']))
-                                            @foreach($data['reopen_supplier'] as $supplier)
-                                                <option value="{{$supplier['supplier_id']}}" selected>{{$supplier['vendor_name']}}</option>
-                                            @endforeach
-                                            @endif --}}
-                                           
 
-                                    </select>
-                                </div><!-- form-group -->
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3" id="supplier-field" style="display:none;">
+
+    <label>Supplier *</label>
+    <select class="form-control Supplier" name="Supplier[]" multiple="multiple" id="supplier">
+        {{-- <option value="">--- select one ---</option> --}}
+        {{-- @if(!empty($data['reopen_supplier']))
+            @foreach($data['reopen_supplier'] as $supplier)
+                <option value="{{$supplier['supplier_id']}}" selected>{{$supplier['vendor_name']}}</option>
+            @endforeach
+        @endif --}}
+    </select>
+</div><!-- form-group -->
                             </div> 
                  
 
@@ -135,7 +135,12 @@
                                     <tbody >
                                     @foreach ( $data['reopen_data'] as $item)
                                     <tr>
-                                        <td><input type="checkbox" class="purchase_requisition_item" checked id="purchase_requisition_item" name="purchase_requisition_item[]"  value="{{$item['requisition_item_id']}}"></td>
+                                        {{--<td><input type="checkbox" class="purchase_requisition_item" checked id="purchase_requisition_item" 
+                                        name="purchase_requisition_item[]"  value="{{$item['requisition_item_id']}}"></td>--}}
+                                        <td>
+                                            <input type="checkbox" class="purchase_requisition_item" id="purchase_requisition_item" name="purchase_requisition_item[]" value="{{$item['requisition_item_id']}}">
+                                        </td>
+                                        <input type="hidden" value="{{$item['requisition_item_id']}}" id="item" name="item[]">
                                         <th>{{$item['pr_no']}}</th>
                                         <th> {{$item['item_code']}} </th>
                                         <td>{{$item['hsn_code']}}</td>
@@ -236,6 +241,7 @@
     var dataTable = $('#example1').dataTable({
         "sPaginationType": "full_numbers",
         "ordering": false,
+        "iDisplayLength": 600
     });
     $('.Supplier').select2({
         placeholder: 'Choose one',
@@ -265,6 +271,8 @@
         if($('#type').val()==0)
         {
             $('#select_error').css('display','block');
+            event.preventDefault();
+            $(window).scrollTop(0);
             //document.getElementById("#select_error").css("display","block");
         }
         if($('.fixed').is(':checked'))
@@ -332,7 +340,27 @@
     $(".check-all").click(function () {
      $('.purchase_requisition_item').not(this).prop('checked', this.checked);
     });
+    $(document).ready(function() {
+    // Initially check if the "Type" field is selected, and show/hide the Supplier field accordingly
+    toggleSupplierField();
 
+    // Listen to changes in the Type dropdown
+    $('#type').on('change', function() {
+        toggleSupplierField();
+    });
+
+    // Function to toggle the Supplier field based on the Type selection
+    function toggleSupplierField() {
+        var typeValue = $('#type').val();
+
+        // If a valid type is selected (not '0'), show the Supplier field, else hide it
+        if (typeValue != '0') {
+            $('#supplier-field').show();  // Show Supplier field
+        } else {
+            $('#supplier-field').hide();  // Hide Supplier field
+        }
+    }
+});
 </script>
 
 @stop

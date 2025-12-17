@@ -135,7 +135,9 @@
                     <th>RECEIVED DATE</th>
                 </tr>
                 <tr style="height:200px;">
-                    <td>{{date('d-m-Y',strtotime($lot['invoice_created']))}}<br/><br/></td>
+                <td>@if($lot['recieved_date']) {{date('d-m-Y',strtotime($lot['recieved_date']))}} @else {{date('d-m-Y',strtotime($lot['invoice_created']))}}@endif<br/><br/></td>
+
+                    {{--<td>{{date('d-m-Y',strtotime($lot['invoice_created']))}}<br/><br/></td>--}}
                 </tr>
             </table>
             <table  border='1' style="width:33.33%;float:left;margin-left:15px;">

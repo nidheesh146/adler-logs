@@ -126,7 +126,7 @@
 									<td>{{$item['remaining_qty_after_cancel']}}</td> 
 									<td>Nos</td>
 									<td>{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-									<td>@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}}  @endif</td>
+									<td>@if($item->expiry_date=='0000-00-00' || $item->expiry_date=='1970-01-01' ) N.A @else {{date('d-m-Y',strtotime($item->expiry_date))}} @endif</td>
 									<td>
 										@if($item['cmin_status']==0) 
 										<span class="badge badge-primary" style="width:60px;">Active</span>
@@ -143,7 +143,7 @@
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
-							
+						{{ $items->appends(request()->input())->links() }}
 						</div>
 					</div>
 				</div>

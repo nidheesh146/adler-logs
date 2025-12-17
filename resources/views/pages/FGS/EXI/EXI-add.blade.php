@@ -179,21 +179,54 @@
         let res = $(this).select2('data')[0];
         if(typeof(res) != "undefined" )
         {
-                if(res.billing_address){
-                    $("#billing_address").val(res.billing_address);
-                }
-                if(res.shipping_address){
-                    $("#shipping_address").val(res.shipping_address);
-                }
-                $.get("{{ url('fgs/EXI/fetchPI') }}?customer_id="+res.id,function(data)
-                {
-                    if(data!=0)
-                    {
-                    $('.invoice-heading').show();
-                    $('#pitable').append(data);
-                    $('.sbmit-btn').show();
+            if (res.dl_expiry_date) {
+                var currentDate = new Date();
+                var year = currentDate.getFullYear();
+                var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                var day = String(currentDate.getDate()).padStart(2, '0');
+                var formattedDate = `${year}-${month}-${day}`; // today date
+
+                var dlExpiryDate = res.dl_expiry_date; // diff of the dates
+                var date1 = new Date(formattedDate);
+                var date2 = new Date(dlExpiryDate);
+                var timeDifference = date2 - date1;
+                // Convert the time difference to days and round to the nearest integer
+                var daysDifference = Math.round(timeDifference / (1000 * 60 * 60 * 24));
+
+                if (daysDifference <= 8 && daysDifference > 0) {
+                    alert('This seller DL will expire within ' + daysDifference + ' days..');
+                    if (res.billing_address) {
+                        $("#billing_address").val(res.billing_address);
                     }
-                });
+                    if (res.shipping_address) {
+                        $("#shipping_address").val(res.shipping_address);
+                    }
+                    $.get("{{ url('fgs/EXI/fetchPI') }}?customer_id=" + res.id, function(data) {
+                        if (data != 0) {
+                            $('.invoice-heading').show();
+                            $('#pitable').append(data);
+                            $('.sbmit-btn').show();
+                        }
+                    });
+                } else if (formattedDate == res.dl_expiry_date || daysDifference < 0) {
+                    alert('This seller DL expired..');
+                } else {
+                    if (res.billing_address) {
+                        $("#billing_address").val(res.billing_address);
+                    }
+                    if (res.shipping_address) {
+                        $("#shipping_address").val(res.shipping_address);
+                    }
+                    $.get("{{ url('fgs/EXI/fetchPI') }}?customer_id=" + res.id, function(data) {
+                        if (data != 0) {
+                            $('.invoice-heading').show();
+                            $('#pitable').append(data);
+                            $('.sbmit-btn').show();
+                        }
+                    });
+                }
+
+            }
             
     
         }

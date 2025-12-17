@@ -75,9 +75,9 @@
                             </div>
 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Product Category *</label>
+                                <label for="exampleInputEmail1">Business Category *</label>
                                 <select class="form-control" name="product_category" id="product_category" onchange="myFunction()">
-                                    <option>Select one...</option>
+                                    <option value="">Select one...</option>
                                     @foreach($category as $cate)
                                     <option value="{{$cate['id']}}" @if(!empty($mrn) && ($mrn->product_category==$cate['id'])) selected="selected" @endif>{{$cate['category_name']}}</option>
                                     @endforeach
@@ -85,9 +85,22 @@
                             </div>
 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+    <label>Product Category *</label>
+    <select class="form-control" name="new_product_category">
+        <option>..select one..</option>
+        @foreach($product_category as $category)
+        <option value="{{ $category->id }}"
+            @if(!empty($mrn) && ($mrn->new_product_category == $category->id)) selected="selected" @endif>
+            {{ $category->category_name }}
+        </option>
+        @endforeach
+    </select>
+</div>
+
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Supplier</label>
                                 <select class="form-control" name="supplier" id="supplier" onchange="myFunction1()">
-                                    <option>Select one...</option>
+                                    <option value="">Select one...</option>
                                     <option value="1" @if(!empty($mrn) && ($mrn->supplier==1)) selected="selected" @endif>Adler Healthcare Pvt. Ltd.</option>
                                     <option value="2" @if(!empty($mrn) && ($mrn->supplier==2)) selected="selected" @endif>Smith & Nephew Healthcare Pvt. Ltd.</option>
 
@@ -107,7 +120,7 @@
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Stock Location *</label>
                                 <select class="form-control" name="stock_location" id="stock_location" @if(!empty($mrn)) readonly @endif>
-                                    <option>Select one...</option>
+                                    <option value="">Select one...</option>
                                     @foreach($locations as $loc)
                                     @if($loc['location_name']!='MAA (Material Allocation Area)' && $loc['location_name']!='Quarantine' && $loc['location_name']!='Consignment' && $loc['location_name']!='Loaner')
                                     <option value="{{$loc['id']}}" @if(!empty($mrn) && ($mrn->stock_location==$loc['id'])) selected="selected" @endif>{{$loc['location_name']}}</option>
@@ -120,6 +133,10 @@
                                 <label>MRN Date *</label>
                                 <input type="text" value="@if(!empty($mrn)) {{date('d-m-Y', strtotime($mrn->mrn_date))}} @else {{date('d-m-Y')}} @endif" class="form-control datepicker mrn_date" name="mrn_date"  placeholder="">
                             </div><!-- form-group -->
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                    <label for="exampleInputEmail1">Remarks  </label>
+                                    <textarea type="text" class="form-control" name="remarks" value="" placeholder="">@if(!empty($mrn)){{$mrn->remarks}} @else @endif</textarea>
+                                </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -192,6 +209,9 @@
                 stock_location: {
                     required: true,
                 },
+                supplier: {
+                    required: true,
+                },
                 mrn_date: {
                     required: true,
                 },
@@ -210,6 +230,15 @@
         $('form').submit(function() {
             $(this).find(':submit').prop('disabled', true);
         });
+        $("#stock_location option[value='15']").hide();
+        $("#stock_location option[value='16']").hide();
+        $("#stock_location option[value='17']").hide();
+        $("#stock_location option[value='18']").hide();
+        $("#stock_location option[value='22']").hide();
+        $("#stock_location option[value='20']").hide();
+        $("#stock_location option[value='21']").hide();
+        $("#stock_location option[value='23']").hide();
+
     });
 </script>
 <script>

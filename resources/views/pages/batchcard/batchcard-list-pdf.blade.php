@@ -76,7 +76,7 @@
             <th style="width:27%;height:30px;" >ITEM CODE :</th>
             <td style="width:30%" >{{ $batch->sku_code }}</td>
             <th style="width:27%">PROCESS SHEET NO :</th>
-            <td style="width:30%">{{ $batch->process_sheet_no }}</td>
+            <td style="width:30%">{{ $batch->process_sheet_id }}</td>
         </tr> 
          <tr style="font-size:11px;height:20px;text-align:right;">
             <th style="width:27%;height:30px;">INPUT MATERIAL CODE NO:</th>

@@ -9,6 +9,7 @@ use App\Models\PurchaseDetails\inventory_rawmaterial;
 use App\Models\PurchaseDetails\inv_supplier_itemrate;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Models\currency_exchange_rate;
 use DB;
 use Validator;
 class RowMaterialController extends Controller
@@ -18,7 +19,8 @@ class RowMaterialController extends Controller
         $this->User = new User;
         $this->inventory_rawmaterial = new inventory_rawmaterial;
         $this->inv_supplier_itemrate = new inv_supplier_itemrate;
-        
+        $this->currency_exchange_rate = new currency_exchange_rate;
+
     }
     public function materialList(Request $request)
     {
@@ -115,12 +117,21 @@ class RowMaterialController extends Controller
         return view('pages/row-material/material-add',compact('data'));
     }
 
-    public function materialDelete(Request $request)
+    public function materialDeactivate(Request $request)
     {
         if($request->id)
         {
             $this->inventory_rawmaterial->updatedata(['id'=>$request->id],['is_active'=>0]);
-            $request->session()->flash('success',  "You have successfully deleted a row material !");
+            $request->session()->flash('success',  "You have successfully deactivated a row material !");
+        }
+       return redirect('row-material/list');
+    }
+    public function materialActivate(Request $request)
+    {
+        if($request->id)
+        {
+            $this->inventory_rawmaterial->updatedata(['id'=>$request->id],['is_active'=>1]);
+            $request->session()->flash('success',  "You have successfully activated a row material !");
         }
        return redirect('row-material/list');
     }
@@ -306,6 +317,7 @@ class RowMaterialController extends Controller
                     $data['revision_record'] = $excelsheet[33];
                     $data['is_active'] = 1;
                     $data['expiry_control'] = ($excelsheet[35] == 'N') ? 0 : 1;
+                    $data['is_expiry'] = ($excelsheet[35] == 'N') ? 0 : 1;
                     $data['created'] = date('Y-m-d');
                     $res[] = DB::table('inventory_rawmaterial')->insert($data);
                 }
@@ -348,6 +360,7 @@ class RowMaterialController extends Controller
                     $data['revision_record'] = $excelsheet[33];
                     $data['is_active'] = 1;
                     $data['expiry_control'] = ($excelsheet[35] == 'N') ? 0 : 1;
+                    $data['is_expiry'] = ($excelsheet[35] == 'N') ? 0 : 1;
                     $data['created'] = date('Y-m-d');
                     $res[] = DB::table('inventory_rawmaterial')->where('item_code',$excelsheet[1])->update($data);
                     $res[] = 1;
@@ -385,6 +398,7 @@ class RowMaterialController extends Controller
 
     public function fixedRateList(Request $request)
     {
+       // dd('hi');
         $condition = [];
         if ($request->item_code) {
             $condition[] = ['inventory_rawmaterial.item_code','like', '%' . $request->item_code . '%'];
@@ -453,6 +467,30 @@ class RowMaterialController extends Controller
             //exit;
         }
     }
+    public function applyChanges(Request $request)
+    {
+        $selectedItems = $request->input('selected_items', []); // Fetch selected items
+        $activationDate = $request->input('activation_date');
+    
+        if (empty($selectedItems)) {
+            return redirect()->back()->with('error', 'No items selected!');
+        }
+    
+        // Ensure each ID is separate by splitting the string correctly
+        if (is_array($selectedItems) && count($selectedItems) === 1) {
+            $selectedItems = explode(',', $selectedItems[0]); // Convert "3887,3883,3882" into an array
+        }
+    
+        // Debugging: Print the array to verify the correct format
+       // dd($selectedItems); 
+    
+        // Update the rate_expiry_enddate for all selected items
+        inv_supplier_itemrate::whereIn('id', $selectedItems)->update(['rate_expiry_enddate' => $activationDate]);
+    
+        return redirect()->back()->with('success', 'Activation date updated successfully!');
+    }
+    
+
     public function Excelsplitsheet($ExcelOBJ)
     {
         $ExcelOBJ->SQLdata = [];
@@ -483,13 +521,13 @@ class RowMaterialController extends Controller
             if ($key > 1 &&  $excelsheet[1]) 
             {
                 $item_id = DB::table('inventory_rawmaterial')->where('item_code','=' ,$excelsheet[2])->pluck('id')->first();
-                // if($item_id)
-                // {
-                //     $res= DB::table('inventory_rawmaterial')->where('id', $item_id)
-                //     ->update([
-                //         'hsn_code' => $excelsheet[3]
-                //         ]);
-                // }
+                if($item_id)
+                {
+                    $res= DB::table('inventory_rawmaterial')->where('id', $item_id)
+                    ->update([
+                        'hsn_code' => $excelsheet[3]
+                        ]);
+                }
                  $supplier_id = DB::table('inv_supplier')->where('vendor_id','=' ,$excelsheet[6])->pluck('id')->first();
                 //$gst = DB::table('inventory_gst')->where('cgst',trim($excelsheet[9],"%")*100)->where('sgst',trim($excelsheet[10],"%")*100)->where('igst',trim($excelsheet[11],"%")*100)->pluck('id')->first();
                 $gst = DB::table('inventory_gst')->where('cgst',$excelsheet[9])->where('sgst',$excelsheet[10])->where('igst',$excelsheet[11])->pluck('id')->first();
@@ -514,7 +552,7 @@ class RowMaterialController extends Controller
                            'rate_expiry_startdate'=>date('Y-m-d',strtotime('01-01-2023')),
                            'rate_expiry_enddate'=>date('Y-m-d',strtotime('31-03-2024'))
                     ];
-                    $res[] = DB::table('inv_supplier_itemrate')->insert($data);
+                    $res = DB::table('inv_supplier_itemrate')->insert($data);
                }
                else
                {
@@ -538,7 +576,7 @@ class RowMaterialController extends Controller
 
                     ];
                     //print_r(json_encode($data));exit;
-                    $res[] = DB::table('inv_supplier_itemrate')->where('id','=',$inv_supplier_itemrate->id)->update($data);
+                    $res = DB::table('inv_supplier_itemrate')->where('id','=',$inv_supplier_itemrate->id)->update($data);
                     // $res[] = inv_supplier_itemrate::where('inv_supplier_itemrate.id','=',$inv_supplier_itemrate->id)
                     //                                 ->update(['
                     //                                     'rate'=>$excelsheet[7],
@@ -557,6 +595,111 @@ class RowMaterialController extends Controller
         else 
         return 0;
     }
-        
+    public function fixedRateAdd(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $validation['supplier'] = ['required'];
+            $validation['item_code'] = ['required'];
+            $validation['rate'] = ['required'];
+            // $validation['gst'] = ['required'];
+            $validation['discount'] = ['required'];
+            $validation['currency'] = ['required'];
+            $validation['delivery_within'] = ['required'];
+
+            $validator = Validator::make($request->all(), $validation);
+            if (!$validator->errors()->all()) {
+                $data['supplier_id'] = $request->supplier;
+                $data['item_id'] = $request->item_code;
+                $data['rate'] = $request->rate;
+                // $data['igst'] = $request->igst;
+                // $data['cgst'] = $request->cgst;
+                $data['currency'] = $request->currency;
+                $data['discount'] = $request->discount;
+                $data['delivery_within'] = $request->delivery_within;
+                $data['rate_expiry_startdate'] = date('Y-m-d', strtotime($request->expiry_date_start));
+                $data['rate_expiry_enddate'] = date('Y-m-d', strtotime($request->expiry_date_end));
+                $data['gst'] = DB::table('inventory_gst')->where('cgst', $request->cgst)->where('sgst', $request->sgst)->where('igst', $request->igst)->pluck('id')->first();
+
+                $inv_row = inv_supplier_itemrate::where('supplier_id', $request->supplier)
+                    ->where('item_id', $request->item_code)->first();
+                if ($inv_row) {
+
+                    $request->session()->flash('error', "Inventory Exist");
+                    return redirect('row-material/fixed-rate');
+                } else {
+                    $add = inv_supplier_itemrate::insertGetId($data);
+                    if ($add) {
+                        $request->session()->flash('success',  "Successfully Added.");
+                        return redirect('row-material/fixed-rate');
+                    } else {
+                        $request->session()->flash('error',  "Can't Added.");
+                        return redirect('row-material/fixed-rate');
+                    }
+                }
+            } else {
+                return redirect('row-material/fixed-rate')->withErrors($validator)->withInput();
+            }
+        } else {
+            $currency =  $this->currency_exchange_rate->get_currency([]);
+            return view('pages/row-material/fixed-rate-add', compact('currency'));
+        }
+    }
+    public function fixedRateEdit(Request $request, $id)
+    {
+        if ($request->isMethod('post')) {
+            $data['rate'] = $request->rate;
+            // $data['gst'] = $request->gst;
+            $data['discount'] = $request->discount;
+            $data['delivery_within'] = $request->delivery_within;
+            $data['rate_expiry_startdate'] = date('Y-m-d', strtotime($request->expiry_date_start));
+            $data['rate_expiry_enddate'] = date('Y-m-d', strtotime($request->expiry_date_end));
+            $data['gst'] = DB::table('inventory_gst')->where('cgst', $request->cgst)->where('sgst', $request->sgst)->where('igst', $request->igst)->pluck('id')->first();
+
+            $add = inv_supplier_itemrate::where('id', $request->id)
+                ->update($data);
+            if ($add) {
+                $request->session()->flash('success',  "Successfully updated.");
+                return redirect('row-material/fixed-rate');
+            } else {
+                $request->session()->flash('error',  "Can't update.");
+                return redirect('row-material/fixed-rate');
+            }
+        } else {
+
+            $fixed_row_material = inv_supplier_itemrate::select(
+                'inv_supplier_itemrate.*',
+                'inv_supplier.id as supl_id',
+                'inv_supplier.vendor_name',
+                'inventory_rawmaterial.id as inv_id',
+                'inventory_rawmaterial.item_code',
+                'inventory_rawmaterial.discription',
+                'inventory_gst.igst',
+                'inventory_gst.cgst',
+                'inventory_gst.sgst',
+                'currency_exchange_rate.currency_code'
+            )
+                ->leftjoin('inv_supplier', 'inv_supplier.id', '=', 'inv_supplier_itemrate.supplier_id')
+                ->leftJoin('inventory_gst', 'inventory_gst.id', '=', 'inv_supplier_itemrate.gst')
+                ->leftJoin('currency_exchange_rate', 'currency_exchange_rate.currency_id', '=', 'inv_supplier_itemrate.currency')
+                ->leftjoin('inventory_rawmaterial', 'inventory_rawmaterial.id', '=', 'inv_supplier_itemrate.item_id')
+                ->where('inv_supplier_itemrate.id', $id)->first();
+
+            return view('pages/row-material/fixed-rate-edit', compact('fixed_row_material'));
+        }
+    }
+    public function fixedRatestatus(Request $request, $id, $status)
+    {
+        if ($status == 1) {
+            inv_supplier_itemrate::where('id', $id)
+                ->update(['is_active' => 1]);
+            $request->session()->flash('success',  "Activated.");
+            return redirect('row-material/fixed-rate');
+        } elseif ($status == 2) {
+            inv_supplier_itemrate::where('id', $id)
+                ->update(['is_active' => 2]);
+            $request->session()->flash('success',  "Deactivated.");
+            return redirect('row-material/fixed-rate');
+        }
+    }   
        
 }

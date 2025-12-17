@@ -11,7 +11,7 @@
 				 	SRN  Transaction List
 				</a></span>
 				 </div>
-                 @include('includes.fgs.fgs-transaction-tab')
+				 @include('includes.fgs.sales-trans-tab')
             <br><br>
 			<h4 class="az-content-title" style="font-size: 20px;">
             SRN  Transaction List
@@ -116,9 +116,9 @@
                             <td>{{$sl++}}</td>
                                 <td>{{$item->sku_code}}</td>
                                 <td>{{$item->discription}}</td>
-                                <td>{{$item->srn}}</td>
+                                <td>{{$item->srn_number}}</td>
                                 <td>{{$item->quantity}} Nos</td>
-                                <td>{{date('d-m-Y',strtotime($item->srn))}}</td>
+                                <td>{{date('d-m-Y',strtotime($item->srn_date))}}</td>
                             </tr>
                             @endforeach
 							</tbody>

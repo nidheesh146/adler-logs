@@ -125,7 +125,7 @@
         }
     </style>
 
-
+    <?php $mpi_items= $fn->getMPIItemsData($mpi->id); ?>
 
     <div class="row">
         <span style="font-weight:bold;font-size: 24px; background-color: #f4f5f8; padding: 0 4px;position: absolute;">
@@ -135,20 +135,34 @@
     <br /> <br /> <br />
     <div class="row3">
         <div class="col23">
-            <table style="font-weight:bold;font-size: 14px;">
+            <table style="font-weight:bold;">
                 <tr>
-                    <td>Reference No</td>
-                    <td>: {{$mpi['merged_pi_name']}} </td>
+                    <td>
+                    To <br/>
+                         <strong>
+                            <font size="12px">{{$mpi['firm_name']}} </font>
+                        </strong>
+                        <p>{{$mpi['billing_address']}}<br />
+                            {{$mpi['city']}}, {{$mpi['state_name']}}
 
+                        </p>
+                    </td>
                 </tr>
 
             </table>
         </div>
         <div class="col23">
-            <table style="font-weight:bold;font-size: 14px;">
+        </div>
+        <div class="col23">
+            <table style="font-weight:bold;font-size: 12px;float:right;text-align:right;">
+                <tr>
+                    <td>Reference No</td>
+                    <td>: {{$mpi['merged_pi_name']}} </td>
+
+                </tr>
                 <tr>
                     &nbsp &nbsp &nbsp &nbsp<td>Reference Date</td>
-                    <td>: {{date('d-m-Y', strtotime($mpi['created_at']))}} </td>
+                    <td>: {{date('d-m-Y', strtotime($mpi['created_at']))}}</td>
 
                 </tr>
 
@@ -157,7 +171,7 @@
 
     </div>
     <br><br>
-    <div class="row3" style="height:100px;">
+    {{--<div class="row3" style="height:100px;">
         <div class="col23">
             <table>
                 <tr>
@@ -176,9 +190,9 @@
 
             </table>
         </div>
-    </div>
+    </div>--}}
     <div style="font-size:12px; padding-top: 30px;">
-
+    <br/><br/>
         <span style="padding-left:0px;">Dear Sir / Madam,</span><br>
         <span>We are pleased to inform you that the material against your following order/s is ready for dispatch. The details for the same are as follows:</span>
     </div><br>
@@ -189,50 +203,89 @@
     </style>
     
     <div class="row3">
-        <table border=1 width="95%">
-            <tr>
-                <th rowspan="2">Your Order No.</th>
-                <th rowspan="2">
+        <table border="1" cellpadding="0" cellspacing="0" width="200px" style="border-collapse:collapse;>
+            <thead>
+            <tr style="background-color:#BED7EF;">
+                <th>Your Order No.</th>
+                <th>
                     Your Order Date
                 </th>
-                <th rowspan="2">Our Inv No.</th>
-                <th rowspan="2">Our Inv.Date</th>
-                <th rowspan="2">Inv. Value</th>
-
-            </tr><br>
-            <?php $tot = 0;?>
-            @foreach($pis as $pi)
+                <th>PI No.</th>
+                <th>PI Date</th>
+                <th>PI Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php 
+                $grand_total = 0;
+            ?>
+            @foreach($mpi_items as $pi)
                 <tr style="text-align: center;">
-                <?php $items = $fn->getPIItems($pi['id']); 
+                <?php $items = $fn->getPIItems($pi['pi_id']); 
+                $total = 0;
+                $total_discount = 0;
+                $total_igst = 0;
+                $total_cgst = 0;
+                $total_sgst = 0;
+                $qsum = 0;
+                $rsum = 0;
+                $tsum = 0;
+                $isum = 0;
+                $totalsum = 0;
+                $tot = 0;
+               // print_r(json_encode($items));exit;
                 foreach($items as $item)
                 {
-                $discount_value = ($item['rate'] * $item['quantity']) - (($item['rate'] * $item['quantity'] * $item['discount']) / 100);
+                    
+                // $discount_value = ($item['rate'] * $item['remaining_qty_after_cancel']) - (($item['rate'] * $item['remaining_qty_after_cancel'] * $item['discount']) / 100);
+                // $total_amount = $discount_value + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['igst']) / 100);
+                $discount_value = ($item['rate']* $item['remaining_qty_after_cancel'])-(($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100);
+                $total_amount =$discount_value+(($discount_value*$item['cgst'])/100)+ (($discount_value*$item['cgst'])/100)+ (($discount_value*$item['igst'])/100);
+                $total =$total+ $item['rate']* $item['remaining_qty_after_cancel'];
+                $total_discount = $total_discount+($item['rate']* $item['remaining_qty_after_cancel']*$item['discount'])/100;
+                $total_igst = $total_igst+($discount_value*$item['igst'])/100;
+                $total_sgst = $total_sgst+($discount_value*$item['sgst'])/100;
+                $total_cgst = $total_cgst+($discount_value*$item['cgst'])/100;
+                $totalsum = $totalsum+$total_amount;
+
+               // $discount_value = ($item['rate'] * $item['quantity']) - (($item['rate'] * $item['quantity'] * $item['discount']) / 100);
                 $total_amount = $discount_value + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['cgst']) / 100) + (($discount_value * $item['igst']) / 100);
-                }
-                ?>
-                <?php $tot = $tot+$total_amount;?> 
                 
-                    <td>{{$pi['order_number']}}</td>
-                    <td>{{$pi['order_date']}}</td>
+                $tot = $tot+$total_amount;
+            }?> 
+               <?php  $grand_total =  $grand_total+ $tot; ?>
+               <?php $OEFInfo = $fn->getOEFInfo($pi->pi_id); ?>
+                    <td>@foreach($OEFInfo as $item)
+                            {{ $item['order_number'] }}
+                        @endforeach
+                    </td>
+                    <td>
+                      <?php $OEFInfo = $fn->getOEFInfo($pi->pi_id); ?>
+                        @foreach($OEFInfo as $item)
+                            {{ date('d-m-Y', strtotime($item['order_date'])) }}
+                        @endforeach
+                    </td>
                     <td>{{$pi['pi_number']}}</td>
                     <td>{{$pi['pi_date']}}</td>
-                    <td>{{number_format($total_amount, 2, '.', '')}}</td>
+                    <td>{{(number_format(round($tot), 2, '.', ''))}}</td>
                 </tr>
+                    
             @endforeach
+                    
             <tr style="text-align: center;">
                 <td></td>
                 <td></td>
                 <td></td>
                 <td style="text-align: right;"><b>Total</b>  </td>
-                <td><b>:  {{round(number_format($tot, 2, '.', ''))}}</b></td>
+                <td><b>:  {{number_format(round($grand_total), 2, '.', '')}}</b></td>
             </tr>
-
+                
         </table>
     </div><br>
 
     <div class="row3" style="font-size:12px; ">
         <span>
-        You are requested to deposit the payment of Rs. {{round(number_format((float)($tot), 2, '.', ''))}} (In Words:  Rs. <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($tot), 2, '.', '')))) ?>  Only ) in our bank account, which details are given below and confirm to us by return mail to enabling us to dispatch your shipment immediately.
+        You are requested to deposit the payment of Rs. {{round(number_format((float)($grand_total), 2, '.', ''))}} (In Words:  Rs. <?php echo( $fn->getIndianCurrencyInt(round(number_format((float)($grand_total), 2, '.', '')))) ?>  Only ) in our bank account, which details are given below and confirm to us by return mail to enabling us to dispatch your shipment immediately.
         </span>
         <br><br>
         <b>Company's Bank Details:-</b><br>

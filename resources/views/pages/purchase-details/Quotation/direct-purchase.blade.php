@@ -114,7 +114,7 @@
                                 <table class="table table-bordered mg-b-0" id="example1">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
+                                            <th><input type="checkbox" class="item-select-radio  check-all"></th>
                                             <th>@if(request()->get('prsr')!='sr') PR No @else SR No @endif</th>
                                             <th>Item code </th>
                                             <th>HSN/SAC Code</th>
@@ -200,6 +200,9 @@
                 if($('#type').val()==0)
                 {
                     $('#select_error').css('display','block');
+                    event.preventDefault();
+                    $(window).scrollTop(0);
+
                     //document.getElementById("#select_error").css("display","block");
                 }
             });
@@ -250,6 +253,9 @@
             $('#supplier-wrapper').wrap('<form id="Form3"></form>');
             //$('#Form2').append('{{csrf_field()}}');
     })();});
+    $(".check-all").click(function () {
+     $('.purchase_requisition_item').not(this).prop('checked', this.checked);
+    });
 
 </script>
 

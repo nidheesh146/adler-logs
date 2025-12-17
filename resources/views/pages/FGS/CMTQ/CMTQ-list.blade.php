@@ -67,9 +67,18 @@
 													</div>
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                    									<label style="font-size: 12px;">From Date</label>
+                    									<input type="date" value="{{ request()->get('from') }}" id="from" class="form-control" name="from">
+                									</div>
+
+                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                    <label style="font-size: 12px;">To Date</label>
+                    <input type="date" value="{{ request()->get('to') }}" id="to" class="form-control" name="to">
+                </div>
+													<!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label  style="font-size: 12px;">mtq Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
-													</div>
+													</div> -->
 			
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
@@ -96,21 +105,25 @@
 					
 					<div class="table-responsive">
 						<table class="table table-bordered mg-b-0" >
-							<thead>
+						<thead>
 								<tr>
-									 <th>CMTQ Number</th>
-									 <th>CMTQ Date</th>
-                   <th>Remarks</th>              
-								   <th>Action</th>
+									<th>CMTQ Number</th>
+									<th>CMTQ Date</th>
+									<th>MTQ Number</th>
+									<th>MTQ Date</th>
+									<th>Remarks</th>
+									<th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-							@foreach($cmtq as $item)
-              <tr>
-							<td>{{$item['cmtq_number']}}</td>
-							<td>{{date('d-m-Y', strtotime($item['cmtq_date']))}}</td>
-              <td>{{$item['remarks']}}</td>
-              <td>
+								@foreach($cmtq as $item)
+								<tr>
+									<td>{{$item['cmtq_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['cmtq_date']))}}</td>
+									<td>{{$item['mtq_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['mtq_date']))}}</td>
+									<td>{{$item['remarks']}}</td>
+              				<td>
 							<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/CMTQ/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a><br/>
 							<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/CMTQ/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
 							</td>
@@ -139,29 +152,29 @@
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 
 <script>
-  $(function(){
-    'use strict'
-	var date = new Date();
-    date.setDate(date.getDate());
-	$(".datepicker").datepicker({
-        format: "mm-yyyy",
-        viewMode: "months",
-        minViewMode: "months",
-        // startDate: date,
-        autoclose:true
-    });
-	$('#prbody1').show();
-	$('#prbody2').show();
-  });
-	$('.search-btn').on( "click", function(e)  {
-		var cmtq_number = $('#cmtq_number').val();
-		var remarks = $('#remarks').val();
-		var from = $('#from').val();
-		if(!cmtq_number   & !remarks & !from)
-		{
-			e.preventDefault();
-		}
-	});
+//   $(function(){
+//     'use strict'
+// 	var date = new Date();
+//     date.setDate(date.getDate());
+// 	$(".datepicker").datepicker({
+//         format: "mm-yyyy",
+//         viewMode: "months",
+//         minViewMode: "months",
+//         // startDate: date,
+//         autoclose:true
+//     });
+// 	$('#prbody1').show();
+// 	$('#prbody2').show();
+//   });
+// 	$('.search-btn').on( "click", function(e)  {
+// 		var cmtq_number = $('#cmtq_number').val();
+// 		var remarks = $('#remarks').val();
+// 		var from = $('#from').val();
+// 		if(!cmtq_number   & !remarks & !from)
+// 		{
+// 			e.preventDefault();
+// 		}
+// 	});
 </script> 
 
 

@@ -130,7 +130,7 @@
 									<td>{{$item['quantity']}}</td>
 									<td>Nos</td>
                                     <td width="10%">{{date('d-m-Y', strtotime($item['manufacturing_date']))}}</td>
-                                    <td width="10%">@if($item['expiry_date']!='0000-00-00') {{date('d-m-Y', strtotime($item['expiry_date']))}} @else NA  @endif</td>
+									<td>@if($item->expiry_date=='0000-00-00' || $item->expiry_date=='1970-01-01' ) N.A @else {{date('d-m-Y',strtotime($item->expiry_date))}} @endif</td>
 									<td>
 									<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MRN-item-edit/'.$item['id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
                             		<a class="badge badge-danger" style="font-size: 13px;" href="{{url('fgs/MRN-item-delete/'.$item['id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>

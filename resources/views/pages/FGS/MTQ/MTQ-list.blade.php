@@ -60,16 +60,25 @@
 														<input type="text" value="{{request()->get('mtq_no')}}" name="mtq_no" id="mtq_no" class="form-control" placeholder="MTQ NO">
 													</div><!-- form-group -->
 													
-													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                   										<label style="font-size: 12px;">From Date</label>
+                    									<input type="date" value="{{ request()->get('from') }}" id="from" class="form-control" name="from">
+                									</div>
+
+                									<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                    									<label style="font-size: 12px;">To Date</label>
+                    									<input type="date" value="{{ request()->get('to') }}" id="to" class="form-control" name="to">
+                									</div>
+													<!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
 														<label for="exampleInputEmail1" style="font-size: 12px;">Referance No</label>
 														<input type="text" value="{{request()->get('supplier_doc_number')}}" name="ref_number" id="ref_number" class="form-control" placeholder="REFERANCE NUMBER">
-													</div>
+													</div> -->
 													
 													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-														<label  style="font-size: 12px;">MRN Month</label>
-														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
-													</div>
+    <label style="font-size: 12px;">MRN Month</label>
+    <input type="month" value="{{ request()->get('mtq_month') }}" id="mtq_month" class="form-control" name="mtq_month" placeholder="Month(MM-YYYY)">
+</div>
+
 												</div>
 												<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 row">
 													<div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding: 0 0 0px 6px;">
@@ -98,12 +107,13 @@
 							<thead>
 								<tr>
 									<th>MTQ Number</th>
+									<th>MTQ date</th>
                                     <th>Referance number</th>
 									<th>Referance date</th>
+									<th>Business Category</th>
 									<th>Product Category</th>
 									<th>Stock Location1</th>
 									<th>Stock Location2</th>
-									<th>MTQ date</th>
                                     <th>Action</th>
 								</tr>
 							</thead>
@@ -112,12 +122,14 @@
                                 <tr>
 									
 									<td>{{$item['mtq_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['mtq_date']))}}</td>
+
                                     <td>{{$item['ref_number']}}</td>
 									<td>{{date('d-m-Y', strtotime($item['ref_date']))}}</td>
 									<td>{{$item['category_name']}}</td>
+									<td>{{$item['new_category_name']}}</td>
 									<td>{{$item['location_name1']}}</td>
 									<td>{{$item['location_name2']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['mtq_date']))}}</td>
                                     <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MTQ/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
                                     	<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/MTQ/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> 	</td>
 									
@@ -146,30 +158,30 @@
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 
 <script>
-  $(function(){
-    'use strict'
-	var date = new Date();
-    date.setDate(date.getDate());
-	$(".datepicker").datepicker({
-        format: "mm-yyyy",
-        viewMode: "months",
-        minViewMode: "months",
-        // startDate: date,
-        autoclose:true
-    });
-	$('#prbody1').show();
-	$('#prbody2').show();
-  });
+//   $(function(){
+//     'use strict'
+// 	var date = new Date();
+//     date.setDate(date.getDate());
+// 	$(".datepicker").datepicker({
+//         format: "mm-yyyy",
+//         viewMode: "months",
+//         minViewMode: "months",
+//         // startDate: date,
+//         autoclose:true
+//     });
+// 	$('#prbody1').show();
+// 	$('#prbody2').show();
+//   });
   	
-	$('.search-btn').on( "click", function(e)  {
-		var ref_number = $('#ref_number').val();
-		var mtq_no = $('#mtq_no').val();
-		var from = $('#from').val();
-		if(!mtq_no  & !ref_number & !from)
-		{
-			e.preventDefault();
-		}
-	});
+// 	$('.search-btn').on( "click", function(e)  {
+// 		var ref_number = $('#ref_number').val();
+// 		var mtq_no = $('#mtq_no').val();
+// 		var from = $('#from').val();
+// 		if(!mtq_no  & !ref_number & !from)
+// 		{
+// 			e.preventDefault();
+// 		}
+// 	});
 </script>
 
 

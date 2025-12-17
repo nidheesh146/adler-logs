@@ -18,10 +18,7 @@
                 SRN 
 				</button>
               <div>  
-				
-              </div>
-          </div>
-        </h4>	
+        	</h4>	
 		   @if(Session::get('error'))
 		   <div class="alert alert-danger "  role="alert" style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -54,7 +51,10 @@
 										<th scope="row">
 											<div class="row filter_search" style="margin-left: 0px;">
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
-								
+												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-3">
+														<label>CUSTOMER :</label>
+														<input type="text" value="{{request()->get('firm_name')}}" name="firm_name" id="firm_name" class="form-control" placeholder="CUSTOMER">
+													</div>
 													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
 														<label>SRN No :</label>
 														<input type="text" value="{{request()->get('srn_no')}}" name="srn_no" id="srn_no" class="form-control" placeholder="SRN NO">
@@ -98,27 +98,33 @@
 							<thead>
 								<tr>
 									<th>SRN Number</th>
+									<th>SRN date</th>
                                     <th>DNI/EXI number</th>
+									<th>Return Location</th>
 									<th>Customer</th>
                                     <th>Shipping Address</th>
                                     <th>Zone</th>
-									<th>SRN date</th>
+									
                                     <th>Action</th>
 								</tr>
 							</thead>
 							<tbody id="prbody1">
-                            	<tr>
 								@foreach($srn as $item)
+								<tr>
                             		<td>{{$item['srn_number']}}</td>
-                                    <td>{{$item['dni_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['srn_date']))}}</td>
+                                    <td>@if($item['dni_number_manual']!=NULL) {{$item['dni_number_manual']}} @else {{$item['dni_number']}} @endif</td>
+									<td>{{$item['location_name']}}</td>
 									<td>{{$item['firm_name']}}</td>
                                     <td>{{$item['shipping_address']}}</td>
                                     <td>{{$item['zone_name']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['srn_date']))}}</td>
+									
                                     <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/SRN/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
+									<a class="badge badge-primary" style="font-size: 13px;" href="{{url('fgs/SRN-edit/'.$item['id'])}}"><i class="fa fa-edit"></i> Edit</a> 
+
                                     	<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/SRN/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> 	</td>
-								@endforeach
 								</tr>
+								@endforeach
 							</tbody>
 						</table>
 						<div class="box-footer clearfix">
@@ -158,10 +164,11 @@
   });
   	
 	$('.search-btn').on( "click", function(e)  {
+		var firm_name = $('#firm_name').val();
 		var srn_no = $('#srn_no').val();
 		var dni_no = $('#dni_no').val();
 		var from = $('#from').val();
-		if(!srn_no  & !dni_number & !from)
+		if (!firm_name & !srn_no & !dni_number & !from) 
 		{
 			e.preventDefault();
 		}

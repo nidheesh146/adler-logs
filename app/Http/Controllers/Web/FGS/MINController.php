@@ -7,12 +7,15 @@ use Illuminate\Http\Request;
 use Validator;
 use DB;
 use PDF;
+use Dompdf\Options;
+
 use App\Models\User;
 use App\Models\product;
 use App\Models\FGS\product_stock_location;
 use App\Models\FGS\fgs_product_stock_management;
 use App\Models\FGS\production_stock_management;
 use App\Models\FGS\fgs_product_category;
+use App\Models\FGS\fgs_product_category_new;
 use App\Models\FGS\fgs_min;
 use App\Models\FGS\fgs_min_item;
 use App\Models\FGS\fgs_min_item_rel;
@@ -22,6 +25,8 @@ use App\Models\FGS\fgs_mrn_item_rel;
 use App\Models\batchcard;
 use App\Exports\FGSmintransactionExport;
 use App\Exports\FGScmintransactionExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class MINController extends Controller
 {
@@ -50,10 +55,12 @@ class MINController extends Controller
             $condition[] = ['fgs_min.min_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
             $condition[] = ['fgs_min.min_date', '<=', date('Y-m-t', strtotime('01-' . $request->from))];
         }
-        $min = fgs_min::select('fgs_min.*', 'fgs_product_category.category_name', 'product_stock_location.location_name')
+        $min = fgs_min::select('fgs_min.*', 'fgs_product_category.category_name', 'product_stock_location.location_name','fgs_product_category_new.category_name as new_category_name')
             ->leftJoin('fgs_product_category', 'fgs_product_category.id', 'fgs_min.product_category')
+            ->leftJoin('fgs_product_category_new', 'fgs_product_category_new.id', 'fgs_min.new_product_category')
             ->leftJoin('product_stock_location', 'product_stock_location.id', 'fgs_min.stock_location')
             ->where($condition)
+            ->where('fgs_min.status',1)
             ->orderBy('fgs_min.id', 'DESC')
             ->paginate(15);
         return view('pages/FGS/MIN/MIN-list', compact('min'));
@@ -78,9 +85,11 @@ class MINController extends Controller
                 $data['ref_number'] = $request->ref_number;
                 $data['ref_date'] = date('Y-m-d', strtotime($request->ref_date));
                 $data['product_category'] = $request->product_category;
+                $data['new_product_category'] = $request->new_product_category;
                 $data['stock_location'] = $request->stock_location;
                 $data['created_by'] = config('user')['user_id'];
                 $data['status'] = 1;
+                $data['remarks']=$request->remarks;
                 $data['created_at'] = date('Y-m-d H:i:s');
                 $data['updated_at'] = date('Y-m-d H:i:s');
                 $add = $this->fgs_min->insert_data($data);
@@ -97,7 +106,8 @@ class MINController extends Controller
         } else {
             $locations = product_stock_location::get();
             $category = fgs_product_category::get();
-            return view('pages/FGS/MIN/MIN-add', compact('locations', 'category'));
+            $product_category = fgs_product_category_new::get();
+            return view('pages/FGS/MIN/MIN-add', compact('locations', 'category','product_category'));
         }
     }
     public function MINEdit(Request $request,$min_id)
@@ -108,6 +118,7 @@ class MINController extends Controller
             $data['product_category'] = $request->product_category;
             $data['stock_location'] = $request->stock_location; 
             $data['min_date'] = date('Y-m-d', strtotime($request->min_date));
+            $data['remarks']=$request->remarks;
             $add = fgs_min::where('id',$min_id)
             ->update($data);
             if ($add) {
@@ -160,16 +171,16 @@ class MINController extends Controller
         }
         //echo($request->q['term']);exit;
         $min = fgs_min::find($request->min_id);
-        $condition[] = ['product_product.sku_code', 'like', '%' . strtoupper($request->q['term']) . '%'];
+        $condition[] = ['fgs_item_master.sku_code', 'like', '%' . strtoupper($request->q['term']) . '%'];
         $data  = fgs_product_stock_management::select(
-            'product_product.id',
-            'product_product.sku_code as text',
-            'product_product.discription',
-            'product_product.hsn_code',
-            'product_product.is_sterile',
+            'fgs_item_master.id',
+            'fgs_item_master.sku_code as text',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_item_master.is_sterile',
             'fgs_product_stock_management.quantity'
         )
-            ->leftJoin('product_product', 'product_product.id', '=', 'fgs_product_stock_management.product_id')
+            ->leftJoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_product_stock_management.product_id')
             ->where($condition)
             ->where('fgs_product_stock_management.quantity', '!=', 0)
             ->where('fgs_product_stock_management.stock_location_id', '=', $min['stock_location'])
@@ -189,7 +200,7 @@ class MINController extends Controller
             ->where('fgs_product_stock_management.product_id', '=', $request->product_id)
             ->where('fgs_product_stock_management.stock_location_id', '=', $min['stock_location'])
             ->where('fgs_product_stock_management.quantity', '!=', 0)
-            ->orderBy('batchcard_batchcard.id', 'DESC')
+            ->orderBy('batchcard_batchcard.id', 'ASC')
             ->get();
         return $batchcards;
     }
@@ -197,7 +208,7 @@ class MINController extends Controller
     {
         $condition = ['fgs_min_item_rel.master' => $request->min_id];
         if ($request->product) {
-            $condition[] = ['product_product.sku_code', 'like', '%' . $request->product . '%'];
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->product . '%'];
         }
         if ($request->batchnumber) {
             $condition[] = ['batchcard_batchcard.batch_no', 'like', '%' . $request->batchnumber . '%'];
@@ -206,10 +217,10 @@ class MINController extends Controller
             $condition[] = ['fgs_min_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->manufaturing_from))];
             $condition[] = ['fgs_min_item.manufacturing_date', '<=', date('Y-m-t', strtotime('01-' . $request->manufaturing_from))];
         }
-        // $items = fgs_min_item::select('fgs_min_item.*','product_product.sku_code','product_product.discription','product_product.hsn_code','batchcard_batchcard.batch_no','fgs_min.min_number')
+        // $items = fgs_min_item::select('fgs_min_item.*','fgs_item_master.sku_code','fgs_item_master.discription','fgs_item_master.hsn_code','batchcard_batchcard.batch_no','fgs_min.min_number')
         //                 ->leftjoin('fgs_min_item_rel','fgs_min_item_rel.item','=','fgs_min_item.id')
         //                 ->leftjoin('fgs_min','fgs_min.id','=','fgs_min_item_rel.master')
-        //                 ->leftjoin('product_product','product_product.id','=','fgs_min_item.product_id')
+        //                 ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_min_item.product_id')
         //                 ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_min_item.batchcard_id')
         //                 ->where($condition)
         //                 //->where('inv_mac.status','=',1)
@@ -247,11 +258,11 @@ class MINController extends Controller
                         "expiry_date" =>  $expiry_date,
                         "created_at" => date('Y-m-d H:i:s')
                     ];
-                    $min_data = [
-                        'remarks' => $request->remarks
-                    ];
+                    // $min_data = [
+                    //     'remarks' => $request->remarks
+                    // ];
                     $this->fgs_min_item->insert_data($data, $request->min_id);
-                    $this->fgs_min->update_data(['id' => $request->min_id], $min_data);
+                    // $this->fgs_min->update_data(['id' => $request->min_id], $min_data);
                     $fgs_product_stock = fgs_product_stock_management::where('product_id', '=', $value['product'])
                         ->where('batchcard_id', '=', $value['batch_no'])
                         ->where('stock_location_id','=',$min_info['stock_location'])
@@ -271,9 +282,14 @@ class MINController extends Controller
     public function MINpdf($min_id)
     {
         $data['min'] = $this->fgs_min->get_single_min(['fgs_min.id' => $min_id]);
-        $data['items'] = $this->fgs_min_item->getItems(['fgs_min_item_rel.master' => $min_id]);
+        $data['items'] = $this->fgs_min_item->getItems_pdf(['fgs_min_item_rel.master' => $min_id]);
         $pdf = PDF::loadView('pages.FGS.MIN.pdf-view', $data);
+        $options = new Options();
+
         // $pdf->set_paper('A4', 'landscape');
+        //$pdf->setOptions(['isPhpEnabled' => true]);       
+        $pdf->getDomPDF()->setOptions($options);
+        $pdf->setOptions(['isPhpEnabled' => true]); 
         $file_name = "MIN" . $data['min']['firm_name'] . "_" . $data['min']['min_date'];
         return $pdf->stream($file_name . '.pdf');
     }
@@ -289,6 +305,7 @@ class MINController extends Controller
         $min_info = fgs_min::find($request->min_id);
         $data = fgs_product_stock_management::where('batchcard_id', '=', $request->batch_id)
                         ->where('stock_location_id','=',$min_info['stock_location'])
+                        ->where('quantity','!=',0)
                         ->first();
         return $data;
     }
@@ -307,11 +324,11 @@ class MINController extends Controller
         {
 
             $item_details = DB::table('fgs_min_item')
-                    ->select('fgs_min_item.*', 'fgs_min.id as min_id','product_product.sku_code', 'product_product.discription','product_product.id as product_id' ,'product_product.hsn_code', 'batchcard_batchcard.batch_no', 'fgs_min.min_number',
-                    'product_product.is_sterile','fgs_product_stock_management.quantity as stk_qty','fgs_product_stock_management.stock_location_id')
+                    ->select('fgs_min_item.*', 'fgs_min.id as min_id','fgs_item_master.sku_code', 'fgs_item_master.discription','fgs_item_master.id as product_id' ,'fgs_item_master.hsn_code','batchcard_batchcard.id as batch_id' ,'batchcard_batchcard.batch_no', 'fgs_min.min_number',
+                    'fgs_item_master.is_sterile','fgs_product_stock_management.quantity as stk_qty','fgs_product_stock_management.stock_location_id')
                     ->leftjoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
                     ->leftjoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
-                    ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
+                    ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_min_item.product_id')
                     ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
                     ->leftjoin('fgs_product_stock_management','fgs_product_stock_management.batchcard_id','=','batchcard_batchcard.id')
                     ->where('fgs_min_item.id', $min_item_id)
@@ -405,12 +422,27 @@ class MINController extends Controller
         }
         
     }
-    public function delete_min($min_item_id)
+    public function Min_delete($id)
+{
+    // Check if fgs_cmin has any record referencing this min_id
+    $isReferenced = \DB::table('fgs_cmin')->where('min_id', $id)->exists();
+
+    if ($isReferenced) {
+        return redirect()->back()->with('error', 'This MIN has completed CMIN.');
+    }
+
+    // If not referenced, proceed to delete
+    fgs_min::where('id', $id)->delete(); 
+    return redirect()->back()->with('success', 'MIN deleted successfully.');
+}
+
+    
+    public function delete_min_item($min_item_id)
     {
         $prdct = DB::table('fgs_min_item')
             ->where('id', $min_item_id)
             ->first();
-
+     //   dd($prdct);
             $pr_id=$prdct->product_id;
 
         $qty = DB::table('fgs_product_stock_management')
@@ -444,130 +476,183 @@ class MINController extends Controller
     }
     public function min_transaction(Request $request)
     {
-        $condition=[];
-        if($request->min_no)
-        {
-            $condition[] = ['fgs_min.min_number','like', '%' . $request->min_no . '%']; 
+        $condition = [];
+        if ($request->min_no) {
+            $condition[] = ['fgs_min.min_number', 'like', '%' . $request->min_no . '%'];
+        }
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
+        }
+        if ($request->from) {
+            $monthStart = date('Y-m-01', strtotime('01-' . $request->from));
+            $monthEnd = date('Y-m-t', strtotime('01-' . $request->from));
+            $condition[] = ['fgs_min.min_date', '>=', $monthStart];
+            $condition[] = ['fgs_min.min_date', '<=', $monthEnd];
         }
         
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
-        }
-        if($request->from)
-        {
-            $condition[] = ['fgs_min_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-           
-        }
-        $items = fgs_min_item::select('fgs_min.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'fgs_min.min_number','fgs_min.min_date','fgs_min.created_at as min_wef','fgs_min_item.id as min_item_id')
+        $items = fgs_min_item::select(
+            'fgs_min.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_min.min_number',
+            'fgs_min.min_date',
+            'fgs_min.created_at as min_wef',
+            'fgs_min_item.id as min_item_id',
+            'fgs_min_item.quantity',
+            // 'fgs_product_category.category_name',
+
+        )
             ->leftJoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
             ->leftJoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_min_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
-            ->where('fgs_min_item.status',1)
+            ->where('fgs_min_item.status', 1)
             //->distinct('fgs_min_item.id')
-            ->orderBy('fgs_min_item.id','desc')
+            ->orderBy('fgs_min_item.id', 'desc')
             ->paginate(15);
-            
-        return view('pages/fgs/MIN/MIN-transaction-list',compact('items'));
+
+        return view('pages/fgs/MIN/MIN-transaction-list', compact('items'));
     }
     public function min_transaction_export(Request $request)
     {
-        $condition=[];
-        if($request->min_no)
-        {
-            $condition[] = ['fgs_min.min_number','like', '%' . $request->min_no . '%']; 
+        $condition = [];
+        if ($request->min_no) {
+            $condition[] = ['fgs_min.min_number', 'like', '%' . $request->min_no . '%'];
         }
-        
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
-        if($request->from)
-        {
+        if ($request->from) {
             $condition[] = ['fgs_min_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-           
         }
-        $items = fgs_min_item::select('fgs_min.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'fgs_min.min_number','fgs_min.min_date','fgs_min.created_at as min_wef','fgs_min_item.id as min_item_id')
+        $items = fgs_min_item::select(
+            'fgs_min.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_min.min_number',
+            'fgs_min.min_date',
+            'fgs_min.created_at as min_wef',
+            'fgs_min_item.id as min_item_id',
+            'fgs_min_item.quantity',
+            'fgs_product_category.category_name',
+            'fgs_product_category_new.category_name as new_category_name'
+
+        )
             ->leftJoin('fgs_min_item_rel', 'fgs_min_item_rel.item', '=', 'fgs_min_item.id')
             ->leftJoin('fgs_min', 'fgs_min.id', '=', 'fgs_min_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_min_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_min_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_min_item.batchcard_id')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_min.product_category')
+            ->leftJoin('fgs_product_category_new','fgs_product_category_new.id','fgs_min.new_product_category')
             //->where('fgs_min_item.batchcard_id', '=', $batch_id)
             ->where($condition)
-            ->where('fgs_min_item.status',1)
-            //->distinct('fgs_min_item.id')
-            ->orderBy('fgs_min_item.id','desc')
+            ->where('fgs_min_item.status', 1)
+            ->distinct('fgs_min_item.id')
+            ->orderBy('fgs_min_item.id', 'desc')
             ->get();
-            return Excel::download(new FGSmintransactionExport($items), 'FGS-MIN-transaction' . date('d-m-Y') . '.xlsx');
-
+        return Excel::download(new FGSmintransactionExport($items), 'FGS-MIN-transaction' . date('d-m-Y') . '.xlsx');
     }
     public function cmin_transaction(Request $request)
     {
-        $condition=[];
-        if($request->cmin_no)
-        {
-            $condition[] = ['fgs_cmin.cmin_number','like', '%' . $request->cmin_no . '%']; 
+        $condition = [];
+        if ($request->cmin_no) {
+            $condition[] = ['fgs_cmin.cmin_number', 'like', '%' . $request->cmin_no . '%'];
         }
-        
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
-        if($request->from)
-        {
+        if ($request->from) {
             $condition[] = ['fgs_cmin_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-           
         }
-        $items = fgs_cmin_item::select('fgs_cmin.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'fgs_cmin.cmin_number','fgs_cmin.cmin_date','fgs_cmin.created_at as cmin_wef','fgs_cmin_item.id as cmin_item_id')
+        $items = fgs_cmin_item::select(
+            'fgs_cmin.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_cmin.cmin_number',
+            'fgs_cmin.cmin_date',
+            'fgs_cmin.created_at as cmin_wef',
+            'fgs_cmin_item.id as cmin_item_id',
+            'fgs_cmin_item.quantity',
+            'fgs_product_category.category_name',
+
+        )
             ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
             ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cmin_item.product_id')
+            ->leftJoin('fgs_min', 'fgs_min.id', '=', 'fgs_cmin.min_id')
+
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_cmin_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cmin_item.batchcard_id')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_min.product_category')
+
             //->where('fgs_cmin_item.batchcard_id', '=', $batch_id)
             ->where($condition)
             //->where('fgs_cmin_item.status',1)
             //->distinct('fgs_cmin_item.id')
-            ->orderBy('fgs_cmin_item.id','desc')
+            ->orderBy('fgs_cmin_item.id', 'desc')
             ->paginate(15);
-            
-        return view('pages/fgs/MIN/CMIN-transaction-list',compact('items'));
+         //   print_r($items);
+
+        return view('pages/fgs/MIN/CMIN-transaction-list', compact('items'));
     }
     public function cmin_transaction_export(Request $request)
     {
-        $condition=[];
-        if($request->cmin_no)
-        {
-            $condition[] = ['fgs_cmin.cmin_number','like', '%' . $request->cmin_no . '%']; 
+        $condition = [];
+        if ($request->cmin_no) {
+            $condition[] = ['fgs_cmin.cmin_number', 'like', '%' . $request->cmin_no . '%'];
         }
-        
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
-        if($request->from)
-        {
-            $condition[] = ['fgs_cmin_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-           
+        if ($request->from) {
+            $condition[] = ['fgs_cmin.cmin_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
         }
-        $items = fgs_cmin_item::select('fgs_cmin.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'fgs_cmin.cmin_number','fgs_cmin.cmin_date','fgs_cmin.created_at as cmin_wef','fgs_cmin_item.id as cmin_item_id')
+        $items = fgs_cmin_item::select(
+            'fgs_cmin.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_cmin.cmin_number',
+            'fgs_cmin.cmin_date',
+            'fgs_cmin.created_at as cmin_wef',
+            'fgs_cmin_item.id as cmin_item_id',
+            'fgs_cmin_item.quantity',
+            'fgs_product_category.category_name',
+
+        )
             ->leftJoin('fgs_cmin_item_rel', 'fgs_cmin_item_rel.item', '=', 'fgs_cmin_item.id')
             ->leftJoin('fgs_cmin', 'fgs_cmin.id', '=', 'fgs_cmin_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_cmin_item.product_id')
+            ->leftJoin('fgs_min', 'fgs_min.id', '=', 'fgs_cmin.min_id')
+
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_cmin_item.product_id')
             ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_cmin_item.batchcard_id')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_min.product_category')
+
             //->where('fgs_cmin_item.batchcard_id', '=', $batch_id)
             ->where($condition)
             //->where('fgs_cmin_item.status',1)
             //->distinct('fgs_cmin_item.id')
-            ->orderBy('fgs_cmin_item.id','desc')
+            ->orderBy('fgs_cmin_item.id', 'desc')
             ->get();
-            return Excel::download(new FGScmintransactionExport($items), 'FGS-cmin-transaction' . date('d-m-Y') . '.xlsx');
+            print_r($items);
+        return Excel::download(new FGScmintransactionExport($items), 'FGS-cmin-transaction' . date('d-m-Y') . '.xlsx');
+    }
+    public function check_min_items($id)
+    {
+        $min_item=fgs_min::leftjoin('fgs_min_item_rel','fgs_min_item_rel.master','=','fgs_min.id')
+        ->leftjoin('fgs_min_item','fgs_min_item.id','=','fgs_min_item_rel.item')
+        ->where('fgs_min.id',$id)
+        ->where('fgs_min_item.status',1)
 
+        ->get();
+        return $min_item;
     }
 }

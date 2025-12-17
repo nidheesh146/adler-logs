@@ -48,17 +48,17 @@ $obj_inv=new InventoryreportController();
                                         <div class="row filter_search" style="margin-left: 0px;">
                                             <div class="col-sm-10 col-md-6 col-lg-6 col-xl-6 row">
                                                 
-                                                <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                     <label>Item Code:</label>
                                                     <input type="text" value="{{request()->get('item_code')}}" name="item_code" id="item_code" class="form-control" placeholder="Item Code">
 
                                                 </div>
                                                 
-                                                <!-- <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                                <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                                     <label for="exampleInputEmail1" style="font-size: 12px;">Month</label>
                                                     <input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 
-                                                </div> -->
+                                                </div>
                                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="padding: 0 0 0px 6px;">
                                                     <label style="width: 100%;">&nbsp;</label>
                                                     <button type="submit" class="badge badge-pill badge-primary search-btn" style="margin-top:-2px;"><i class="fas fa-search"></i> Search</button>
@@ -93,7 +93,7 @@ $obj_inv=new InventoryreportController();
                             <th>Item Group</th>
                             <th>Supplier Name</th>
                             <th>Supplier Code</th>
-                            <th>PO / WO Number</th> 
+                            {{--<th>PO / WO Number</th> 
                             <th>Stk_Kpng_Unt</th>
                             <th>Invoice No.</th> 
                             <th>Invoice Qty.</th> 
@@ -130,7 +130,7 @@ $obj_inv=new InventoryreportController();
                             <th>STO Number</th>
                             <th>STO Date</th>
                             <th>STO Qty.</th>
-                            <th>STO Created</th>
+                            <th>STO Created</th>--}}
                         </tr>
                     </thead>
                     <tbody>
@@ -139,14 +139,14 @@ $obj_inv=new InventoryreportController();
 
                             <td>{{date('Y', strtotime($item_detail->invoice_date))}}</td>
                             <td>{{date('m/y', strtotime($item_detail->invoice_date))}}</td>
-                            <td>{{$item_detail->item_code}}-{{$item_detail->po_number}}</td>
+                            <td>{{$item_detail->item_code}}</td>
                             <td>{{date('d-m-Y', strtotime($item_detail->transaction_date))}}</td>
                             <td>{{$item_detail->item_code}}</td>
                             <td>{{$item_detail->discription}}</td>
                             <td>{{$item_detail->type_name}}</td>
                             <td>{{$item_detail->vendor_name}}</td>
                             <td>{{$item_detail->vendor_id}}</td>
-                            <td>{{$item_detail->po_number}}</td>
+                            {{--<td>{{$item_detail->po_number}}</td>
                             <td>{{$item_detail->unit_name}}</td>
                             <td>{{$item_detail->invoice_number}}</td>
                             <td>{{$item_detail->invoice_qty}}</td>
@@ -192,7 +192,7 @@ $obj_inv=new InventoryreportController();
                            <td>{{$item_detail->sto_number}}</td>
                             <td>@if($item_detail->sto_number) {{date('d-m-Y', strtotime($item_detail->sto_date))}} @endif</td>
                             <td>{{$item_detail->transfer_qty}}</td> 
-                            <td>{{$obj_inv->get_user($item_detail->sto_created_by)}}</td>
+                            <td>{{$obj_inv->get_user($item_detail->sto_created_by)}}</td>--}}
                           
 
                         </tr>
@@ -230,7 +230,9 @@ $obj_inv=new InventoryreportController();
         });
         $('.search-btn').on("click", function(e) {
             var item_code = $('#item_code').val();
-            if (!item_code) {
+            var from = $('#from').val();
+
+            if (!item_code & !from) {
                 e.preventDefault();
             }
         });

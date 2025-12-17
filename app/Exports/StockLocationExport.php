@@ -146,10 +146,11 @@ class StockLocationExport implements FromCollection, WithHeadings, WithStyles,Wi
         $total = 0;
         foreach($this->stock as $stk)
         {
-            if($stk['expiry_date']!='0000-00-00') 
-            $expiry = date('d-m-Y', strtotime($stk['expiry_date']));
-            else 
+            if($stk['expiry_date']=='0000-00-00' || empty($stk['expiry_date']) || $stk['expiry_date']=='NULL') 
             $expiry = 'NA';  
+            else 
+            $expiry = date('d-m-Y', strtotime($stk['expiry_date']));
+
             if($stk['is_sterile']==1) 
             $condition = 'Sterile'; 
             else 
@@ -168,7 +169,8 @@ class StockLocationExport implements FromCollection, WithHeadings, WithStyles,Wi
                 'product_type'=>$stk['product_type_name'],
                 'hsn'=>$stk['hsn_code'],
                 'condition'=>$condition,
-                'category'=>$stk['category_name'],
+                'business category'=>$stk['category_name'],
+                'product category'=>$stk['new_category_name'],
                 'group'=>$stk['group_name'],
                 'oem'=>$stk['oem_name'],
                 'pack_size'=>$stk['quantity_per_pack'],
@@ -192,6 +194,7 @@ class StockLocationExport implements FromCollection, WithHeadings, WithStyles,Wi
             'Product Type',
             'HSN Code',
             'Product Condition',
+            'Business Category',
             'Product Category',
             'Product Group',
             'OEM',

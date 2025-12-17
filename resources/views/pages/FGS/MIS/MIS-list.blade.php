@@ -98,10 +98,11 @@
 							<thead>
 								<tr>
 									<th>MIS Number</th>
+									<th>MIS date</th>
                                     <th>MTQ number</th>
+									<th>Business Category</th>
 									<th>Product Category</th>
 									<th>Stock Location</th>
-									<th>MIS date</th>
                                     <th>Action</th>
 								</tr>
 							</thead>
@@ -109,10 +110,12 @@
                             	<tr>
 								@foreach($mis as $item)
                             		<td>{{$item['mis_number']}}</td>
+									<td>{{date('d-m-Y', strtotime($item['mis_date']))}}</td>
+
                                     <td>{{$item['mtq_number']}}</td>
 									<td>{{$item['category_name']}}</td>
+									<td>{{$item['new_category_name']}}</td>
 									<td>{{$item['location_name']}}</td>
-									<td>{{date('d-m-Y', strtotime($item['mis_date']))}}</td>
                                     <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/MIS/item-list/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-eye"></i> Item</a>
                                     	<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/MIS/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a> 	</td>
 								@endforeach

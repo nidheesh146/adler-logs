@@ -65,11 +65,11 @@
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Customer Biiling Address</label>
-                                <textarea name="billing_address" class="form-control" id="billing_address" readonly></textarea>
+                                <textarea name="billing_address" class="form-control" id="billing_address" ></textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Customer Shipping Address</label>
-                                <textarea name="shipping_address" class="form-control" id="shipping_address" readonly></textarea>
+                                <textarea name="shipping_address" class="form-control" id="shipping_address" ></textarea>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Order Number *</label>
@@ -99,14 +99,26 @@
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Product Category *</label>
+                                <label for="exampleInputEmail1">Business Category *</label>
                                 <select class="form-control" name="product_category">
-                                    <option value="">Select one...</option>
+                                    <!-- <option value="">Select one...</option> -->
                                     @foreach($category as $cate)
                                     <option value="{{$cate['id']}}">{{$cate['category_name']}}</option>
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+    <label>Product Category *</label>
+    <select class="form-control" name="new_product_category">
+        <!-- <option>..select one..</option> -->
+        @foreach($product_category as $category)
+        <option value="{{ $category->id }}"
+            @if(!empty($grs) && ($grs->new_product_category == $category->id)) selected="selected" @endif>
+            {{ $category->category_name }}
+        </option>
+        @endforeach
+    </select>
+</div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>OEF Date *</label>
                                 <input type="date" value="{{date('Y-m-d')}}" class="form-control oef_date" id="oef_date" name="oef_date" placeholder="">
@@ -163,99 +175,116 @@
 <script src="<?= url('') ?>/lib/select2/js/select2.min.js"></script>
 <script src="<?= url('') ?>/lib/ionicons/ionicons.js"></script>
 <script src="<?= url('') ?>/lib/jquery.maskedinput/jquery.maskedinput.js"></script>
-
 <script>
-    // $(".datepicker").datepicker({
-    //     format: " dd-mm-yyyy",
-    //     endDate: new Date(),
-    //     autoclose:true
-    // });
-    // $(".due_date").datepicker({
-    //     format: " dd-mm-yyyy",
-    //     autoclose:true
-    // });
-    // $(".oef_date").datepicker({
-    //     format: " dd-mm-yyyy",
-    //     autoclose:true
-    // });
-    // $(".oef_date").datepicker("setDate", new Date());
-    // var date = new Date();
-    // date.setDate(date.getDate() + 30);
-    // $(".due_date").datepicker("setDate", date);
+    $(document).ready(function() {
+        // Disable submit button initially
+        $(':submit').prop('disabled', true);
 
-    $('.oef_date').on('change', function() {
-        var oef_date = new Date($(this).val());
-        var date = new Date(oef_date.setDate(oef_date.getDate() + 30));
-        var aftr_30_days = (((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
-        $('#due_date').val(aftr_30_days);
-    });
+        // Disable submit button when form is submitted
+        $('form').submit(function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            $(this).find(':submit').prop('disabled', true);
 
-    // $(".oef_date").change(function(){
-    //    var oef_date= new Date($(this).val());
-    //    var day = new Date( oef_date.setDate(oef_date.getDate() + 30));
-    //    var date = ((day.getDate() < 10) ? "0" : "") + String(day.getDate()) + "-" +((day.getMonth() < 9) ? "0" : "") + String(day.getMonth() + 1)+ "-" +day.getFullYear();
-    //    alert(day);
-    // //    date.setDate(date.getDate() + 30);
-    // //      alert(day);
-    // //    var aftr_30_days = ((day.getDate() < 10) ? "0" : "") + String(day.getDate()) + "-" +((day.getMonth() < 9) ? "0" : "") + String(day.getMonth() + 1)+ "-" +day.getFullYear();
-    //    $(".due_date").val(date);
-    // });
-
-
-    $("#commentForm").validate({
-        rules: {
-            customer: {
-                required: true,
-            },
-            order_number: {
-                required: true,
-            },
-            order_date: {
-                required: true,
-            },
-            order_fulfil: {
-                required: true,
-            },
-            transaction_type: {
-                required: true,
-            },
-            product_category: {
-                required: true,
-            },
-        },
-        submitHandler: function(form) {
-            $('.spinner-button').show();
-            form.submit();
-        }
-    });
-    $(".customer").select2({
-        placeholder: 'Choose one',
-        searchInputPlaceholder: 'Search',
-        minimumInputLength: 4,
-        allowClear: true,
-        ajax: {
-            url: "{{ url('fgs/customersearch') }}",
-            processResults: function(data) {
-                return {
-                    results: data
-                };
+            // Check if form is valid
+            if ($(this).valid()) {
+                $('.spinner-button').show();
+                $(this).off('submit').submit(); // Submit the form if valid
+            } else {
+                $('.spinner-button').hide();
+                $(this).find(':submit').prop('disabled', false);
             }
-        }
-    }).on('change', function(e) {
-        $('#Itemcode-error').remove();
-        $("#billing_address").text('');
-        $("#shipping_address").text('');
-        let res = $(this).select2('data')[0];
-        if (typeof(res) != "undefined") {
-            if (res.billing_address) {
-                $("#billing_address").val(res.billing_address);
+        });
+
+        // Update due_date based on oef_date
+        $('.oef_date').on('change', function() {
+            var oef_date = new Date($(this).val());
+            var date = new Date(oef_date.setDate(oef_date.getDate() + 30));
+            var aftr_30_days = (((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + date.getFullYear());
+            $('#due_date').val(aftr_30_days);
+        });
+
+        // Form validation
+        $("#commentForm").validate({
+            rules: {
+                customer: { required: true },
+                order_number: { required: true },
+                order_date: { required: true },
+                oef_date: { required: true },
+                due_date: { required: true },
+                order_fulfil: { required: true },
+                transaction_type: { required: true },
+                product_category: { required: true }
+            },
+            errorPlacement: function(error, element) {
+                // Custom error placement
+                error.insertAfter(element);
+            },
+            submitHandler: function(form) {
+                $('.spinner-button').show();
+                form.submit(); // Submit the form if valid
+            },
+            invalidHandler: function(event, validator) {
+                // Errors are displayed only when clicking Save
+                $('.spinner-button').hide();
+                $(':submit').prop('disabled', false);
             }
-            if (res.shipping_address) {
-                $("#shipping_address").val(res.shipping_address);
+        });
+
+        // Enable/Disable submit button based on form validity
+        $("#commentForm").on('keyup change', function() {
+            if ($(this).valid()) {
+                $(':submit').prop('disabled', false);
+            } else {
+                $(':submit').prop('disabled', true);
             }
-        }
+        });
+
+        // Initialize select2 for customer search
+        $(".customer").select2({
+            placeholder: 'Choose one',
+            searchInputPlaceholder: 'Search',
+            minimumInputLength: 4,
+            allowClear: true,
+            ajax: {
+                url: "{{ url('fgs/customersearch') }}",
+                processResults: function(data) {
+                    return { results: data };
+                }
+            }
+        }).on('change', function(e) {
+            $('#Itemcode-error').remove();
+            $("#billing_address").text('');
+            $("#shipping_address").text('');
+            let res = $(this).select2('data')[0];
+            if (typeof(res) != "undefined") {
+                if (res.dl_expiry_date) {
+                    var currentDate = new Date();
+                    var year = currentDate.getFullYear();
+                    var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                    var day = String(currentDate.getDate()).padStart(2, '0');
+                    var formattedDate = `${year}-${month}-${day}`; // today date
+
+                    var dlExpiryDate = res.dl_expiry_date;
+                    var date1 = new Date(formattedDate);
+                    var date2 = new Date(dlExpiryDate);
+                    var timeDifference = date2 - date1;
+                    var daysDifference = Math.round(timeDifference / (1000 * 60 * 60 * 24));
+                    if (daysDifference <= 30 && daysDifference > 0) {
+                        alert('This seller DL will expire within ' + daysDifference + ' days..');
+                        $("#billing_address").val(res.billing_address || '').prop("readonly", ![93, 95, 96, 112].includes(res.id));
+                        $("#shipping_address").val(res.shipping_address || '').prop("readonly", ![93, 95, 96, 112].includes(res.id));
+                    } else if (formattedDate == res.dl_expiry_date || daysDifference < 0) {
+                        alert('This seller DL expired..');
+                        $("#billing_address").val(res.billing_address || '').prop("readonly", false);
+                        $("#shipping_address").val(res.shipping_address || '').prop("readonly", false);
+                    } else {
+                        $("#billing_address").val(res.billing_address || '').prop("readonly", ![93, 95, 96, 112].includes(res.id));
+                        $("#shipping_address").val(res.shipping_address || '').prop("readonly", ![93, 95, 96, 112].includes(res.id));
+                    }
+                }
+            }
+        });
     });
 </script>
-
 
 @stop

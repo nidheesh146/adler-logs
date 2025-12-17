@@ -50,7 +50,7 @@
             display:block;
             font-size:11px;
             height:120px;
-            border-bottom:solid 0.5px black;
+            /* border-bottom:solid 0.5px black; */
         }
         .row3, .row4{
             display:block;
@@ -63,6 +63,8 @@
         .row3 table{
             width:100%;
             font-size:10px;
+            border-collapse: collapse;
+
         }
         .row4{
             font-size:10px;
@@ -123,6 +125,10 @@
                     <td>Reference Date</td>
                     <td>: {{date('d-m-Y', strtotime($mis['ref_date']))}}</td>
                 </tr>
+                <tr>
+                    <td>Stock Location</td>
+                    <td>: {{$mis['location_name']}}</td> 
+                </tr>
             </table>
         </div>
         <div class="col22">
@@ -138,12 +144,12 @@
                     <td>: {{date('d-m-Y', strtotime($mis['mis_date']))}}</td>
                 </tr>
                 <tr>
-                    <td> Product Category</td>
+                    <td> Business Category</td>
                     <td>: {{$mis['category_name']}}</td>
                 </tr>
                 <tr>
-                    <td>Stock Location</td>
-                    <td>: {{$mis['location_name']}}</td> 
+                    <td> Product Category</td>
+                    <td>: {{$mis['new_category_name']}}</td>
                 </tr>
             </table>
         </div>   
@@ -223,7 +229,29 @@
     
     </div>
     
-     
+    <script type="text/php">
+
+    if (isset($pdf)) {
+    $xPage = 535; // X-axis for "Page", positioned on the right side
+    $yPage = 810; // Y-axis horizontal position
+
+    $textPage = "Page {PAGE_NUM} of {PAGE_COUNT}"; // "Page" message
+
+    $font = $fontMetrics->get_font("helvetica");
+    $size = 7;
+    $color = "#808080";
+
+    $pdf->page_text($xPage, $yPage, $textPage, $font, $size, $color); // "Page" on the right
+    $pageNumber = $pdf->get_page_number();
+    // Check if it's not the first page
+    if (var_dump($pageNumber) != 1) {
+        $xDoc = 530;  // X-axis for "Doc", positioned on the left side
+        $yDoc = 15; // Y-axis horizontal position
+        $textDoc = "{{$mis['mis_number']}}"; // "Doc" message
+        $pdf->page_text($xDoc, $yDoc, $textDoc, $font, $size, $color); // "Doc" on the left
+    }
+}
+</script>  
    
 </body>
 </html>

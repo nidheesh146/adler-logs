@@ -228,7 +228,7 @@ class MACController extends Controller
 
     public function MACAdd(Request $request)
     {
-
+//dd('hi');
         if($request->isMethod('post'))
         {
             $validation['mac_date'] = ['required','date'];
@@ -251,19 +251,22 @@ class MACController extends Controller
                     $item_type2 = $this->get_item_type2($request->invoice_number);
                     if($item_type=="Direct Items"){
                         $lot_alloted = $this->check_lot_alloted($request->invoice_number);
+                        //dd($lot_alloted);
+
                         if($item_type2!='Finished Goods')
                         {
                             if($lot_alloted==1){
+                               // dd('debugging');
                                 $request->session()->flash('error', "Please complete lot allocation for the particular invoice items...");  
                                 return redirect('inventory/MAC-add');
                             }
                         }
-                        $Data['mac_number'] = "MAC2-".$this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2-'.$years_combo.'%')->count()); 
+                        $Data['mac_number'] = "MAC2-".$this->year_combo_num_gen_inv(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC2-'.$years_combo.'%')->count()); 
                     }
                     //if($item_type=="Indirect Items"){
                     else
                     {
-                        $Data['mac_number'] = "MAC3-" . $this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC3-'.$years_combo.'%')->count()); 
+                        $Data['mac_number'] = "MAC3-" . $this->year_combo_num_gen_inv(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'MAC3-'.$years_combo.'%')->count()); 
                     }
                     $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
                     $Data['invoice_id'] = $request->invoice_number;
@@ -271,6 +274,7 @@ class MACController extends Controller
                     $Data['status']=1;
                     $Data['created_at'] =date('Y-m-d H:i:s');
                     $Data['updated_at'] =date('Y-m-d H:i:s');
+                  // dd($Data);
                     $add_id = $this->inv_mac->insert_data($Data);
                     $invoice_items = inv_supplier_invoice_rel::select('inv_supplier_invoice_rel.item','inv_supplier_invoice_item.item_id')
                                 ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
@@ -285,11 +289,13 @@ class MACController extends Controller
                             'updated_at'=>date('Y-m-d H:i:s')
 
                         ];
+                      // dd($dat);
                         $item_id = $this->inv_mac_item->insert_data($dat);
                         $dat2 =[
                             'master'=>$add_id,
                             'item'=>$item_id,
                         ];
+                     //  dd($dat2);
                         $rel =DB::table('inv_mac_item_rel')->insert($dat2);
                     }
                     
@@ -350,27 +356,33 @@ class MACController extends Controller
         return $item_type;
     }
     public function check_lot_alloted($invoice_number)
-    {
-        $not_alloted_item = [];
-        $items = inv_supplier_invoice_rel::select('inv_supplier_invoice_item.*','inv_lot_allocation.lot_number')
-                                            ->leftJoin('inv_supplier_invoice_item','inv_supplier_invoice_item.id','=','inv_supplier_invoice_rel.item')
-                                            ->leftJoin('inv_lot_allocation','inv_lot_allocation.si_invoice_item_id','=','inv_supplier_invoice_item.id')
-                                            ->where('inv_supplier_invoice_rel.master','=', $invoice_number)
-                                            ->where('inv_supplier_invoice_item.is_merged','=',0)
-                                            ->get();
+{
+    $not_alloted_item = [];
 
-        //print_r($items);exit;
-        foreach($items as $item)
-        {
-            if($item['lot_number']=='')
-            $not_alloted_item[] = $item['id'];
-        }
-        if(count($not_alloted_item)==0)
-        return 0;
-        else 
-        return 1;
+    $items = inv_supplier_invoice_rel::select(
+                'inv_supplier_invoice_item.*',
+                'inv_lot_allocation.lot_number',
+                'inv_final_purchase_order_master.po_number'
 
+            )
+            ->leftJoin('inv_supplier_invoice_item', 'inv_supplier_invoice_item.id', '=', 'inv_supplier_invoice_rel.item')
+            ->leftJoin('inv_lot_allocation', 'inv_lot_allocation.si_invoice_item_id', '=', 'inv_supplier_invoice_item.id')
+            ->leftJoin('inv_final_purchase_order_master','inv_final_purchase_order_master.id','=','inv_supplier_invoice_item.po_master_id')
+            ->where('inv_supplier_invoice_rel.master', '=', $invoice_number)
+            ->where('inv_supplier_invoice_item.is_merged', '=', 0)
+            ->get();
+//dd($items);
+foreach ($items as $item) {
+    $po_number = trim($item['po_number'] ?? '');
+    //dd($po_number);
+    if ($item['lot_number'] == '' && !(str_starts_with($po_number, 'POI3'))) {
+        $not_alloted_item[] = $item['id'];
     }
+}
+//dd('hi');
+    return count($not_alloted_item) === 0 ? 0 : 1;
+}
+
     public function MACAddItemInfo(Request $request, $id)
     {
         if ($request->isMethod('post')) {
@@ -379,6 +391,8 @@ class MACController extends Controller
             if(!$validator->errors()->all()){
                 $data['accepted_quantity'] =$request->accepted_quantity;
                 $data['available_qty'] = $request->accepted_quantity;
+                $data['expiry_date'] = date('Y-m-d', strtotime($request->exp_date));
+
                 $update = $this->inv_mac_item->update_data(['inv_mac_item.id'=>$request->id],$data);
                 $mac_id = inv_mac_item_rel::where('item','=',$request->id)->pluck('master')->first();
                 $stock_update = $this->stock_management($request->id);
@@ -425,11 +439,11 @@ class MACController extends Controller
                     if($item_type=="Direct Items"){
                         // if($item_type2!='Finished Goods')
                         // {
-                            $Data['mac_number'] = "WOA2-".$this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA2-'.$years_combo.'%')->count()); 
+                            $Data['mac_number'] = "WOA2-".$this->year_combo_num_gen_inv(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA2-'.$years_combo.'%')->count()); 
                     }
                     //if($item_type=="Indirect Items"){
                     else {
-                        $Data['mac_number'] = "WOA3-" . $this->year_combo_num_gen(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA3-'.$years_combo.'%')->count()); 
+                        $Data['mac_number'] = "WOA3-" . $this->year_combo_num_gen_inv(DB::table('inv_mac')->where('inv_mac.mac_number', 'LIKE', 'WOA3-'.$years_combo.'%')->count()); 
                     }
                     $Data['mac_date'] = date('Y-m-d', strtotime($request->mac_date));
                     $Data['invoice_id'] = $request->invoice_number;

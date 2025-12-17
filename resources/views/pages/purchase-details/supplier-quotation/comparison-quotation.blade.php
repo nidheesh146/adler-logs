@@ -91,6 +91,7 @@
 						</tr>
                         <tr>
                         @if(!empty($suppliers))
+                        <input type="hidden" name="item_count"  id="item_count" value="{{count($supplier_data)}}">
 				            @foreach($suppliers as $supplier)
                             <th></th>
                             <th width="5%" style="color:#1c273c;">Rate</th>
@@ -221,6 +222,26 @@ $('.item-select-radio').on('change', function() {
     });
 });
 
+document.addEventListener('visibilitychange', e=>{
+     if (document.visibilityState === 'visible') 
+     {
+    } 
+    else 
+    {
+        var itemcount = $('#item_count').val();
+        var numberOfChecked = $('input:radio:checked').length;
+        // alert(numberOfChecked);
+        // alert(itemcount);
+        if(itemcount!=numberOfChecked)
+        {
+            if(!confirm('You did not check all items, Do you want to proceed?' )) 
+            { 
+                return false; 
+                e.preventDefault();
+            } 
+        }
+    }  
+});
 // $(".select-button").on("click", function(){
 //     var quotation_id = $(this).data('quotation');
 //     var supplier = $(this).data('supplier');

@@ -39,6 +39,7 @@ class SupplierQuotationController extends Controller
     public function getSupplierQuotation(Request $request) 
     {     
             $condition[] = ['inv_purchase_req_quotation.status', '=', 1];
+           // $condition[] = ['inv_purchase_req_quotation.final_purchase_order', '=', 0];
             if ($request->rq_no) {
                 $condition[] = ['inv_purchase_req_quotation.rq_no', 'like', '%'.$request->rq_no.'%'];
             }
@@ -68,6 +69,15 @@ class SupplierQuotationController extends Controller
         //print_r(json_encode($data['quotation']));exit;
         return view('pages/purchase-details/supplier-quotation/supplier-quotation', compact('data'));
     }
+
+    function getSupplierQuotationMerge(){
+        $masterData = DB::table('inv_final_purchase_order_master')->select('*')->get();
+        foreach($masterData as $masterData1){
+            DB::table('inv_purchase_req_quotation')->where(['quotation_id'=>$masterData1->rq_master_id])->update(['final_purchase_order'=>1]);
+        }
+    return 'done';
+    }
+    
     function get_supplier($quotation_id){
       $suppliers ="";
       $supplier_id ="";
@@ -448,6 +458,30 @@ class SupplierQuotationController extends Controller
         
     }
 
+    public function saveExchangeRate(Request $request)
+{
+    // Validate the incoming data
+    $request->validate([
+        'currency' => 'required|string|max:3|regex:/^[A-Z]{3}$/', // Ensure it's uppercase and 3 characters
+    ]);
+
+    // Check if the currency_code already exists
+    if (DB::table('currency_exchange_rate')->where('currency_code', $request->input('currency'))->exists()) {
+        return redirect()->back()->with('error', 'Currency already exists.');
+    }
+
+    // Insert the data into the currency_exchange_rate table
+    DB::table('currency_exchange_rate')->insert([
+        'currency_code' => $request->input('currency'),
+        // 'created_at' => now(),
+        // 'updated_at' => now()
+    ]);
+
+    // Redirect or respond with a success message
+    return redirect()->back()->with('success', 'Exchange rate added successfully!');
+}
+
+
     public function getCurrency_code($rq_no,$supplier_id)
     {
         $currency = inv_purchase_req_quotation_item_supp_rel::where('quotation_id','=',$rq_no)
@@ -468,6 +502,11 @@ class SupplierQuotationController extends Controller
             $request =null;
             return Excel::download(new SupplierQuotationExport($request), 'supplier_quotation' . date('d-m-Y') . '.xlsx');
         }
+    }
+    public function getItemCount($rq_id)
+    {
+        $items = inv_purchase_req_quotation_item_supp_rel::where('quotation_id',$rq_id)->where('selected_item',1)->get();
+        count($items);
     }
 }
 

@@ -13,6 +13,7 @@ use App\Models\FGS\fgs_product_stock_management;
 use App\Models\FGS\production_stock_management;
 use App\Models\FGS\fgs_qurantine_stock_management;
 use App\Models\FGS\fgs_product_category;
+use App\Models\FGS\fgs_product_category_new;
 use App\Models\FGS\fgs_mtq;
 use App\Models\FGS\fgs_mtq_item;
 use App\Models\FGS\fgs_mis;
@@ -80,6 +81,7 @@ class MISController extends Controller
                 $data['mis_date'] = date('Y-m-d', strtotime($request->mis_date));
                 $data['mtq_id'] = $request->mtq_no;
                 $data['product_category_id'] = $request->product_category;
+                $data['new_product_category'] = $request->new_product_category;
                 $data['stock_location_id'] = $request->stock_location;
                 $data['created_by']= config('user')['user_id'];
                 $data['status']=1;
@@ -117,7 +119,8 @@ class MISController extends Controller
         {
             $locations = product_stock_location::get();
             $category = fgs_product_category::get();
-            return view('pages/FGS/MIS/MIS-add',compact('locations','category'));
+            $product_category = fgs_product_category_new::get();
+            return view('pages/FGS/MIS/MIS-add',compact('locations','category','product_category'));
         }
        
     }
@@ -257,7 +260,7 @@ class MISController extends Controller
         $condition[] = ['fgs_mis_item_rel.master','=',$request->mis_id];
         if($request->product)
         {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->product . '%'];
+            $condition[] = ['fgs_item_master.sku_code','like', '%' . $request->product . '%'];
         }
         if($request->batch_no)
         {
@@ -277,71 +280,88 @@ class MISController extends Controller
         $data['items'] = $this->fgs_mis_item->get_items(['fgs_mis_item_rel.master' => $mis_id]);
         $pdf = PDF::loadView('pages.FGS.MIS.pdf-view', $data);
         // $pdf->set_paper('A4', 'landscape');
+       // $pdf->setOptions(['isPhpEnabled' => true]);       
+       $pdf->setOptions(['isPhpEnabled' => true]); 
         $file_name = "MIS" . $data['mis']['firm_name'] . "_" . $data['mis']['mis_date'];
         return $pdf->stream($file_name . '.pdf');
     }
     public function mis_transaction(Request $request)
     {
-        $condition=[];
-        if($request->mis_no)
-        {
-            $condition[] = ['fgs_mis.mis_number','like', '%' . $request->mis_no . '%']; 
+        $condition = [];
+        if ($request->mis_no) {
+            $condition[] = ['fgs_mis.mis_number', 'like', '%' . $request->mis_no . '%'];
         }
-        
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
-        if($request->from)
-        {
+        if ($request->from) {
             $condition[] = ['fgs_mis_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-           
         }
-        $items = fgs_mis_item::select('fgs_mis.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'fgs_mis.mis_number','fgs_mis.mis_date','fgs_mis.created_at as mis_wef','fgs_mis_item.id as mis_item_id')
+        $items = fgs_mis_item::select(
+            'fgs_mis.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_mis.mis_number',
+            'fgs_mis.mis_date',
+            'fgs_mis.created_at as mis_wef',
+            'fgs_mis_item.id as mis_item_id'
+        )
             ->leftJoin('fgs_mis_item_rel', 'fgs_mis_item_rel.item', '=', 'fgs_mis_item.id')
             ->leftJoin('fgs_mis', 'fgs_mis.id', '=', 'fgs_mis_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mis_item.product_id')
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_mis_item.product_id')
             //->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mis_item.batchcard_id')
             //->where('fgs_mis_item.batchcard_id', '=', $batch_id)
             ->where($condition)
             //->where('fgs_mis_item.status',1)
             //->distinct('fgs_mis_item.id')
-            ->orderBy('fgs_mis_item.id','desc')
+            ->orderBy('fgs_mis_item.id', 'desc')
             ->paginate(15);
-            
-        return view('pages/fgs/MIS/MIS-transaction-list',compact('items'));
+
+        return view('pages/fgs/MIS/MIS-transaction-list', compact('items'));
     }
     public function mis_transaction_export(Request $request)
     {
-        $condition=[];
-        if($request->mis_no)
-        {
-            $condition[] = ['fgs_mis.mis_number','like', '%' . $request->mis_no . '%']; 
+        $condition = [];
+        if ($request->mis_no) {
+            $condition[] = ['fgs_mis.mis_number', 'like', '%' . $request->mis_no . '%'];
         }
-        
-        if($request->item_code)
-        {
-            $condition[] = ['product_product.sku_code','like', '%' . $request->item_code . '%']; 
+
+        if ($request->item_code) {
+            $condition[] = ['fgs_item_master.sku_code', 'like', '%' . $request->item_code . '%'];
         }
-        if($request->from)
-        {
+        if ($request->from) {
             $condition[] = ['fgs_mis_item.manufacturing_date', '>=', date('Y-m-d', strtotime('01-' . $request->from))];
-           
         }
-        $items = fgs_mis_item::select('fgs_mis.*','product_product.sku_code','product_product.discription','product_product.hsn_code',
-        'fgs_mis.mis_number','fgs_mis.mis_date','fgs_mis.created_at as mis_wef','fgs_mis_item.id as mis_item_id')
+        $items = fgs_mis_item::select(
+            'fgs_mis.*',
+            'fgs_item_master.sku_code',
+            'fgs_item_master.discription',
+            'fgs_item_master.hsn_code',
+            'fgs_mis.mis_number',
+            'fgs_mis.mis_date',
+            'fgs_mis.created_at as mis_wef',
+            'fgs_mis_item.id as mis_item_id',
+            'fgs_product_category.category_name',
+            'fgs_product_category_new.category_name as new_category_name'
+
+        )
             ->leftJoin('fgs_mis_item_rel', 'fgs_mis_item_rel.item', '=', 'fgs_mis_item.id')
             ->leftJoin('fgs_mis', 'fgs_mis.id', '=', 'fgs_mis_item_rel.master')
-            ->leftjoin('product_product', 'product_product.id', '=', 'fgs_mis_item.product_id')
-           // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mis_item.batchcard_id')
+            ->leftJoin('fgs_mtq', 'fgs_mtq.id', '=', 'fgs_mis.mtq_id')
+
+            ->leftjoin('fgs_item_master', 'fgs_item_master.id', '=', 'fgs_mis_item.product_id')
+            ->leftJoin('fgs_product_category', 'fgs_product_category.id', '=', 'fgs_mtq.product_category_id')
+            ->leftJoin('fgs_product_category_new','fgs_product_category_new.id','fgs_mis.new_product_category')
+
+            // ->leftjoin('batchcard_batchcard', 'batchcard_batchcard.id', '=', 'fgs_mis_item.batchcard_id')
             //->where('fgs_mis_item.batchcard_id', '=', $batch_id)
             ->where($condition)
             //->where('fgs_mis_item.status',1)
             //->distinct('fgs_mis_item.id')
-            ->orderBy('fgs_mis_item.id','desc')
+            ->orderBy('fgs_mis_item.id', 'desc')
             ->get();
-            return Excel::download(new FGSmistransactionExport($items), 'FGS-MIS-transaction' . date('d-m-Y') . '.xlsx');
-
+        return Excel::download(new FGSmistransactionExport($items), 'FGS-MIS-transaction' . date('d-m-Y') . '.xlsx');
     }
 }

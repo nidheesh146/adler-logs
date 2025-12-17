@@ -11,7 +11,7 @@
 				 	MIN  Transaction List
 				</a></span>
 				 </div>
-                 @include('includes.fgs.fgs-transaction-tab')
+				 @include('includes.fgs.inv-trans-tab')
             <br><br>
 			<h4 class="az-content-title" style="font-size: 20px;">
             MIN  Transaction List

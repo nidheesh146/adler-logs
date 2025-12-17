@@ -67,6 +67,12 @@
                                 <label>PI Date *</label>
                                 <input type="text" value="{{date('d-m-Y', strtotime($pi['pi_date']))}}" class="form-control pi_date" id="pi_date" name="pi_date"  placeholder="">
                             </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>OEF Remark </label>
+                                <input type="text" value="{{$pi['oef_remarks']}}" class="form-control" id="oef_remarks" name="oef_remarks"  placeholder="">
+                                <input type="hidden" value="{{$pi['oef_id']}}" class="form-control" id="oef_id" name="oef_id"  placeholder="">
+
+                            </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">

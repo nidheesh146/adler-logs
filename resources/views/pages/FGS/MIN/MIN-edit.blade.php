@@ -104,7 +104,10 @@
                                 <label>MIN Date *</label>
                                 <input type="text" value="{{date('d-m-Y',strtotime($min->min_date))}}" class="form-control  " name="min_date" placeholder="">
                             </div><!-- form-group -->
-                            
+                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                    <label for="exampleInputEmail1">Remarks  </label>
+                                    <textarea type="text" class="form-control" name="remarks" value=" " placeholder="">{{$min->remarks}}</textarea>
+                                </div>
 
                             
                         </div>                       

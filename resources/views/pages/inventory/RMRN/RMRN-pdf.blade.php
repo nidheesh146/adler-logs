@@ -61,7 +61,7 @@
         <p>{{$rmrn['address']}}
         Cell No : {{ SplitPhone($rmrn['contact_number']) }}</p><br/>
         </div>
-        <div style="width:40%"></div>
+        <div style="width:23%"></div>
         <div class="adler-address">
             FROM:<br>
             <strong>ADLER HEALTHCARE PVT. LTD</strong>

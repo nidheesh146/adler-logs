@@ -58,19 +58,22 @@ $obj_oef=new OEFController;
 										<th scope="row">
 											<div class="row filter_search" style="margin-left: 0px;">
 												<div class="col-sm-10 col-md- col-lg-10 col-xl-10 row">
-
-													<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-4">
+												<div class="form-group col-sm-12 col-md-3 col-lg- col-xl-3">
+														<label>CUSTOMER :</label>
+														<input type="text" value="{{request()->get('firm_name')}}" name="firm_name" id="firm_name" class="form-control" placeholder="CUSTOMER">
+													</div>
+													<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
 														<label>OEF No :</label>
 														<input type="text" value="{{request()->get('oef_number')}}" name="oef_number" id="oef_number" class="form-control" placeholder="OEF NO">
 													</div><!-- form-group -->
 
 
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+													<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
 														<label for="exampleInputEmail1" style="font-size: 12px;">Order No</label>
 														<input type="text" value="{{request()->get('order_number')}}" name="order_number" id="order_number" class="form-control" placeholder="ORDER NUMBER">
 													</div>
 
-													<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+													<div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
 														<label style="font-size: 12px;">OEF Month</label>
 														<input type="text" value="{{request()->get('from')}}" id="from" class="form-control datepicker" name="from" placeholder="Month(MM-YYYY)">
 													</div>
@@ -96,8 +99,12 @@ $obj_oef=new OEFController;
 
 
 				<div class="tab-pane  active  show " id="purchase">
-
+					<a class="badge badge-success" style="float:right;font-size: 13px; color:white;border:solid black;border-width:thin;margin-top:2px;"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a><span style="float:right;">&nbsp;&nbsp;Sent Mail : </span>
+					&nbsp;&nbsp;
+					<a class="badge badge-default" style="float:right;font-size: 13px; color:white;background:blue;border:solid black;border-width:thin;margin-top:2px;"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a><span style="float:right;">Not Sent Mail : </span>
+					
 					<div class="table-responsive">
+					<br/>
 						<table class="table table-bordered mg-b-0">
 							<thead>
 								<tr>
@@ -108,6 +115,7 @@ $obj_oef=new OEFController;
 									<th>Order date</th>
 									{{--<th>Order Fulfil</th>--}}
 									<th>Transaction Type</th>
+									<th>Business Category</th>
 									<th>Product Category</th>
 									{{--<th>Due Date</th>--}}
 									<th>Action</th>
@@ -129,6 +137,7 @@ $obj_oef=new OEFController;
 									{{--<td>{{$item['order_fulfil_type']}}</td>--}}
 									<td>{{$item['transaction_name']}}</td>
 									<td>{{$item['category_name']}}</td>
+									<td>{{$item['new_category_name']}}</td>
 									{{--<td>{{date('d-m-Y', strtotime($item['due_date']))}}</td>--}}
 
 									
@@ -136,6 +145,12 @@ $obj_oef=new OEFController;
 										<a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/OEF/item-list/'.$item["id"])}}" class="dropdown-item"><i class="fas fa-eye"></i> Item</a><br />
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/OEF/pdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;PDF</a>
 										<a class="badge badge-default" style="font-size: 13px; color:black;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/OEF/ackpdf/'.$item["id"])}}" target="_blank"><i class="fas fa-file-pdf" style='color:red'></i>&nbsp;Acknowledgment</a>
+										@if($item['is_mail_sent']==1)
+										<a class="badge badge-success" style="font-size: 13px; color:white;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/OEF/order-acknowledgement-mail/'.$item["id"])}}"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a>
+										@else
+										<a class="badge badge-default" style="font-size: 13px;background:blue; color:white;border:solid black;border-width:thin;margin-top:2px;" href="{{url('fgs/OEF/order-acknowledgement-mail/'.$item["id"])}}"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email</a>
+										@endif
+
 									</td>
 
 									@if(!empty($obj_oef->check_item($item["id"])))
@@ -188,10 +203,11 @@ $obj_oef=new OEFController;
 		$('#prbody2').show();
 	});
 	$('.search-btn').on("click", function(e) {
+		var firm_name = $('#firm_name').val();
 		var oef_number = $('#oef_number').val();
 		var order_number = $('#order_number').val();
 		var from = $('#from').val();
-		if (!oef_number & !order_number & !from) {
+		if (!firm_name & !oef_number & !order_number & !from) {
 			e.preventDefault();
 		}
 	});

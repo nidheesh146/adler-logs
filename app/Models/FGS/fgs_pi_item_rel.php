@@ -14,7 +14,7 @@ class fgs_pi_item_rel extends Model
     
     function getAllItems($condition)
     {
-        return $this->select('fgs_grs.grs_number','fgs_grs.grs_date','product_product.sku_code','fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date','product_product.hsn_code','product_product.discription',
+        return $this->select('fgs_pi_item.id as pi_item_id','fgs_grs.grs_number','fgs_grs.grs_date','fgs_item_master.sku_code','fgs_oef.oef_number','fgs_oef.oef_date','fgs_oef.order_number','fgs_oef.order_date','fgs_item_master.hsn_code','fgs_item_master.discription',
         'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity as quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code',
         'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_pi_item.remaining_qty_after_cancel')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_pi_item_rel.item')
@@ -27,8 +27,8 @@ class fgs_pi_item_rel extends Model
                         ->leftJoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_pi_item.mrn_item_id')
                         ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
                         ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
-                        ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
-                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_grs_item.product_id')
+                        ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_pi_item.batchcard_id')
                         ->where('fgs_grs.status','=',1)
                         ->where('fgs_pi.status','=',1)
                         ->where('fgs_pi_item.status','=',1)

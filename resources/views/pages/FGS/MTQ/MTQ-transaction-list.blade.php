@@ -11,7 +11,7 @@
 				 	MTQ  Transaction List
 				</a></span>
 				 </div>
-                 @include('includes.fgs.fgs-transaction-tab')
+				 @include('includes.fgs.inv-trans-tab')
             <br><br>
 			<h4 class="az-content-title" style="font-size: 20px;">
             MTQ  Transaction List
@@ -116,9 +116,9 @@
                             <td>{{$sl++}}</td>
                                 <td>{{$item->sku_code}}</td>
                                 <td>{{$item->discription}}</td>
-                                <td>{{$item->mtq}}</td>
+                                <td>{{$item->mtq_number}}</td>
                                 <td>{{$item->quantity}} Nos</td>
-                                <td>{{date('d-m-Y',strtotime($item->mtq))}}</td>
+                                <td>{{date('d-m-Y',strtotime($item->mtq_date))}}</td>
                             </tr>
                             @endforeach
 							</tbody>

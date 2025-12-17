@@ -30,24 +30,26 @@ class customer_supplier extends Model
     function get_customer_data($condition)
     {
         return $this->select(['customer_supplier.id','customer_supplier.firm_name as text','customer_supplier.billing_address',
-        'customer_supplier.shipping_address','zone.zone_name'])
+        'customer_supplier.shipping_address','zone.zone_name','customer_supplier.contact_number','customer_supplier.contact_person','customer_supplier.dl_expiry_date'])
                     ->leftjoin('zone','zone.id','=','customer_supplier.zone')
                     ->where('firm_name','like','%'.$condition.'%')
+                    ->where('status_type',1)
                     ->get()->toArray();
     }
     function get_domestic_customer_data($condition)
     {
         return $this->select(['customer_supplier.id','customer_supplier.firm_name as text','customer_supplier.billing_address',
-        'customer_supplier.shipping_address','zone.zone_name'])
+        'customer_supplier.shipping_address','zone.zone_name','customer_supplier.dl_expiry_date'])
                     ->leftjoin('zone','zone.id','=','customer_supplier.zone')
                     ->where('zone.zone_name','!=','Export')
                     ->where('firm_name','like','%'.$condition.'%')
+                    ->where('status_type',1)
                     ->get()->toArray();
     }
     function get_export_customer_data($condition)
     {
         return $this->select(['customer_supplier.id','customer_supplier.firm_name as text','customer_supplier.billing_address',
-        'customer_supplier.shipping_address','zone.zone_name'])
+        'customer_supplier.shipping_address','zone.zone_name','customer_supplier.dl_expiry_date'])
                     ->leftjoin('zone','zone.id','=','customer_supplier.zone')
                     ->where('zone.zone_name','=','Export')
                     ->where('firm_name','like','%'.$condition.'%')
@@ -56,7 +58,8 @@ class customer_supplier extends Model
     function get_single_customer_supplier($condition)
     {
         
-     return $this->select('customer_supplier.*')
+     return $this->select('customer_supplier.*','zone.zone_name')
+                    ->leftjoin('zone','zone.id','=','customer_supplier.zone')
                     ->where($condition)
                     ->where('customer_supplier.is_active','=',1)
                     ->orderby('customer_supplier.id','desc')

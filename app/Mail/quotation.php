@@ -33,7 +33,7 @@ class quotation extends Mailable
             return $this->view('emails.add_quotation',compact('mailData'))
           // ->text('email.laraemail_plain')
           // ->from($from, $name)
-           ->cc('shilma33@gmail.com', 'Shilma')
+          //  ->cc('shilma33@gmail.com', 'Shilma')
           // ->bcc($cc, $name)
           // ->replyTo($from, $name)
              ->subject($this->mailData->subject);

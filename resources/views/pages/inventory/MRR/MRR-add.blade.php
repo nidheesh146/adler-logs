@@ -233,6 +233,12 @@
     <script src="<?= url('') ?>/js/additional-methods.js"></script>
     <script>
         $(function(){
+            $(document).ready(function() {
+        $('form').submit(function() {
+            $(this).find(':submit').prop('disabled', true);
+        });
+        
+    });
             'use strict'
             $("#commentForm").validate({
                 rules: {

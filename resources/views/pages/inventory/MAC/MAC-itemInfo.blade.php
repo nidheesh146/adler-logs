@@ -81,7 +81,15 @@
                                 <input type="text" value="@if($data) {{$data['unit_name']}} @endif" class="form-control " name="unit" placeholder="Stk Kpng Unit" readonly>
                             </div><!-- form-group -->
                             
-                            
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <label>Expiry date *</label>
+                               
+                                @if($data['is_expiry']==0)
+                                <input type="text" class="form-control datepicker" value="" name="exp_date" placeholder="NA" disabled>
+                                @else
+                                <input type="text" class="form-control datepicker" value="@if($data) {{$data['mac_exp']}} @else {{date('d-m-Y')}} @endif" name="exp_date"  >
+                                @endif
+                            </div>
                             <!-- <div class="form-group col-sm-12 $col-md-3 col-lg-3 col-xl-3">
                                 <label>Conversion rate (INR) *</label>
                                 <input type="text" class="form-control" value="" name="conversion_rate" id="conversion_rate" placeholder="Conversion rate">

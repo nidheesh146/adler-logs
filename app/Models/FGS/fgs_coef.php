@@ -35,18 +35,19 @@ class fgs_coef extends Model
                 ->distinct('fgs_oef.id')
                 ->get();
     }
-    function get_single_oef($condition)
+    function get_single_coef($condition)
     {
         return $this->select('fgs_coef.*','order_fulfil.order_fulfil_type','transaction_type.transaction_name','customer_supplier.firm_name','customer_supplier.pan_number','customer_supplier.gst_number',
         'customer_supplier.shipping_address','customer_supplier.billing_address','customer_supplier.sales_type','customer_supplier.contact_person','customer_supplier.sales_type','customer_supplier.city',
         'customer_supplier.contact_number','customer_supplier.designation','customer_supplier.email','currency_exchange_rate.currency_code','zone.zone_name','state.state_name','customer_supplier.dl_number1','customer_supplier.payment_terms',
-        'customer_supplier.dl_number2','customer_supplier.dl_number3','fgs_oef.order_number','fgs_oef.order_date','fgs_oef.due_date','fgs_product_category.category_name')
+        'customer_supplier.dl_number2','customer_supplier.dl_number3','fgs_oef.order_number','fgs_oef.order_date','fgs_oef.due_date','fgs_product_category.category_name','fgs_product_category_new.category_name as new_category_name','fgs_oef.remarks as oef_remarks','fgs_oef.oef_number')
                     ->leftJoin('fgs_oef','fgs_oef.id','=','fgs_coef.oef_id')
                     ->leftJoin('order_fulfil','order_fulfil.id','=','fgs_oef.order_fulfil')
                     ->leftJoin('transaction_type','transaction_type.id','=','fgs_oef.transaction_type')
                     ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_oef.customer_id')
                     ->leftJoin('zone','zone.id','=','customer_supplier.zone')
                     ->leftJoin('fgs_product_category','fgs_product_category.id','fgs_oef.product_category')
+                    ->leftJoin('fgs_product_category_new','fgs_product_category_new.id','fgs_oef.new_product_category')
                     ->leftJoin('state','state.state_id','=','customer_supplier.state')
                     ->leftJoin('currency_exchange_rate','currency_exchange_rate.currency_id','=','customer_supplier.currency')
                     ->where($condition)

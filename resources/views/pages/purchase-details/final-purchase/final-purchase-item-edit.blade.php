@@ -9,12 +9,12 @@
               <div class="az-content-breadcrumb">
               <span><a href="{{url('inventory/final-purchase?order_type=')}}{{($data->type == "PO") ? 'po': 'wo';}}">  @if($data->type == "PO") Final Purchase @else Work @endif Order </a></span>
                    <span> <a href="{{url('inventory/final-purchase-add/'.$data->fpo_master_id)}}"> Edit @if($data->type == "PO") Final Purchase @else Work @endif Order</a></span>
-                    <span><a>  Edit @if($data->type == "PO") Final Purchase @else Work @endif Order Item</a></span>
+                    <span><a>  Edit  @if($data->type == "PO") Final Purchase @else Work @endif Order Item</a></span>
               </div>
 
               <h4 class="az-content-title" style="font-size: 20px;margin-bottom: 18px !important;">
                   <!-- Add  Supplier quotation item</h4> -->
-                  Edit Supplier Quotation Item for  ( {{$data['vendor_id']}} - {{$data['vendor_name']}} ) 
+                  Edit  Supplier Quotation Item for  ( {{$data['vendor_id']}} - {{$data['vendor_name']}} ) 
               </h4>
               <!-- <div class="az-dashboard-nav">
                   <nav class="nav">
@@ -28,8 +28,6 @@
               <div class="row">
 
                   <div class="col-sm-12   col-md-12 col-lg-12 col-xl-12 " style="border: 0px solid rgba(28, 39, 60, 0.12);">
-
-
                       <!-- <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3"></div> -->
                       @if (Session::get('success'))
                       <div class="alert alert-success " style="width: 100%;">
@@ -140,7 +138,7 @@
                                 </div>
                                 <div class="form-group col-sm-12 col-md-2 col-lg-2 col-xl-2" style="float:left;">
                                   <label> IGST ( % ) </label>
-                                  <input type="hidden" name="gst" id="gst-id" value="@if(!empty($data['get_item_single']['gst'])) {{$data['get_item_single']['gst']}}  @endif">
+                                  <input type="hidden" name="gst" id="gst-id" value="@if(!empty($data)) {{$data['gst']}}  @endif">
                                   <select class="form-control IGST" id="IGST" name="IGST">
                                     <option value="">--- select one ---</option>
                                     @if(!empty($data))

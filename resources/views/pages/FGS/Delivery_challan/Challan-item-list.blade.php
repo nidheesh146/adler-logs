@@ -1,6 +1,42 @@
 @extends('layouts.default')
 @section('content')
 @inject('fn', 'App\Http\Controllers\Web\FGS\GRSController')
+@php
+use App\Http\Controllers\Web\FGS\DeliveryNoteController;
+$obj_batch= new DeliveryNoteController;
+@endphp
+<style>
+    input[type="checkbox"]{
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        content: none;
+        outline: none;
+        margin: 0;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    
+
+    input[type="checkbox"]:checked {
+        appearance: none;
+        outline: none;
+        padding: 0;
+        content: none;
+        border: none;
+    }
+
+    input[type="checkbox"]:checked::before{
+        position: absolute;
+        color: white !important;
+        content: "\00A0\2713\00A0" !important;
+        border: 1px solid #d3d3d3;
+        font-weight: bolder;
+        font-size: 18px;
+    }
+
+               
+                
+</style>
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -69,7 +105,7 @@
                                             <th>HSN Code</th>
                                             <th>Batchcard</th>
                                             <th>Batch Quantity </th>
-                                            <th>Manufacturing Date</th>
+                                            <th>Manufacttturing Date</th>
                                             <th>Expiry Date</th>
                                             <th>Status</th>
                                         </tr>                                                
@@ -84,9 +120,15 @@
                                             <td>{{$item['discription']}}</td>
                                             <td>{{$item['hsn_code']}} </td>
                                             <td>{{$item['batch_no']}} </td>
-                                            <td>{{$item['batch_quantity']}} Nos</td>
+                                            <td>{{$item['remaining_qty_after_cancel']}} Nos</td>
                                             <td>{{$item['manufacturing_date']}}</td>
-                                            <td>@if($item['expiry_date']=='0000-00-00') NA @else {{$item['expiry_date']}} @endif</td>
+											<td>
+    @if($item['expiry_date'] == '0000-00-00' || $item['expiry_date'] == '1970-01-01')
+        NA
+    @else
+        {{ $item['expiry_date'] }}
+    @endif
+</td>
                                             <td>
 												@if($item['cdc_status']==0)
 												<span class="badge badge-primary" style="width:60px;">Active</span>
@@ -94,6 +136,12 @@
 												<span class="badge badge-danger" style="width:60px;">Cancelled</span> 
 												@endif
 											</td> 
+											<td>
+											{{--<a class="badge badge-primary" style="font-size: 13px;" href="{{url('fgs/Delivery_challan/Challan-item-edit/'.$item['id'])}}"><i class="fa fa-edit"></i> Edit</a>--}}
+											<a class="badge badge-danger" style="font-size: 13px;"  href="{{url('fgs/Delivery_challan/Challan-item-delete/'.$item['id'])}}"><i class="fa fa-trash"></i> Delete</a>
+
+											</td>
+
 											{{--<td>
 												<?php $is_exist_in_pi = $fn->grsItemExistInPI($item['id']);?>
 												@if($is_exist_in_pi==1)
@@ -124,6 +172,14 @@
 							<label style="color: #3f51b5;font-weight: 500;margin-bottom:2px;">
 							<i class='fas fa-hand-point-right'></i> Unreserved OEF Items
 							</label>
+							<div style="float:right;">
+                                <input type="checkbox" disabled  class="item-select-radio check-approve bg-info text-white "  style="color:info;width:20px;height:20px;">
+                                <span style="vertical-align: middle;"><label  style="font-size: 12px;">Batch card with full qty</label></span>
+                                <input type="checkbox" disabled class="item-select-radio check-hold bg-warning text-dark "   style="color:yellow;width:20px;height:20px;">
+                                <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>Batch card with partial qty</span></label></span>
+                                <input type="checkbox"disabled  class="item-select-radio check-reject bg-danger text-white check-all-reject"  style="color:red;width:20px;height:20px;">
+                                <span style="vertical-align: middle;"><label  style="font-size: 12px;"><span>No batchcard</span></label></span>
+                            </div>
 							<table class="table table-bordered mg-b-0" >
                             	<thead>
                                 	<tr>
@@ -151,7 +207,14 @@
                                                         CGST:{{$item['cgst']}}%<br/>
                                                         SGST:{{$item['sgst']}}%
                                             </td>
-											<td><a class="badge badge-info" style="font-size: 13px;" href="{{url('fgs/Delivery_challan/'.$dc_id.'/add-item/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-plus"></i>  Challan Item</a></td>
+											<td><a
+											 @if($obj_batch->get_batch($dc_id,$item["id"])==0)class="badge badge-danger"
+											 @elseif($obj_batch->get_batch($dc_id,$item["id"])==1 && $item['quantity']==$item['quantity_to_allocate']) class="badge badge-info"
+											  @else class="badge badge-warning"@endif 
+											  style="font-size: 13px;" href="{{url('fgs/Delivery_challan/'.$dc_id.'/add-item/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-plus"></i>  Challan Item</a></td>
+                                       
+											{{--<td><a class="badge badge-info" style="font-size: 13px;"
+											 href="{{url('fgs/Delivery_challan/'.$dc_id.'/add-item/'.$item["id"])}}"  class="dropdown-item"><i class="fas fa-plus"></i>  Challan Item</a></td>--}}
                                         </tr>
                                     @endforeach
 									@endif

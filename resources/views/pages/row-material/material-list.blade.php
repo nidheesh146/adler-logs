@@ -13,7 +13,7 @@
                 </a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Raw Material List
-			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('row-material/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Row Material</button>
+			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('row-material/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Raw Material</button>
             </h4>
 			
 		   @if (Session::get('success'))
@@ -112,7 +112,13 @@
 								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-success"> Active <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu">
 									<a href="{{url('row-material/edit?id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
-									<a href="{{url('row-material/delete?id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
+									<a href="{{url('raw-material/deactivate?id='.$item["id"])}}" onclick="return confirm('Are you sure you want to deactivate this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Deactivate</a> 
+								</div>
+								@elseif($item['is_active']==0)
+								<button data-toggle="dropdown" style="width: 64px;" class="badge badge-warning"> Deactive <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
+								<div class="dropdown-menu">
+									<!--a href="{{url('row-material/edit?id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a--> 
+									<a href="{{url('raw-material/activate?id='.$item["id"])}}" onclick="return confirm('Are you sure you want to activate this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Activate</a> 
 								</div>
 								@endif
 							</td>

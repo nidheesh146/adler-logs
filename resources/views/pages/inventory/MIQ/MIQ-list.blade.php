@@ -112,7 +112,7 @@
                        <td>{{$miq['vendor_name']}}</td>
                        <td>{{$miq['f_name']}} {{$miq['l_name']}}</td>
                         <td><a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MIQ-add/'.$miq['miq_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 	
-                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MIQ-delete/'.$miq['miq_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        <!--<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MIQ-delete/'.$miq['miq_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>-->
                         </td>
                     </tr>
                     @endforeach

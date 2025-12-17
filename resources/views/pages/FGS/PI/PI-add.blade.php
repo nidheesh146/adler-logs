@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('fn', 'App\Http\Controllers\Web\FGS\PIController')
 <div class="az-content az-content-dashboard">
   <br>
   <div class="container">
@@ -9,8 +10,10 @@
             <span> Proforma Invoice(PI)</span>
 		</div>
 		<h4 class="az-content-title" style="font-size: 20px;"> Proforma Invoice(PI)
-		  <div class="right-button">  
-		  <div> 
+            <div style="float: right;margin-left:600px;">
+                <div style="background-color:#C0C0C0;width:30px;height:30px;float:left;"></div>
+                <div style="font-size: 14px;float:left;margin-top:10px;">&nbsp;Indicates Expired/Expire within 2days Products</div>
+            </div>
 	    </h4>
 		<!-- <div class="az-dashboard-nav">
 			<nav class="nav"> </nav>	
@@ -103,17 +106,20 @@
                     <div class="form-devider"></div>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
-                                <label for="exampleInputEmail1">Customer  *</label>
-                                <input type="text" value="" class="form-control" id="customer_name"  readonly placeholder="{{$customer['firm_name']}}">
+                            <label for="exampleInputEmail1">Customer *</label> <label for="" style="color: red;"> 
+                                        @if($customer['dl_expiry_date']==date('Y-m-d')|| $daysDifference < 0)
+                                            This seller DL expired.
+                                            @elseif($daysDifference <= 30 && $daysDifference > 0)
+                                            This seller DL will expire within {{$daysDifference}}  days.
+                                            @endif</label>                                <input type="text" value="" class="form-control" id="customer_name"  readonly placeholder="{{$customer['firm_name']}}">
                                 <input type="hidden" class="form-control" name="customer_id"   value="{{$customer['id']}}">
                             </div> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label for="exampleInputEmail1">Customer Biiling Address</label>
-                                <textarea name="billing_address" class="form-control" id="billing_address" readonly>{{$customer['billing_address']}}</textarea>
-                            </div> 
+                                <textarea name="billing_address" class="form-control" id="billing_address" readonly>@if($customer['dl_expiry_date']==date('Y-m-d') || $daysDifference < 0) @else{{$customer['billing_address']}}@endif</textarea>                            </div> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label for="exampleInputEmail1">Customer Shipping Address</label>
-                                <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly>{{$customer['shipping_address']}}</textarea>
+                                <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly>@if($customer['dl_expiry_date']==date('Y-m-d') || $daysDifference < 0) @else{{$customer['shipping_address']}}@endif</textarea>
                             </div> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label>PI Date *</label>
@@ -129,41 +135,72 @@
                             <th><input type="checkbox" class="item-select-radio  check-all"></th>
 							<th style="width:120px;">GRS Number :</th>
 							<th>SKU Code</th>
-							<th>HSN Code</th>
+							<th>BATCHCARD INFO</th>
                             <th>Customer</th>
                             <th>GRS Date</th>
                             <th>Qty</th>
                             <th>Action</th>
 						</tr>
 					</thead>
+                    @if($customer['dl_expiry_date']==date('Y-m-d') || $daysDifference < 0 ) @else
+
 					<tbody>
-    					@foreach($grs_items as $item)
-                        <tr>
-                            <td><input type="checkbox" class="check_pi" name="grs_item_id[]" id="grs_item_id" supplier="{{$item['firm_name']}}" value="{{$item['id']}}"></td>
-                            <td>{{$item['grs_number']}}</td>
-                            <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{$item['discription']}}" >{{$item['sku_code']}}</td>
-                            <td>{{$item['hsn_code']}}</td>
-                            <td>{{$item['firm_name']}}</td>
-                            <td>{{date('d-m-Y', strtotime($item['grs_date']))}}</td>
-                            <td>@if($item['current_invoice_qty']!=0)
-                                {{$item['current_invoice_qty']}} Nos
-                                @elseif($item['remaining_qty_after_cancel']==$item['qty_to_invoice'])
-                                {{$item['remaining_qty_after_cancel']}} Nos
-                                @else
-                                {{$item['qty_to_invoice']}} Nos
-                                @endif
-                            </td>
-                            <td><a href="#" data-toggle="modal"  data-target="#PIpendingModal" class="invoice-pending-model badge badge-info"   id="invoice-pending-model" grsitem="{{$item['id']}}" skucode="{{$item['sku_code']}}"  orderqty="{{$item['remaining_qty_after_cancel']}}" description="{{$item['discription']}}"   grsid="{{$item['grs_number']}}" style="font-size: 13px;" balanceQty="@if($item['current_invoice_qty']!=0)
-                                {{$item['current_invoice_qty']}} 
-                                @elseif($item['remaining_qty_after_cancel']==$item['qty_to_invoice'])
-                                {{$item['remaining_qty_after_cancel']}}
-                                @else
-                                {{$item['qty_to_invoice']}} 
-                                @endif"><i class="fas fa-plus"></i> Partial</a>
-                            </td>
-                        </tr>
-                        @endforeach
+                    @foreach($grs_items as $item)
+    <?php
+    if (empty($item['expiry_date'])) {
+        $exp = '0000-00-00';
+    } else {
+        $exp = $item['expiry_date'];
+    }
+    $check = $fn->checkExpiry($exp);
+    $dateAfterSixMonth = date('Y-m-d', strtotime('+6 months'));
+    ?>
+    <tr @if($check == 1 && $exp != '1970-01-01' && $exp != '0000-00-00') style="background:#C0C0C0;" @endif>
+        <td>
+            @if($check == 0 || $exp == '1970-01-01' || $exp == '0000-00-00')
+                <input type="checkbox" class="check_pi" name="grs_item_id[]" id="grs_item_id" supplier="{{ $item['firm_name'] }}" value="{{ $item['id'] }}">
+            @endif
+        </td>
+        <td>{{ $item['grs_number'] }}</td>
+        <td><a href="#" style="color:#3b4863;" data-toggle="tooltip" data-placement="top" title="{{ $item['discription'] }}">{{ $item['sku_code'] }}</a></td>
+        <td>
+            <b>{{ $item['batch_no'] }}</b><br />
+            Mfg. Date: {{ date('d-m-Y', strtotime($item['manufacturing_date'])) }}<br />
+            Expiry. Date:
+            @if($exp == '0000-00-00' || $exp == '1970-01-01' || empty($item['expiry_date']))
+                NA
+            @else
+                {{ date('d-m-Y', strtotime($item['expiry_date'])) }}
+            @endif
+            <br />
+            @if($exp != '0000-00-00' && $exp != '1970-01-01' && !empty($item['expiry_date']) && $exp <= $dateAfterSixMonth && $check == 0)
+                <?php
+                    $now = new DateTime();
+                    $expiry_date = new DateTime($exp);
+                    $interval = $now->diff($expiry_date);
+                ?>
+                <span style="color:red;">Will Expire Within {{ $interval->format('%a') }} days</span>
+            @endif
+        </td>
+        <td>{{ $item['firm_name'] }}</td>
+        <td>{{ date('d-m-Y', strtotime($item['grs_date'])) }}</td>
+        <td>
+            @if($check == 0 || $exp == '1970-01-01' || $exp == '0000-00-00')
+                <a href="#" data-toggle="modal" data-target="#PIpendingModal" class="invoice-pending-model badge badge-info" id="invoice-pending-model"
+                   grsitem="{{ $item['id'] }}" skucode="{{ $item['sku_code'] }}" orderqty="{{ $item['remaining_qty_after_cancel'] }}"
+                   description="{{ $item['discription'] }}" grsid="{{ $item['grs_number'] }}" style="font-size: 13px;"
+                   balanceQty="@if($item['current_invoice_qty'] != 0) {{ $item['current_invoice_qty'] }}
+                               @elseif($item['remaining_qty_after_cancel'] == $item['qty_to_invoice']) {{ $item['remaining_qty_after_cancel'] }}
+                               @else {{ $item['qty_to_invoice'] }} @endif">
+                    <i class="fas fa-plus"></i> Partial
+                </a>
+            @endif
+        </td>
+    </tr>
+@endforeach
+
 					</tbody>
+                    @endif
 				</table>
 				<div class="box-footer clearfix">
                 

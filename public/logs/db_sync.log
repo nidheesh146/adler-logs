@@ -1,0 +1,555 @@
+2025-11-03 15:53:43,024 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:53:43,024 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:53:43,104 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 15:54:40,394 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:54:40,395 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:54:40,398 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 15:55:32,636 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:55:32,636 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:55:32,639 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 15:58:58,116 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-03 15:58:58,672 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:58:58,673 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:58:58,682 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 15:58:58,689 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:59:39,598 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-03 15:59:40,182 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:59:40,183 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 15:59:40,190 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 15:59:40,205 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:04:53,289 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-03 16:04:53,902 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:04:53,903 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:04:53,913 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 16:04:53,919 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:07:28,879 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-03 16:07:29,482 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:07:29,483 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:07:29,492 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 16:07:29,495 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:16:17,697 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-03 16:16:18,301 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:16:18,302 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:16:18,305 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 16:16:18,320 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:52:20,043 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-03 16:52:20,794 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:52:20,797 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:52:20,818 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 16:52:20,829 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:57:30,361 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-03 16:57:30,989 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:57:30,989 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-03 16:57:31,006 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-03 16:57:31,011 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 12:32:15,139 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 12:32:15,741 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 12:32:15,742 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 12:32:15,829 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-11 12:32:15,836 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 12:38:59,444 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 12:39:00,050 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 12:39:00,051 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 12:39:00,057 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-11 12:39:00,066 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 12:58:17,868 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 12:58:18,478 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 12:58:18,478 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 12:58:18,487 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-11 12:58:18,498 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 13:05:26,980 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 13:05:27,576 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 13:05:27,577 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 13:05:27,583 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-11 13:05:27,587 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 13:14:37,213 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 13:14:37,847 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 13:14:37,847 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 13:14:37,916 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+
+2025-11-11 13:14:37,918 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1130 (HY000): Host '103.119.179.42' is not allowed to connect to this MySQL server
+2025-11-11 13:32:15,120 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 13:32:16,603 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1044 (42000): Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'
+2025-11-11 13:32:16,605 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1044 (42000): Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'
+2025-11-11 13:32:16,623 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1044 (42000): Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'
+
+2025-11-11 13:32:16,628 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1044 (42000): Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'
+2025-11-11 15:16:20,479 - __main__ - INFO - [MainThread] -  Starting comprehensive database synchronization process
+2025-11-11 15:16:22,081 - __main__ - ERROR - [MainThread] - Error creating connection pools: 1044 (42000): Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'
+2025-11-11 15:16:22,082 - __main__ - ERROR - [MainThread] - Critical error during sync process: 1044 (42000): Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'
+2025-11-11 15:16:22,100 - __main__ - ERROR - [MainThread] - Traceback (most recent call last):
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 704, in run_sync
+    self.create_connection_pools()
+  File "C:\xampp\htdocs\adler-erp\public\python\mysql_sync_complete.py", line 199, in create_connection_pools
+    self.online_pool = pooling.MySQLConnectionPool(**online_config)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "C:\Users\NIDHEESH\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1044 (42000): Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'
+
+2025-11-11 15:16:22,109 - __main__ - ERROR - [MainThread] -  Sync failed with critical error: 1044 (42000): Access denied for user 'matsolut_adler'@'%' to database 'matsolut_malabarr_sku'

@@ -11,7 +11,7 @@
 				 	CMIN  Transaction List
 				</a></span>
 				 </div>
-                 @include('includes.fgs.fgs-transaction-tab')
+				 @include('includes.fgs.inv-trans-tab')
             <br><br>
 			<h4 class="az-content-title" style="font-size: 20px;">
             CMIN  Transaction List
@@ -116,9 +116,9 @@
                             <td>{{$sl++}}</td>
                                 <td>{{$item->sku_code}}</td>
                                 <td>{{$item->discription}}</td>
-                                <td>{{$item->cmin}}</td>
+                                <td>{{$item->cmin_number}}</td>
                                 <td>{{$item->quantity}} Nos</td>
-                                <td>{{date('d-m-Y',strtotime($item->cmin))}}</td>
+                                <td>{{date('d-m-Y',strtotime($item->cmin_date))}}</td>
                             </tr>
                             @endforeach
 							</tbody>

@@ -82,24 +82,69 @@
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Order Date  *</label>
                                 
-                                <input type="date"  class="form-control datepicker" name="order_date" value="{{$oef->order_date}}" placeholder="">
+                                <input type="date"  class="form-control datepicker1" name="order_date" value="{{$oef->order_date}}" placeholder="">
                             </div>
                         
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Order Fulfil  *</label>
-                                <input type="text" class="form-control" name="order_fulfil" value="{{$oef->order_fulfil_type}}" placeholder="Order Number" readonly>
-
+                                <!-- <input type="text" class="form-control" name="order_fulfil" value="{{$oef->order_fulfil_type}}" placeholder="Order Number" readonly> -->
+                                <select class="form-control" name="order_fulfil">
+                                    <!-- <option>Select one...</option> -->
+                                    @foreach($order_fulfil as $type)
+                                    <option value="{{$type['id']}}"  @if($type['order_fulfil_type']==$oef->order_fulfil_type) selected @endif>{{$type['order_fulfil_type']}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label for="exampleInputEmail1">Transaction Type  *</label>
-                                <input type="text" class="form-control" name="transaction" value="{{$oef->transaction_name}}" placeholder="Order Number" readonly>
-
+                                <!-- <input type="text" class="form-control" name="transaction" value="{{$oef->transaction_name}}" placeholder="Order Number" readonly> -->
+                                <select class="form-control" name="transaction_type">
+                                    <!-- <option>Select one...</option> -->
+                                    @foreach($transaction_type as $type)
+                                    <option value="{{$type['id']}}" @if($type['transaction_name']==$oef->transaction_name) selected @endif>{{$type['transaction_name']}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                                <label for="exampleInputEmail1">Product Category  *</label>
-                                <input type="text" readonly class="form-control" name="pro_category" value="{{$oef->category_name}}" placeholder="Order Number">
-
+                                <label for="exampleInputEmail1">Business Category  *</label>
+                               <!--input type="text" readonly class="form-control" name="pro_category" value="{{$oef->category_name}}" placeholder="Order Number"-->
+                               <select class="form-control" name="product_category">
+                                    <option value="">Select one...</option>
+                                    @foreach($category as $cate)
+                                    <option value="{{$cate['id']}}" @if($cate['id']==$oef->product_category) selected @endif>{{$cate['category_name']}}</option>
+                                    @endforeach
+                                </select>
                             </div>
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+    <label for="exampleInputEmail1">Product Category *</label>
+    @if(!empty($oef))
+        <select class="form-control" name="new_product_category" id="new_product_category" required>
+            <option value="">Select Category</option>
+            @foreach($product_category as $category)
+                <option value="{{ $category->id }}" 
+                    {{ $category->id == $oef['new_product_category'] ? 'selected' : '' }}>
+                    {{ $category->category_name }}
+                </option>
+            @endforeach
+        </select>
+    @else
+        <select class="form-control" name="new_product_category" id="new_product_category" required>
+            <option value="">Select Category...</option>
+            @foreach($product_category as $category)
+                <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+            @endforeach
+        </select>
+    @endif
+</div>
+
+                            <!-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+    <label for="exampleInputEmail1">Product Category *</label>
+    @if(!empty($oef))
+        <input type="text" class="form-control" name="new_product_category" value="{{$oef['new_category_name']}}" required>
+    @else
+        <input type="text" class="form-control" name="new_product_category" id="new_product_category" readonly required>
+    @endif
+</div> -->
                             <div class="form-group col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label>OEF Date *</label>
                                 <input type="date" value="{{$oef->oef_date}}" class="form-control oef_date" id="oef_date" name="oef_date">

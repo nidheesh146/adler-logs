@@ -72,6 +72,10 @@
                                 <textarea name="shipping_address"  class="form-control" id="shipping_address" readonly></textarea>
                             </div> 
                             <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
+        <label for="charges">Other Charges *</label>
+        <input type="text" value="" class="form-control charges" id="charges" name="charges" placeholder=""disabled>
+    </div> 
+                            <div class="form-group col-sm-12 col-md-3 col-lg-3 col-xl-3">
                                 <label>DNI Date *</label>
                                 <input type="date" value="{{date('Y-m-d')}}" class="form-control dni_date" id="dni_date"  name="dni_date"  placeholder="">
                             </div>
@@ -153,15 +157,15 @@
 
 <script>
   
-     $(document).ready(function() {
-        $('form').submit(function() {
-                $(this).find(':submit').prop('disabled', true);
-        });
+  $(document).ready(function () {
+    $('form').submit(function () {
+        // Enable the 'other_charges' field before submission
+        $('#charges').prop('disabled', false);
+        $(this).find(':submit').prop('disabled', true);
     });
 
-    
-       
-  $(".customer").select2({
+    // Initialize Select2 for customer selection
+    $(".customer").select2({
         placeholder: 'Choose one',
         searchInputPlaceholder: 'Search',
         minimumInputLength: 4,
@@ -173,41 +177,79 @@
             }
         }
     }).on('change', function (e) {
+        // Clear previous error messages and data
         $('#Itemcode-error').remove();
         $("#billing_address").text('');
         $("#shipping_address").text('');
         $('#pitable').empty();
         $('.invoice-heading').hide();
+
         let res = $(this).select2('data')[0];
-        if(typeof(res) != "undefined" )
-        {
-            if(res.zone_name!="Export")
-            {
-                if(res.billing_address){
-                    $("#billing_address").val(res.billing_address);
-                }
-                if(res.shipping_address){
-                    $("#shipping_address").val(res.shipping_address);
-                }
-                $.get("{{ url('fgs/DNI/fetchPI') }}?customer_id="+res.id,function(data)
-                {
-                    if(data!=0)
-                    {
-                    $('.invoice-heading').show();
-                    $('#pitable').append(data);
-                    $('.sbmit-btn').show();
+        if (typeof res !== "undefined") {
+            if (res.zone_name !== "Export") {
+                if (res.dl_expiry_date) {
+                    var currentDate = new Date();
+                    var year = currentDate.getFullYear();
+                    var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                    var day = String(currentDate.getDate()).padStart(2, '0');
+                    var formattedDate = `${year}-${month}-${day}`;
+
+                    var dlExpiryDate = res.dl_expiry_date;
+                    var date1 = new Date(formattedDate);
+                    var date2 = new Date(dlExpiryDate);
+                    var timeDifference = date2 - date1;
+                    var daysDifference = Math.round(timeDifference / (1000 * 60 * 60 * 24));
+
+                    if (daysDifference <= 30 && daysDifference > 0) {
+                        alert('This seller DL will expire within ' + daysDifference + ' days.');
+                    } else if (formattedDate === res.dl_expiry_date || daysDifference < 0) {
+                        alert('This seller DL has expired.');
                     }
-                });
+
+                    // Set billing and shipping addresses if available
+                    if (res.billing_address) {
+                        $("#billing_address").val(res.billing_address);
+                    }
+                    if (res.shipping_address) {
+                        $("#shipping_address").val(res.shipping_address);
+                    }
+
+                    // Fetch PI details
+                    $.get("{{ url('fgs/DNI/fetchPI') }}?customer_id=" + res.id, function (data) {
+    if (data !== 0) {
+        $('.invoice-heading').show();
+        $('#pitable').append(data);
+        $('.sbmit-btn').show();
+
+        var allAWM = true; // Assume all are AWM initially
+
+        $('#table-body tr').each(function () {
+            var categoryName = $(this).find('td').eq(5).text().trim(); // Get category name
+            if (categoryName !== "AWM") {
+                allAWM = false; // If any row is not AWM, set this to false
             }
-            else
-            {
-                alert('This is not a domestic customer...');
-                $('.customer').val('');
+        });
+
+        // Enable or disable the #charges field based on the allAWM flag
+        if (allAWM) {
+            $('#charges').prop('disabled', false).prop('required', true); // Enable and require if all are AWM
+        } else {
+            $('#charges').prop('disabled', true); // Disable if not all are AWM
+        }
+    }
+});
+
+                }
+            } else {
+                alert('This is not a domestic customer.');
+                $('.customer').val('').trigger('change');
                 $("#billing_address").html('');
                 $("#shipping_address").html('');
             }
         }
     });
+});
+
 </script>
 <script>
     $(document).ready(function() {

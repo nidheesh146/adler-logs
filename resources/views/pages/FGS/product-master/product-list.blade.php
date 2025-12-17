@@ -13,6 +13,7 @@
                 </a></span>
 			</div>
 			<h4 class="az-content-title" style="font-size: 20px;">Products
+			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/product-master/upload-excel')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> upload</button>
 			<button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/product-master/add')}}'" class="badge badge-pill badge-dark "><i class="fas fa-plus"></i> Product</button>
             <button style="float: right;font-size: 14px;" onclick="document.location.href='{{url('fgs/product-master/excel-export').'?'.http_build_query(array_merge(request()->all()))}}'" class="badge badge-pill badge-info"><i class="fas fa-file-excel"></i> Report</button>
 			</h4>
@@ -21,6 +22,12 @@
 		   <div class="alert alert-success " style="width: 100%;">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 			   <i class="icon fa fa-check"></i> {{ Session::get('success') }}
+		   </div>
+		   @endif
+		   @if (Session::get('error'))
+		   <div class="alert alert-danger " style="width: 100%;">
+			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+			   <i class="icon fa fa-check"></i> {{ Session::get('error') }}
 		   </div>
 		   @endif
 			<div class="tab-content">
@@ -92,7 +99,8 @@
 									<th>Type </th>
 									<th>HSN Code </th>
                                     <th>Product Condition</th>
-									<th>Category</th>
+									<th>Business Category</th>
+									<th>Product Category</th>
                                     <th>Brand</th>
 									<th>Family</th>
 									<th>Group</th>
@@ -109,18 +117,19 @@
                             <td>{{$item['hsn_code']}}</td>
                             <td>@if($item['is_sterile']==1) Sterile @else Non-Sterile @endif</td>
 							<td>{{$item['category_name']}}</td>
+							<td>{{$item['new_category_name']}}</td>
                             <td>{{$item['brand_name']}}</td>
                             <td>{{$item['family_name']}}</td>
                             <td>{{$item['group1_name']}}</td>
                             <td>{{$item['gst']}}%</td>
 							<td>
-								@if($item['is_active']==1)
+								{{--@if($item['is_active']==1)--}}
 								<button data-toggle="dropdown" style="width: 64px;" class="badge @if($item['status_type']==1) badge-success @else badge-warning @endif">@if($item['status_type']==1)  Active @else Inactive @endif<i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
 								<div class="dropdown-menu">
 									<a href="{{url('fgs/product-master/add?id='.$item["id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
 									<a href="{{url('product/delete?id='.$item["id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
 								</div>
-								@endif
+								{{--@endif--}}
 							</td>
                         </tr>
                         @endforeach

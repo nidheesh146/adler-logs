@@ -1,6 +1,9 @@
 @extends('layouts.default')
 @section('content')
-
+@php
+use App\Http\Controllers\Web\PurchaseDetails\InventoryController;
+$obj =new InventoryController;
+@endphp
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -160,9 +163,14 @@
 												@if(in_array('purchase_details.requisition_item_list',config('permission')))
 												<a href="{{url('inventory/add-purchase-reqisition-item?pr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
 												@endif
-												{{-- @if(in_array('purchase_details.requisition_delete',config('permission')))
-												<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
-												@endif --}}
+												@if(in_array('purchase_details.requisition_delete',config('permission')))
+												<?php $items = $obj->status($item['master_id']); ?>
+												@if($items)
+												<a onclick="return confirm('You cant delete.It is under next process');" class="dropdown-item"><i class="fas fa-trash-alt"></i> Delete</a>
+												@else
+												<a href="{{url('inventory/delete-purchase-reqisition?pr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i> Delete</a>
+												@endif
+												@endif
 											@else
 												@if(in_array('purchase_details.requisition_edit',config('permission')))
 												<a href="{{url('inventory/edit-service-reqisition?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a> 
@@ -170,9 +178,15 @@
 												@if(in_array('purchase_details.requisition_item_list',config('permission')))
 												<a href="{{url('inventory/add-purchase-reqisition-item?sr_id='.$item["master_id"])}}" class="dropdown-item"><i class="fas fa-plus"></i> Item</a> 
 												@endif
-												{{-- @if(in_array('purchase_details.requisition_delete',config('permission')))
-												<a href="{{url('inventory/delete-service-reqisition?sr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a> 
-												@endif --}}
+												@if(in_array('purchase_details.requisition_delete',config('permission')))
+												<?php $items = $obj->status($item['master_id']); ?>
+												@if($items)
+												<a onclick="return confirm('You cant delete.It is under next process');" class="dropdown-item"><i class="fas fa-trash-alt"></i> Delete</a>
+												@else
+												<a href="{{url('inventory/delete-service-reqisition?sr_id='.$item["master_id"])}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i> Delete</a>
+												@endif
+												@endif
+												
 											@endif
 										</div>
 										@if(in_array('purchase_details.requisition_item_list',config('permission')))

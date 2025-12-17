@@ -123,10 +123,10 @@
                         <td>
                         @if(request()->get('order_type')=='wo')
                         <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/WOR-add/'.$mrd['mrd_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
-                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRD-delete/'.$mrd['mrd_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        {{--<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRD-delete/'.$mrd['mrd_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>--}}
                         @else
                         <a class="badge badge-info" style="font-size: 13px;" href="{{url('inventory/MRD-add/'.$mrd['mrd_id'])}}"  class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
-                        <a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRD-delete/'.$mrd['mrd_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>
+                        {{--<a class="badge badge-danger" style="font-size: 13px;" href="{{url('inventory/MRD-delete/'.$mrd['mrd_id'])}}" onclick="return confirm('Are you sure you want to delete this ?');"><i class="fa fa-trash"></i> Delete</a>--}}
                         @endif
                         </td>
                     </tr>

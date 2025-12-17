@@ -13,10 +13,10 @@ $obj_req= new InventoryController;
 			<div class="az-content-breadcrumb">
 				<span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">PURCHASE DETAILS</a></span>
 				<span><a href="{{url('inventory/get-purchase-reqisition')}}" style="color: #596881;">{{ (request()->pr_id)?  "PURCHASE": "SERVICE"}} REQUISITION</a></span>
-				<span><a href="">{{ (request()->pr_id)?  "Purchase": "Service"}} Requisition Details ( {{$data["master"]['pr_no']}} )</a></span>
+				<span><a href="">{{ (request()->pr_id)?  "Purchase": "Service"}} Requisition Details ( {{$data["master"]['pr_no']}} ) Document Number -PUR/F-16</a></span>
 			</div>
 
-			<h4 class="az-content-title" style="font-size: 20px;">{{ (request()->pr_id)?  "Purchase": "Service"}} Requisition Details ( {{$data["master"]['pr_no']}} )
+			<h4 class="az-content-title" style="font-size: 19px;">{{ (request()->pr_id)?  "Purchase": "Service"}} Requisition Details ( {{$data["master"]['pr_no']}} )  Document Number -PUR/F-16
 				<div class="right-button">
 					<!-- <button data-toggle="dropdown" style="float: right; margin-left: 9px;font-size: 14px;" class="badge badge-pill badge-info ">
                         <i class="fa fa-download" aria-hidden="true"></i> Download <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i></button>
@@ -158,18 +158,30 @@ $obj_req= new InventoryController;
 							</td>
 							<td>
 								@php $status =$fn->getStatus($item['requisition_item_id']); @endphp
-								<button data-toggle="dropdown" style="width: 70px;" class="badge @if($status == 1) badge-success @elseif($status== 4) badge-info  @elseif($status==5 ) badge-warning   @elseif($item['status'] == 0) badge-danger @endif ">
-									@if($status ==4)
-									Pending
-									@elseif($status == 5)
-									On hold
-									@elseif($status == 1)
-									Approved
-									@else
-									Rejected
-									@endif
-									<i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i>
-								</button>
+								<button 
+        data-toggle="dropdown" 
+        style="width: 70px;" 
+        class="badge 
+            @if($status == 1 || $status == 8) 
+                badge-success 
+            @elseif($status == 4) 
+                badge-info  
+            @elseif($status == 5) 
+                badge-warning   
+            @elseif($item['status'] == 0) 
+                badge-danger 
+            @endif">
+        @if($status == 1 || $status == 8)
+            Approved
+        @elseif($status == 4)
+            Pending
+        @elseif($status == 5)
+            On hold
+        @else
+            Rejected
+        @endif
+        <i class="icon ion-ios-arrow-down tx-11 mg-l-3"></i>
+    </button>
 								@php $qtn =$fn->get_qtn($item['requisition_item_id']); @endphp
 								<div class="dropdown-menu">
 									@if(!empty($qtn))
@@ -177,6 +189,9 @@ $obj_req= new InventoryController;
 									@else
 									{{--<a href="{{url('inventory/delete-purchase-reqisition-item?pr_id='.request()->pr_id).'&'.'item_id='.$item['requisition_item_id']}}" onclick="return confirm('Are you sure you want to delete this ?');" class="dropdown-item"><i class="fas fa-trash-alt"></i> Delete</a>--}}
 									<a style="" class="dropdown-item item-delete" style="font-size: 13px;" href="#" item="{{$item['item_code']}}" qty="{{$item['actual_order_qty']}}" unit="{{$item['unit_name']}}" itemId="{{$item['requisition_item_id']}}" type="Purchase" master="{{$data["master"]['pr_no']}}" description="{{$item['short_description']}}" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-trash-alt"></i> Delete</a>
+									@if($status ==4)
+									<a href="{{url('inventory/edit-purchase-reqisition-item?pr_id='.request()->pr_id.'&item='.$item['requisition_item_id'])}}" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+									@endif
 									@endif
 								</div>
 								@if(in_array('purchase_details.requisition_item_edit',config('permission')))
@@ -241,7 +256,7 @@ $obj_req= new InventoryController;
 										<label for="exampleInputEmail1">Select File*</label>
 										<input type="file" required class="form-control file" name="file" id="file">
 										<a href="{{ asset('uploads/purchase_requisition_items_sample.xlsx') }}" target="_blank" style="float: right; font-size: 10px;"> Download Template</a>
-										<input type="text" name="pr_id" id="prid" value="">
+										<input type="hidden" name="pr_id" id="prid" value="">
 									</div>
 								</div>
 								<div class="row">

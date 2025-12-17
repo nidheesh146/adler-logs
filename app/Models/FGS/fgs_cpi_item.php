@@ -24,8 +24,8 @@ class fgs_cpi_item extends Model
     }
      function get_items($cpi_id)
     {
-        return $this->select('fgs_grs.grs_number','product_product.sku_code','product_product.hsn_code','product_product.discription',
-        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code')
+        return $this->select('fgs_grs.grs_number','fgs_item_master.sku_code','fgs_item_master.hsn_code','fgs_item_master.discription',
+        'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code','fgs_cpi_item.quantity')
                         ->leftjoin('fgs_cpi_item_rel','fgs_cpi_item_rel.item','=','fgs_cpi_item.id')
                         ->leftjoin('fgs_cpi','fgs_cpi.id','=','fgs_cpi_item_rel.master')
                          ->leftJoin('customer_supplier','customer_supplier.id','=','fgs_cpi.customer_id')
@@ -34,7 +34,7 @@ class fgs_cpi_item extends Model
                         ->leftJoin('fgs_grs_item','fgs_grs_item.id','=','fgs_cpi_item.grs_item_id')
                         ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
                         ->leftJoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_cpi_item.mrn_item_id')
-                        ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_grs_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                         ->where('fgs_cpi_item_rel.master','=', $cpi_id)
                         ->where('fgs_grs.status','=',1)
@@ -45,9 +45,11 @@ class fgs_cpi_item extends Model
     }
     function getItems($condition)
     {
-         return $this->select('fgs_grs.grs_number','product_product.sku_code','fgs_oef.oef_number','fgs_oef.oef_number','product_product.hsn_code','product_product.discription',
+         return $this->select('fgs_grs.grs_number','fgs_item_master.sku_code','fgs_oef.oef_number','fgs_oef.oef_number','fgs_item_master.hsn_code','fgs_item_master.discription',
         'batchcard_batchcard.batch_no','fgs_grs_item.batch_quantity as quantity','fgs_oef_item.rate','fgs_oef_item.discount','currency_exchange_rate.currency_code',
-        'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date')
+        'inventory_gst.igst','inventory_gst.cgst','inventory_gst.sgst','inventory_gst.id as gst_id','fgs_mrn_item.manufacturing_date','fgs_mrn_item.expiry_date','fgs_cpi_item.quantity')
+                        ->leftjoin('fgs_cpi_item_rel','fgs_cpi_item_rel.item','=','fgs_cpi_item.id')
+                        ->leftjoin('fgs_cpi','fgs_cpi.id','=','fgs_cpi_item_rel.master')
                         ->leftJoin('fgs_pi_item','fgs_pi_item.id','=','fgs_cpi_item.pi_item_id')
                         ->leftjoin('fgs_pi_item_rel','fgs_pi_item_rel.item','=','fgs_pi_item.id')
                         ->leftjoin('fgs_pi','fgs_pi.id','=','fgs_pi_item_rel.master')
@@ -59,12 +61,12 @@ class fgs_cpi_item extends Model
                         ->leftJoin('fgs_mrn_item','fgs_mrn_item.id','=','fgs_pi_item.mrn_item_id')
                         ->leftJoin('fgs_oef_item','fgs_oef_item.id','=','fgs_grs_item.oef_item_id')
                         ->leftjoin('inventory_gst','inventory_gst.id','=','fgs_oef_item.gst')
-                        ->leftjoin('product_product','product_product.id','=','fgs_grs_item.product_id')
+                        ->leftjoin('fgs_item_master','fgs_item_master.id','=','fgs_grs_item.product_id')
                         ->leftjoin('batchcard_batchcard','batchcard_batchcard.id','=','fgs_mrn_item.batchcard_id')
                         ->where('fgs_grs.status','=',1)
                         ->where($condition)
                         ->orderBy('fgs_grs_item.id','DESC')
-                        ->distinct('fgs_grs_item.id')
+                        //->distinct('fgs_grs_item.id')
                         ->get();
     }
 

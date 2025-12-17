@@ -34,6 +34,21 @@ class inv_stock_to_production extends Model
 
        
     }
+
+    function get_all_data_export($condition)
+    {
+        return $this->select(['inv_stock_to_production.*','inv_lot_allocation.lot_number','inventory_rawmaterial.item_code','inv_unit.unit_name','inv_item_type.type_name'])
+        ->leftjoin('inv_lot_allocation','inv_lot_allocation.id','=','inv_stock_to_production.lot_id')
+        ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_to_production.pr_item_id')
+        ->leftjoin('inv_stock_management','inv_stock_management.id','=','inv_stock_to_production.stock_id')
+        ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_stock_management.item_id')
+        ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+        ->leftjoin('inv_item_type', 'inv_item_type.id', '=','inventory_rawmaterial.item_type_id' )
+        ->where($condition)
+        ->where('inv_stock_to_production.status','=',1)
+        ->orderby('inv_stock_to_production.id','desc')
+        ->get();
+    }
     function get_single_data($condition)
     {
         return $this->select(['inv_stock_to_production.*','inv_lot_allocation.lot_number','inventory_rawmaterial.item_code','inv_unit.unit_name',
@@ -42,6 +57,7 @@ class inv_stock_to_production extends Model
         ->leftjoin('inv_purchase_req_item','inv_purchase_req_item.requisition_item_id','=','inv_stock_to_production.pr_item_id')
         ->leftjoin('inventory_rawmaterial','inventory_rawmaterial.id','=','inv_purchase_req_item.item_code')
         ->leftjoin('inv_unit', 'inv_unit.id','=', 'inventory_rawmaterial.issue_unit_id')
+        ->leftjoin('inv_item_type', 'inv_item_type.id', '=','inventory_rawmaterial.item_type_id' )
         ->leftjoin('work_centre','work_centre.id','=','inv_stock_to_production.work_centre')
         ->where($condition)
         ->where('inv_stock_to_production.status','=',1)

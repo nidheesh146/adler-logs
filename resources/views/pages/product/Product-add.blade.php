@@ -137,29 +137,26 @@ $obj_product=new ProductController();
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Family </label>
-                                @if(!empty($data['product_family_id']))
-                                <input type="text" name="product_family_id" class="form-control" value="{{(!empty($data)) ? $obj_product->get_product_family($data['product_family_id']): ""}}" placeholder="">
-                                @else
+                               
                                 <select name="product_family_id" id="product_family_id" class="form-control" >
                                     <option value="">-- Select one ---</option>
                                     @foreach ($family as $item)
+                                    <option value="{{$item->id}}" @if(!empty($data) && $data['product_family_id'] == $item->id) selected @endif>{{$item->family_name}}</option>
+
                                     <option value="{{$item->id}}" >{{$item->family_name}}</option>
                                     @endforeach
                                 </select>
-                                @endif
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label> Group </label>
-                                @if(!empty($data['product_group_id']))
-                                <input type="text" name="product_group_id" class="form-control" value="{{(!empty($data)) ? $obj_product->get_product_group($data['product_group_id']): ""}}" placeholder="">
-                                @else
+                                
                                  <select name="product_group_id" id="product_group_id" class="form-control" >
                                     <option value="">-- Select one ---</option>
                                  @foreach ($group as $item)
-                                        <option value="{{$item->id}}">{{$item->group_name}}</option>
+                                 <option value="{{$item->id}}" @if(!empty($data) && $data['product_group_id'] == $item->id) selected @endif>{{$item->group_name}}</option>
                                 @endforeach
                                 </select> 
-                                @endif
+                                
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label> Brand </label>
@@ -289,9 +286,9 @@ $obj_product=new ProductController();
                                 <label>Item Type</label>
                                 <select name="item_type" id="item_type" class="form-control">
                                     <option value="">-- Select one ---</option>
-                                    <option value="FINISHED GOODS">FINISHED GOODS</option>
-                                    <option value="PSI">PSI</option>
-                                    <option value="SEMI FINISHED GOODS">SEMI FINISHED GOODS</option>
+                                    <option value="FINISHED GOODS" @if(!empty($data)) && $data['item_type'] == "FINISHED GOODS") selected @endif >FINISHED GOODS</option>
+                                    <option value="PSI" @if(!empty($data) && $data['item_type'] == "PSI") selected @endif>PSI</option>
+                                    <option value="SEMI FINISHED GOODS" @if(!empty($data) && $data['item_type'] == "SEMI FINISHED GOODS") selected @endif>SEMI FINISHED GOODS</option>
                                 </select>
                             </div>
                             <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -371,12 +368,23 @@ $obj_product=new ProductController();
                                 <label>Image Upload</label>
                                 <input type="file" name="pimage" id="pimage" style="width:60%;max-width: 535px; border: 1px solid #1b273d;" />
                             </div>
+                            {{--<div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label>PDF Upload</label>
+                                <input type="file" name="pdf" id="pdf" accept="pdf" style="width:60%;max-width: 535px; border: 1px solid #1b273d;" />
+                            </div>--}}
+                            
                            {{-- <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
                                 <label>Process Sheet Upload</label>
                                 <input type="file" name="pimage"  style="width:60%;max-width: 535px; border: 1px solid #1b273d;" />
                             </div>--}}
                         </div>
-
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                <label>Is active</label><br>
+                                <input type="radio" id="is_active" name="is_active" value="1">
+                                <label for="Yes">Yes</label>&nbsp &nbsp &nbsp
+                                <input type="radio" id="is_active" name="is_active" value="0">
+                                <label for="No">No</label><br>
+                            </div>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                 <button type="submit" class="btn btn-primary btn-rounded " style="float: right;"><span class="spinner-border spinner-button spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span> <i class="fas fa-save"></i>
@@ -445,6 +453,9 @@ $obj_product=new ProductController();
             },
             pimage:{
                 extension: "jpeg|png|jpg",
+            },
+            pdf:{
+                extension: "pdf",
             }
 
         },

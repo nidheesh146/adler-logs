@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+@inject('function', 'App\Http\Controllers\Web\FGS\PIController')
 <div class="az-content az-content-dashboard">
   <br>
 	<div class="container">
@@ -106,7 +107,12 @@
 									<td><input type="checkbox" class="pi_id" id="pi_id" name="pi_id[]" value="{{$item['id']}}"></td> 
 									<td>{{$item['pi_number']}}</td>
 									<td>{{$item['pi_date'] ? date('d-m-Y',strtotime($item['pi_date'])) : '-'}}</td>
-									<td>{{$item['grs_number']}}</td>
+									<?php $grs_numbers = $function->getGRS_numbers($item['id']); ?>
+									<td>
+										@foreach($grs_numbers as $grs)
+										{{$grs['grs_number']}} ,
+										@endforeach
+									</td>
                                     <td>{{$item['firm_name']}}</td>
 								</tr>  
                             @endforeach
